@@ -4,18 +4,15 @@ import { ActivatedRoute } from '@angular/router';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
-import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
-import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { of } from 'rxjs';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
+import { DateService, GlobalStore, GlobalStoreType, SESSION_USER_STATE_MOCK } from 'opal-frontend-common';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;

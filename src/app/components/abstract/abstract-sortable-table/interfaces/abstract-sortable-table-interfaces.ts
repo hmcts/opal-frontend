@@ -1,4 +1,5 @@
-import { SortableValues } from '@services/sort-service/types/sort-service-type';
+import { SortableValues } from 'opal-frontend-common';
+
 export interface IAbstractSortState {
   [key: string]: 'ascending' | 'descending' | 'none';
 }

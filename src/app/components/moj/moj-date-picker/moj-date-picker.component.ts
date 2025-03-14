@@ -10,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { DateService } from '@services/date-service/date.service';
+import { DateService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-moj-date-picker',

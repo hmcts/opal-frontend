@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractSortableTableComponent } from './abstract-sortable-table.component';
-import { SortService } from '@services/sort-service/sort-service';
 import { IAbstractSortState } from './interfaces/abstract-sortable-table-interfaces';
 import { ABSTRACT_EXISTING_SORT_STATE_MOCK } from './mocks/abstract-sortable-table-existing-sort-state-mock';
 import { MOCK_ABSTRACT_TABLE_DATA } from './mocks/abstract-sortable-table-data-mock';
+import { SortService } from 'opal-frontend-common';
 
 class TestComponent extends AbstractSortableTableComponent {
   constructor() {

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
@@ -17,6 +16,7 @@ import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GovukButtonComponent } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',

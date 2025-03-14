@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
+import { alphabeticalTextValidator } from 'opal-frontend-common';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {

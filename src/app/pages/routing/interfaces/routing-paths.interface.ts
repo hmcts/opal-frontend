@@ -2,9 +2,6 @@ import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-path
 
 export interface IPagesRoutingPaths extends IChildRoutingPaths {
   children: {
-    accessDenied: string;
-    signIn: string;
-    signInStub: string;
     dashboard: string;
   };
 }

@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
+import { optionalValidDateValidator } from 'opal-frontend-common';
 
 export const FINES_MAC_PAYMENT_TERMS_PAY_IN_FULL_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {

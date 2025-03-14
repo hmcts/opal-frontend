@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { UtilsService } from '@services/utils/utils.service';
+import { UtilsService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-govuk-tab-list-item',

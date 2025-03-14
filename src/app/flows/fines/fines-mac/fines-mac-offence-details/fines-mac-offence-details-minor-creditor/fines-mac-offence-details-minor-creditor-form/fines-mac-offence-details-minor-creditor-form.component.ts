@@ -12,20 +12,22 @@ import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form
 import { CommonModule } from '@angular/common';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
-import { numericalTextValidator } from '@validators/numerical-only/numerical-only.validator';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../constants/fines-mac-offence-details-minor-creditor-field-errors.constant';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import {
+  alphabeticalTextValidator,
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  numericalTextValidator,
+  specialCharactersValidator,
+} from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -37,12 +39,12 @@ import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-deta
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
     GovukSelectComponent,
-    GovukTextInputComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukErrorSummaryComponent,
     GovukButtonComponent,
+    GovukTextInputComponent,
     GovukCancelLinkComponent,
   ],
   templateUrl: './fines-mac-offence-details-minor-creditor-form.component.html',

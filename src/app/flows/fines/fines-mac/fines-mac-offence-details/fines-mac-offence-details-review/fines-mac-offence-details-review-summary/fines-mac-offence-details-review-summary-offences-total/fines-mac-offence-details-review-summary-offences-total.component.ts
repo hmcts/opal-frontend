@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angu
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals } from './interfaces/fines-mac-offence-details-review-summary-offences-total-totals.interface';
-import { UtilsService } from '@services/utils/utils.service';
+
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../interfaces/fines-mac-offence-details-review-summary-form.interface';
+import { UtilsService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-offences-total',

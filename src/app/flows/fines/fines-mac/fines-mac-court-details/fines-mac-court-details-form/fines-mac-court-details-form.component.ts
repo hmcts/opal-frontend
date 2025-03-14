@@ -11,10 +11,8 @@ import {
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
@@ -23,6 +21,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-m
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GovukTextInputComponent, GovukButtonComponent } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
@@ -32,8 +31,8 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
     AlphagovAccessibleAutocompleteComponent,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    GovukTextInputComponent,
     GovukErrorSummaryComponent,
+    GovukTextInputComponent,
   ],
   templateUrl: './fines-mac-court-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,7 +1,4 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { LaunchDarklyService } from '@services/launch-darkly/launch-darkly.service';
-import { SessionService } from '@services/session-service/session.service';
-import { DateService } from '@services/date-service/date.service';
 import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -9,9 +6,14 @@ import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.compon
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
-import { GlobalStore } from './stores/global/global.store';
-import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
-import { AppInsightsService } from '@services/app-insights/app-insights.service';
+import {
+  AppInsightsService,
+  DateService,
+  GlobalStore,
+  LaunchDarklyService,
+  SessionService,
+  SSO_ENDPOINTS,
+} from 'opal-frontend-common';
 
 @Component({
   selector: 'app-root',

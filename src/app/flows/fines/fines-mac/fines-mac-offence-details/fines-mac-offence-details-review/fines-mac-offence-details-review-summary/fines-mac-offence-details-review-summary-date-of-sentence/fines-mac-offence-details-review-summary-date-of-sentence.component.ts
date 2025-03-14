@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { DateService } from '@services/date-service/date.service';
+import { DateService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-date-of-sentence',

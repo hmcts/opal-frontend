@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@guards/auth/auth.guard';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from './constants/fines-draft-cam-routing-paths.constant';
 import { FINES_DRAFT_CAM_ROUTING_TITLES } from './constants/fines-draft-cam-routing-titles.constant';
-import { TitleResolver } from '@resolvers/title/title.resolver';
+import { authGuard, TitleResolver } from 'opal-frontend-common';
 
 export const routing: Routes = [
   {

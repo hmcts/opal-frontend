@@ -1,6 +1,6 @@
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { Validators } from '@angular/forms';
-import { amountValidator } from '@validators/amount/amount.validator';
+import { amountValidator } from 'opal-frontend-common';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlValidation[] = [
   {

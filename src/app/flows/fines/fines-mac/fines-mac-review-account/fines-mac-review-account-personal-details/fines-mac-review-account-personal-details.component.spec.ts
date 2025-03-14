@@ -1,10 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details.component';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
 import { DateTime } from 'luxon';
+import { DateService, UtilsService } from 'opal-frontend-common';
 
 describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   let component: FinesMacReviewAccountPersonalDetailsComponent;

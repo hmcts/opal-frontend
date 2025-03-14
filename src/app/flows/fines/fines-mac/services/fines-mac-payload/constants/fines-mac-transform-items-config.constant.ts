@@ -1,4 +1,4 @@
-import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
+import { ITransformItem } from 'opal-frontend-common';
 
 // Shared properties
 const BUILD_PAYLOAD_FORMAT = {

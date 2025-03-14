@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form.component';
-import { DateService } from '@services/date-service/date.service';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -26,6 +24,7 @@ import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-of
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
+import { DateService, UtilsService } from 'opal-frontend-common';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;

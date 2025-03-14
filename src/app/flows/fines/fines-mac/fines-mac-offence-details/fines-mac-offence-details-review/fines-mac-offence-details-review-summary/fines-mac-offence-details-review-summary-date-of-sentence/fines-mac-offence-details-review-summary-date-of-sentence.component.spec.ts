@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent } from './fines-mac-offence-details-review-summary-date-of-sentence.component';
-import { DateService } from '@services/date-service/date.service';
+import { DateService } from 'opal-frontend-common';
 
 describe('FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent;

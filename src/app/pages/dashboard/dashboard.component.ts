@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStore } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-dashboard',

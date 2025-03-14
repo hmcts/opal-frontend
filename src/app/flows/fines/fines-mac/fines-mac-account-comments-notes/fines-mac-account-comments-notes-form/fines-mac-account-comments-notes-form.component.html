@@ -24,15 +24,15 @@
   ></app-govuk-text-area>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <lib-govuk-button buttonId="submitForm" type="submit">Return to account details</lib-govuk-button>
       @if (mandatorySectionsCompleted && defendantType && finesMacNestedRoutes[defendantType].accountCommentsNotes) {
-        <app-govuk-button
+        <lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].accountCommentsNotes?.buttonText }}
-        </app-govuk-button>
+        </lib-govuk-button>
       }
     </div>
   </div>

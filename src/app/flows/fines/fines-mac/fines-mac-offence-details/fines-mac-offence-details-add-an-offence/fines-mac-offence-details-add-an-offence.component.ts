@@ -13,9 +13,9 @@ import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-off
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
-import { DateService } from '@services/date-service/date.service';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { DateService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',

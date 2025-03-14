@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angu
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { UtilsService } from '@services/utils/utils.service';
+
 import { IFinesMacOffenceDetailsImpositionsState } from '../../interfaces/fines-mac-offence-details-impositions-state.interface';
 import {
   IFinesMacOffenceDetailsReviewSummaryImpositionTableData,
@@ -18,6 +18,7 @@ import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-li
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
+import { UtilsService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',

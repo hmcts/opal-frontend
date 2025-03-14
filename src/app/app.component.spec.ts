@@ -1,21 +1,23 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { DateService } from '@services/date-service/date.service';
 import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { DateTime } from 'luxon';
-import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
-import { GlobalStore } from './stores/global/global.store';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
-import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
+import {
+  DateService,
+  GlobalStore,
+  GlobalStoreType,
+  ISessionTokenExpiry,
+  SESSION_TOKEN_EXPIRY_MOCK,
+  SSO_ENDPOINTS,
+} from 'opal-frontend-common';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

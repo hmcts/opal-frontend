@@ -9,30 +9,32 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
-import { optionalEmailAddressValidator } from '@validators/optional-valid-email-address/optional-valid-email-address.validator';
-import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';
 import { IFinesMacContactDetailsFieldErrors } from '../interfaces/fines-mac-contact-details-field-errors.interface';
 import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-contact-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import {
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  optionalEmailAddressValidator,
+  optionalMaxLengthValidator,
+  optionalPhoneNumberValidator,
+} from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
     GovukCancelLinkComponent,
+    GovukTextInputComponent,
   ],
   templateUrl: './fines-mac-contact-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

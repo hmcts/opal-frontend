@@ -11,8 +11,8 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants/fines-mac-personal-details-form';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { UtilsService } from 'opal-frontend-common';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;

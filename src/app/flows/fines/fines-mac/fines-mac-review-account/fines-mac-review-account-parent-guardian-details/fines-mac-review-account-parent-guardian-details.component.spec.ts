@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details.component';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
+
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
+import { DateService, UtilsService } from 'opal-frontend-common';
 
 describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
   let component: FinesMacReviewAccountParentGuardianDetailsComponent;

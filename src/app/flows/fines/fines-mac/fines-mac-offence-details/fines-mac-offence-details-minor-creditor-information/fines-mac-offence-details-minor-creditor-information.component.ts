@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { UtilsService } from '@services/utils/utils.service';
+
 import { CommonModule } from '@angular/common';
 import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
@@ -7,6 +7,7 @@ import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
+import { UtilsService } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',

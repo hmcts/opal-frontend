@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
@@ -22,23 +21,26 @@ import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-persona
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { DateService } from '@services/date-service/date.service';
 import { takeUntil } from 'rxjs';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { dateOfBirthValidator } from '@validators/date-of-birth/date-of-birth.validator';
-import { nationalInsuranceNumberValidator } from '@validators/national-insurance-number/national-insurance-number.validator';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
-import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
-import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import {
+  alphabeticalTextValidator,
+  dateOfBirthValidator,
+  DateService,
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  nationalInsuranceNumberValidator,
+  optionalMaxLengthValidator,
+  optionalValidDateValidator,
+  specialCharactersValidator,
+} from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -49,10 +51,10 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
     GovukErrorSummaryComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
-    GovukTextInputComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
+    GovukTextInputComponent,
     MojTicketPanelComponent,
     MojDatePickerComponent,
   ],

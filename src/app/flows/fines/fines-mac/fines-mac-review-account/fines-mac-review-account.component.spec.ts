@@ -16,12 +16,9 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { UtilsService } from '@services/utils/utils.service';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { GlobalStore, GlobalStoreType, SESSION_USER_STATE_MOCK, UtilsService } from 'opal-frontend-common';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;

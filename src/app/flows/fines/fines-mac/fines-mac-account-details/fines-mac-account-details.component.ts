@@ -5,7 +5,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-a
 import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukButtonComponent } from 'opal-frontend-common';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
@@ -13,7 +13,6 @@ import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-
 import { GovukTaskListItemComponent } from '@components/govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
-import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
@@ -21,6 +20,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { CanDeactivateTypes } from 'opal-frontend-common';
 
 @Component({
   selector: 'app-fines-mac-account-details',
