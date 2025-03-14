@@ -105,6 +105,7 @@ Then('I clear the {string} field for imposition {int}', (labelText: string, inde
     .eq(index - 1)
     .contains('label', labelText)
     .nextUntil('input')
+    .find('input')
     .clear();
 });
 

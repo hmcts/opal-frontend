@@ -139,7 +139,7 @@ export const routing: Routes = [
       import('../fines-mac-language-preferences/fines-mac-language-preferences.component').then(
         (c) => c.FinesMacLanguagePreferencesComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.languagePreferences },
     resolve: { title: TitleResolver },

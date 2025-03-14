@@ -134,6 +134,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     if (index !== -1) {
       const offence = structuredClone(offenceDetails[index]);
       offence.formData = form.formData;
+      offence.childFormData = form.childFormData;
       offenceDetails[index] = offence;
     } else {
       offenceDetails.push(form);

@@ -16,7 +16,7 @@ Then('I set the {string}, {string} to {string}', (alias: string, aliasField: str
     .contains('lib-govuk-text-input', aliasField)
     .find('input')
     .clear()
-    .type(aliasValue);
+    .type(aliasValue, { delay: 0 });
 });
 /*
 Example usage: I see "Alias 1", "First name" is set to "John"

@@ -472,6 +472,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param rowIndex - The index of the row.
    */
   public goToMinorCreditor(rowIndex: number): void {
+    this.finesMacOffenceDetailsStore.setRemoveMinorCreditor(null);
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
 
     this.updateOffenceDetailsDraft(this.form.value);
@@ -563,7 +564,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const draftOffenceDetails = offenceDetailsDraft[0];
 
     const minorCreditorsArray =
-      structuredClone(offenceDetails?.childFormData) || draftOffenceDetails?.childFormData || [];
+      structuredClone(draftOffenceDetails?.childFormData) || structuredClone(offenceDetails?.childFormData) || [];
 
     this.minorCreditors = minorCreditorsArray.reduce((acc, creditor) => {
       const position = creditor.formData.fm_offence_details_imposition_position;
