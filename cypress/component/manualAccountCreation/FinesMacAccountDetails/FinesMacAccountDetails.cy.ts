@@ -10,19 +10,26 @@ import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interf
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_ayg_check_account_mock';
 import { FINES_AYPG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_aypg_check_account_mock';
 import { FINES_COMP_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_comp_check_account_mock';
+import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
+import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { FINES_REJECTED_ACCOUNT_MOCK } from './mocks/fines_mac_rejected_account_mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
+  let finesRejectedAccountMock = structuredClone(FINES_REJECTED_ACCOUNT_MOCK);
 
   const setupComponent = (
     formSubmit: any,
     defendantTypeMock: string = '',
     finesMacStateMock: IFinesMacState = finesMacState,
+    setAmend: boolean = false,
   ) => {
     mount(FinesMacAccountDetailsComponent, {
       providers: [
         UtilsService,
         DateService,
+        FinesMacPayloadService,
+
         {
           provide: FinesMacStore,
           useFactory: () => {
@@ -32,11 +39,27 @@ describe('FinesMacAccountDetailsComponent', () => {
           },
         },
         {
+          provide: FinesDraftStore,
+          useFactory: () => {
+            let store = new FinesDraftStore();
+            store.setAmend(setAmend);
+            return store;
+          },
+        },
+        {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                accountDetailsFetchMap: {
+                  FinesMacStore: finesMacState,
+                  finesMacDraft: finesRejectedAccountMock,
+                },
+              },
+              parent: {
+                snapshot: {
+                  url: [{ path: 'manual-account-creation' }],
+                },
               },
             },
           },
@@ -62,7 +85,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
-    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524'] },
+    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524', '@PO-640'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
@@ -94,7 +117,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
-    { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524'] },
+    { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524', '@PO-640'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
@@ -127,7 +150,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
-    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524'] },
+    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524', '@PO-640'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -236,6 +259,58 @@ describe('FinesMacAccountDetailsComponent', () => {
         'contain',
         'You cannot proceed until all required sections have been completed.',
       );
+    },
+  );
+  it('(AC.1,AC.2) should show rejected account when account is rejected', { tags: ['@PO-640'] }, () => {
+    setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+    cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
+    cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+    cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
+    cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+    cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+    cy.get(DOM_ELEMENTS.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
+  });
+
+  it('(AC.3)should show history of timeline data', { tags: ['@PO-640'] }, () => {
+    finesRejectedAccountMock.timeline_data.push({
+      username: 'Timmy Test',
+      status: 'Rejected',
+      status_date: '2023-07-05',
+      reason_text: null,
+    });
+    finesRejectedAccountMock.timeline_data.push({
+      username: 'Timmy Test',
+      status: 'Submitted',
+      status_date: '2023-07-07',
+      reason_text: null,
+    });
+
+    setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
+
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    const timelineEntries = [
+      { title: 'Submitted', author: 'by Timmy Test', date: '03 July 2023' },
+      { title: 'Rejected', author: 'by Timmy Test', date: '05 July 2023' },
+      { title: 'Submitted', author: 'by Timmy Test', date: '07 July 2023' },
+    ];
+
+    timelineEntries.forEach((entry) => {
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains(entry.title).should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).contains(entry.author).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).contains(entry.date).should('exist');
+    });
+  });
+
+  it(
+    'should not show rejected account when ammend is set to false and should have account details title',
+    { tags: ['@PO-640'] },
+    () => {
+      setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, false);
+      cy.get(DOM_ELEMENTS.pageTitle).contains('Account details').should('exist');
+      cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
     },
   );
 });
