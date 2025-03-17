@@ -12,5 +12,4 @@ export const DOM_ELEMENTS = {
   created: 'td[id = "created"]',
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
-  
 };
