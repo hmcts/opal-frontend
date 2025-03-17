@@ -1,0 +1,56 @@
+{
+  "count": 3,
+  "summaries": [
+    {
+      "draft_account_id": 328,
+      "created_at": "2025-01-08T14:04:35.409798Z",
+      "submitted_by": "L073JG",
+      "business_unit_id": 73,
+      "account_snapshot": {
+        "account_type": "Fine",
+        "created_date": "2025-01-08T14:04:35.40979796Z",
+        "submitted_by": "BUUID",
+        "date_of_birth": "01/01/2000",
+        "defendant_name": "LNAME, FNAME1",
+        "submitted_by_name": "Laura Clerk1",
+        "business_unit_name": "West London"
+      },
+      "account_type": "Fine",
+      "account_status": "Rejected"
+    },
+    {
+      "draft_account_id": 329,
+      "created_at": "2025-01-07T14:04:35.409798Z",
+      "submitted_by": "L073JG",
+      "business_unit_id": 73,
+      "account_snapshot": {
+        "account_type": "Fine",
+        "created_date": "2025-01-07T14:04:35.40979796Z",
+        "submitted_by": "BUUID",
+        "date_of_birth": "01/01/2000",
+        "defendant_name": "LNAME, FNAME2",
+        "submitted_by_name": "Laura Clerk1",
+        "business_unit_name": "West London"
+      },
+      "account_type": "Fine",
+      "account_status": "Rejected"
+    },
+    {
+      "draft_account_id": 330,
+      "created_at": "2025-01-08T14:04:35.409798Z",
+      "submitted_by": "L073JG",
+      "business_unit_id": 73,
+      "account_snapshot": {
+        "account_type": "Fine",
+        "created_date": "2025-01-08T14:04:35.40979796Z",
+        "submitted_by": "BUUID",
+        "date_of_birth": "01/01/2000",
+        "defendant_name": "LNAME, FNAME3",
+        "submitted_by_name": "Laura Clerk1",
+        "business_unit_name": "West London"
+      },
+      "account_type": "Fine",
+      "account_status": "Rejected"
+    }
+  ]
+}

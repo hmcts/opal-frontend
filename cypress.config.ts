@@ -84,8 +84,10 @@ export default defineConfig({
 
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
+
     specPattern: 'cypress/e2e/**/*.feature',
     excludeSpecPattern: '**/*/*.cy.ts',
+
     setupNodeEvents,
     retries: {
       runMode: 1,
