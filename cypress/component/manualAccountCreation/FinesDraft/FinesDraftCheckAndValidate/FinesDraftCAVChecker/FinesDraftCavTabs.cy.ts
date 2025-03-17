@@ -1,9 +1,9 @@
 import { mount } from 'cypress/angular';
-import { FinesDraftCavCheckerComponent } from 'src/app/flows/fines/fines-draft/fines-draft-cav/fines-draft-cav-checker/fines-draft-cav-checker.component';
+import { FinesDraftCheckAndValidateTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-validate/fines-draft-check-and-validate-tabs/fines-draft-check-and-validate-tabs.component';
 
 describe('FinesDraftCavCheckerComponent', () => {
   const setupComponent = () => {
-    mount(FinesDraftCavCheckerComponent, {
+    mount(FinesDraftCheckAndValidateTabsComponent, {
       providers: [],
       componentProperties: {},
     });
