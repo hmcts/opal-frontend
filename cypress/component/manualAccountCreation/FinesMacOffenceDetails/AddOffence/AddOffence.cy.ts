@@ -438,13 +438,13 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'INVALID';
+      cy.get(DOM_ELEMENTS.offenceCodeInput).type('INVALID', { delay: 0 });
+      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
+      cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidOffenceCode);
-      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-      cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
     },
   );
 
