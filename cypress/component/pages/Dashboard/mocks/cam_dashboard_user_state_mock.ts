@@ -1,9 +1,9 @@
 import { ISessionUserState } from 'src/app/services/session-service/interfaces/session-user-state.interface';
 
-export const DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
-  user_id: 'gl.timTest',
-  user_name: 'timmyTest@HMCTS.NET',
-  name: 'Timmy Test',
+export const CAM_DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
+  user_id: 'gl.testUser',
+  user_name: 'testUserCAM@HMCTS.NET',
+  name: 'Test User',
   business_unit_user: [
     {
       business_unit_user_id: 'L017KG',
@@ -20,10 +20,6 @@ export const DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
         {
           permission_id: 35,
           permission_name: 'CAV',
-        },
-        {
-          permission_id: 501,
-          permission_name: 'CAM',
         },
       ],
     },
