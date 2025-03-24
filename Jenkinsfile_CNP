@@ -148,15 +148,15 @@ withPipeline(type, product, component) {
     setupTestSpecifications()
 }
 
-  // afterSuccess('test') {
-  //   script {
-  //       def sourceJobName = env.JOB_NAME
-  //       sh' mkdir -p cypress/parallel/weights/pipeline'
-  //       sh 'cp -r cypress/parallel/weights/component-parallel-weights.json cypress/parallel/weights/pipeline/'
-  //       sh"echo 'Archiving weight files in ${sourceJobName}'"
-  //       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/component-parallel-weights.json', allowEmptyArchive: true
-  //       }
-  // }
+  afterSuccess('test') {
+    script {
+        def sourceJobName = env.JOB_NAME
+        sh' mkdir -p cypress/parallel/weights/pipeline'
+        sh 'cp -r cypress/parallel/weights/component-parallel-weights.json cypress/parallel/weights/pipeline/'
+        sh"echo 'Archiving weight files in ${sourceJobName}'"
+        archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/component-parallel-weights.json', allowEmptyArchive: true
+        }
+  }
   afterAlways('test'){
     archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }

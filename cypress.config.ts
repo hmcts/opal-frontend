@@ -112,7 +112,7 @@ export default defineConfig({
       bundler: 'webpack',
       webpackConfig: {
         devServer: {
-          port: 8090,
+          port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
         },
       },
     },
