@@ -110,6 +110,11 @@ export default defineConfig({
     devServer: {
       framework: 'angular',
       bundler: 'webpack',
+      webpackConfig: {
+        devServer: {
+          port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
+        },
+      },
     },
     specPattern: 'cypress/component/**/*.cy.ts',
     setupNodeEvents(on, config) {
