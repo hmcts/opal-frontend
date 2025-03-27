@@ -39,3 +39,4 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
     },
   ],
 };
+

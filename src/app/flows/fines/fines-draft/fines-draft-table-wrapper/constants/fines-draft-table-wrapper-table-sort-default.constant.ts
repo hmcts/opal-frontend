@@ -4,7 +4,7 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT: IFinesDraftTableWrapperTabl
   account: 'none',
   defendant: 'none',
   dob: 'none',
-  created: 'descending',
+  createdString: 'descending',
   accountType: 'none',
   businessUnit: 'none',
 };

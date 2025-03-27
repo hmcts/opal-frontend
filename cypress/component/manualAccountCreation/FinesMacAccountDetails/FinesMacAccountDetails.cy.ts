@@ -85,7 +85,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
-    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524', '@PO-640'] },
+    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
@@ -117,7 +117,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
-    { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524', '@PO-640'] },
+    { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
@@ -150,7 +150,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
-    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524', '@PO-640'] },
+    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -261,7 +261,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       );
     },
   );
-  it('(AC.1,AC.2) should show rejected account when account is rejected', { tags: ['@PO-640'] }, () => {
+  it('(AC.1,AC.2) should show rejected account when account is rejected', { tags: ['@PO-605', '@PO-640'] }, () => {
     setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
     cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
     cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
@@ -274,7 +274,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.timelineDescription).contains('Account rejected due to incorrect information').should('exist');
   });
 
-  it('(AC.3)should show history of timeline data', { tags: ['@PO-640'] }, () => {
+  it('(AC.3)should show history of timeline data', { tags: ['@PO-605', '@PO-640'] }, () => {
     finesRejectedAccountMock.timeline_data.push({
       username: 'Timmy Test',
       status: 'Rejected',
@@ -305,12 +305,134 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it(
-    'should not show rejected account when ammend is set to false and should have account details title',
-    { tags: ['@PO-640'] },
+    'should not show rejected account when amend is set to false and should have account details title',
+    { tags: ['@PO-605', '@PO-640'] },
     () => {
       setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, false);
       cy.get(DOM_ELEMENTS.pageTitle).contains('Account details').should('exist');
       cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
+    },
+  );
+
+  it(
+    '(AC.4,AC.5) Should display summary table below the review history for adultOrYouthOnly',
+    { tags: ['@PO-605', '@PO-640', '@PO-272'] },
+    () => {
+      setupComponent(null, '', FINES_AYG_CHECK_ACCOUNT_MOCK, true);
+
+      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription)
+        .contains('Account rejected due to incorrect information')
+        .should('exist');
+
+      // Verify all elements are rendered
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(DOM_ELEMENTS.defendantDetails).should('exist');
+      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
+      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
+      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
+    },
+  );
+
+  it(
+    '(AC.4,AC.6) Should display summary table below the review history for AYPG',
+    { tags: ['@PO-605', '@PO-640', '@PO-344'] },
+    () => {
+      setupComponent(null, '', FINES_AYPG_CHECK_ACCOUNT_MOCK, true);
+
+      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).contains('Mr John DOE').should('exist');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription)
+        .contains('Account rejected due to incorrect information')
+        .should('exist');
+
+      // Verify all elements are rendered
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(DOM_ELEMENTS.parentOrGuardianDetails).should('exist');
+      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
+      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
+
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+    },
+  );
+
+  it(
+    '(AC.4,AC.7) Should display summary table below the review history for COMP',
+    { tags: ['@PO-605', '@PO-640', '@PO-345'] },
+    () => {
+      setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
+
+      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+      cy.get(DOM_ELEMENTS.status).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).contains('Company Name').should('exist');
+      cy.get(DOM_ELEMENTS.timeLine).should('exist');
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Rejected').should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+      cy.get(DOM_ELEMENTS.timelineDescription)
+        .contains('Account rejected due to incorrect information')
+        .should('exist');
+
+      // Verify all elements are rendered
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
     },
   );
 });
