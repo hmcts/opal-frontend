@@ -8,12 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
-import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
-import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
-import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
@@ -22,7 +17,15 @@ import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-c
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  GovukCancelLinkComponent,
+  GovukCheckboxesComponent,
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesItemComponent,
+  GovukErrorSummaryComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 import {
   alphabeticalTextValidator,
   optionalMaxLengthValidator,

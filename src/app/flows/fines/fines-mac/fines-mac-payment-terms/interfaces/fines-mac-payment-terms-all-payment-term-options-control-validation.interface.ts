@@ -1,4 +1,4 @@
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract';
 
 interface IFinesMacPaymentTermsPaymentTermFieldsAddRemove {
   fieldsToAdd: IAbstractFormArrayControlValidation[];

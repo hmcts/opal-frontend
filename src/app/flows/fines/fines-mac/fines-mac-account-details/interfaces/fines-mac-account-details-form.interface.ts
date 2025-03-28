@@ -1,4 +1,4 @@
-import { IAbstractFormBaseForm } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form.interface';
+import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacAccountDetailsState } from './fines-mac-account-details-state.interface';
 
 export interface IFinesMacAccountDetailsForm extends IAbstractFormBaseForm<IFinesMacAccountDetailsState> {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsStoreType } from './types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from './fines-mac-offence-details.store';
-import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
+import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsStore', () => {

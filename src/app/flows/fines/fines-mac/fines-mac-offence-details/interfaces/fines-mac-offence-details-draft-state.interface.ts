@@ -1,5 +1,5 @@
 import { FormArray } from '@angular/forms';
-import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
+import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacOffenceDetailsForm } from './fines-mac-offence-details-form.interface';
 
 interface IFinesMacOffenceDetailsDraftRemoval {

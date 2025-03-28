@@ -1,7 +1,10 @@
 <h1 class="govuk-heading-l">Minor creditor details</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-  <app-govuk-radio
+  <opal-lib-govuk-radio
     fieldSetId="fm_offence_details_minor_creditor_creditor_type"
     legendText="Select creditor type"
     legendClasses="govuk-fieldset__legend--s"
@@ -9,7 +12,7 @@
   >
     @for (creditorType of creditorTypes; track creditorType.key) {
       <div
-        app-govuk-radios-item
+        opal-lib-govuk-radios-item
         [labelText]="creditorType.value"
         [inputId]="creditorType.key"
         inputName="fm_offence_details_minor_creditor_creditor_type"
@@ -19,9 +22,9 @@
 
       @if (creditorType.key === 'individual') {
         @if (form.get('fm_offence_details_minor_creditor_creditor_type')!.value === creditorType.key) {
-          <div app-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
+          <div opal-lib-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
             <div class="govuk-form-group">
-              <app-govuk-select
+              <opal-lib-govuk-select
                 labelText="Title"
                 selectId="fm_offence_details_minor_creditor_title"
                 selectName="fm_offence_details_minor_creditor_title"
@@ -29,7 +32,7 @@
                 [options]="titleOptions"
                 [control]="form.controls['fm_offence_details_minor_creditor_title']"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_title']"
-              ></app-govuk-select>
+              ></opal-lib-govuk-select>
             </div>
             <div class="govuk-form-group">
               <opal-lib-govuk-text-input
@@ -56,7 +59,7 @@
         }
       } @else if (creditorType.key === 'company') {
         @if (form.get('fm_offence_details_minor_creditor_creditor_type')!.value === creditorType.key) {
-          <div app-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
+          <div opal-lib-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
             <div class="govuk-form-group">
               <opal-lib-govuk-text-input
                 labelText="Company name"
@@ -71,7 +74,7 @@
         }
       }
     }
-  </app-govuk-radio>
+  </opal-lib-govuk-radio>
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
     <opal-lib-govuk-text-input
@@ -109,17 +112,17 @@
   </fieldset>
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Payment details</legend>
-    <app-govuk-checkboxes fieldSetId="has_payment_details" legendText="">
+    <opal-lib-govuk-checkboxes fieldSetId="has_payment_details" legendText="">
       <div
-        app-govuk-checkboxes-item
+        opal-lib-govuk-checkboxes-item
         labelText="I have BACS payment details"
         inputId="fm_offence_details_minor_creditor_pay_by_bacs"
         inputName="fm_offence_details_minor_creditor_pay_by_bacs"
         [control]="form.get('fm_offence_details_minor_creditor_pay_by_bacs')"
       ></div>
-    </app-govuk-checkboxes>
+    </opal-lib-govuk-checkboxes>
     @if (form.get('fm_offence_details_minor_creditor_pay_by_bacs')?.value === true) {
-      <div app-govuk-checkboxes-conditional conditionalId="fm_offence_details_minor_creditor_pay_by_bacs">
+      <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_offence_details_minor_creditor_pay_by_bacs">
         <opal-lib-govuk-text-input
           labelText="Name on the account"
           inputId="fm_offence_details_minor_creditor_bank_account_name"
@@ -162,9 +165,9 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -25,7 +24,7 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukButtonComponent, GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 import { UtilsService } from '@hmcts/opal-frontend-common/services';
 

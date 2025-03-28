@@ -22,10 +22,6 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
-      "@components/govuk/*": ["./src/app/components/govuk/*.ts"],
-      "@components/moj/*": ["./src/app/components/moj/*.ts"],
-      "@components/alphagov/*": ["./src/app/components/alphagov/*.ts"],
-      "@components/abstract/*": ["./src/app/components/abstract/*.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@routing/pages/*": ["./src/app/pages/routing/*.ts"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],

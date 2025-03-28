@@ -1,6 +1,6 @@
 export const DOM_ELEMENTS = {
   pageHeading: 'h1.govuk-heading-l',
-  errorSummary: 'app-govuk-error-summary',
+  errorSummary: 'opal-lib-govuk-error-summary',
   form: 'app-fines-mac-offence-details-minor-creditor-form',
   legendS: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
   legendM: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
@@ -50,5 +50,5 @@ export const DOM_ELEMENTS = {
   submitButton: 'button[id="submitForm"]',
 
   //links
-  cancelLink: 'app-govuk-cancel-link',
+  cancelLink: 'opal-lib-govuk-cancel-link',
 };

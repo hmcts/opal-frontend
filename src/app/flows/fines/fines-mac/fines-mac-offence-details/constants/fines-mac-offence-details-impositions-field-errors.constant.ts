@@ -1,4 +1,4 @@
-import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
+import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number): IAbstractFormBaseFieldErrors => {
   const indexSuffix = `_${index}`;

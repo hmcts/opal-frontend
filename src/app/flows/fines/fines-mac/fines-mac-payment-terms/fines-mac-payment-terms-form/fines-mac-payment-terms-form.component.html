@@ -1,15 +1,18 @@
 <h1 class="govuk-heading-l">Payment terms</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   @if (accessCollectionOrder) {
-    <app-govuk-radio
+    <opal-lib-govuk-radio
       fieldSetId="fm_payment_terms_collection_order_made"
       legendText="Has a collection order been made?"
       legendClasses="govuk-fieldset__legend--s"
       [errors]="formControlErrorMessages['fm_payment_terms_collection_order_made']"
     >
       <div
-        app-govuk-radios-item
+        opal-lib-govuk-radios-item
         labelText="Yes"
         inputId="fm_payment_terms_collection_order_made_true"
         inputName="fm_payment_terms_collection_order_made"
@@ -18,9 +21,9 @@
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === true) {
-          <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
+          <div opal-lib-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
             <div class="govuk-form-group">
-              <app-moj-date-picker
+              <opal-lib-moj-date-picker
                 labelText="Date of collection order"
                 labelClasses="govuk-label--s"
                 inputId="fm_payment_terms_collection_order_date"
@@ -31,14 +34,14 @@
                 [control]="form.controls['fm_payment_terms_collection_order_date']"
                 [errors]="formControlErrorMessages['fm_payment_terms_collection_order_date']"
                 (dateChange)="setInputValue($event, 'fm_payment_terms_collection_order_date')"
-              ></app-moj-date-picker>
+              ></opal-lib-moj-date-picker>
             </div>
           </div>
         }
       }
 
       <div
-        app-govuk-radios-item
+        opal-lib-govuk-radios-item
         labelText="No"
         inputId="fm_payment_terms_collection_order_made_false"
         inputName="fm_payment_terms_collection_order_made"
@@ -48,9 +51,9 @@
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
-            <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
+            <div opal-lib-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">
-                <app-govuk-checkboxes-item
+                <opal-lib-govuk-checkboxes-item
                   inputId="fm_payment_terms_collection_order_made_today"
                   inputName="fm_payment_terms_collection_order_made_today"
                   inputId="fm_payment_terms_collection_order_made_today"
@@ -58,15 +61,15 @@
                   labelText="Make collection order today"
                   [control]="form.controls['fm_payment_terms_collection_order_made_today']"
                   [control]="form.controls['fm_payment_terms_collection_order_made_today']"
-                ></app-govuk-checkboxes-item>
+                ></opal-lib-govuk-checkboxes-item>
               </div>
             </div>
           }
         }
       }
-    </app-govuk-radio>
+    </opal-lib-govuk-radio>
   }
-  <app-govuk-radio
+  <opal-lib-govuk-radio
     fieldSetId="fm_payment_terms_payment_terms"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
@@ -74,7 +77,7 @@
   >
     @for (paymentTerm of paymentTerms; track paymentTerm.key) {
       <div
-        app-govuk-radios-item
+        opal-lib-govuk-radios-item
         [labelText]="paymentTerm.value"
         [inputId]="paymentTerm.key"
         [inputName]="'fm_payment_terms_payment_terms'"
@@ -85,9 +88,9 @@
       @switch (paymentTerm.key) {
         @case ('payInFull') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
+            <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <div class="govuk-form-group">
-                <app-moj-date-picker
+                <opal-lib-moj-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
                   inputId="fm_payment_terms_pay_by_date"
@@ -97,7 +100,7 @@
                   [control]="form.controls['fm_payment_terms_pay_by_date']"
                   [errors]="formControlErrorMessages['fm_payment_terms_pay_by_date']"
                   (dateChange)="setInputValue($event, 'fm_payment_terms_pay_by_date')"
-                ></app-moj-date-picker>
+                ></opal-lib-moj-date-picker>
                 @if (dateInPast) {
                   <ng-container
                     *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
@@ -114,16 +117,16 @@
         }
         @case ('instalmentsOnly') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
+            <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
           }
         }
         @case ('lumpSumPlusInstalments') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
+            <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <div class="govuk-form-group">
-                <app-govuk-text-input-prefix-suffix
+                <opal-lib-govuk-text-input-prefix-suffix
                   labelText="Lump sum"
                   labelClasses="govuk-label--s"
                   inputId="fm_payment_terms_lump_sum_amount"
@@ -138,7 +141,7 @@
                   [errors]="formControlErrorMessages['fm_payment_terms_lump_sum_amount']"
                   [forceTwoDecimalPoints]="true"
                 >
-                </app-govuk-text-input-prefix-suffix>
+                </opal-lib-govuk-text-input-prefix-suffix>
               </div>
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
@@ -146,10 +149,10 @@
         }
       }
     }
-  </app-govuk-radio>
+  </opal-lib-govuk-radio>
   @if (defendantType !== 'company') {
     <div
-      app-govuk-checkboxes-item
+      opal-lib-govuk-checkboxes-item
       labelText="Request payment card"
       inputId="fm_payment_terms_payment_card_request"
       inputName="fm_payment_terms_payment_card_request"
@@ -160,13 +163,13 @@
     ></div>
   }
   @if (accessDefaultDates) {
-    <app-govuk-checkboxes
+    <opal-lib-govuk-checkboxes
       fieldSetId="daysInDefaultCheckbox"
       legendText="Days in default"
       legendClasses="govuk-fieldset__legend--s"
     >
       <div
-        app-govuk-checkboxes-item
+        opal-lib-govuk-checkboxes-item
         labelText="There are days in default"
         inputId="fm_payment_terms_has_days_in_default"
         inputName="fm_payment_terms_has_days_in_default"
@@ -174,9 +177,9 @@
       ></div>
 
       @if (form.get('fm_payment_terms_has_days_in_default')?.value) {
-        <div app-govuk-checkboxes-conditional conditionalId="fm_payment_terms_has_days_in_default">
+        <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_has_days_in_default">
           <div class="govuk-form-group">
-            <app-moj-date-picker
+            <opal-lib-moj-date-picker
               labelText="Date days in default were imposed"
               labelClasses="govuk-label--s"
               inputId="fm_payment_terms_suspended_committal_date"
@@ -192,10 +195,10 @@
               [control]="form.controls['fm_payment_terms_suspended_committal_date']"
               [errors]="formControlErrorMessages['fm_payment_terms_suspended_committal_date']"
               (dateChange)="setInputValue($event, 'fm_payment_terms_suspended_committal_date')"
-            ></app-moj-date-picker>
+            ></opal-lib-moj-date-picker>
           </div>
           <div class="govuk-form-group">
-            <app-govuk-text-input-prefix-suffix
+            <opal-lib-govuk-text-input-prefix-suffix
               labelText="Enter days in default"
               labelClasses="govuk-label--s"
               inputId="fm_payment_terms_default_days_in_jail"
@@ -208,7 +211,7 @@
               [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
               [control]="form.controls['fm_payment_terms_default_days_in_jail']"
               [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
-            ></app-govuk-text-input-prefix-suffix>
+            ></opal-lib-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
@@ -218,24 +221,24 @@
           </div>
         </div>
       }
-    </app-govuk-checkboxes>
+    </opal-lib-govuk-checkboxes>
   }
-  <app-govuk-checkboxes
+  <opal-lib-govuk-checkboxes
     fieldSetId="enforcementActions"
     legendText="Enforcement action"
     legendClasses="govuk-fieldset__legend--s"
   >
     @if (defendantType === 'company') {
       <div
-        app-govuk-checkboxes-item
+        opal-lib-govuk-checkboxes-item
         labelText="Hold enforcement on account (NOENF)"
         inputId="fm_payment_terms_hold_enforcement_on_account"
         inputName="fm_payment_terms_hold_enforcement_on_account"
         [control]="form.controls['fm_payment_terms_hold_enforcement_on_account']"
       ></div>
       <div *ngIf="form.get('fm_payment_terms_hold_enforcement_on_account')?.value">
-        <div app-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
-          <app-govuk-text-area
+        <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
+          <opal-lib-govuk-text-area
             labelText="Reason account is on NOENF"
             labelClasses="govuk-label--s"
             inputId="fm_payment_terms_reason_account_is_on_noenf"
@@ -246,12 +249,12 @@
             [rows]="1"
             [maxCharacterLimit]="28"
             [characterCountEnabled]="true"
-          ></app-govuk-text-area>
+          ></opal-lib-govuk-text-area>
         </div>
       </div>
     } @else {
       <div
-        app-govuk-checkboxes-item
+        opal-lib-govuk-checkboxes-item
         labelText="Add enforcement action"
         inputId="fm_payment_terms_add_enforcement_action"
         inputName="fm_payment_terms_add_enforcement_action"
@@ -259,15 +262,15 @@
       ></div>
       @if (form.get('fm_payment_terms_add_enforcement_action')!.value !== null) {
         @if (form.get('fm_payment_terms_add_enforcement_action')?.value === true) {
-          <div app-govuk-checkboxes-conditional conditionalId="fm_payment_terms_add_enforcement_action">
-            <app-govuk-radio
+          <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_add_enforcement_action">
+            <opal-lib-govuk-radio
               fieldSetId="fm_payment_terms_enforcement_action"
               legendClasses="govuk-fieldset__legend--s"
               [errors]="formControlErrorMessages['fm_payment_terms_enforcement_action']"
             >
               @for (enforcementAction of enforcementActions; track enforcementAction.key) {
                 <div
-                  app-govuk-radios-item
+                  opal-lib-govuk-radios-item
                   [labelText]="enforcementAction.value"
                   [inputId]="enforcementAction.key"
                   [inputName]="'fm_payment_terms_enforcement_action'"
@@ -276,9 +279,9 @@
                 ></div>
                 @if (enforcementAction.key === 'PRIS') {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
-                    <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
+                    <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
                       <div class="govuk-form-group">
-                        <app-moj-date-picker
+                        <opal-lib-moj-date-picker
                           labelText="Earliest release date (EDR)"
                           labelClasses="govuk-label--s"
                           inputId="fm_payment_terms_earliest_release_date"
@@ -288,10 +291,10 @@
                           [control]="form.controls['fm_payment_terms_earliest_release_date']"
                           [errors]="formControlErrorMessages['fm_payment_terms_earliest_release_date']"
                           (dateChange)="setInputValue($event, 'fm_payment_terms_earliest_release_date')"
-                        ></app-moj-date-picker>
+                        ></opal-lib-moj-date-picker>
                       </div>
                       <div class="govuk-form-group">
-                        <app-govuk-text-area
+                        <opal-lib-govuk-text-area
                           labelText="Prison and prison number"
                           labelClasses="govuk-label--s"
                           hintText="Held as enforcement comment"
@@ -303,14 +306,14 @@
                           [rows]="1"
                           [maxCharacterLimit]="28"
                           [characterCountEnabled]="true"
-                        ></app-govuk-text-area>
+                        ></opal-lib-govuk-text-area>
                       </div>
                     </div>
                   }
                 } @else {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
-                    <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
-                      <app-govuk-text-area
+                    <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
+                      <opal-lib-govuk-text-area
                         labelText="Reason account is on NOENF"
                         labelClasses="govuk-label--s"
                         inputId="fm_payment_terms_reason_account_is_on_noenf"
@@ -321,17 +324,17 @@
                         [rows]="1"
                         [maxCharacterLimit]="28"
                         [characterCountEnabled]="true"
-                      ></app-govuk-text-area>
+                      ></opal-lib-govuk-text-area>
                     </div>
                   }
                 }
               }
-            </app-govuk-radio>
+            </opal-lib-govuk-radio>
           </div>
         }
       }
     }
-  </app-govuk-checkboxes>
+  </opal-lib-govuk-checkboxes>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
@@ -346,16 +349,16 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>
 
 <ng-template #instalmentsFrequencyStartDate>
   <div class="govuk-form-group">
-    <app-govuk-text-input-prefix-suffix
+    <opal-lib-govuk-text-input-prefix-suffix
       labelText="Instalment"
       labelClasses="govuk-label--s"
       inputId="fm_payment_terms_instalment_amount"
@@ -370,10 +373,10 @@
       [errors]="formControlErrorMessages['fm_payment_terms_instalment_amount']"
       [forceTwoDecimalPoints]="true"
     >
-    </app-govuk-text-input-prefix-suffix>
+    </opal-lib-govuk-text-input-prefix-suffix>
   </div>
   <div class="govuk-form-group">
-    <app-govuk-radio
+    <opal-lib-govuk-radio
       fieldSetId="fm_payment_terms_instalment_period"
       fieldSetId="fm_payment_terms_instalment_period"
       legendText="Frequency"
@@ -383,7 +386,7 @@
     >
       @for (frequency of frequencyOptions; track frequency.key) {
         <div
-          app-govuk-radios-item
+          opal-lib-govuk-radios-item
           [labelText]="frequency.value"
           [inputId]="frequency.key"
           inputName="fm_payment_terms_instalment_period"
@@ -393,10 +396,10 @@
           [control]="form.controls['fm_payment_terms_instalment_period']"
         ></div>
       }
-    </app-govuk-radio>
+    </opal-lib-govuk-radio>
   </div>
   <div class="govuk-form-group">
-    <app-moj-date-picker
+    <opal-lib-moj-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
       inputId="fm_payment_terms_start_date"
@@ -406,7 +409,7 @@
       [control]="form.controls['fm_payment_terms_start_date']"
       [errors]="formControlErrorMessages['fm_payment_terms_start_date']"
       (dateChange)="setInputValue($event, 'fm_payment_terms_start_date')"
-    ></app-moj-date-picker>
+    ></opal-lib-moj-date-picker>
     @if (dateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>
     }
@@ -416,14 +419,14 @@
   </div>
 </ng-template>
 <ng-template #dateInPastTemplate let-fieldName>
-  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
+  <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
     <strong>{{ fieldName }} is in the past</strong>
     <p>You can continue with date in the past or change</p>
-  </app-moj-ticket-panel>
+  </opal-lib-moj-ticket-panel>
 </ng-template>
 <ng-template #dateInFutureTemplate let-fieldName>
-  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
+  <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
     <strong>{{ fieldName }} is more than 3 years in the future</strong>
     <p>You can continue with date in the past or change</p>
-  </app-moj-ticket-panel>
+  </opal-lib-moj-ticket-panel>
 </ng-template>

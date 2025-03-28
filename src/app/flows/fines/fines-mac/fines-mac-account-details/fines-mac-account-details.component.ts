@@ -4,13 +4,15 @@ import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS } from './constants/fines-mac-
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-account-details-account-types';
 import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
-import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
-import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
-import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-task-list.component';
-import { GovukTaskListItemComponent } from '@components/govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
+import {
+  GovukBackLinkComponent,
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+  GovukTagComponent,
+  GovukTaskListComponent,
+  GovukTaskListItemComponent,
+  GovukButtonComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';

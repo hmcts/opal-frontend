@@ -2,10 +2,12 @@ import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angu
 import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
-import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
-import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
+import {
+  MojHeaderComponent,
+  MojHeaderNavigationItemComponent,
+  MojBannerComponent,
+} from '@hmcts/opal-frontend-common/components/moj';
+import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/constants';
 import {
   DateService,

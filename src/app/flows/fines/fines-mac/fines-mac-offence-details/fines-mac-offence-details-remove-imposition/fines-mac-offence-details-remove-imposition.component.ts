@@ -1,24 +1,25 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { forkJoin, Observable, tap } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
+import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
-import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
-import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
-import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukButtonComponent,
+  GovukCancelLinkComponent,
+  GovukTableBodyRowDataComponent,
+  GovukTableBodyRowComponent,
+  GovukTableHeadingComponent,GovukTableComponent
+} from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',

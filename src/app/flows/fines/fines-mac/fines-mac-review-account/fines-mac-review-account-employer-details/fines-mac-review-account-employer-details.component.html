@@ -1,13 +1,13 @@
-<app-govuk-summary-card-list cardTitle="Employer details" summaryCardListId="employer-details">
+<opal-lib-govuk-summary-card-list cardTitle="Employer details" summaryCardListId="employer-details">
   <ng-container actions>
     <app-fines-mac-review-account-change-link
       (emitChange)="changeEmployerDetails()"
     ></app-fines-mac-review-account-change-link>
   </ng-container>
   <ng-container content>
-    <app-govuk-summary-list summaryListId="employerDetails">
+    <opal-lib-govuk-summary-list summaryListId="employerDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="employerDetails"
         summaryListRowId="employerName"
@@ -22,7 +22,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="employerDetails"
         summaryListRowId="employeeReference"
@@ -37,7 +37,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="employerDetails"
         summaryListRowId="employerEmailAddress"
@@ -52,7 +52,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="employerDetails"
         summaryListRowId="employerTelephoneNumber"
@@ -67,7 +67,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="employerDetails"
         summaryListRowId="employerAddress"
@@ -84,6 +84,6 @@
           }
         </ng-container>
       </div>
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

@@ -1,5 +1,5 @@
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
+import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract';
 
 const generateFormArrayControl = (index: number): IAbstractFormArrayControls => ({
   fm_offence_details_result_id: {

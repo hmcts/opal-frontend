@@ -1,4 +1,4 @@
-import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
+import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk';
 
 export const FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS: IGovUkRadioOptions[] = [
   { key: 'major', value: 'Major creditor' },

@@ -1,20 +1,22 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
-import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
-import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
-import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
-import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
+import { MojDatePickerComponent, MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  GovukCancelLinkComponent,
+  GovukErrorSummaryComponent,
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesItemComponent,
+  GovukCheckboxesComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 import {
   alphabeticalTextValidator,

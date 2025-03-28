@@ -1,4 +1,4 @@
-import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov';
 
 export const OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {

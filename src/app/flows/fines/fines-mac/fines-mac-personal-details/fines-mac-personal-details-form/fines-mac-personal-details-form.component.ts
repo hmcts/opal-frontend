@@ -9,28 +9,29 @@ import {
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
+import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
-import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
+import { MojTicketPanelComponent, MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj';
 import { takeUntil } from 'rxjs';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
-import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
-import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
-import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
-import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  GovukCancelLinkComponent,
+  GovukErrorSummaryComponent,
+  GovukSelectComponent,
+  IGovUkSelectOptions,
+  GovukCheckboxesComponent,
+  GovukCheckboxesConditionalComponent,GovukCheckboxesItemComponent
+} from '@hmcts/opal-frontend-common/components/govuk';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 import {
   alphabeticalTextValidator,

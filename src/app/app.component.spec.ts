@@ -4,10 +4,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DateTime } from 'luxon';
-import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
-import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
-import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  MojHeaderComponent,
+  MojHeaderNavigationItemComponent,
+  MojBannerComponent,
+} from '@hmcts/opal-frontend-common/components/moj';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services';

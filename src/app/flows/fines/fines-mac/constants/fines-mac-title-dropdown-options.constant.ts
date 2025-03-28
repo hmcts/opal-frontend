@@ -1,4 +1,4 @@
-import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
+import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk';
 
 export const FINES_MAC_TITLE_DROPDOWN_OPTIONS: IGovUkSelectOptions[] = [
   { value: 'Mr', name: 'Mr' },

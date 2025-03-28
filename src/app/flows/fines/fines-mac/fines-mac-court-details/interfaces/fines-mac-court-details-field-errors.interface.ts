@@ -1,5 +1,4 @@
-import { IAbstractFormBaseFieldError } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-error.interface';
-import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
 
 export interface IFinesMacCourtDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_court_details_originator_id: IAbstractFormBaseFieldError;

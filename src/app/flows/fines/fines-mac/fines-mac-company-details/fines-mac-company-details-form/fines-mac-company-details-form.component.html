@@ -1,5 +1,8 @@
 <h1 class="govuk-heading-l">Company details</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-input
     labelText="Company name"
@@ -9,18 +12,18 @@
     [control]="form.controls['fm_company_details_company_name']"
     [errors]="formControlErrorMessages['fm_company_details_company_name']"
   ></opal-lib-govuk-text-input>
-  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
+  <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
-      app-govuk-checkboxes-item
+      opal-lib-govuk-checkboxes-item
       labelText="Add company aliases"
       inputId="fm_company_details_add_alias"
       inputName="fm_company_details_add_alias"
       [control]="form.get('fm_company_details_add_alias')"
     ></div>
-  </app-govuk-checkboxes>
+  </opal-lib-govuk-checkboxes>
   @if (form.get('fm_company_details_add_alias')?.value === true) {
     <div
-      app-govuk-checkboxes-conditional
+      opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_company_details_add_alias"
       formArrayName="fm_company_details_aliases"
     >
@@ -119,9 +122,9 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

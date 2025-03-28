@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukButtonComponent, GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',

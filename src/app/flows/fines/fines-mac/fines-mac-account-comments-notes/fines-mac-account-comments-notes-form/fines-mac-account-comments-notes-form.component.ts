@@ -9,10 +9,8 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
+import { GovukCancelLinkComponent, GovukTextAreaComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';

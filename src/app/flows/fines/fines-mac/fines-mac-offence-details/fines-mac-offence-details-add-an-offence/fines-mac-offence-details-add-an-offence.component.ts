@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, forkJoin, map } from 'rxjs';
@@ -12,7 +12,7 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
+import { AbstractFormArrayParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { DateService } from '@hmcts/opal-frontend-common/services';

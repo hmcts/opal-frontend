@@ -1,5 +1,4 @@
-import { IAbstractFormBaseFieldError } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-error.interface';
-import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
 
 export interface IFinesMacContactDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_contact_details_email_address_1: IAbstractFormBaseFieldError;

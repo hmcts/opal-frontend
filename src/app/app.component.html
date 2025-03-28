@@ -1,15 +1,15 @@
 <div class="page-container">
-  <app-moj-header>
+  <opal-lib-moj-header>
     <ng-container organisationName>HMCTS</ng-container>
     <ng-container serviceName>Opal</ng-container>
-    <app-moj-header-navigation-item (actionClick)="handleAuthentication()">
+    <opal-lib-moj-header-navigation-item (actionClick)="handleAuthentication()">
       @if (!globalStore.authenticated()) {
         <ng-container linkText>Sign in</ng-container>
       } @else {
         <ng-container linkText>Sign out</ng-container>
       }
-    </app-moj-header-navigation-item>
-  </app-moj-header>
+    </opal-lib-moj-header-navigation-item>
+  </opal-lib-moj-header>
 
   <div class="content-wrapper">
     <div class="govuk-width-container">
@@ -18,22 +18,25 @@
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
               @let minutesText = minutes === 1 ? 'minute' : 'minutes';
-              <app-moj-banner
+              <opal-lib-moj-banner
                 text="Warning: Your session will expire in {{ minutes }} {{
                   minutesText
                 }}. Please save your work and log out, then log back in to continue."
                 type="warning"
-              ></app-moj-banner>
+              ></opal-lib-moj-banner>
             </div>
           }
         }
 
         @if (showExpiredWarning) {
-          <app-moj-banner text="Warning: Your session has expired. Please log back in." type="warning"></app-moj-banner>
+          <opal-lib-moj-banner
+            text="Warning: Your session has expired. Please log back in."
+            type="warning"
+          ></opal-lib-moj-banner>
         }
 
         @if (globalStore.authenticated() && globalStore.error().error) {
-          <app-moj-banner type="warning" [text]="globalStore.error().message"></app-moj-banner>
+          <opal-lib-moj-banner type="warning" [text]="globalStore.error().message"></opal-lib-moj-banner>
         }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>
@@ -42,5 +45,5 @@
     </div>
   </div>
 
-  <app-govuk-footer></app-govuk-footer>
+  <opal-lib-govuk-footer></opal-lib-govuk-footer>
 </div>

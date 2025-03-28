@@ -9,19 +9,23 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
-import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { AbstractFormBaseComponent, IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
+import {
+  AlphagovAccessibleAutocompleteComponent,
+  IAlphagovAccessibleAutocompleteItem,
+} from '@hmcts/opal-frontend-common/components/alphagov';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukTextInputComponent,
+  GovukButtonComponent,
+  GovukCancelLinkComponent,
+  GovukErrorSummaryComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',

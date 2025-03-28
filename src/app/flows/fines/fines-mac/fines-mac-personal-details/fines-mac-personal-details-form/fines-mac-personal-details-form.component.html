@@ -1,7 +1,10 @@
 <h1 class="govuk-heading-l">Personal details</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-  <app-govuk-select
+  <opal-lib-govuk-select
     labelText="Title"
     labelClasses="govuk-label--s"
     selectId="fm_personal_details_title"
@@ -9,7 +12,7 @@
     [options]="titleOptions"
     [control]="form.controls['fm_personal_details_title']"
     [errors]="formControlErrorMessages['fm_personal_details_title']"
-  ></app-govuk-select>
+  ></opal-lib-govuk-select>
   <opal-lib-govuk-text-input
     labelText="First names"
     inputId="fm_personal_details_forenames"
@@ -29,18 +32,18 @@
     [control]="form.controls['fm_personal_details_surname']"
     [errors]="formControlErrorMessages['fm_personal_details_surname']"
   ></opal-lib-govuk-text-input>
-  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
+  <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
-      app-govuk-checkboxes-item
+      opal-lib-govuk-checkboxes-item
       labelText="Add aliases"
       inputId="fm_personal_details_add_alias"
       inputName="fm_personal_details_add_alias"
       [control]="form.get('fm_personal_details_add_alias')"
     ></div>
-  </app-govuk-checkboxes>
+  </opal-lib-govuk-checkboxes>
   @if (form.get('fm_personal_details_add_alias')?.value === true) {
     <div
-      app-govuk-checkboxes-conditional
+      opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_personal_details_add_alias"
       formArrayName="fm_personal_details_aliases"
     >
@@ -101,7 +104,7 @@
       }
     </div>
   }
-  <app-moj-date-picker
+  <opal-lib-moj-date-picker
     labelText="Date of birth"
     labelClasses="govuk-label--s"
     inputId="fm_personal_details_dob"
@@ -112,16 +115,16 @@
     [maxDate]="yesterday"
     (dateChange)="setInputValue($event, 'fm_personal_details_dob')"
     [errors]="formControlErrorMessages['fm_personal_details_dob']"
-  ></app-moj-date-picker>
+  ></opal-lib-moj-date-picker>
   @if (age && ageLabel) {
-    <app-moj-ticket-panel
+    <opal-lib-moj-ticket-panel
       componentClasses="govuk-!-width-one-third"
       sectionClasses="moj-ticket-panel__content--blue"
       [alert]="true"
     >
       <strong>Age: {{ age }}</strong>
       <p>{{ ageLabel }}</p>
-    </app-moj-ticket-panel>
+    </opal-lib-moj-ticket-panel>
   }
   <opal-lib-govuk-text-input
     labelText="National Insurance number"
@@ -206,9 +209,9 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

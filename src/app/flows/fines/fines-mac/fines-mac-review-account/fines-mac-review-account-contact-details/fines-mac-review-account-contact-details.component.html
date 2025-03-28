@@ -1,13 +1,13 @@
-<app-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact-details">
+<opal-lib-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact-details">
   <ng-container actions>
     <app-fines-mac-review-account-change-link
       (emitChange)="changeContactDetails()"
     ></app-fines-mac-review-account-change-link>
   </ng-container>
   <ng-container content>
-    <app-govuk-summary-list summaryListId="contactDetails">
+    <opal-lib-govuk-summary-list summaryListId="contactDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="contactDetails"
         summaryListRowId="primaryEmailAddress"
@@ -22,7 +22,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="contactDetails"
         summaryListRowId="secondaryEmailAddress"
@@ -37,7 +37,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="contactDetails"
         summaryListRowId="mobileTelephoneNumber"
@@ -52,7 +52,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="contactDetails"
         summaryListRowId="homeTelephoneNumber"
@@ -67,7 +67,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="contactDetails"
         summaryListRowId="workTelephoneNumber"
@@ -81,6 +81,6 @@
           }
         </ng-container>
       </div>
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

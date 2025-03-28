@@ -1,4 +1,4 @@
-import { IAbstractFormBaseForm } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form.interface';
+import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacOffenceDetailsState } from './fines-mac-offence-details-state.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 

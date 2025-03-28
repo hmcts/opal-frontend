@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacParentGuardianDetailsForm } from './interfaces/fines-mac-parent-guardian-details-form.interface';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';

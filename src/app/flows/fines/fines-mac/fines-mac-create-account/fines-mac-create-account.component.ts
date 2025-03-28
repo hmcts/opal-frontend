@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
-import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -10,7 +10,7 @@ import {
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
+import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';

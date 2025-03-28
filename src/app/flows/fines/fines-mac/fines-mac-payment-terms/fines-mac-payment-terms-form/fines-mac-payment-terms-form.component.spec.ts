@@ -5,7 +5,7 @@ import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
 import { DateTime } from 'luxon';
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';

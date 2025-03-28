@@ -5,7 +5,6 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent } from './fines-mac-offence-details-review-summary-date-of-sentence/fines-mac-offence-details-review-summary-date-of-sentence.component';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total/fines-mac-offence-details-review-summary-offences-total.component';
@@ -15,8 +14,8 @@ import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-of
 import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj';
+import { GovukButtonComponent, GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
