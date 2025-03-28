@@ -1,11 +1,11 @@
 import { mount } from 'cypress/angular';
-import { FinesDraftCamViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-cam/fines-draft-cam-view-all-rejected/fines-draft-cam-view-all-rejected.component';
+import { FinesDraftViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/fines-draft-view-all-rejected/fines-draft-view-all-rejected.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 
-describe('FinesDraftCamViewAllRejectedComponent', () => {
+describe('FinesDraftViewAllRejectedComponent', () => {
   const setupComponent = () => {
-    mount(FinesDraftCamViewAllRejectedComponent, {
+    mount(FinesDraftViewAllRejectedComponent, {
       providers: [
         FinesDraftStore,
         Router,
