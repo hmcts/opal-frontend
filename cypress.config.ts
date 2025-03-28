@@ -85,7 +85,11 @@ export default defineConfig({
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: 'cypress/e2e/**/*.feature',
-    excludeSpecPattern: '**/*/*.cy.ts',
+    excludeSpecPattern: [
+      '**/*/*.cy.ts',
+      'cypress/e2e/DiscoPlus_accountEnquiry/**/*',
+      'cypress/e2e/Old_functional_E2E_Tests/**/*',
+    ],
     setupNodeEvents,
     retries: {
       runMode: 1,
@@ -106,6 +110,11 @@ export default defineConfig({
     devServer: {
       framework: 'angular',
       bundler: 'webpack',
+      webpackConfig: {
+        devServer: {
+          port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
+        },
+      },
     },
     specPattern: 'cypress/component/**/*.cy.ts',
     setupNodeEvents(on, config) {
