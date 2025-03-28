@@ -2724,18 +2724,19 @@ __metadata:
   linkType: hard
 
 "@cypress/webpack-preprocessor@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "@cypress/webpack-preprocessor@npm:6.0.2"
+  version: 6.0.4
+  resolution: "@cypress/webpack-preprocessor@npm:6.0.4"
   dependencies:
     bluebird: "npm:3.7.1"
     debug: "npm:^4.3.4"
     lodash: "npm:^4.17.20"
+    semver: "npm:^7.3.2"
   peerDependencies:
-    "@babel/core": ^7.0.1
-    "@babel/preset-env": ^7.0.0
-    babel-loader: ^8.3 || ^9
+    "@babel/core": ^7.25.2
+    "@babel/preset-env": ^7.25.3
+    babel-loader: ^8.3 || ^9 || ^10
     webpack: ^4 || ^5
-  checksum: 10/da98d36a4f4ee106b13c03e3e86d2345c4c909fc73913897117477e2b690ab4be838d655c95aa8175f52434dca6c12ff4f7357702bd93616634b57cb354429b4
+  checksum: 10/65acd85be422b755a1503342bdf46c149daef74dd9fd57a6aa9023313fa23bff357c9677e21500f41dc24dcf306595317c1f984879801fc41bdaaa95f4d7f26f
   languageName: node
   linkType: hard
 
@@ -14995,7 +14996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.1, semver@npm:^7.7.1":
+"semver@npm:7.7.1, semver@npm:^7.3.2, semver@npm:^7.7.1":
   version: 7.7.1
   resolution: "semver@npm:7.7.1"
   bin:
