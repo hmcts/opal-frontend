@@ -110,11 +110,11 @@
   </app-govuk-task-list>
   @if (mandatorySectionsCompleted) {
     <h2 class="govuk-heading-m">Check and submit</h2>
-    <lib-govuk-button
+    <opal-lib-govuk-button
       buttonId="checkAccountButton"
       buttonClasses="govuk-!-margin-bottom-0"
       (buttonClickEvent)="handleRoute(fineMacRoutes.children.reviewAccount)"
-      >Check account</lib-govuk-button
+      >Check account</opal-lib-govuk-button
     >
   } @else {
     <h2 class="govuk-heading-m">Check and submit</h2>

@@ -21,7 +21,8 @@ import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
-import { DateService, ISessionUserState, ITransformItem, TransformationService } from 'opal-frontend-common';
+import { DateService, TransformationService } from '@hmcts/opal-frontend-common/core/services';
+import { ISessionUserState, ITransformItem } from '@hmcts/opal-frontend-common/core/interfaces';
 
 @Injectable({
   providedIn: 'root',

@@ -87,32 +87,32 @@
 
 <ng-template #offenceTemplate>
   <div class="govuk-grid-column-full">
-    <lib-govuk-button
+    <opal-lib-govuk-button
       buttonId="addAnOffence"
       buttonClasses="govuk-button--secondary"
       (buttonClickEvent)="addAnotherOffence()"
     >
       Add another offence
-    </lib-govuk-button>
+    </opal-lib-govuk-button>
   </div>
 </ng-template>
 
 <ng-template #returnToAccountDetails let-subNavigationButton>
   <div class="govuk-grid-column-full">
-    <lib-govuk-button
+    <opal-lib-govuk-button
       buttonId="returnToCreateAccount"
       (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
     >
       Return to account details
-    </lib-govuk-button>
+    </opal-lib-govuk-button>
     @if (subNavigationButton && checkSubNavigationButton()) {
-      <lib-govuk-button
+      <opal-lib-govuk-button
         buttonId="submitForm"
         buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.paymentTerms, true)"
       >
         Add payment terms
-      </lib-govuk-button>
+      </opal-lib-govuk-button>
     }
   </div>
 </ng-template>

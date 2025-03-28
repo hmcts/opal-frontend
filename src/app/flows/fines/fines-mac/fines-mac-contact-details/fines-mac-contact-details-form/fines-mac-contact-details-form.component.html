@@ -3,57 +3,57 @@
 <h1 class="govuk-heading-l">{{ heading }}</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
-  <lib-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="Primary email address"
     inputId="fm_contact_details_email_address_1"
     inputName="fm_contact_details_email_address_1"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_contact_details_email_address_1']"
     [errors]="formControlErrorMessages['fm_contact_details_email_address_1']"
-  ></lib-govuk-text-input>
-  <lib-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Secondary email address"
     inputId="fm_contact_details_email_address_2"
     inputName="fm_contact_details_email_address_2"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_contact_details_email_address_2']"
     [errors]="formControlErrorMessages['fm_contact_details_email_address_2']"
-  ></lib-govuk-text-input>
-  <lib-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Mobile telephone number"
     inputId="fm_contact_details_telephone_number_mobile"
     inputName="fm_contact_details_telephone_number_mobile"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_contact_details_telephone_number_mobile']"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_mobile']"
-  ></lib-govuk-text-input>
-  <lib-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Home telephone number"
     inputId="fm_contact_details_telephone_number_home"
     inputName="fm_contact_details_telephone_number_home"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_contact_details_telephone_number_home']"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_home']"
-  ></lib-govuk-text-input>
-  <lib-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Work telephone number"
     inputId="fm_contact_details_telephone_number_business"
     inputName="fm_contact_details_telephone_number_business"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_contact_details_telephone_number_business']"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_business']"
-  ></lib-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <lib-govuk-button buttonId="submitForm" type="submit">Return to account details</lib-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].contactDetails) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].contactDetails?.buttonText }}
-        </lib-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>

@@ -46,13 +46,9 @@ import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './in
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
-import {
-  DateService,
-  futureDateValidator,
-  GovukTextInputComponent,
-  GovukButtonComponent,
-  optionalValidDateValidator,
-} from 'opal-frontend-common';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { DateService } from '@hmcts/opal-frontend-common/core/services';
+import { futureDateValidator, optionalValidDateValidator } from '@hmcts/opal-frontend-common/core/validators';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',

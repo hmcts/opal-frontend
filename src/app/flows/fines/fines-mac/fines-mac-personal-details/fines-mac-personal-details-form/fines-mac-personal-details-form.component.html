@@ -10,7 +10,7 @@
     [control]="form.controls['fm_personal_details_title']"
     [errors]="formControlErrorMessages['fm_personal_details_title']"
   ></app-govuk-select>
-  <lib-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="First names"
     inputId="fm_personal_details_forenames"
     inputName="fm_personal_details_forenames"
@@ -19,8 +19,8 @@
     hintText="Include their middle names"
     [control]="form.controls['fm_personal_details_forenames']"
     [errors]="formControlErrorMessages['fm_personal_details_forenames']"
-  ></lib-govuk-text-input>
-  <lib-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Last name"
     inputId="fm_personal_details_surname"
     inputName="fm_personal_details_surname"
@@ -28,7 +28,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_personal_details_surname']"
     [errors]="formControlErrorMessages['fm_personal_details_surname']"
-  ></lib-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
@@ -47,7 +47,7 @@
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-          <lib-govuk-text-input
+          <opal-lib-govuk-text-input
             labelText="First names"
             [inputId]="aliasControl['fm_personal_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_personal_details_alias_forenames'].inputName"
@@ -60,8 +60,8 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_forenames'].controlName]"
-          ></lib-govuk-text-input>
-          <lib-govuk-text-input
+          ></opal-lib-govuk-text-input>
+          <opal-lib-govuk-text-input
             labelText="Last name"
             [inputId]="aliasControl['fm_personal_details_alias_surname'].inputId"
             [inputName]="aliasControl['fm_personal_details_alias_surname'].inputName"
@@ -74,7 +74,7 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_surname'].controlName]"
-          ></lib-govuk-text-input>
+          ></opal-lib-govuk-text-input>
         </fieldset>
       }
 
@@ -91,12 +91,12 @@
         </div>
       }
       @if (aliasControls.length < 5) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
           (buttonClickEvent)="addAlias(aliasControls.length, 'fm_personal_details_aliases')"
-          >Add another alias</lib-govuk-button
+          >Add another alias</opal-lib-govuk-button
         >
       }
     </div>
@@ -123,7 +123,7 @@
       <p>{{ ageLabel }}</p>
     </app-moj-ticket-panel>
   }
-  <lib-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="National Insurance number"
     inputId="fm_personal_details_national_insurance_number"
     inputName="fm_personal_details_national_insurance_number"
@@ -131,46 +131,46 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_personal_details_national_insurance_number']"
     [errors]="formControlErrorMessages['fm_personal_details_national_insurance_number']"
-  ></lib-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
-    <lib-govuk-text-input
+    <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_personal_details_address_line_1"
       inputName="fm_personal_details_address_line_1"
       [control]="form.controls['fm_personal_details_address_line_1']"
       [errors]="formControlErrorMessages['fm_personal_details_address_line_1']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_personal_details_address_line_2"
       inputName="fm_personal_details_address_line_2"
       [control]="form.controls['fm_personal_details_address_line_2']"
       [errors]="formControlErrorMessages['fm_personal_details_address_line_2']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 3"
       inputId="fm_personal_details_address_line_3"
       inputName="fm_personal_details_address_line_3"
       inputClasses="govuk-input--width-20"
       [control]="form.controls['fm_personal_details_address_line_3']"
       [errors]="formControlErrorMessages['fm_personal_details_address_line_3']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Postcode"
       inputId="fm_personal_details_post_code"
       inputName="fm_personal_details_post_code"
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_personal_details_post_code']"
       [errors]="formControlErrorMessages['fm_personal_details_post_code']"
-    ></lib-govuk-text-input>
+    ></opal-lib-govuk-text-input>
   </fieldset>
   @if (defendantType === 'adultOrYouthOnly') {
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
-      <lib-govuk-text-input
+      <opal-lib-govuk-text-input
         labelText="Make and model"
         inputId="fm_personal_details_vehicle_make"
         inputName="fm_personal_details_vehicle_make"
@@ -178,8 +178,8 @@
         labelClasses="govuk-label--s"
         [control]="form.controls['fm_personal_details_vehicle_make']"
         [errors]="formControlErrorMessages['fm_personal_details_vehicle_make']"
-      ></lib-govuk-text-input>
-      <lib-govuk-text-input
+      ></opal-lib-govuk-text-input>
+      <opal-lib-govuk-text-input
         labelText="Registration number"
         inputId="fm_personal_details_vehicle_registration_mark"
         inputName="fm_personal_details_vehicle_registration_mark"
@@ -187,20 +187,20 @@
         labelClasses="govuk-label--s"
         [control]="form.controls['fm_personal_details_vehicle_registration_mark']"
         [errors]="formControlErrorMessages['fm_personal_details_vehicle_registration_mark']"
-      ></lib-govuk-text-input>
+      ></opal-lib-govuk-text-input>
     </fieldset>
   }
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <lib-govuk-button buttonId="submitForm" type="submit"> Return to account details </lib-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit"> Return to account details </opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].personalDetails) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].personalDetails?.buttonText }}
-        </lib-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>

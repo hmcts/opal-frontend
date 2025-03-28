@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-sortable-table-interfaces';
-import { SortableValues, SortService } from 'opal-frontend-common';
+import { SortService } from '@hmcts/opal-frontend-common/core/services';
+import { SortableValues } from '@hmcts/opal-frontend-common/core/types';
 
 @Component({
   template: '',

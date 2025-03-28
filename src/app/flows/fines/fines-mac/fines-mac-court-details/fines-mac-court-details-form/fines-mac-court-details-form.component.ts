@@ -21,7 +21,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-m
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from 'opal-frontend-common';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',

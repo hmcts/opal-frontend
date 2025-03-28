@@ -7,7 +7,7 @@ import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
-import { UtilsService } from 'opal-frontend-common';
+import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',

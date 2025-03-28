@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FinesMacStore } from './stores/fines-mac.store';
-import { CanDeactivateTypes, GlobalStore } from 'opal-frontend-common';
+import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/core/types';
 
 @Component({
   selector: 'app-fines-mac',

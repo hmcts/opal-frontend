@@ -1,14 +1,14 @@
 <h1 class="govuk-heading-l">Company details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-  <lib-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="Company name"
     inputId="fm_company_details_company_name"
     inputName="fm_company_details_company_name"
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_company_details_company_name']"
     [errors]="formControlErrorMessages['fm_company_details_company_name']"
-  ></lib-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
@@ -27,7 +27,7 @@
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-          <lib-govuk-text-input
+          <opal-lib-govuk-text-input
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
             [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"
@@ -41,7 +41,7 @@
             [errors]="
               formControlErrorMessages[aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName]
             "
-          ></lib-govuk-text-input>
+          ></opal-lib-govuk-text-input>
         </fieldset>
       }
 
@@ -58,12 +58,12 @@
         </div>
       }
       @if (aliasControls.length < 5) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
           (buttonClickEvent)="addAlias(aliasControls.length, 'fm_company_details_aliases')"
-          >Add another alias</lib-govuk-button
+          >Add another alias</opal-lib-govuk-button
         >
       }
     </div>
@@ -71,49 +71,49 @@
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
-    <lib-govuk-text-input
+    <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_company_details_address_line_1"
       inputName="fm_company_details_address_line_1"
       [control]="form.controls['fm_company_details_address_line_1']"
       [errors]="formControlErrorMessages['fm_company_details_address_line_1']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_company_details_address_line_2"
       inputName="fm_company_details_address_line_2"
       [control]="form.controls['fm_company_details_address_line_2']"
       [errors]="formControlErrorMessages['fm_company_details_address_line_2']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 3"
       inputId="fm_company_details_address_line_3"
       inputName="fm_company_details_address_line_3"
       inputClasses="govuk-input--width-20"
       [control]="form.controls['fm_company_details_address_line_3']"
       [errors]="formControlErrorMessages['fm_company_details_address_line_3']"
-    ></lib-govuk-text-input>
-    <lib-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Postcode"
       inputId="fm_company_details_postcode"
       inputName="fm_company_details_postcode"
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_company_details_postcode']"
       [errors]="formControlErrorMessages['fm_company_details_postcode']"
-    ></lib-govuk-text-input>
+    ></opal-lib-govuk-text-input>
   </fieldset>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <lib-govuk-button buttonId="submitForm" type="submit"> Return to account details </lib-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit"> Return to account details </opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].companyDetails) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].companyDetails?.buttonText }}
-        </lib-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>

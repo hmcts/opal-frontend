@@ -30,17 +30,16 @@ import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { DateService } from '@hmcts/opal-frontend-common/core/services';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
-  DateService,
-  GovukTextInputComponent,
-  GovukButtonComponent,
   nationalInsuranceNumberValidator,
   optionalMaxLengthValidator,
   optionalValidDateValidator,
   specialCharactersValidator,
-} from 'opal-frontend-common';
+} from '@hmcts/opal-frontend-common/core/validators';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',

@@ -18,7 +18,10 @@ import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GlobalStore, GlobalStoreType, SESSION_USER_STATE_MOCK, UtilsService } from 'opal-frontend-common';
+import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/core/types';
+import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/core/mocks';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;

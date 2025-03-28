@@ -13,7 +13,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
-import { GovukButtonComponent } from 'opal-frontend-common';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-offence-and-impositions',

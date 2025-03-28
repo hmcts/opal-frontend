@@ -4,7 +4,8 @@ import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
-import { authGuard, canDeactivateGuard, TitleResolver } from 'opal-frontend-common';
+import { authGuard, canDeactivateGuard } from '@hmcts/opal-frontend-common/core/guards';
+import { TitleResolver } from '@hmcts/opal-frontend-common/core/resolvers';
 
 export const routing: Routes = [
   {

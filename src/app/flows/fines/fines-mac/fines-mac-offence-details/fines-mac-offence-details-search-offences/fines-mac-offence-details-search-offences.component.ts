@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { CanDeactivateTypes, GovukButtonComponent } from 'opal-frontend-common';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/core/types';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',

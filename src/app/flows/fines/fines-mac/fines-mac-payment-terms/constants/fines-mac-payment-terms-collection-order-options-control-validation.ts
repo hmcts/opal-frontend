@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
-import { futureDateValidator, optionalValidDateValidator } from 'opal-frontend-common';
+import { futureDateValidator, optionalValidDateValidator } from '@hmcts/opal-frontend-common/core/validators';
 
 export const FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsCollectionOrderOptionsControlValidation =
   {

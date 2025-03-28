@@ -44,14 +44,11 @@ import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '..
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
-import {
-  dateBeforeValidator,
-  DateService,
-  GlobalStore,
-  ISessionUserStateRole,
-  PermissionsService,
-  GovukButtonComponent,
-} from 'opal-frontend-common';
+import { DateService, PermissionsService } from '@hmcts/opal-frontend-common/core/services';
+import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/core/interfaces';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { dateBeforeValidator } from '@hmcts/opal-frontend-common/core/validators';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',

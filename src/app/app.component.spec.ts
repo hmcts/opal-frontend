@@ -10,14 +10,12 @@ import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
-import {
-  DateService,
-  GlobalStore,
-  GlobalStoreType,
-  ISessionTokenExpiry,
-  SESSION_TOKEN_EXPIRY_MOCK,
-  SSO_ENDPOINTS,
-} from 'opal-frontend-common';
+import { DateService } from '@hmcts/opal-frontend-common/core/services';
+import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/core/types';
+import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/core/interfaces';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/core/constants';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/core/mocks';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

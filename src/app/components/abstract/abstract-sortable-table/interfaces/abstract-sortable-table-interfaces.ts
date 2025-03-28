@@ -1,4 +1,4 @@
-import { SortableValues } from 'opal-frontend-common';
+import { SortableValues } from '@hmcts/opal-frontend-common/core/types';
 
 export interface IAbstractSortState {
   [key: string]: 'ascending' | 'descending' | 'none';

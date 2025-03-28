@@ -5,7 +5,8 @@ import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routin
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { authGuard, canDeactivateGuard, routePermissionsGuard, userStateResolver } from 'opal-frontend-common';
+import { authGuard, canDeactivateGuard, routePermissionsGuard } from '@hmcts/opal-frontend-common/core/guards';
+import { userStateResolver } from '@hmcts/opal-frontend-common/core/resolvers';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];

@@ -16,7 +16,7 @@ import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
-import { GovukButtonComponent } from 'opal-frontend-common';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',

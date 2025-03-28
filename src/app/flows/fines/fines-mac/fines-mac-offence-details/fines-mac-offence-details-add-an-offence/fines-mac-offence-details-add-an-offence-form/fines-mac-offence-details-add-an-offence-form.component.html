@@ -21,7 +21,7 @@
       [errors]="formControlErrorMessages['fm_offence_details_date_of_sentence']"
       (dateChange)="setInputValue($event, 'fm_offence_details_date_of_sentence')"
     ></app-moj-date-picker>
-    <lib-govuk-text-input
+    <opal-lib-govuk-text-input
       labelText="Offence code"
       labelClasses="govuk-fieldset__legend--s"
       inputId="fm_offence_details_offence_cjs_code"
@@ -39,7 +39,7 @@
         tabindex="0"
       >
         search the offence list
-      </a></lib-govuk-text-input
+      </a></opal-lib-govuk-text-input
     >
     @if (offenceCode$ | async; as offenceCode) {
       @if (selectedOffenceConfirmation) {
@@ -232,26 +232,26 @@
         }
       </app-moj-ticket-panel>
     }
-    <lib-govuk-button
+    <opal-lib-govuk-button
       buttonId="addImposition"
       buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
       type="button"
       (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
-      >Add another imposition</lib-govuk-button
+      >Add another imposition</opal-lib-govuk-button
     >
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <lib-govuk-button buttonId="submitForm" type="submit"> Review offence </lib-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit"> Review offence </opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].addAnotherOffence) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].addAnotherOffence?.buttonText }}
-        </lib-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>

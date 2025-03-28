@@ -1,4 +1,4 @@
-import { INestedRoutes } from 'opal-frontend-common';
+import { INestedRoutes } from '@hmcts/opal-frontend-common/core/interfaces';
 
 export interface IFinesMacRoutingNestedRoutes {
   courtDetails: INestedRoutes | null;

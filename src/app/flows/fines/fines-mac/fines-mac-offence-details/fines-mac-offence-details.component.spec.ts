@@ -5,7 +5,8 @@ import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStoreType } from './stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.store';
-import { GlobalStore, GlobalStoreType } from 'opal-frontend-common';
+import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/core/types';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;

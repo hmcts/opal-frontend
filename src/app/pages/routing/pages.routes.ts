@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { PAGES_ROUTING_TITLES } from './constants/routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from './constants/routing-paths.constant';
-import { authGuard, TitleResolver, userStateResolver } from 'opal-frontend-common';
+import { authGuard } from '@hmcts/opal-frontend-common/core/guards';
+import { TitleResolver, userStateResolver } from '@hmcts/opal-frontend-common/core/resolvers';
 
 export const routing: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

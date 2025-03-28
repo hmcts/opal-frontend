@@ -14,17 +14,16 @@ import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { DateService } from '@hmcts/opal-frontend-common/core/services';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
-  DateService,
-  GovukTextInputComponent,
-  GovukButtonComponent,
   nationalInsuranceNumberValidator,
   optionalMaxLengthValidator,
   optionalValidDateValidator,
   specialCharactersValidator,
-} from 'opal-frontend-common';
+} from '@hmcts/opal-frontend-common/core/validators';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',

@@ -3421,6 +3421,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.3
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=42b025&locator=opal-frontend%40workspace%3A."
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^18.2.0
+    "@angular/core": ^18.2.0
+  checksum: 10/2f7ce31c12a67eff23cfdf3ba316e75967ab5887b4bf110f8baf7d607daf4a229d8fde506c56f51244c794e9891d2477dce496e1741aa3d2bd42b31b81c08f01
+  languageName: node
+  linkType: hard
+
 "@hmcts/properties-volume@npm:^1.1.0":
   version: 1.2.0
   resolution: "@hmcts/properties-volume@npm:1.2.0"
@@ -13322,18 +13334,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.1
-  resolution: "opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=9dfca3&locator=opal-frontend%40workspace%3A."
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^18.2.0
-    "@angular/core": ^18.2.0
-  checksum: 10/7530e1d040815e512eb91f6c1e2fe3f94a2e85a2588932828f4ea75694fd038dd6d008a2b378c562805516479896bca10d01ac0bbba63f1aa211da45102d6b78
-  languageName: node
-  linkType: hard
-
 "opal-frontend@workspace:.":
   version: 0.0.0-use.local
   resolution: "opal-frontend@workspace:."
@@ -13362,6 +13362,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
+    "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^3.0.0"
@@ -13410,7 +13411,6 @@ __metadata:
     mocha: "npm:^11.0.0"
     mocha-junit-reporter: "npm:^2.2.1"
     ng: "npm:^0.0.0"
-    opal-frontend-common: "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common"
     prettier: "npm:^3.0.3"
     redis: "npm:^4.6.11"
     rxjs: "npm:~7.8.0"

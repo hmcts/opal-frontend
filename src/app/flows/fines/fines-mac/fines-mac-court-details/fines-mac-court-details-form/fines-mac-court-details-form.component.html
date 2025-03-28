@@ -12,7 +12,7 @@
     [autoCompleteItems]="sendingCourtAutoCompleteItems"
     [errors]="formControlErrorMessages['fm_court_details_originator_id']"
   ></app-alphagov-accessible-autocomplete>
-  <lib-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="Prosecutor Case Reference (PCR)"
     inputId="fm_court_details_prosecutor_case_reference"
     inputName="fm_court_details_prosecutor_case_reference"
@@ -21,7 +21,7 @@
     hintText="Enter the prosecutor's reference number or original account number"
     [control]="form.controls['fm_court_details_prosecutor_case_reference']"
     [errors]="formControlErrorMessages['fm_court_details_prosecutor_case_reference']"
-  ></lib-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <app-alphagov-accessible-autocomplete
     [control]="form.controls['fm_court_details_imposing_court_id']"
@@ -36,15 +36,15 @@
   ></app-alphagov-accessible-autocomplete>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <lib-govuk-button buttonId="submitForm" type="submit">Return to account details</lib-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].courtDetails) {
-        <lib-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].courtDetails?.buttonText }}
-        </lib-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>
