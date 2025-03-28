@@ -25,9 +25,9 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
-import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
   selector: 'app-fines-mac-review-account',

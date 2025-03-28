@@ -18,12 +18,12 @@ import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-c
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import {
   optionalEmailAddressValidator,
   optionalMaxLengthValidator,
   optionalPhoneNumberValidator,
-} from '@hmcts/opal-frontend-common/core/validators';
+} from '@hmcts/opal-frontend-common/validators';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',

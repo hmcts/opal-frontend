@@ -10,7 +10,7 @@ import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-fo
 import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
 import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
 import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
   template: '',

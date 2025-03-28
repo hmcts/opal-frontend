@@ -9,8 +9,8 @@ import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core'
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
-import { AppInitializerService, AppInsightsService } from '@hmcts/opal-frontend-common/core/services';
-import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/core/interceptors';
+import { AppInitializerService, AppInsightsService } from '@hmcts/opal-frontend-common/services';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors';
 
 export const appConfig: ApplicationConfig = {
   providers: [

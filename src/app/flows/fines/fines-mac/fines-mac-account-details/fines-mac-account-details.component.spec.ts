@@ -12,7 +12,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../fines-mac-language
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants/fines-mac-personal-details-form';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;

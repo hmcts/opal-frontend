@@ -11,8 +11,8 @@ import {
 import { FormGroup, FormControl } from '@angular/forms';
 import { GovukDetailsComponent } from '@components/govuk/govuk-details/govuk-details.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
-import { DateService } from '@hmcts/opal-frontend-common/core/services';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { DateService } from '@hmcts/opal-frontend-common/services';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

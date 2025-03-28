@@ -10,9 +10,9 @@ import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
-import { DateService } from '@hmcts/opal-frontend-common/core/services';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/core/interfaces';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/core/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/interfaces';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;

@@ -2,7 +2,7 @@ import {
   alphabeticalTextValidator,
   optionalValidDateValidator,
   pastDateValidator,
-} from '@hmcts/opal-frontend-common/core/validators';
+} from '@hmcts/opal-frontend-common/validators';
 import { IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-enforcment-actions-options-control-validation.interface';
 import { Validators } from '@angular/forms';
 

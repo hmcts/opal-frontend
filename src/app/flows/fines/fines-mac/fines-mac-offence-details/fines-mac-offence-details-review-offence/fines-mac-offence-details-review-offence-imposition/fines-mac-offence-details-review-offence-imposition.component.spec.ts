@@ -15,7 +15,7 @@ import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
-import { DateService, UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;

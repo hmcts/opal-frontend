@@ -3,8 +3,8 @@ import { FinesComponent } from './fines.component';
 import { FINES_MAC_STATE_MOCK } from '../fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacStoreType } from './fines-mac/stores/types/fines-mac-store.type';
 import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/core/types';
-import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;

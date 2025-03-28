@@ -4,7 +4,7 @@ import {
   dateOfBirthValidator,
   numericalTextValidator,
   optionalValidDateValidator,
-} from '@hmcts/opal-frontend-common/core/validators';
+} from '@hmcts/opal-frontend-common/validators';
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {

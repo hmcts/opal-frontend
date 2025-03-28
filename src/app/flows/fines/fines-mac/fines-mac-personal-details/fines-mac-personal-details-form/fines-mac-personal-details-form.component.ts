@@ -30,8 +30,8 @@ import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
-import { DateService } from '@hmcts/opal-frontend-common/core/services';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { DateService } from '@hmcts/opal-frontend-common/services';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
@@ -39,7 +39,7 @@ import {
   optionalMaxLengthValidator,
   optionalValidDateValidator,
   specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/core/validators';
+} from '@hmcts/opal-frontend-common/validators';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',

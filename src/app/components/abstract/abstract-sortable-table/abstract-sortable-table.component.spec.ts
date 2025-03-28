@@ -3,7 +3,7 @@ import { AbstractSortableTableComponent } from './abstract-sortable-table.compon
 import { IAbstractSortState } from './interfaces/abstract-sortable-table-interfaces';
 import { ABSTRACT_EXISTING_SORT_STATE_MOCK } from './mocks/abstract-sortable-table-existing-sort-state-mock';
 import { MOCK_ABSTRACT_TABLE_DATA } from './mocks/abstract-sortable-table-data-mock';
-import { SortService } from '@hmcts/opal-frontend-common/core/services';
+import { SortService } from '@hmcts/opal-frontend-common/services';
 
 class TestComponent extends AbstractSortableTableComponent {
   constructor() {

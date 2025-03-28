@@ -6,14 +6,14 @@ import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.compon
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
-import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/core/constants';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/constants';
 import {
   DateService,
   AppInsightsService,
   LaunchDarklyService,
   SessionService,
-} from '@hmcts/opal-frontend-common/core/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/core/stores';
+} from '@hmcts/opal-frontend-common/services';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 
 @Component({
   selector: 'app-root',

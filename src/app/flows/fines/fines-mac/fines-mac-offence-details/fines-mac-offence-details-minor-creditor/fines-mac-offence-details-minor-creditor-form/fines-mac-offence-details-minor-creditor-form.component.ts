@@ -21,12 +21,12 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { GovukTextInputComponent, GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import {
   alphabeticalTextValidator,
   numericalTextValidator,
   specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/core/validators';
+} from '@hmcts/opal-frontend-common/validators';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',

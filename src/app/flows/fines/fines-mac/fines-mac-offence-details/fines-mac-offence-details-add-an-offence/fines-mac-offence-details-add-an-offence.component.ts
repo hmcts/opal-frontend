@@ -15,7 +15,7 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { DateService } from '@hmcts/opal-frontend-common/core/services';
+import { DateService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',

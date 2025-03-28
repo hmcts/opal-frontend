@@ -6,7 +6,7 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-d
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-minor-creditor',

@@ -32,7 +32,7 @@ import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',

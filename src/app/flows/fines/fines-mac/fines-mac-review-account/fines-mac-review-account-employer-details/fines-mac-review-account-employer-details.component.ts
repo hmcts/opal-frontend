@@ -6,7 +6,7 @@ import { IFinesMacEmployerDetailsState } from '../../fines-mac-employer-details/
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
   selector: 'app-fines-mac-review-account-employer-details',

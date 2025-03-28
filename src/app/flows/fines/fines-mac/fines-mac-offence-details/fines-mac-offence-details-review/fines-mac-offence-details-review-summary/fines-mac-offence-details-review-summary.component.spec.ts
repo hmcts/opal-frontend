@@ -16,7 +16,7 @@ import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;

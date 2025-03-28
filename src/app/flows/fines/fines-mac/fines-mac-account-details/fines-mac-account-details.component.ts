@@ -5,7 +5,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-a
 import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/core/components/govuk';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
@@ -20,7 +20,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/core/types';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/types';
 
 @Component({
   selector: 'app-fines-mac-account-details',

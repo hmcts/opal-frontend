@@ -2,7 +2,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { inject } from '@angular/core';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { hasFlowStateGuard } from '@hmcts/opal-frontend-common/core/guards';
+import { hasFlowStateGuard } from '@hmcts/opal-frontend-common/guards';
 
 export const finesMacFlowStateGuard = hasFlowStateGuard(
   () => inject(FinesMacStore).accountDetails(),

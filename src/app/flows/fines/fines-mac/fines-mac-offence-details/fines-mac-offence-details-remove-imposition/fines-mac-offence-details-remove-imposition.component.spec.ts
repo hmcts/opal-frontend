@@ -16,7 +16,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constant
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;

@@ -9,7 +9,7 @@ import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
-import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/core/guards';
+import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards';
 
 describe('finesMacFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;

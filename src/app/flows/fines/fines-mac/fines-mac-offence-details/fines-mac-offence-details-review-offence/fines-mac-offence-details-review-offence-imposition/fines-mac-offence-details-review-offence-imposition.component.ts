@@ -17,7 +17,7 @@ import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-li
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',

@@ -27,7 +27,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-deta
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
-import { DateService, UtilsService } from '@hmcts/opal-frontend-common/core/services';
+import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
