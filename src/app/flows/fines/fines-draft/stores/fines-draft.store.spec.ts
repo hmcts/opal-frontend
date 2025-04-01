@@ -26,6 +26,7 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual('');
     expect(store.account_snapshot()).toEqual({} as IFinesMacPayloadAccountSnapshot);
     expect(store.account_status_date()).toEqual('');
+    expect(store.fragment()).toEqual('');
   });
 
   it('should set business_unit_id', () => {
@@ -118,5 +119,51 @@ describe('FinesDraftStore', () => {
   it('should return blank for account_status if null', () => {
     store.resetFineDraftState();
     expect(store.getAccountStatus()).toEqual('');
+  });
+
+  it('should set fragment', () => {
+    store.setFragment('fragment');
+    expect(store.fragment()).toEqual('fragment');
+  });
+
+  it('should reset fragment', () => {
+    store.setFragment('fragment');
+    store.resetFragment();
+    expect(store.fragment()).toEqual('');
+  });
+
+  it('should set amend', () => {
+    store.setAmend(true);
+    expect(store.amend()).toEqual(true);
+  });
+
+  it('should reset amend', () => {
+    store.setAmend(true);
+    store.resetAmend();
+    expect(store.amend()).toEqual(false);
+  });
+
+  it('should set fragment and amend', () => {
+    store.setFragmentAndAmend('fragment', true);
+    expect(store.fragment()).toEqual('fragment');
+    expect(store.amend()).toEqual(true);
+  });
+
+  it('should reset fragment and amend', () => {
+    store.setFragmentAndAmend('fragment', true);
+    store.resetFragmentAndAmend();
+    expect(store.fragment()).toEqual('');
+    expect(store.amend()).toEqual(false);
+  });
+
+  it('should set banner message', () => {
+    store.setBannerMessage('banner message');
+    expect(store.bannerMessage()).toEqual('banner message');
+  });
+
+  it('should reset banner message', () => {
+    store.setBannerMessage('banner message');
+    store.resetBannerMessage();
+    expect(store.bannerMessage()).toEqual('');
   });
 });

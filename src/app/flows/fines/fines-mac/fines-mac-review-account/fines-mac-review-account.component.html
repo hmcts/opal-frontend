@@ -3,29 +3,15 @@
   @if (!isReadOnly) {
     <h1 class="govuk-heading-l">Check account details</h1>
   } @else {
-    <h1 class="govuk-heading-l">
-      @if (finesMacStore.getDefendantType() === 'company') {
-        {{ finesMacStore.getCompanyDetailsName() }}
-      } @else {
-        {{ finesMacStore.getPersonalDetailsName() }}
-      }
-    </h1>
-    <app-govuk-tag tagClasses="govuk-tag" tagId="status">{{ status }}</app-govuk-tag>
-    <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
-    <app-moj-timeline>
-      @for (timelineItem of finesDraftStore.timeline_data(); track timelineItem.status_date) {
-        <app-moj-timeline-item>
-          <span title>{{ timelineItem.status }}</span>
-          <span user>{{ timelineItem.username }}</span>
-          <span date>{{
-            dateService.getFromFormatToFormat(timelineItem.status_date, 'yyyy-MM-dd', 'dd MMMM yyyy')
-          }}</span>
-          @if (timelineItem.reason_text) {
-            <span description>{{ timelineItem.reason_text }}</span>
-          }
-        </app-moj-timeline-item>
-      }
-    </app-moj-timeline>
+    <app-fines-mac-review-account-history
+      [accountStatus]="reviewAccountStatus"
+      [defendantName]="
+        finesMacStore.getDefendantType() === 'company'
+          ? finesMacStore.getCompanyDetailsName()
+          : finesMacStore.getPersonalDetailsName()
+      "
+      [timelineData]="finesDraftStore.timeline_data()"
+    ></app-fines-mac-review-account-history>
   }
 
   <app-fines-mac-review-account-account-details
