@@ -38,6 +38,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   @Input({ required: true }) public paymentTermsState!: IFinesMacPaymentTermsState;
   @Input({ required: true }) public businessUnit!: IOpalFinesBusinessUnit;
   @Input({ required: true }) public defendantType!: string;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
 
   private readonly globalStore = inject(GlobalStore);
