@@ -3,11 +3,13 @@ import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component'
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
-import { DASHBOARD_USER_STATE_MOCK } from './mocks/dashboard_user_state_mock';
-import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { CAM_CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cam_cav_dashboard_user_state_mock';
 import { DOM_ELEMENTS } from './constants/dashboard_elements';
+import { CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cav_dashboard_user_state_mock';
+import { CAM_DASHBOARD_USER_STATE_MOCK } from './mocks/cam_dashboard_user_state_mock';
+import { NO_PERMS_DASHBOARD_USER_STATE_MOCK } from './mocks/no_perms_dashboard_user_state_mock';
 describe('DashboardComponent', () => {
-  const setupComponent = (StateMock: any = DASHBOARD_USER_STATE_MOCK) => {
+  const setupComponent = (StateMock: any) => {
     mount(DashboardComponent, {
       providers: [
         RouterModule,
@@ -36,30 +38,37 @@ describe('DashboardComponent', () => {
   };
 
   it('should render component', () => {
-    setupComponent();
+    setupComponent(CAM_CAV_DASHBOARD_USER_STATE_MOCK);
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
   it('should only show CAV when user has correct permissions', { tags: ['@PO-604'] }, () => {
-    let cavMock = DASHBOARD_USER_STATE_MOCK;
-    cavMock.business_unit_user[0].permissions[2].permission_id = 0;
-    setupComponent(cavMock);
-    cy.get('span').contains('timmyTest@HMCTS.NET').should('exist');
+    setupComponent(CAV_DASHBOARD_USER_STATE_MOCK);
+    cy.get('span').contains('testUserCAV@HMCTS.NET').should('exist');
     cy.get(DOM_ELEMENTS.finesMacLink).contains('Manual Account Creation').should('exist');
     cy.get(DOM_ELEMENTS.CAVlink).contains('Check and Validate Draft Accounts').should('exist');
+    cy.get(DOM_ELEMENTS.CAMlink).should('not.exist');
   });
 
-  it('(AC.1c)should only show CAV and CAM when user has the correct permissions', { tags: ['@PO-604'] }, () => {
-    setupComponent();
-    cy.get('span').contains('timmyTest@HMCTS.NET').should('exist');
+  it('should only show CAM when user has correct permissions', { tags: ['@PO-604'] }, () => {
+    setupComponent(CAM_DASHBOARD_USER_STATE_MOCK);
+    cy.get('span').contains('testUserCAM@HMCTS.NET').should('exist');
+    cy.get(DOM_ELEMENTS.finesMacLink).contains('Manual Account Creation').should('exist');
+    cy.get(DOM_ELEMENTS.CAMlink).contains('Create and Manage Draft Accounts').should('exist');
+    cy.get(DOM_ELEMENTS.CAVlink).should('not.exist');
+  });
+
+  it('(AC.1c)should show CAV and CAM when user has the correct permissions', { tags: ['@PO-604'] }, () => {
+    setupComponent(CAM_CAV_DASHBOARD_USER_STATE_MOCK);
+    cy.get('span').contains('testUserCAM_CAV@HMCTS.NET').should('exist');
     cy.get(DOM_ELEMENTS.finesMacLink).contains('Manual Account Creation').should('exist');
     cy.get(DOM_ELEMENTS.CAMlink).contains('Create and Manage Draft Accounts').should('exist');
     cy.get(DOM_ELEMENTS.CAVlink).contains('Check and Validate Draft Accounts').should('exist');
   });
 
   it('should not show CAV and CAM links when user does not have correct permissions', { tags: ['@PO-604'] }, () => {
-    setupComponent(SESSION_USER_STATE_MOCK);
-    cy.get('span').contains('timmyTest@HMCTS.NET').should('exist');
+    setupComponent(NO_PERMS_DASHBOARD_USER_STATE_MOCK);
+    cy.get('span').contains('noPermissionsTestUser@HMCTS.NET').should('exist');
     cy.get(DOM_ELEMENTS.finesMacLink).contains('Manual Account Creation').should('exist');
     cy.get(DOM_ELEMENTS.CAMlink).should('not.exist');
     cy.get(DOM_ELEMENTS.CAVlink).should('not.exist');
