@@ -4,6 +4,7 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 
 import {
   IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitNonSnakeCase,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import {
@@ -17,7 +18,10 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 import { Observable, shareReplay } from 'rxjs';
-import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import {
+  IOpalFinesOffencesNonSnakeCase,
+  IOpalFinesOffencesRefData,
+} from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import {
   IOpalFinesMajorCreditor,
@@ -247,5 +251,50 @@ export class OpalFines {
     });
 
     return this.http.get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params });
+  }
+
+  /**
+   * Retrieves a draft account summary by its ID.
+   *
+   * @param draftAccountId - The ID of the draft account to retrieve.
+   * @returns An Observable that emits the draft account summary.
+   */
+  public getDraftAccountById(draftAccountId: number): Observable<IFinesMacAddAccountPayload> {
+    return this.http.get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`);
+  }
+
+  /**
+   * Retrieves a business unit by its ID.
+   *
+   * @param businessUnitId - The ID of the business unit to retrieve.
+   * @returns An Observable that emits the business unit data.
+   */
+  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
+    return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
+      `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+    );
+  }
+
+  /**
+   * Retrieves an offence by its ID.
+   *
+   * @param {number} offenceId - The ID of the offence to retrieve.
+   * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
+   */
+  public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
+  }
+
+  /**
+   * Sends a PUT request to update the draft account payload.
+   *
+   * @param body - The payload containing the account information to be added.
+   * @returns An Observable of the updated account payload.
+   */
+  public putDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.put<IFinesMacAddAccountPayload>(
+      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      body,
+    );
   }
 }
