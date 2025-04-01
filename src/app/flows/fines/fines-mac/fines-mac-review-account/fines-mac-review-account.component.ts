@@ -30,11 +30,13 @@ import { GlobalStore } from 'src/app/stores/global/global.store';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
+import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -62,7 +64,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  protected readonly globalStore = inject(GlobalStore);
+  private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesDraftStore = inject(FinesDraftStore);
@@ -76,7 +78,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndManageRoutes = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
@@ -87,6 +90,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
       }),
+      takeUntil(this.ngUnsubscribe),
     );
 
   private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
@@ -95,42 +99,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       tap((response: IOpalFinesLocalJusticeAreaRefData) => {
         this.localJusticeAreasData = response.refData;
       }),
+      takeUntil(this.ngUnsubscribe),
     );
 
   protected groupLjaAndCourtData$ = forkJoin({
     enforcementCourtsData: this.enforcementCourtsData$,
     localJusticeAreasData: this.localJusticeAreasData$,
   });
-
-  /**
-   * Submits the payload for adding a fines MAC account.
-   *
-   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
-   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
-   * Otherwise, it logs an error message.
-   *
-   * @private
-   * @returns {void}
-   */
-  private submitPayload(): void {
-    const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
-      this.finesMacStore.getFinesMacStore(),
-      this.userState,
-    );
-    this.opalFinesService
-      .postDraftAddAccountPayload(finesMacAddAccountPayload)
-      .pipe(
-        tap(() => {
-          this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
-        }),
-        catchError(() => {
-          this.utilsService.scrollToTop();
-          return of(null);
-        }),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe();
-  }
 
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
@@ -176,6 +151,164 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles the request error by scrolling to the top of the page.
+   *
+   * @returns {null} Always returns null.
+   */
+  private handleRequestError(): null {
+    this.utilsService.scrollToTop();
+    return null;
+  }
+
+  /**
+   * Handles the PUT request to add an account payload.
+   *
+   * @param payload - The payload containing the account information to be added.
+   *
+   * This method sends the payload to the `opalFinesService` to update the draft account information.
+   * It processes the response using `processPutResponse` method and handles any errors by scrolling to the top of the page.
+   * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
+   */
+  private handlePutRequest(payload: IFinesMacAddAccountPayload): void {
+    this.opalFinesService
+      .putDraftAddAccountPayload(payload)
+      .pipe(
+        tap((response) => this.processPutResponse(response)),
+        catchError(() => {
+          return of(this.handleRequestError());
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Handles the post request to add an account payload.
+   *
+   * @param payload - The payload containing the account details to be added.
+   *
+   * This method sends the payload to the `opalFinesService` to post the draft add account payload.
+   * It processes the response upon success and handles any errors by scrolling to the top of the page.
+   * The request is automatically unsubscribed when the component is destroyed.
+   */
+  private handlePostRequest(payload: IFinesMacAddAccountPayload): void {
+    this.opalFinesService
+      .postDraftAddAccountPayload(payload)
+      .pipe(
+        tap(() => this.processPostResponse()),
+        catchError(() => {
+          return of(this.handleRequestError());
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Processes the response from a PUT request and updates the state accordingly.
+   *
+   * @param response - The response payload from the PUT request containing account details.
+   * @param response.account_snapshot - Snapshot of the account details.
+   * @param response.account_snapshot.defendant_name - The name of the defendant associated with the account.
+   *
+   * Updates the fines draft banner message with the defendant's name, sets the state changes and unsaved changes flags to false,
+   * and handles routing to the inputter route.
+   */
+  private processPutResponse(response: IFinesMacAddAccountPayload): void {
+    const accountName = response.account_snapshot?.defendant_name;
+    this.finesDraftStore.setBannerMessage(`You have submitted ${accountName}'s account for review`);
+    this.finesMacStore.resetStateChangesUnsavedChanges();
+
+    this.handleRoute(
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
+      false,
+      undefined,
+      this.finesDraftStore.fragment(),
+    );
+  }
+
+  /**
+   * Processes the post response by handling the route to the submit confirmation page.
+   * This method is called after a post request is successfully completed.
+   * It navigates to the submit confirmation route defined in the finesMacRoutes.
+   *
+   * @private
+   * @returns {void}
+   */
+  private processPostResponse(): void {
+    this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+  }
+
+  /**
+   * Prepares the payload for a PUT request to replace an account.
+   *
+   * This method utilizes the `finesMacPayloadService` to build the payload
+   * required for replacing an account. It takes into consideration the current
+   * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
+   * and the user state (`userState`).
+   *
+   * @returns {IFinesMacAddAccountPayload} The payload for the PUT request.
+   */
+  private preparePutPayload(): IFinesMacAddAccountPayload {
+    return this.finesMacPayloadService.buildReplaceAccountPayload(
+      this.finesMacStore.getFinesMacStore(),
+      this.finesDraftStore.getFinesDraftState(),
+      this.userState,
+    );
+  }
+
+  /**
+   * Prepares the payload for posting account data.
+   *
+   * This method constructs the payload required to add an account by utilizing
+   * the `finesMacPayloadService` to build the payload based on the current state
+   * of `finesMacState` and `userState`.
+   *
+   * @returns {IFinesMacAddAccountPayload} The payload for adding an account.
+   */
+  private preparePostPayload(): IFinesMacAddAccountPayload {
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
+  }
+
+  /**
+   * Submits the payload for a PUT request.
+   * This method prepares the payload and then handles the PUT request.
+   *
+   * @private
+   */
+  private submitPutPayload(): void {
+    const payload = this.preparePutPayload();
+    this.handlePutRequest(payload);
+  }
+
+  /**
+   * Submits the post payload by preparing the payload and handling the post request.
+   *
+   * @private
+   * @returns {void}
+   */
+  private submitPostPayload(): void {
+    const payload = this.preparePostPayload();
+    this.handlePostRequest(payload);
+  }
+
+  /**
+   * Submits the payload based on the draft amendment status.
+   *
+   * If the fines draft amendment is present, it submits the payload using a PUT request.
+   * Otherwise, it submits the payload using a POST request.
+   *
+   * @returns {void}
+   */
+  public submitPayload(): void {
+    if (this.finesDraftStore.amend()) {
+      this.submitPutPayload();
+    } else {
+      this.submitPostPayload();
+    }
+  }
+
+  /**
    * Navigates back to the previous page
    * Page navigation set to false to trigger the canDeactivate guard
    */
@@ -184,7 +317,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
         false,
         undefined,
         this.finesDraftStore.fragment(),
