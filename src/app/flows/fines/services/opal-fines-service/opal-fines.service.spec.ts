@@ -28,8 +28,12 @@ import {
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-draft-add-account-payload.mock';
+import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-account-params.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
+import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-business-unit-non-snake-case.mock';
+import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -316,5 +320,97 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
+  });
+
+  it('should send a GET request to draft accounts API with correct query parameters', () => {
+    const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
+
+    const expectedResponse = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
+
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne((request) => {
+      // Validate the URL and query parameters
+      const url = request.urlWithParams;
+
+      return (
+        url.includes(OPAL_FINES_PATHS.draftAccounts) &&
+        url.includes(`business_unit=${filters.businessUnitIds![0]}`) &&
+        url.includes(`business_unit=${filters.businessUnitIds![1]}`) &&
+        url.includes(`status=${filters.statuses![0]}`) &&
+        url.includes(`status=${filters.statuses![1]}`) &&
+        url.includes(`submitted_by=${filters.submittedBy![0]}`) &&
+        url.includes(`submitted_by=${filters.submittedBy![1]}`) &&
+        url.includes(`not_submitted_by=${filters.notSubmittedBy![0]}`) &&
+        url.includes(`not_submitted_by=${filters.notSubmittedBy![1]}`)
+      );
+    });
+
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.getAll('business_unit')).toEqual(['1', '2']);
+    expect(req.request.params.getAll('status')).toEqual(['Submitted', 'Resubmitted']);
+    expect(req.request.params.getAll('submitted_by')).toEqual(['user1', 'user2']);
+    expect(req.request.params.getAll('not_submitted_by')).toEqual(['user3', 'user4']);
+
+    req.flush(expectedResponse);
+  });
+
+  it('should GET the draft account by id', () => {
+    const draftAccountId = 123;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
+
+    service.getDraftAccountById(draftAccountId).subscribe((draftAccount) => {
+      expect(draftAccount).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+  });
+
+  it('should GET the business unit by id', () => {
+    const businessUnitId = 123;
+    const apiUrl = `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`;
+
+    service.getBusinessUnitById(businessUnitId).subscribe((businessUnit) => {
+      expect(businessUnit).toEqual(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+  });
+
+  it('should GET the offence by id', () => {
+    const offenceId = 123;
+    const apiUrl = `${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`;
+
+    service.getOffenceById(offenceId).subscribe((offence) => {
+      expect(offence).toEqual(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
+  });
+
+  it('should send a PUT request to update the draft account payload', () => {
+    const body: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+
+    service.putDraftAddAccountPayload(body).subscribe((response) => {
+      expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
 });

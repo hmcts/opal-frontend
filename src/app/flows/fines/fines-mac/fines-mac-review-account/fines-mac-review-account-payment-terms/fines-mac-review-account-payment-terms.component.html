@@ -1,9 +1,11 @@
 <app-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
-  <ng-container actions>
-    <app-fines-mac-review-account-change-link
-      (emitChange)="changePaymentTerms()"
-    ></app-fines-mac-review-account-change-link>
-  </ng-container>
+  @if (!isReadOnly) {
+    <ng-container actions>
+      <app-fines-mac-review-account-change-link
+        (emitChange)="changePaymentTerms()"
+      ></app-fines-mac-review-account-change-link>
+    </ng-container>
+  }
   <ng-container content>
     <app-govuk-summary-list summaryListId="paymentTerms">
       @if (paymentTermsState.fm_payment_terms_collection_order_date) {
