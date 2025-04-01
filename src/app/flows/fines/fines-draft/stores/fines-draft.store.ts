@@ -21,6 +21,8 @@ export const FinesDraftStore = signalStore(
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,
     account_status_date: '' as string | null,
     fragment: '',
+    amend: false,
+    bannerMessage: '',
   })),
   withHooks((store) => {
     return {
@@ -107,6 +109,24 @@ export const FinesDraftStore = signalStore(
     },
     resetFragment: () => {
       patchState(store, { fragment: '' });
+    },
+    setAmend(state: boolean) {
+      patchState(store, { amend: state });
+    },
+    resetAmend() {
+      patchState(store, { amend: false });
+    },
+    setFragmentAndAmend(fragment: string, state: boolean) {
+      patchState(store, { fragment, amend: state });
+    },
+    resetFragmentAndAmend() {
+      patchState(store, { fragment: '', amend: false });
+    },
+    setBannerMessage: (bannerMessage: string) => {
+      patchState(store, { bannerMessage });
+    },
+    resetBannerMessage: () => {
+      patchState(store, { bannerMessage: '' });
     },
   })),
 );

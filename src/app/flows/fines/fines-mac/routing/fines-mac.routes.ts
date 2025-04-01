@@ -7,7 +7,7 @@ import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/r
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { TitleResolver } from '@resolvers/title/title.resolver';
 import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
-import { draftAccountResolver } from './resolvers/draft-account-resolver/draft-account.resolver';
+import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
 
 export const routing: Routes = [
   {
@@ -186,7 +186,18 @@ export const routing: Routes = [
         (c) => c.FinesMacReviewAccountComponent,
       ),
     canActivate: [authGuard],
-    resolve: { title: TitleResolver, draftAccountFinesMacState: draftAccountResolver },
-    data: { title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation },
+    resolve: { title: TitleResolver, reviewAccountFetchMap: fetchMapFinesMacPayloadResolver },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
+  },
+  {
+    path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
+    loadComponent: () =>
+      import('../fines-mac-account-details/fines-mac-account-details.component').then(
+        (c) => c.FinesMacAccountDetailsComponent,
+      ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+    resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.accountDetails },
   },
 ];
