@@ -1,8 +1,7 @@
-@manualAccountCreation @languagePreferences @PO-272 @PO-344 @PO-345 @PO-545 @PO-464 @PO-465 @PO-542 @PO-544
+@manualAccountCreation @languagePreferences @PO-272 @PO-344 @PO-345 @PO-545 @PO-464 @PO-465 @PO-542 @PO-544 @PO-1396
 Feature: Manual account creation - Language preferences
   #This feature file contains tests for the Language preferences page of the Manual Account Creation journey that cannot be exercised in the component tests #
 
-  @skip
   Scenario: Entered data persists in the session
     Given I am on the Opal Frontend and I sign in as "opal-test-8@HMCTS.NET"
     Then I am on the dashboard
