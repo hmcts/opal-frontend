@@ -1,9 +1,11 @@
 <app-govuk-summary-card-list cardTitle="Account comments and notes" summaryCardListId="account-comments-and-notes">
-  <ng-container actions>
-    <app-fines-mac-review-account-change-link
-      (emitChange)="changeAccountCommentsAndNotesDetails()"
-    ></app-fines-mac-review-account-change-link>
-  </ng-container>
+  @if (!isReadOnly) {
+    <ng-container actions>
+      <app-fines-mac-review-account-change-link
+        (emitChange)="changeAccountCommentsAndNotesDetails()"
+      ></app-fines-mac-review-account-change-link>
+    </ng-container>
+  }
   <ng-container content>
     <app-govuk-summary-list summaryListId="accountCommentsAndNotes">
       <div

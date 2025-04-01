@@ -1,9 +1,11 @@
 <app-govuk-summary-card-list cardTitle="Court details" summaryCardListId="court-details">
-  <ng-container actions>
-    <app-fines-mac-review-account-change-link
-      (emitChange)="changeCourtDetails()"
-    ></app-fines-mac-review-account-change-link>
-  </ng-container>
+  @if (!isReadOnly) {
+    <ng-container actions>
+      <app-fines-mac-review-account-change-link
+        (emitChange)="changeCourtDetails()"
+      ></app-fines-mac-review-account-change-link>
+    </ng-container>
+  }
   <ng-container content>
     <app-govuk-summary-list summaryListId="courtDetails">
       <div
