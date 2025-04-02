@@ -6,8 +6,8 @@ export interface IFinesDraftTableWrapperTableData extends IAbstractTableData<Sor
   'Defendant id': number;
   Defendant: string;
   'Date of birth': string | null;
-  Created: string;
-  CreatedAgo: number;
+  Created: number;
+  CreatedDate: string;
   'Account type': string;
   'Business unit': string;
 }

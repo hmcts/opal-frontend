@@ -112,8 +112,8 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
         'Defendant id': draft_account_id,
         Defendant: defendant_name,
         'Date of birth': date_of_birth,
-        Created: created_date,
-        CreatedAgo: this.dateService.getDaysAgo(created_date),
+        CreatedDate: created_date,
+        Created: this.dateService.getDaysAgo(created_date),
         'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
         'Business unit': business_unit_name,
       };

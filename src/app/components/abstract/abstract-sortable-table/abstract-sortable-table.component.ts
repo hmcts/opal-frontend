@@ -106,7 +106,8 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    */
   private getSortedColumn(): void {
     // Find the first column that has a sort state other than 'none'
-    const sortedColumn = Object.entries(this.sortStateSignal()).find(([state]) => state !== 'none');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const sortedColumn = Object.entries(this.sortStateSignal()).find(([_, state]) => state !== 'none');
 
     // If a sorted column is found, set the signal to the sorted column key and state
     if (sortedColumn) {
