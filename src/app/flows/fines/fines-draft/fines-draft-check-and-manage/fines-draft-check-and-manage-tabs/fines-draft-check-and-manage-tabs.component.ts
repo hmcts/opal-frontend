@@ -19,7 +19,6 @@ import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
-
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
@@ -45,9 +44,6 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   private readonly businessUnitUserIds = this.globalStore
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_user_id);
-
-  private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
-  private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
   protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
@@ -112,16 +108,14 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
       const { defendant_name, date_of_birth, created_date, account_type, business_unit_name } = account_snapshot;
 
       return {
-        account: '',
-        defendantId: draft_account_id,
-        defendant: defendant_name,
-        dob: date_of_birth
-          ? this.dateService.getFromFormatToFormat(date_of_birth, this.DATE_INPUT_FORMAT, this.DATE_OUTPUT_FORMAT)
-          : '',
-        created: created_date,
-        createdString: this.dateService.getDaysAgoString(created_date),
-        accountType: FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
-        businessUnit: business_unit_name,
+        Account: '',
+        'Defendant id': draft_account_id,
+        Defendant: defendant_name,
+        'Date of birth': date_of_birth,
+        Created: created_date,
+        CreatedAgo: this.dateService.getDaysAgo(created_date),
+        'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
+        'Business unit': business_unit_name,
       };
     });
   }

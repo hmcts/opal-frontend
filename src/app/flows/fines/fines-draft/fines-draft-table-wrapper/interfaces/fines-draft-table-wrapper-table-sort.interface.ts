@@ -1,10 +1,12 @@
 import { IAbstractSortState } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
+import { SortDirectionType } from '@components/abstract/abstract-sortable-table/types/abstract-sortable-table.type';
 
 export interface IFinesDraftTableWrapperTableSort extends IAbstractSortState {
-  Account: 'ascending' | 'descending' | 'none';
-  Defendant: 'ascending' | 'descending' | 'none';
-  'Date of birth': 'ascending' | 'descending' | 'none';
-  Created: 'ascending' | 'descending' | 'none';
-  'Account type': 'ascending' | 'descending' | 'none';
-  'Business unit': 'ascending' | 'descending' | 'none';
+  Account: SortDirectionType;
+  Defendant: SortDirectionType;
+  'Date of birth': SortDirectionType;
+  Created: SortDirectionType;
+  CreatedAgo: SortDirectionType;
+  'Account type': SortDirectionType;
+  'Business unit': SortDirectionType;
 }

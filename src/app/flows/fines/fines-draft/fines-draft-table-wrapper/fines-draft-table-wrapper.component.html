@@ -36,8 +36,8 @@
     </th>
     <th
       app-moj-sortable-table-header
-      columnKey="Created"
-      [sortDirection]="sortStateSignal()['Created']"
+      columnKey="CreatedAgo"
+      [sortDirection]="sortStateSignal()['CreatedAgo']"
       (sortChange)="onSortChange($event)"
       [dataIndex]="isApprovedTab ? 3 : 2"
     >
@@ -77,8 +77,10 @@
             >{{ row['Defendant'] }}</a
           >
         </td>
-        <td app-moj-sortable-table-row-data id="dob">{{ row['Date of birth'] ? row['Date of birth'] : '—' }}</td>
-        <td app-moj-sortable-table-row-data id="created">{{ row['CreatedString'] }}</td>
+        <td app-moj-sortable-table-row-data id="dob">
+          {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+        </td>
+        <td app-moj-sortable-table-row-data id="created">{{ row['CreatedAgo'] | daysAgo }}</td>
         <td app-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td app-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
       </tr>
