@@ -2,15 +2,16 @@ import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angu
 import { LaunchDarklyService } from '@services/launch-darkly/launch-darkly.service';
 import { SessionService } from '@services/session-service/session.service';
 import { DateService } from '@services/date-service/date.service';
-import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
+import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 import { GlobalStore } from './stores/global/global.store';
 import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
+import { AppInsightsService } from '@services/app-insights/app-insights.service';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +37,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private timerSub!: Subscription;
   private readonly ngUnsubscribe = new Subject<void>();
+  private readonly appInsightsService = inject(AppInsightsService);
+  private readonly router = inject(Router);
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
@@ -114,6 +117,30 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Tracks page views and logs them using the AppInsights service.
+   * This method sets up a subscription to the router events and listens for `NavigationEnd` events.
+   * It prevents execution on the server-side rendering (SSR) by checking the platform ID.
+   * When a navigation ends, it extracts the current URL and the page name, then logs the page view.
+   *
+   * @private
+   * @returns {void}
+   */
+  private trackPageViews(): void {
+    if (!isPlatformBrowser(this.platformId)) return; // Prevent SSR execution
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe((event: NavigationEnd) => {
+        const currentUrl = event.url.split('#')[0];
+        const pageName = event.urlAfterRedirects.split('/').pop() ?? 'unknown';
+        this.appInsightsService.logPageView(pageName, currentUrl);
+      });
+  }
+
+  /**
    * Initializes the component after Angular has initialized all data-bound properties.
    * This method is called once after the first `ngOnChanges` method is called.
    */
@@ -125,6 +152,7 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe();
     this.setupTokenExpiry();
+    this.trackPageViews();
   }
 
   public ngOnDestroy(): void {

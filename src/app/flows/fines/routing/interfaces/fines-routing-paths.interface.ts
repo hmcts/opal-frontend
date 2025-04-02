@@ -4,7 +4,6 @@ import { IParentRoutingPaths } from '@routing/flows/interfaces/parent-routing-pa
 export interface IFinesRoutingPaths extends IParentRoutingPaths {
   children: {
     mac: IChildRoutingPaths;
-    draftCav: IChildRoutingPaths;
-    draftCam: IChildRoutingPaths;
+    draft: IChildRoutingPaths;
   };
 }

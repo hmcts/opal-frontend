@@ -74,12 +74,6 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
     };
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
-      'buildAddAccountPayload',
-      'mapAccountPayload',
-    ]);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
-
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'scrollToTop',
@@ -92,6 +86,7 @@ describe('FinesMacReviewAccountComponent', () => {
     mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
       'buildAddAccountPayload',
       'buildReplaceAccountPayload',
+      'mapAccountPayload',
     ]);
     mockFinesMacPayloadService.buildReplaceAccountPayload.and.returnValue(
       structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
@@ -226,7 +221,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(finesMacStore.stateChanges()).toBeFalse();
     expect(finesMacStore.unsavedChanges()).toBeFalse();
     expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
       false,
       undefined,
       finesDraftStore.fragment(),
@@ -307,7 +302,7 @@ describe('FinesMacReviewAccountComponent', () => {
     component['submitPayload']();
 
     expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
       false,
       undefined,
       finesDraftStore.fragment(),
@@ -332,7 +327,7 @@ describe('FinesMacReviewAccountComponent', () => {
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(
       [
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
       ],
       {
         fragment: finesDraftStore.fragment(),

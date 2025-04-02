@@ -35,11 +35,18 @@
         "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
         "__format": "json"
       }
+    },
+    "app-insights": {
+      "enabled": {
+        "__name": "FEATURES_APP_INSIGHTS_ENABLED",
+        "__format": "json"
+      }
     }
   },
   "session": {
     "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" },
-    "sameSite": "SESSION_SAME_SITE"
+    "sameSite": "SESSION_SAME_SITE",
+    "domain": "SESSION_DOMAIN"
   },
   "csrf": {
     "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" },
@@ -49,7 +56,9 @@
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
       "redis-connection-string": "REDIS_CONNECTION_STRING",
-      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
+      "opal-frontend-session-secret": "FRONTEND_SESSION_SECRET",
+      "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET"
     }
   }
 }
