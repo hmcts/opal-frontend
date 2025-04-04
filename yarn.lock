@@ -3644,7 +3644,7 @@ __metadata:
 
 "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
   version: 0.0.1
-  resolution: "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=f9af01&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=5f4224&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@hmcts/info-provider": "npm:^1.2.3"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3668,7 +3668,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     typescript: "npm:^5.8.2"
     xml2js: "npm:^0.6.2"
-  checksum: 10/2695d07b8e9fb45904924191e58866942f3e63207d053f735357b61ffd721437946880bfba82f63cfb796e996b857a76ba7076d0a84a22636044c1517de6f765
+  checksum: 10/7bd33a6196a83546cdff7f9e2c33fd91e139dc7162182156be125c30c15929f15561c20fae129ce82e6bdc2ea67fecc882986ca0fe9664df2c8ef0b5e3d304b9
   languageName: node
   linkType: hard
 
