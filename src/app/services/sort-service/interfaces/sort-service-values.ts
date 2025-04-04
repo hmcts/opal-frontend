@@ -1,4 +1,4 @@
-export interface ISortServiceValues<T extends string | number | boolean> {
+export interface ISortServiceValues<T extends string | number | boolean | null> {
   [key: string]: T;
 }
 

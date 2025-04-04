@@ -32,6 +32,7 @@
       "@interfaces/*": ["./src/app/interfaces/*.ts"],
       "@guards/*": ["./src/app/guards/*.ts"],
       "@interceptors/*": ["./src/app/interceptors/*.ts"],
+      "@pipes/*": ["./src/app/pipes/*.ts"],
       "@resolvers/*": ["./src/app/resolvers/*.ts"],
       "@routing/*": ["./src/app/routing/*.ts"],
       "@routing/pages/*": ["./src/app/pages/routing/*.ts"],

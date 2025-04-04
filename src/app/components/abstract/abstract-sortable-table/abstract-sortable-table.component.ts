@@ -12,6 +12,8 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   public abstractTableDataSignal = signal<IAbstractTableData<SortableValues>[]>([]);
   public abstractExistingSortState: IAbstractSortState | null = null;
   public sortStateSignal = signal<IAbstractSortState>({});
+  public sortedColumnTitleSignal = signal<string>('');
+  public sortedColumnDirectionSignal = signal<'ascending' | 'descending' | 'none'>('none');
 
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
@@ -55,6 +57,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
         }
       });
     }
+    this.getSortedColumn();
   }
 
   /**
@@ -93,6 +96,32 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   }
 
   /**
+   * Determines the first column with a sort state other than 'none' and updates the sorted column signals accordingly.
+   *
+   * - If a sorted column is found, updates the `sortedColumnTitleSignal` and `sortedColumnDirectionSignal` with the column key and state.
+   * - If no sorted column is found, sets the `sortedColumnTitleSignal` to an empty string and `sortedColumnDirectionSignal` to 'none'.
+   *
+   * @private
+   * @returns {void}
+   */
+  private getSortedColumn(): void {
+    // Find the first column that has a sort state other than 'none'
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const sortedColumn = Object.entries(this.sortStateSignal()).find(([_, state]) => state !== 'none');
+
+    // If a sorted column is found, set the signal to the sorted column key and state
+    if (sortedColumn) {
+      const [columnKey, state] = sortedColumn;
+      this.sortedColumnTitleSignal.set(columnKey);
+      this.sortedColumnDirectionSignal.set(state);
+    } else {
+      // Otherwise, set the signal to null
+      this.sortedColumnTitleSignal.set('');
+      this.sortedColumnDirectionSignal.set('none');
+    }
+  }
+
+  /**
    * Handles the change in sorting for the table.
    *
    * @param event - An object containing the key to sort by and the sort type.
@@ -106,6 +135,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     const { key, sortType } = event;
 
     this.updateSortState(key, sortType);
+    this.getSortedColumn();
     const sortedData = this.getSortedTableData(key, sortType);
 
     // Update the table data signal

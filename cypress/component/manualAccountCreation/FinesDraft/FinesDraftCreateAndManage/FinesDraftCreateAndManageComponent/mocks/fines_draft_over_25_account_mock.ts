@@ -1,7 +1,7 @@
 import { IOpalFinesDraftAccountsResponse } from '../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 
 export const OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
-  count: 2,
+  count: 50,
   summaries: [
     {
       draft_account_id: 101,
