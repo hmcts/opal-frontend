@@ -6583,20 +6583,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-sync-client@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "browser-sync-client@npm:3.0.3"
+"browser-sync-client@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "browser-sync-client@npm:3.0.4"
   dependencies:
     etag: "npm:1.8.1"
     fresh: "npm:0.5.2"
     mitt: "npm:^1.1.3"
-  checksum: 10/a73748c4b1735efd3d77c14b7dff6b89b09a53aba0e40d2003999667354c237e7c698c396d9cd61503c36b56715dabcda0ece8ee4a28ae620e7e7f46b61d30fa
+  checksum: 10/4dd371aa7deb99833aeea2663ed5a5107b1a759164c867e4fa33229a005e46bc67aff2b50eb249b17c5256cf324e695c52cfd39cb31c06a08593098906ee4dd3
   languageName: node
   linkType: hard
 
-"browser-sync-ui@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "browser-sync-ui@npm:3.0.3"
+"browser-sync-ui@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "browser-sync-ui@npm:3.0.4"
   dependencies:
     async-each-series: "npm:0.1.1"
     chalk: "npm:4.1.2"
@@ -6605,16 +6605,16 @@ __metadata:
     server-destroy: "npm:1.0.1"
     socket.io-client: "npm:^4.4.1"
     stream-throttle: "npm:^0.1.3"
-  checksum: 10/9f82ba93f9574ee6680f8f9aeb31b2b722d6d7625ea67a753faac0c397d7f672d41a53f728b0dbafafc29a78f2c1b234ce6cb6f10215f84a3f77f659095117ff
+  checksum: 10/4cdfb5dc4ea099f34ac7f4e926f4de511e3e4f9c97ddd0c994dffb8a1dfed0287d141f616c7f398d1102869350ac4c3ad6bafdefed2fd286ec2c81ca68b046cf
   languageName: node
   linkType: hard
 
 "browser-sync@npm:^3.0.2":
-  version: 3.0.3
-  resolution: "browser-sync@npm:3.0.3"
+  version: 3.0.4
+  resolution: "browser-sync@npm:3.0.4"
   dependencies:
-    browser-sync-client: "npm:^3.0.3"
-    browser-sync-ui: "npm:^3.0.3"
+    browser-sync-client: "npm:^3.0.4"
+    browser-sync-ui: "npm:^3.0.4"
     bs-recipes: "npm:1.3.4"
     chalk: "npm:4.1.2"
     chokidar: "npm:^3.5.1"
@@ -6622,7 +6622,7 @@ __metadata:
     connect-history-api-fallback: "npm:^1"
     dev-ip: "npm:^1.0.1"
     easy-extender: "npm:^2.3.4"
-    eazy-logger: "npm:^4.0.1"
+    eazy-logger: "npm:^4.1.0"
     etag: "npm:^1.8.1"
     fresh: "npm:^0.5.2"
     fs-extra: "npm:3.0.1"
@@ -6643,7 +6643,7 @@ __metadata:
     yargs: "npm:^17.3.1"
   bin:
     browser-sync: dist/bin.js
-  checksum: 10/78ea2ae8cd849e09a898fa76dce1e5f9265474482dbe653abed83e7b9453cc97a7f01f7d1a4a41f8332bb99fedda67ecf28bc53b056783ebca7f8d04d7118c55
+  checksum: 10/405c40ba84f9d0865b8ea0d8b6efe42b06dc938cc88721625d0a3081c9ff3f5edc51f07f43952e3a9fa9c641be46b0994eaf4c51ebddbaf041b8c583d20c6124
   languageName: node
   linkType: hard
 
@@ -8333,12 +8333,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eazy-logger@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "eazy-logger@npm:4.0.1"
+"eazy-logger@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "eazy-logger@npm:4.1.0"
   dependencies:
     chalk: "npm:4.1.2"
-  checksum: 10/6116f29f39c092f5cf999236a5fa8e6c063105814863fe884bea02de038edb604d1a5b63b9b50f8456eeabe56b8fcaca1f679cc845ce2cf6987986ec8aaa22a5
+  checksum: 10/d382716213350b8adfd187396cbc82a5b95206b0ea47b7fea19d91fd3182d1c1052f0738a53207b642e75aa0133e781030e299b4ac81bb8f0dc35a4c2156652d
   languageName: node
   linkType: hard
 
