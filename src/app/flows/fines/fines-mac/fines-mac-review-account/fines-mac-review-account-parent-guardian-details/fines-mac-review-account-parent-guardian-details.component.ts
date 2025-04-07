@@ -21,6 +21,7 @@ import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services'
 })
 export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnInit {
   @Input({ required: true }) public parentGuardianDetails!: IFinesMacParentGuardianDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeParentGuardianDetails = new EventEmitter<void>();
 
   private readonly dateService = inject(DateService);

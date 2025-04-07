@@ -24,6 +24,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services';
 })
 export class FinesMacReviewAccountEmployerDetailsComponent implements OnInit {
   @Input({ required: true }) public employerDetails!: IFinesMacEmployerDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeEmployerDetails = new EventEmitter<void>();
 
   private readonly utilsService = inject(UtilsService);

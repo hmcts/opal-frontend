@@ -1,6 +1,18 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
-  <h1 class="govuk-heading-l">Check account details</h1>
+  @if (!isReadOnly) {
+    <h1 class="govuk-heading-l">Check account details</h1>
+  } @else {
+    <app-fines-mac-review-account-history
+      [accountStatus]="reviewAccountStatus"
+      [defendantName]="
+        finesMacStore.getDefendantType() === 'company'
+          ? finesMacStore.getCompanyDetailsName()
+          : finesMacStore.getPersonalDetailsName()
+      "
+      [timelineData]="finesDraftStore.timeline_data()"
+    ></app-fines-mac-review-account-history>
+  }
 
   <app-fines-mac-review-account-account-details
     [accountDetails]="finesMacStore.accountDetails().formData"
@@ -14,6 +26,7 @@
       [courtDetails]="finesMacStore.courtDetails().formData"
       [enforcementCourtsData]="data.enforcementCourtsData.refData"
       [localJusticeAreasData]="data.localJusticeAreasData.refData"
+      [isReadOnly]="isReadOnly"
       (emitChangeCourtDetails)="navigateBack()"
     ></app-fines-mac-review-account-court-details>
   }
@@ -48,6 +61,7 @@
 
   <app-fines-mac-review-account-offence-details
     (emitChangeOffenceDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-offence-details>
 
   <app-fines-mac-review-account-payment-terms
@@ -62,24 +76,26 @@
     (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
   ></app-fines-mac-review-account-account-comments-and-notes>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <opal-lib-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
-        >Submit for review</opal-lib-govuk-button
-      >
+  @if (!isReadOnly) {
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <opal-lib-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
+          >Submit for review</opal-lib-govuk-button
+        >
+      </div>
     </div>
-  </div>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <a
-        class="govuk-link govuk-error-colour"
-        (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
-        (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
-        tabindex="0"
-        >Delete account</a
-      >
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <a
+          class="govuk-link govuk-error-colour"
+          (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+          (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+          tabindex="0"
+          >Delete account</a
+        >
+      </div>
     </div>
-  </div>
+  }
 </div>
 
 <ng-template #parentGuardianDetails>
@@ -95,6 +111,7 @@
     [showVehicleDetails]="
       finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
     "
+    [isReadOnly]="isReadOnly"
     (emitChangePersonalDetails)="navigateBack()"
   ></app-fines-mac-review-account-personal-details>
 </ng-template>

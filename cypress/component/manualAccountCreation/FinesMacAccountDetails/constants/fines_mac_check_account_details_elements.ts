@@ -23,4 +23,14 @@ export const DOM_ELEMENTS = {
   accountCommentsAndNotesItem: 'opal-lib-govuk-task-list-item[taskListItemId="accountCommentsAndNotesItem"]',
   CheckDetails: 'h2.govuk-heading-m',
   CheckDetailsText: 'p.govuk-body:contains("You cannot proceed until all required sections have been completed.")',
+
+  //review status
+  reviewComponent: 'app-fines-mac-review-account-history',
+  status: 'strong[id = "status"]',
+  reviewHistory: 'h3.govuk-heading-m',
+  timeLine: 'div.moj-timeline__item',
+  timeLineTitle: 'h2.moj-timeline__title',
+  timelineAuthor: 'p.moj-timeline__byline',
+  timelineDate: 'p.moj-timeline__date',
+  timelineDescription: 'div.moj-timeline__description',
 };

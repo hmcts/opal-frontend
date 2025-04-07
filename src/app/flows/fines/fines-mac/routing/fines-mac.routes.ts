@@ -4,6 +4,7 @@ import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
+import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
 import { authGuard, canDeactivateGuard } from '@hmcts/opal-frontend-common/guards';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers';
 
@@ -176,5 +177,26 @@ export const routing: Routes = [
     canActivate: [authGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation },
     resolve: { title: TitleResolver },
+  },
+  {
+    path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:draftAccountId`,
+    loadComponent: () =>
+      import('../fines-mac-review-account/fines-mac-review-account.component').then(
+        (c) => c.FinesMacReviewAccountComponent,
+      ),
+    canActivate: [authGuard],
+    resolve: { title: TitleResolver, reviewAccountFetchMap: fetchMapFinesMacPayloadResolver },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
+  },
+  {
+    path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
+    loadComponent: () =>
+      import('../fines-mac-account-details/fines-mac-account-details.component').then(
+        (c) => c.FinesMacAccountDetailsComponent,
+      ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+    resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.accountDetails },
   },
 ];

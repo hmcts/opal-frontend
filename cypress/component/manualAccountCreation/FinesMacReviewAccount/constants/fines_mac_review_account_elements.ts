@@ -91,4 +91,13 @@ export const DOM_ELEMENTS = {
   changeLink: 'a.govuk-link.govuk-link--no-visited-state',
   submitButton: 'button[id = "submitAccountButton"]',
   deleteLink: 'a.govuk-link.govuk-error-colour',
+
+  //review status
+  reviewComponent: 'app-fines-mac-review-account-history',
+  status: 'strong[id = "status"]',
+  reviewHistory: 'h3.govuk-heading-m',
+  timeLine: 'div.moj-timeline__item',
+  timeLineTitle: 'h2.moj-timeline__title',
+  timelineAuthor: 'p.moj-timeline__byline',
+  timelineDate: 'p.moj-timeline__date',
 };

@@ -63,7 +63,7 @@ Then('I see the {string} button under the {string} section', (buttonName: string
   cy.contains('h2', sectionName).next().next().contains('button', buttonName);
 });
 Then('I see the {string} link', (linkName: string) => {
-  cy.contains('a', linkName);
+  cy.contains('a', linkName).should('exist');
 });
 Then('I do not see a back button or back link', () => {
   cy.contains('a', /back/i).should('not.exist');

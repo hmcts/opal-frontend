@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
 import {
   IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitNonSnakeCase,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import {
@@ -17,13 +18,18 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 import { Observable, shareReplay } from 'rxjs';
-import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import {
+  IOpalFinesOffencesNonSnakeCase,
+  IOpalFinesOffencesRefData,
+} from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import {
   IOpalFinesMajorCreditor,
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
+import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -35,6 +41,28 @@ export class OpalFines {
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
+
+  private readonly PARAM_BUSINESS_UNIT = 'business_unit';
+  private readonly PARAM_STATUS = 'status';
+  private readonly PARAM_SUBMITTED_BY = 'submitted_by';
+  private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
+
+  /**
+   * Appends an array of values to the given HttpParams object under the specified key.
+   *
+   * @param params - The HttpParams object to which the values will be appended.
+   * @param key - The key under which the values will be appended.
+   * @param values - An optional array of string or number values to be appended.
+   * @returns The updated HttpParams object with the appended values.
+   */
+  private appendArrayParams(params: HttpParams, key: string, values?: (string | number)[]): HttpParams {
+    if (values) {
+      values.forEach((value) => {
+        params = params.append(key, value.toString());
+      });
+    }
+    return params;
+  }
 
   /**
    * Retrieves the court data for a specific business unit.
@@ -190,5 +218,83 @@ export class OpalFines {
    */
   public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
     return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
+  }
+
+  /**
+   * Retrieves draft accounts based on the provided filters.
+   *
+   * @param filters - An object containing the filter parameters for the draft accounts.
+   * @returns An Observable that emits the response containing the draft accounts.
+   *
+   * The filters object can contain the following properties:
+   * - businessUnitIds: An array of business unit IDs to filter by.
+   * - statuses: An array of statuses to filter by.
+   * - submittedBy: An array of user IDs who submitted the accounts.
+   * - notSubmittedBy: An array of user IDs who did not submit the accounts.
+   */
+  public getDraftAccounts(filters: IOpalFinesDraftAccountParams): Observable<IOpalFinesDraftAccountsResponse> {
+    let params = new HttpParams();
+
+    const filterMapping = {
+      [this.PARAM_BUSINESS_UNIT]: filters.businessUnitIds?.filter((id) => id != null),
+      [this.PARAM_STATUS]: filters.statuses,
+      [this.PARAM_SUBMITTED_BY]: filters.submittedBy,
+      [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
+    };
+
+    Object.entries(filterMapping).forEach(([key, values]) => {
+      params = this.appendArrayParams(
+        params,
+        key,
+        values?.filter((value) => value != null),
+      );
+    });
+
+    return this.http.get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params });
+  }
+
+  /**
+   * Retrieves a draft account summary by its ID.
+   *
+   * @param draftAccountId - The ID of the draft account to retrieve.
+   * @returns An Observable that emits the draft account summary.
+   */
+  public getDraftAccountById(draftAccountId: number): Observable<IFinesMacAddAccountPayload> {
+    return this.http.get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`);
+  }
+
+  /**
+   * Retrieves a business unit by its ID.
+   *
+   * @param businessUnitId - The ID of the business unit to retrieve.
+   * @returns An Observable that emits the business unit data.
+   */
+  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
+    return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
+      `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+    );
+  }
+
+  /**
+   * Retrieves an offence by its ID.
+   *
+   * @param {number} offenceId - The ID of the offence to retrieve.
+   * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
+   */
+  public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
+  }
+
+  /**
+   * Sends a PUT request to update the draft account payload.
+   *
+   * @param body - The payload containing the account information to be added.
+   * @returns An Observable of the updated account payload.
+   */
+  public putDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.put<IFinesMacAddAccountPayload>(
+      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      body,
+    );
   }
 }

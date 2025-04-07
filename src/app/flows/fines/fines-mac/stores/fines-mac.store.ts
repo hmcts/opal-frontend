@@ -172,6 +172,18 @@ export const FinesMacStore = signalStore(
           null as Date | null,
         );
       }),
+      getPersonalDetailsName: computed(() => {
+        const {
+          fm_personal_details_title: title,
+          fm_personal_details_forenames: forenames,
+          fm_personal_details_surname: surname,
+        } = store.personalDetails().formData;
+
+        return `${title} ${forenames} ${utilsService.upperCaseAllLetters(surname!)}`;
+      }),
+      getCompanyDetailsName: computed(() => {
+        return store.companyDetails().formData.fm_company_details_company_name!;
+      }),
     };
   }),
   withMethods((store) => ({
@@ -279,6 +291,9 @@ export const FinesMacStore = signalStore(
     },
     resetFinesMacStore: () => {
       patchState(store, FINES_MAC_STATE);
+    },
+    resetStateChangesUnsavedChanges: () => {
+      patchState(store, { stateChanges: false, unsavedChanges: false });
     },
   })),
 );

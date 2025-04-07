@@ -19,5 +19,42 @@
         >Manual Account Creation</a
       >
     </li>
+    @if (permissionIds.includes(permissionsMap.checkAndValidateDraftAccounts)) {
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.draft.root +
+            '/' +
+            finesRoutingPaths.children.draft.children['checkAndValidate']
+          "
+          id="finesCavCheckerLink"
+          >Check and Validate Draft Accounts</a
+        >
+      </li>
+    }
+    @if (permissionIds.includes(permissionsMap.createAndManageDraftAccounts)) {
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.draft.root +
+            '/' +
+            finesRoutingPaths.children.draft.children['createAndManage'] +
+            '/' +
+            finesDraftCheckAndManageRoutingPaths.children.tabs
+          "
+          fragment="review"
+          id="finesCavInputterLink"
+          >Create and Manage Draft Accounts</a
+        >
+      </li>
+    }
   </ul>
 </div>

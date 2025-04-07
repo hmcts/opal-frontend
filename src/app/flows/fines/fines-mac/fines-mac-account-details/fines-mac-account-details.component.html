@@ -1,6 +1,19 @@
 <div class="govuk-grid-column-two-thirds">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
-  <h1 class="govuk-heading-l">Account details</h1>
+  @if (finesDraftStore.amend()) {
+    <app-fines-mac-review-account-history
+      [defendantName]="
+        finesMacStore.getDefendantType() === 'company'
+          ? finesMacStore.getCompanyDetailsName()
+          : finesMacStore.getPersonalDetailsName()
+      "
+      [accountStatus]="accountDetailsStatus"
+      [timelineData]="finesDraftStore.timeline_data()"
+      [isRejected]="true"
+    ></app-fines-mac-review-account-history>
+  } @else {
+    <h1 class="govuk-heading-l">Account details</h1>
+  }
   <opal-lib-govuk-summary-list summaryListId="accountDetails">
     <div
       opal-lib-govuk-summary-list-row
@@ -120,14 +133,16 @@
     <h2 class="govuk-heading-m">Check and submit</h2>
     <p class="govuk-body">You cannot proceed until all required sections have been completed.</p>
   }
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-  <a
-    class="govuk-link govuk-error-colour"
-    (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-    (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-    tabindex="0"
-    >Delete account</a
-  >
+  @if (!finesDraftStore.amend()) {
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    <a
+      class="govuk-link govuk-error-colour"
+      (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      tabindex="0"
+      >Delete account</a
+    >
+  }
 </div>
 
 <ng-template #statusTag let-status>

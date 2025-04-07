@@ -21,6 +21,9 @@ import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 import { DateService, TransformationService } from '@hmcts/opal-frontend-common/services';
 import { ISessionUserState, ITransformItem } from '@hmcts/opal-frontend-common/interfaces';
 
@@ -129,12 +132,15 @@ export class FinesMacPayloadService {
    */
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
+    draftAccountPayload: IFinesMacAddAccountPayload | null,
     sessionUserState: ISessionUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
+    const storedTimeLineData: IFinesMacAccountTimelineData[] = draftAccountPayload
+      ? draftAccountPayload.timeline_data
+      : [];
     const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
     const timeLineData = finesMacPayloadBuildAccountTimelineData(
@@ -147,6 +153,10 @@ export class FinesMacPayloadService {
 
     // Build the add account payload
     const addAccountPayload: IFinesMacAddAccountPayload = {
+      draft_account_id: draftAccountPayload ? draftAccountPayload.draft_account_id : null,
+      created_at: null,
+      account_snapshot: null,
+      account_status_date: null,
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
       submitted_by: this.getBusinessUnitBusinessUserId(
         accountDetailsState['fm_create_account_business_unit_id'],
@@ -157,10 +167,6 @@ export class FinesMacPayloadService {
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
       timeline_data: timeLineData,
-      draft_account_id: null,
-      created_at: null,
-      account_snapshot: null,
-      account_status_date: null,
     };
 
     // Transform the payload, format the dates to the correct format
@@ -178,7 +184,7 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, true);
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, sessionUserState, true);
   }
 
   /**
@@ -190,9 +196,15 @@ export class FinesMacPayloadService {
    */
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
+    draftAccountPayload: IFinesMacAddAccountPayload,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
+    return this.buildAddReplaceAccountPayload(
+      structuredClone(finesMacState),
+      draftAccountPayload,
+      sessionUserState,
+      false,
+    );
   }
 
   /**
@@ -242,7 +254,11 @@ export class FinesMacPayloadService {
    * @param payload - The payload containing account information to be mapped.
    * @returns The updated fines MAC state after mapping the account information.
    */
-  public mapAccountPayload(payload: IFinesMacAddAccountPayload) {
+  public mapAccountPayload(
+    payload: IFinesMacAddAccountPayload,
+    businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase | null,
+    offencesRefData: IOpalFinesOffencesNonSnakeCase[] | null,
+  ) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
@@ -256,7 +272,11 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
 
-    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+
+    if (businessUnitRefData) {
+      finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
+    }
 
     return finesMacState;
   }

@@ -39,6 +39,7 @@ describe('FinesMacStore', () => {
       'checkFormArrayValues',
       'getFormStatus',
       'getArrayFormStatus',
+      'upperCaseAllLetters',
     ]);
     mockDateService = jasmine.createSpyObj(DateService, ['getDateFromFormat']);
 
@@ -234,5 +235,35 @@ describe('FinesMacStore', () => {
     store.setFinesMacStore(finesMacState);
 
     expect(store.getEarliestDateOfSentence()).toEqual(null);
+  });
+
+  it('should return company name', () => {
+    const companyDetails = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM_MOCK);
+    store.setCompanyDetails(companyDetails);
+    expect(store.getCompanyDetailsName()).toEqual(companyDetails.formData.fm_company_details_company_name!);
+  });
+
+  it('should return defendant name', () => {
+    const personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
+    const {
+      fm_personal_details_title: title,
+      fm_personal_details_forenames: forenames,
+      fm_personal_details_surname: surname,
+    } = personalDetails.formData;
+    mockUtilsService.upperCaseAllLetters.and.returnValue(surname!.toUpperCase());
+    const expectedName = `${title} ${forenames} ${surname!.toUpperCase()}`;
+    store.setPersonalDetails(personalDetails);
+    expect(store.getPersonalDetailsName()).toEqual(expectedName);
+  });
+
+  it('should reset state changes and unsaved changes', () => {
+    store.setStateChanges(true);
+    store.setUnsavedChanges(true);
+    expect(store.stateChanges()).toBe(true);
+    expect(store.unsavedChanges()).toBe(true);
+
+    store.resetStateChangesUnsavedChanges();
+    expect(store.stateChanges()).toBe(false);
+    expect(store.unsavedChanges()).toBe(false);
   });
 });

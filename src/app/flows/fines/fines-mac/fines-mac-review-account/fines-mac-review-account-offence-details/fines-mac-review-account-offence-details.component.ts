@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FinesMacOffenceDetailsReviewComponent } from '../../fines-mac-offence-details/fines-mac-offence-details-review/fines-mac-offence-details-review.component';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountOffenceDetailsComponent {
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
 
   /**

@@ -15,6 +15,7 @@ import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
+import { IFinesMacOffenceDetailsReviewSummaryImpositionTableData } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
 import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
@@ -102,12 +103,12 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   it('should set impositionTableData with correct values', () => {
     const expectedTotal = '£100.00';
     mockUtilsService.convertToMonetaryString.and.returnValue(expectedTotal);
-    const expectedImpositionTableData = [
+    const imposition = { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] };
+    const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
         impositionId: 0,
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
-          (result) =>
-            result.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_id!,
+          (result) => result.result_id === imposition.fm_offence_details_result_id!,
         )!.result_title,
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
@@ -124,6 +125,8 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         balanceRemaining: expectedTotal,
       },
     ];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getMinorCreditorData').and.returnValue(expectedImpositionTableData[0].minorCreditor);
 
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
