@@ -96,7 +96,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
@@ -107,7 +107,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
@@ -154,13 +154,13 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.created)
         .first()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
         );
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
       cy.get(DOM_ELEMENTS.created)
         .last()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
         );
     },
   );
@@ -190,7 +190,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
@@ -201,7 +201,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
@@ -248,13 +248,13 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.created)
         .first()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
         );
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
       cy.get(DOM_ELEMENTS.created)
         .last()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
         );
     },
   );
@@ -284,7 +284,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
@@ -295,7 +295,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
@@ -342,13 +342,13 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.created)
         .first()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
         );
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
       cy.get(DOM_ELEMENTS.created)
         .last()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
         );
     },
   );
@@ -378,7 +378,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
@@ -389,7 +389,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       .should('exist')
       .and(
         'contain',
-        `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
+        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
       );
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
@@ -436,13 +436,13 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.created)
         .first()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
         );
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
       cy.get(DOM_ELEMENTS.created)
         .last()
         .contains(
-          `${dateService.getDaysAgoString(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
+          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
         );
     },
   );
@@ -450,7 +450,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
   it('(AC.1) should display number of rejected accounts in a icon on values of 1-99', { tags: ['@PO-605'] }, () => {
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '2');
+    cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '50');
 
     mockData = {
       count: 0,
