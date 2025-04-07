@@ -9,7 +9,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/
 import { DOM_ELEMENTS } from './constants/fines_mac_court_details_elements';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
 import { provideHttpClient } from '@angular/common/http';
-import { DateService, UtilsService} from '@hmcts/opal-frontend-common/services';
+import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
