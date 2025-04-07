@@ -9,7 +9,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
-import { UtilsService } from '@services/utils/utils.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
 import { DOM_ELEMENTS } from './constants/remove_imposition_elements';
 
 describe('FinesRemoveImpositionComponent', () => {

@@ -11,9 +11,9 @@ import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from 'src/app/flows/fines/s
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { UtilsService } from '@services/utils/utils.service';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { SESSION_USER_STATE_MOCK } from 'src/app/services/session-service/mocks/session-user-state.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
