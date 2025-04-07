@@ -1,5 +1,9 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { GovukSummaryCardListComponent, GovukSummaryListRowComponent, GovukSummaryListComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukSummaryCardListComponent,
+  GovukSummaryListRowComponent,
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { IFinesMacParentGuardianDetailsState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';

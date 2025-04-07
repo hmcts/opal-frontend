@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj';
-import { GovukTextInputComponent,GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukTextInputComponent, GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 import { Subject, takeUntil } from 'rxjs';
 

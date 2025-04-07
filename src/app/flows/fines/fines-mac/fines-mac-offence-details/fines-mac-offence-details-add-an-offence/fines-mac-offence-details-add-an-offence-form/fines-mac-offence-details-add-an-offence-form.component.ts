@@ -9,7 +9,10 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormArrayBaseComponent, IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
+import {
+  AbstractFormArrayBaseComponent,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract';
 import {
   IAlphagovAccessibleAutocompleteItem,
   AlphagovAccessibleAutocompleteComponent,

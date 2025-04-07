@@ -4,7 +4,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
-import { GlobalStore } from '@stores/global/global.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,

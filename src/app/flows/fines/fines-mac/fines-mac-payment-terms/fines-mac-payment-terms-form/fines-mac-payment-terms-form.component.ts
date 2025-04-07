@@ -8,7 +8,10 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormBaseComponent, IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract';
+import {
+  AbstractFormBaseComponent,
+  IAbstractFormArrayControlValidation,
+} from '@hmcts/opal-frontend-common/components/abstract';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';

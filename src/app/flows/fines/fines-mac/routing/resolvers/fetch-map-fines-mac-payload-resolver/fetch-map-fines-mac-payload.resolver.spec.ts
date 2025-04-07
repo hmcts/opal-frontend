@@ -10,8 +10,8 @@ import { fetchMapFinesMacPayloadResolver } from './fetch-map-fines-mac-payload.r
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../../../services/fines-mac-payload/mocks/fines-mac-payload-fines-mac-state.mock';
 import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
-import { GlobalStore } from '@stores/global/global.store';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>

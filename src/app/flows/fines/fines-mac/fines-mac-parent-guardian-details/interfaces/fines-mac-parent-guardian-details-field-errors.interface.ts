@@ -1,4 +1,7 @@
-import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
+import {
+  IAbstractFormBaseFieldError,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract';
 
 export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_parent_guardian_details_forenames: IAbstractFormBaseFieldError;

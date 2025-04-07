@@ -26,6 +26,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
 import { UtilsService, DateService } from '@hmcts/opal-frontend-common/services';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;

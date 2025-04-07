@@ -30,7 +30,8 @@ import {
   GovukSelectComponent,
   IGovUkSelectOptions,
   GovukCheckboxesComponent,
-  GovukCheckboxesConditionalComponent,GovukCheckboxesItemComponent
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 import {

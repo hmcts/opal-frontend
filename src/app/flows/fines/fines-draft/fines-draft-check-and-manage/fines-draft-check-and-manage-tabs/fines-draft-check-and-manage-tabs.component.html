@@ -1,46 +1,46 @@
 <div class="govuk-grid-column-full">
   @if (finesDraftStore.bannerMessage().length > 0) {
-    <app-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></app-moj-banner>
+    <opal-lib-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></opal-lib-moj-banner>
   }
   <h2 class="govuk-heading-l">Create accounts</h2>
-  <app-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-    <app-moj-sub-navigation-item
+  <opal-lib-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-in-review-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="review"
       subNavItemText="In review"
-    ></app-moj-sub-navigation-item>
+    ></opal-lib-moj-sub-navigation-item>
     @if (rejectedCount$ | async; as rejectedCount) {
       @if (rejectedCount === '0') {
-        <app-moj-sub-navigation-item
+        <opal-lib-moj-sub-navigation-item
           subNavItemId="inputter-rejected-tab"
           [activeSubNavItemFragment]="activeTab"
           subNavItemFragment="rejected"
           subNavItemText="Rejected"
-        ></app-moj-sub-navigation-item>
+        ></opal-lib-moj-sub-navigation-item>
       } @else {
-        <app-moj-sub-navigation-item
+        <opal-lib-moj-sub-navigation-item
           subNavItemId="inputter-rejected-tab"
           [activeSubNavItemFragment]="activeTab"
           subNavItemFragment="rejected"
           subNavItemText="Rejected"
           [count]="rejectedCount"
-        ></app-moj-sub-navigation-item>
+        ></opal-lib-moj-sub-navigation-item>
       }
     }
-    <app-moj-sub-navigation-item
+    <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-approved-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="approved"
       subNavItemText="Approved"
-    ></app-moj-sub-navigation-item>
-    <app-moj-sub-navigation-item
+    ></opal-lib-moj-sub-navigation-item>
+    <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-deleted-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
-    ></app-moj-sub-navigation-item>
-  </app-moj-sub-navigation>
+    ></opal-lib-moj-sub-navigation-item>
+  </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
     @case ('review') {
       <h3 class="govuk-heading-m">In review</h3>

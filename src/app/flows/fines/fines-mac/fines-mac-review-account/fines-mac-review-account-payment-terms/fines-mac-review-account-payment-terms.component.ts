@@ -1,5 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { GovukSummaryCardListComponent,GovukSummaryListRowComponent ,GovukSummaryListComponent  } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukSummaryCardListComponent,
+  GovukSummaryListRowComponent,
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk';
 import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';

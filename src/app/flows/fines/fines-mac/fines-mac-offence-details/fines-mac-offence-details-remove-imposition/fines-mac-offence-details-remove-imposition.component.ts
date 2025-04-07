@@ -18,7 +18,8 @@ import {
   GovukCancelLinkComponent,
   GovukTableBodyRowDataComponent,
   GovukTableBodyRowComponent,
-  GovukTableHeadingComponent,GovukTableComponent
+  GovukTableHeadingComponent,
+  GovukTableComponent,
 } from '@hmcts/opal-frontend-common/components/govuk';
 
 @Component({

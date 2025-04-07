@@ -1,4 +1,7 @@
-import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors} from '@hmcts/opal-frontend-common/components/abstract';
+import {
+  IAbstractFormBaseFieldError,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract';
 
 export interface IFinesMacCompanyDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_company_details_company_name: IAbstractFormBaseFieldError;
