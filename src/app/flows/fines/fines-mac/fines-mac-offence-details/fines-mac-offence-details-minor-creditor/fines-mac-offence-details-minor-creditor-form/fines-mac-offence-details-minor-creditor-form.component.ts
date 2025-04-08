@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  AbstractFormBaseComponent,
-  IAbstractFormBaseFieldErrors,
-} from '@hmcts/opal-frontend-common/components/abstract';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE } from '../constants/fines-mac-offence-details-minor-creditor-creditor-type.constant';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../constants/fines-mac-title-dropdown-options.constant';
 import { takeUntil } from 'rxjs';
@@ -12,21 +10,23 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../consta
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
-  GovukTextInputComponent,
-  GovukButtonComponent,
-  IGovUkRadioOptions,
   GovukRadioComponent,
   GovukRadiosItemComponent,
-  IGovUkSelectOptions,
   GovukRadiosConditionalComponent,
-  GovukSelectComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
+import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
+import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
+import {
   GovukCheckboxesComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
-  GovukErrorSummaryComponent,
-  GovukCancelLinkComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
   alphabeticalTextValidator,
   numericalTextValidator,

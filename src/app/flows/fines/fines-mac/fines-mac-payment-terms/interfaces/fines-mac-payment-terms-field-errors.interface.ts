@@ -1,7 +1,7 @@
 import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
-} from '@hmcts/opal-frontend-common/components/abstract';
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 export interface IFinesMacPaymentTermsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_payment_terms_collection_order_made: IAbstractFormBaseFieldError;

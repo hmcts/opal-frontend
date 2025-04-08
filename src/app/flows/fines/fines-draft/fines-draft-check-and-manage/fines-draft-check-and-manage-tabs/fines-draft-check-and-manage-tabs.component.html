@@ -24,8 +24,11 @@
           [activeSubNavItemFragment]="activeTab"
           subNavItemFragment="rejected"
           subNavItemText="Rejected"
-          [count]="rejectedCount"
-        ></opal-lib-moj-sub-navigation-item>
+        >
+          <opal-lib-moj-badge badge badgeId="inputter-rejected-tab-rejected-count">{{
+            rejectedCount
+          }}</opal-lib-moj-badge>
+        </opal-lib-moj-sub-navigation-item>
       }
     }
     <opal-lib-moj-sub-navigation-item

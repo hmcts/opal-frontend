@@ -32,7 +32,8 @@ import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-accoun
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
-import { GovukButtonComponent, GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 import { UtilsService, DateService } from '@hmcts/opal-frontend-common/services';
 

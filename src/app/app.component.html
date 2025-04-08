@@ -1,5 +1,5 @@
 <div class="page-container">
-  <opal-lib-moj-header>
+  <opal-lib-moj-header [headerLinks]="headerLinks">
     <ng-container organisationName>HMCTS</ng-container>
     <ng-container serviceName>Opal</ng-container>
     <opal-lib-moj-header-navigation-item (actionClick)="handleAuthentication()">
@@ -45,5 +45,5 @@
     </div>
   </div>
 
-  <opal-lib-govuk-footer></opal-lib-govuk-footer>
+  <opal-lib-govuk-footer [footerLinks]="footerLinks"></opal-lib-govuk-footer>
 </div>

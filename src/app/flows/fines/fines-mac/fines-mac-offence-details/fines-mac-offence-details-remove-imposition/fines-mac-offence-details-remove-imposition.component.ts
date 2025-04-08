@@ -4,7 +4,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { forkJoin, Observable, tap } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract';
+import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
@@ -13,14 +13,14 @@ import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details
 import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
   GovukTableBodyRowDataComponent,
   GovukTableBodyRowComponent,
   GovukTableHeadingComponent,
   GovukTableComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',

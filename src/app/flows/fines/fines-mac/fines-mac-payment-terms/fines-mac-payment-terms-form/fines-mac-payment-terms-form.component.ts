@@ -8,10 +8,8 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import {
-  AbstractFormBaseComponent,
-  IAbstractFormArrayControlValidation,
-} from '@hmcts/opal-frontend-common/components/abstract';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,7 +24,8 @@ import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-ma
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
-import { MojTicketPanelComponent, MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj';
+import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
@@ -37,20 +36,22 @@ import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-paym
 import { DateService, PermissionsService } from '@hmcts/opal-frontend-common/services';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/interfaces';
+import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
-  IGovUkRadioOptions,
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
   GovukCheckboxesComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
-  GovukErrorSummaryComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
-  GovukTextInputPrefixSuffixComponent,
   GovukRadiosConditionalComponent,
-  GovukTextAreaComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
+import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators';
 
 @Component({

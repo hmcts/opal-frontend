@@ -1,4 +1,4 @@
-import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
 import { SortableValues } from '@hmcts/opal-frontend-common/types';
 
 export interface IFinesDraftTableWrapperTableData extends IAbstractTableData<SortableValues> {

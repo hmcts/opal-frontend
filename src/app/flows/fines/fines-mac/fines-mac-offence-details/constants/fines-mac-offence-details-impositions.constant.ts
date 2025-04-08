@@ -1,4 +1,4 @@
-import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { Validators } from '@angular/forms';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators';
 

@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms';
-import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import {
   dateOfBirthValidator,
   numericalTextValidator,

@@ -15,20 +15,22 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import {
-  MojBannerComponent,
   MojSubNavigationItemComponent,
   MojSubNavigationComponent,
-} from '@hmcts/opal-frontend-common/components/moj';
+} from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
+import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
     CommonModule,
+    MojBannerComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
+    MojBadgeComponent,
     FinesDraftTableWrapperComponent,
-    MojBannerComponent,
   ],
   templateUrl: './fines-draft-check-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

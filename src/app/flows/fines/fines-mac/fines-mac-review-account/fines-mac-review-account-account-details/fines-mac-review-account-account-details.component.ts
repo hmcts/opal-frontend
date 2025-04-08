@@ -8,11 +8,11 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language
 import { IFinesMacLanguagePreferencesOptions } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { IFinesMacLanguagePreferencesState } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
-  GovukSummaryCardListComponent,
-  GovukSummaryListComponent,
   GovukSummaryListRowComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 
 @Component({
   selector: 'app-fines-mac-review-account-account-details',

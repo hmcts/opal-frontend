@@ -1,4 +1,4 @@
-import { ISessionUserState } from 'src/app/services/session-service/interfaces/session-user-state.interface';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/interfaces';
 
 export const DRAFT_SESSION_USER_STATE_MOCK: ISessionUserState = {
   user_id: 'gl.timTest',

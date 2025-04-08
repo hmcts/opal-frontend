@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GovukPanelComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukPanelComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-panel';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 

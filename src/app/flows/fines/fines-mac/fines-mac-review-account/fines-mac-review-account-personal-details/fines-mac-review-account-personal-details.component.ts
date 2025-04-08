@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
-  GovukSummaryCardListComponent,
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesMacPersonalDetailsState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';

@@ -1,4 +1,4 @@
-import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   fm_offence_details_date_of_sentence: {

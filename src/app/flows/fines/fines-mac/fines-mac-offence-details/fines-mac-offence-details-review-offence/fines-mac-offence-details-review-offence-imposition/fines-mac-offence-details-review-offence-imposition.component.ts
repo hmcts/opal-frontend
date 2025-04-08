@@ -13,9 +13,11 @@ import {
   GovukTableBodyRowComponent,
   GovukTableHeadingComponent,
   GovukTableComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import {
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';

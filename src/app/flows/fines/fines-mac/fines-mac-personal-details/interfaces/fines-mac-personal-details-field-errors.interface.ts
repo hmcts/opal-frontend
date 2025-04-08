@@ -1,7 +1,7 @@
 import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
-} from '@hmcts/opal-frontend-common/components/abstract';
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 export interface IFinesMacPersonalDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_personal_details_title: IAbstractFormBaseFieldError;

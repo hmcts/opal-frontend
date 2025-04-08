@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { GovukSummaryCardActionComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukSummaryCardActionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 
 @Component({
   selector: 'app-fines-mac-review-account-change-link',

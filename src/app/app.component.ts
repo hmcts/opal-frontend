@@ -5,10 +5,10 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import {
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
-  MojBannerComponent,
-} from '@hmcts/opal-frontend-common/components/moj';
-import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk';
-import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/constants';
+} from '@hmcts/opal-frontend-common/components/moj/moj-header';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
+import { SSO_ENDPOINTS, HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
 import {
   DateService,
   AppInsightsService,
@@ -48,6 +48,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly POLL_INTERVAL = 60;
   public thresholdInMinutes!: number;
   public showExpiredWarning = false;
+
+  protected readonly headerLinks = HEADER_LINKS;
+  protected readonly footerLinks = FOOTER_LINKS;
 
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize

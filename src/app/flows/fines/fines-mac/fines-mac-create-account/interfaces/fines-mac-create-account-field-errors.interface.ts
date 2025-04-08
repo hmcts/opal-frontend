@@ -1,7 +1,7 @@
 import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
-} from '@hmcts/opal-frontend-common/components/abstract';
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 export interface IFinesMacCreateAccountFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_create_account_account_type: IAbstractFormBaseFieldError;

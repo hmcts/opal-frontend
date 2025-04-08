@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/types';
 
 @Component({

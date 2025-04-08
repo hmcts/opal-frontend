@@ -9,14 +9,10 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import {
-  AbstractFormArrayBaseComponent,
-  IAbstractFormBaseFieldErrors,
-} from '@hmcts/opal-frontend-common/components/abstract';
-import {
-  IAlphagovAccessibleAutocompleteItem,
-  AlphagovAccessibleAutocompleteComponent,
-} from '@hmcts/opal-frontend-common/components/alphagov';
+import { AbstractFormArrayBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-base';
+import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
@@ -30,11 +26,9 @@ import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFor
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions.constant';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
-import {
-  MojDatePickerComponent,
-  MojTicketPanelComponent,
-  MojBannerComponent,
-} from '@hmcts/opal-frontend-common/components/moj';
+import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
+import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -46,16 +40,16 @@ import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './in
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
-  GovukTextInputComponent,
-  GovukButtonComponent,
   GovukRadiosConditionalComponent,
-  GovukTextInputPrefixSuffixComponent,
   GovukRadiosItemComponent,
   GovukRadioComponent,
-  GovukErrorSummaryComponent,
-  GovukCancelLinkComponent,
-} from '@hmcts/opal-frontend-common/components/govuk';
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 import { futureDateValidator, optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators';
 

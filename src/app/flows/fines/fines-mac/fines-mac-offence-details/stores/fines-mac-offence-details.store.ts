@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract';
+import { IAbstractFormArrayControls } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 
 export const FinesMacOffenceDetailsStore = signalStore(

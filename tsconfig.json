@@ -22,6 +22,7 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
+      "@constants/*": ["./src/app/constants/*.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@routing/pages/*": ["./src/app/pages/routing/*.ts"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],

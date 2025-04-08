@@ -6,11 +6,11 @@ import {
   MojSortableTableRowComponent,
   MojSortableTableComponent,
   MojSortableTableStatusComponent,
-} from '@hmcts/opal-frontend-common/components/moj';
+} from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
-import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract';
-import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
+import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-pagination';
 import { DaysAgoPipe, DateFormatPipe } from '@hmcts/opal-frontend-common/pipes';
 
 @Component({
@@ -22,8 +22,8 @@ import { DaysAgoPipe, DateFormatPipe } from '@hmcts/opal-frontend-common/pipes';
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
-    GovukPaginationComponent,
     MojSortableTableStatusComponent,
+    GovukPaginationComponent,
     DaysAgoPipe,
     DateFormatPipe,
   ],

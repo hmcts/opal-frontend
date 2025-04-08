@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { GovukSummaryListRowComponent, GovukSummaryListComponent } from '@hmcts/opal-frontend-common/components/govuk';
+import {
+  GovukSummaryListRowComponent,
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { DateService } from '@hmcts/opal-frontend-common/services';
 
 @Component({
