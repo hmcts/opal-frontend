@@ -9,7 +9,7 @@ import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core'
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
-import { AppInitializerService, AppInsightsService } from '@hmcts/opal-frontend-common/services';
+import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors';
 
 export const appConfig: ApplicationConfig = {
@@ -30,7 +30,6 @@ export const appConfig: ApplicationConfig = {
         cookieName: 'XSRF-TOKEN',
       }),
     ),
-    AppInsightsService,
     provideAppInitializer(() => {
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.initializeApp();

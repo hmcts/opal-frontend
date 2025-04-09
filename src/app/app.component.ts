@@ -9,13 +9,9 @@ import {
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import { SSO_ENDPOINTS, HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
-import {
-  DateService,
-  AppInsightsService,
-  LaunchDarklyService,
-  SessionService,
-} from '@hmcts/opal-frontend-common/services';
+import { DateService, LaunchDarklyService, SessionService } from '@hmcts/opal-frontend-common/services';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 
 @Component({
   selector: 'app-root',
