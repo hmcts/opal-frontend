@@ -4040,13 +4040,13 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@ministryofjustice/frontend@npm:4.0.1"
+  version: 4.0.2
+  resolution: "@ministryofjustice/frontend@npm:4.0.2"
   peerDependencies:
     govuk-frontend: 5.x
     jquery: 3.x
     moment: 2.x
-  checksum: 10/f96ed31857ccb3c83a2622fe5df277634a46efccc2bf8242396e86614735e639b304c8a96aece8a841b60b83b330e55d9b6a968e55fc76bc3e69dd9144e6a134
+  checksum: 10/80489599aa8a44c46494488490053f88ae856c020e36fb26cea667be13ae3cb93da8c42300c20fed300afd6a995fa752ec3162ba793e0d4bba0af23a4b654bc0
   languageName: node
   linkType: hard
 
