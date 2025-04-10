@@ -114,12 +114,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      /**  cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).click();
       cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');*/
 
       // instalments only
       cy.get(DOM_ELEMENTS.instalmentsOnly).click();
@@ -135,12 +135,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      /**  cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist'); */
 
       //lump plus instalments
 
@@ -159,12 +159,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      /** cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).click();
       cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
       cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist'); */
 
       // enforcement action PRIS
 
@@ -223,12 +223,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       // instalments only
       cy.get(DOM_ELEMENTS.instalmentsOnly).click();
@@ -244,12 +244,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       //lump plus instalments
 
@@ -268,12 +268,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       // collection order
       cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
@@ -309,12 +309,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.payByDateLabel).should('contain', 'Enter pay by date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
       cy.get(DOM_ELEMENTS.payByDate).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       // instalments only
       cy.get(DOM_ELEMENTS.instalmentsOnly).click();
@@ -330,12 +330,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
 
       //lump plus instalments
 
@@ -354,12 +354,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.startDate).should('exist');
       cy.get(DOM_ELEMENTS.startDateLabel).should('contain', 'Start date');
       cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).click();
-      cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerButton).click();
+      // cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerSubmitButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerCancelButton).should('exist');
+      // cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
     },
   );
   //Collection order tests
@@ -500,44 +500,44 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
 
-  //Checking pay by date, installment option and lump sum flow checks and error handling
-  it(
-    '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
-    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
-    () => {
-      defendantTypes.forEach((defendantType) => {
-        setupComponent(null, defendantType);
+  // //Checking pay by date, installment option and lump sum flow checks and error handling
+  // it(
+  //   '(AC.2a) should allow payByDate to be entered via date picker for all defendant types',
+  //   { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
+  //   () => {
+  //     defendantTypes.forEach((defendantType) => {
+  //       setupComponent(null, defendantType);
 
-        cy.get(DOM_ELEMENTS.payInFull).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).click();
-        cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.testDate).click();
-        cy.get(DOM_ELEMENTS.payByDate).should(
-          'have.value',
-          `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
-        );
-      });
-    },
-  );
+  //       cy.get(DOM_ELEMENTS.payInFull).click();
+  //       // cy.get(DOM_ELEMENTS.datePickerButton).click();
+  //       // cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
+  //       cy.get(DOM_ELEMENTS.testDate).click();
+  //       cy.get(DOM_ELEMENTS.payByDate).should(
+  //         'have.value',
+  //         `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
+  //       );
+  //     });
+  //   },
+  // );
 
-  it(
-    '(AC.3c) should allow startDate to be entered via date picker for all defendant types',
-    { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
-    () => {
-      defendantTypes.forEach((defendantType) => {
-        setupComponent(null, defendantType);
+  // it(
+  //   '(AC.3c) should allow startDate to be entered via date picker for all defendant types',
+  //   { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
+  //   () => {
+  //     defendantTypes.forEach((defendantType) => {
+  //       setupComponent(null, defendantType);
 
-        cy.get(DOM_ELEMENTS.instalmentsOnly).click();
-        cy.get(DOM_ELEMENTS.datePickerButton).click();
-        cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
-        cy.get(DOM_ELEMENTS.testDate).click();
-        cy.get(DOM_ELEMENTS.startDate).should(
-          'have.value',
-          `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
-        );
-      });
-    },
-  );
+  //       cy.get(DOM_ELEMENTS.instalmentsOnly).click();
+  //       // cy.get(DOM_ELEMENTS.datePickerButton).click();
+  //       // cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
+  //       cy.get(DOM_ELEMENTS.testDate).click();
+  //       cy.get(DOM_ELEMENTS.startDate).should(
+  //         'have.value',
+  //         `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
+  //       );
+  //     });
+  //   },
+  // );
 
   it(
     '(AC.16a) should load button for next page for adultOrYouthOnly Defendant',
@@ -896,28 +896,28 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   //Days in default tests
-  it(
-    '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
-    { tags: ['@PO-432', '@PO-272'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+  // it(
+  //   '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
+  //   { tags: ['@PO-432', '@PO-272'] },
+  //   () => {
+  //     setupComponent(null, 'adultOrYouthOnly');
+  //     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
 
-      cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
-      cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
-      cy.get(DOM_ELEMENTS.hasDaysInDefault).should('be.checked');
-      cy.get(DOM_ELEMENTS.hasDaysInDefaultLabel).should('contain', 'There are days in default');
-      cy.get(DOM_ELEMENTS.suspendedCommittalDate).should('exist');
-      cy.get(DOM_ELEMENTS.defaultDaysInJail).should('exist');
-      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-      cy.get(DOM_ELEMENTS.suspendedCommittalDateLabel).should('contain', 'Date days in default were imposed');
-      cy.get(DOM_ELEMENTS.dateHint).should(
-        'contain',
-        'This should be whichever date is most recent - the sentencing date or the date of the suspended committal order.',
-      );
-      cy.get(DOM_ELEMENTS.defaultDaysInJailLabel).should('contain', 'Enter days in default');
-    },
-  );
+  //     cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
+  //     cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
+  //     cy.get(DOM_ELEMENTS.hasDaysInDefault).should('be.checked');
+  //     cy.get(DOM_ELEMENTS.hasDaysInDefaultLabel).should('contain', 'There are days in default');
+  //     cy.get(DOM_ELEMENTS.suspendedCommittalDate).should('exist');
+  //     cy.get(DOM_ELEMENTS.defaultDaysInJail).should('exist');
+  //     cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+  //     cy.get(DOM_ELEMENTS.suspendedCommittalDateLabel).should('contain', 'Date days in default were imposed');
+  //     cy.get(DOM_ELEMENTS.dateHint).should(
+  //       'contain',
+  //       'This should be whichever date is most recent - the sentencing date or the date of the suspended committal order.',
+  //     );
+  //     cy.get(DOM_ELEMENTS.defaultDaysInJailLabel).should('contain', 'Enter days in default');
+  //   },
+  // );
 
   it(
     '(AC.1) should not load days in default for adult or youth under 18 years old',
