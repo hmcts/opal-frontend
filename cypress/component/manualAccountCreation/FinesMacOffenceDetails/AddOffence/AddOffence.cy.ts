@@ -467,7 +467,6 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      cy.wait(2000);
       cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
       cy.get(DOM_ELEMENTS.datePickerButton).click();
       cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
