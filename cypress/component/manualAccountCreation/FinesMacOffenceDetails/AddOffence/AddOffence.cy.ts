@@ -461,7 +461,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  /**  it(
+  it(
     '(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
@@ -478,7 +478,7 @@ describe('FinesMacAddOffenceComponent', () => {
         `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
       );
     },
-  ); */
+  );
 
   it(
     '(AC.6, AC.8) should allow form submission with multiple impositions',
