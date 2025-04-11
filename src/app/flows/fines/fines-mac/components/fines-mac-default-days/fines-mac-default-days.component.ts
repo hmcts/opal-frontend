@@ -12,7 +12,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
-import { DateService } from '@hmcts/opal-frontend-common/services';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

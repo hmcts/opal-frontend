@@ -33,9 +33,10 @@ import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '..
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
-import { DateService, PermissionsService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/interfaces';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -52,7 +53,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
-import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators';
+import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',

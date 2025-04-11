@@ -4,7 +4,7 @@ import {
   MojTimelineItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-timeline';
 import { IFinesMacAccountTimelineData } from '../../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 
 @Component({

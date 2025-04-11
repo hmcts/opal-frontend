@@ -26,11 +26,9 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import {
-  alphabeticalTextValidator,
-  optionalMaxLengthValidator,
-  specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/validators';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',

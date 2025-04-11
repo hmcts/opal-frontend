@@ -22,10 +22,11 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
-import { UtilsService, DateService } from '@hmcts/opal-frontend-common/services';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 
 describe('FinesMacReviewAccountComponent', () => {

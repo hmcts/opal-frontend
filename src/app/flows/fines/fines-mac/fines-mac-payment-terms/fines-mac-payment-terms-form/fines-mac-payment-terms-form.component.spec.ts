@@ -12,10 +12,10 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { of } from 'rxjs';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;

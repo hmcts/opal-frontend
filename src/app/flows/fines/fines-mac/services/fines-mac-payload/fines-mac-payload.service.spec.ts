@@ -12,9 +12,9 @@ import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-a
 import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offence-data-non-snake-case.mock';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/interfaces';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;

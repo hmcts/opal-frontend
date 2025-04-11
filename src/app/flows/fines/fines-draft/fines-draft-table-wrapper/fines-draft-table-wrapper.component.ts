@@ -11,7 +11,8 @@ import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-pagination';
-import { DaysAgoPipe, DateFormatPipe } from '@hmcts/opal-frontend-common/pipes';
+import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
+import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',

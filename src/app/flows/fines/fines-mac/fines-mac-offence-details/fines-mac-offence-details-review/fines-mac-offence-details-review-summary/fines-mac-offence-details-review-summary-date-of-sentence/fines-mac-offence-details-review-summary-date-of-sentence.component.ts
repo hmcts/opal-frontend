@@ -3,7 +3,7 @@ import {
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { DateService } from '@hmcts/opal-frontend-common/services';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-date-of-sentence',

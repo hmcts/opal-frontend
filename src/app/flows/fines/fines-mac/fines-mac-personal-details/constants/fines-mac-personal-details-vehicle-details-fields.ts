@@ -1,5 +1,5 @@
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 
 export const FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS: IAbstractFormArrayControlValidation[] = [
   {

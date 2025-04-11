@@ -19,7 +19,8 @@ import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
-import { UtilsService, DateService } from '@hmcts/opal-frontend-common/services';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;

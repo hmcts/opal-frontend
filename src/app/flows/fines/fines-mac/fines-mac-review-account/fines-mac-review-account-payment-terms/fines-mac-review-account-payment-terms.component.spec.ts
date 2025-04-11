@@ -3,11 +3,11 @@ import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-a
 import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-terms/mocks/fines-mac-payment-terms-state.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/interfaces';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;

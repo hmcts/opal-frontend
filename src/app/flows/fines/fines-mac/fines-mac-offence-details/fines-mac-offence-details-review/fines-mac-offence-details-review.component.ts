@@ -10,7 +10,7 @@ import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
-import { DateService } from '@hmcts/opal-frontend-common/services';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',

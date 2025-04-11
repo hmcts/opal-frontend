@@ -27,7 +27,8 @@ import { computed, inject } from '@angular/core';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
-import { DateService, UtilsService } from '@hmcts/opal-frontend-common/services';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },

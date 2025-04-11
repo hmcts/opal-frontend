@@ -8,10 +8,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
-import { SSO_ENDPOINTS, HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
-import { DateService, LaunchDarklyService, SessionService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { SessionService } from '@hmcts/opal-frontend-common/services/session-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +30,6 @@ import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-ins
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly launchDarklyService = inject(LaunchDarklyService);
   public readonly globalStore = inject(GlobalStore);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
@@ -38,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private timerSub!: Subscription;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly appInsightsService = inject(AppInsightsService);
+  private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly router = inject(Router);
 
   // Defined in seconds

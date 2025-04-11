@@ -10,7 +10,7 @@ import { provideClientHydration, withNoHttpTransferCache } from '@angular/platfo
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
-import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,9 +30,9 @@ export const appConfig: ApplicationConfig = {
         cookieName: 'XSRF-TOKEN',
       }),
     ),
-    provideAppInitializer(() => {
+    provideAppInitializer(async () => {
       const appInitializerService = inject(AppInitializerService);
-      return appInitializerService.initializeApp();
+      appInitializerService.initializeApp();
     }),
   ],
 };

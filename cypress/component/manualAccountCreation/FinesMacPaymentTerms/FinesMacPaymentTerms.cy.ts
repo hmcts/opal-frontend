@@ -11,9 +11,9 @@ import {
 import { DOM_ELEMENTS } from './constants/fines_mac_payment_terms_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { PermissionsService } from '@hmcts/opal-frontend-common/services';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { PAYMENT_TERMS_SESSION_USER_STATE_MOCK } from './mocks/fines-payment-terms-session-user-mock';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);

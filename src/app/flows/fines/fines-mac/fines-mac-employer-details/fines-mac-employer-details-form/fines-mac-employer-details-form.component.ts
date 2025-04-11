@@ -20,12 +20,10 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import {
-  optionalEmailAddressValidator,
-  optionalMaxLengthValidator,
-  optionalPhoneNumberValidator,
-  specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/validators';
+import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
+import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',

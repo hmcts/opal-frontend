@@ -3,8 +3,8 @@ import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-m
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
@@ -12,8 +12,8 @@ import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-pa
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 

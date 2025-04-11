@@ -50,8 +50,9 @@ import {
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { futureDateValidator, optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
+import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',

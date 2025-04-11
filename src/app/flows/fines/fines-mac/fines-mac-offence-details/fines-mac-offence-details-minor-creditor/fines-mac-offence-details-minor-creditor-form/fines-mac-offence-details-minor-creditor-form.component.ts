@@ -27,11 +27,9 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import {
-  alphabeticalTextValidator,
-  numericalTextValidator,
-  specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/validators';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
+import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',

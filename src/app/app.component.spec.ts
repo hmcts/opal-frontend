@@ -12,12 +12,12 @@ import {
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/types';
-import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/interfaces';
-import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/constants';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/mocks';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

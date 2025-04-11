@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RedirectCommand, UrlTree } from '@angular/router';
-import { handleObservableResult } from '@hmcts/opal-frontend-common/guards';
+import { handleObservableResult } from '@hmcts/opal-frontend-common/guards/helpers';
 import { Observable } from 'rxjs';
 
 export type GuardReturnType = boolean | UrlTree | RedirectCommand;

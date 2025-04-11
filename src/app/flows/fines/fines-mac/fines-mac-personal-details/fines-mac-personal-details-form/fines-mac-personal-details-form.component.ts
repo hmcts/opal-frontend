@@ -32,15 +32,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
-import { DateService } from '@hmcts/opal-frontend-common/services';
-import {
-  alphabeticalTextValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  optionalMaxLengthValidator,
-  optionalValidDateValidator,
-  specialCharactersValidator,
-} from '@hmcts/opal-frontend-common/validators';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
+import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';

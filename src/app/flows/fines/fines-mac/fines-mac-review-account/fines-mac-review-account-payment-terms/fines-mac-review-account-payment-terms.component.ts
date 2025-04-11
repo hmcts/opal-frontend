@@ -18,9 +18,10 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-permission-values.constant';
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
-import { DateService, PermissionsService } from '@hmcts/opal-frontend-common/services';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores';
-import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/interfaces';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { ISessionUserStateRole } from '@hmcts/opal-frontend-common//services/session-service/interfaces';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',

@@ -1,4 +1,4 @@
-import { ISessionUserState } from '@hmcts/opal-frontend-common/interfaces';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 
 export const CAV_DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
   user_id: 'gl.testUser',

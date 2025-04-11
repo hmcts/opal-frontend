@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES } from './constants/fines-mac-offence-details-routing-titles.constant';
-import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers';
-import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 export const routing: Routes = [
   {

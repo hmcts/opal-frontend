@@ -24,8 +24,10 @@ import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-status
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
-import { DateService, TransformationService } from '@hmcts/opal-frontend-common/services';
-import { ISessionUserState, ITransformItem } from '@hmcts/opal-frontend-common/interfaces';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 
 @Injectable({
   providedIn: 'root',

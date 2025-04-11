@@ -5,8 +5,9 @@ import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/r
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
 import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
-import { authGuard, canDeactivateGuard } from '@hmcts/opal-frontend-common/guards';
-import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 
 export const routing: Routes = [
   {

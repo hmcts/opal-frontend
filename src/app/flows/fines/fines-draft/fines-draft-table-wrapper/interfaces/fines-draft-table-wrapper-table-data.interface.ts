@@ -1,7 +1,7 @@
 import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
-import { SortableValues } from '@hmcts/opal-frontend-common/types';
+import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 
-export interface IFinesDraftTableWrapperTableData extends IAbstractTableData<SortableValues> {
+export interface IFinesDraftTableWrapperTableData extends IAbstractTableData<SortableValuesType> {
   Account: string;
   'Defendant id': number;
   Defendant: string;

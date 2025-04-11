@@ -1,4 +1,4 @@
-import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/interfaces';
+import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/interfaces';
 
 export interface IFinesMacOffenceDetailsRoutingPaths extends IChildRoutingPaths {
   children: {

@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
-import { routePermissionsGuard, authGuard } from '@hmcts/opal-frontend-common/guards';
-import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { IFinesDraftCheckAndManageRoutingPermissions } from './interfaces/fines-draft-check-and-manage-routing-permissions.interface';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PERMISSIONS } from './constants/fines-draft-check-and-manage-routing-permissions.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from './constants/fines-draft-check-and-manage-routing-paths.constant';
