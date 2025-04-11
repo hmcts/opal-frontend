@@ -20,11 +20,11 @@
       "enabled": false
     },
     "launch-darkly": {
-      "enabled": true,
-      "stream": true
+      "enabled": false,
+      "stream": false
     },
     "app-insights": {
-      "enabled": true
+      "enabled": false
     }
   },
   "session": {
@@ -46,7 +46,7 @@
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",
-      "app-insights-connection-string": "InstrumentationKey=95778809-169a-413e-a613-a49138ab81b6;IngestionEndpoint=https://uksouth-0.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/;ApplicationId=ce3d4581-7658-48ac-94f4-5029368a83e8"
+      "app-insights-connection-string": "supersecret"
     }
   },
   "expiry": {
