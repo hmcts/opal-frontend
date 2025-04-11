@@ -427,7 +427,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     const age = 17;
     finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
     cy.get('.moj-ticket-panel').should('exist');
-    cy.get('app-moj-ticket-panel').find('strong').should('contain.text', age);
+    cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
     cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Youth');
   });
   it('(AC.3) should display age panel when entering a valid age for adult', { tags: ['@PO-272', '@PO-502'] }, () => {
@@ -435,7 +435,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     const age = 18;
     finesMacState.personalDetails.formData.fm_personal_details_dob = calculateDOB(age);
     cy.get('.moj-ticket-panel').should('exist');
-    cy.get('app-moj-ticket-panel').find('strong').should('contain.text', age);
+    cy.get('opal-lib-moj-ticket-panel').find('strong').should('contain.text', age);
     cy.get('.moj-ticket-panel').find('p').should('contain.text', 'Adult');
   });
 

@@ -1,5 +1,5 @@
-import { IAbstractSortState } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
-import { SortDirectionType } from '@components/abstract/abstract-sortable-table/types/abstract-sortable-table.type';
+import { IAbstractSortState } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/interfaces';
+import { SortDirectionType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 
 export interface IFinesDraftTableWrapperTableSort extends IAbstractSortState {
   Account: SortDirectionType;

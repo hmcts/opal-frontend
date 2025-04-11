@@ -6,10 +6,10 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { runFinesMacEmptyFlowGuardWithContext } from '../helpers/run-fines-mac-empty-flow-guard-with-context';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
-import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
 
 describe('finesMacFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;

@@ -1,17 +1,20 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { LaunchDarklyService } from '@services/launch-darkly/launch-darkly.service';
-import { SessionService } from '@services/session-service/session.service';
-import { DateService } from '@services/date-service/date.service';
 import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
-import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
-import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
-import { GlobalStore } from './stores/global/global.store';
-import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
-import { AppInsightsService } from '@services/app-insights/app-insights.service';
+import {
+  MojHeaderComponent,
+  MojHeaderNavigationItemComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-header';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
+import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { SessionService } from '@hmcts/opal-frontend-common/services/session-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +30,6 @@ import { AppInsightsService } from '@services/app-insights/app-insights.service'
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly launchDarklyService = inject(LaunchDarklyService);
   public readonly globalStore = inject(GlobalStore);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
@@ -38,12 +40,16 @@ export class AppComponent implements OnInit, OnDestroy {
   private timerSub!: Subscription;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly appInsightsService = inject(AppInsightsService);
+  private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly router = inject(Router);
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
   public thresholdInMinutes!: number;
   public showExpiredWarning = false;
+
+  protected readonly headerLinks = HEADER_LINKS;
+  protected readonly footerLinks = FOOTER_LINKS;
 
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize

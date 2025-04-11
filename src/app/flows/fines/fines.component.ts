@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GlobalStore } from 'src/app/stores/global/global.store';
 import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 @Component({
   selector: 'app-fines',

@@ -1,7 +1,7 @@
 import { FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION as FM_PAYMENT_TERMS_INSTALMENT_AMOUNT_CONTROLS } from './fines-mac-payment-terms-instalments-only-control-validation';
 import { Validators } from '@angular/forms';
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { twoDecimalPlacesValidator } from '@validators/two-decimal-places/two-decimal-places.validator';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { twoDecimalPlacesValidator } from '@hmcts/opal-frontend-common/validators/two-decimal-places';
 
 export const FINES_MAC_PAYMENT_TERMS_LUMP_SUM_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {

@@ -6,11 +6,11 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-
 import { FinesMacOffenceDetailsReviewSummaryComponent } from './fines-mac-offence-details-review-summary/fines-mac-offence-details-review-summary.component';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { CommonModule } from '@angular/common';
-import { DateService } from '@services/date-service/date.service';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',

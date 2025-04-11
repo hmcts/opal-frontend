@@ -71,7 +71,7 @@ Then('I do not see a back button or back link', () => {
 });
 
 Then('I see {string} below the {string} header', (defendantType: string, accountType: string) => {
-  cy.contains('fieldset', accountType).find('app-govuk-radio').invoke('text').should('contains', defendantType);
+  cy.contains('fieldset', accountType).find('opal-lib-govuk-radio').invoke('text').should('contains', defendantType);
 });
 Then('I see {string} is {string}', (accountList: string, value: string) => {
   cy.contains('dt', accountList).siblings().invoke('text').should('contains', value);
@@ -105,7 +105,7 @@ Then('I do not see {string} text on the page', (text: string) => {
 });
 
 When('I see {string} text under the {string} field', (text: string, inputField: string) => {
-  cy.get('app-govuk-text-area[labeltext="' + inputField + '"]')
+  cy.get('opal-lib-govuk-text-area[labeltext="' + inputField + '"]')
     .find('textarea')
     .prev()
     .invoke('text')
@@ -113,5 +113,5 @@ When('I see {string} text under the {string} field', (text: string, inputField: 
 });
 
 Then('I see green banner on the top of the page', () => {
-  cy.get('app-moj-banner').should('exist');
+  cy.get('opal-lib-moj-banner').should('exist');
 });

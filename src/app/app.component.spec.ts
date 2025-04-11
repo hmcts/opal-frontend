@@ -1,21 +1,23 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { DateService } from '@services/date-service/date.service';
 import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { DateTime } from 'luxon';
-import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
-import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
-import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
-import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
+import {
+  MojHeaderComponent,
+  MojHeaderNavigationItemComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-header';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
-import { GlobalStore } from './stores/global/global.store';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
-import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

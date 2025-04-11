@@ -23,9 +23,9 @@ import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-term
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../../fines-mac-payment-terms/mocks/fines-mac-payment-terms-form.mock';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;

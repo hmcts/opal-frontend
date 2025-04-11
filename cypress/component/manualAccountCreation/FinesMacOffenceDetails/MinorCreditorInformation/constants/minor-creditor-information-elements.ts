@@ -1,5 +1,5 @@
 export const DOM_ELEMENTS = {
-  app: 'app-govuk-summary-card-list',
+  app: 'opal-lib-govuk-summary-card-list',
 
   name: 'h2.govuk-summary-card__title',
   address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',

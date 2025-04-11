@@ -1,8 +1,8 @@
 import { mount } from 'cypress/angular';
 import { DashboardComponent } from 'src/app/pages/dashboard/dashboard.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { CAM_CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cam_cav_dashboard_user_state_mock';
 import { DOM_ELEMENTS } from './constants/dashboard_elements';
 import { CAV_DASHBOARD_USER_STATE_MOCK } from './mocks/cav_dashboard_user_state_mock';

@@ -10,8 +10,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
   let component: FinesMacAccountCommentsNotesComponent;
@@ -25,14 +23,6 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesComponent],
       providers: [
-        {
-          provide: DateService,
-          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
-        },
-        {
-          provide: UtilsService,
-          useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),
-        },
         {
           provide: ActivatedRoute,
           useValue: {

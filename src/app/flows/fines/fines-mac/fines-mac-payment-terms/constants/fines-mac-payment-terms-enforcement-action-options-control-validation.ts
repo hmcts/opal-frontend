@@ -1,8 +1,8 @@
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { pastDateValidator } from '@validators/past-date/past-date.validator';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { pastDateValidator } from '@hmcts/opal-frontend-common/validators/past-date';
 import { IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-enforcment-actions-options-control-validation.interface';
 import { Validators } from '@angular/forms';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 
 export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation =
   {

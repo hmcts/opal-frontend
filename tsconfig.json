@@ -22,23 +22,11 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
-      "@components/govuk/*": ["./src/app/components/govuk/*.ts"],
-      "@components/moj/*": ["./src/app/components/moj/*.ts"],
-      "@components/alphagov/*": ["./src/app/components/alphagov/*.ts"],
-      "@components/abstract/*": ["./src/app/components/abstract/*.ts"],
-      "@stores/*": ["./src/app/stores/*.ts"],
-      "@services/*": ["./src/app/services/*.ts"],
+      "@constants/*": ["./src/app/constants/*.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
-      "@interfaces/*": ["./src/app/interfaces/*.ts"],
-      "@guards/*": ["./src/app/guards/*.ts"],
-      "@interceptors/*": ["./src/app/interceptors/*.ts"],
-      "@pipes/*": ["./src/app/pipes/*.ts"],
-      "@resolvers/*": ["./src/app/resolvers/*.ts"],
-      "@routing/*": ["./src/app/routing/*.ts"],
       "@routing/pages/*": ["./src/app/pages/routing/*.ts"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],
-      "@routing/flows/*": ["./src/app/flows/routing/*.ts"],
-      "@validators/*": ["./src/app/validators/*.ts"]
+      "@routing/flows/*": ["./src/app/flows/routing/*.ts"]
     },
     "allowSyntheticDefaultImports": true
   },

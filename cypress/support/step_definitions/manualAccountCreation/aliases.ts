@@ -13,7 +13,7 @@ Example usage: I set the "Alias 1", "First name" to "John"
 Then('I set the {string}, {string} to {string}', (alias: string, aliasField: string, aliasValue: string) => {
   cy.contains('legend', alias)
     .siblings()
-    .contains('app-govuk-text-input', aliasField)
+    .contains('opal-lib-govuk-text-input', aliasField)
     .find('input')
     .clear()
     .type(aliasValue, { delay: 0 });
@@ -27,7 +27,7 @@ Example usage: I see "Alias 1", "First name" is set to "John"
 Then('I see {string}, {string} is set to {string}', (alias: string, aliasField: string, aliasValue: string) => {
   cy.contains('legend', alias)
     .siblings()
-    .contains('app-govuk-text-input', aliasField)
+    .contains('opal-lib-govuk-text-input', aliasField)
     .find('input')
     .should('have.value', aliasValue);
 });
@@ -38,7 +38,7 @@ Then(
   (linkName: string, alias: string, aliasField: string) => {
     cy.contains('legend', alias)
       .siblings()
-      .contains('app-govuk-text-input', aliasField)
+      .contains('opal-lib-govuk-text-input', aliasField)
       .parent()
       .next()
       .contains('a', linkName);
@@ -54,7 +54,7 @@ Then(
   (linkName: string, alias: string, aliasField: string) => {
     cy.contains('legend', alias)
       .siblings()
-      .contains('app-govuk-text-input', aliasField)
+      .contains('opal-lib-govuk-text-input', aliasField)
       .parent()
       .next()
       .contains('a', linkName)
@@ -66,7 +66,7 @@ Then(
 //   (removeLink: string, aliasField: string, lastNameAlias: string) => {
 //     cy.contains('a', removeLink)
 //       .siblings()
-//       .contains('app-govuk-text-input', aliasField)
+//       .contains('opal-lib-govuk-text-input', aliasField)
 //       .parent()
 //       .next()
 //       .contains('a', lastNameAlias)
@@ -83,10 +83,10 @@ Then('I see {string} button below the {string} link', (addAnotherAliasButton: st
 });
 
 When('I remove the {string}, {string} to be cleared', (alias: string, aliasField: string) => {
-  cy.contains('legend', alias).siblings().contains('app-govuk-text-input', aliasField).find('input').clear();
+  cy.contains('legend', alias).siblings().contains('opal-lib-govuk-text-input', aliasField).find('input').clear();
 });
 Then('I see the text box {string} below the sub heading {string}', (aliasField: string, alias: string) => {
-  cy.contains('legend', alias).siblings().contains('app-govuk-text-input', aliasField).should('exist', aliasField);
+  cy.contains('legend', alias).siblings().contains('opal-lib-govuk-text-input', aliasField).should('exist', aliasField);
 });
 
 Then('I do not see {string} below the {string} checkbox', (aliasField: string, checkbox: string) => {
@@ -98,7 +98,7 @@ Then(
   (removeLink: string, alias: string, aliasField: string) => {
     cy.contains('legend', alias)
       .siblings()
-      .contains('app-govuk-text-input', aliasField)
+      .contains('opal-lib-govuk-text-input', aliasField)
       .parent()
       .next()
       .contains('a', removeLink)
@@ -109,14 +109,14 @@ Then('I see {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).should('exist', buttonName);
 });
 When('I select add another alias', () => {
-  cy.get('[id*="_details_add_alias-conditional"] > app-govuk-button > button').click();
+  cy.get('[id*="_details_add_alias-conditional"] > opal-lib-govuk-button > button').click();
 });
 
 Then('I see the {string} sub heading in aliases', (aliasText: string) => {
   cy.contains('[id*="_details_add_alias-conditional"] > fieldset > legend', aliasText).invoke('text');
 });
 Then('I see {string} link below the {string} field', (removeLink: string, lastName: string) => {
-  cy.get('[id*="_details_add_alias-conditional"]> fieldset >app-govuk-text-input > div >h1 ')
+  cy.get('[id*="_details_add_alias-conditional"]> fieldset >lib-govuk-text-input > div >h1 ')
     .find('[id*="_details_add_alias-conditional"] >div > a')
     .invoke('text')
     .should('contains', removeLink);

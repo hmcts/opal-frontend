@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Signal, signal, Output } from '@angular/core';
-import { MojSortableTableHeaderComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-header/moj-sortable-table-header.component';
-import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row-data/moj-sortable-table-row-data.component';
-import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row.component';
-import { MojSortableTableComponent } from '@components/moj/moj-sortable-table/moj-sortable-table.component';
+import {
+  MojSortableTableHeaderComponent,
+  MojSortableTableRowDataComponent,
+  MojSortableTableRowComponent,
+  MojSortableTableComponent,
+  MojSortableTableStatusComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
-import { AbstractSortableTablePaginationComponent } from '@components/abstract/abstract-sortable-table-pagination/abstract-sortable-table-pagination.component';
-import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/govuk-pagination.component';
-import { MojSortableTableStatusComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-status/moj-sortable-table-status.component';
-import { DaysAgoPipe } from '@pipes/days-ago/days-ago.pipe';
-import { DateFormatPipe } from '@pipes/date-format/date-format.pipe';
+import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
+import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-pagination';
+import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
+import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -21,8 +23,8 @@ import { DateFormatPipe } from '@pipes/date-format/date-format.pipe';
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
-    GovukPaginationComponent,
     MojSortableTableStatusComponent,
+    GovukPaginationComponent,
     DaysAgoPipe,
     DateFormatPipe,
   ],

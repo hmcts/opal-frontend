@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list
+<opal-lib-govuk-summary-card-list
   [cardTitle]="name"
   [contentHidden]="isDetailsHidden"
   summaryCardListId="minor-creditor-information"
@@ -6,20 +6,20 @@
   @if (showActions) {
     <ng-container actions>
       <li
-        app-govuk-summary-card-action
+        opal-lib-govuk-summary-card-action
         [actionText]="isDetailsHidden ? 'Show details' : 'Hide details'"
         actionRoute="showHideDetails"
         (clickEvent)="summaryListActionClick($event)"
       ></li>
       <li
-        app-govuk-summary-card-action
+        opal-lib-govuk-summary-card-action
         class="govuk-!-padding-left-2"
         actionText="Change"
         actionRoute="change"
         (clickEvent)="summaryListActionClick($event)"
       ></li>
       <li
-        app-govuk-summary-card-action
+        opal-lib-govuk-summary-card-action
         actionText="Remove"
         actionRoute="remove"
         (clickEvent)="summaryListActionClick($event)"
@@ -27,9 +27,9 @@
     </ng-container>
   }
   <ng-container content>
-    <app-govuk-summary-list summaryListId="minorCreditor">
+    <opal-lib-govuk-summary-list summaryListId="minorCreditor">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="minorCreditorAddress"
         summaryListRowId="minorCreditor"
@@ -39,7 +39,7 @@
       </div>
 
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="minorCreditorPaymentMethod"
         summaryListRowId="minorCreditor"
@@ -49,7 +49,7 @@
       </div>
       @if (sortCode || accountNumber || paymentReference || accountName) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorAccountName"
           summaryListRowId="minorCreditor"
@@ -58,7 +58,7 @@
           <ng-container value> {{ accountName }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorSortCode"
           summaryListRowId="minorCreditor"
@@ -67,7 +67,7 @@
           <ng-container value> {{ sortCode }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorAccountNumber"
           summaryListRowId="minorCreditor"
@@ -76,7 +76,7 @@
           <ng-container value> {{ accountNumber }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorPaymentReference"
           summaryListRowId="minorCreditor"
@@ -85,6 +85,6 @@
           <ng-container value> {{ paymentReference }}</ng-container>
         </div>
       }
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

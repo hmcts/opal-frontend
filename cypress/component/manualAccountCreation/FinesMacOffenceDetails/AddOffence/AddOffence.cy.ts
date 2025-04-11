@@ -10,10 +10,10 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { ADD_OFFENCE_OFFENCE_MOCK } from './mocks/add-offence-draft-state-mock';
 import { provideHttpClient } from '@angular/common/http';
-import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
-import { UtilsService } from '@services/utils/utils.service';
 import { impositionResultCodelist } from './constants/fines_mac_offence_details_results_codes';
 import { IMPOSITION_MOCK_1, IMPOSITION_MOCK_2, IMPOSITION_MOCK_3 } from './mocks/add-offence-imposition-mock';
 

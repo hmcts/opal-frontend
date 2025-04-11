@@ -1,7 +1,10 @@
 <h1 class="govuk-heading-l">Parent or guardian details</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-  <app-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="First names"
     inputId="fm_parent_guardian_details_forenames"
     inputName="fm_parent_guardian_details_forenames"
@@ -10,8 +13,8 @@
     hintText="Include their middle names"
     [control]="form.controls['fm_parent_guardian_details_forenames']"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_forenames']"
-  ></app-govuk-text-input>
-  <app-govuk-text-input
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
     labelText="Last name"
     inputId="fm_parent_guardian_details_surname"
     inputName="fm_parent_guardian_details_surname"
@@ -19,26 +22,26 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_parent_guardian_details_surname']"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_surname']"
-  ></app-govuk-text-input>
-  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
-      app-govuk-checkboxes-item
+      opal-lib-govuk-checkboxes-item
       labelText="Add aliases"
       inputId="fm_parent_guardian_details_add_alias"
       inputName="fm_parent_guardian_details_add_alias"
       [control]="form.get('fm_parent_guardian_details_add_alias')"
     ></div>
-  </app-govuk-checkboxes>
+  </opal-lib-govuk-checkboxes>
   @if (form.get('fm_parent_guardian_details_add_alias')?.value === true) {
     <div
-      app-govuk-checkboxes-conditional
+      opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_parent_guardian_details_add_alias"
       formArrayName="fm_parent_guardian_details_aliases"
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-          <app-govuk-text-input
+          <opal-lib-govuk-text-input
             labelText="First names"
             [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
@@ -51,8 +54,8 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_forenames'].controlName]"
-          ></app-govuk-text-input>
-          <app-govuk-text-input
+          ></opal-lib-govuk-text-input>
+          <opal-lib-govuk-text-input
             labelText="Last name"
             [inputId]="aliasControl['fm_parent_guardian_details_alias_surname'].inputId"
             [inputName]="aliasControl['fm_parent_guardian_details_alias_surname'].inputName"
@@ -65,7 +68,7 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_surname'].controlName]"
-          ></app-govuk-text-input>
+          ></opal-lib-govuk-text-input>
         </fieldset>
       }
 
@@ -82,17 +85,17 @@
         </div>
       }
       @if (aliasControls.length < 5) {
-        <app-govuk-button
+        <opal-lib-govuk-button
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
           (buttonClickEvent)="addAlias(aliasControls.length, 'fm_parent_guardian_details_aliases')"
-          >Add another alias</app-govuk-button
+          >Add another alias</opal-lib-govuk-button
         >
       }
     </div>
   }
-  <app-moj-date-picker
+  <opal-lib-moj-date-picker
     labelText="Date of birth"
     labelClasses="govuk-label--s"
     inputId="fm_parent_guardian_details_dob"
@@ -103,18 +106,18 @@
     [maxDate]="yesterday"
     (dateChange)="setInputValue($event, 'fm_parent_guardian_details_dob')"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_dob']"
-  ></app-moj-date-picker>
+  ></opal-lib-moj-date-picker>
   @if (age && ageLabel) {
-    <app-moj-ticket-panel
+    <opal-lib-moj-ticket-panel
       componentClasses="govuk-!-width-one-third"
       sectionClasses="moj-ticket-panel__content--blue"
       [alert]="true"
     >
       <strong>Age: {{ age }}</strong>
       <p>{{ ageLabel }}</p>
-    </app-moj-ticket-panel>
+    </opal-lib-moj-ticket-panel>
   }
-  <app-govuk-text-input
+  <opal-lib-govuk-text-input
     labelText="National Insurance number"
     inputId="fm_parent_guardian_details_national_insurance_number"
     inputName="fm_parent_guardian_details_national_insurance_number"
@@ -122,46 +125,46 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_parent_guardian_details_national_insurance_number']"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_national_insurance_number']"
-  ></app-govuk-text-input>
+  ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian address</legend>
-    <app-govuk-text-input
+    <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_parent_guardian_details_address_line_1"
       inputName="fm_parent_guardian_details_address_line_1"
       [control]="form.controls['fm_parent_guardian_details_address_line_1']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_1']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_parent_guardian_details_address_line_2"
       inputName="fm_parent_guardian_details_address_line_2"
       [control]="form.controls['fm_parent_guardian_details_address_line_2']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_2']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Address line 3"
       inputId="fm_parent_guardian_details_address_line_3"
       inputName="fm_parent_guardian_details_address_line_3"
       inputClasses="govuk-input--width-20"
       [control]="form.controls['fm_parent_guardian_details_address_line_3']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_3']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Postcode"
       inputId="fm_parent_guardian_details_post_code"
       inputName="fm_parent_guardian_details_post_code"
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_parent_guardian_details_post_code']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_post_code']"
-    ></app-govuk-text-input>
+    ></opal-lib-govuk-text-input>
   </fieldset>
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian vehicle details</legend>
-    <app-govuk-text-input
+    <opal-lib-govuk-text-input
       labelText="Make and model"
       inputId="fm_parent_guardian_details_vehicle_make"
       inputName="fm_parent_guardian_details_vehicle_make"
@@ -169,8 +172,8 @@
       labelClasses="govuk-label--s"
       [control]="form.controls['fm_parent_guardian_details_vehicle_make']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_vehicle_make']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
       labelText="Registration number"
       inputId="fm_parent_guardian_details_vehicle_registration_mark"
       inputName="fm_parent_guardian_details_vehicle_registration_mark"
@@ -178,26 +181,26 @@
       labelClasses="govuk-label--s"
       [control]="form.controls['fm_parent_guardian_details_vehicle_registration_mark']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_vehicle_registration_mark']"
-    ></app-govuk-text-input>
+    ></opal-lib-govuk-text-input>
   </fieldset>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-      <app-govuk-button
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
+      <opal-lib-govuk-button
         buttonId="submitForm"
         type="submit"
         buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
       >
         Add contact details
-      </app-govuk-button>
+      </opal-lib-govuk-button>
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

@@ -6,8 +6,6 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from '../mocks/fines-mac-account-comments-notes-form.mock';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { of } from 'rxjs';
 
@@ -28,14 +26,6 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
           useValue: {
             parent: of('manual-account-creation'),
           },
-        },
-        {
-          provide: DateService,
-          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
-        },
-        {
-          provide: UtilsService,
-          useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),
         },
       ],
     }).compileComponents();

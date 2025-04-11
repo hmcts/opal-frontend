@@ -1,8 +1,8 @@
-<app-govuk-summary-card-list summaryCardListId="account-details">
+<opal-lib-govuk-summary-card-list summaryCardListId="account-details">
   <ng-container content>
-    <app-govuk-summary-list summaryListId="accountDetails">
+    <opal-lib-govuk-summary-list summaryListId="accountDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="accountDetails"
         summaryListRowId="businessUnit"
@@ -11,7 +11,7 @@
         <ng-container value>{{ businessUnit.business_unit_name }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="accountDetails"
         summaryListRowId="accountType"
@@ -20,7 +20,7 @@
         <ng-container value>{{ accountType }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="accountDetails"
         summaryListRowId="defendantType"
@@ -30,7 +30,7 @@
       </div>
       @if (businessUnit.welsh_language) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="accountDetails"
           summaryListRowId="documentLanguage"
@@ -40,7 +40,7 @@
         </div>
 
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="accountDetails"
           summaryListRowId="courtHearingLanguage"
@@ -49,6 +49,6 @@
           <ng-container value>{{ courtHearingLanguage }}</ng-container>
         </div>
       }
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

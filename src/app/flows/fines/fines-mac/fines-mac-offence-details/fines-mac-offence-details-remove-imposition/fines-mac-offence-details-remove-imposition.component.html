@@ -3,20 +3,20 @@
     {{ getImpositionToBeRemoved() }}
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
-      <app-govuk-table>
+      <opal-lib-govuk-table>
         <ng-container head>
-          <th app-govuk-table-heading>Imposition</th>
-          <th app-govuk-table-heading>Creditor</th>
-          <th app-govuk-table-heading>Amount imposed</th>
-          <th app-govuk-table-heading>Amount paid</th>
-          <th app-govuk-table-heading>Balance remaining</th>
+          <th opal-lib-govuk-table-heading>Imposition</th>
+          <th opal-lib-govuk-table-heading>Creditor</th>
+          <th opal-lib-govuk-table-heading>Amount imposed</th>
+          <th opal-lib-govuk-table-heading>Amount paid</th>
+          <th opal-lib-govuk-table-heading>Balance remaining</th>
         </ng-container>
         <ng-container body>
-          <tr app-govuk-table-body-row>
-            <td app-govuk-table-body-row-data id="imposition">
+          <tr opal-lib-govuk-table-body-row>
+            <td opal-lib-govuk-table-body-row-data id="imposition">
               {{ imposition }}
             </td>
-            <td app-govuk-table-body-row-data id="creditor">
+            <td opal-lib-govuk-table-body-row-data id="creditor">
               @if (creditor === 'major') {
                 {{ majorCreditor }}
               } @else if (creditor === 'minor') {
@@ -25,35 +25,35 @@
                 {{ defaultCreditor }}
               }
             </td>
-            <td app-govuk-table-body-row-data id="amountImposed">
+            <td opal-lib-govuk-table-body-row-data id="amountImposed">
               {{ amountImposedString }}
             </td>
-            <td app-govuk-table-body-row-data id="amountPaid">
+            <td opal-lib-govuk-table-body-row-data id="amountPaid">
               {{ amountPaidString }}
             </td>
-            <td app-govuk-table-body-row-data id="balanceRemaining">
+            <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
               {{ balanceString }}
             </td>
           </tr>
         </ng-container>
-      </app-govuk-table>
+      </opal-lib-govuk-table>
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <app-govuk-button
+          <opal-lib-govuk-button
             buttonId="confirmDeletion"
             buttonClasses="govuk-button--warning"
             (buttonClickEvent)="confirmRemoval()"
           >
             Yes - remove imposition
-          </app-govuk-button>
+          </opal-lib-govuk-button>
         </div>
       </div>
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <app-govuk-cancel-link
+          <opal-lib-govuk-cancel-link
             (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
             cancelLinkText="No - cancel"
-          ></app-govuk-cancel-link>
+          ></opal-lib-govuk-cancel-link>
         </div>
       </div>
     </div>

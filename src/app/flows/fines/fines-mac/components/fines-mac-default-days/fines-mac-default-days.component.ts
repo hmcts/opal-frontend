@@ -9,10 +9,10 @@ import {
   inject,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { GovukDetailsComponent } from '@components/govuk/govuk-details/govuk-details.component';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { DateService } from '@services/date-service/date.service';
+import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
+import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

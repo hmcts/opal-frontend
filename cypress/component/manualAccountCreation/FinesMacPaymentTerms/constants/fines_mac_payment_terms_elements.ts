@@ -91,7 +91,7 @@ export const DOM_ELEMENTS = {
   reasonAccountIsOnNoenf: 'textarea[id="fm_payment_terms_reason_account_is_on_noenf"]',
 
   //calculate days in default
-  panel: 'app-moj-ticket-panel',
+  panel: 'opal-lib-moj-ticket-panel',
   years: 'input[id="years"]',
   months: 'input[id="months"]',
   days: 'input[id="days"]',

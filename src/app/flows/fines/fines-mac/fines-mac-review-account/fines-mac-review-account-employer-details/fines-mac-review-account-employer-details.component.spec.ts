@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-review-account-employer-details.component';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../fines-mac-employer-details/mocks/fines-mac-employer-details-state.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
   let component: FinesMacReviewAccountEmployerDetailsComponent;

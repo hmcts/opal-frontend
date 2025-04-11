@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesMacStore } from './fines-mac.store';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
+
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/constants/fines-mac-employer-details-form';
 import { FINES_MAC_ACCOUNT_DETAILS_FORM } from '../fines-mac-account-details/constants/fines-mac-account-details-form';
 import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants/fines-mac-contact-details-form';
@@ -28,6 +27,8 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-deta
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;

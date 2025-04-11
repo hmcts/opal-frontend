@@ -7,7 +7,10 @@
         finesMacOffenceDetailsStore.offenceCodeMessage() && finesMacOffenceDetailsStore.offenceCodeMessage().length > 0
       ) {
         <div class="govuk-grid-column-full">
-          <app-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></app-moj-banner>
+          <opal-lib-moj-banner
+            type="success"
+            [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"
+          ></opal-lib-moj-banner>
         </div>
       }
     </div>
@@ -77,9 +80,9 @@
     @if (!isReadOnly) {
       <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: true }"></ng-container>
       <div class="govuk-grid-column-full">
-        <app-govuk-cancel-link
+        <opal-lib-govuk-cancel-link
           (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-        ></app-govuk-cancel-link>
+        ></opal-lib-govuk-cancel-link>
       </div>
     }
   </div>
@@ -87,32 +90,32 @@
 
 <ng-template #offenceTemplate>
   <div class="govuk-grid-column-full">
-    <app-govuk-button
+    <opal-lib-govuk-button
       buttonId="addAnOffence"
       buttonClasses="govuk-button--secondary"
       (buttonClickEvent)="addAnotherOffence()"
     >
       Add another offence
-    </app-govuk-button>
+    </opal-lib-govuk-button>
   </div>
 </ng-template>
 
 <ng-template #returnToAccountDetails let-subNavigationButton>
   <div class="govuk-grid-column-full">
-    <app-govuk-button
+    <opal-lib-govuk-button
       buttonId="returnToCreateAccount"
       (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
     >
       Return to account details
-    </app-govuk-button>
+    </opal-lib-govuk-button>
     @if (subNavigationButton && checkSubNavigationButton()) {
-      <app-govuk-button
+      <opal-lib-govuk-button
         buttonId="submitForm"
         buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.paymentTerms, true)"
       >
         Add payment terms
-      </app-govuk-button>
+      </opal-lib-govuk-button>
     }
   </div>
 </ng-template>

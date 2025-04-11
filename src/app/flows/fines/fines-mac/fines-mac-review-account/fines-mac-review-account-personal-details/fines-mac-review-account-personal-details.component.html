@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list
+<opal-lib-govuk-summary-card-list
   [cardTitle]="showVehicleDetails ? 'Personal details' : 'Defendant details'"
   [summaryCardListId]="showVehicleDetails ? 'personal-details' : 'defendant-details'"
 >
@@ -10,9 +10,9 @@
     </ng-container>
   }
   <ng-container content>
-    <app-govuk-summary-list summaryListId="personalDetails">
+    <opal-lib-govuk-summary-list summaryListId="personalDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="title"
@@ -21,7 +21,7 @@
         <ng-container value>{{ personalDetails.fm_personal_details_title }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="forenames"
@@ -30,7 +30,7 @@
         <ng-container value>{{ personalDetails.fm_personal_details_forenames }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="surname"
@@ -39,7 +39,7 @@
         <ng-container value>{{ personalDetails.fm_personal_details_surname }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="aliases"
@@ -57,7 +57,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="dob"
@@ -72,7 +72,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="nationalInsuranceNumber"
@@ -87,7 +87,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="personalDetails"
         summaryListRowId="address"
@@ -102,7 +102,7 @@
       </div>
       @if (showVehicleDetails) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="personalDetails"
           summaryListRowId="vehicleMakeOrModel"
@@ -117,7 +117,7 @@
           </ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="personalDetails"
           summaryListRowId="registrationNumber"
@@ -132,6 +132,6 @@
           </ng-container>
         </div>
       }
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

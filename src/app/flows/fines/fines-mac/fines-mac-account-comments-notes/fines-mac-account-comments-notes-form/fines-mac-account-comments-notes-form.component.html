@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-l">Account comments and notes</h1>
 <form (submit)="handleFormSubmit($event)">
-  <app-govuk-text-area
+  <opal-lib-govuk-text-area
     labelText="Add comment"
     labelClasses="govuk-label--s"
     hintText="For example, a warning, which will appear on the account summary"
@@ -10,9 +10,9 @@
     [characterCountEnabled]="true"
     [maxCharacterLimit]="30"
     [rows]="1"
-  ></app-govuk-text-area>
+  ></opal-lib-govuk-text-area>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-  <app-govuk-text-area
+  <opal-lib-govuk-text-area
     labelText="Add account notes"
     labelClasses="govuk-label--s"
     hintText="You can view notes in account history after the account is published"
@@ -21,26 +21,26 @@
     [control]="form.controls['fm_account_comments_notes_notes']"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="1000"
-  ></app-govuk-text-area>
+  ></opal-lib-govuk-text-area>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
       @if (mandatorySectionsCompleted && defendantType && finesMacNestedRoutes[defendantType].accountCommentsNotes) {
-        <app-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].accountCommentsNotes?.buttonText }}
-        </app-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

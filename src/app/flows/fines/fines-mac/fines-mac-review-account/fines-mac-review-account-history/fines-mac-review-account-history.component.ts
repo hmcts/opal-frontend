@@ -1,9 +1,11 @@
 import { Component, inject, Input } from '@angular/core';
-import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
-import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
+import {
+  MojTimelineComponent,
+  MojTimelineItemComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-timeline';
 import { IFinesMacAccountTimelineData } from '../../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
-import { DateService } from '@services/date-service/date.service';
-import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 
 @Component({
   selector: 'app-fines-mac-review-account-history',

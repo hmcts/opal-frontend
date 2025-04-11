@@ -4,11 +4,11 @@ import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-pare
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from '../mocks/fines-mac-parent-guardian-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { DateService } from '@services/date-service/date.service';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { UtilsService } from '@services/utils/utils.service';
 import { of } from 'rxjs';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;

@@ -2,22 +2,26 @@ import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angu
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { IFinesMacOffenceDetailsImpositionsState } from '../../interfaces/fines-mac-offence-details-impositions-state.interface';
 import {
   IFinesMacOffenceDetailsReviewSummaryImpositionTableData,
   IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData,
   IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData,
 } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
-import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
-import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
-import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
-import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
+import {
+  GovukTableBodyRowDataComponent,
+  GovukTableBodyRowComponent,
+  GovukTableHeadingComponent,
+  GovukTableComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import {
+  GovukSummaryListRowComponent,
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { CommonModule } from '@angular/common';
-import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
-import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',

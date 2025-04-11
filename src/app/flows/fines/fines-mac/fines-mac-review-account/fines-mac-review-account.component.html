@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-full">
-  <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   @if (!isReadOnly) {
     <h1 class="govuk-heading-l">Check account details</h1>
   } @else {
@@ -79,8 +79,8 @@
   @if (!isReadOnly) {
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <app-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
-          >Submit for review</app-govuk-button
+        <opal-lib-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
+          >Submit for review</opal-lib-govuk-button
         >
       </div>
     </div>
