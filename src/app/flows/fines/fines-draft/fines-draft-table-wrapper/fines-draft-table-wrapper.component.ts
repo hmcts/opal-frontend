@@ -8,6 +8,9 @@ import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { AbstractSortableTablePaginationComponent } from '@components/abstract/abstract-sortable-table-pagination/abstract-sortable-table-pagination.component';
 import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/govuk-pagination.component';
+import { MojSortableTableStatusComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-status/moj-sortable-table-status.component';
+import { DaysAgoPipe } from '@pipes/days-ago/days-ago.pipe';
+import { DateFormatPipe } from '@pipes/date-format/date-format.pipe';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -19,6 +22,9 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
     GovukPaginationComponent,
+    MojSortableTableStatusComponent,
+    DaysAgoPipe,
+    DateFormatPipe,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +42,9 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   }
   @Input({ required: true }) public isApprovedTab: boolean = false;
   @Output() public linkClicked = new EventEmitter<number>();
+
+  protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
+  protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
   /**
    * Handles the click event on a defendant.
