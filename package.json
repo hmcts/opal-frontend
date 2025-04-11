@@ -64,7 +64,7 @@
     "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common",
     "@hmcts/properties-volume": "^1.1.0",
     "@microsoft/applicationinsights-web": "^3.3.5",
-    "@ministryofjustice/frontend": "^4.0.0",
+    "@ministryofjustice/frontend": "^5.0.0",
     "@ngrx/signals": "^19.0.0",
     "accessible-autocomplete": "^3.0.0",
     "applicationinsights": "~2.9.6",
