@@ -49,20 +49,16 @@ describe('authGuard', () => {
   });
 
   it('should return true if the user is logged in ', fakeAsync(async () => {
-    mockIsLoggedInTrue();
+    mockAuthService.checkAuthenticated.and.returnValue(of(true));
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
     expect(authenticated).toBeTruthy();
   }));
 
   it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
-    globalStore.setSsoEnabled(true);
+    globalStore.setSsoEnabled(false);
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
     expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
     expect(authenticated).toBeFalsy();
   }));
-
-  const mockIsLoggedInTrue = () => {
-    mockAuthService.checkAuthenticated.and.returnValue(of(true));
-  };
 });
