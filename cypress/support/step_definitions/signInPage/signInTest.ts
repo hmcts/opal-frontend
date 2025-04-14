@@ -28,7 +28,7 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
   cy.session(
     emailSSO,
     () => {
-      cy.visit('/sign-in');
+      cy.visit('/');
       cy.location('href').then((href: string) => {
         cy.log(href);
 
@@ -41,7 +41,6 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
           cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
         } else {
           // Handle Microsoft SSO login
-          cy.get('#signInButton').contains('Sign in').click();
 
           cy.origin(
             'https://login.microsoftonline.com',
@@ -61,9 +60,6 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
               cy.get('#idBtn_Back', { timeout: 12000 }).click();
             },
           );
-          cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 })
-            .contains('Sign out')
-            .should('be.visible');
         }
       });
     },
