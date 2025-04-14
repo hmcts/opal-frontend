@@ -3,7 +3,18 @@ import 'cypress-axe';
 
 Then('I check accessibility', () => {
   cy.injectAxe();
-  cy.checkA11y();
+  cy.checkA11y(undefined, undefined, (violations) => {
+    if (violations.length) {
+      violations.forEach((violation) => {
+        console.log(`${violation.id} (${violation.impact}): ${violation.description}`)
+        violation.nodes.forEach((node) => {
+          console.log('Element:', node.target)
+          console.log('Failure Summary:', node.failureSummary)
+        })
+      })
+      assert.fail(`${violations.length} accessibility violation(s) detected.`)
+    }
+  })
 });
 //Only use for accessibility testing
 Then('I navigate to {string} URL', (url: string) => {
