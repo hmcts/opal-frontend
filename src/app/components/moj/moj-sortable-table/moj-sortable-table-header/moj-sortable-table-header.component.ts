@@ -9,7 +9,6 @@ import { Component, HostBinding, ChangeDetectionStrategy, Output, EventEmitter, 
 export class MojSortableTableHeaderComponent {
   @Input() columnKey!: string;
   @Input() sortDirection: 'ascending' | 'descending' | 'none' = 'none';
-  @Input() titleInput: string = 'Sort';
   @Input() dataIndex: number = 0;
 
   @Output() sortChange = new EventEmitter<{ key: string; sortType: 'ascending' | 'descending' }>();

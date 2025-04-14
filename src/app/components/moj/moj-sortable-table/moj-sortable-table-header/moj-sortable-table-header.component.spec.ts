@@ -26,11 +26,6 @@ describe('MojSortableTableHeaderComponent', () => {
     expect(component.columnKey).toBe('test-column');
   });
 
-  it('should set titleInput correctly', () => {
-    component.titleInput = 'test-title';
-    expect(component.titleInput).toBe('test-title');
-  });
-
   it('should set dataIndex correctly', () => {
     component.dataIndex = 2;
     expect(component.dataIndex).toBe(2);
@@ -126,12 +121,10 @@ describe('MojSortableTableHeaderComponent', () => {
     expect(component.toggleSort).toHaveBeenCalled();
   });
 
-  it('should set title and data-index attributes on button', () => {
-    component.titleInput = 'button';
+  it('should set data-index attributes on button', () => {
     component.dataIndex = 2;
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('button'));
-    expect(button.attributes['title']).toBe('button');
     expect(button.attributes['data-index']).toBe('2');
   });
 });

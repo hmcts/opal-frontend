@@ -171,4 +171,32 @@ describe('AbstractSortableTableComponent', () => {
     expect(component.abstractTableDataSignal()).toEqual(sortedData);
     expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortStateSignal());
   });
+
+  it('should set sorted column signals when a sorted column is found', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
+    component.sortStateSignal.set(structuredClone(ABSTRACT_EXISTING_SORT_STATE_MOCK));
+
+    component['getSortedColumn']();
+
+    expect(component.sortedColumnTitleSignal()).toBe('imposition');
+    expect(component.sortedColumnDirectionSignal()).toBe('ascending');
+  });
+
+  it('should set sorted column signals to empty when no sorted column is found', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
+    component.sortStateSignal.set({});
+
+    component['getSortedColumn']();
+
+    expect(component.sortedColumnTitleSignal()).toBe('');
+    expect(component.sortedColumnDirectionSignal()).toBe('none');
+  });
 });
