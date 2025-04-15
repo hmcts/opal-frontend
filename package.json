@@ -32,7 +32,7 @@
     "test:functional:cucumber:jsonReport": "yarn cucumber-merge-messages functional-output/prod/cucumber/*.ndjson > functional-output/prod/cucumber/functional-report.ndjson",
     "test:functional:cucumber:htmlReport": "yarn cucumber-html-formatter < functional-output/prod/cucumber/functional-report.ndjson > functional-output/prod/cucumber/functional-report.html",
     "test:dev:functional:combine:reports": "jrm functional-output/dev/test-result.xml \"functional-output/dev/*.xml\"",
-    "test:fullfunctional": "yarn test:opalComponent ; yarn test:functional;",
+    "test:fullfunctional": "yarn test:opalComponent ; yarn test:functional",
     "dev:ssr": "ng run opal-frontend:serve-ssr",
     "serve:ssr": "node dist/opal-frontend/server/main.js",
     "build:ssr": "ng build --configuration production && ng run opal-frontend:server",
