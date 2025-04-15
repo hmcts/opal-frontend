@@ -106,8 +106,8 @@ Then('I see the status of {string} is {string}', (linkText: string, status: stri
 });
 
 Then('{string} is verified as disabled', (link: string) => {
-  cy.contains('app-govuk-task-list-item', link).should('be.visible', link);
-  cy.contains('app-govuk-task-list-item > li', link).invoke('is', 'disabled');
+  cy.contains('opal-lib-govuk-task-list-item', link).should('be.visible', link);
+  cy.contains('opal-lib-govuk-task-list-item > li', link).invoke('is', 'disabled');
 });
 Then('{string} is verified as enabled', (link: string) => {
   cy.contains('a', link).invoke('is', 'enabled');

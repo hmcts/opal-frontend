@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FINES_MINOR_CREDITOR_MOCK } from './mocks/minor_creditor_information_mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { provideHttpClient } from '@angular/common/http';
-import { UtilsService } from '@services/utils/utils.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 import { DOM_ELEMENTS } from './constants/minor-creditor-information-elements';
 

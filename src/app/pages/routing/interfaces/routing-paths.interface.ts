@@ -1,10 +1,7 @@
-import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-paths.interface';
+import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/interfaces';
 
 export interface IPagesRoutingPaths extends IChildRoutingPaths {
   children: {
-    accessDenied: string;
-    signIn: string;
-    signInStub: string;
     dashboard: string;
   };
 }

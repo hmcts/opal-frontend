@@ -2,18 +2,18 @@
   <h1 class="govuk-heading-l">Are you sure you want to delete this account?</h1>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-button
+      <opal-lib-govuk-button
         buttonId="confirmDeletion"
         buttonClasses="govuk-button--warning"
         (buttonClickEvent)="handleRoute(finesMacRoutes.children.createAccount)"
       >
         Yes - delete
-      </app-govuk-button>
+      </opal-lib-govuk-button>
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         cancelLinkText="No - cancel"
         (linkClickEvent)="
           handleRoute(
@@ -22,7 +22,7 @@
               : finesMacRoutes.children.accountDetails
           )
         "
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </div>

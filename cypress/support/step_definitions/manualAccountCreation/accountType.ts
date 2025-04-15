@@ -31,7 +31,7 @@ Then('I see the {string} radio button below the defendant type help text', (radi
 });
 
 Then('I see the error message {string} above the business unit field', (errorMessage: string) => {
-  cy.get('app-alphagov-accessible-autocomplete[labeltext="Business unit"]')
+  cy.get('opal-lib-alphagov-accessible-autocomplete[labeltext="Business unit"]')
     .parent()
     .prev()
     .should('contain', errorMessage);

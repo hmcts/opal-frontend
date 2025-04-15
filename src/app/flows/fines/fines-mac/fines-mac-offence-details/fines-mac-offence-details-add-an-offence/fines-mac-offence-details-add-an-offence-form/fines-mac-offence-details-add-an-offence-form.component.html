@@ -1,15 +1,18 @@
 @if (finesMacOffenceDetailsStore.minorCreditorAdded()) {
-  <app-moj-banner type="success" text="Minor creditor added"></app-moj-banner>
+  <opal-lib-moj-banner type="success" text="Minor creditor added"></opal-lib-moj-banner>
 }
 @if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
-  <app-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></app-moj-banner>
+  <opal-lib-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></opal-lib-moj-banner>
 }
 <h1 class="govuk-heading-l">Add an offence</h1>
-<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
-    <app-moj-date-picker
+    <opal-lib-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
       inputId="fm_offence_details_date_of_sentence"
@@ -20,8 +23,8 @@
       [control]="form.controls['fm_offence_details_date_of_sentence']"
       [errors]="formControlErrorMessages['fm_offence_details_date_of_sentence']"
       (dateChange)="setInputValue($event, 'fm_offence_details_date_of_sentence')"
-    ></app-moj-date-picker>
-    <app-govuk-text-input
+    ></opal-lib-moj-date-picker>
+    <opal-lib-govuk-text-input
       labelText="Offence code"
       labelClasses="govuk-fieldset__legend--s"
       inputId="fm_offence_details_offence_cjs_code"
@@ -39,7 +42,7 @@
         tabindex="0"
       >
         search the offence list
-      </a></app-govuk-text-input
+      </a></opal-lib-govuk-text-input
     >
     @if (offenceCode$ | async; as offenceCode) {
       @if (selectedOffenceConfirmation) {
@@ -60,10 +63,10 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
     @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
-      <app-moj-ticket-panel>
+      <opal-lib-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
           <div class="govuk-grid-column-one-half">
-            <app-alphagov-accessible-autocomplete
+            <opal-lib-alphagov-accessible-autocomplete
               [control]="
                 form.get([
                   'fm_offence_details_impositions',
@@ -79,10 +82,10 @@
               [errors]="formControlErrorMessages[formArrayControl['fm_offence_details_result_id'].controlName]"
               [showAllValues]="true"
             >
-            </app-alphagov-accessible-autocomplete>
+            </opal-lib-alphagov-accessible-autocomplete>
           </div>
           <div class="govuk-grid-column-one-quarter">
-            <app-govuk-text-input-prefix-suffix
+            <opal-lib-govuk-text-input-prefix-suffix
               labelText="Amount imposed"
               labelClasses="govuk-fieldset__legend--s"
               [inputId]="formArrayControl['fm_offence_details_amount_imposed'].inputId"
@@ -98,10 +101,10 @@
                 ])
               "
               [errors]="formControlErrorMessages[formArrayControl['fm_offence_details_amount_imposed'].controlName]"
-            ></app-govuk-text-input-prefix-suffix>
+            ></opal-lib-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-grid-column-one-quarter">
-            <app-govuk-text-input-prefix-suffix
+            <opal-lib-govuk-text-input-prefix-suffix
               labelText="Amount paid"
               labelClasses="govuk-fieldset__legend--s"
               [inputId]="formArrayControl['fm_offence_details_amount_paid'].inputId"
@@ -117,7 +120,7 @@
                 ])
               "
               [errors]="formControlErrorMessages[formArrayControl['fm_offence_details_amount_paid'].controlName]"
-            ></app-govuk-text-input-prefix-suffix>
+            ></opal-lib-govuk-text-input-prefix-suffix>
           </div>
         </div>
         @if (
@@ -140,7 +143,7 @@
                   ></app-fines-mac-offence-details-minor-creditor-information>
                 </fieldset>
               } @else {
-                <app-govuk-radio
+                <opal-lib-govuk-radio
                   [fieldSetId]="formArrayControl['fm_offence_details_creditor'].inputId"
                   legendText="Add creditor"
                   legendClasses="govuk-fieldset__legend--s"
@@ -148,7 +151,7 @@
                 >
                   @for (creditorOption of creditorOptions; track creditorOption.key) {
                     <div
-                      app-govuk-radios-item
+                      opal-lib-govuk-radios-item
                       [labelText]="creditorOption.value"
                       [inputId]="creditorOption.key + '_' + rowIndex"
                       [inputName]="formArrayControl['fm_offence_details_creditor'].controlName"
@@ -161,7 +164,7 @@
                         ])
                       "
                     ></div>
-                    <div app-govuk-radios-conditional conditionalId="creditor">
+                    <div opal-lib-govuk-radios-conditional conditionalId="creditor">
                       @if (creditorOption.key === 'major') {
                         @if (
                           form.get([
@@ -170,7 +173,7 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'major'
                         ) {
-                          <app-alphagov-accessible-autocomplete
+                          <opal-lib-alphagov-accessible-autocomplete
                             [control]="
                               form.get([
                                 'fm_offence_details_impositions',
@@ -190,7 +193,7 @@
                               ]
                             "
                           >
-                          </app-alphagov-accessible-autocomplete>
+                          </opal-lib-alphagov-accessible-autocomplete>
                         }
                       }
                       @if (creditorOption.key === 'minor') {
@@ -213,7 +216,7 @@
                       }
                     </div>
                   }
-                </app-govuk-radio>
+                </opal-lib-govuk-radio>
               }
             </div>
           </div>
@@ -230,40 +233,40 @@
             </a>
           </div>
         }
-      </app-moj-ticket-panel>
+      </opal-lib-moj-ticket-panel>
     }
-    <app-govuk-button
+    <opal-lib-govuk-button
       buttonId="addImposition"
       buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
       type="button"
       (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, 'fm_offence_details_impositions')"
-      >Add another imposition</app-govuk-button
+      >Add another imposition</opal-lib-govuk-button
     >
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitForm" type="submit"> Review offence </app-govuk-button>
+      <opal-lib-govuk-button buttonId="submitForm" type="submit"> Review offence </opal-lib-govuk-button>
       @if (defendantType && finesMacNestedRoutes[defendantType].addAnotherOffence) {
-        <app-govuk-button
+        <opal-lib-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
           {{ finesMacNestedRoutes[defendantType].addAnotherOffence?.buttonText }}
-        </app-govuk-button>
+        </opal-lib-govuk-button>
       }
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link (linkClickEvent)="cancelLink()"></app-govuk-cancel-link>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="cancelLink()"></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>
 
 <ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
-  <app-moj-ticket-panel
+  <opal-lib-moj-ticket-panel
     [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
     [alert]="true"
   >
@@ -274,5 +277,5 @@
     } @else {
       <p>Enter a valid offence code</p>
     }
-  </app-moj-ticket-panel>
+  </opal-lib-moj-ticket-panel>
 </ng-template>

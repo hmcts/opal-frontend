@@ -1,16 +1,16 @@
-<app-govuk-table>
+<opal-lib-govuk-table>
   <ng-container head>
-    <th app-govuk-table-heading>Imposition</th>
-    <th app-govuk-table-heading>Creditor</th>
-    <th app-govuk-table-heading>Amount imposed</th>
-    <th app-govuk-table-heading>Amount paid</th>
-    <th app-govuk-table-heading>Balance remaining</th>
+    <th opal-lib-govuk-table-heading>Imposition</th>
+    <th opal-lib-govuk-table-heading>Creditor</th>
+    <th opal-lib-govuk-table-heading>Amount imposed</th>
+    <th opal-lib-govuk-table-heading>Amount paid</th>
+    <th opal-lib-govuk-table-heading>Balance remaining</th>
   </ng-container>
   <ng-container body>
     @for (imposition of impositionTableData; track imposition.impositionId) {
-      <tr app-govuk-table-body-row>
-        <td app-govuk-table-body-row-data id="imposition">{{ imposition.impositionDescription }}</td>
-        <td app-govuk-table-body-row-data id="creditor">
+      <tr opal-lib-govuk-table-body-row>
+        <td opal-lib-govuk-table-body-row-data id="imposition">{{ imposition.impositionDescription }}</td>
+        <td opal-lib-govuk-table-body-row-data id="creditor">
           @if (imposition.minorCreditor) {
             {{ imposition.creditor }}
             <br />
@@ -28,21 +28,21 @@
             {{ imposition.creditor }}
           }
         </td>
-        <td app-govuk-table-body-row-data id="amountImposed">{{ imposition.amountImposed }}</td>
-        <td app-govuk-table-body-row-data id="amountPaid">{{ imposition.amountPaid }}</td>
-        <td app-govuk-table-body-row-data id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
+        <td opal-lib-govuk-table-body-row-data id="amountImposed">{{ imposition.amountImposed }}</td>
+        <td opal-lib-govuk-table-body-row-data id="amountPaid">{{ imposition.amountPaid }}</td>
+        <td opal-lib-govuk-table-body-row-data id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
       </tr>
     }
-    <tr app-govuk-table-body-row bodyRowClasses="govuk-light-grey-background-color">
-      <th app-govuk-table-body-row-data colspan="2" id="totalsHeading"><strong>Totals</strong></th>
-      <th app-govuk-table-body-row-data id="totalAmountImposed">{{ impositionsTotalsData.totalAmountImposed }}</th>
-      <th app-govuk-table-body-row-data id="totalAmountPaid">{{ impositionsTotalsData.totalAmountPaid }}</th>
-      <th app-govuk-table-body-row-data id="totalBalanceRemaining">
+    <tr opal-lib-govuk-table-body-row bodyRowClasses="govuk-light-grey-background-color">
+      <th opal-lib-govuk-table-body-row-data colspan="2" id="totalsHeading"><strong>Totals</strong></th>
+      <th opal-lib-govuk-table-body-row-data id="totalAmountImposed">{{ impositionsTotalsData.totalAmountImposed }}</th>
+      <th opal-lib-govuk-table-body-row-data id="totalAmountPaid">{{ impositionsTotalsData.totalAmountPaid }}</th>
+      <th opal-lib-govuk-table-body-row-data id="totalBalanceRemaining">
         {{ impositionsTotalsData.totalBalanceRemaining }}
       </th>
     </tr>
   </ng-container>
-</app-govuk-table>
+</opal-lib-govuk-table>
 
 <ng-template #minorCreditor let-impositionId="impositionId" let-show="show" let-minorCreditor="minorCreditor">
   @let linkLabel = show ? 'Hide details' : 'Show details';
@@ -54,9 +54,9 @@
     >{{ linkLabel }}</a
   >
   @if (show) {
-    <app-govuk-summary-list classes="govuk-summary-list--no-border" summaryListId="minorCreditorDataTable">
+    <opal-lib-govuk-summary-list classes="govuk-summary-list--no-border" summaryListId="minorCreditorDataTable">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="minorCreditorDataTable"
         summaryListRowId="address"
@@ -74,7 +74,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="minorCreditorDataTable"
         summaryListRowId="paymentMethod"
@@ -90,7 +90,7 @@
       </div>
       @if (minorCreditor.paymentMethod) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorDataTable"
           summaryListRowId="nameOnAccount"
@@ -105,7 +105,7 @@
           </ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorDataTable"
           summaryListRowId="sortCode"
@@ -120,7 +120,7 @@
           </ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorDataTable"
           summaryListRowId="accountNumber"
@@ -135,7 +135,7 @@
           </ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="minorCreditorDataTable"
           summaryListRowId="paymentReference"
@@ -150,7 +150,7 @@
           </ng-container>
         </div>
       }
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   }
 </ng-template>
 

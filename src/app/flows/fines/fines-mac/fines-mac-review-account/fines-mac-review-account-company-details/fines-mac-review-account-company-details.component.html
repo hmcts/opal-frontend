@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list cardTitle="Company details" summaryCardListId="company-details">
+<opal-lib-govuk-summary-card-list cardTitle="Company details" summaryCardListId="company-details">
   @if (!isReadOnly) {
     <ng-container actions>
       <app-fines-mac-review-account-change-link
@@ -7,9 +7,9 @@
     </ng-container>
   }
   <ng-container content>
-    <app-govuk-summary-list summaryListId="companyDetails">
+    <opal-lib-govuk-summary-list summaryListId="companyDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="companyDetails"
         summaryListRowId="companyName"
@@ -19,7 +19,7 @@
       </div>
 
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="companyDetails"
         summaryListRowId="aliases"
@@ -37,7 +37,7 @@
         </ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="companyDetails"
         summaryListRowId="address"
@@ -50,6 +50,6 @@
           }
         </ng-container>
       </div>
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>
