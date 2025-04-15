@@ -28,6 +28,9 @@ import {
   ExpiryConfiguration,
   SessionStorageConfiguration,
   RoutesConfiguration,
+  ProxyConfiguration,
+  SessionConfiguration,
+  SsoConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
 import { Helmet } from '@hmcts/opal-frontend-common-node/helmet';
@@ -48,6 +51,24 @@ const sessionStorageConfig: SessionStorageConfiguration = {
   domain: config.get('session.domain'),
   redisEnabled: config.get('features.redis.enabled'),
   redisConnectionString: config.get('secrets.opal.redis-connection-string'),
+};
+
+const proxyConfiguration: ProxyConfiguration = {
+  opalApiProxyUrl: '/api',
+  opalFinesServiceProxyUrl: '/opal-fines-service',
+};
+
+const sessionConfiguration: SessionConfiguration = {
+  sessionExpiryUrl: '/session/expiry',
+  userStateUrl: '/session/user-state',
+};
+
+const ssoConfiguration: SsoConfiguration = {
+  login: '/sso/login',
+  loginCallback: '/sso/login-callback',
+  logout: '/sso/logout',
+  logoutCallback: '/sso/logout-callback',
+  authenticated: '/sso/authenticated',
 };
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -92,7 +113,15 @@ export function app(): express.Express {
     prefix: config.get('session.prefix'),
   };
 
-  new Routes().enableFor(server, config.get('features.sso.enabled'), sessionExpiryConfiguration, routesConfiguration);
+  new Routes().enableFor(
+    server,
+    config.get('features.sso.enabled'),
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    sessionConfiguration,
+    proxyConfiguration,
+    ssoConfiguration,
+  );
 
   const launchDarkly = new LaunchDarkly().enableFor(
     config.get('features.launch-darkly.enabled'),
