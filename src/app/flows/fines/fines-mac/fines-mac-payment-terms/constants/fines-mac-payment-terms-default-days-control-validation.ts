@@ -1,8 +1,8 @@
 import { Validators } from '@angular/forms';
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { dateOfBirthValidator } from '@validators/date-of-birth/date-of-birth.validator';
-import { numericalTextValidator } from '@validators/numerical-only/numerical-only.validator';
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
+import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
+import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {

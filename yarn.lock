@@ -3643,37 +3643,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.1
-  resolution: "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=5f4224&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common@npm:^0.0.7":
+  version: 0.0.7
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.7"
   dependencies:
-    "@hmcts/info-provider": "npm:^1.2.3"
-    "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
-    "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/properties-volume": "npm:^1.2.0"
-    applicationinsights: "npm:^3.6.0"
-    axios: "npm:^1.8.4"
-    body-parser: "npm:^2.2.0"
-    config: "npm:^3.3.12"
-    connect-redis: "npm:^8.0.2"
-    cookie-parser: "npm:^1.4.7"
-    csrf-csrf: "npm:^3.1.0"
-    eslint: "npm:^9.23.0"
-    express: "npm:^5.1.0"
-    express-session: "npm:^1.18.1"
-    helmet: "npm:^8.1.0"
-    http-proxy-middleware: "npm:^3.0.3"
-    luxon: "npm:^3.6.0"
-    prettier: "npm:^3.5.3"
-    redis: "npm:^4.7.0"
-    session-file-store: "npm:^1.5.0"
-    typescript: "npm:^5.8.2"
-    xml2js: "npm:^0.6.2"
-  checksum: 10/7bd33a6196a83546cdff7f9e2c33fd91e139dc7162182156be125c30c15929f15561c20fae129ce82e6bdc2ea67fecc882986ca0fe9664df2c8ef0b5e3d304b9
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^18.2.0 || ^19.0.0
+    "@angular/core": ^18.2.0 || ^19.0.0
+  checksum: 10/391dcf2aa468ad432ba5363b54c8e60dfb3836cc78cdd9f84acbb253de70d8bf8adf0255bc666e53284604d2f0c4c2cbd29c81f6e3fcf2d82bf38506fd6a9888
   languageName: node
   linkType: hard
 
-"@hmcts/properties-volume@npm:^1.1.0, @hmcts/properties-volume@npm:^1.2.0":
+"@hmcts/properties-volume@npm:^1.1.0":
   version: 1.2.0
   resolution: "@hmcts/properties-volume@npm:1.2.0"
   dependencies:
@@ -14371,7 +14353,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common-node": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist"
+    "@hmcts/opal-frontend-common": "npm:^0.0.7"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"

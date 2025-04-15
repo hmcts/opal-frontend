@@ -4,8 +4,8 @@ import { FinesMacAccountDetailsComponent } from '../../../../src/app/flows/fines
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_check_account_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_check_account_details_elements';
-import { UtilsService } from '@services/utils/utils.service';
-import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_ayg_check_account_mock';
 import { FINES_AYPG_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_aypg_check_account_mock';

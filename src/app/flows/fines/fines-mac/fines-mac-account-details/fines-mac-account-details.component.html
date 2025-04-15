@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-two-thirds">
-  <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   @if (finesDraftStore.amend()) {
     <app-fines-mac-review-account-history
       [defendantName]="
@@ -14,9 +14,9 @@
   } @else {
     <h1 class="govuk-heading-l">Account details</h1>
   }
-  <app-govuk-summary-list summaryListId="accountDetails">
+  <opal-lib-govuk-summary-list summaryListId="accountDetails">
     <div
-      app-govuk-summary-list-row
+      opal-lib-govuk-summary-list-row
       class="govuk-summary-list__row govuk-summary-list__row--no-actions"
       summaryListId="accountDetails"
       summaryListRowId="businessUnit"
@@ -29,7 +29,7 @@
       </ng-container>
     </div>
     <div
-      app-govuk-summary-list-row
+      opal-lib-govuk-summary-list-row
       class="govuk-summary-list__row govuk-summary-list__row--no-actions"
       summaryListId="accountDetails"
       summaryListRowId="accountType"
@@ -40,7 +40,7 @@
       </ng-container>
     </div>
     <div
-      app-govuk-summary-list-row
+      opal-lib-govuk-summary-list-row
       class="govuk-summary-list__row govuk-summary-list__row--no-actions"
       summaryListId="accountDetails"
       summaryListRowId="defendantType"
@@ -52,7 +52,7 @@
     </div>
     @if (finesMacStore.businessUnit().welsh_language) {
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row"
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
@@ -66,7 +66,7 @@
         <ng-container action>Change</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row"
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
@@ -80,54 +80,54 @@
         <ng-container action>Change</ng-container>
       </div>
     }
-  </app-govuk-summary-list>
+  </opal-lib-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
   @switch (defendantType) {
     @case (defendantTypes['adultOrYouthOnly']) {
       <h2 class="govuk-heading-m">Defendant details</h2>
-      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <opal-lib-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
         <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
         <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
-      </app-govuk-task-list>
+      </opal-lib-govuk-task-list>
     }
     @case (defendantTypes['parentOrGuardianToPay']) {
       <h2 class="govuk-heading-m">Parent or guardian details</h2>
-      <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <opal-lib-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
         <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
         <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
-      </app-govuk-task-list>
+      </opal-lib-govuk-task-list>
       <h2 class="govuk-heading-m">Defendant details</h2>
-      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <opal-lib-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-      </app-govuk-task-list>
+      </opal-lib-govuk-task-list>
     }
     @case (defendantTypes['company']) {
       <h2 class="govuk-heading-m">Defendant details</h2>
-      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <opal-lib-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="companyDetails"></ng-container>
         <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
-      </app-govuk-task-list>
+      </opal-lib-govuk-task-list>
     }
   }
   <h2 class="govuk-heading-m">Offence and imposition details</h2>
-  <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
+  <opal-lib-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
     <ng-container *ngTemplateOutlet="offenceDetails"></ng-container>
     <ng-container *ngTemplateOutlet="paymentTerms"></ng-container>
-  </app-govuk-task-list>
+  </opal-lib-govuk-task-list>
   <h2 class="govuk-heading-m">Account comments and notes</h2>
-  <app-govuk-task-list taskListId="accountCommentsAndNotes" taskListClasses="govuk-!-margin-left-0 ">
+  <opal-lib-govuk-task-list taskListId="accountCommentsAndNotes" taskListClasses="govuk-!-margin-left-0 ">
     <ng-container *ngTemplateOutlet="accountCommentsAndNotes"></ng-container>
-  </app-govuk-task-list>
+  </opal-lib-govuk-task-list>
   @if (mandatorySectionsCompleted) {
     <h2 class="govuk-heading-m">Check and submit</h2>
-    <app-govuk-button
+    <opal-lib-govuk-button
       buttonId="checkAccountButton"
       buttonClasses="govuk-!-margin-bottom-0"
       (buttonClickEvent)="handleRoute(fineMacRoutes.children.reviewAccount)"
-      >Check account</app-govuk-button
+      >Check account</opal-lib-govuk-button
     >
   } @else {
     <h2 class="govuk-heading-m">Check and submit</h2>
@@ -146,7 +146,7 @@
 </div>
 
 <ng-template #statusTag let-status>
-  <app-govuk-tag
+  <opal-lib-govuk-tag
     [tagClasses]="
       status === finesMacStatus.PROVIDED
         ? 'govuk-tag'
@@ -156,12 +156,12 @@
     "
     [tagId]="status"
   >
-    {{ status }}</app-govuk-tag
+    {{ status }}</opal-lib-govuk-tag
   >
 </ng-template>
 
 <ng-template #contactDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="contactDetailsItem"
     taskListStatusId="contactDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link border-top_none"
@@ -182,11 +182,11 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.contactDetailsStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #employerDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="employerDetailsItem"
     taskListStatusId="employerDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link border-top_none"
@@ -207,11 +207,11 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.employerDetailsStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #companyDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="companyDetailsItem"
     taskListStatusId="companyDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link"
@@ -232,11 +232,11 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.companyDetailsStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #personalDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="personalDetailsItem"
     taskListStatusId="personalDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link"
@@ -257,12 +257,12 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.personalDetailsStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #courtDetails>
-  <app-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
-    <app-govuk-task-list-item
+  <opal-lib-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
+    <opal-lib-govuk-task-list-item
       taskListItemId="courtDetailsItem"
       taskListStatusId="courtDetailsStatus"
       taskListItemClasses="govuk-task-list_item--with-link"
@@ -283,12 +283,12 @@
           *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.courtDetailsStatus() }"
         ></ng-container>
       </ng-container>
-    </app-govuk-task-list-item>
-  </app-govuk-task-list>
+    </opal-lib-govuk-task-list-item>
+  </opal-lib-govuk-task-list>
 </ng-template>
 
 <ng-template #parentGuardianDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="parentOrGuardianDetailsItem"
     taskListStatusId="parentOrGuardianDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link"
@@ -309,11 +309,11 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.parentGuardianDetailsStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #offenceDetails>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="offenceDetailsItem"
     taskListStatusId="offenceDetailsStatus"
     taskListItemClasses="govuk-task-list_item--with-link"
@@ -340,11 +340,11 @@
         "
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #paymentTerms>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="paymentTermsItem"
     taskListStatusId="paymentTermsStatus"
     taskListItemClasses="govuk-task-list_item--with-link border-top_none"
@@ -355,7 +355,7 @@
     <ng-container status>
       <ng-container *ngTemplateOutlet="paymentTermsStatus"></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>
 
 <ng-template #paymentTermsLink>
@@ -385,7 +385,7 @@
 </ng-template>
 
 <ng-template #accountCommentsAndNotes>
-  <app-govuk-task-list-item
+  <opal-lib-govuk-task-list-item
     taskListItemId="accountCommentsAndNotesItem"
     taskListStatusId="accountCommentsAndNotesStatus"
     taskListItemClasses="govuk-task-list_item--with-link"
@@ -406,5 +406,5 @@
         *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.accountCommentsNotesStatus() }"
       ></ng-container>
     </ng-container>
-  </app-govuk-task-list-item>
+  </opal-lib-govuk-task-list-item>
 </ng-template>

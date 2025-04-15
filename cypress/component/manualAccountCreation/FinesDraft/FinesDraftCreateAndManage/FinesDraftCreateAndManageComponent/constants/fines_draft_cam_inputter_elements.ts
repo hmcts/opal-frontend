@@ -3,7 +3,7 @@ export const DOM_ELEMENTS = {
   heading: 'h2.govuk-heading-l',
   navigationLinks: 'a.moj-sub-navigation__link.cursor-pointer',
 
-  rejectedIcon: 'span[id = "inputter-rejected-tab-notifications"]',
+  rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
   satusHeading: 'h3.govuk-heading-m',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',

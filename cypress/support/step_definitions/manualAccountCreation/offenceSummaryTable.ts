@@ -7,7 +7,7 @@ Then('row number {int} should have the following data:', (rowNumber: number, dat
   const columnNames = expectedValues[0];
   const rowData = expectedValues[1];
 
-  cy.get('app-govuk-table').within(() => {
+  cy.get('opal-lib-govuk-table').within(() => {
     columnNames.forEach((columnName: string, colIndex: number) => {
       cy.get('th')
         .contains(columnName)

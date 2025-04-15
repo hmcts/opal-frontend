@@ -13,10 +13,10 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;

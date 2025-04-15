@@ -22,7 +22,7 @@ export const DOM_ELEMENTS = {
   submitButton: 'button[type = "submit"]',
 
   //ticket panel
-  ticketPanel: 'app-moj-ticket-panel',
+  ticketPanel: 'opal-lib-moj-ticket-panel',
   successPanel: 'section.moj-ticket-panel__content.moj-ticket-panel__content--blue',
   invalidPanel: 'section.moj-ticket-panel__content.moj-ticket-panel__content--orange',
 

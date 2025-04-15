@@ -1,5 +1,4 @@
-import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-paths.interface';
-import { IParentRoutingPaths } from '@routing/flows/interfaces/parent-routing-paths.interface';
+import { IChildRoutingPaths, IParentRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/interfaces';
 
 export interface IFinesRoutingPaths extends IParentRoutingPaths {
   children: {

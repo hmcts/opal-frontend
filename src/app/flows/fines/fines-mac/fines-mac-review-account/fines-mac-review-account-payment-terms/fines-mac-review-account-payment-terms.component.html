@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
+<opal-lib-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
   @if (!isReadOnly) {
     <ng-container actions>
       <app-fines-mac-review-account-change-link
@@ -7,10 +7,10 @@
     </ng-container>
   }
   <ng-container content>
-    <app-govuk-summary-list summaryListId="paymentTerms">
+    <opal-lib-govuk-summary-list summaryListId="paymentTerms">
       @if (paymentTermsState.fm_payment_terms_collection_order_date) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="hasCollectionOrder"
@@ -22,7 +22,7 @@
         </div>
         @if (paymentTermsState.fm_payment_terms_collection_order_made) {
           <div
-            app-govuk-summary-list-row
+            opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
             summaryListId="paymentTerms"
             summaryListRowId="collectionOrderDate"
@@ -33,7 +33,7 @@
         } @else {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
             <div
-              app-govuk-summary-list-row
+              opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
               summaryListId="paymentTerms"
               summaryListRowId="makeCollectionOrderToday"
@@ -47,7 +47,7 @@
         }
       }
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="paymentTerms"
         summaryListRowId="selectedPaymentTerms"
@@ -57,7 +57,7 @@
       </div>
       @if (paymentTerms === paymentTermsOptions.payInFull) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="payByDate"
@@ -68,7 +68,7 @@
       } @else {
         @if (paymentTerms === paymentTermsOptions.lumpSumPlusInstalments) {
           <div
-            app-govuk-summary-list-row
+            opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
             summaryListId="paymentTerms"
             summaryListRowId="lumpSum"
@@ -78,7 +78,7 @@
           </div>
         }
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="instalment"
@@ -87,7 +87,7 @@
           <ng-container value>£{{ paymentTermsState.fm_payment_terms_instalment_amount }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="frequency"
@@ -96,7 +96,7 @@
           <ng-container value>{{ frequency }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="startDate"
@@ -107,7 +107,7 @@
       }
       @if (defendantType !== 'company') {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="requestPaymentCard"
@@ -118,7 +118,7 @@
           }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="hasDaysInDefault"
@@ -128,7 +128,7 @@
         </div>
         @if (paymentTermsState.fm_payment_terms_has_days_in_default) {
           <div
-            app-govuk-summary-list-row
+            opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
             summaryListId="paymentTerms"
             summaryListRowId="daysInDefaultDate"
@@ -137,7 +137,7 @@
             <ng-container value>{{ daysInDefaultDate }}</ng-container>
           </div>
           <div
-            app-govuk-summary-list-row
+            opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"
             summaryListId="paymentTerms"
             summaryListRowId="daysInDefault"
@@ -151,7 +151,7 @@
         }
       }
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="paymentTerms"
         summaryListRowId="hasEnforcementActions"
@@ -169,7 +169,7 @@
         enforcementAction === enforcementActions.NOENF || paymentTermsState.fm_payment_terms_hold_enforcement_on_account
       ) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="noEnf"
@@ -179,7 +179,7 @@
         </div>
       } @else if (enforcementAction === enforcementActions.PRIS) {
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="earliestReleaseDate"
@@ -188,7 +188,7 @@
           <ng-container value>{{ earliestReleaseDate }}</ng-container>
         </div>
         <div
-          app-govuk-summary-list-row
+          opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
           summaryListRowId="prisonAndPrisonNumber"
@@ -203,6 +203,6 @@
           </ng-container>
         </div>
       }
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>
