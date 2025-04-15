@@ -29,8 +29,8 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     getDraftAccountById: jasmine.createSpy('getDraftAccountById').and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT)),
   };
   const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
+    'getDaysAgo',
     'getFromFormatToFormat',
-    'getDaysAgoString',
   ]);
 
   beforeEach(async () => {
@@ -77,14 +77,14 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     expect((component as any).getDraftAccountsData).toHaveBeenCalled();
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
     expect(mockDateService.getFromFormatToFormat).toHaveBeenCalled();
-    expect(mockDateService.getDaysAgoString).toHaveBeenCalled();
+    expect(mockDateService.getDaysAgo).toHaveBeenCalled();
   });
 
   it('should populate table data correctly', () => {
     const response = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
     const tableData = component['populateTableData'](response);
     expect(tableData.length).toEqual(response.summaries.length);
-    expect(tableData[0].defendantId).toEqual(response.summaries[0].draft_account_id);
+    expect(tableData[0]['Defendant id']).toEqual(response.summaries[0].draft_account_id);
   });
 
   it('should call getDraftAccounts with correct parameters', () => {
