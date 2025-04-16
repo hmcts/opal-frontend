@@ -1,8 +1,4 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@guards/auth/auth.guard';
-import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
-import { routePermissionsGuard } from '@guards/route-permissions/route-permissions.guard';
-import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { routing as draftRouting } from '../fines-draft/routing/fines-draft.routes';
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
@@ -10,6 +6,10 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../fines-draft/routing/constants/fines-draft-routing-permissions.constant';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { userStateResolver } from '@hmcts/opal-frontend-common/resolvers/user-state';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];

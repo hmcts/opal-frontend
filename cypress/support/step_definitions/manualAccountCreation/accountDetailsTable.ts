@@ -52,7 +52,7 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
     const tableSelector = cy
       .get(`h2.govuk-summary-card__title`)
       .contains(tableName)
-      .parentsUntil('app-govuk-summary-card-list');
+      .parentsUntil('opal-lib-govuk-summary-card-list');
 
     if (tableName === 'Offences and impositions') {
       tableSelector
@@ -88,7 +88,7 @@ Then('I do not see the {string} table', (tableName: string) => {
 Then('I click on the {string} link in the {string} table', (linkName: string, tableName: string) => {
   cy.get(`h2.govuk-summary-card__title`)
     .contains(tableName)
-    .parentsUntil('app-govuk-summary-card-list')
+    .parentsUntil('opal-lib-govuk-summary-card-list')
     .contains('a', linkName)
     .click();
 });

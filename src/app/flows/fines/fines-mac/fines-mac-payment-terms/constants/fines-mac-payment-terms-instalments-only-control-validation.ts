@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { twoDecimalPlacesValidator } from '@validators/two-decimal-places/two-decimal-places.validator';
+import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { twoDecimalPlacesValidator } from '@hmcts/opal-frontend-common/validators/two-decimal-places';
 
 export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {

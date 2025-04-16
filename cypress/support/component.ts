@@ -1,5 +1,5 @@
 import '@cypress/grep';
-import { addGdsBodyClass } from 'src/app/components/govuk/helpers/add-gds-body-class';
+import { addGdsBodyClass } from '@hmcts/opal-frontend-common/components/govuk/helpers';
 
 beforeEach(function () {
   const test = this.currentTest;

@@ -6,21 +6,21 @@
   ></app-fines-mac-offence-details-minor-creditor-information>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-button
+      <opal-lib-govuk-button
         buttonId="confirmDeletion"
         buttonClasses="govuk-button--warning"
         (buttonClickEvent)="confirmMinorCreditorRemoval()"
       >
         Yes - remove minor creditor
-      </app-govuk-button>
+      </opal-lib-govuk-button>
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-cancel-link
+      <opal-lib-govuk-cancel-link
         (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
         cancelLinkText="No - cancel"
-      ></app-govuk-cancel-link>
+      ></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </div>
