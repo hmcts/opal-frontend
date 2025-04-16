@@ -11,6 +11,124 @@ def type = "angular"
 def product = "opal"
 def component = "frontend"
 
-withNightlyPipeline(type, product, component) {
+def secrets = [
+  'opal-${env}': [
+    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
+    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
+  ],
+]
 
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [$class     : 'AzureKeyVaultSecret',
+    secretType : 'Secret',
+    name       : secretName,
+    version    : '',
+    envVariable: envVar
+  ]
+}
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def performArtifactOperations() {
+    sh 'mkdir -p cypress/parallel/weights/pipeline'
+
+    sh '''
+    echo "Listing all artifacts before copy artifacts:"
+    ls -l1a cypress/parallel/weights/
+    ls -l1a cypress/parallel/weights/pipeline/
+    '''
+
+    script {
+        def projectName = getProjectName()
+        try {
+            copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
+        } catch (Exception e) {
+            echo "Error copying artifacts: ${e}"
+        }
+
+        sh '''
+        echo "Listing all artifacts after copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/
+        '''
+    }
+
+    try {
+        sh '''
+        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "Moved smoke-parallel-weights.json"
+        else
+            echo "smoke-parallel-weights.json not found, skipping move"
+        fi
+        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            echo "Moved functional-parallel-weights.json"
+        else
+            echo "functional-parallel-weights.json not found, skipping move"
+        fi
+        if [ -f cypress/parallel/weights/pipeline/component-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/component-parallel-weights.json cypress/parallel/weights/component-parallel-weights.json
+            echo "Moved component-parallel-weights.json"
+        else
+            echo "component-parallel-weights.json not found, skipping move"
+        fi
+        '''
+    } catch (Exception e) {
+        echo "Artifacts not found or copy failed: ${e}"
+    }
+
+    sh '''
+    echo "Listing all copied artifacts:"
+    ls -l1a cypress/parallel/weights/
+    ls -l1a cypress/parallel/weights/pipeline/
+    '''
+}
+def setupTestSpecifications() {
+    script {
+      env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+    }
+}
+
+properties([
+    copyArtifactPermission('*')
+])
+withNightlyPipeline(type, product, component) {
+  afterSuccess('checkout') {
+    performArtifactOperations()
+    setupTestSpecifications()
+  }
+
+  afterSuccess('fullFunctionalTest') {
+    script {
+      def sourceJobName = env.JOB_NAME
+      sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+
+      sh"echo 'Archiving weight files in ${sourceJobName}'"
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+    }
+  }
+  afterAlways('fullFunctionalTest') {
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "functional-output/prod/cucumber/",
+        reportFiles          : "functional-report.html",
+        reportName           : "Cucumber Functional Test Report"
+    ]
+      publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "smoke-output/prod/cucumber/",
+        reportFiles          : "smoke-report.html",
+        reportName           : "Cucumber Smoke Test Report"
+    ]
+  }
 }
