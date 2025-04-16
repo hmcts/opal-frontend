@@ -21,37 +21,27 @@ import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
 
-import { AppInsights } from '@hmcts/opal-frontend-common-node/app-insights';
-import { LaunchDarkly } from '@hmcts/opal-frontend-common-node/launch-darkly';
 import {
-  TransferServerState,
-  ExpiryConfiguration,
-  SessionStorageConfiguration,
-  RoutesConfiguration,
+  getRoutesConfig,
+  configureApiProxyRoutes,
+  configureSession,
+  configureCsrf,
+  configureSecurityHeaders,
+  configureMonitoring,
+} from './server-setup';
+
+import {
   ProxyConfiguration,
   SessionConfiguration,
   SsoConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
-import { Helmet } from '@hmcts/opal-frontend-common-node/helmet';
 import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
-import { CSRFToken } from '@hmcts/opal-frontend-common-node/csrf-token';
 import { Routes } from '@hmcts/opal-frontend-common-node/routes';
-import SessionStorage from '@hmcts/opal-frontend-common-node/session/session-storage';
 
-const env = process.env['NODE_ENV'] || 'development';
-const developmentMode = env === 'development';
-
-const sessionStorageConfig: SessionStorageConfiguration = {
-  secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
-  prefix: config.get('session.prefix'),
-  maxAge: config.get('session.maxAge'),
-  sameSite: config.get('session.sameSite'),
-  secure: config.get('session.secure'),
-  domain: config.get('session.domain'),
-  redisEnabled: config.get('features.redis.enabled'),
-  redisConnectionString: config.get('secrets.opal.redis-connection-string'),
-};
+const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+  ? join(distFolder, 'index.original.html')
+  : join(distFolder, 'index.html');
 
 const proxyConfiguration: ProxyConfiguration = {
   opalApiProxyUrl: '/api',
@@ -71,13 +61,8 @@ const ssoConfiguration: SsoConfiguration = {
   authenticated: '/sso/authenticated',
 };
 
-// The Express app is exported so that it can be used by serverless Functions.
-export function app(): express.Express {
+function app(): express.Express {
   const server = express();
-  const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? join(distFolder, 'index.original.html')
-    : join(distFolder, 'index.html');
 
   const commonEngine = new CommonEngine();
 
@@ -85,33 +70,18 @@ export function app(): express.Express {
   server.set('views', distFolder);
 
   new PropertiesVolume().enableFor(server, config);
-  new SessionStorage().enableFor(server, sessionStorageConfig);
-  new CSRFToken().enableFor(
-    server,
-    config.get('secrets.opal.opal-frontend-csrf-secret'),
-    config.get('csrf.cookieName'),
-    config.get('csrf.sameSite'),
-    config.get('csrf.secure'),
-  );
+  configureSession(server);
+  configureCsrf(server);
+  configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
-  // secure the application by adding various HTTP headers to its responses
-  new Helmet(developmentMode).enableFor(server, config.get('features.helmet.enabled'));
 
-  const testMode = config.get<boolean>('expiry.testMode');
-  const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
-  const sessionExpiryConfiguration: ExpiryConfiguration = {
-    testMode: config.get<boolean>('expiry.testMode'),
-    expiryTimeInMilliseconds: config.get<number>(`${expiryConfigPath}.expiryTimeInMilliseconds`),
-    warningThresholdInMilliseconds: config.get<number>(`${expiryConfigPath}.warningThresholdInMilliseconds`),
-  };
-  const env = process.env['NODE_ENV'] || 'development';
-  const routesConfiguration: RoutesConfiguration = {
-    opalApiTarget: config.get('opal-api.url'),
-    opalFinesServiceTarget: config.get('opal-api.opal-fines-service'),
-    frontendHostname:
-      env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
-    prefix: config.get('session.prefix'),
-  };
+  const { sessionExpiryConfiguration, routesConfiguration } = getRoutesConfig();
+
+  configureApiProxyRoutes(server);
+
+  server.get('/health', (_, res, next) => {
+    res.status(200).send('OK');
+  });
 
   new Routes().enableFor(
     server,
@@ -123,23 +93,7 @@ export function app(): express.Express {
     ssoConfiguration,
   );
 
-  const launchDarkly = new LaunchDarkly().enableFor(
-    config.get('features.launch-darkly.enabled'),
-    config.get('features.launch-darkly.stream'),
-    config.has('secrets.opal.launch-darkly-client-id') ? config.get('features.launch-darkly.clientId') : null,
-  );
-  const appInsights = new AppInsights().enable(
-    config.get('features.app-insights.enabled'),
-    config.has('features.app-insights.connection-string')
-      ? config.get('features.app-insights.connection-string')
-      : null,
-    config.has('features.app-insights.cloudRoleName') ? config.get('features.app-insights.cloudRoleName') : null,
-  );
-  const serverTransferState: TransferServerState = {
-    launchDarklyConfig: launchDarkly,
-    ssoEnabled: config.get('features.sso.enabled'),
-    appInsightsConfig: appInsights,
-  };
+  const serverTransferState = configureMonitoring();
 
   // Serve static files from /browser
   server.get(
@@ -150,11 +104,11 @@ export function app(): express.Express {
   );
 
   // All regular routes use the Angular engine
-  server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
+  server.get('*', async (req, res, next) => {
+    try {
+      const { protocol, originalUrl, baseUrl, headers } = req;
 
-    commonEngine
-      .render({
+      const html = await commonEngine.render({
         bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
@@ -166,9 +120,13 @@ export function app(): express.Express {
             useValue: serverTransferState,
           },
         ],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+      });
+
+      res.send(html);
+    } catch (err) {
+      Logger.getLogger('SSR').error('SSR render failed', err);
+      next(err);
+    }
   });
 
   return server;
