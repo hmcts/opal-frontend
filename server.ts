@@ -30,10 +30,7 @@ import {
   configureMonitoring,
 } from './server-setup';
 
-import {
-  SessionConfiguration,
-  SsoConfiguration,
-} from '@hmcts/opal-frontend-common-node/interfaces';
+import { SessionConfiguration, SsoConfiguration } from '@hmcts/opal-frontend-common-node/interfaces';
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
 import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
 import { Routes } from '@hmcts/opal-frontend-common-node/routes';
