@@ -31,7 +31,6 @@ import {
 } from './server-setup';
 
 import {
-  ProxyConfiguration,
   SessionConfiguration,
   SsoConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
@@ -42,11 +41,6 @@ import { Routes } from '@hmcts/opal-frontend-common-node/routes';
 const indexHtml = existsSync(join(distFolder, 'index.original.html'))
   ? join(distFolder, 'index.original.html')
   : join(distFolder, 'index.html');
-
-const proxyConfiguration: ProxyConfiguration = {
-  opalApiProxyUrl: '/api',
-  opalFinesServiceProxyUrl: '/opal-fines-service',
-};
 
 const sessionConfiguration: SessionConfiguration = {
   sessionExpiryUrl: '/session/expiry',
@@ -89,7 +83,6 @@ function app(): express.Express {
     sessionExpiryConfiguration,
     routesConfiguration,
     sessionConfiguration,
-    proxyConfiguration,
     ssoConfiguration,
   );
 
