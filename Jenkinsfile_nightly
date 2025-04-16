@@ -39,7 +39,7 @@ def performArtifactOperations() {
     '''
 
     script {
-        def projectName = getProjectName()
+        def projectName = 'HMCTS_Nightly/opal-frontend/master'
         try {
             copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
         } catch (Exception e) {
