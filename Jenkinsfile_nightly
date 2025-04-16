@@ -94,6 +94,10 @@ properties([
     copyArtifactPermission('*')
 ])
 withNightlyPipeline(type, product, component) {
+  loadVaultSecrets(secrets)
+  enableFullFunctionalTest(600)
+
+
   afterSuccess('checkout') {
     performArtifactOperations()
     setupTestSpecifications()
