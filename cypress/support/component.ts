@@ -3,6 +3,8 @@ import { addGdsBodyClass } from '@hmcts/opal-frontend-common/components/govuk/he
 
 beforeEach(function () {
   const test = this.currentTest;
+
+  // @ts-ignore
   const tags = test?._testConfig.unverifiedTestConfig.tags;
 
   if (tags && tags.length > 0) {
