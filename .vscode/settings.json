@@ -1,7 +1,7 @@
 {
     "editor.formatOnSave": true,
     "sonarlint.connectedMode.project": {
-        "connectionId": "HMCTS",
+        "connectionId": "HMCTS SonarQube",
         "projectKey": "opal-frontend"
     }
 }
