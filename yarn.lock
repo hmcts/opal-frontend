@@ -3418,6 +3418,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/opal-frontend-common-node@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.4"
+  dependencies:
+    "@hmcts/info-provider": "npm:^1.1.0"
+    "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
+    "@hmcts/nodejs-logging": "npm:^4.0.4"
+    "@hmcts/properties-volume": "npm:^1.1.0"
+    applicationinsights: "npm:~2.9.6"
+    axios: "npm:^1.6.2"
+    body-parser: "npm:^2.0.0"
+    config: "npm:^3.3.9"
+    connect-redis: "npm:^8.0.0"
+    cookie-parser: "npm:^1.4.6"
+    csrf-csrf: "npm:^3.0.6"
+    express: "npm:^4.15.2"
+    express-session: "npm:^1.17.3"
+    helmet: "npm:^8.0.0"
+    http-proxy-middleware: "npm:^3.0.0"
+    luxon: "npm:^3.4.3"
+    prettier: "npm:^3.0.3"
+    redis: "npm:^4.6.11"
+    session-file-store: "npm:^1.5.0"
+    xml2js: "npm:^0.6.2"
+  checksum: 10/b82f5360ceb81aa031945d5c39b6d7564c8dff4bad55de653873991b15f11f3b5e41c5e5844848d8ae4d25241b6c3a6c1cd83284925d0abfaf450efdf63f680b
+  languageName: node
+  linkType: hard
+
 "@hmcts/opal-frontend-common@npm:^0.0.7":
   version: 0.0.7
   resolution: "@hmcts/opal-frontend-common@npm:0.0.7"
@@ -13329,6 +13357,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.7"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.4"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
