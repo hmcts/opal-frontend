@@ -39,7 +39,7 @@ def performArtifactOperations() {
     '''
 
     script {
-        def projectName = getProjectName()
+        def projectName = 'HMCTS_Nightly/opal-frontend/master'
         try {
             copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
         } catch (Exception e) {
@@ -94,6 +94,10 @@ properties([
     copyArtifactPermission('*')
 ])
 withNightlyPipeline(type, product, component) {
+  loadVaultSecrets(secrets)
+  enableFullFunctionalTest(600)
+
+
   afterSuccess('checkout') {
     performArtifactOperations()
     setupTestSpecifications()
