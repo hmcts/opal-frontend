@@ -32,7 +32,7 @@ When('I click on the rejected tab and ensure there are no accounts', () => {
     ).as('getRejectedDraftAccounts');
   });
 
-  cy.get('app-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
 
   cy.wait('@getRejectedDraftAccounts');
 });
@@ -69,7 +69,7 @@ When('I click on the rejected tab and ensure there are three accounts', () => {
     ).as('getRejectedDraftAccounts');
   });
 
-  cy.get('app-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
 
   cy.wait('@getRejectedDraftAccounts');
 });
@@ -105,7 +105,7 @@ When('I click on the rejected tab and ensure there are 26 accounts', () => {
     ).as('getRejectedDraftAccounts');
   });
 
-  cy.get('app-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
 
   cy.wait('@getRejectedDraftAccounts');
 });

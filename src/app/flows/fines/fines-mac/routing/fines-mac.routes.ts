@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@guards/auth/auth.guard';
-import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths.constant';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { TitleResolver } from '@resolvers/title/title.resolver';
 import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
 import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
+import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 
 export const routing: Routes = [
   {

@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacComponent } from './fines-mac.component';
 import { FINES_MAC_STATE_MOCK } from './mocks/fines-mac-state.mock';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { FinesMacStoreType } from './stores/types/fines-mac-store.type';
 import { FinesMacStore } from './stores/fines-mac.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;

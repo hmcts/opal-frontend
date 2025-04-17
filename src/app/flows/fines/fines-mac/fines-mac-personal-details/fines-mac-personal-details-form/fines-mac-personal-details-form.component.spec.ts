@@ -5,11 +5,11 @@ import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-d
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;

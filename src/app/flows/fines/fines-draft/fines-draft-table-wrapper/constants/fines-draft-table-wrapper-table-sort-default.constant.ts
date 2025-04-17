@@ -6,7 +6,6 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT: IFinesDraftTableWrapperTabl
   'Date of birth': 'none',
   Created: 'descending',
   CreatedAgo: 'none',
-  CreatedString: 'none',
   'Account type': 'none',
   'Business unit': 'none',
 };

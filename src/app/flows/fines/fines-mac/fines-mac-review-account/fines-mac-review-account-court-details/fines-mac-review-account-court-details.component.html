@@ -1,15 +1,13 @@
-<app-govuk-summary-card-list cardTitle="Court details" summaryCardListId="court-details">
+<opal-lib-govuk-summary-card-list cardTitle="Court details" summaryCardListId="court-details">
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changeCourtDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeCourtDetails()"></li>
     </ng-container>
   }
   <ng-container content>
-    <app-govuk-summary-list summaryListId="courtDetails">
+    <opal-lib-govuk-summary-list summaryListId="courtDetails">
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="courtDetails"
         summaryListRowId="originatorName"
@@ -18,7 +16,7 @@
         <ng-container value>{{ sendingCourt }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="courtDetails"
         summaryListRowId="pcr"
@@ -27,7 +25,7 @@
         <ng-container value>{{ courtDetails.fm_court_details_prosecutor_case_reference }}</ng-container>
       </div>
       <div
-        app-govuk-summary-list-row
+        opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="courtDetails"
         summaryListRowId="enforcementCourt"
@@ -35,6 +33,6 @@
         <ng-container name>Enforcement court</ng-container>
         <ng-container value>{{ enforcementCourt }}</ng-container>
       </div>
-    </app-govuk-summary-list>
+    </opal-lib-govuk-summary-list>
   </ng-container>
-</app-govuk-summary-card-list>
+</opal-lib-govuk-summary-card-list>

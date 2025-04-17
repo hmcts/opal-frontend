@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { GlobalStore } from 'src/app/stores/global/global.store';
-import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { DashboardPermissions } from './enums/dashboard-permissions.enum';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 

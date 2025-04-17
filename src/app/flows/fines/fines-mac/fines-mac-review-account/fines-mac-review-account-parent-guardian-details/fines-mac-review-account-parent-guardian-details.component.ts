@@ -1,14 +1,16 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
-import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
-import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
+import {
+  GovukSummaryListRowComponent,
+  GovukSummaryListComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { IFinesMacParentGuardianDetailsState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacParentGuardianDetailsAliasState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
-import { DateService } from '@services/date-service/date.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 @Component({
   selector: 'app-fines-mac-review-account-parent-guardian-details',

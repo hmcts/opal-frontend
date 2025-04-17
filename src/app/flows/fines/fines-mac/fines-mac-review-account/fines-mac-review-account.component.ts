@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -25,11 +23,8 @@ import {
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { UtilsService } from '@services/utils/utils.service';
-import { GlobalStore } from 'src/app/stores/global/global.store';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
-import { DateService } from '@services/date-service/date.service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
@@ -37,6 +32,11 @@ import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-accoun
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-mac-review-account',

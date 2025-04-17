@@ -32,6 +32,7 @@
     "test:functional:cucumber:jsonReport": "yarn cucumber-merge-messages functional-output/prod/cucumber/*.ndjson > functional-output/prod/cucumber/functional-report.ndjson",
     "test:functional:cucumber:htmlReport": "yarn cucumber-html-formatter < functional-output/prod/cucumber/functional-report.ndjson > functional-output/prod/cucumber/functional-report.html",
     "test:dev:functional:combine:reports": "jrm functional-output/dev/test-result.xml \"functional-output/dev/*.xml\"",
+    "test:fullfunctional": "yarn test:opalComponent ; yarn test:functional",
     "dev:ssr": "ng run opal-frontend:serve-ssr",
     "serve:ssr": "node dist/opal-frontend/server/main.js",
     "build:ssr": "ng build --configuration production && ng run opal-frontend:server",
@@ -61,9 +62,11 @@
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
+    "@hmcts/opal-frontend-common": "^0.0.7",
+    "@hmcts/opal-frontend-common-node": "^0.0.4",
     "@hmcts/properties-volume": "^1.1.0",
     "@microsoft/applicationinsights-web": "^3.3.5",
-    "@ministryofjustice/frontend": "^4.0.0",
+    "@ministryofjustice/frontend": "^5.0.0",
     "@ngrx/signals": "^19.0.0",
     "accessible-autocomplete": "^3.0.0",
     "applicationinsights": "~2.9.6",
@@ -132,7 +135,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "typescript": "~5.8.0"
   },
-  "packageManager": "yarn@4.8.1",
+  "packageManager": "yarn@4.9.1",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
