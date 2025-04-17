@@ -107,9 +107,9 @@ Feature: Accessibility Tests for Populate and Submit Screens
         Then I see "Check account details" on the page header
         Then I check accessibility
 
-# Scenario: Submit for review - Axe Core
-# When I click the "Submit for review" button and capture the created account number
-# Then I see "You've submitted this account for review" text on the page
-# Then I check accessibility
+        # Scenario: Submit for review - Axe Core
+        When I click the "Submit for review" button and capture the created account number
+        Then I see "You've submitted this account for review" text on the page
+        Then I check accessibility
 
 
