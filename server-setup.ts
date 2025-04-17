@@ -78,7 +78,7 @@ export function configureMonitoring(): TransferServerState {
   const launchDarkly = new LaunchDarkly().enableFor(
     config.get('features.launch-darkly.enabled'),
     config.get('features.launch-darkly.stream'),
-    config.has('secrets.opal.launch-darkly-client-id') ? config.get('features.launch-darkly.clientId') : null,
+    config.has('secrets.opal.launch-darkly-client-id') ? config.get('secrets.opal.launch-darkly-client-id') : null,
   );
   const appInsights = new AppInsights().enable(
     config.get('features.app-insights.enabled'),
