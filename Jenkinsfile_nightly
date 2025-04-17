@@ -96,6 +96,7 @@ properties([
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   enableFullFunctionalTest(600)
+  env.TEST_URL = "https://opal-frontend.staging.platform.hmcts.net/"
 
 
   afterSuccess('checkout') {
