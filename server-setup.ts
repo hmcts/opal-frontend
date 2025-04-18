@@ -16,17 +16,6 @@ import {
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
 
-const sessionStorageConfig: SessionStorageConfiguration = {
-  secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
-  prefix: config.get('session.prefix'),
-  maxAge: config.get('session.maxAge'),
-  sameSite: config.get('session.sameSite'),
-  secure: config.get('session.secure'),
-  domain: config.get('session.domain'),
-  redisEnabled: config.get('features.redis.enabled'),
-  redisConnectionString: config.get('secrets.opal.redis-connection-string'),
-};
-
 export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
@@ -57,6 +46,19 @@ export function configureApiProxyRoutes(app: express.Express): void {
 }
 
 export function configureSession(server: express.Express): void {
+  const sessionStorageConfig: SessionStorageConfiguration = {
+    secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
+    prefix: config.get('session.prefix'),
+    maxAge: config.get('session.maxAge'),
+    sameSite: config.get('session.sameSite'),
+    secure: config.get('session.secure'),
+    domain: config.get('session.domain'),
+    redisEnabled: config.get('features.redis.enabled'),
+    redisConnectionString: config.get('secrets.opal.redis-connection-string'),
+  };
+
+  console.log('[DEBUG] Redis connection string length:', sessionStorageConfig.redisConnectionString.length);
+
   new SessionStorage().enableFor(server, sessionStorageConfig);
 }
 
