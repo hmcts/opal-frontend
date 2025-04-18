@@ -85,7 +85,7 @@ export function configureMonitoring(): TransferServerState {
     config.has('secrets.opal.app-insights-connection-string')
       ? config.get('secrets.opal.app-insights-connection-string')
       : null,
-    config.has('features.app-insights.cloudRoleName') ? config.get('features.app-insights.cloudRoleName') : null,
+    config.has('application-insights.cloudRoleName') ? config.get('application-insights.cloudRoleName') : null,
   );
 
   return {
