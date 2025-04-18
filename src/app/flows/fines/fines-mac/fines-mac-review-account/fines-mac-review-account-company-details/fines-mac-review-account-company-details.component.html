@@ -1,9 +1,7 @@
 <opal-lib-govuk-summary-card-list cardTitle="Company details" summaryCardListId="company-details">
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changeCompanyDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeCompanyDetails()"></li>
     </ng-container>
   }
   <ng-container content>

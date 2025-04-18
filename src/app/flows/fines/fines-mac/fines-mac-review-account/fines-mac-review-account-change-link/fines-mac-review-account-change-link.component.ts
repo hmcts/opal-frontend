@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { GovukSummaryCardActionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 
 @Component({
-  selector: 'app-fines-mac-review-account-change-link',
+  selector: 'app-fines-mac-review-account-change-link, [app-fines-mac-review-account-change-link]',
   imports: [GovukSummaryCardActionComponent],
   templateUrl: './fines-mac-review-account-change-link.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
