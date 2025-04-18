@@ -57,8 +57,6 @@ export function configureSession(server: express.Express): void {
     redisConnectionString: config.get('secrets.opal.redis-connection-string'),
   };
 
-  console.log('[DEBUG] Redis connection string length:', sessionStorageConfig.redisConnectionString.length);
-
   new SessionStorage().enableFor(server, sessionStorageConfig);
 }
 
@@ -84,8 +82,8 @@ export function configureMonitoring(): TransferServerState {
   );
   const appInsights = new AppInsights().enable(
     config.get('features.app-insights.enabled'),
-    config.has('features.app-insights.connection-string')
-      ? config.get('features.app-insights.connection-string')
+    config.has('secrets.opal.app-insights-connection-string')
+      ? config.get('secrets.opal.app-insights-connection-string')
       : null,
     config.has('features.app-insights.cloudRoleName') ? config.get('features.app-insights.cloudRoleName') : null,
   );
