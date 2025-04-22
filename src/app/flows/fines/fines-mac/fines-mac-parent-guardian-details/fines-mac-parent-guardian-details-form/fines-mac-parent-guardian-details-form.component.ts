@@ -25,6 +25,7 @@ import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/va
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -40,6 +41,7 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
     GovukTextInputComponent,
     MojTicketPanelComponent,
     MojDatePickerComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-parent-guardian-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
