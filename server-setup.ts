@@ -16,17 +16,6 @@ import {
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
 
-const sessionStorageConfig: SessionStorageConfiguration = {
-  secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
-  prefix: config.get('session.prefix'),
-  maxAge: config.get('session.maxAge'),
-  sameSite: config.get('session.sameSite'),
-  secure: config.get('session.secure'),
-  domain: config.get('session.domain'),
-  redisEnabled: config.get('features.redis.enabled'),
-  redisConnectionString: config.get('secrets.opal.redis-connection-string'),
-};
-
 export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
@@ -57,6 +46,17 @@ export function configureApiProxyRoutes(app: express.Express): void {
 }
 
 export function configureSession(server: express.Express): void {
+  const sessionStorageConfig: SessionStorageConfiguration = {
+    secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
+    prefix: config.get('session.prefix'),
+    maxAge: config.get('session.maxAge'),
+    sameSite: config.get('session.sameSite'),
+    secure: config.get('session.secure'),
+    domain: config.get('session.domain'),
+    redisEnabled: config.get('features.redis.enabled'),
+    redisConnectionString: config.get('secrets.opal.redis-connection-string'),
+  };
+
   new SessionStorage().enableFor(server, sessionStorageConfig);
 }
 
@@ -82,10 +82,10 @@ export function configureMonitoring(): TransferServerState {
   );
   const appInsights = new AppInsights().enable(
     config.get('features.app-insights.enabled'),
-    config.has('features.app-insights.connection-string')
-      ? config.get('features.app-insights.connection-string')
+    config.has('secrets.opal.app-insights-connection-string')
+      ? config.get('secrets.opal.app-insights-connection-string')
       : null,
-    config.has('features.app-insights.cloudRoleName') ? config.get('features.app-insights.cloudRoleName') : null,
+    config.has('application-insights.cloudRoleName') ? config.get('application-insights.cloudRoleName') : null,
   );
 
   return {
