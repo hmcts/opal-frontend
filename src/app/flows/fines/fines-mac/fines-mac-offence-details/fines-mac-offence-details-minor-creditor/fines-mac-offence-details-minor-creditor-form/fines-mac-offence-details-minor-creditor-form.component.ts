@@ -30,6 +30,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -48,6 +49,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
     GovukButtonComponent,
     GovukTextInputComponent,
     GovukCancelLinkComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-offence-details-minor-creditor-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
