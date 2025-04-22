@@ -58,16 +58,13 @@ Feature: Accessibility Tests for Populate and Submit Screens
         When I enter "HY35014" into the "Offence code" field
         And I enter a date 8 weeks into the past into the "Date of sentence" date field
 
-        And I enter "Costs (FCOST)" into the "Result code" field for imposition 1
-        And I enter "500" into the "Amount imposed" field for imposition 1
-        And I enter "250" into the "Amount paid" field for imposition 1
-        And I select the "Minor creditor" radio button for imposition 1
-
-        When I click on the "Add minor creditor details" link for imposition 1
-        Then I see "Minor creditor details" on the page header
-        And I select the "Company" radio button
-        And I enter "CNAME" into the "Company" field
-        Then I click the "Save" button
+        And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
+        And I enter "300" into the "Amount imposed" field for imposition 1
+        And I enter "100" into the "Amount paid" field for imposition 1
+        And I see "Add creditor" text on the page
+        And I select the "Major creditor" radio button
+        And I enter "Transport for London" into the "Search using name or code" search box
+        And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 1
 
         When I click the "Review offence" button
         Then I see "Offences and impositions" on the page header
