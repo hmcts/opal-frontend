@@ -157,9 +157,42 @@ yarn cypress
 We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
 Run the production server and once running you can run the smoke or functional test commands.
 
+> See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib) and [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib) for usage and build instructions.
+## Switching Between Local and Published Common Libraries
+This project supports switching between local and published versions of the `opal-frontend-common` and `opal-frontend-common-node` libraries using the following scripts:
+
+### Switching to Local Versions
+
+First, ensure you've built the libraries locally and exported the paths to the built `dist` folders:
+
+```bash
+# In your shell config file (.zshrc, .bash_profile, etc.)
+export COMMON_UI_LIB_PATH="[INSERT PATH TO COMMON UI LIB FOLDER]"
+export COMMON_NODE_LIB_PATH="[INSERT PATH TO COMMON NODE LIB DIST FOLDER]"
+```
+
+Then, run the following scripts:
+
+```bash
+yarn import:local:common-ui-lib
+yarn import:local:common-node-lib
+```
+
+These commands will remove the published versions and install the local builds from the paths you specified.
+
+### Switching to Published Versions
+
+To restore the published packages from npm:
+
+```bash
+yarn import:published:common-ui-lib
+yarn import:published:common-node-lib
+```
+
+This is useful when you're no longer working on the libraries directly or want to verify against the published version.
+
 ## Angular code scaffolding
 
 Run `yarn ng generate component component-name` to generate a new component. You can also use `yarn ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 Note the requirement for prefixing the `ng` commands with `yarn`
-‹
