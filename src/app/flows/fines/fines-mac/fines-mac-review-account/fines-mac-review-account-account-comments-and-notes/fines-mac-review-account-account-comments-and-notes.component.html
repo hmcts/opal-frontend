@@ -1,9 +1,7 @@
 <opal-lib-govuk-summary-card-list cardTitle="Account comments and notes" summaryCardListId="account-comments-and-notes">
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changeAccountCommentsAndNotesDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeAccountCommentsAndNotesDetails()"></li>
     </ng-container>
   }
   <ng-container content>
