@@ -13,58 +13,77 @@ global['document'] = win.document;
 global['self'] = win;
 
 import 'zone.js/node';
-
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
-
 import { Logger } from '@hmcts/nodejs-logging';
-
-import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
-import { SessionStorage } from './server/session/index';
-import { LaunchDarkly } from './server/launch-darkly/index';
-import Routes from './server/routes';
-import { CSRFToken } from './server/csrf-token';
 import config from 'config';
-import TransferServerState from './server/interfaces/transferServerState';
 import bootstrap from './src/main.server';
-import AppInsightsConfiguration from './server/modules/appinsights/app-insights-configuration';
 
-const env = process.env['NODE_ENV'] || 'development';
-const developmentMode = env === 'development';
+import {
+  getRoutesConfig,
+  configureApiProxyRoutes,
+  configureSession,
+  configureCsrf,
+  configureSecurityHeaders,
+  configureMonitoring,
+} from './server-setup';
 
-// The Express app is exported so that it can be used by serverless Functions.
-export function app(): express.Express {
+import { SessionConfiguration, SsoConfiguration } from '@hmcts/opal-frontend-common-node/interfaces';
+import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
+import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
+import { Routes } from '@hmcts/opal-frontend-common-node/routes';
+
+const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+  ? join(distFolder, 'index.original.html')
+  : join(distFolder, 'index.html');
+
+const sessionConfiguration: SessionConfiguration = {
+  sessionExpiryUrl: '/session/expiry',
+  userStateUrl: '/session/user-state',
+};
+
+const ssoConfiguration: SsoConfiguration = {
+  login: '/sso/login',
+  loginCallback: '/sso/login-callback',
+  logout: '/sso/logout',
+  logoutCallback: '/sso/logout-callback',
+  authenticated: '/sso/authenticated',
+};
+
+function app(): express.Express {
   const server = express();
-  const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? join(distFolder, 'index.original.html')
-    : join(distFolder, 'index.html');
 
   const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  new PropertiesVolume().enableFor(server);
-  new SessionStorage().enableFor(server);
-  new CSRFToken().enableFor(server);
-  new HealthCheck().enableFor(server);
-  // secure the application by adding various HTTP headers to its responses
-  new Helmet(developmentMode).enableFor(server);
+  new PropertiesVolume().enableFor(server, config);
+  configureSession(server);
+  configureCsrf(server);
+  configureSecurityHeaders(server);
+  new HealthCheck().enableFor(server, 'opal-frontend');
 
-  new Routes().enableFor(server);
+  const { sessionExpiryConfiguration, routesConfiguration } = getRoutesConfig();
 
-  new AppInsights().enable();
+  configureApiProxyRoutes(server);
 
-  const launchDarkly = new LaunchDarkly().enableFor();
-  const appInsights = new AppInsightsConfiguration().enableFor();
-  const serverTransferState: TransferServerState = {
-    launchDarklyConfig: launchDarkly,
-    ssoEnabled: config.get('features.sso.enabled'),
-    appInsightsConfig: appInsights,
-  };
+  server.get('/health', (_, res, next) => {
+    res.status(200).send('OK');
+  });
+
+  new Routes().enableFor(
+    server,
+    config.get('features.sso.enabled'),
+    sessionExpiryConfiguration,
+    routesConfiguration,
+    sessionConfiguration,
+    ssoConfiguration,
+  );
+
+  const serverTransferState = configureMonitoring();
 
   // Serve static files from /browser
   server.get(
@@ -75,11 +94,11 @@ export function app(): express.Express {
   );
 
   // All regular routes use the Angular engine
-  server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
+  server.get('*', async (req, res, next) => {
+    try {
+      const { protocol, originalUrl, baseUrl, headers } = req;
 
-    commonEngine
-      .render({
+      const html = await commonEngine.render({
         bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
@@ -91,9 +110,13 @@ export function app(): express.Express {
             useValue: serverTransferState,
           },
         ],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+      });
+
+      res.send(html);
+    } catch (err) {
+      Logger.getLogger('SSR').error('SSR render failed', err);
+      next(err);
+    }
   });
 
   return server;
