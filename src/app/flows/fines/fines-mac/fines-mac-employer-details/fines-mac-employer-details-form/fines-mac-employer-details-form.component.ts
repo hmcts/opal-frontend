@@ -24,7 +24,7 @@ import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/valid
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
-
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 @Component({
   selector: 'app-fines-mac-employer-details-form',
   imports: [
@@ -35,6 +35,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
     GovukErrorSummaryComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-employer-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
