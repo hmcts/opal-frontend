@@ -4,9 +4,7 @@
 >
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changePersonalDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changePersonalDetails()"></li>
     </ng-container>
   }
   <ng-container content>
