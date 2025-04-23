@@ -1,9 +1,7 @@
 <opal-lib-govuk-summary-card-list cardTitle="Offences and impositions" summaryCardListId="offences-and-imposition">
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changeOffenceDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeOffenceDetails()"></li>
     </ng-container>
   }
   <ng-container content>
