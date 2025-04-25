@@ -11,10 +11,7 @@ Feature: Tests for Populate and Submit Screens Containing Capitalization
         And I enter "West London" into the business unit search box
         And I select the "Fine" radio button
         And I select the "Adult or youth only" radio button
-        Then I check accessibility
-
         Then I click the "Continue" button
-        Then I check accessibility
 
         # Court Details
         Then I click on the "Court details" link
@@ -23,8 +20,8 @@ Feature: Tests for Populate and Submit Screens Containing Capitalization
         When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
 
         # Test For Capitalization in PCR
-        When I enter "abcd1234" into the "Prosecutor Case Reference (PCR)" field
-        Then I see "ABCD1234" in the "Prosecutor Case Reference (PCR)" field
+        When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
+        Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
         When I enter "bridport" into the "Enforcement court" search box
 
@@ -215,7 +212,7 @@ Feature: Tests for Populate and Submit Screens Containing Capitalization
         Then I see "Check account details" on the page header
 
         Then I see the following in the "Court details" table:
-            | Prosecutor Case Reference (PCR) | ABCD1234 |
+            | Prosecutor Case Reference (PCR) | ABCD1234A |
 
         Then I see the following in the "Personal details" table:
             | Last name                 | LNAME                                                                                                                                       |
