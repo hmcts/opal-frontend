@@ -463,7 +463,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     // Add the remaining four aliases using loop
     for (let i = 1; i < 5; i++) {
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      cy.get(getAliasLastName(i)).type(`alias${i + 1}`).should('have.value', `ALIAS${i + 1}`);
+      cy.get(getAliasLastName(i))
+        .type(`alias${i + 1}`)
+        .should('have.value', `ALIAS${i + 1}`);
     }
   });
 });

@@ -357,13 +357,17 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input', { tags: ['@PO-242', '@PO-1448'] }, () => {
-    setupComponent(null, 'AdultOrYouthOnly');
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-242', '@PO-1448'] },
+    () => {
+      setupComponent(null, 'AdultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc').should('have.value', 'REF123ABC');
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc').should('have.value', 'REF123ABC');
 
-    cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
-    cy.get(DOM_ELEMENTS.surnameInput).type('smith').should('have.value', 'SMITH');
-    cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
-  });
+      cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith').should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
+    },
+  );
 });
