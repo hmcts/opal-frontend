@@ -356,4 +356,20 @@ describe('FinesMacMinorCreditor', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+
+  it('Payment reference should be captilise - AYPG', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] }, () => {
+    setupComponent(null, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123');
+    cy.get(DOM_ELEMENTS.surnameInput).type('surname');
+    cy.get(DOM_ELEMENTS.postCodeInput).type('ne137fg');
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
+    cy.get(DOM_ELEMENTS.surnameInput).blur();
+    cy.get(DOM_ELEMENTS.postCodeInput).blur();
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('contain', 'ABGC123');
+    cy.get(DOM_ELEMENTS.surnameInput).should('contain', 'SURNAME');
+    cy.get(DOM_ELEMENTS.postCodeInput).should('contain', 'NE137FG');
+  });
 });

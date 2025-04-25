@@ -526,4 +526,30 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+
+  it('Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-569'] }, () => {
+    setupComponent(null, 'parentOrGuardianToPay');
+    cy.get(DOM_ELEMENTS.lastNameInput).type('lname');
+    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et');
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab71234b');
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('ap12 slu');
+    cy.get(getAliasLastName(0)).type('alias0lastname');
+    cy.get(getAliasLastName(1)).type('alias1lastname');
+    cy.get(getAliasLastName(2)).type('alias2lastname');
+    cy.get(getAliasLastName(3)).type('alias3lastname');
+    cy.get(getAliasLastName(4)).type('alias4lastname');
+    cy.get(DOM_ELEMENTS.lastNameInput).blur();
+    cy.get(DOM_ELEMENTS.postcodeInput).blur();
+    cy.get(DOM_ELEMENTS.niNumberInput).blur();
+
+    cy.get(DOM_ELEMENTS.lastNameInput).should('contain', 'LNAME');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('contain', 'SL86ET');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('contain', 'AB71234B');
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('AP12 SLU');
+    cy.get(getAliasLastName(0)).should('contain','ALIAS0LASTNAME');
+    cy.get(getAliasLastName(1)).should('contain','ALIAS1LASTNAME');
+    cy.get(getAliasLastName(2)).should('contain','ALIAS2LASTNAME');
+    cy.get(getAliasLastName(3)).should('contain','ALIAS3LASTNAME');
+    cy.get(getAliasLastName(4)).should('contain','ALIAS4LASTNAME');
+  });
 });
