@@ -551,17 +551,17 @@ describe('FinesMacCompanyDetailsComponent', () => {
   it('(AC.1) should convert specified company details fields to uppercase on user input', { tags: ['@PO-345', '@PO-1450'] }, () => {
     setupComponent(null, 'company');
 
-    cy.get(DOM_ELEMENTS.companyNameInput).type('example company').should('have.value', 'EXAMPLE COMPANY');
-    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
+    cy.get(DOM_ELEMENTS.companyNameInput).type('example company', { delay: 0 }).should('have.value', 'EXAMPLE COMPANY');
+    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
 
     cy.get(DOM_ELEMENTS.addAlias).check();
-    cy.get(DOM_ELEMENTS.aliasCompanyName1Input).type('alias company').should('have.value', 'ALIAS COMPANY');
+    cy.get(DOM_ELEMENTS.aliasCompanyName1Input).type('alias company', { delay: 0 }).should('have.value', 'ALIAS COMPANY');
 
     // Add the remaining four aliases using a loop
     for (let i = 1; i < 5; i++) {
         cy.get(DOM_ELEMENTS.additionalAlias).click();
         cy.get(DOM_ELEMENTS[`aliasCompanyName${i + 1}Input` as keyof typeof DOM_ELEMENTS])
-            .type(`alias company ${i + 1}`)
+            .type(`alias company ${i + 1}`, { delay: 0 })
             .should('have.value', `ALIAS COMPANY ${i + 1}`);
     }
   });

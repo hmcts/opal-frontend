@@ -362,11 +362,12 @@ describe('FinesMacMinorCreditor', () => {
     () => {
       setupComponent(null, 'company');
 
-      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc').should('have.value', 'REF123ABC');
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 });
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'REF123ABC');
 
       cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
-      cy.get(DOM_ELEMENTS.surnameInput).type('smith').should('have.value', 'SMITH');
-      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
     },
   );
 });
