@@ -320,16 +320,15 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
-  it('Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-272', '@PO-280'] }, () => {
+  it('Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344','@PO-1449'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.referenceInput).type('abd123fgt');
-    cy.get(DOM_ELEMENTS.postCodeInput).type('ne129et');
-
     cy.get(DOM_ELEMENTS.referenceInput).blur();
+    cy.get(DOM_ELEMENTS.postCodeInput).type('ne129et');
     cy.get(DOM_ELEMENTS.postCodeInput).blur();
 
-    cy.get(DOM_ELEMENTS.referenceInput).should('contain','ABD123FGT');
-    cy.get(DOM_ELEMENTS.postCodeInput).should('contain','NE129ET');
+    cy.get(DOM_ELEMENTS.referenceInput).should('have.value','ABD123FGT');
+    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value','NE129ET');
   });
 });

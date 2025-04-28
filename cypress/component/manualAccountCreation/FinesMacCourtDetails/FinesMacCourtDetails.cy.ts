@@ -319,12 +319,12 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
   });
-  it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-527'] }, () => {
+  it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
     cy.get(DOM_ELEMENTS.pcrInput).type('testpcr');
     cy.get(DOM_ELEMENTS.pcrInput).blur();
- 
- 
-    cy.get(DOM_ELEMENTS.pcrInput).should('contain', 'TESTPCR');
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value','TESTPCR');
+    
   });
 });
