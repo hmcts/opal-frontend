@@ -1,9 +1,7 @@
 <opal-lib-govuk-summary-card-list cardTitle="Parent or guardian details" summaryCardListId="parent-guardian-details">
   @if (!isReadOnly) {
     <ng-container actions>
-      <app-fines-mac-review-account-change-link
-        (emitChange)="changeParentGuardianDetails()"
-      ></app-fines-mac-review-account-change-link>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeParentGuardianDetails()"></li>
     </ng-container>
   }
   <ng-container content>
