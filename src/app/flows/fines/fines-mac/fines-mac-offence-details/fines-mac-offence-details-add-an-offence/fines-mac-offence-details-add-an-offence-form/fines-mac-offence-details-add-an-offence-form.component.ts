@@ -53,7 +53,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-
+import { GovUkErrorMessageComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-message';
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
   imports: [
@@ -71,6 +71,7 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
     GovukCancelLinkComponent,
     GovukRadiosConditionalComponent,
     GovukTextInputComponent,
+    GovUkErrorMessageComponent,
     MojBannerComponent,
     FinesMacOffenceDetailsMinorCreditorInformationComponent,
   ],
@@ -106,6 +107,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
   public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
+  public missingMinorCreditorSubmit!: boolean;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
@@ -510,6 +512,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     }
   }
 
+  override handleFormSubmit(event: SubmitEvent): void {
+    event.preventDefault();
+
+    this.missingMinorCreditorSubmit = true;
+
+    super.handleFormSubmit(event);
+  }
+
   /**
    * Handles the submit event for adding an offence.
    * This method calculates the remaining balance and handles the form submission.
@@ -539,6 +549,23 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     } else if (event.action === 'showHideDetails') {
       this.minorCreditorsHidden[event.index] = !this.minorCreditorsHidden[event.index];
     }
+  }
+
+  /**
+   * Adds an error message to the form error summary indicating that a minor creditor must be added.
+   *
+   * This method appends an error object to the `formErrorSummaryMessage` array with a specific
+   * field ID and a corresponding error message. The field ID is hardcoded as `minor-creditor-link-0`.
+   *
+   * @remarks
+   * This method is typically used to enforce validation rules related to minor creditors
+   * in the form and to provide user feedback when the validation fails.
+   */
+  public minorCreditorErrorSummary(rowIndex: boolean): void {
+    this.formErrorSummaryMessage.push({
+      fieldId: `fm_add-minor-creditor-${rowIndex}`,
+      message: 'You must add a minor creditor.',
+    });
   }
 
   /**

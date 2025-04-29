@@ -3446,15 +3446,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.8":
+"@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
   version: 0.0.8
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.8"
+  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=e5c763&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/11a7f099c87a4a65b0ab30d38d78c753fec4d56445e4dcc94d8d1e94eea01f2fe6f8e9697b330468af928761bdd93e5b133ae1e0c0a3c35e31fe7f87873d4ea7
+  checksum: 10/8587759fb3efb2bb9684956b5b3f09f440248caf0447ff64546c351f41909434bb236b79725164b3eca8e3a7b8b4ea891f14676820935fd4c567e41b4d42766e
   languageName: node
   linkType: hard
 
@@ -13438,7 +13438,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.8"
+    "@hmcts/opal-frontend-common": "file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.7"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
