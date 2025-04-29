@@ -452,19 +452,19 @@ describe('FinesMacPersonalDetailsComponent', () => {
   it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.lastNameInput).type('smith').should('have.value', 'SMITH');
-    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('xy12 abc').should('have.value', 'XY12 ABC');
-    cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c').should('have.value', 'AB123456C');
+    cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('xy12 abc', { delay: 0 }).should('have.value', 'XY12 ABC');
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasLastName(0)).type('alias1').should('have.value', 'ALIAS1');
+    cy.get(getAliasLastName(0)).type('alias1', { delay: 0 }).should('have.value', 'ALIAS1');
 
-    // Add the remaining four aliases using loop
+    // Add the remaining four aliases using a loop
     for (let i = 1; i < 5; i++) {
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
       cy.get(getAliasLastName(i))
-        .type(`alias${i + 1}`)
+        .type(`alias${i + 1}`, { delay: 0 })
         .should('have.value', `ALIAS${i + 1}`);
     }
   });

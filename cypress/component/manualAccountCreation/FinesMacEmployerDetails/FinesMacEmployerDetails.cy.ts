@@ -326,8 +326,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
-      cy.get(DOM_ELEMENTS.referenceInput).type('ref123abc').should('have.value', 'REF123ABC');
-      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd').should('have.value', 'AB12 3CD');
+      cy.get(DOM_ELEMENTS.referenceInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
     },
   );
 });
