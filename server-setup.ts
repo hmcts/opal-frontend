@@ -35,6 +35,10 @@ export function getRoutesConfig(): {
     frontendHostname:
       env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
     prefix: config.get('session.prefix'),
+    clientId: config.get('secrets.opal.AzureADClientId'),
+    clientSecret: config.get('secrets.opal.AzureADClientSecret'),
+    tenantId: config.get('secrets.opal.AzureADTenantId'),
+    microsoftUrl: config.get('microsoft.url'),
   };
 
   return { sessionExpiryConfiguration, routesConfiguration };
