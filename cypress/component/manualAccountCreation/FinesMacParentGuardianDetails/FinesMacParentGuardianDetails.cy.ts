@@ -527,7 +527,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1)(AC.2)Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
