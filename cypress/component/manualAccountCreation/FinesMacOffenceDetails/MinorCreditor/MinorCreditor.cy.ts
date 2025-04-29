@@ -356,4 +356,45 @@ describe('FinesMacMinorCreditor', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+
+  it('Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
+      formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
+      
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123', { delay: 0 });
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
+
+    formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+    cy.get(DOM_ELEMENTS.surnameInput).type('surname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.surnameInput).blur();
+
+    cy.get(DOM_ELEMENTS.postCodeInput).type('ne137fg', { delay: 0 });
+    cy.get(DOM_ELEMENTS.postCodeInput).blur();
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'ABGC123');
+    cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
+    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+  });
+
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-242', '@PO-1448'] },
+    () => {
+      setupComponent(null, 'AdultOrYouthOnly');
+
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
+
+      cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
+
 });

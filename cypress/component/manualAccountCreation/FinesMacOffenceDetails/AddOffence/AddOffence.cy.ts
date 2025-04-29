@@ -520,4 +520,6 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+
+  
 });
