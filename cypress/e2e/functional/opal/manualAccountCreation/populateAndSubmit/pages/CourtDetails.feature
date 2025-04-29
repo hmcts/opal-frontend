@@ -20,7 +20,7 @@ Feature: Manual account creation - Court Details
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "Bridport Magistrates' Court (121)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 

@@ -11,6 +11,7 @@ import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_deta
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -319,6 +320,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
   });
+  
   it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
@@ -333,6 +335,14 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.pcrInput).should('have.value','TESTPCR');
 
     cy.get(DOM_ELEMENTS.returnToACDetails).click();
-    
+  });
+
+  it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-272', '@PO-1448'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+
+    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
+
   });
 });
