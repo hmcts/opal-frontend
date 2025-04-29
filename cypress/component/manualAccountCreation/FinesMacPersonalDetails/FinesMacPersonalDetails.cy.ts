@@ -448,37 +448,37 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
   });
-  it('Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
-    cy.get(DOM_ELEMENTS.lastNameInput).type('lname');
+  it('(AC.1) (AC.2) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.titleInput).select('Mr');
+    cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
     cy.get(DOM_ELEMENTS.lastNameInput).blur();
-    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et');
+    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
     cy.get(DOM_ELEMENTS.postcodeInput).blur();
-    cy.get(DOM_ELEMENTS.niNumberInput).type('ab71234b');
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
     cy.get(DOM_ELEMENTS.niNumberInput).blur();
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasLastName(0)).type('alias1lastname');
-    cy.get(getAliasLastName(0)).blur();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    cy.get(getAliasLastName(1)).type('alias2lastname');
-    cy.get(getAliasLastName(1)).blur();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    cy.get(getAliasLastName(2)).type('alias3lastname');
-    cy.get(getAliasLastName(2)).blur();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    cy.get(getAliasLastName(3)).type('alias4lastname');
-    cy.get(getAliasLastName(3)).blur();
-    cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    cy.get(getAliasLastName(4)).type('alias5lastname');
-    cy.get(getAliasLastName(4)).blur();
 
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB71234B');
-    cy.get(getAliasLastName(0)).should('have.value', 'ALIAS1LASTNAME');
-    cy.get(getAliasLastName(1)).should('have.value', 'ALIAS2LASTNAME');
-    cy.get(getAliasLastName(2)).should('have.value', 'ALIAS3LASTNAME');
-    cy.get(getAliasLastName(3)).should('have.value', 'ALIAS4LASTNAME');
-    cy.get(getAliasLastName(4)).should('have.value', 'ALIAS5LASTNAME');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
+    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    cy.get(getAliasFirstName(0)).type('alias0fname');
+    cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
+
+    // Add the remaining four aliases using loop
+    for (let i = 1; i < 5; i++) {
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
+      cy.get(getAliasLastName(i))
+        .type(`alias${i + 1}lname`)
+        .should('have.value', `ALIAS${i + 1}LNAME`);
+    }
+
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
   });
 });

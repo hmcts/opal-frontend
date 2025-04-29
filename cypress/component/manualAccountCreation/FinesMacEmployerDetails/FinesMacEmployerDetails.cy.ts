@@ -320,15 +320,22 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
-  it('Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344','@PO-1449'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+  it('(AC.1) (AC.2) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
-    cy.get(DOM_ELEMENTS.referenceInput).type('abd123fgt');
+    cy.get(DOM_ELEMENTS.companyNameInput).type('Company XYZ Ltd.', { delay: 0 });
+    cy.get(DOM_ELEMENTS.companyNameInput).blur();
+    cy.get(DOM_ELEMENTS.addressLine1Input).type('12 Street', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).blur();
+    cy.get(DOM_ELEMENTS.referenceInput).type('abd123fgt', { delay: 0 });
     cy.get(DOM_ELEMENTS.referenceInput).blur();
-    cy.get(DOM_ELEMENTS.postCodeInput).type('ne129et');
+    cy.get(DOM_ELEMENTS.postCodeInput).type('ne129et', { delay: 0 });
     cy.get(DOM_ELEMENTS.postCodeInput).blur();
 
-    cy.get(DOM_ELEMENTS.referenceInput).should('have.value','ABD123FGT');
-    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value','NE129ET');
+    cy.get(DOM_ELEMENTS.referenceInput).should('have.value', 'ABD123FGT');
+    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE129ET');
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
   });
 });
