@@ -2,6 +2,7 @@ Feature: Manual account creation - Create Draft Account
     # Placeholder for refactored e2e tests
 
     Background:
+        >>>>>>> Stashed changes
         Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
         Then I am on the dashboard
 
@@ -9,7 +10,8 @@ Feature: Manual account creation - Create Draft Account
         Given I navigate to Manual Account Creation
         And I enter "West London" into the business unit search box
         And I select the "Fine" radio button
-        And I select the "Adult or youth only" radio button
+        # And I select the "Adult or Youth only" radio button
+        And I select the "Parent or Guardian to pay" radio button
         Then I click the "Continue" button
 
         # Court Details
@@ -18,7 +20,7 @@ Feature: Manual account creation - Create Draft Account
 
         When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
 
-        # Test For Capitalization in PCR - PO-1448
+        # Test For Capitalization in PCR - PO-1448/ PO-1449
         When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
         Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
@@ -34,17 +36,13 @@ Feature: Manual account creation - Create Draft Account
 
         When I select "Mr" from the "Title" dropdown
         And I enter "FNAME" into the "First names" field
+        When I enter "Addr Line 1" into the "Address line 1" field
 
-        # Test For Capitalization in Last Name - PO-1448
+        # Test For Capitalization in Last Name - PO-1448/PO-1449
         When I enter "lname" into the "Last name" field
         Then I see "LNAME" in the "Last name" field
 
-
-        When I enter "Addr Line 1" into the "Address line 1" field
-        And I enter "Addr Line 2" into the "Address line 2" field
-        And I enter "Addr Line 3" into the "Address line 3" field
-
-        # Test For Capitalization in Post Code - PO-1448
+        # Test For Capitalization in Post Code - PO-1448/PO-1449
         When I enter "te1 1st" into the "Postcode" field
         Then I see "TE1 1ST" in the "Postcode" field
 
@@ -62,35 +60,35 @@ Feature: Manual account creation - Create Draft Account
         When I select the "Add aliases" checkbox
         And I set the "Alias 1", "First names" to "Alias 1 FNAME"
 
-        # Test For Capitalization in Alias 1 Last Name - PO-1448
+        # Test For Capitalization in Alias 1 Last Name - PO-1448/PO-1449
         When I set the "Alias 1", "Last name" to "Alias 1 lname"
         Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
 
         And I click the "Add another alias" button
         And I set the "Alias 2", "First names" to "Alias 2 FNAME"
 
-        # Test For Capitalization in Alias 2 Last Name - PO-1448
+        # Test For Capitalization in Alias 2 Last Name - PO-1448/PO-1449
         When I set the "Alias 2", "Last name" to "Alias 2 lname"
         Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
 
         And I click the "Add another alias" button
         And I set the "Alias 3", "First names" to "Alias 3 FNAME"
 
-        # Test For Capitalization in Alias 3 Last Name - PO-1448
+        # Test For Capitalization in Alias 3 Last Name - PO-1448/PO-1449
         And I set the "Alias 3", "Last name" to "Alias 3 lname"
         Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
 
         And I click the "Add another alias" button
         And I set the "Alias 4", "First names" to "Alias 4 FNAME"
 
-        # Test For Capitalization in Alias 4 Last Name - PO-1448
+        # Test For Capitalization in Alias 4 Last Name - PO-1448/PO-1449
         And I set the "Alias 4", "Last name" to "Alias 4 lname"
         Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
 
         And I click the "Add another alias" button
         And I set the "Alias 5", "First names" to "Alias 5 FNAME"
 
-        # Test For Capitalization in Alias 5 Last Name - PO-1448
+        # Test For Capitalization in Alias 5 Last Name - PO-1448/PO-1449
         And I set the "Alias 5", "Last name" to "Alias 5 lname"
         Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
 
@@ -119,7 +117,7 @@ Feature: Manual account creation - Create Draft Account
         And I select "Mr" from the "Title" dropdown
         And I enter "FNAME" into the "First name" field
 
-        # Test For Capitalization in Last Name - PO-1448
+        # Test For Capitalization in Last Name - PO-1448/ PO-1449
         When I enter "lname" into the "Last name" field
         Then I see "LNAME" in the "Last name" field
 
@@ -127,7 +125,7 @@ Feature: Manual account creation - Create Draft Account
         And I enter "Addr2" into the "Address Line 2" field
         And I enter "Addr3" into the "Address Line 3" field
 
-        # Test Capitalization in Postcode - PO-1448
+        # Test Capitalization in Postcode - PO-1448/PO-1449
         When I enter "te1 1st" into the "Postcode" field
         Then I see "TE1 1ST" in the "Postcode" field
 
@@ -137,7 +135,7 @@ Feature: Manual account creation - Create Draft Account
         And I enter "123456" into the "Sort code" field
         And I enter "12345678" into the "Account number" field
 
-        # Test Capitalization in Payment Reference - PO-1448
+        # Test Capitalization in Payment Reference - PO-1448/PO-1449
         When I enter "ref" into the "Payment reference" field
         Then I see "REF" in the "Payment reference" field
 
@@ -192,7 +190,7 @@ Feature: Manual account creation - Create Draft Account
         And I enter "Addr4" into the "Address line 4" field
         And I enter "Addr5" into the "Address line 5" field
 
-        # Test Capitalization in Postcode - PO-1448
+        # Test Capitalization in Postcode - PO-1448/PO-1449
         When I enter "te12 3st" into the "Postcode" field
         Then I see "TE12 3ST" in the "Postcode" field
         When I enter "te12 3st" into the "Postcode" field
@@ -203,7 +201,51 @@ Feature: Manual account creation - Create Draft Account
 
         Then I see the status of "Employer details" is "Provided"
 
+        #Parent or guardian to pay
+        When I enter "fname" into the "First names" field
+        And I enter "lname" into the "Last name" field
+        And I see "LNAME" in the "Last name" field
+        And I enter "01/01/2000" into the Date of birth field
+        And I enter "ab123456c" into the "National Insurance number" field
+        And I see "AB123456C" in the "National Insurance number" field
+        And I enter "Address line 1" into the "Address line 1" field
 
+        When I select the "Add aliases" checkbox
+        And I set the "Alias 1", "First names" to "Alias 1 FNAME"
+
+        # Test For Capitalization in Alias 1 Last Name - PO-1448/PO-1449
+        When I set the "Alias 1", "Last name" to "Alias 1 lname"
+        Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+
+        And I click the "Add another alias" button
+        And I set the "Alias 2", "First names" to "Alias 2 FNAME"
+
+        # Test For Capitalization in Alias 2 Last Name - PO-1448/PO-1449
+        When I set the "Alias 2", "Last name" to "Alias 2 lname"
+        Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+
+        And I click the "Add another alias" button
+        And I set the "Alias 3", "First names" to "Alias 3 FNAME"
+
+        # Test For Capitalization in Alias 3 Last Name - PO-1448/PO-1449
+        And I set the "Alias 3", "Last name" to "Alias 3 lname"
+        Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+
+        And I click the "Add another alias" button
+        And I set the "Alias 4", "First names" to "Alias 4 FNAME"
+
+        # Test For Capitalization in Alias 4 Last Name - PO-1448/PO-1449
+        And I set the "Alias 4", "Last name" to "Alias 4 lname"
+        Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
+
+        And I click the "Add another alias" button
+        And I set the "Alias 5", "First names" to "Alias 5 FNAME"
+
+        # Test For Capitalization in Alias 5 Last Name - PO-1448/PO-1449
+        And I set the "Alias 5", "Last name" to "Alias 5 lname"
+        Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+
+        And I click the "Return to account details" button
 
         # Check Account
         And I see the "Check account" button
@@ -229,5 +271,7 @@ Feature: Manual account creation - Create Draft Account
         Then I see the following in the "Offence details" table:
             | Payment Reference | AB123456C |
             | Surname           | TE12 3ST  |
+
+
 
 
