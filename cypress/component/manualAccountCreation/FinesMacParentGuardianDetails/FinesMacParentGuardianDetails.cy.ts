@@ -526,4 +526,47 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+
+  it('(AC.1)(AC.2)Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.firstNameInput).type('fname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.firstNameInput).blur();
+
+    cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.lastNameInput).blur();
+
+    cy.get(DOM_ELEMENTS.addressLine1Input).type('12 avenue', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).blur();
+
+    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
+    cy.get(DOM_ELEMENTS.postcodeInput).blur();
+
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
+    cy.get(DOM_ELEMENTS.niNumberInput).blur();
+
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('ap12 slu', { delay: 0 });
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).blur();
+
+    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    cy.get(getAliasFirstName(0)).type('alias0fname');
+    cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('have.value', 'AP12 SLU');
+
+    // Add the remaining four aliases using loop
+    for (let i = 1; i < 5; i++) {
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
+      cy.get(getAliasLastName(i))
+        .type(`alias${i + 1}lname`)
+        .should('have.value', `ALIAS${i + 1}LNAME`);
+    }
+
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+  });
 });
