@@ -3448,13 +3448,13 @@ __metadata:
 
 "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
   version: 0.0.8
-  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=e5c763&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=9eaadc&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/8587759fb3efb2bb9684956b5b3f09f440248caf0447ff64546c351f41909434bb236b79725164b3eca8e3a7b8b4ea891f14676820935fd4c567e41b4d42766e
+  checksum: 10/a777132e0eb99ca9d799867a9fc7421ea3ed1bc376508433349600074e0ba69b42a988ea7b769ae89ce67e9d51c251f87ca3a2a33afc1e9004b4e66971a3ce14
   languageName: node
   linkType: hard
 

@@ -204,20 +204,13 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'minor'
                         ) {
-                          @if (missingMinorCreditorSubmit) {
-                            <opal-lib-gov-uk-error-message errors="Add minor creditor details" errorId="error-message">
-                              <a
-                                id = "fm_offence_add-minor-creditor{{rowIndex}}"
-                                class="govuk-link govuk-link--no-visited-state"
-                                (click)="goToMinorCreditor(rowIndex)"
-                                (keyup.enter)="goToMinorCreditor(rowIndex)"
-                                tabindex="0"
-                              >
-                                Add minor creditor details
-                              </a>
-                            </opal-lib-gov-uk-error-message>
-                          } @else {
+                          <opal-lib-gov-uk-error-message
+                            [error]="missingMinorCreditorSubmit[rowIndex]"
+                            errorMessage="Add minor creditor details"
+                            elementId="fm_offence_add-minor-creditor{{ rowIndex }}"
+                          >
                             <a
+                              id="fm_offence_add-minor-creditor{{ rowIndex }}"
                               class="govuk-link govuk-link--no-visited-state"
                               (click)="goToMinorCreditor(rowIndex)"
                               (keyup.enter)="goToMinorCreditor(rowIndex)"
@@ -225,7 +218,7 @@
                             >
                               Add minor creditor details
                             </a>
-                          }
+                          </opal-lib-gov-uk-error-message>
                         }
                       }
                     </div>
