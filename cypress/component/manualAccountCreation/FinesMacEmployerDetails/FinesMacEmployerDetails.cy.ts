@@ -319,4 +319,15 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
+
+  it(
+    '(AC.1) should convert Employer reference and Employer postcode to uppercase on user input',
+    { tags: ['@PO-272', '@PO-1448'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+
+      cy.get(DOM_ELEMENTS.referenceInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
 });
