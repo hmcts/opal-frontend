@@ -11,7 +11,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_company_details_company_name']"
     [errors]="formControlErrorMessages['fm_company_details_company_name']"
-    opalLibCapitaliseAllCharacters
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_company_details_company_name']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -45,7 +45,13 @@
             [errors]="
               formControlErrorMessages[aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName]
             "
-            opalLibCapitaliseAllCharacters
+            [opalLibCapitaliseAllCharacters]="
+              form.get([
+                'fm_company_details_aliases',
+                rowIndex,
+                aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
+              ])!
+            "
           ></opal-lib-govuk-text-input>
         </fieldset>
       }
@@ -105,7 +111,7 @@
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_company_details_postcode']"
       [errors]="formControlErrorMessages['fm_company_details_postcode']"
-      opalLibCapitaliseAllCharacters
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_company_details_postcode']"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
