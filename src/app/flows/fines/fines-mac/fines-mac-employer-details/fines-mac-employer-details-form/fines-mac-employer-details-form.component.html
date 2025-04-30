@@ -21,7 +21,7 @@
     hintText="If employee reference not known, add National Insurance number"
     [control]="form.controls['fm_employer_details_employer_reference']"
     [errors]="formControlErrorMessages['fm_employer_details_employer_reference']"
-    opalLibCapitaliseAllCharacters
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_employer_details_employer_reference']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
     labelText="Employer email address"
@@ -86,7 +86,7 @@
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_employer_details_employer_post_code']"
       [errors]="formControlErrorMessages['fm_employer_details_employer_post_code']"
-      opalLibCapitaliseAllCharacters
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_employer_details_employer_post_code']"
     ></opal-lib-govuk-text-input>
   </fieldset>
   <div class="govuk-grid-row">
