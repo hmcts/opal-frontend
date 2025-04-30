@@ -31,7 +31,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_personal_details_surname']"
     [errors]="formControlErrorMessages['fm_personal_details_surname']"
-    opalLibCapitaliseAllCharacters
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_personal_details_surname']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -78,7 +78,11 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_surname'].controlName]"
-            opalLibCapitaliseAllCharacters
+            [opalLibCapitaliseAllCharacters]="form.get([
+                'fm_personal_details_aliases',
+                rowIndex,
+                aliasControl['fm_personal_details_alias_surname'].controlName,
+              ])!"
           ></opal-lib-govuk-text-input>
         </fieldset>
       }
@@ -136,7 +140,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_personal_details_national_insurance_number']"
     [errors]="formControlErrorMessages['fm_personal_details_national_insurance_number']"
-    opalLibCapitaliseAllCharacters
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_personal_details_national_insurance_number']"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
@@ -170,7 +174,7 @@
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_personal_details_post_code']"
       [errors]="formControlErrorMessages['fm_personal_details_post_code']"
-      opalLibCapitaliseAllCharacters
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_personal_details_post_code']"
     ></opal-lib-govuk-text-input>
   </fieldset>
   @if (defendantType === 'adultOrYouthOnly') {
@@ -194,7 +198,7 @@
         labelClasses="govuk-label--s"
         [control]="form.controls['fm_personal_details_vehicle_registration_mark']"
         [errors]="formControlErrorMessages['fm_personal_details_vehicle_registration_mark']"
-        opalLibCapitaliseAllCharacters
+        [opalLibCapitaliseAllCharacters]="form.controls['fm_personal_details_vehicle_registration_mark']"
       ></opal-lib-govuk-text-input>
     </fieldset>
   }

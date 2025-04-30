@@ -53,7 +53,7 @@
                 inputClasses="govuk-!-width-two-thirds"
                 [control]="form.controls['fm_offence_details_minor_creditor_surname']"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_surname']"
-                opalLibCapitaliseAllCharacters
+                [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_surname']"
               ></opal-lib-govuk-text-input>
             </div>
           </div>
@@ -109,7 +109,7 @@
       inputClasses="govuk-!-width-one-third"
       [control]="form.controls['fm_offence_details_minor_creditor_post_code']"
       [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_post_code']"
-      opalLibCapitaliseAllCharacters
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_post_code']"
     ></opal-lib-govuk-text-input>
   </fieldset>
   <fieldset class="govuk-fieldset">
@@ -156,7 +156,7 @@
           inputClasses="govuk-!-width-two-thirds"
           [control]="form.controls['fm_offence_details_minor_creditor_bank_account_ref']"
           [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_ref']"
-          opalLibCapitaliseAllCharacters
+          [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_bank_account_ref']"
         ></opal-lib-govuk-text-input>
       </div>
     }
