@@ -52,8 +52,6 @@ Feature: Manual account creation - Create Draft Account
         And I enter "FORD FOCUS" into the "Make and model" field
 
         # Test For Capitalization in VRN - PO-1448
-        When I enter "ab12 cde" into the "Vehicle registration number (VRN)" field
-        Then I see "AB12 CDE" in the "Vehicle registration number (VRN)" field
         When I enter "ab12 cde" into the "Registration number" field
         Then I see "AB12 CDE" in the "Registration number" field
 
