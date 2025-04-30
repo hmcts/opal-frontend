@@ -469,9 +469,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
     formArray.controls.forEach((control, rowIndex) => {
       const needsCreditor = control.get(`fm_offence_details_needs_creditor_${rowIndex}`)?.value;
-      const selectedCreditor = control.get(`fm_offence_details_creditor_${rowIndex}`)?.value;
+      const creditorControl = control.get(`fm_offence_details_creditor_${rowIndex}`);
+      const selectedCreditor = creditorControl?.value;
       if (needsCreditor && selectedCreditor === 'minor' && !this.minorCreditors?.[rowIndex]) {
-        control.get(`fm_offence_details_creditor_${rowIndex}`)?.setErrors({ minorCreditorMissing: true });
+        creditorControl?.setErrors({ minorCreditorMissing: true });
       }
     });
   }
