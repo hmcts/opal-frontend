@@ -320,8 +320,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
-
-  it('(AC.1) (AC.2) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
@@ -350,5 +349,4 @@ describe('FinesMacEmployerDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
     },
   );
-
 });

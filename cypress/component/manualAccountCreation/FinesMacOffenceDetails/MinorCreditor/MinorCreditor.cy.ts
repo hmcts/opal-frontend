@@ -357,15 +357,15 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
-      formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
-      formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
-      formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
-      
+    formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
+    formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
+    formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
+
     cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123', { delay: 0 });
     cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
 
@@ -396,5 +396,4 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
     },
   );
-
 });

@@ -320,8 +320,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
   });
-  
-  it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
@@ -332,7 +331,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
     cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
 
-    cy.get(DOM_ELEMENTS.pcrInput).should('have.value','TESTPCR');
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'TESTPCR');
 
     cy.get(DOM_ELEMENTS.returnToACDetails).click();
   });
@@ -343,6 +342,5 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234', { delay: 0 });
 
     cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
-
   });
 });
