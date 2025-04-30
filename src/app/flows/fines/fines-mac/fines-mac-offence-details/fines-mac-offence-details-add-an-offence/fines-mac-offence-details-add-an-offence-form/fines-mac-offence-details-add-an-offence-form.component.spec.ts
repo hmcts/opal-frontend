@@ -750,6 +750,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should call checkImpositionMinorCreditors and super.handleFormSubmit on handleFormSubmit', () => {
     const event = new SubmitEvent('submit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const checkImpositionSpy = spyOn(component as any, 'checkImpositionMinorCreditors');
     const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as jasmine.Spy;
 
