@@ -321,7 +321,6 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
   });
   it('(AC.1) Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
