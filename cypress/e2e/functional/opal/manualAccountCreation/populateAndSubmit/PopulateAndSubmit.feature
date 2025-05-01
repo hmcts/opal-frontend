@@ -6,7 +6,7 @@ Feature: Manual account creation - Create Draft Account
     Then I am on the dashboard
 
   @PO-1448
-  Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page
+  Scenario: As a user I can create a draft account for the Adult or youth only defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
@@ -23,7 +23,7 @@ Feature: Manual account creation - Create Draft Account
     When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
     Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-    When I enter "bridport" into the "Enforcement court" search box
+    When I enter "ACTON (820)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -41,9 +41,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see "LNAME" in the "Last name" field
 
 
-    When I enter "Addr Line 1" into the "Address line 1" field
-    And I enter "Addr Line 2" into the "Address line 2" field
-    And I enter "Addr Line 3" into the "Address line 3" field
+    When I enter "Addr1" into the "Address line 1" field
 
     # Test For Capitalization in Post Code - PO-1448
     When I enter "te1 1st" into the "Postcode" field
@@ -61,40 +59,38 @@ Feature: Manual account creation - Create Draft Account
     Then I see "QQ123456C" in the "National insurance number" field
 
     When I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "Alias 1 FNAME"
 
     # Test For Capitalization in Alias 1 Last Name - PO-1448
-    When I set the "Alias 1", "Last name" to "Alias 1 lname"
-    Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
 
     And I click the "Add another alias" button
-    And I set the "Alias 2", "First names" to "Alias 2 FNAME"
 
     # Test For Capitalization in Alias 2 Last Name - PO-1448
-    When I set the "Alias 2", "Last name" to "Alias 2 lname"
-    Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
 
     And I click the "Add another alias" button
-    And I set the "Alias 3", "First names" to "Alias 3 FNAME"
 
     # Test For Capitalization in Alias 3 Last Name - PO-1448
-    And I set the "Alias 3", "Last name" to "Alias 3 lname"
-    Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
 
     And I click the "Add another alias" button
-    And I set the "Alias 4", "First names" to "Alias 4 FNAME"
 
     # Test For Capitalization in Alias 4 Last Name - PO-1448
-    And I set the "Alias 4", "Last name" to "Alias 4 lname"
-    Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
 
     And I click the "Add another alias" button
-    And I set the "Alias 5", "First names" to "Alias 5 FNAME"
-
     # Test For Capitalization in Alias 5 Last Name - PO-1448
-    And I set the "Alias 5", "Last name" to "Alias 5 lname"
-    Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
-
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
     And I click the "Return to account details" button
 
@@ -217,22 +213,31 @@ Feature: Manual account creation - Create Draft Account
       | Prosecutor Case Reference (PCR) | ABCD1234A |
 
     Then I see the following in the "Personal details" table:
-      | Last name                 | LNAME                                                                                                                                       |
-      | Postcode                  | TE1 1ST                                                                                                                                     |
-      | Registration number       | AB12 CDE                                                                                                                                    |
-      | National Insurance number | QQ123456C                                                                                                                                   |
-      | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+      | Last name                 | LNAME                                                                     |
+      | Address                   | Addr1  TE1 1ST                                                            |
+      | Registration number       | AB12 CDE                                                                  |
+      | National Insurance number | QQ123456C                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
 
-    Then I see the following in the "Employee details" table:
-      | Employee Reference | AB123456C |
-      | Postcode           | TE12 3ST  |
+    Then I see the following in the "Employer details" table:
+      | Employee reference | AB123456C                                   |
+      | Employer address   | Addr1  Addr2  Addr3  Addr4  Addr5  TE12 3ST |
 
-    Then I see the following in the "Offence details" table:
-      | Payment Reference | AB123456C |
-      | Surname           | TE12 3ST  |
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation                 |
+      | creditor          | Mr FNAME LNAME               |
+      | amountImposed     | 300                          |
+      | amountPaid        | 100                          |
+      | balanceRemaining  | 200                          |
+      | Address           | Addr1  Addr2  Addr3  TE1 1ST |
+      | Payment method    | Pay by BACS                  |
+      | Name on account   | F LNAME                      |
+      | Sort code         | 12-34-56                     |
+      | Account number    | 12345678                     |
+      | Payment reference | REF                          |
 
   @PO-1450
-  Scenario: Verify capitalization is applied correctly on the "Check Account Details" page for Company Details
+  Scenario: As a user I can create a draft account for the Company defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
@@ -249,7 +254,7 @@ Feature: Manual account creation - Create Draft Account
     When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
     Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-    When I enter "bridport" into the "Enforcement court" search box
+    When I enter "ACTON (820)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -280,8 +285,6 @@ Feature: Manual account creation - Create Draft Account
     Then I see "LNAME" in the "Last name" field
 
     And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
 
     # Test Capitalization in Postcode @PO-1450
     When I enter "te1 1st" into the "Postcode" field
@@ -331,36 +334,34 @@ Feature: Manual account creation - Create Draft Account
 
     And I select the "Add company aliases" checkbox
     # Test Capitalization in Company Alias 1 @PO-1450
-    When I set the "Alias 1", "Company name" to "Alias 1s"
-    Then I see "Alias 1", "Company name" is set to "ALIAS 1S"
+    When I set the "Alias 1", "Company name" to "cname1"
+    Then I see "Alias 1", "Company name" is set to "CNAME1"
 
     And I click the "Add another alias" button
 
     # Test Capitalization in Company Alias 2 @PO-1450
-    When I set the "Alias 2", "Company name" to "Alias 2s"
-    Then I see "Alias 2", "Company name" is set to "ALIAS 2S"
+    When I set the "Alias 2", "Company name" to "cname2"
+    Then I see "Alias 2", "Company name" is set to "CNAME2"
 
     And I click the "Add another alias" button
 
     # Test Capitalization in Company Alias 3 @PO-1450
-    When I set the "Alias 3", "Company name" to "Alias 3s"
-    Then I see "Alias 3", "Company name" is set to "ALIAS 3S"
+    When I set the "Alias 3", "Company name" to "cname3"
+    Then I see "Alias 3", "Company name" is set to "CNAME3"
 
     And I click the "Add another alias" button
 
     # Test Capitalization in Company Alias 4 @PO-1450
-    When I set the "Alias 4", "Company name" to "Alias 4s"
-    Then I see "Alias 4", "Company name" is set to "ALIAS 4S"
+    When I set the "Alias 4", "Company name" to "cname4"
+    Then I see "Alias 4", "Company name" is set to "CNAME4"
 
     And I click the "Add another alias" button
 
     # Test Capitalization in Company Alias 5 @PO-1450
-    When I set the "Alias 5", "Company name" to "Alias 5s"
-    Then I see "Alias 5", "Company name" is set to "ALIAS 5S"
+    When I set the "Alias 5", "Company name" to "cname5"
+    Then I see "Alias 5", "Company name" is set to "CNAME5"
 
     And I enter "Addr1" into the "Address line 1" field
-    And I enter "Addr2" into the "Address line 2" field
-    And I enter "Addr3" into the "Address line 3" field
 
     # Test Capitalization in Postcode
     When I enter "te1 1st" into the "Postcode" field
@@ -379,12 +380,30 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following in the "Court details" table:
       | Prosecutor Case Reference (PCR) | ABCD1234A |
 
+    Then I see the following in the "Company details" table:
+      | Company name | COMPANY NAME                           |
+      | Address      | Addr1  TE1 1ST                         |
+      | Aliases      | CNAME1  CNAME2  CNAME3  CNAME4  CNAME5 |
 
-    Then I see the following in the "Offence details" table:
-      | Payment Reference | AB123456C |
-      | Surname           | TE12 3ST  |
 
-  Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for AYPG
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation   |
+      | creditor          | Mr FNAME LNAME |
+      | amountImposed     | 300            |
+      | amountPaid        | 100            |
+      | balanceRemaining  | 200            |
+      | Address           | Addr1  TE1 1ST |
+      | Payment method    | Pay by BACS    |
+      | Name on account   | F LNAME        |
+      | Sort code         | 12-34-56       |
+      | Account number    | 12345678       |
+      | Payment reference | REF            |
+
+  @PO-1449
+  Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
+    Given I navigate to Manual Account Creation
+    And I enter "West London" into the business unit search box
+    And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
 
@@ -420,39 +439,37 @@ Feature: Manual account creation - Create Draft Account
     Then I see "AB122398B" in the "National insurance number" field
 
     When I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "Alias 1 FNAME"
 
     # Test For Capitalization in Alias 1 Last Name - PO-1449
-    When I set the "Alias 1", "Last name" to "Alias 1 lname"
-    Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
 
     And I click the "Add another alias" button
-    And I set the "Alias 2", "First names" to "Alias 2 FNAME"
 
     # Test For Capitalization in Alias 2 Last Name - PO-1449
-    When I set the "Alias 2", "Last name" to "Alias 2 lname"
-    Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
 
     And I click the "Add another alias" button
-    And I set the "Alias 3", "First names" to "Alias 3 FNAME"
-
     # Test For Capitalization in Alias 3 Last Name - PO-1449
-    And I set the "Alias 3", "Last name" to "Alias 3 lname"
-    Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
 
     And I click the "Add another alias" button
-    And I set the "Alias 4", "First names" to "Alias 4 FNAME"
 
     # Test For Capitalization in Alias 4 Last Name - PO-1449
-    And I set the "Alias 4", "Last name" to "Alias 4 lname"
-    Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
-
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
     And I click the "Add another alias" button
-    And I set the "Alias 5", "First names" to "Alias 5 FNAME"
 
     # Test For Capitalization in Alias 5 Last Name - PO-1449
-    And I set the "Alias 5", "Last name" to "Alias 5 lname"
-    Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
 
     And I click the "Return to account details" button
@@ -496,39 +513,34 @@ Feature: Manual account creation - Create Draft Account
     Then I see "AB122398B" in the "National insurance number" field
 
     When I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "Alias 1 FNAME"
-
     # Test For Capitalization in Alias 1 Last Name - PO-1449
-    When I set the "Alias 1", "Last name" to "Alias 1 lname"
-    Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
-
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
     And I click the "Add another alias" button
-    And I set the "Alias 2", "First names" to "Alias 2 FNAME"
 
     # Test For Capitalization in Alias 2 Last Name - PO-1449
-    When I set the "Alias 2", "Last name" to "Alias 2 lname"
-    Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
-
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
     And I click the "Add another alias" button
-    And I set the "Alias 3", "First names" to "Alias 3 FNAME"
 
     # Test For Capitalization in Alias 3 Last Name - PO-1449
-    And I set the "Alias 3", "Last name" to "Alias 3 lname"
-    Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
-
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
     And I click the "Add another alias" button
-    And I set the "Alias 4", "First names" to "Alias 4 FNAME"
 
     # Test For Capitalization in Alias 4 Last Name - PO-1449
-    And I set the "Alias 4", "Last name" to "Alias 4 lname"
-    Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
-
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
     And I click the "Add another alias" button
-    And I set the "Alias 5", "First names" to "Alias 5 FNAME"
 
     # Test For Capitalization in Alias 5 Last Name - PO-1449
-    And I set the "Alias 5", "Last name" to "Alias 5 lname"
-    Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
 
     And I click the "Return to account details" button
@@ -606,25 +618,34 @@ Feature: Manual account creation - Create Draft Account
       | Prosecutor Case Reference (PCR) | ABCD1234A |
 
     Then I see the following in the "Parent or guardian details" table:
-      | Last name                 | LNAME                                                                                                                                       |
-      | Postcode                  | RG12 8EU                                                                                                                                    |
-      | National Insurance number | AB122398B                                                                                                                                   |
-      | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+      | Surname                   | LNAME                                                                     |
+      | Address                   | 1 Address Street  RG12 8EU                                                |
+      | National Insurance number | AB122398B                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
 
 
-    Then I see the following in the "Personal details" table:
-      | Last name                 | LNAME                                                                                                                                       |
-      | Postcode                  | RG12 8EU                                                                                                                                    |
-      | National Insurance number | AB122398B                                                                                                                                   |
-      | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+    Then I see the following in the "Defendant details" table:
+      | Last name                 | LNAME                                                                     |
+      | Address                   | 1 Address Street  RG12 8EU                                                |
+      | National Insurance number | AB122398B                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
 
     Then I see the following in the "Employer details" table:
-      | Employee Reference | AB122398B |
-      | Postcode           | RG12 8EU  |
+      | Employee reference | AB122398B                  |
+      | Employer address   | 1 Address Street  RG12 8EU |
 
-    Then I see the following in the "Offences and impositions" table:
-      | Payment Reference | REF123AB |
-      | Surname           | LNAME    |
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation   |
+      | creditor          | Mr FNAME LNAME |
+      | amountImposed     | 300            |
+      | amountPaid        | 100            |
+      | balanceRemaining  | 200            |
+      | Address           | NE13 8ED       |
+      | Payment method    | Pay by BACS    |
+      | Name on account   | F LNAME        |
+      | Sort code         | 12-34-56       |
+      | Account number    | 12345678       |
+      | Payment reference | REF123AB       |
 
 
 
