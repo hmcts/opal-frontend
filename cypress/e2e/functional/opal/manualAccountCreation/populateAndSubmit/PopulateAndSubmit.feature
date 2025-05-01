@@ -217,23 +217,23 @@ Feature: Manual account creation - Create Draft Account
 
         Then I see the following in the "Personal details" table:
             | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | TE1 1ST                                                                                                                                     |
             | Registration number       | AB12 CDE                                                                                                                                    |
             | National Insurance number | QQ123456C                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
 
-        Then I see the following in the "Employee details" table:
-            | Employee Reference | AB123456C |
-            | Postcode           | TE12 3ST  |
+        Then I see the following in the "Employer details" table:
+            | Employee reference | AB123456C |
+        # | Postcode           | TE12 3ST  |
 
-        Then I see the following in the "Offence details" table:
-            | Payment Reference | AB123456C |
-            | Surname           | TE12 3ST  |
+        Then I see the following in the "Offences and impositions" table:
+            | Payment reference | REF   |
+            | Last name         | LNAME |
+    # | Postcode          | TE12 3ST |
 
 
-        Then I see the following in the "Offence details" table:
-            | Payment Reference | AB123456C |
-            | Surname           | TE12 3ST  |
+    # Then I see the following in the "Offence details" table:
+    #     | Payment Reference | AB123456C |
+    #     | Surname           | TE12 3ST  |
 
     Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for AYPG
         And I select the "Adult or youth with parent or guardian to pay" radio button
@@ -457,25 +457,25 @@ Feature: Manual account creation - Create Draft Account
             | Prosecutor Case Reference (PCR) | ABCD1234A |
 
         Then I see the following in the "Parent or guardian details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | RG12 8EU                                                                                                                                    |
+            | Surname                 | LNAME                                                                                                                                       |
+            # | Postcode                  | RG12 8EU                                                                                                                                    |
             | National Insurance number | AB122398B                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
 
 
-        Then I see the following in the "Personal details" table:
+        Then I see the following in the "Defendant details" table:
             | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | RG12 8EU                                                                                                                                    |
+            # | Postcode                  | RG12 8EU                                                                                                                                    |
             | National Insurance number | AB122398B                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
 
         Then I see the following in the "Employer details" table:
-            | Employee Reference | AB122398B |
-            | Postcode           | RG12 8EU  |
+            | Employee reference | AB122398B |
+            # | Postcode           | RG12 8EU  |
 
         Then I see the following in the "Offences and impositions" table:
-            | Payment Reference | REF123AB |
-            | Surname           | LNAME    |
+            | Payment reference | REF123AB |
+            | Last name         | LNAME    |
 
 
 

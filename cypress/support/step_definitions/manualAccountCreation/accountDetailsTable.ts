@@ -1,5 +1,6 @@
 import { DataTable, Then } from '@badeball/cypress-cucumber-preprocessor';
 import { formatDateString, calculateWeeksInFuture, calculateWeeksInPast } from '../../../support/utils/dateUtils';
+import { should } from 'chai';
 
 Then('I see the business unit is {string}', (businessUnit: string) => {
   cy.get('#accountDetailsBusinessUnitValue').should('contain.text', businessUnit);
@@ -77,7 +78,8 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
         .next()
         .invoke('text')
         .then((actualText) => {
-          expect(actualText.trim()).to.equal(value);
+        expect(actualText.trim()).to.equal(value);
+        //expect(actualText.trim()).have.value(value);
         });
     }
   });
