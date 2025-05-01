@@ -471,6 +471,11 @@ Feature: Manual account creation - Create Draft Account
     When I set the "Alias 5", "Last name" to "lname5"
     Then I see "Alias 5", "Last name" is set to "LNAME5"
 
+    # Test For Capitalization in Car Reg - PO-1449
+    And I enter "CarMake" into the "Make and model" field
+    And I enter "carreg" into the "Registration number" field
+    Then I see "CARREG" in the "Registration number" field
+
 
     And I click the "Return to account details" button
 
@@ -622,6 +627,7 @@ Feature: Manual account creation - Create Draft Account
       | Address                   | 1 Address Street  RG12 8EU                                                |
       | National Insurance number | AB122398B                                                                 |
       | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
+      | Registration number       | CARREG                                                                    |
 
 
     Then I see the following in the "Defendant details" table:
