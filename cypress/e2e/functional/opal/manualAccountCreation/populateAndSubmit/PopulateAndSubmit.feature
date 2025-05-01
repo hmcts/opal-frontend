@@ -8,7 +8,7 @@ Feature: Manual account creation - Create Draft Account
         And I enter "West London" into the business unit search box
         And I select the "Fine" radio button
 
-    Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for adult or youth only
+    Scenario: PO-1448 - Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for adult or youth only
         And I select the "Adult or youth only" radio button
         Then I click the "Continue" button
 
@@ -198,12 +198,9 @@ Feature: Manual account creation - Create Draft Account
         When I enter "te12 3st" into the "Postcode" field
         Then I see "TE12 3ST" in the "Postcode" field
 
-
         And I click the "Return to account details" button
 
         Then I see the status of "Employer details" is "Provided"
-
-
 
         # Check Account
         And I see the "Check account" button
@@ -216,26 +213,23 @@ Feature: Manual account creation - Create Draft Account
             | Prosecutor Case Reference (PCR) | ABCD1234A |
 
         Then I see the following in the "Personal details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | TE1 1ST                                                                                                                                     |
-            | Registration number       | AB12 CDE                                                                                                                                    |
-            | National Insurance number | QQ123456C                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+            | Last name                 | LNAME                                                                                                                                           |
+            | Address                   | Addr Line 1  Addr Line 2  Addr Line 3  TE1 1ST                                                                                                  |
+            | Registration number       | AB12 CDE                                                                                                                                        |
+            | National Insurance number | QQ123456C                                                                                                                                       |
+            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME  Alias 2 FNAME ALIAS 2 LNAME  Alias 3 FNAME ALIAS 3 LNAME  Alias 4 FNAME ALIAS 4 LNAME  Alias 5 FNAME ALIAS 5 LNAME |
 
-        Then I see the following in the "Employee details" table:
-            | Employee Reference | AB123456C |
-            | Postcode           | TE12 3ST  |
+        Then I see the following in the "Employer details" table:
+            | Employee reference | AB123456C                                   |
+            | Employer address   | Addr1  Addr2  Addr3  Addr4  Addr5  TE12 3ST |
 
-        Then I see the following in the "Offence details" table:
-            | Payment Reference | AB123456C |
-            | Surname           | TE12 3ST  |
+        Then the creditor details should contain:
+            | Address           | Addr1  Addr2  Addr3  TE1 1ST |
+            | Name on account   | F LNAME                      |
+            | Payment reference | REF                          |
 
 
-        Then I see the following in the "Offence details" table:
-            | Payment Reference | AB123456C |
-            | Surname           | TE12 3ST  |
-
-    Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for AYPG
+    Scenario: PO-1449 - Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for AYPG
         And I select the "Adult or youth with parent or guardian to pay" radio button
         And I click the "Continue" button
 
@@ -305,6 +299,11 @@ Feature: Manual account creation - Create Draft Account
         And I set the "Alias 5", "Last name" to "Alias 5 lname"
         Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
 
+        And I enter "CarMake" into the "Make and model" field
+        # Test For Capitalization in Car Reg - PO-1449
+        And I enter "carreg" into the "Registration number" field
+        Then I see "CARREG" in the "Registration number" field
+
 
         And I click the "Return to account details" button
 
@@ -333,7 +332,7 @@ Feature: Manual account creation - Create Draft Account
         And I see "Personal details" on the page header
 
         When I select "Miss" from the "Title" dropdown
-        And I enter "FNAME" into the "First names" field
+        And I enter "FNAMES" into the "First names" field
         When I enter "1 Address Street" into the "Address line 1" field
 
         # Test For Capitalization in Last Name, Postcode & National Insurance Number - PO-1449
@@ -457,27 +456,184 @@ Feature: Manual account creation - Create Draft Account
             | Prosecutor Case Reference (PCR) | ABCD1234A |
 
         Then I see the following in the "Parent or guardian details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | RG12 8EU                                                                                                                                    |
-            | National Insurance number | AB122398B                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+            | Surname                   | LNAME                                                                                                                                           |
+            | Address                   | 1 Address Street  RG12 8EU                                                                                                                      |
+            | National Insurance number | AB122398B                                                                                                                                       |
+            | Registration number       | CARREG                                                                                                                                          |
+            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME  Alias 2 FNAME ALIAS 2 LNAME  Alias 3 FNAME ALIAS 3 LNAME  Alias 4 FNAME ALIAS 4 LNAME  Alias 5 FNAME ALIAS 5 LNAME |
 
 
-        Then I see the following in the "Personal details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            | Postcode                  | RG12 8EU                                                                                                                                    |
-            | National Insurance number | AB122398B                                                                                                                                   |
-            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+        Then I see the following in the "Defendant details" table:
+            | Last name                 | LNAME                                                                                                                                           |
+            | Address                   | 1 Address Street  RG12 8EU                                                                                                                      |
+            | National Insurance number | AB122398B                                                                                                                                       |
+            | Alias                     | Alias 1 FNAME ALIAS 1 LNAME  Alias 2 FNAME ALIAS 2 LNAME  Alias 3 FNAME ALIAS 3 LNAME  Alias 4 FNAME ALIAS 4 LNAME  Alias 5 FNAME ALIAS 5 LNAME |
 
         Then I see the following in the "Employer details" table:
-            | Employee Reference | AB122398B |
-            | Postcode           | RG12 8EU  |
+            | Employee reference | AB122398B                  |
+            | Employer address   | 1 Address Street  RG12 8EU |
 
-        Then I see the following in the "Offences and impositions" table:
-            | Payment Reference | REF123AB |
-            | Surname           | LNAME    |
+        Then the creditor details should contain:
+            | Address           | NE13 8ED |
+            | Name on account   | F LNAME  |
+            | Payment reference | REF123AB |
 
 
+
+    Scenario: PO-1450 - Verify capitalization is applied correctly on the "Check Account Details" page for Company Details
+        And I select the "Company" radio button
+        Then I click the "Continue" button
+
+        # Court Details
+        Then I click on the "Court details" link
+        And I see "Court details" on the page header
+
+        When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
+
+        # Test For Capitalization in PCR @PO-1450
+        When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
+        Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
+
+        When I enter "bridport" into the "Enforcement court" search box
+
+        Then I click the "Return to account details" button
+
+        Then I see the status of "Court details" is "Provided"
+
+        # Offence Details
+        And I click on the "Offence details" link
+        Then I see "Add an offence" on the page header
+        And I see "Offence details" text on the page
+
+        When I enter "HY35014" into the "Offence code" field
+        And I enter a date 8 weeks into the past into the "Date of sentence" date field
+
+        And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
+        And I enter "300" into the "Amount imposed" field for imposition 1
+        And I enter "100" into the "Amount paid" field for imposition 1
+        And I see "Add creditor" text on the page
+        And I select the "Minor creditor" radio button
+        When I click on the "Add minor creditor details" link for imposition 1
+        Then I see "Minor creditor details" on the page header
+
+        When I select the "Individual" radio button
+        And I select "Mr" from the "Title" dropdown
+        And I enter "FNAME" into the "First name" field
+
+        # Test For Capitalization in Last Name @PO-1450
+        When I enter "lname" into the "Last name" field
+        Then I see "LNAME" in the "Last name" field
+
+        And I enter "Addr1" into the "Address Line 1" field
+        And I enter "Addr2" into the "Address Line 2" field
+        And I enter "Addr3" into the "Address Line 3" field
+
+        # Test Capitalization in Postcode @PO-1450
+        When I enter "te1 1st" into the "Postcode" field
+        Then I see "TE1 1ST" in the "Postcode" field
+
+
+        Then I select the "I have BACS payment details" checkbox
+        And I enter "F LNAME" into the "Name on the account" field
+        And I enter "123456" into the "Sort code" field
+        And I enter "12345678" into the "Account number" field
+
+        # Test Capitalization in Payment Reference @PO-1450
+        When I enter "ref" into the "Payment reference" field
+        Then I see "REF" in the "Payment reference" field
+
+        When I click the "Save" button
+        Then I see "Add an offence" on the page header
+
+        When I click the "Review offence" button
+        Then I see "Offences and impositions" on the page header
+        When I click the "Return to account details" button
+        And I see the status of "Offence details" is "Provided"
+
+        # Payment Terms
+        When I click on the "Payment terms" link
+        And I see "Payment terms" on the page header
+
+        When I select the "Lump sum plus instalments" radio button
+        And I enter "150" into the "Lump sum" payment field
+        And I enter "300" into the "Instalment" payment field
+        And I select the "Monthly" radio button
+        And I enter a date 2 weeks into the future into the "Start date" date field
+
+        When I select the "Hold enforcement on account (NOENF)" radio button
+        And I enter "Reason" into the "Reason account is on NOENF" text field
+
+        And I click the "Return to account details" button
+        Then I see "Account details" on the page header
+        Then I see the status of "Payment terms" is "Provided"
+
+        # Company Details
+        When I click on the "Company details" link
+        # Test Capitalization in Company name @PO-1450
+        When I enter "Company Name" into the "Company name" field
+        Then I see "COMPANY NAME" in the "COMPANY NAME" field
+
+
+        And I select the "Add company aliases" checkbox
+        # Test Capitalization in Company Alias 1 @PO-1450
+        When I set the "Alias 1", "Company name" to "Alias 1s"
+        Then I see "Alias 1", "Company name" is set to "ALIAS 1S"
+
+        And I click the "Add another alias" button
+
+        # Test Capitalization in Company Alias 2 @PO-1450
+        When I set the "Alias 2", "Company name" to "Alias 2s"
+        Then I see "Alias 2", "Company name" is set to "ALIAS 2S"
+
+        And I click the "Add another alias" button
+
+        # Test Capitalization in Company Alias 3 @PO-1450
+        When I set the "Alias 3", "Company name" to "Alias 3s"
+        Then I see "Alias 3", "Company name" is set to "ALIAS 3S"
+
+        And I click the "Add another alias" button
+
+        # Test Capitalization in Company Alias 4 @PO-1450
+        When I set the "Alias 4", "Company name" to "Alias 4s"
+        Then I see "Alias 4", "Company name" is set to "ALIAS 4S"
+
+        And I click the "Add another alias" button
+
+        # Test Capitalization in Company Alias 5 @PO-1450
+        When I set the "Alias 5", "Company name" to "Alias 5s"
+        Then I see "Alias 5", "Company name" is set to "ALIAS 5S"
+
+        And I enter "Addr1" into the "Address line 1" field
+        And I enter "Addr2" into the "Address line 2" field
+        And I enter "Addr3" into the "Address line 3" field
+
+        # Test Capitalization in Postcode
+        When I enter "te1 1st" into the "Postcode" field
+        Then I see "TE1 1ST" in the "Postcode" field
+
+        When I click the "Return to account details" button
+        Then I see the status of "Company details" is "Provided"
+
+        # Check Account
+        When I see the "Check account" button
+        Then I do not see "You cannot proceed until all required sections have been completed." text on the page
+
+        When I click the "Check account" button
+        Then I see "Check account details" on the page header
+
+        Then I see the following in the "Court details" table:
+            | Prosecutor Case Reference (PCR) | ABCD1234A |
+
+
+        Then I see the following in the "Company details" table:
+            | Company name | COMPANY NAME                                     |
+            | Aliases      | ALIAS 1S  ALIAS 2S  ALIAS 3S  ALIAS 4S  ALIAS 5S |
+            | Address      | Addr1  Addr2  Addr3  TE1 1ST                     |
+
+        Then the creditor details should contain:
+            | Address           | Addr1  Addr2  Addr3  TE1 1ST |
+            | Name on account   | F LNAME                      |
+            | Payment reference | REF                          |
 
 
 

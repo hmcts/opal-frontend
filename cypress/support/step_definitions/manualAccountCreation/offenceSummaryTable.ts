@@ -116,3 +116,31 @@ Then(
       .should('contain.text', weeks1Formatted);
   },
 );
+
+Then('the creditor details should contain:', (dataTable: DataTable) => {
+  const expectedData = dataTable.rowsHash();
+  cy.get('#creditor').should('exist').and('be.visible');
+
+  cy.get('#creditor').within(() => {
+    cy.get('dl.govuk-summary-list').within(() => {
+      cy.get('div.govuk-summary-list__row').each(($row) => {
+        cy.wrap($row).within(() => {
+          cy.get('dt.govuk-summary-list__key')
+            .invoke('text')
+            .then((key) => {
+              const expectedValue = expectedData[key.trim()];
+              if (expectedValue) {
+                cy.get('dd.govuk-summary-list__value')
+                  .invoke('text')
+                  .then((actualValue) => {
+                    const normalizedActual = actualValue.trim();
+                    const normalizedExpected = expectedValue.trim();
+                    expect(normalizedActual).to.equal(normalizedExpected);
+                  });
+              }
+            });
+        });
+      });
+    });
+  });
+});

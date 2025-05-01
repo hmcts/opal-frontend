@@ -78,11 +78,13 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_surname'].controlName]"
-            [opalLibCapitaliseAllCharacters]="form.get([
+            [opalLibCapitaliseAllCharacters]="
+              form.get([
                 'fm_personal_details_aliases',
                 rowIndex,
                 aliasControl['fm_personal_details_alias_surname'].controlName,
-              ])!"
+              ])!
+            "
           ></opal-lib-govuk-text-input>
         </fieldset>
       }
