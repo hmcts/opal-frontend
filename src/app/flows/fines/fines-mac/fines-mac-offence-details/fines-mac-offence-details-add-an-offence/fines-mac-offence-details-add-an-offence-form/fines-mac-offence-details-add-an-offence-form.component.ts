@@ -53,6 +53,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -106,6 +107,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
   public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
+
+  public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
@@ -456,14 +459,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
       balanceRemainingControl?.setValue(amountImposed - amountPaid, { emitEvent: false });
     });
-  }
-
-  /**
-   * Navigates to the search offences page and updates the offence details draft.
-   */
-  public goToSearchOffences(): void {
-    this.updateOffenceDetailsDraft(this.form.value);
-    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
   }
 
   /**

@@ -276,41 +276,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
 
-  it('should populate offence details draft when navigating to search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
-  it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
-    component['initialAddAnOffenceDetailsSetup']();
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
-  it('should populate offence details draft when navigating to search offences when draft is populated - search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component['initialAddAnOffenceDetailsSetup']();
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
   it('should go to minor creditor', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 

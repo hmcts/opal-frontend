@@ -1,48 +1,59 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnDestroy } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
-  imports: [GovukButtonComponent, GovukBackLinkComponent],
+  imports: [RouterOutlet],
+  providers: [FinesMacOffenceDetailsSearchOffencesStore],
   templateUrl: './fines-mac-offence-details-search-offences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesComponent implements OnInit {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+export class FinesMacOffenceDetailsSearchOffencesComponent implements OnDestroy {
+  private readonly globalStore = inject(GlobalStore);
+  private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
 
   /**
    * If the user navigates externally from the site or closes the tab
-   * Check if there is unsaved changes form state -> warning message
+   * Check if there is unsaved changes -> warning message
+   * Check if the state has changes -> warning message
    * Otherwise -> no warning message
    *
    * @returns boolean
    */
-  canDeactivate(): CanDeactivateTypes {
-    return true;
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(): boolean {
+    if (this.finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()) {
+      return false;
+    } else if (this.finesMacOffenceDetailsSearchOffencesStore.stateChanges()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   /**
-   * Navigates to the specified route.
-   * @param route - The route to navigate to.
-   * @param event - The optional event object.
+   * Checks if the component can be deactivated.
+   * @returns A boolean indicating whether the component can be deactivated.
    */
-  public handleRoute(route: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
+  canDeactivate(): CanDeactivateTypes {
+    if (this.finesMacOffenceDetailsSearchOffencesStore.stateChanges()) {
+      return false;
+    } else {
+      return true;
     }
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
-  public ngOnInit(): void {
-    this.finesMacOffenceDetailsStore.setOffenceCodeMessage('');
+  ngOnDestroy(): void {
+    // Cleanup our state when the route unloads...
+    this.finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
+
+    // Clear any errors...
+    this.globalStore.setError({
+      error: false,
+      message: '',
+    });
   }
 }
