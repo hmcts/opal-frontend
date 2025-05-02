@@ -20,6 +20,6 @@ dependencies:
     condition: postgresql.enabled
   - name: opal-fines-service
     version: 0.0.33
-    repository: 'oci://sdshmctspublic.azurecr.io/helm/v1/repo/'
+    repository: 'oci://sdshmctspublic.azurecr.io/helm'
     condition: opal-fines-service.enabled
-  
+
