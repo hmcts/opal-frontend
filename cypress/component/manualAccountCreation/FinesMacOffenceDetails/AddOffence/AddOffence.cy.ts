@@ -526,7 +526,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
     { tags: ['@PO-1060'] },
     () => {
@@ -551,7 +551,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
     { tags: ['@PO-1060'] },
     () => {
@@ -576,7 +576,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
     { tags: ['@PO-1060'] },
     () => {
