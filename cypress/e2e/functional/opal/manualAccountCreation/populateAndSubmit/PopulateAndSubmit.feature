@@ -1,481 +1,657 @@
 Feature: Manual account creation - Create Draft Account
-    # Placeholder for refactored e2e tests
+  # Placeholder for refactored e2e tests
 
-    Background:
-        Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
-        Then I am on the dashboard
-        Given I navigate to Manual Account Creation
-        And I enter "West London" into the business unit search box
-        And I select the "Fine" radio button
+  Background:
+    Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
+    Then I am on the dashboard
 
-    Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for adult or youth only
-        And I select the "Adult or youth only" radio button
-        Then I click the "Continue" button
+  @PO-1448
+  Scenario: As a user I can create a draft account for the Adult or youth only defendant type
+    Given I navigate to Manual Account Creation
+    And I enter "West London" into the business unit search box
+    And I select the "Fine" radio button
+    And I select the "Adult or youth only" radio button
+    Then I click the "Continue" button
 
-        # Court Details
-        Then I click on the "Court details" link
-        And I see "Court details" on the page header
+    # Court Details
+    Then I click on the "Court details" link
+    And I see "Court details" on the page header
 
-        When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
+    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
 
-        # Test For Capitalization in PCR - PO-1448
-        When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
-        Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
+    # Test For Capitalization in PCR - PO-1448
+    When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
+    Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-        When I enter "bridport" into the "Enforcement court" search box
+    When I enter "ACTON (820)" into the "Enforcement court" search box
 
-        Then I click the "Return to account details" button
+    Then I click the "Return to account details" button
 
-        Then I see the status of "Court details" is "Provided"
+    Then I see the status of "Court details" is "Provided"
 
-        # Personal Details
-        Then I click on the "Personal details" link
-        And I see "Personal details" on the page header
+    # Personal Details
+    Then I click on the "Personal details" link
+    And I see "Personal details" on the page header
 
-        When I select "Mr" from the "Title" dropdown
-        And I enter "FNAME" into the "First names" field
+    When I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First names" field
 
-        # Test For Capitalization in Last Name - PO-1448
-        When I enter "lname" into the "Last name" field
-        Then I see "LNAME" in the "Last name" field
+    # Test For Capitalization in Last Name - PO-1448
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
 
-        When I enter "Addr Line 1" into the "Address line 1" field
-        And I enter "Addr Line 2" into the "Address line 2" field
-        And I enter "Addr Line 3" into the "Address line 3" field
+    When I enter "Addr1" into the "Address line 1" field
 
-        # Test For Capitalization in Post Code - PO-1448
-        When I enter "te1 1st" into the "Postcode" field
-        Then I see "TE1 1ST" in the "Postcode" field
+    # Test For Capitalization in Post Code - PO-1448
+    When I enter "te1 1st" into the "Postcode" field
+    Then I see "TE1 1ST" in the "Postcode" field
 
-        When I enter "01/01/1990" into the Date of birth field
-        And I enter "FORD FOCUS" into the "Make and model" field
+    When I enter "01/01/1990" into the Date of birth field
+    And I enter "FORD FOCUS" into the "Make and model" field
 
-        # Test For Capitalization in VRN - PO-1448
-        When I enter "ab12 cde" into the "Registration number" field
-        Then I see "AB12 CDE" in the "Registration number" field
+    # Test For Capitalization in VRN - PO-1448
+    When I enter "ab12 cde" into the "Registration number" field
+    Then I see "AB12 CDE" in the "Registration number" field
 
-        # Test For Capitalization in National Insurance Number - PO-1448
-        When I enter "qq123456c" into the "National insurance number" field
-        Then I see "QQ123456C" in the "National insurance number" field
+    # Test For Capitalization in National Insurance Number - PO-1448
+    When I enter "qq123456c" into the "National insurance number" field
+    Then I see "QQ123456C" in the "National insurance number" field
 
-        When I select the "Add aliases" checkbox
-        And I set the "Alias 1", "First names" to "Alias 1 FNAME"
+    When I select the "Add aliases" checkbox
 
-        # Test For Capitalization in Alias 1 Last Name - PO-1448
-        When I set the "Alias 1", "Last name" to "Alias 1 lname"
-        Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    # Test For Capitalization in Alias 1 Last Name - PO-1448
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
 
-        And I click the "Add another alias" button
-        And I set the "Alias 2", "First names" to "Alias 2 FNAME"
+    And I click the "Add another alias" button
 
-        # Test For Capitalization in Alias 2 Last Name - PO-1448
-        When I set the "Alias 2", "Last name" to "Alias 2 lname"
-        Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    # Test For Capitalization in Alias 2 Last Name - PO-1448
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
 
-        And I click the "Add another alias" button
-        And I set the "Alias 3", "First names" to "Alias 3 FNAME"
+    And I click the "Add another alias" button
 
-        # Test For Capitalization in Alias 3 Last Name - PO-1448
-        And I set the "Alias 3", "Last name" to "Alias 3 lname"
-        Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+    # Test For Capitalization in Alias 3 Last Name - PO-1448
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
 
-        And I click the "Add another alias" button
-        And I set the "Alias 4", "First names" to "Alias 4 FNAME"
+    And I click the "Add another alias" button
 
-        # Test For Capitalization in Alias 4 Last Name - PO-1448
-        And I set the "Alias 4", "Last name" to "Alias 4 lname"
-        Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
+    # Test For Capitalization in Alias 4 Last Name - PO-1448
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
 
-        And I click the "Add another alias" button
-        And I set the "Alias 5", "First names" to "Alias 5 FNAME"
+    And I click the "Add another alias" button
+    # Test For Capitalization in Alias 5 Last Name - PO-1448
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
-        # Test For Capitalization in Alias 5 Last Name - PO-1448
-        And I set the "Alias 5", "Last name" to "Alias 5 lname"
-        Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+    And I click the "Return to account details" button
 
+    Then I see the status of "Personal details" is "Provided"
 
-        And I click the "Return to account details" button
+    # Offence Details
+    And I click on the "Offence details" link
+    Then I see "Add an offence" on the page header
+    And I see "Offence details" text on the page
+
+    When I enter "HY35014" into the "Offence code" field
+    And I enter a date 8 weeks into the past into the "Date of sentence" date field
 
-        Then I see the status of "Personal details" is "Provided"
+    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
+    And I enter "300" into the "Amount imposed" field for imposition 1
+    And I enter "100" into the "Amount paid" field for imposition 1
+    And I see "Add creditor" text on the page
+    And I select the "Minor creditor" radio button
+    When I click on the "Add minor creditor details" link for imposition 1
+    Then I see "Minor creditor details" on the page header
 
-        # Offence Details
-        And I click on the "Offence details" link
-        Then I see "Add an offence" on the page header
-        And I see "Offence details" text on the page
-
-        When I enter "HY35014" into the "Offence code" field
-        And I enter a date 8 weeks into the past into the "Date of sentence" date field
+    When I select the "Individual" radio button
+    And I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First name" field
 
-        And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
-        And I enter "300" into the "Amount imposed" field for imposition 1
-        And I enter "100" into the "Amount paid" field for imposition 1
-        And I see "Add creditor" text on the page
-        And I select the "Minor creditor" radio button
-        When I click on the "Add minor creditor details" link for imposition 1
-        Then I see "Minor creditor details" on the page header
+    # Test For Capitalization in Last Name - PO-1448
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
-        When I select the "Individual" radio button
-        And I select "Mr" from the "Title" dropdown
-        And I enter "FNAME" into the "First name" field
+    And I enter "Addr1" into the "Address Line 1" field
+    And I enter "Addr2" into the "Address Line 2" field
+    And I enter "Addr3" into the "Address Line 3" field
 
-        # Test For Capitalization in Last Name - PO-1448
-        When I enter "lname" into the "Last name" field
-        Then I see "LNAME" in the "Last name" field
+    # Test Capitalization in Postcode - PO-1448
+    When I enter "te1 1st" into the "Postcode" field
+    Then I see "TE1 1ST" in the "Postcode" field
 
-        And I enter "Addr1" into the "Address Line 1" field
-        And I enter "Addr2" into the "Address Line 2" field
-        And I enter "Addr3" into the "Address Line 3" field
+
+    Then I select the "I have BACS payment details" checkbox
+    And I enter "F LNAME" into the "Name on the account" field
+    And I enter "123456" into the "Sort code" field
+    And I enter "12345678" into the "Account number" field
+
+    # Test Capitalization in Payment Reference - PO-1448
+    When I enter "ref" into the "Payment reference" field
+    Then I see "REF" in the "Payment reference" field
+
+    When I click the "Save" button
+    Then I see "Add an offence" on the page header
+
+    When I click the "Review offence" button
+    Then I see "Offences and impositions" on the page header
+    When I click the "Return to account details" button
+    And I see the status of "Offence details" is "Provided"
+
+    # Payment Terms
+    When I click on the "Payment terms" link
+    And I see "Payment terms" on the page header
+
+    When I select the "No" radio button under the "Has a collection order been made?" section
+    And I select the "Make collection order today" checkbox
+    And I select the "Lump sum plus instalments" radio button
+    And I enter "150" into the "Lump sum" payment field
+    And I enter "300" into the "Instalment" payment field
+    And I select the "Monthly" radio button
+    And I enter a date 2 weeks into the future into the "Start date" date field
+    And I select the "Request payment card" checkbox
+
+    And I select the "There are days in default" checkbox
+    And I enter a date 1 weeks into the past into the "Date days in default were imposed" date field
+    And I enter "100" into the days in default input field
+
+    Then I select the "Add enforcement action" radio button
+    And I select the "Hold enforcement on account (NOENF)" radio button
+    And I enter "Reason" into the "Reason account is on NOENF" text field
+
+    And I click the "Return to account details" button
+    Then I see "Account details" on the page header
+    Then I see the status of "Payment terms" is "Provided"
+
+    # Employer Details
+    When I click on the "Employer details" link
+    And I see "Employer details" on the page header
+
+    And I enter "Test Corp" into the "Employer name" field
+
+    # Test Capitalization in Employee Reference - PO-1448
+    When I enter "ab123456c" into the "Employee reference" field
+    Then I see "AB123456C" in the "Employee reference" field
+
+    And I enter "employer@example.com" into the "Employer email address" field
+    And I enter "01234567890" into the "Employer telephone" field
+    And I enter "Addr1" into the "Address line 1" field
+    And I enter "Addr2" into the "Address line 2" field
+    And I enter "Addr3" into the "Address line 3" field
+    And I enter "Addr4" into the "Address line 4" field
+    And I enter "Addr5" into the "Address line 5" field
+
+    # Test Capitalization in Postcode - PO-1448
+    When I enter "te12 3st" into the "Postcode" field
+    Then I see "TE12 3ST" in the "Postcode" field
+    When I enter "te12 3st" into the "Postcode" field
+    Then I see "TE12 3ST" in the "Postcode" field
+
+
+    And I click the "Return to account details" button
+
+    Then I see the status of "Employer details" is "Provided"
+
+
+
+    # Check Account
+    And I see the "Check account" button
+    And I do not see "You cannot proceed until all required sections have been completed." text on the page
+
+    When I click the "Check account" button
+    Then I see "Check account details" on the page header
+
+    Then I see the following in the "Court details" table:
+      | Prosecutor Case Reference (PCR) | ABCD1234A |
+
+    Then I see the following in the "Personal details" table:
+      | Last name                 | LNAME                                                                     |
+      | Address                   | Addr1  TE1 1ST                                                            |
+      | Registration number       | AB12 CDE                                                                  |
+      | National Insurance number | QQ123456C                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
+
+    Then I see the following in the "Employer details" table:
+      | Employee reference | AB123456C                                   |
+      | Employer address   | Addr1  Addr2  Addr3  Addr4  Addr5  TE12 3ST |
+
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation                 |
+      | creditor          | Mr FNAME LNAME               |
+      | amountImposed     | 300                          |
+      | amountPaid        | 100                          |
+      | balanceRemaining  | 200                          |
+      | Address           | Addr1  Addr2  Addr3  TE1 1ST |
+      | Payment method    | Pay by BACS                  |
+      | Name on account   | F LNAME                      |
+      | Sort code         | 12-34-56                     |
+      | Account number    | 12345678                     |
+      | Payment reference | REF                          |
+
+  @PO-1450
+  Scenario: As a user I can create a draft account for the Company defendant type
+    Given I navigate to Manual Account Creation
+    And I enter "West London" into the business unit search box
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    Then I click the "Continue" button
 
-        # Test Capitalization in Postcode - PO-1448
-        When I enter "te1 1st" into the "Postcode" field
-        Then I see "TE1 1ST" in the "Postcode" field
+    # Court Details
+    Then I click on the "Court details" link
+    And I see "Court details" on the page header
 
+    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
 
-        Then I select the "I have BACS payment details" checkbox
-        And I enter "F LNAME" into the "Name on the account" field
-        And I enter "123456" into the "Sort code" field
-        And I enter "12345678" into the "Account number" field
+    # Test For Capitalization in PCR @PO-1450
+    When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
+    Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-        # Test Capitalization in Payment Reference - PO-1448
-        When I enter "ref" into the "Payment reference" field
-        Then I see "REF" in the "Payment reference" field
+    When I enter "ACTON (820)" into the "Enforcement court" search box
 
-        When I click the "Save" button
-        Then I see "Add an offence" on the page header
+    Then I click the "Return to account details" button
 
-        When I click the "Review offence" button
-        Then I see "Offences and impositions" on the page header
-        When I click the "Return to account details" button
-        And I see the status of "Offence details" is "Provided"
+    Then I see the status of "Court details" is "Provided"
 
-        # Payment Terms
-        When I click on the "Payment terms" link
-        And I see "Payment terms" on the page header
+    # Offence Details
+    And I click on the "Offence details" link
+    Then I see "Add an offence" on the page header
+    And I see "Offence details" text on the page
 
-        When I select the "No" radio button under the "Has a collection order been made?" section
-        And I select the "Make collection order today" checkbox
-        And I select the "Lump sum plus instalments" radio button
-        And I enter "150" into the "Lump sum" payment field
-        And I enter "300" into the "Instalment" payment field
-        And I select the "Monthly" radio button
-        And I enter a date 2 weeks into the future into the "Start date" date field
-        And I select the "Request payment card" checkbox
+    When I enter "HY35014" into the "Offence code" field
+    And I enter a date 8 weeks into the past into the "Date of sentence" date field
 
-        And I select the "There are days in default" checkbox
-        And I enter a date 1 weeks into the past into the "Date days in default were imposed" date field
-        And I enter "100" into the days in default input field
+    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
+    And I enter "300" into the "Amount imposed" field for imposition 1
+    And I enter "100" into the "Amount paid" field for imposition 1
+    And I see "Add creditor" text on the page
+    And I select the "Minor creditor" radio button
+    When I click on the "Add minor creditor details" link for imposition 1
+    Then I see "Minor creditor details" on the page header
 
-        Then I select the "Add enforcement action" radio button
-        And I select the "Hold enforcement on account (NOENF)" radio button
-        And I enter "Reason" into the "Reason account is on NOENF" text field
+    When I select the "Individual" radio button
+    And I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First name" field
 
-        And I click the "Return to account details" button
-        Then I see "Account details" on the page header
-        Then I see the status of "Payment terms" is "Provided"
+    # Test For Capitalization in Last Name @PO-1450
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
-        # Employer Details
-        When I click on the "Employer details" link
-        And I see "Employer details" on the page header
+    And I enter "Addr1" into the "Address Line 1" field
 
-        And I enter "Test Corp" into the "Employer name" field
+    # Test Capitalization in Postcode @PO-1450
+    When I enter "te1 1st" into the "Postcode" field
+    Then I see "TE1 1ST" in the "Postcode" field
 
-        # Test Capitalization in Employee Reference - PO-1448
-        When I enter "ab123456c" into the "Employee reference" field
-        Then I see "AB123456C" in the "Employee reference" field
 
-        And I enter "employer@example.com" into the "Employer email address" field
-        And I enter "01234567890" into the "Employer telephone" field
-        And I enter "Addr1" into the "Address line 1" field
-        And I enter "Addr2" into the "Address line 2" field
-        And I enter "Addr3" into the "Address line 3" field
-        And I enter "Addr4" into the "Address line 4" field
-        And I enter "Addr5" into the "Address line 5" field
+    Then I select the "I have BACS payment details" checkbox
+    And I enter "F LNAME" into the "Name on the account" field
+    And I enter "123456" into the "Sort code" field
+    And I enter "12345678" into the "Account number" field
 
-        # Test Capitalization in Postcode - PO-1448
-        When I enter "te12 3st" into the "Postcode" field
-        Then I see "TE12 3ST" in the "Postcode" field
-        When I enter "te12 3st" into the "Postcode" field
-        Then I see "TE12 3ST" in the "Postcode" field
+    # Test Capitalization in Payment Reference @PO-1450
+    When I enter "ref" into the "Payment reference" field
+    Then I see "REF" in the "Payment reference" field
 
+    When I click the "Save" button
+    Then I see "Add an offence" on the page header
 
-        And I click the "Return to account details" button
+    When I click the "Review offence" button
+    Then I see "Offences and impositions" on the page header
+    When I click the "Return to account details" button
+    And I see the status of "Offence details" is "Provided"
 
-        Then I see the status of "Employer details" is "Provided"
+    # Payment Terms
+    When I click on the "Payment terms" link
+    And I see "Payment terms" on the page header
 
+    When I select the "Lump sum plus instalments" radio button
+    And I enter "150" into the "Lump sum" payment field
+    And I enter "300" into the "Instalment" payment field
+    And I select the "Monthly" radio button
+    And I enter a date 2 weeks into the future into the "Start date" date field
 
+    When I select the "Hold enforcement on account (NOENF)" radio button
+    And I enter "Reason" into the "Reason account is on NOENF" text field
 
-        # Check Account
-        And I see the "Check account" button
-        And I do not see "You cannot proceed until all required sections have been completed." text on the page
+    And I click the "Return to account details" button
+    Then I see "Account details" on the page header
+    Then I see the status of "Payment terms" is "Provided"
 
-        When I click the "Check account" button
-        Then I see "Check account details" on the page header
+    # Company Details
+    When I click on the "Company details" link
+    # Test Capitalization in Company name @PO-1450
+    When I enter "COMPANY NAME" into the "Company name" field
+    Then I see "COMPANY NAME" in the "COMPANY NAME" field
 
-        Then I see the following in the "Court details" table:
-            | Prosecutor Case Reference (PCR) | ABCD1234A |
 
-        Then I see the following in the "Personal details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            | Registration number       | AB12 CDE                                                                                                                                    |
-            | National Insurance number | QQ123456C                                                                                                                                   |
-            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+    And I select the "Add company aliases" checkbox
+    # Test Capitalization in Company Alias 1 @PO-1450
+    When I set the "Alias 1", "Company name" to "cname1"
+    Then I see "Alias 1", "Company name" is set to "CNAME1"
 
-        Then I see the following in the "Employer details" table:
-            | Employee reference | AB123456C |
-        # | Postcode           | TE12 3ST  |
+    And I click the "Add another alias" button
 
-        Then I see the following in the "Offences and impositions" table:
-            | Payment reference | REF   |
-            | Last name         | LNAME |
-    # | Postcode          | TE12 3ST |
+    # Test Capitalization in Company Alias 2 @PO-1450
+    When I set the "Alias 2", "Company name" to "cname2"
+    Then I see "Alias 2", "Company name" is set to "CNAME2"
 
+    And I click the "Add another alias" button
 
-    # Then I see the following in the "Offence details" table:
-    #     | Payment Reference | AB123456C |
-    #     | Surname           | TE12 3ST  |
+    # Test Capitalization in Company Alias 3 @PO-1450
+    When I set the "Alias 3", "Company name" to "cname3"
+    Then I see "Alias 3", "Company name" is set to "CNAME3"
 
-    Scenario: Verify capitalization is applied to all relevant fields and displayed correctly on the "Check Account Details" page for AYPG
-        And I select the "Adult or youth with parent or guardian to pay" radio button
-        And I click the "Continue" button
+    And I click the "Add another alias" button
 
-        # Court Details
-        Then I click on the "Court details" link
-        And I see "Court details" on the page header
+    # Test Capitalization in Company Alias 4 @PO-1450
+    When I set the "Alias 4", "Company name" to "cname4"
+    Then I see "Alias 4", "Company name" is set to "CNAME4"
 
-        When I enter "Bedfordshire" into the "Sending area or Local Justice Area (LJA)" search box
+    And I click the "Add another alias" button
 
-        # Test For Capitalization in PCR - PO-1449 for PCR field
-        When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
-        Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
+    # Test Capitalization in Company Alias 5 @PO-1450
+    When I set the "Alias 5", "Company name" to "cname5"
+    Then I see "Alias 5", "Company name" is set to "CNAME5"
 
-        When I enter "ACTON (820)" into the "Enforcement court" search box
+    And I enter "Addr1" into the "Address line 1" field
 
-        Then I click the "Return to account details" button
+    # Test Capitalization in Postcode
+    When I enter "te1 1st" into the "Postcode" field
+    Then I see "TE1 1ST" in the "Postcode" field
 
-        #Parent or Guardian details
-        And I click on the "Parent or guardian details" link
-        And I see "Parent or guardian details" on the page header
+    When I click the "Return to account details" button
+    Then I see the status of "Company details" is "Provided"
 
-        And I enter "FNAME" into the "First names" field
-        When I enter "1 Address Street" into the "Address line 1" field
+    # Check Account
+    When I see the "Check account" button
+    Then I do not see "You cannot proceed until all required sections have been completed." text on the page
 
-        # Test For Capitalization in Last Name, Postcode & National Insurance Number - PO-1449
-        When I enter "lname" into the "Last name" field
-        Then I see "LNAME" in the "Last name" field
+    When I click the "Check account" button
+    Then I see "Check account details" on the page header
 
-        When I enter "rg12 8eu" into the "Postcode" field
-        Then I see "RG12 8EU" in the "Postcode" field
+    Then I see the following in the "Court details" table:
+      | Prosecutor Case Reference (PCR) | ABCD1234A |
 
-        When I enter "ab122398b" into the "National insurance number" field
-        Then I see "AB122398B" in the "National insurance number" field
+    Then I see the following in the "Company details" table:
+      | Company name | COMPANY NAME                           |
+      | Address      | Addr1  TE1 1ST                         |
+      | Aliases      | CNAME1  CNAME2  CNAME3  CNAME4  CNAME5 |
 
-        When I select the "Add aliases" checkbox
-        And I set the "Alias 1", "First names" to "Alias 1 FNAME"
 
-        # Test For Capitalization in Alias 1 Last Name - PO-1449
-        When I set the "Alias 1", "Last name" to "Alias 1 lname"
-        Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation   |
+      | creditor          | Mr FNAME LNAME |
+      | amountImposed     | 300            |
+      | amountPaid        | 100            |
+      | balanceRemaining  | 200            |
+      | Address           | Addr1  TE1 1ST |
+      | Payment method    | Pay by BACS    |
+      | Name on account   | F LNAME        |
+      | Sort code         | 12-34-56       |
+      | Account number    | 12345678       |
+      | Payment reference | REF            |
 
-        And I click the "Add another alias" button
-        And I set the "Alias 2", "First names" to "Alias 2 FNAME"
+  @PO-1449
+  Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
+    Given I navigate to Manual Account Creation
+    And I enter "West London" into the business unit search box
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
 
-        # Test For Capitalization in Alias 2 Last Name - PO-1449
-        When I set the "Alias 2", "Last name" to "Alias 2 lname"
-        Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    # Court Details
+    Then I click on the "Court details" link
+    And I see "Court details" on the page header
 
-        And I click the "Add another alias" button
-        And I set the "Alias 3", "First names" to "Alias 3 FNAME"
+    When I enter "Bedfordshire" into the "Sending area or Local Justice Area (LJA)" search box
 
-        # Test For Capitalization in Alias 3 Last Name - PO-1449
-        And I set the "Alias 3", "Last name" to "Alias 3 lname"
-        Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+    # Test For Capitalization in PCR - PO-1449 for PCR field
+    When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
+    Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-        And I click the "Add another alias" button
-        And I set the "Alias 4", "First names" to "Alias 4 FNAME"
+    When I enter "ACTON (820)" into the "Enforcement court" search box
 
-        # Test For Capitalization in Alias 4 Last Name - PO-1449
-        And I set the "Alias 4", "Last name" to "Alias 4 lname"
-        Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
+    Then I click the "Return to account details" button
 
-        And I click the "Add another alias" button
-        And I set the "Alias 5", "First names" to "Alias 5 FNAME"
+    #Parent or Guardian details
+    And I click on the "Parent or guardian details" link
+    And I see "Parent or guardian details" on the page header
 
-        # Test For Capitalization in Alias 5 Last Name - PO-1449
-        And I set the "Alias 5", "Last name" to "Alias 5 lname"
-        Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+    And I enter "FNAME" into the "First names" field
+    When I enter "1 Address Street" into the "Address line 1" field
 
+    # Test For Capitalization in Last Name, Postcode & National Insurance Number - PO-1449
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
-        And I click the "Return to account details" button
+    When I enter "rg12 8eu" into the "Postcode" field
+    Then I see "RG12 8EU" in the "Postcode" field
 
-        Then I see the status of "Parent or guardian details" is "Provided"
+    When I enter "ab122398b" into the "National insurance number" field
+    Then I see "AB122398B" in the "National insurance number" field
 
-        #Employer details
-        Then I click on the "Employer details" link
-        Then I see "Employer details" on the page header
+    When I select the "Add aliases" checkbox
 
-        When I enter "XYZ company" into the "Employer name" field
-        When I enter "1 Address Street" into the "Address line 1" field
+    # Test For Capitalization in Alias 1 Last Name - PO-1449
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
 
-        # Test For Capitalization in Postcode & National Insurance Number - PO-1449
-        When I enter "rg12 8eu" into the "Postcode" field
-        Then I see "RG12 8EU" in the "Postcode" field
+    And I click the "Add another alias" button
 
-        When I enter "ab122398b" into the "National insurance number" field
-        Then I see "AB122398B" in the "National insurance number" field
+    # Test For Capitalization in Alias 2 Last Name - PO-1449
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
 
-        And I click the "Return to account details" button
+    And I click the "Add another alias" button
+    # Test For Capitalization in Alias 3 Last Name - PO-1449
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
 
-        Then I see the status of "Employer details" is "Provided"
+    And I click the "Add another alias" button
 
-        # Personal Details
-        Then I click on the "Personal details" link
-        And I see "Personal details" on the page header
+    # Test For Capitalization in Alias 4 Last Name - PO-1449
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
+    And I click the "Add another alias" button
 
-        When I select "Miss" from the "Title" dropdown
-        And I enter "FNAME" into the "First names" field
-        When I enter "1 Address Street" into the "Address line 1" field
+    # Test For Capitalization in Alias 5 Last Name - PO-1449
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
-        # Test For Capitalization in Last Name, Postcode & National Insurance Number - PO-1449
-        When I enter "lname" into the "Last name" field
-        Then I see "LNAME" in the "Last name" field
+    # Test For Capitalization in Car Reg - PO-1449
+    And I enter "CarMake" into the "Make and model" field
+    And I enter "carreg" into the "Registration number" field
+    Then I see "CARREG" in the "Registration number" field
 
-        When I enter "rg12 8eu" into the "Postcode" field
-        Then I see "RG12 8EU" in the "Postcode" field
 
-        When I enter "ab122398b" into the "National insurance number" field
-        Then I see "AB122398B" in the "National insurance number" field
+    And I click the "Return to account details" button
 
-        When I select the "Add aliases" checkbox
-        And I set the "Alias 1", "First names" to "Alias 1 FNAME"
+    Then I see the status of "Parent or guardian details" is "Provided"
 
-        # Test For Capitalization in Alias 1 Last Name - PO-1449
-        When I set the "Alias 1", "Last name" to "Alias 1 lname"
-        Then I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    #Employer details
+    Then I click on the "Employer details" link
+    Then I see "Employer details" on the page header
 
-        And I click the "Add another alias" button
-        And I set the "Alias 2", "First names" to "Alias 2 FNAME"
+    When I enter "XYZ company" into the "Employer name" field
+    When I enter "1 Address Street" into the "Address line 1" field
 
-        # Test For Capitalization in Alias 2 Last Name - PO-1449
-        When I set the "Alias 2", "Last name" to "Alias 2 lname"
-        Then I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    # Test For Capitalization in Postcode & National Insurance Number - PO-1449
+    When I enter "rg12 8eu" into the "Postcode" field
+    Then I see "RG12 8EU" in the "Postcode" field
 
-        And I click the "Add another alias" button
-        And I set the "Alias 3", "First names" to "Alias 3 FNAME"
+    When I enter "ab122398b" into the "National insurance number" field
+    Then I see "AB122398B" in the "National insurance number" field
 
-        # Test For Capitalization in Alias 3 Last Name - PO-1449
-        And I set the "Alias 3", "Last name" to "Alias 3 lname"
-        Then I see "Alias 3", "Last name" is set to "ALIAS 3 LNAME"
+    And I click the "Return to account details" button
 
-        And I click the "Add another alias" button
-        And I set the "Alias 4", "First names" to "Alias 4 FNAME"
+    Then I see the status of "Employer details" is "Provided"
 
-        # Test For Capitalization in Alias 4 Last Name - PO-1449
-        And I set the "Alias 4", "Last name" to "Alias 4 lname"
-        Then I see "Alias 4", "Last name" is set to "ALIAS 4 LNAME"
+    # Personal Details
+    Then I click on the "Personal details" link
+    And I see "Personal details" on the page header
 
-        And I click the "Add another alias" button
-        And I set the "Alias 5", "First names" to "Alias 5 FNAME"
+    When I select "Miss" from the "Title" dropdown
+    And I enter "FNAME" into the "First names" field
+    When I enter "1 Address Street" into the "Address line 1" field
 
-        # Test For Capitalization in Alias 5 Last Name - PO-1449
-        And I set the "Alias 5", "Last name" to "Alias 5 lname"
-        Then I see "Alias 5", "Last name" is set to "ALIAS 5 LNAME"
+    # Test For Capitalization in Last Name, Postcode & National Insurance Number - PO-1449
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
+    When I enter "rg12 8eu" into the "Postcode" field
+    Then I see "RG12 8EU" in the "Postcode" field
 
-        And I click the "Return to account details" button
+    When I enter "ab122398b" into the "National insurance number" field
+    Then I see "AB122398B" in the "National insurance number" field
 
-        Then I see the status of "Personal details" is "Provided"
+    When I select the "Add aliases" checkbox
+    # Test For Capitalization in Alias 1 Last Name - PO-1449
+    And I set the "Alias 1", "First names" to "fname1"
+    When I set the "Alias 1", "Last name" to "lname1"
+    Then I see "Alias 1", "Last name" is set to "LNAME1"
+    And I click the "Add another alias" button
 
-        # Offence Details
+    # Test For Capitalization in Alias 2 Last Name - PO-1449
+    And I set the "Alias 2", "First names" to "fname2"
+    When I set the "Alias 2", "Last name" to "lname2"
+    Then I see "Alias 2", "Last name" is set to "LNAME2"
+    And I click the "Add another alias" button
 
-        And I click on the "Offence details" link
-        Then I see "Add an offence" on the page header
-        And I see "Offence details" text on the page
+    # Test For Capitalization in Alias 3 Last Name - PO-1449
+    And I set the "Alias 3", "First names" to "fname3"
+    When I set the "Alias 3", "Last name" to "lname3"
+    Then I see "Alias 3", "Last name" is set to "LNAME3"
+    And I click the "Add another alias" button
 
-        When I enter "HY35014" into the "Offence code" field
-        And I enter a date 8 weeks into the past into the "Date of sentence" date field
+    # Test For Capitalization in Alias 4 Last Name - PO-1449
+    And I set the "Alias 4", "First names" to "fname4"
+    When I set the "Alias 4", "Last name" to "lname4"
+    Then I see "Alias 4", "Last name" is set to "LNAME4"
+    And I click the "Add another alias" button
 
-        And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
-        And I enter "300" into the "Amount imposed" field for imposition 1
-        And I enter "100" into the "Amount paid" field for imposition 1
-        And I see "Add creditor" text on the page
-        And I select the "Minor creditor" radio button
-        When I click on the "Add minor creditor details" link for imposition 1
-        Then I see "Minor creditor details" on the page header
+    # Test For Capitalization in Alias 5 Last Name - PO-1449
+    And I set the "Alias 5", "First names" to "fname5"
+    When I set the "Alias 5", "Last name" to "lname5"
+    Then I see "Alias 5", "Last name" is set to "LNAME5"
 
-        When I select the "Individual" radio button
-        And I select "Mr" from the "Title" dropdown
-        And I enter "FNAME" into the "First name" field
 
-        # Test For Capitalization in Last Name - PO-1449
-        When I enter "lname" into the "Last name" field
-        Then I see "LNAME" in the "Last name" field
+    And I click the "Return to account details" button
 
-        # Test Capitalization in Postcode - PO-1448
-        When I enter "ne13 8ed" into the "Postcode" field
-        Then I see "NE13 8ED" in the "Postcode" field
+    Then I see the status of "Personal details" is "Provided"
 
-        Then I select the "I have BACS payment details" checkbox
-        And I enter "F LNAME" into the "Name on the account" field
-        And I enter "123456" into the "Sort code" field
-        And I enter "12345678" into the "Account number" field
+    # Offence Details
 
-        # Test Capitalization in Payment Reference - PO-1449
-        When I enter "ref123ab" into the "Payment reference" field
-        Then I see "REF123AB" in the "Payment reference" field
+    And I click on the "Offence details" link
+    Then I see "Add an offence" on the page header
+    And I see "Offence details" text on the page
 
-        When I click the "Save" button
-        Then I see "Add an offence" on the page header
+    When I enter "HY35014" into the "Offence code" field
+    And I enter a date 8 weeks into the past into the "Date of sentence" date field
 
-        When I click the "Review offence" button
-        Then I see "Offences and impositions" on the page header
-        When I click the "Return to account details" button
-        And I see the status of "Offence details" is "Provided"
+    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
+    And I enter "300" into the "Amount imposed" field for imposition 1
+    And I enter "100" into the "Amount paid" field for imposition 1
+    And I see "Add creditor" text on the page
+    And I select the "Minor creditor" radio button
+    When I click on the "Add minor creditor details" link for imposition 1
+    Then I see "Minor creditor details" on the page header
 
-        # Payment Terms
-        When I click on the "Payment terms" link
-        And I see "Payment terms" on the page header
+    When I select the "Individual" radio button
+    And I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First name" field
 
-        When I select the "No" radio button under the "Has a collection order been made?" section
-        And I select the "Make collection order today" checkbox
-        And I select the "Pay in full" radio button
-        And I enter "01/04/2025" into the "Enter pay by date" date field
+    # Test For Capitalization in Last Name - PO-1449
+    When I enter "lname" into the "Last name" field
+    Then I see "LNAME" in the "Last name" field
 
-        And I click the "Return to account details" button
-        Then I see "Account details" on the page header
-        Then I see the status of "Payment terms" is "Provided"
+    # Test Capitalization in Postcode - PO-1448
+    When I enter "ne13 8ed" into the "Postcode" field
+    Then I see "NE13 8ED" in the "Postcode" field
 
+    Then I select the "I have BACS payment details" checkbox
+    And I enter "F LNAME" into the "Name on the account" field
+    And I enter "123456" into the "Sort code" field
+    And I enter "12345678" into the "Account number" field
 
-        # Check Account
-        And I see the "Check account" button
-        And I do not see "You cannot proceed until all required sections have been completed." text on the page
+    # Test Capitalization in Payment Reference - PO-1449
+    When I enter "ref123ab" into the "Payment reference" field
+    Then I see "REF123AB" in the "Payment reference" field
 
-        When I click the "Check account" button
-        Then I see "Check account details" on the page header
+    When I click the "Save" button
+    Then I see "Add an offence" on the page header
 
-        Then I see the following in the "Court details" table:
-            | Prosecutor Case Reference (PCR) | ABCD1234A |
+    When I click the "Review offence" button
+    Then I see "Offences and impositions" on the page header
+    When I click the "Return to account details" button
+    And I see the status of "Offence details" is "Provided"
 
-        Then I see the following in the "Parent or guardian details" table:
-            | Surname                 | LNAME                                                                                                                                       |
-            # | Postcode                  | RG12 8EU                                                                                                                                    |
-            | National Insurance number | AB122398B                                                                                                                                   |
-            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+    # Payment Terms
+    When I click on the "Payment terms" link
+    And I see "Payment terms" on the page header
 
+    When I select the "No" radio button under the "Has a collection order been made?" section
+    And I select the "Make collection order today" checkbox
+    And I select the "Pay in full" radio button
+    And I enter "01/04/2025" into the "Enter pay by date" date field
 
-        Then I see the following in the "Defendant details" table:
-            | Last name                 | LNAME                                                                                                                                       |
-            # | Postcode                  | RG12 8EU                                                                                                                                    |
-            | National Insurance number | AB122398B                                                                                                                                   |
-            #| Aliases                     | Alias 1 FNAME ALIAS 1 LNAME Alias 2 FNAME ALIAS 2 LNAME Alias 3 FNAME ALIAS 3 LNAME Alias 4 FNAME ALIAS 4 LNAME Alias 5 FNAME ALIAS 5 LNAME |
+    And I click the "Return to account details" button
+    Then I see "Account details" on the page header
+    Then I see the status of "Payment terms" is "Provided"
 
-        Then I see the following in the "Employer details" table:
-            | Employee reference | AB122398B |
-            # | Postcode           | RG12 8EU  |
 
-        Then I see the following in the "Offences and impositions" table:
-            | Payment reference | REF123AB |
-            | Last name         | LNAME    |
+    # Check Account
+    And I see the "Check account" button
+    And I do not see "You cannot proceed until all required sections have been completed." text on the page
+
+    When I click the "Check account" button
+    Then I see "Check account details" on the page header
+
+    Then I see the following in the "Court details" table:
+      | Prosecutor Case Reference (PCR) | ABCD1234A |
+
+    Then I see the following in the "Parent or guardian details" table:
+      | Surname                   | LNAME                                                                     |
+      | Address                   | 1 Address Street  RG12 8EU                                                |
+      | National Insurance number | AB122398B                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
+      | Registration number       | CARREG                                                                    |
+
+
+    Then I see the following in the "Defendant details" table:
+      | Last name                 | LNAME                                                                     |
+      | Address                   | 1 Address Street  RG12 8EU                                                |
+      | National Insurance number | AB122398B                                                                 |
+      | Alias                     | fname1 LNAME1  fname2 LNAME2  fname3 LNAME3  fname4 LNAME4  fname5 LNAME5 |
+
+    Then I see the following in the "Employer details" table:
+      | Employee reference | AB122398B                  |
+      | Employer address   | 1 Address Street  RG12 8EU |
+
+    Then I see the following details for imposition 1 in the Offences and impositions table:
+      | imposition        | Compensation   |
+      | creditor          | Mr FNAME LNAME |
+      | amountImposed     | 300            |
+      | amountPaid        | 100            |
+      | balanceRemaining  | 200            |
+      | Address           | NE13 8ED       |
+      | Payment method    | Pay by BACS    |
+      | Name on account   | F LNAME        |
+      | Sort code         | 12-34-56       |
+      | Account number    | 12345678       |
+      | Payment reference | REF123AB       |
 
 
 

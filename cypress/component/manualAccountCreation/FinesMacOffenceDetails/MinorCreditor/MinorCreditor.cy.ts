@@ -356,6 +356,20 @@ describe('FinesMacMinorCreditor', () => {
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-345', '@PO-1450'] },
+    () => {
+      setupComponent(null, 'company');
+
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 });
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'REF123ABC');
+
+      cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
 
   it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');

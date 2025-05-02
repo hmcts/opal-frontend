@@ -19,9 +19,9 @@ Feature: Manual account creation - Company Details
   Scenario: (AC.12) Entered data persists in the session [@PO-345, @PO-365]
     When I enter "COMPANY NAME" into the "Company name" field
     And I select the "Add company aliases" checkbox
-    And I set the "Alias 1", "Company name" to "Alias 1"
+    And I set the "Alias 1", "Company name" to "ALIAS 1"
     And I select add another alias
-    And I set the "Alias 2", "Company name" to "Alias 2"
+    And I set the "Alias 2", "Company name" to "ALIAS 2"
 
     And I enter "Addr1" into the "Address line 1" field
     And I enter "Addr2" into the "Address line 2" field
@@ -35,8 +35,8 @@ Feature: Manual account creation - Company Details
     When I click on the "Company details" link
     And I see "COMPANY NAME" in the "Company name" field
     And I validate the "Add company aliases" checkbox is checked
-    And I see "Alias 1", "Company name" is set to "Alias 1"
-    And I see "Alias 2", "Company name" is set to "Alias 2"
+    And I see "Alias 1", "Company name" is set to "ALIAS 1"
+    And I see "Alias 2", "Company name" is set to "ALIAS 2"
     And I see "Addr1" in the "Address line 1" field
     And I see "Addr2" in the "Address line 2" field
     And I see "Addr3" in the "Address line 3" field
@@ -69,9 +69,9 @@ Feature: Manual account creation - Company Details
   Scenario: (AC.13, AC.14) Unsaved data is cleared when cancel is clicked [@PO-345, @PO-365]
     When I enter "COMPANY NAME" into the "Company name" field
     And I select the "Add company aliases" checkbox
-    And I set the "Alias 1", "Company name" to "Alias 1"
+    And I set the "Alias 1", "Company name" to "ALIAS 1"
     And I select add another alias
-    And I set the "Alias 2", "Company name" to "Alias 2"
+    And I set the "Alias 2", "Company name" to "ALIAS 2"
 
     And I enter "Addr1" into the "Address line 1" field
     And I enter "Addr2" into the "Address line 2" field

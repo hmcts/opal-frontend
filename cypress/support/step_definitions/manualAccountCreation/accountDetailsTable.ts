@@ -84,6 +84,66 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
     }
   });
 });
+Then(
+  'I see the following details for imposition {int} in the Offences and impositions table:',
+  (imposition: number, dataTable: DataTable) => {
+    const expectedRows = dataTable.raw();
+
+    expectedRows.forEach((row) => {
+      const [key, value] = row;
+      cy.get(`h2.govuk-summary-card__title`)
+        .contains('Offences and impositions')
+        .parentsUntil('opal-lib-govuk-summary-card-list')
+        .find('app-fines-mac-offence-details-review-offence-imposition')
+        .find('tbody')
+        .find('tr:nth-child(' + imposition + ')');
+
+      if (key === 'Address') {
+        cy.get('dd[id="minorCreditorDataTableAddressValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else if (key === 'Payment method') {
+        cy.get('dd[id="minorCreditorDataTablePaymentMethodValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else if (key === 'Name on account') {
+        cy.get('dd[id="minorCreditorDataTableNameOnAccountValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else if (key === 'Sort code') {
+        cy.get('dd[id="minorCreditorDataTableSortCodeValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else if (key === 'Account number') {
+        cy.get('dd[id="minorCreditorDataTableAccountNumberValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else if (key === 'Payment reference') {
+        cy.get('dd[id="minorCreditorDataTablePaymentReferenceValue"]')
+          .invoke('text')
+          .then((text) => {
+            expect(text.trim()).to.equal(value);
+          });
+      } else {
+        cy.get('td[id="' + key + '"]').then((cell) => {
+          const cellText = cell.text().trim();
+          expect(cellText).to.contains(value);
+        });
+      }
+    });
+  },
+);
+
 Then('I do not see the {string} table', (tableName: string) => {
   cy.get(`h2.govuk-summary-card__title`).contains(tableName).should('not.exist');
 });
