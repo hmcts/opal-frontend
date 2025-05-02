@@ -14,4 +14,5 @@ export const IMPOSITION_ERROR_MESSAGES = {
   invalidAmount: 'Enter an amount that is no more than 18 numbers before the decimal and 2 or less after',
   requiredCreditor: 'Select whether major or minor creditor',
   requiredMajorCreditor: 'Enter a major creditor name or code',
+  requiredMinorCreditor: 'Add minor creditor details',
 };
