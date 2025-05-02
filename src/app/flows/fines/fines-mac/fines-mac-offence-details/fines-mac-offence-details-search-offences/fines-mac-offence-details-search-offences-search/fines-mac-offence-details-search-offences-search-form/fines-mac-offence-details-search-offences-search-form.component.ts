@@ -37,7 +37,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
 
   /**
    * Initializes the offence details search offences form with predefined controls and validators.
-   * 
+   *
    * The form contains the following fields:
    * - `fm_offence_details_search_offences_code`: A text field with a maximum length of 8 characters,
    *   allowing only alphanumeric characters and spaces.
@@ -46,7 +46,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
    * - `fm_offence_details_search_offences_act_and_section`: A text field with a maximum length of 4000 characters,
    *   allowing only alphanumeric characters and spaces.
    * - `fm_offence_details_search_offences_inactive`: A boolean field initialized to `false`.
-   * 
+   *
    * Validators are applied to ensure the input adheres to the specified constraints.
    */
   private setupOffenceDetailsSearchOffencesForm(): void {
@@ -69,13 +69,13 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
 
   /**
    * Initializes the setup process for the "Search Offences" feature.
-   * 
+   *
    * This method performs the following actions:
    * 1. Retrieves the initial form data from the `finesMacOffenceDetailsSearchOffencesStore`.
    * 2. Sets up the offence details search offences form.
    * 3. Configures the initial error messages for the form.
    * 4. Populates the form with the retrieved data.
-   * 
+   *
    * @private
    */
   private initialSearchOffencesSetup(): void {

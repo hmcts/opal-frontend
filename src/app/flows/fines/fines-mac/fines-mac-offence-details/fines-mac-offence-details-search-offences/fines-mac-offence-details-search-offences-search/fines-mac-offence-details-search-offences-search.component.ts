@@ -16,10 +16,10 @@ export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends Abstrac
 
   /**
    * Handles the submission of the search offences form.
-   * 
+   *
    * This method updates the search offences state in the store with the provided form data
    * and navigates the user to the search offences results page.
-   * 
+   *
    * @param form - The form data containing the search offences details.
    */
   public handleSearchOffencesSubmit(form: IFinesMacOffenceDetailsSearchOffencesForm): void {
