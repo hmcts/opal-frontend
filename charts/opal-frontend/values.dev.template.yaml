@@ -47,7 +47,7 @@ opal-fines-service:
 postgresql:
   enabled: true
   image:
-    tag: '15.4.0'
+    tag: '17.0.0'
   auth:
     username: opal
     password: opal
