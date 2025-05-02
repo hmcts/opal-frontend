@@ -7,7 +7,6 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
   imports: [RouterOutlet],
-  providers: [FinesMacOffenceDetailsSearchOffencesStore],
   templateUrl: './fines-mac-offence-details-search-offences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

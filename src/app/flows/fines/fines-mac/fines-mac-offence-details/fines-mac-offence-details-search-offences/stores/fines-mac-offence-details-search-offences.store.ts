@@ -3,6 +3,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from '../constants/fin
 import { IFinesMacOffenceDetailsSearchOffencesForm } from '../interfaces/fines-mac-offence-details-search-offences-form.interface';
 
 export const FinesMacOffenceDetailsSearchOffencesStore = signalStore(
+  { providedIn: 'root' },
   withState(() => ({
     searchOffences: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM,
     unsavedChanges: false,

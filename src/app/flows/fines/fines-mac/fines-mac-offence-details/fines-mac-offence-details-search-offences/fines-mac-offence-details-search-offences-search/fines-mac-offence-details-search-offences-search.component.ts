@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FinesMacOffenceDetailsSearchOffencesSearchFormComponent } from './fines-mac-offence-details-search-offences-search-form/fines-mac-offence-details-search-offences-search-form.component';
 import { IFinesMacOffenceDetailsSearchOffencesForm } from '../interfaces/fines-mac-offence-details-search-offences-form.interface';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
@@ -9,7 +9,7 @@ import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/com
   selector: 'app-fines-mac-offence-details-search-offences-search',
   imports: [FinesMacOffenceDetailsSearchOffencesSearchFormComponent],
   templateUrl: './fines-mac-offence-details-search-offences-search.component.html',
-  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends AbstractFormParentBaseComponent {
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
