@@ -77,7 +77,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get('button[type="submit"]').should('contain', 'Add personal details');
   });
-  it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527'] }, () => {
+  it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527', '@PO-1449'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
     cy.get('app-fines-mac-court-details-form').should('exist');
 
@@ -319,6 +319,30 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
+  });
+
+  it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-345', '@PO-1450'] }, () => {
+    setupComponent(null, 'company');
+
+    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234a', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234A');
+  });
+
+  it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
+    cy.get(DOM_ELEMENTS.pcrInput).type('testpcr', { delay: 0 });
+    cy.get(DOM_ELEMENTS.pcrInput).blur();
+    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
+    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'TESTPCR');
+
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
   });
 
   it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-272', '@PO-1448'] }, () => {
