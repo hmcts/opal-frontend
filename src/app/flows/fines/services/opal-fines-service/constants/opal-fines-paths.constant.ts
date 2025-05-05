@@ -5,6 +5,7 @@ const courtPath = 'courts';
 const businessUnit = 'business-units';
 const localJusticeArea = 'local-justice-areas';
 const offences = 'offences';
+const searchOffences = '/search';
 const results = 'results';
 const majorCreditor = 'major-creditors';
 const draftAccounts = 'draft-accounts';
@@ -17,4 +18,5 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   resultsRefData: `${baseUrl}${results}`,
   majorCreditorRefData: `${baseUrl}${majorCreditor}`,
   draftAccounts: `${baseUrl}${draftAccounts}`,
+  searchOffences: `${baseUrl}${offences}${searchOffences}`,
 };

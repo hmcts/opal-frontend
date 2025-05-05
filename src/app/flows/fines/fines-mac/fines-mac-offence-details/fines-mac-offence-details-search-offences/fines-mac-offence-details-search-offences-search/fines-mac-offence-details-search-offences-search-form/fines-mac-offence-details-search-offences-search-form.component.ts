@@ -12,6 +12,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS } from '../../constant
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
 import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -23,6 +24,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
     GovukTextInputComponent,
     GovukCheckboxesItemComponent,
     GovukErrorSummaryComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
