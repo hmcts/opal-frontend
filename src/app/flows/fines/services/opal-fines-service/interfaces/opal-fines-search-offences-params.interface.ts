@@ -1,5 +1,5 @@
 export interface IOpalFinesSearchOffencesParams {
-  actSection?: string | null;
+  actAndSection?: string | null;
   activeDate?: string | null;
   cjsCode?: string | null;
   maxResults?: number | null;

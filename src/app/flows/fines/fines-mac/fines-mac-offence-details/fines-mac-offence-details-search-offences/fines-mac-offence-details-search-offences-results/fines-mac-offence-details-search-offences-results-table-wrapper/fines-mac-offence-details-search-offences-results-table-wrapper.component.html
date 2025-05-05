@@ -59,14 +59,12 @@
           {{ row['Code'] }}
           <a
             class="govuk-link govuk-link--no-visited-state"
-            #codeLink
-            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
-            (keyup.enter)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
+            (click)="utilsService.copyToClipboard(row['Code'])"
+            (keyup.enter)="utilsService.copyToClipboard(row['Code'])"
             tabindex="0"
           >
-            {{ COPY_CODE_TO_CLIPBOARD }}
+            Copy code
           </a>
-          <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
         </td>
         <td opal-lib-moj-sortable-table-row-data id="shortTitle">
           {{ row['Short title'] }}
@@ -87,10 +85,18 @@
       </tr>
     }
   </ng-container>
+  <ng-container status>
+    <opal-lib-moj-sortable-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    ></opal-lib-moj-sortable-table-status>
+  </ng-container>
 </opal-lib-moj-sortable-table>
-<app-fines-shared-sortable-table-footer
-  [abstractTableData]="abstractTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/>
+@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  <opal-lib-govuk-pagination
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="abstractTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-govuk-pagination>
+}

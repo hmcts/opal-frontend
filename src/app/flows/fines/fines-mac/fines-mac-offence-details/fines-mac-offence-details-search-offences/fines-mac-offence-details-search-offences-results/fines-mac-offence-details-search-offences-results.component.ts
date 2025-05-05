@@ -1,19 +1,27 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../stores/fines-mac-offence-details-search-offences.store';
+import { map, Observable } from 'rxjs';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IOpalFinesSearchOffencesParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences-params.interface';
 import { CommonModule } from '@angular/common';
 import { FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent } from './fines-mac-offence-details-search-offences-results-table-wrapper/fines-mac-offence-details-search-offences-results-table-wrapper.component';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT } from './fines-mac-offence-details-search-offences-results-table-wrapper/constants/fines-mac-offence-details-search-offences-results-table-wrapper-sort-defaults.constant';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './fines-mac-offence-details-search-offences-results-table-wrapper/interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
-import {
-  IOpalFinesSearchOffences,
-  IOpalFinesSearchOffencesData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
+import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results',
+  imports: [
+    CommonModule,
+    RouterModule,
+    GovukBackLinkComponent,
+    FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent,
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -26,33 +34,68 @@ import {
 export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly dateService = inject(DateService);
 
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
   public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
-  protected readonly searchOffencesData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] =
-    this.mapSearchOffencesToTableData();
+  private readonly todayIsoDate: string = this.dateService.getDateNow().toUTC().toISO()!;
+  protected readonly searchOffencesData$: Observable<
+    IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]
+  > = this.opalFinesService
+    .searchOffences(this.buildSearchOffencesBody())
+    .pipe(map((response) => this.populateTableData(response)));
 
   /**
-   * Maps search offences data retrieved from the activated route's snapshot
-   * to a format suitable for table display.
+   * Builds the search offences request body by mapping form data fields
+   * to the corresponding keys in the `IOpalFinesSearchOffencesParams` interface.
+   * Filters out any undefined or null values from the resulting object.
    *
-   * @returns An array of objects representing table data, where each object
-   * contains the following properties:
-   * - `Code`: The CJS code of the offence.
-   * - `Short title`: The title of the offence.
-   * - `Act and section`: The act and section of the offence.
-   * - `Used from`: The date the offence was first used.
-   * - `Used to`: The date the offence was last used.
+   * @returns {Partial<IOpalFinesSearchOffencesParams>} The filtered and mapped search offences request body.
    */
-  private mapSearchOffencesToTableData(): IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] {
-    const data = this.activatedRoute.snapshot.data['searchResults'] as IOpalFinesSearchOffencesData;
-    return data.searchData.map((offence: IOpalFinesSearchOffences) => ({
-      Code: offence.cjs_code,
-      'Short title': offence.offence_title,
-      'Act and section': offence.offence_oas,
-      'Used from': offence.date_used_from,
-      'Used to': offence.date_used_to,
-    }));
+  private buildSearchOffencesBody(): Partial<IOpalFinesSearchOffencesParams> {
+    // Retrieve form data from the store
+    const formData = this.finesMacOffenceDetailsSearchOffencesStore.searchOffences().formData;
+
+    // Map form data fields to the corresponding keys
+    const mappedData: IOpalFinesSearchOffencesParams = {
+      activeDate: formData.fm_offence_details_search_offences_inactive === true ? null : this.todayIsoDate,
+      cjsCode: formData.fm_offence_details_search_offences_code,
+      title: formData.fm_offence_details_search_offences_short_title,
+      actAndSection: formData.fm_offence_details_search_offences_act_and_section,
+    };
+
+    // Filter out undefined or null values
+    const filteredData = Object.keys(mappedData).reduce((acc, key) => {
+      const typedKey = key as keyof IOpalFinesSearchOffencesParams;
+      const value = mappedData[typedKey];
+      if (value !== undefined && value !== null) {
+        (acc as Record<string, string | number>)[typedKey] = value;
+      }
+      return acc;
+    }, {} as Partial<IOpalFinesSearchOffencesParams>);
+
+    return filteredData;
+  }
+
+  /**
+   * Transforms the response data from an offence search into a format suitable for table display.
+   *
+   * @param response - The response object containing offence search data.
+   * @returns An array of table data objects, each representing an offence with its details.
+   */
+  private populateTableData(
+    response: IOpalFinesSearchOffencesData,
+  ): IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] {
+    return response.searchData.map((offence) => {
+      return {
+        Code: offence.cjs_code,
+        'Short title': offence.offence_title,
+        'Act and section': offence.offence_oas,
+        'Used from': offence.date_used_from,
+        'Used to': offence.date_used_to,
+      };
+    });
   }
 
   /**
