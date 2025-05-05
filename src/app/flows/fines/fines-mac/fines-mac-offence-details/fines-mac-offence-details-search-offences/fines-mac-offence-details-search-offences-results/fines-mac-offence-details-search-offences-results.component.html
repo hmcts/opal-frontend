@@ -1,4 +1,15 @@
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-full-width">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   <h1 class="govuk-heading-l">Search results</h1>
+  @if (searchOffencesData$ | async; as searchOffencesData) {
+    @if (searchOffencesData.length === 0) {
+      <p>There are no matching results.</p>
+      <p>Check your search and try again.</p>
+    } @else {
+      <app-fines-mac-offence-details-search-offences-results-table-wrapper
+        [tableData]="searchOffencesData"
+        [existingSortState]="tableSort"
+      ></app-fines-mac-offence-details-search-offences-results-table-wrapper>
+    }
+  }
 </div>

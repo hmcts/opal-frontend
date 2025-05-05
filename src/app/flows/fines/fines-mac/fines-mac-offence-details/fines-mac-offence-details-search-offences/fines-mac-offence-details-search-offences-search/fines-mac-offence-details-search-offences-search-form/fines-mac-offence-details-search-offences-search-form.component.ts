@@ -10,6 +10,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS } from '../../constants/fines-mac-offence-details-search-offences-errors.constant';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -21,6 +22,7 @@ import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-ma
     GovukTextInputComponent,
     GovukCheckboxesItemComponent,
     GovukErrorSummaryComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
