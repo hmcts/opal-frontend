@@ -59,6 +59,7 @@ postgresql:
   primary:
     persistence:
       enabled: false
+    resourcesPreset: small
 
 redis:
   enabled: true
