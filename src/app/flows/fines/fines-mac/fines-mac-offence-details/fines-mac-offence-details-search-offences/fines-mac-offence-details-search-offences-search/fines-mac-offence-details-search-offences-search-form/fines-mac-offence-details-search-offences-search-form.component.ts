@@ -10,6 +10,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS } from '../../constants/fines-mac-offence-details-search-offences-errors.constant';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
@@ -38,32 +39,33 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS;
 
   /**
-   * Initializes the offence details search offences form with predefined controls and validators.
+   * Initializes the `form` property with a `FormGroup` containing controls for searching offence details.
+   * Each control is configured with specific validators to enforce input constraints.
    *
-   * The form contains the following fields:
+   * Form Controls:
    * - `fm_offence_details_search_offences_code`: A text field with a maximum length of 8 characters,
-   *   allowing only alphanumeric characters and spaces.
+   *   validated to allow only alphabetical text.
    * - `fm_offence_details_search_offences_short_title`: A text field with a maximum length of 120 characters,
-   *   allowing only alphanumeric characters and spaces.
+   *   validated to allow only alphabetical text.
    * - `fm_offence_details_search_offences_act_and_section`: A text field with a maximum length of 4000 characters,
-   *   allowing only alphanumeric characters and spaces.
+   *   validated to allow only alphabetical text.
    * - `fm_offence_details_search_offences_inactive`: A boolean field initialized to `false`.
    *
-   * Validators are applied to ensure the input adheres to the specified constraints.
+   * This method is used to set up the form structure and validation rules for the offence details search functionality.
    */
   private setupOffenceDetailsSearchOffencesForm(): void {
     this.form = new FormGroup({
       fm_offence_details_search_offences_code: new FormControl(null, [
         Validators.maxLength(8),
-        Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+        alphabeticalTextValidator(),
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [
         Validators.maxLength(120),
-        Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+        alphabeticalTextValidator(),
       ]),
       fm_offence_details_search_offences_act_and_section: new FormControl(null, [
         Validators.maxLength(4000),
-        Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+        alphabeticalTextValidator(),
       ]),
       fm_offence_details_search_offences_inactive: new FormControl(false),
     });
