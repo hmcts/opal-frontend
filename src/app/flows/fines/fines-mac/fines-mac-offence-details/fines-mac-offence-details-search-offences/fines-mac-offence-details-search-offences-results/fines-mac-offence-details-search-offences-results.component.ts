@@ -96,11 +96,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
    * @returns A boolean indicating whether the component can be deactivated.
    */
   canDeactivate(): CanDeactivateTypes {
-    if (this.finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !this.finesMacOffenceDetailsSearchOffencesStore.unsavedChanges();
   }
 
   /**
