@@ -131,10 +131,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private setIndividualValidators(): void {
     const {
+      fm_offence_details_minor_creditor_title: title,
       fm_offence_details_minor_creditor_forenames: forenames,
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
-    forenames.setValidators([Validators.maxLength(20), alphabeticalTextValidator()]);
+    title.setValidators([Validators.required]);
+    forenames.setValidators([Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]);
     surname.setValidators([Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]);
   }
 
@@ -175,6 +177,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_company_name: companyName,
     } = this.form.controls;
     title.reset();
+    title.clearValidators();
     forenames.reset();
     forenames.clearValidators();
     surname.reset();
@@ -238,6 +241,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     const {
       fm_offence_details_minor_creditor_creditor_type: creditorType,
       fm_offence_details_minor_creditor_company_name: companyName,
+      fm_offence_details_minor_creditor_title: title,
       fm_offence_details_minor_creditor_forenames: forenames,
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
@@ -255,6 +259,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       }
 
       companyName.updateValueAndValidity();
+      title.updateValueAndValidity();
       forenames.updateValueAndValidity();
       surname.updateValueAndValidity();
     });

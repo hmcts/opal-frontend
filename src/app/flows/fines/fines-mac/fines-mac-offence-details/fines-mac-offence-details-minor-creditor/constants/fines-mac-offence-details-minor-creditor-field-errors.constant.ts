@@ -7,14 +7,24 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 1,
     },
   },
+  fm_offence_details_minor_creditor_title: {
+    required: {
+      message: `Select minor creditor’s title`,
+      priority: 1,
+    },
+  },
   fm_offence_details_minor_creditor_forenames: {
+    required: {
+      message: `Enter minor creditor's first name`,
+      priority: 1,
+    },
     maxlength: {
       message: `The minor creditor's first name(s) must be 20 characters or fewer`,
-      priority: 1,
+      priority: 2,
     },
     alphabeticalTextPattern: {
       message: `The minor creditor's first name(s) must only contain alphabetical text`,
-      priority: 2,
+      priority: 3,
     },
   },
   fm_offence_details_minor_creditor_surname: {
