@@ -9,6 +9,7 @@ import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } fro
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesMacOffenceDetailsSearchOffencesResultsResolver(...resolverParameters));
 
@@ -45,10 +46,12 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
           },
         },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockOpalFinesService.searchOffences.and.returnValue(
@@ -58,6 +61,7 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
       }),
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe(
       (result: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]) => {
         expect(result).toEqual([
@@ -75,8 +79,10 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
   });
 
   it('should return empty array if no state.searchForm is available', (done) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockRouter.getCurrentNavigation.and.returnValue({ extras: {} } as any);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe(
       (result: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]) => {
         expect(result).toEqual([]);
@@ -97,14 +103,17 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
           },
         },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockOpalFinesService.searchOffences.and.returnValue(throwError(() => new Error('Server error')));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe(
       (result: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]) => {
         expect(result).toEqual([]);
@@ -125,10 +134,12 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
           },
         },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
       toUTC: () => ({ toISO: () => '2025-05-07' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     mockOpalFinesService.searchOffences.and.returnValue(
@@ -138,6 +149,7 @@ describe('finesMacOffenceDetailsSearchOffencesResultsResolver', () => {
       }),
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe(() => {
       const expectedPayload = {
         cjsCode: 'B456',
