@@ -4,6 +4,7 @@ import { IFinesMacPaymentTermsForm } from './interfaces/fines-mac-payment-terms-
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form/fines-mac-payment-terms-form.component';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 @Component({
   selector: 'app-fines-mac-payment-terms',
@@ -13,7 +14,46 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 })
 export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseComponent {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly userState = this.globalStore.userState();
   public defendantType = this.finesMacStore.getDefendantType();
+
+  /**
+   * Generates a system note based on the collection order status and date.
+   *
+   * @param collectionOrderDate - The date when the collection order was made, or null if not applicable.
+   * @param collectionOrder - A boolean indicating whether a collection order was previously made.
+   * @returns A string containing the generated note, or null if no collection order date is provided.
+   */
+  private systemGenerateNote(collectionOrderDate: string | null, collectionOrder: boolean): string | null {
+    if (!collectionOrderDate) return null;
+
+    return collectionOrder
+      ? `A collection order was previously made on ${collectionOrderDate} prior to this account creation`
+      : `A collection order has been made by ${this.userState.name} using Authorised Functions`;
+  }
+
+  /**
+   * Adds a system-generated note to the account comments notes data in the finesMacStore.
+   *
+   * @param collectionOrderDate - The date of the collection order, or `null` if not applicable.
+   * @param collectionOrderMade - A boolean indicating whether the collection order was made.
+   *
+   * This method clones the existing account comments notes data and updates it with a
+   * system-generated note based on the provided `collectionOrderDate` and `collectionOrderMade` values.
+   * The updated data is then set in the finesMacStore.
+   */
+  private addSystemGeneratedNote(collectionOrderDate: string | null, collectionOrderMade: boolean): void {
+    const accountCommentsNotesData = {
+      ...structuredClone(this.finesMacStore.accountCommentsNotes()),
+      formData: {
+        ...structuredClone(this.finesMacStore.accountCommentsNotes().formData),
+        fm_account_comments_notes_system_notes: this.systemGenerateNote(collectionOrderDate, collectionOrderMade),
+      },
+    };
+
+    this.finesMacStore.setAccountCommentsNotes(accountCommentsNotesData);
+  }
 
   /**
    * Handles the submission of the payment terms form.
@@ -40,6 +80,9 @@ export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseCompone
       : null;
 
     this.finesMacStore.setPaymentTerms(form);
+
+    const { fm_payment_terms_collection_order_date, fm_payment_terms_collection_order_made } = form.formData;
+    this.addSystemGeneratedNote(fm_payment_terms_collection_order_date, !!fm_payment_terms_collection_order_made);
 
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes);

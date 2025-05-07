@@ -48,6 +48,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     this.form = new FormGroup({
       fm_account_comments_notes_comments: new FormControl<string | null>(null),
       fm_account_comments_notes_notes: new FormControl<string | null>(null),
+      fm_account_comments_notes_system_notes: new FormControl<string | null>(null),
     });
   }
 

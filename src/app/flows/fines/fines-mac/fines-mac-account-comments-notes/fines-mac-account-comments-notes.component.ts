@@ -23,7 +23,15 @@ export class FinesMacAccountCommentsNotesComponent extends AbstractFormParentBas
    * @returns void
    */
   public handleAccountCommentsNoteSubmit(form: IFinesMacAccountCommentsNotesForm): void {
-    this.finesMacStore.setAccountCommentsNotes(form);
+    const formCloned: IFinesMacAccountCommentsNotesForm = {
+      ...structuredClone(form),
+      formData: {
+        ...structuredClone(form.formData),
+        fm_account_comments_notes_system_notes:
+          this.finesMacStore.accountCommentsNotes().formData.fm_account_comments_notes_system_notes,
+      },
+    };
+    this.finesMacStore.setAccountCommentsNotes(formCloned);
 
     // Navigate to the next route
     if (form.nestedFlow && this.defendantType) {
