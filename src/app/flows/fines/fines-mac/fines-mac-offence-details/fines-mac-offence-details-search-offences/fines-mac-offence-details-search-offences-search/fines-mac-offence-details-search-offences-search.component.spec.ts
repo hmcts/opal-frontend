@@ -58,6 +58,9 @@ describe('FinesMacOffenceDetailsSearchOffencesSearchComponent', () => {
       [FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.children.searchOffencesResults],
       {
         relativeTo: component['activatedRoute'].parent,
+        state: {
+          searchForm: { ...formSubmit.formData },
+        },
       },
     );
   });
