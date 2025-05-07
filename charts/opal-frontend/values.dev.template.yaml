@@ -21,6 +21,10 @@ opal-fines-service:
     releaseNameOverride: ${SERVICE_NAME}-opal-fines-service
     ingressHost: opal-fines-service-${SERVICE_FQDN}
     imagePullPolicy: Always
+    devmemoryRequests: "1Gi"
+    devcpuRequests: "250m"
+    devmemoryLimits: "2Gi"
+    devcpuLimits: "2500m"
     keyVaults:
       opal:
         secrets:
@@ -47,7 +51,7 @@ opal-fines-service:
 postgresql:
   enabled: true
   image:
-    tag: '15.4.0'
+    tag: '17.0.0'
   auth:
     username: opal
     password: opal
@@ -55,6 +59,7 @@ postgresql:
   primary:
     persistence:
       enabled: false
+    resourcesPreset: small
 
 redis:
   enabled: true
