@@ -4,7 +4,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from './const
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES } from './constants/fines-mac-offence-details-search-offences-routing-titles.constant';
 import { finesMacOffenceDetailsSearchOffencesFlowStateGuard } from '../guards/fines-mac-offence-details-search-offences-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
-import { finesMacOffenceDetailsSearchOffencesResultsResolver } from './resolvers/fines-mac-offence-details-search-offences-result.resolver';
+import { finesMacOffenceDetailsSearchOffencesResolver } from './resolvers/fines-mac-offence-details-search-offences.resolver';
 
 export const routing: Routes = [
   {
@@ -27,7 +27,7 @@ export const routing: Routes = [
     data: { title: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults },
     resolve: { 
       title: TitleResolver,
-      searchResults: finesMacOffenceDetailsSearchOffencesResultsResolver,
-     },
+      searchResults: finesMacOffenceDetailsSearchOffencesResolver,
+    },
   },
 ];

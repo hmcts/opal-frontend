@@ -41,7 +41,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
           payload: {
             code: 'A123',
             short_title: 'Test Title',
-            act_section: 'Act 1',
+            act_and_section: 'Act 1',
             inactive: false,
           },
         },
@@ -78,7 +78,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
           payload: {
             code: 'A123',
             short_title: 'Test Title',
-            act_section: 'Act 1',
+            act_and_section: 'Act 1',
             inactive: true,
           },
         },
@@ -126,7 +126,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
           payload: {
             code: 'A123',
             short_title: 'Test Title',
-            act_section: 'Act 1',
+            act_and_section: 'Act 1',
             inactive: false,
           },
         },

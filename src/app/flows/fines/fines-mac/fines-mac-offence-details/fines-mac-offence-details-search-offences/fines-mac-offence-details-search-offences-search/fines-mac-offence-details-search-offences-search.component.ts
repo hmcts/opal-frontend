@@ -37,11 +37,11 @@ export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends Abstrac
       undefined,
       undefined,
       {
-        searchForm: {
-          fm_offence_details_search_offences_code,
-          fm_offence_details_search_offences_short_title,
-          fm_offence_details_search_offences_act_and_section,
-          fm_offence_details_search_offences_inactive,
+        payload: {
+          code: fm_offence_details_search_offences_code,
+          short_title: fm_offence_details_search_offences_short_title,
+          act_and_section: fm_offence_details_search_offences_act_and_section,
+          inactive: fm_offence_details_search_offences_inactive,
         },
       },
     );

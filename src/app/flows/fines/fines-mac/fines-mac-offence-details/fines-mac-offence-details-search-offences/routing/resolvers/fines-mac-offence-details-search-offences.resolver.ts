@@ -32,7 +32,7 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
     activeDate: state.payload['inactive'] === true ? null : todayIsoDate,
     cjsCode: state.payload['code'],
     title: state.payload['short_title'],
-    actSection: state.payload['act_section'],
+    actAndSection: state.payload['act_and_section'],
   };
 
   // Filter out any undefined or null fields from the request payload
