@@ -6,7 +6,7 @@ import { FinesMacOffenceDetailsSearchOffencesStoreType } from '../stores/types/f
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
-import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../fines-mac-offence-details-search-offences-results/fines-mac-offence-details-search-offences-results-table-wrapper/mocks/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.mock';
+import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-search-offences.mock';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
@@ -26,7 +26,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
             parent: of('search-offences'),
             snapshot: {
               data: {
-                searchResults: [FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_TABLE_DATA_MOCK],
+                searchResults: OPAL_FINES_SEARCH_OFFENCES_MOCK,
               },
             },
           },
