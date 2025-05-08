@@ -269,6 +269,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    console.log(this.finesMacStore.accountCommentsNotes().formData);
     this.initialAccountDetailsSetup();
   }
 
