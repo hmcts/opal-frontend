@@ -78,8 +78,7 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
         .next()
         .invoke('text')
         .then((actualText) => {
-        expect(actualText.trim()).to.equal(value);
-        //expect(actualText.trim()).have.value(value);
+          expect(actualText.trim()).to.equal(value);
         });
     }
   });
