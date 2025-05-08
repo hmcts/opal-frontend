@@ -9,7 +9,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
   },
   fm_offence_details_minor_creditor_title: {
     required: {
-      message: `Select minor creditor’s title`,
+      message: `Select minor creditor's title`,
       priority: 1,
     },
   },
