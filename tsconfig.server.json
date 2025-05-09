@@ -6,10 +6,9 @@
     "types": ["node"]
   },
   "files": [
-    "src/main.server.ts", 
-    "node_modules/@hmcts/opal-frontend-common-node/global.d.ts", 
-    "node_modules/@hmcts/opal-frontend-common-node/session.d.ts", 
-    "node_modules/@hmcts/opal-frontend-common-node/type.d.ts", 
+    "src/main.server.ts",
+    "node_modules/@hmcts/opal-frontend-common-node/global.d.ts",
+    "node_modules/@hmcts/opal-frontend-common-node/session.d.ts",
     "server.ts"
   ]
 }
