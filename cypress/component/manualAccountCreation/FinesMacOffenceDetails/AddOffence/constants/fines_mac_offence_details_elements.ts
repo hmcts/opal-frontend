@@ -20,6 +20,7 @@ export const DOM_ELEMENTS = {
   //buttons
   addImpositionButton: 'button[id = "addImposition"]',
   submitButton: 'button[type = "submit"]',
+  addAnotherOffenceButton: 'button[type = "submit"]:contains("Add another offence")',
 
   //ticket panel
   ticketPanel: 'opal-lib-moj-ticket-panel',

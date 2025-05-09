@@ -39,6 +39,10 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         message: 'Select whether major or minor creditor',
         priority: 1,
       },
+      minorCreditorMissing: {
+        message: 'Add minor creditor details',
+        priority: 2,
+      },
     },
     [`fm_offence_details_major_creditor_id${indexSuffix}`]: {
       required: {
