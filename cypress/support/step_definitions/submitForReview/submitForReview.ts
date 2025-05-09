@@ -6,13 +6,17 @@ Then('I click the {string} button and capture the created account number', (butt
   cy.contains('button', buttonName).click();
   cy.wait('@createAccount').then((interception) => {
     const createdAccountId = interception.response?.body.draft_account_id;
-    cy.log('Created Account ID: ' + createdAccountId);
-    createdAccount.push(createdAccountId);
+    if (createdAccountId) {
+      createdAccount.push(createdAccountId);
+      cy.log('Created Account ID: ' + createdAccountId);
+    }
     expect(interception.response?.statusCode).to.equal(201);
   });
 });
 
 afterEach(() => {
+  cy.log('Createdaccount length: ' + createdAccount.length);
+
   if (createdAccount.length > 0) {
     cy.log('Cleaning up accounts: ' + createdAccount.join(', '));
     createdAccount.forEach((accountId) => {
