@@ -121,7 +121,7 @@ export class FinesMacParentGuardianDetailsFormComponent
     this.setupParentGuardianDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...Array(formData['fm_parent_guardian_details_aliases'].length).keys()],
+      [...Array(formData.fm_parent_guardian_details_aliases.length).keys()],
       'fm_parent_guardian_details_aliases',
     );
     this.setInitialErrorMessages();
