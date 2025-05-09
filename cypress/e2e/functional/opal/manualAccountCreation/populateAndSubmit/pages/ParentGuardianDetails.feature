@@ -19,11 +19,11 @@ Feature: Manual account creation - Parent Guardian Details
     When I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
     And I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "Alias 1 FNAME"
-    And I set the "Alias 1", "Last name" to "Alias 1 LNAME"
+    And I set the "Alias 1", "First names" to "ALIAS 1 FNAME"
+    And I set the "Alias 1", "Last name" to "ALIAS 1 LNAME"
     And I select add another alias
-    And I set the "Alias 2", "First names" to "Alias 2 FNAME"
-    And I set the "Alias 2", "Last name" to "Alias 2 LNAME"
+    And I set the "Alias 2", "First names" to "ALIAS 2 FNAME"
+    And I set the "Alias 2", "Last name" to "ALIAS 2 LNAME"
 
     And I enter a date of birth 18 years ago
 
@@ -33,7 +33,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I enter "TE1 1ST" into the "Postcode" field
 
     And I enter "CarMake" into the "Make and model" field
-    And I enter "CarReg" into the "Registration number" field
+    And I enter "CARREG" into the "Registration number" field
 
     When I click the "Return to account details" button
 
@@ -43,10 +43,10 @@ Feature: Manual account creation - Parent Guardian Details
     And I see "FNAME" in the "First names" field
     And I see "LNAME" in the "Last name" field
     And I validate the "Add aliases" checkbox is checked
-    And I see "Alias 1", "First names" is set to "Alias 1 FNAME"
-    And I see "Alias 1", "Last name" is set to "Alias 1 LNAME"
-    And I see "Alias 2", "First names" is set to "Alias 2 FNAME"
-    And I see "Alias 2", "Last name" is set to "Alias 2 LNAME"
+    And I see "Alias 1", "First names" is set to "ALIAS 1 FNAME"
+    And I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
+    And I see "Alias 2", "First names" is set to "ALIAS 2 FNAME"
+    And I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
 
 
     And I see "Addr1" in the "Address line 1" field
@@ -55,7 +55,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I see "TE1 1ST" in the "Postcode" field
 
     And I see "CarMake" in the "Make and model" field
-    And I see "CarReg" in the "Registration number" field
+    And I see "CARREG" in the "Registration number" field
 
     When I reload the page
     Then I see "Business unit and defendant type" on the page header
@@ -91,11 +91,11 @@ Feature: Manual account creation - Parent Guardian Details
     When I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
     And I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "Alias 1 FNAME"
-    And I set the "Alias 1", "Last name" to "Alias 1 LNAME"
+    And I set the "Alias 1", "First names" to "ALIAS 1 FNAME"
+    And I set the "Alias 1", "Last name" to "ALIAS 1 LNAME"
     And I select add another alias
-    And I set the "Alias 2", "First names" to "Alias 2 FNAME"
-    And I set the "Alias 2", "Last name" to "Alias 2 LNAME"
+    And I set the "Alias 2", "First names" to "ALIAS 2 FNAME"
+    And I set the "Alias 2", "Last name" to "ALIAS 2 LNAME"
 
     And I enter a date of birth 18 years ago
 
@@ -105,7 +105,7 @@ Feature: Manual account creation - Parent Guardian Details
     And I enter "TE1 1ST" into the "Postcode" field
 
     And I enter "CarMake" into the "Make and model" field
-    And I enter "CarReg" into the "Registration number" field
+    And I enter "CARREG" into the "Registration number" field
 
     Then I click Cancel, a window pops up and I click Ok
 

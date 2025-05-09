@@ -2,7 +2,7 @@ import { IFinesMacEmployerDetailsState } from '../interfaces/fines-mac-employer-
 
 export const FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK: IFinesMacEmployerDetailsState = {
   fm_employer_details_employer_company_name: 'Test Employer Name',
-  fm_employer_details_employer_reference: 'Test Reference',
+  fm_employer_details_employer_reference: 'TEST REFERENCE',
   fm_employer_details_employer_email_address: 'abc@def.co.uk',
   fm_employer_details_employer_telephone_number: '12345678910',
   fm_employer_details_employer_address_line_1: 'Test Employer Address 1',

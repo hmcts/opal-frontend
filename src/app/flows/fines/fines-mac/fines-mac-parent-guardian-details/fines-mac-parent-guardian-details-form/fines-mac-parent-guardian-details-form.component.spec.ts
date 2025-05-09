@@ -8,7 +8,6 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
@@ -32,10 +31,6 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
             parent: of('manual-account-creation'),
           },
         },
-        {
-          provide: UtilsService,
-          useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),
-        },
       ],
     }).compileComponents();
 
@@ -43,10 +38,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.accountDetails.formData = {
-      ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
-      fm_create_account_defendant_type: 'parentOrGuardianToPay',
-    };
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
