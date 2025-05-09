@@ -154,7 +154,7 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsComponent,
       ),
     children: offenceDetailsRouting,
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.offenceDetails },
     resolve: { title: TitleResolver },

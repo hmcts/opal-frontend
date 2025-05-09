@@ -37,9 +37,9 @@
       For example, HY35014. If you don't know the offence code, you can
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="goToSearchOffences()"
-        (keyup.enter)="goToSearchOffences()"
-        tabindex="0"
+        [href]="searchOffenceUrl"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         search the offence list
       </a></opal-lib-govuk-text-input

@@ -1,27 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesComponent } from './fines-mac-offence-details-search-offences.component';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { FinesMacOffenceDetailsSearchOffencesStoreType } from './stores/types/fines-mac-offence-details-search-offences-store.type';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from './constants/fines-mac-offence-details-search-offences-form.constant';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from './mocks/fines-mac-offence-details-search-offences-form.mock';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesComponent>;
+  let globalStore: GlobalStoreType;
+  let finesMacOffenceDetailsSearchOffencesStore: FinesMacOffenceDetailsSearchOffencesStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsSearchOffencesComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: of('offence-details'),
-          },
-        },
-      ],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesComponent);
     component = fixture.componentInstance;
+
+    globalStore = TestBed.inject(GlobalStore);
+
+    finesMacOffenceDetailsSearchOffencesStore = TestBed.inject(FinesMacOffenceDetailsSearchOffencesStore);
+    finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
 
     fixture.detectChanges();
   });
@@ -30,24 +34,45 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return true for canDeactivate', () => {
-    const result = component.canDeactivate();
-    expect(result).toBeTrue();
+  it('should call on destroy and clear state', () => {
+    const destroy = spyOn(component, 'ngOnDestroy');
+
+    component.ngOnDestroy();
+    fixture.detectChanges();
+
+    expect(destroy).toHaveBeenCalled();
+    expect(finesMacOffenceDetailsSearchOffencesStore.searchOffences()).toEqual(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM,
+    );
+    expect(finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()).toBe(false);
+    expect(finesMacOffenceDetailsSearchOffencesStore.stateChanges()).toBe(false);
+    expect(globalStore.error()).toEqual({ error: false, message: '' });
   });
 
-  it('should navigate to account-details page on handleRoute', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    component.handleRoute('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+  it('should call handleBeforeUnload ', () => {
+    finesMacOffenceDetailsSearchOffencesStore.setStateChanges(true);
+    finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(false);
+    expect(component.handleBeforeUnload()).toBeFalsy();
+
+    finesMacOffenceDetailsSearchOffencesStore.setStateChanges(false);
+    finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(true);
+    expect(component.handleBeforeUnload()).toBeFalsy();
+
+    finesMacOffenceDetailsSearchOffencesStore.setStateChanges(false);
+    finesMacOffenceDetailsSearchOffencesStore.setUnsavedChanges(false);
+    expect(component.handleBeforeUnload()).toBeTruthy();
   });
 
-  it('should navigate to relative route with event', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+  it('should call canDeactivate ', () => {
+    finesMacOffenceDetailsSearchOffencesStore.setSearchOffences(
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK),
+    );
+    expect(component.canDeactivate()).toBeTruthy();
 
-    component.handleRoute('test', event);
+    finesMacOffenceDetailsSearchOffencesStore.setStateChanges(true);
+    expect(component.canDeactivate()).toBeFalsy();
 
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
-    expect(event.preventDefault).toHaveBeenCalled();
+    finesMacOffenceDetailsSearchOffencesStore.setStateChanges(false);
+    expect(component.canDeactivate()).toBeTruthy();
   });
 });

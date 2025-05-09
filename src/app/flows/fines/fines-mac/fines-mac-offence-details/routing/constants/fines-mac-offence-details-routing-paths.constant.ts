@@ -5,7 +5,6 @@ export const FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS: IFinesMacOffenceDetailsRou
   children: {
     reviewOffences: 'review-offences',
     addOffence: 'add-offence',
-    searchOffences: 'search-offences',
     removeImposition: 'remove-imposition',
     addMinorCreditor: 'add-minor-creditor',
     removeMinorCreditor: 'remove-minor-creditor',
