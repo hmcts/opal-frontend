@@ -31,8 +31,11 @@ export const finesMacPayloadBuildAccountAccountNotes = (
   accountCommentsNotesState: IFinesMacAccountCommentsNotesState,
 ): IFinesMacPayloadAccountAccountNote[] | null => {
   const accountNotes: IFinesMacPayloadAccountAccountNote[] = [];
-  const { fm_account_comments_notes_comments: comments, fm_account_comments_notes_notes: notes } =
-    accountCommentsNotesState;
+  const {
+    fm_account_comments_notes_comments: comments,
+    fm_account_comments_notes_notes: notes,
+    fm_account_comments_notes_system_notes: systemNotes,
+  } = accountCommentsNotesState;
 
   const addNote = (type: number, content: string | null, code: string) => {
     if (content) {
@@ -42,9 +45,7 @@ export const finesMacPayloadBuildAccountAccountNotes = (
 
   addNote(3, comments, 'AC');
   addNote(2, notes, 'AA');
-
-  // https://tools.hmcts.net/jira/browse/PO-651
-  // addNote(1, systemNotes, 'AA');
+  addNote(1, systemNotes, 'AA');
 
   return accountNotes.length ? accountNotes : null;
 };

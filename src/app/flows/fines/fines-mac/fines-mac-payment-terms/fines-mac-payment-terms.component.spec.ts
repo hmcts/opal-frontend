@@ -110,4 +110,39 @@ describe('FinesMacPaymentTermsComponent', () => {
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
+
+  it('should return null if no collection order date is provided', () => {
+    const result = component['systemGenerateNote'](null, true);
+    expect(result).toBeNull();
+  });
+
+  it('should return note for previously made collection order', () => {
+    const result = component['systemGenerateNote']('01/01/2024', true);
+    expect(result).toBe('A collection order was previously made on 01/01/2024 prior to this account creation');
+  });
+
+  it('should return note for new collection order made by user', () => {
+    const result = component['systemGenerateNote']('01/01/2024', false);
+    expect(result).toBe(
+      `A collection order has been made by ${component['userState'].name} using Authorised Functions`,
+    );
+  });
+
+  it('should add a system generated note to the finesMacStore', () => {
+    const collectionOrderDate = '01/01/2024';
+    const collectionOrderMade = true;
+
+    const setSpy = spyOn(finesMacStore, 'setAccountCommentsNotes');
+    const expectedNote = `A collection order was previously made on ${collectionOrderDate} prior to this account creation`;
+
+    component['addSystemGeneratedNote'](collectionOrderDate, collectionOrderMade);
+
+    expect(setSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: jasmine.objectContaining({
+          fm_account_comments_notes_system_notes: expectedNote,
+        }),
+      }),
+    );
+  });
 });

@@ -57,6 +57,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
     formData: {
       fm_account_comments_notes_comments: 'Follow-up required for next meeting',
       fm_account_comments_notes_notes: 'Client prefers email communication over phone calls',
+      fm_account_comments_notes_system_notes: null,
     },
     nestedFlow: false,
   },
