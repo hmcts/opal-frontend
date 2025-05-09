@@ -54,15 +54,13 @@ export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseCompone
    * The updated data is then set in the finesMacStore.
    */
   private addSystemGeneratedNote(collectionOrderDate: string | null, collectionOrderMade: boolean): void {
-    const accountCommentsNotesData = {
-      ...structuredClone(this.finesMacStore.accountCommentsNotes()),
-      formData: {
-        ...structuredClone(this.finesMacStore.accountCommentsNotes().formData),
-        fm_account_comments_notes_system_notes: this.systemGenerateNote(collectionOrderDate, collectionOrderMade),
-      },
-    };
+    const accountCommentsNotes = structuredClone(this.finesMacStore.accountCommentsNotes());
+    accountCommentsNotes.formData.fm_account_comments_notes_system_notes = this.systemGenerateNote(
+      collectionOrderDate,
+      collectionOrderMade,
+    );
 
-    this.finesMacStore.setAccountCommentsNotes(accountCommentsNotesData);
+    this.finesMacStore.setAccountCommentsNotes(accountCommentsNotes);
   }
 
   /**
