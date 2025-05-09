@@ -137,7 +137,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it(
-    '(AC.1a) should not allow firstnames,last names and Address lines 1,2 & 3 to have more than max characters',
+    '(AC.1a) should not allow first names,last names and Address lines 1,2 & 3 to have more than max characters',
     { tags: ['@PO-272', '@PO-360'] },
     () => {
       setupComponent(null);
@@ -447,5 +447,59 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('not.exist');
     cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
+  });
+
+  it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.titleInput).select('Mr');
+    cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.lastNameInput).type('lname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.lastNameInput).blur();
+    cy.get(DOM_ELEMENTS.postcodeInput).type('sl86et', { delay: 0 });
+    cy.get(DOM_ELEMENTS.postcodeInput).blur();
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab712348b', { delay: 0 });
+    cy.get(DOM_ELEMENTS.niNumberInput).blur();
+
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
+    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    cy.get(getAliasFirstName(0)).type('alias0fname');
+    cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
+
+    // Add the remaining four aliases using loop
+    for (let i = 1; i < 5; i++) {
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
+      cy.get(getAliasLastName(i))
+        .type(`alias${i + 1}lname`)
+        .should('have.value', `ALIAS${i + 1}LNAME`);
+    }
+
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+  });
+
+  it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+
+    cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+    cy.get(DOM_ELEMENTS.postcodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).type('xy12 abc', { delay: 0 }).should('have.value', 'XY12 ABC');
+    cy.get(DOM_ELEMENTS.niNumberInput).type('ab123456c', { delay: 0 }).should('have.value', 'AB123456C');
+
+    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    cy.get(getAliasLastName(0)).type('alias1', { delay: 0 }).should('have.value', 'ALIAS1');
+
+    // Add the remaining four aliases using a loop
+    for (let i = 1; i < 5; i++) {
+      cy.get(DOM_ELEMENTS.aliasAddButton).click();
+      cy.get(getAliasLastName(i))
+        .type(`alias${i + 1}`, { delay: 0 })
+        .should('have.value', `ALIAS${i + 1}`);
+    }
   });
 });

@@ -22,6 +22,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_parent_guardian_details_surname']"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_surname']"
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_surname']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -68,6 +69,13 @@
               ])
             "
             [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_surname'].controlName]"
+            [opalLibCapitaliseAllCharacters]="
+              form.get([
+                'fm_parent_guardian_details_aliases',
+                rowIndex,
+                aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
+              ])!
+            "
           ></opal-lib-govuk-text-input>
         </fieldset>
       }
@@ -125,6 +133,7 @@
     labelClasses="govuk-label--s"
     [control]="form.controls['fm_parent_guardian_details_national_insurance_number']"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_national_insurance_number']"
+    [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_national_insurance_number']"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
@@ -158,6 +167,7 @@
       inputClasses="govuk-input--width-10"
       [control]="form.controls['fm_parent_guardian_details_post_code']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_post_code']"
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_post_code']"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
@@ -181,6 +191,7 @@
       labelClasses="govuk-label--s"
       [control]="form.controls['fm_parent_guardian_details_vehicle_registration_mark']"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_vehicle_registration_mark']"
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_vehicle_registration_mark']"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
