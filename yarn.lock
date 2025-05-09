@@ -3429,9 +3429,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.7":
-  version: 0.0.7
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.7"
+"@hmcts/opal-frontend-common-node@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.8"
   dependencies:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3443,17 +3443,17 @@ __metadata:
     config: "npm:^3.3.9"
     connect-redis: "npm:^8.0.0"
     cookie-parser: "npm:^1.4.6"
-    csrf-csrf: "npm:^3.0.6"
+    csrf-csrf: "npm:^4.0.0"
     express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     helmet: "npm:^8.0.0"
     http-proxy-middleware: "npm:^3.0.0"
     luxon: "npm:^3.4.3"
     prettier: "npm:^3.0.3"
-    redis: "npm:^4.6.11"
+    redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/f4c778c992439ba84111c06d9176dd7e0dc9a6c4dc4c75667748c5ea768f920e187ea5ac8b6ca0b0b9afbb7370514c151800400c2f5f26ec1f7f3002728265a4
+  checksum: 10/a02a34c34ff02259a54ac4d35b018436f41db0d1afbe0f6140b84b8125681a8cc0967a60f61085aecc796b399cb3517e15833fbbd15c301b0439fbbff908a50b
   languageName: node
   linkType: hard
 
@@ -4818,6 +4818,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/bloom@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@redis/bloom@npm:5.0.1"
+  peerDependencies:
+    "@redis/client": ^5.0.1
+  checksum: 10/eb482046522909affb8018a1f2caa701eed724b5973e9f871a168b7f48b819ae0a238e52794773540fcabe4b06686b759e9e0d706626d77c2c59275dff857d46
+  languageName: node
+  linkType: hard
+
 "@redis/client@npm:1.6.1":
   version: 1.6.1
   resolution: "@redis/client@npm:1.6.1"
@@ -4826,6 +4835,15 @@ __metadata:
     generic-pool: "npm:3.9.0"
     yallist: "npm:4.0.0"
   checksum: 10/3ef20235b9b0ecba728bbc7208eabbdfc2eebb50c6fb95b20486a0c14e9d6f3ce620ac0d3d14d7f682ea7cb953b13bf89bd94932b7ab3babeb12ba77136b4291
+  languageName: node
+  linkType: hard
+
+"@redis/client@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@redis/client@npm:5.0.1"
+  dependencies:
+    cluster-key-slot: "npm:1.1.2"
+  checksum: 10/ed4f025a78a2c5186b6b0c83a06f473c2f9ce1d3ffce31d7df2f22fe954f4c0520eaf9af78621a4f400eb6659a04a2d954b4e0d30142d8bf4a345dc8111d163d
   languageName: node
   linkType: hard
 
@@ -4847,6 +4865,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/json@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@redis/json@npm:5.0.1"
+  peerDependencies:
+    "@redis/client": ^5.0.1
+  checksum: 10/79c1d41e8eac6eedf3b0a9a34844e269f92ba0802fcdec68b3e4bd6615c9b4d0d540788b18953239cc14f81cf0a37f2b5857b043c0bf07ff611aa2db5c541de4
+  languageName: node
+  linkType: hard
+
 "@redis/search@npm:1.2.0":
   version: 1.2.0
   resolution: "@redis/search@npm:1.2.0"
@@ -4856,12 +4883,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/search@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@redis/search@npm:5.0.1"
+  peerDependencies:
+    "@redis/client": ^5.0.1
+  checksum: 10/e7f843875c0cef76c8b5ffe4707c4be213f840db651e0bf12adfca827690119437227aea88600b4e12d85b0d4e5dd0d47a3bb2e997330ec7a1af0c8af30bfced
+  languageName: node
+  linkType: hard
+
 "@redis/time-series@npm:1.1.0":
   version: 1.1.0
   resolution: "@redis/time-series@npm:1.1.0"
   peerDependencies:
     "@redis/client": ^1.0.0
   checksum: 10/e1d000eef7f37645f7f4ff94f32dd998384360b12fed1e4d614d828c065b72d7627e27444fab781fac4fdfe301c45f893417550fb1011d3b75237566ff0954e0
+  languageName: node
+  linkType: hard
+
+"@redis/time-series@npm:5.0.1":
+  version: 5.0.1
+  resolution: "@redis/time-series@npm:5.0.1"
+  peerDependencies:
+    "@redis/client": ^5.0.1
+  checksum: 10/0b2f3cc7947b1e7d1dedb1518d1269dd500c2f6964a9feb23c66193c540ae6a7104a82641ab616da98aefb45c190bfa4eb168b318b69a713bb3c3e4e93ce21ad
   languageName: node
   linkType: hard
 
@@ -7765,6 +7810,15 @@ __metadata:
   dependencies:
     http-errors: "npm:^2.0.0"
   checksum: 10/0792acaf819f36910a5df410237c0989c1577a59bd6c20b590ddd0f08f49ed8b8205df4157481e1530d47b3071effb69c5264ecc6c1c3a595cc6a13c87a5d2fe
+  languageName: node
+  linkType: hard
+
+"csrf-csrf@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "csrf-csrf@npm:4.0.1"
+  dependencies:
+    http-errors: "npm:^2.0.0"
+  checksum: 10/3ddcd68f54072a299de3edfb2531868185c477d23f42bf9700252843b56b9c530e1f634b0147d9cf67ad73add7b8da37ba6e2bc6a1247aba6426c04dfdd34df3
   languageName: node
   linkType: hard
 
@@ -13524,7 +13578,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.11"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.7"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.8"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
@@ -14563,6 +14617,19 @@ __metadata:
     "@redis/search": "npm:1.2.0"
     "@redis/time-series": "npm:1.1.0"
   checksum: 10/42e55071c6e6191940b88466f444db409d6a4f953e06588141a791a4cc2d3f1bc068dd0fad18eeee105353b1e3b885406abf23dcc56f80972f27e4f8507bd388
+  languageName: node
+  linkType: hard
+
+"redis@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "redis@npm:5.0.1"
+  dependencies:
+    "@redis/bloom": "npm:5.0.1"
+    "@redis/client": "npm:5.0.1"
+    "@redis/json": "npm:5.0.1"
+    "@redis/search": "npm:5.0.1"
+    "@redis/time-series": "npm:5.0.1"
+  checksum: 10/4b6992996040c6d07c510180d4d3d2e41443d57324543422ade6772cb46a4fd7075f962c7d1332c12546d03211887e909225e1a82971c22b8445bb264baaa8e9
   languageName: node
   linkType: hard
 
