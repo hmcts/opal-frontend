@@ -46,7 +46,7 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
     component['getAliasesData']();
 
     expect(component.aliases).toEqual([
-      'Testing Test',
+      'Testing TEST',
       'James Smith',
       'Emily Johnston',
       'Oliver Brown',
