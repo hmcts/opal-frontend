@@ -3457,15 +3457,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.10":
-  version: 0.0.10
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.10"
+"@hmcts/opal-frontend-common@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.11"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/a196185967ddc209d1270081b230f50477502596df1f78ae1055143b08688acda970b0ae265ad5e576ce78f3da1677f7441b2ac91aa0dd0ac81289c5caefaf07
+  checksum: 10/2deb6fc1267cc2e84915a4297182be3ac9da3333a258841868134fdd130b5926d2d8364f35a08200d27deb71ad2393c6df823f61b279cfaa2e1d4145a90fe57f
   languageName: node
   linkType: hard
 
@@ -13523,7 +13523,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.10"
+    "@hmcts/opal-frontend-common": "npm:^0.0.11"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.7"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
