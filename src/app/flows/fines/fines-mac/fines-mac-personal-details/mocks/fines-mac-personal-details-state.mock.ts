@@ -3,12 +3,12 @@ import { IFinesMacPersonalDetailsState } from '../interfaces/fines-mac-personal-
 export const FINES_MAC_PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDetailsState = {
   fm_personal_details_title: 'Mr',
   fm_personal_details_forenames: 'John',
-  fm_personal_details_surname: 'Doe',
+  fm_personal_details_surname: 'DOE',
   fm_personal_details_add_alias: true,
   fm_personal_details_aliases: [
     {
       fm_personal_details_alias_forenames_0: 'Testing',
-      fm_personal_details_alias_surname_0: 'Test',
+      fm_personal_details_alias_surname_0: 'TEST',
     },
   ],
   fm_personal_details_dob: '01/01/1990',
