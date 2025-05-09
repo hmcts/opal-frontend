@@ -270,32 +270,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/builder@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/builder@npm:19.3.0"
+"@angular-eslint/builder@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/builder@npm:19.4.0"
   dependencies:
     "@angular-devkit/architect": "npm:>= 0.1900.0 < 0.2000.0"
     "@angular-devkit/core": "npm:>= 19.0.0 < 20.0.0"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
-  checksum: 10/1366de5866570ccd385a78c84305d5497920fbfcbb07756ced43357678e22f00c25a33951ebcaf9bfd4a0a1e9b117b2c4a18572d4b689ba0e4aaee3cbc69ef1e
+  checksum: 10/38a415fa632694bc90526ea3a175275abf2e8b9e56799bbe2642aca4161b8b10cc19a54690190a777cdde088d9c274ca3592f816df8c012ba08027f7effbfaf9
   languageName: node
   linkType: hard
 
-"@angular-eslint/bundled-angular-compiler@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/bundled-angular-compiler@npm:19.3.0"
-  checksum: 10/1859a6d8f21cbcafaa22c2f3d63bc677abf9bffdab53d9080bc8faf8409267ac7b32489358b537f6d86f612b9ab49b03d193c220110907158a95b97c9144db11
+"@angular-eslint/bundled-angular-compiler@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/bundled-angular-compiler@npm:19.4.0"
+  checksum: 10/fa618e683f0e1c2b6b1f617ff5b422aef65c0d49030f5dffe1abee80373dfda36268bf08191e884da744f4f7bdce63c21d854a2c7d5082d3b8446da1c5f561e4
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin-template@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/eslint-plugin-template@npm:19.3.0"
+"@angular-eslint/eslint-plugin-template@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/eslint-plugin-template@npm:19.4.0"
   dependencies:
-    "@angular-eslint/bundled-angular-compiler": "npm:19.3.0"
-    "@angular-eslint/utils": "npm:19.3.0"
+    "@angular-eslint/bundled-angular-compiler": "npm:19.4.0"
+    "@angular-eslint/utils": "npm:19.4.0"
     aria-query: "npm:5.3.2"
     axobject-query: "npm:4.1.0"
   peerDependencies:
@@ -303,62 +303,62 @@ __metadata:
     "@typescript-eslint/utils": ^7.11.0 || ^8.0.0
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
-  checksum: 10/8801e21cf454669649c74ac2dac040cf6eae45ab8534c76c03ca8abc762a8fc9bffd50f0e512d7eec6d12a93e84fbf135fea92c9fbfe8188f5043f616db1d0a8
+  checksum: 10/ed5ff8f8ffd3049d684016df406f9abb626d12b41950ddf325ca15e75f7b623982746844ddec7a948576ffc5d61b5194f240f32873d209ce37369839aec62570
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/eslint-plugin@npm:19.3.0"
+"@angular-eslint/eslint-plugin@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/eslint-plugin@npm:19.4.0"
   dependencies:
-    "@angular-eslint/bundled-angular-compiler": "npm:19.3.0"
-    "@angular-eslint/utils": "npm:19.3.0"
+    "@angular-eslint/bundled-angular-compiler": "npm:19.4.0"
+    "@angular-eslint/utils": "npm:19.4.0"
   peerDependencies:
     "@typescript-eslint/utils": ^7.11.0 || ^8.0.0
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
-  checksum: 10/3323c717eff645e73f83116ec1caa70c8754d46c0ed2920e46e7151824826a8aa7eb427c0e9fa43057bceb985d432a5685b49e01eafbad7a298afd4e300e995b
+  checksum: 10/af9a87d69c3d745ea79745eb48bcdebb85135adb855bc774484a626e8aa4a0011495d38dcc183f906d619c5786af90b7ea23d13828beda5ed92787ee3506d73d
   languageName: node
   linkType: hard
 
-"@angular-eslint/schematics@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/schematics@npm:19.3.0"
+"@angular-eslint/schematics@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/schematics@npm:19.4.0"
   dependencies:
     "@angular-devkit/core": "npm:>= 19.0.0 < 20.0.0"
     "@angular-devkit/schematics": "npm:>= 19.0.0 < 20.0.0"
-    "@angular-eslint/eslint-plugin": "npm:19.3.0"
-    "@angular-eslint/eslint-plugin-template": "npm:19.3.0"
-    ignore: "npm:7.0.3"
+    "@angular-eslint/eslint-plugin": "npm:19.4.0"
+    "@angular-eslint/eslint-plugin-template": "npm:19.4.0"
+    ignore: "npm:7.0.4"
     semver: "npm:7.7.1"
     strip-json-comments: "npm:3.1.1"
-  checksum: 10/c900f92d64e6230fc1f1aefe2532ab63e7c46d5e22409360062eb389d0c2e33825721713003ee36496438bff5c87578b5333169e7cfee3471d86408f7e1f87f6
+  checksum: 10/05b600268443063c62a926f15638872d1d00fb935582b236836d52c5580a2d8e54db90f57300454c0c0629daaf7c5bb205d8af71a2b676a8556e78da42a989dc
   languageName: node
   linkType: hard
 
-"@angular-eslint/template-parser@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/template-parser@npm:19.3.0"
+"@angular-eslint/template-parser@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/template-parser@npm:19.4.0"
   dependencies:
-    "@angular-eslint/bundled-angular-compiler": "npm:19.3.0"
+    "@angular-eslint/bundled-angular-compiler": "npm:19.4.0"
     eslint-scope: "npm:^8.0.2"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
-  checksum: 10/8c9f25d7180f50969a847d023284a84e768d134e4dcaa2ead03154297885f4086a5f11d64cb56569da31861d01462be477e9775a1443165b8fa63b313c5fdb30
+  checksum: 10/58b203acee79215c32e875586708954cad31f9ff5ab7ea6d425b2e355dd0dac586d9269191da0e53350eceb0e1850ad0d091cff1eabf100324b62d2656fb4912
   languageName: node
   linkType: hard
 
-"@angular-eslint/utils@npm:19.3.0":
-  version: 19.3.0
-  resolution: "@angular-eslint/utils@npm:19.3.0"
+"@angular-eslint/utils@npm:19.4.0":
+  version: 19.4.0
+  resolution: "@angular-eslint/utils@npm:19.4.0"
   dependencies:
-    "@angular-eslint/bundled-angular-compiler": "npm:19.3.0"
+    "@angular-eslint/bundled-angular-compiler": "npm:19.4.0"
   peerDependencies:
     "@typescript-eslint/utils": ^7.11.0 || ^8.0.0
     eslint: ^8.57.0 || ^9.0.0
     typescript: "*"
-  checksum: 10/e4e0d97cf77f2c2847f70046fcf1b18d9656165a69277a478c814a7dc6cf19eff3ab113a56c82972f12d77aec6ca96bc7571317c5a302f55174116dacaed6c2d
+  checksum: 10/7f09ae05b10a23b606af916df8701897dc44a151eecebdffa5004d1bce770e4e673bb0307f27e8e114a938584b67c4fbd38dc7cc532de31bbea1cfc9037b3a4d
   languageName: node
   linkType: hard
 
@@ -3938,109 +3938,109 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-analytics-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.3.6"
+"@microsoft/applicationinsights-analytics-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/eb8f5a6429f10feb3ddcaaef8499ae86adf0de9b354d9b08c66cb607099c870397d2a48e8b3b6dc0f6a84f6074ad2f3c40e6282323f6862a887c246193ef6747
+  checksum: 10/4b56851a912818b8d911e39c47aa21288e9c530b79aac185b0ddcabb450b59ff690e9e24eabb115bdc676a7ee109949d26b5bbaa4f24d7a1912f403507942b5b
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-cfgsync-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.3.6"
+"@microsoft/applicationinsights-cfgsync-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/6c018fdc13164542de6f21dbd19d7ca8d72683fed0ac56592d90c285b4a2f8bff44f2227d38dd9e30a1dd7fc1a7fe61482b543270e6ba4bfde107a15af4f87dd
+  checksum: 10/429b1c006d7b6b6623c846e103076b78e00dae412abcf1e300e20980e57936f4f4432b46eaf185b31b6ea0f668dcd411a7b0d326009cbf393e2071e266d13a94
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-channel-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-channel-js@npm:3.3.6"
+"@microsoft/applicationinsights-channel-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-channel-js@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/e3d5c74cb8e6ca9f2ab661fc1ce15e5daf4996368bf41c17500bfde4cc80ec4d938ac6ba3a2d621f36f181c36963b930ed9bc0fa9d05834e96957be417cc101e
+  checksum: 10/8b962c946b0b9deee75bafcace66a568fd5453dbcd95a19e08162229c5474dbae4ad1c03e18a76fd4da119fb4523b4359610d30aaf8cf14aac614ebaf2f2a294
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-common@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-common@npm:3.3.6"
+"@microsoft/applicationinsights-common@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-common@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/d8460d30047657b964d2e6179c7cd531434872a31d27a6af127fe2e6d6154ae412d835f0bad40825a095ac0dec99811bf814854d23f6c0a17e87425fc047132c
+  checksum: 10/9d2bf9f4869acdc90019cd2fec04b8fb9c231f634a2132cd48a115c6c25e175471c030fa4eedb200fbcda5176bc086be8cc83647cad1ffc3b4f161c59aea51bd
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-core-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-core-js@npm:3.3.6"
+"@microsoft/applicationinsights-core-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-core-js@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-shims": "npm:3.0.1"
-    "@microsoft/dynamicproto-js": "npm:^2.0.3"
-    "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
-  peerDependencies:
-    tslib: ">= 1.0.0"
-  checksum: 10/8c30d0627ca67c51de8fd0dc6b98b3df1c30c92b7f8cc76cac8ca78330fc6fb37c0c0abdecda593701dcf97cff5c986324fb8617d0cd84efabee244a9224ad6e
-  languageName: node
-  linkType: hard
-
-"@microsoft/applicationinsights-dependencies-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.3.6"
-  dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/a758d0dad1c4ccdf7a6a9034b8a0f846a531deae42140c87c0c8d6f0df059164361d69dc75f6e2e65892e7384f4ee24222c7ae7814b481f47d9a034948103579
+  checksum: 10/12b53b947406d4eacb713a30f0296c2c22b6f61402ffa5dd120824f326188d69f5dd45b6cfe247bd1980a83e06d9b58811a2ab308114d9a7cc0c0bb668a466f3
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-properties-js@npm:3.3.6":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-properties-js@npm:3.3.6"
+"@microsoft/applicationinsights-dependencies-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-shims": "npm:3.0.1"
+    "@microsoft/dynamicproto-js": "npm:^2.0.3"
+    "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
+  peerDependencies:
+    tslib: ">= 1.0.0"
+  checksum: 10/9ab31abf4901488bc1b72dd0c286c188a2f96987ed7ffce1d74ffb0e2ed568edf3ffb658bb4479988472bdb980369b1baf55c36007c4f2a8e626d2ee52f540bd
+  languageName: node
+  linkType: hard
+
+"@microsoft/applicationinsights-properties-js@npm:3.3.7":
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-properties-js@npm:3.3.7"
+  dependencies:
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/a7dbf0487918159f273186d8aa93d64d5561f7c6cd9181bf08d729777136d7737071f453ba148659f12787c523f6b142669d28a4ab7ca6a3de0eafc78c203107
+  checksum: 10/820f8d38cb337131f408786a4808004fbddf4556467e6e331cf9aca31df173d9b382ba55018fa79b3673420856cd3b5c99ec2d41162b4ed4bb574a23c742ea16
   languageName: node
   linkType: hard
 
@@ -4061,23 +4061,23 @@ __metadata:
   linkType: hard
 
 "@microsoft/applicationinsights-web@npm:^3.3.5":
-  version: 3.3.6
-  resolution: "@microsoft/applicationinsights-web@npm:3.3.6"
+  version: 3.3.7
+  resolution: "@microsoft/applicationinsights-web@npm:3.3.7"
   dependencies:
-    "@microsoft/applicationinsights-analytics-js": "npm:3.3.6"
-    "@microsoft/applicationinsights-cfgsync-js": "npm:3.3.6"
-    "@microsoft/applicationinsights-channel-js": "npm:3.3.6"
-    "@microsoft/applicationinsights-common": "npm:3.3.6"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
-    "@microsoft/applicationinsights-dependencies-js": "npm:3.3.6"
-    "@microsoft/applicationinsights-properties-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-analytics-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-cfgsync-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-channel-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-common": "npm:3.3.7"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-dependencies-js": "npm:3.3.7"
+    "@microsoft/applicationinsights-properties-js": "npm:3.3.7"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
     "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/92f754bbe8a285064f93549d27e2051774407ab0c03cf32f37a481c4e8e84f664fc6624b81ad20e0c6805a5360822dfcf7b39f665dcedfad052bfad73ed60dda
+  checksum: 10/22f7458fb130abe74fc195d86a04fd73ee43a9b2c1ed2cd06dd2c39669ea78b379107ebd3ad4cedc25ee158fb9e2e916204911411a5d3493b4cb644c6ea3d785
   languageName: node
   linkType: hard
 
@@ -5331,11 +5331,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^22.0.0":
-  version: 22.15.16
-  resolution: "@types/node@npm:22.15.16"
+  version: 22.15.17
+  resolution: "@types/node@npm:22.15.17"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/d8055a0ab033ed16368109183f7e11d5364e5d8d5bd9a12df7fa1673a624823aaaaa54c0afef1648d0bfa7e12ef20b600f9d006accebecdb9931d2b72d05c7be
+  checksum: 10/3f5870ec1ac16b1dd8e5817de81164df9b69e4cf19cce692cb7c9b1af1deaecfd98b591b56155fcc4aa582f7189a4fc0c8d7d3226fa0387403db615a12dd8cb6
   languageName: node
   linkType: hard
 
@@ -10689,10 +10689,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:7.0.3":
-  version: 7.0.3
-  resolution: "ignore@npm:7.0.3"
-  checksum: 10/ce5e812af3acd6607a3fe0a9f9b5f01d53f009a5ace8cbf5b6491d05a481b55d65186e6a7eaa13126e93f15276bcf3d1e8d6ff3ce5549c312f9bb313fff33365
+"ignore@npm:7.0.4":
+  version: 7.0.4
+  resolution: "ignore@npm:7.0.4"
+  checksum: 10/01ee59df2ffd14b0844efc17f5ab3642c848e45efdb7cc757928da5e076cb74313748f77f5ffe362a6407c5e7cc71f10fad5e8eb9d91c1a17c4e7ef2c1f8e40e
   languageName: node
   linkType: hard
 
@@ -13455,11 +13455,11 @@ __metadata:
   resolution: "opal-frontend@workspace:."
   dependencies:
     "@angular-devkit/build-angular": "npm:^19.1.2"
-    "@angular-eslint/builder": "npm:19.3.0"
-    "@angular-eslint/eslint-plugin": "npm:19.3.0"
-    "@angular-eslint/eslint-plugin-template": "npm:19.3.0"
-    "@angular-eslint/schematics": "npm:19.3.0"
-    "@angular-eslint/template-parser": "npm:19.3.0"
+    "@angular-eslint/builder": "npm:19.4.0"
+    "@angular-eslint/eslint-plugin": "npm:19.4.0"
+    "@angular-eslint/eslint-plugin-template": "npm:19.4.0"
+    "@angular-eslint/schematics": "npm:19.4.0"
+    "@angular-eslint/template-parser": "npm:19.4.0"
     "@angular/animations": "npm:^19.0.0"
     "@angular/cli": "npm:^19.1.2"
     "@angular/common": "npm:^19.0.0"
