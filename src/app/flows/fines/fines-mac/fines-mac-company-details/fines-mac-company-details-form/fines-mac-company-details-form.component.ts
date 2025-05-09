@@ -29,6 +29,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -42,6 +43,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
     GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

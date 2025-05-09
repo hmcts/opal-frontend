@@ -42,7 +42,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
-
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
@@ -58,6 +58,7 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
     GovukTextInputComponent,
     MojTicketPanelComponent,
     MojDatePickerComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

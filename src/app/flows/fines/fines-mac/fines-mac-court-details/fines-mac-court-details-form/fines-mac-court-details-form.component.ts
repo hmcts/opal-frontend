@@ -23,7 +23,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
+import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
@@ -35,6 +35,7 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patte
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukTextInputComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-court-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
