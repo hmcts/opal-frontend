@@ -199,9 +199,8 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
           const capped = this.formatCount(resolverRejectedCount);
           return of(capped);
         } else {
-          // Fetch new rejected count on tab change
           const params = {
-            businessUnitIds: [], // Provide actual business unit IDs here if needed
+            businessUnitIds: this.businessUnitIds,
             statuses: [OpalFinesDraftAccountStatuses.rejected],
           };
           return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
