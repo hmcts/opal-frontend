@@ -1019,7 +1019,23 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
+@only
+  Scenario: AC.1, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
+   # When I click on the "search the offence list" link
+    And I am moving to "search the offence list" tab
 
+    And I see "Search offences" on the page header
+    And I click the search button
+
+    Then I see "Search offences" on the page header
+
+    And I enter "ABC123" into the "Offence code" field
+    And I enter "Title name" into the "Short title" field
+    And I enter "testing the new field" into the "Act and section" text field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+    
 
 
 
