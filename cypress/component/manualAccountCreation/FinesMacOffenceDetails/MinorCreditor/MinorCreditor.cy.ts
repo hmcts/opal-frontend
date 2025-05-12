@@ -206,11 +206,11 @@ describe('FinesMacMinorCreditor', () => {
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.submitButton).click();
-      for (const [, value] of Object.entries(REQUIRED_FIELDS)) {
-        if (value != 'Enter company name' && value != "Enter minor creditor's last name") {
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-        }
-      }
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.creditorTypeRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNameRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankSortCodeRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNumberRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountRefRequired);
     },
   );
 
@@ -408,6 +408,32 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
       cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
       cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
+
+  it(
+    '(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual',
+    { tags: ['@PO-1075'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      setupComponent(mockFormSubmit);
+
+      formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+      formData[0].formData.fm_offence_details_minor_creditor_title = '';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '';
+      cy.get(DOM_ELEMENTS.payByBacsCheckbox).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualTitleRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualFirstNameRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
+
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.forenamesInput).type('John', { delay: 0 });
+      cy.get(DOM_ELEMENTS.surnameInput).type('Doe', { delay: 0 });
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
     },
   );
 });
