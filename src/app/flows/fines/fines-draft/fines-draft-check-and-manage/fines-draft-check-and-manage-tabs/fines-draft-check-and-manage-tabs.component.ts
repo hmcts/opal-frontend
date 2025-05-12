@@ -1,20 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { map, Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
-import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import {
   MojSubNavigationItemComponent,
@@ -22,6 +17,24 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
+import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
@@ -35,11 +48,12 @@ import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants
   templateUrl: './fines-draft-check-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCheckAndManageTabsComponent implements OnInit {
-  private readonly opalFinesService = inject(OpalFines);
-  private readonly globalStore = inject(GlobalStore);
+export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   private readonly dateService = inject(DateService);
   protected readonly finesDraftStore = inject(FinesDraftStore);
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly globalStore = inject(GlobalStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStore
@@ -51,55 +65,11 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
 
   protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
-  public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
+  public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
+  public rejectedCount$!: Observable<string>;
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public activeTab!: string;
-  public rejectedCount$!: Observable<string>;
-
-  /**
-   * Fetches draft accounts data based on the active tab option and business unit IDs.
-   * It retrieves the statuses associated with the active tab and constructs the parameters
-   * required for the API call. If statuses are found, it makes a call to the `opalFinesService`
-   * to get the draft accounts and processes the response to populate the table data.
-   *
-   * @private
-   * @returns {void}
-   */
-  private getDraftAccountsData(): void {
-    const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === this.activeTab)?.statuses;
-    const params = { businessUnitIds: this.businessUnitIds, statuses, submittedBy: this.businessUnitUserIds };
-
-    if (statuses) {
-      this.draftAccounts$ = this.opalFinesService
-        .getDraftAccounts(params)
-        .pipe(map((response) => this.populateTableData(response)));
-    }
-  }
-
-  /**
-   * Retrieves the count of rejected draft accounts and assigns it to `rejectedCount$`.
-   *
-   * This method constructs the parameters required to fetch the rejected draft accounts,
-   * including the business unit IDs and the status set to rejected. It then calls the
-   * `getDraftAccounts` method of `opalFinesService` with these parameters and maps the
-   * response to extract the count of rejected accounts.
-   *
-   * @private
-   * @returns {void}
-   */
-  private getRejectedCount(): void {
-    const params = { businessUnitIds: this.businessUnitIds, statuses: [OpalFinesDraftAccountStatuses.rejected] };
-
-    this.rejectedCount$ = this.opalFinesService.getDraftAccounts(params).pipe(
-      map((response) => {
-        if (response.count > 99) {
-          return '99+';
-        }
-        return response.count.toString();
-      }),
-    );
-  }
 
   /**
    * Populates table data from the given response.
@@ -146,6 +116,101 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   }
 
   /**
+   * Sets up a data stream for managing tab-specific data in the component.
+   *
+   * This method initializes an observable (`tabData$`) that listens to changes in the
+   * route fragment and dynamically fetches or processes data based on the active tab.
+   * It also updates the `activeTab` property whenever the tab changes.
+   *
+   * @param initialData - The initial data to populate the table when the component is initialized.
+   * @param initialTab - The default tab to be used when the component is first loaded.
+   *
+   * The observable performs the following steps:
+   * - Listens to the route fragment and starts with the `initialTab`.
+   * - Filters out invalid fragments and ensures only valid strings are processed.
+   * - Updates the `activeTab` property whenever the tab changes.
+   * - Fetches data for the active tab:
+   *   - If the tab matches the `initialTab`, it uses the provided `initialData`.
+   *   - Otherwise, it fetches data from the `opalFinesService` based on the tab's statuses,
+   *     business unit IDs, and user IDs.
+   * - Shares the fetched data across multiple subscribers using `shareReplay`.
+   * - Cleans up the observable when the component is destroyed using `takeUntil`.
+   */
+  private setupTabDataStream(initialData: IOpalFinesDraftAccountsResponse, initialTab: string): void {
+    this.tabData$ = this.activatedRoute.fragment.pipe(
+      filter((frag): frag is string => !!frag),
+      startWith(initialTab),
+      map((tab) => tab!),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      tap((tab) => (this.activeTab = tab)),
+      switchMap((tab) => {
+        if (tab === initialTab) {
+          return of(this.populateTableData(initialData));
+        }
+
+        return this.opalFinesService
+          .getDraftAccounts({
+            businessUnitIds: this.businessUnitIds,
+            statuses: FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab)?.statuses,
+            submittedBy: this.businessUnitUserIds,
+          })
+          .pipe(
+            map((res) => this.populateTableData(res)),
+            shareReplay(1),
+          );
+      }),
+    );
+  }
+
+  /**
+   * Formats a given count as a string. If the count exceeds the maximum allowed
+   * rejected fines (`FINES_DRAFT_MAX_REJECTED`), it appends a "+" to the maximum value.
+   * Otherwise, it returns the count as a string.
+   *
+   * @param count - The number to format.
+   * @returns A formatted string representing the count or the maximum value with a "+" suffix.
+   */
+  private formatCount(count: number): string {
+    return count > FINES_DRAFT_MAX_REJECTED ? `${FINES_DRAFT_MAX_REJECTED}+` : `${count}`;
+  }
+
+  /**
+   * Sets up a stream to manage the rejected count for fines draft tabs.
+   * This stream listens to router navigation events and updates the rejected count
+   * based on the currently active tab. If the active tab matches the initial tab,
+   * it uses the provided `resolverRejectedCount`. Otherwise, it fetches the rejected
+   * count dynamically from the `opalFinesService`.
+   *
+   * @param resolverRejectedCount - The initial rejected count to use for the default tab.
+   * @param initialTab - The name of the initial tab to compare against during navigation.
+   * @returns An observable that emits the formatted rejected count as a string.
+   */
+  private setupRejectedCountStream(resolverRejectedCount: number, initialTab: string): void {
+    const tab$ = this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.activatedRoute.snapshot.fragment || 'review'),
+      distinctUntilChanged(),
+      startWith(initialTab),
+    );
+    this.rejectedCount$ = tab$.pipe(
+      switchMap((tab) => {
+        if (tab === initialTab) {
+          const capped = this.formatCount(resolverRejectedCount);
+          return of(capped);
+        } else {
+          // Fetch new rejected count on tab change
+          const params = {
+            businessUnitIds: [], // Provide actual business unit IDs here if needed
+            statuses: [OpalFinesDraftAccountStatuses.rejected],
+          };
+          return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
+        }
+      }),
+    );
+  }
+
+  /**
    * Handles the click event on a defendant item.
    * Navigates to the review account page for the specified defendant.
    *
@@ -157,25 +222,16 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   }
 
   /**
-   * Switches the active tab based on the provided fragment.
-   * If a matching tab option is found, it sets it as the active tab
-   * and retrieves the draft accounts data.
+   * Handles the tab switch by updating the active tab and triggering a router fragment update.
    *
-   * @param {string} fragment - The fragment identifier for the tab to switch to.
-   * @private
+   * @param fragment - The identifier of the tab to activate.
    */
-  private switchTab(fragment: string): void {
+  public handleTabSwitch(fragment: string): void {
     this.activeTab = fragment;
-    this.getDraftAccountsData();
-  }
-
-  /**
-   * Handles the tab switch event by invoking the switchTab method with the provided event string.
-   *
-   * @param event - The event string that indicates which tab to switch to.
-   */
-  public handleTabSwitch(event: string) {
-    this.switchTab(event);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute.parent,
+      fragment,
+    });
   }
 
   /**
@@ -189,8 +245,17 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.getRejectedCount();
     this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndAmend();
+    const resolvedDraftAccounts = this.activatedRoute.snapshot.data['draftAccounts'] as IOpalFinesDraftAccountsResponse;
+    const resolvedRejectedAccounts = this.activatedRoute.snapshot.data['rejectedCount'] as number;
+    const initialTab = this.activatedRoute.snapshot.fragment ?? 'review';
+    this.setupTabDataStream(resolvedDraftAccounts, initialTab);
+    this.setupRejectedCountStream(resolvedRejectedAccounts, initialTab);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

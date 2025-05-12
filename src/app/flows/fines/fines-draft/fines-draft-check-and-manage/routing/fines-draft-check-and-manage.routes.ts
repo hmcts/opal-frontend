@@ -7,6 +7,8 @@ import { IFinesDraftCheckAndManageRoutingPermissions } from './interfaces/fines-
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PERMISSIONS } from './constants/fines-draft-check-and-manage-routing-permissions.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from './constants/fines-draft-check-and-manage-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_TITLES } from './constants/fines-draft-check-and-manage-routing-titles.constant';
+import { finesDraftCheckAndManageTabResolver } from './resolvers/fines-draft-check-and-manage-tab.resolver';
+import { finesDraftCheckAndManageRejectedCountResolver } from './resolvers/fines-draft-check-and-manage-rejected-count.resolver';
 
 const draftCreateAndManageRootPath = FINES_DRAFT_ROUTING_PATHS.children.createAndManage;
 const draftCreateAndManagePermissionId =
@@ -31,7 +33,11 @@ export const routing: Routes = [
       routePermissionId: [draftCreateAndManagePermissionId],
       title: FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_TITLES.children.tabs,
     },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+      draftAccounts: finesDraftCheckAndManageTabResolver,
+      rejectedCount: finesDraftCheckAndManageRejectedCountResolver,
+    },
   },
   {
     path: FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.viewAllRejected,
