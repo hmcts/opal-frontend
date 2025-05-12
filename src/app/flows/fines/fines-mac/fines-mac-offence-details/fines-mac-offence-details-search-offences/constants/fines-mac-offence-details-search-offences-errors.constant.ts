@@ -25,7 +25,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       priority: 2,
     },
     specialCharactersPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 3,
     },
   },
@@ -39,7 +39,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       priority: 2,
     },
     specialCharactersPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 3,
     },
   },
