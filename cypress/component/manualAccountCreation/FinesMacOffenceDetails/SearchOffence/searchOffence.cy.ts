@@ -43,52 +43,66 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     });
   };
 
-  it('AC.2 Checking the validation failures', { tags: ['@PO-545', '@PO-667'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+  it(
+    'AC.2 Checking the validation failures when exceeding the maximum characters',
+    { tags: ['@PO-545', '@PO-667'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
-    //This creates the component with invalid offence code pre-loaded in the form
-    setupComponent(mockFormSubmit, SEARCH_OFFENCES_INVALID_OFFENCE_CODE_MOCK);
-    setupComponent(mockFormSubmit, SEARCH_OFFENCES_SPECIAL_CHAR_OFFENCE_CODE_MOCK);
+      //This creates the component with invalid offence code pre-loaded in the form
+      setupComponent(mockFormSubmit, SEARCH_OFFENCES_INVALID_OFFENCE_CODE_MOCK);
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search offences');
+      cy.get(DOM_ELEMENTS.app).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search offences');
 
-    cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
-    cy.get(DOM_ELEMENTS.offenceCodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
+      cy.get(DOM_ELEMENTS.offenceCodeInput).should('exist');
 
-    cy.get(DOM_ELEMENTS.shortTitleLabel).should('contain', 'Short title');
-    cy.get(DOM_ELEMENTS.shortTitleInput).should('exist');
+      cy.get(DOM_ELEMENTS.shortTitleLabel).should('contain', 'Short title');
+      cy.get(DOM_ELEMENTS.shortTitleInput).should('exist');
 
-    cy.get(DOM_ELEMENTS.actAndSectionLabel).should('contain', 'Act and section');
-    cy.get(DOM_ELEMENTS.actAndSectionInput).should('exist');
+      cy.get(DOM_ELEMENTS.actAndSectionLabel).should('contain', 'Act and section');
+      cy.get(DOM_ELEMENTS.actAndSectionInput).should('exist');
 
-    cy.get(DOM_ELEMENTS.inactiveLabel).should('contain', 'Include inactive offence codes');
-    cy.get(DOM_ELEMENTS.inactiveInput).should('exist');
+      cy.get(DOM_ELEMENTS.inactiveLabel).should('contain', 'Include inactive offence codes');
+      cy.get(DOM_ELEMENTS.inactiveInput).should('exist');
 
-    formData.fm_offence_details_search_offences_code_length;
-    formData[0].fm_offence_details_search_offences_short_title_length;
-    formData[0].fm_offence_details_search_offences_act_and_section_length;
-    cy.get(DOM_ELEMENTS.inactiveInput).check();
+      formData.fm_offence_details_search_offences_code_length;
+      formData[0].fm_offence_details_search_offences_short_title_length;
+      formData[0].fm_offence_details_search_offences_act_and_section_length;
+      cy.get(DOM_ELEMENTS.inactiveInput).check();
 
-    cy.get(DOM_ELEMENTS.searchButton).should('exist');
+      cy.get(DOM_ELEMENTS.searchButton).should('exist');
 
-    cy.contains('button', 'Search').should('exist');
-    cy.contains('button', 'Search').click();
+      cy.contains('button', 'Search').should('exist');
+      cy.contains('button', 'Search').click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
-      .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.shortTitleMaxLength)
-      .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.actAndSectionMaxLength);
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
+        .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.shortTitleMaxLength)
+        .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.actAndSectionMaxLength);
+    },
+  );
 
-    formData[1].fm_offence_details_search_offences_code_special_char;
-    formData[1].fm_offence_details_search_offences_short_title_special_char;
-    formData[1].fm_offence_details_search_offences_act_and_section_special_char;
-    cy.get(DOM_ELEMENTS.inactiveInput).check();
-    cy.contains('button', 'Search').click();
+  it(
+    'AC.2 Checking the validation failures when a special character into the fields',
+    { tags: ['@PO-545', '@PO-667'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.offenceCodeSpecialCharPattern)
-      .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
-      .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
-  });
+      //This creates the component with invalid offence code pre-loaded in the form
+      setupComponent(mockFormSubmit, SEARCH_OFFENCES_INVALID_OFFENCE_CODE_MOCK);
+
+      formData[1].fm_offence_details_search_offences_code_special_char;
+      formData[1].fm_offence_details_search_offences_short_title_special_char;
+      formData[1].fm_offence_details_search_offences_act_and_section_special_char;
+      cy.get(DOM_ELEMENTS.inactiveInput).check();
+      cy.contains('button', 'Search').click();
+
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.offenceCodeSpecialCharPattern)
+        .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
+        .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
+    },
+  );
 });
