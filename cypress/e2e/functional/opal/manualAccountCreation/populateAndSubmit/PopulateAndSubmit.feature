@@ -5,7 +5,7 @@ Feature: Manual account creation - Create Draft Account
     Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
     Then I am on the dashboard
 
-  @PO-1448
+  @PO-1448 @PO-1638
   Scenario: As a user I can create a draft account for the Adult or youth only defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
@@ -236,7 +236,11 @@ Feature: Manual account creation - Create Draft Account
       | Account number    | 12345678                     |
       | Payment reference | REF                          |
 
-  @PO-1450
+    #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
+    When I click the "Submit for review" button and capture the created account number
+    Then I see "You've submitted this account for review" text on the page
+
+  @PO-1450 @PO-1638
   Scenario: As a user I can create a draft account for the Company defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
@@ -399,7 +403,11 @@ Feature: Manual account creation - Create Draft Account
       | Account number    | 12345678       |
       | Payment reference | REF            |
 
-  @PO-1449
+    #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
+    When I click the "Submit for review" button and capture the created account number
+    Then I see "You've submitted this account for review" text on the page
+
+  @PO-1449 @PO-1638
   Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
@@ -652,6 +660,9 @@ Feature: Manual account creation - Create Draft Account
       | Sort code         | 12-34-56       |
       | Account number    | 12345678       |
       | Payment reference | REF123AB       |
+    #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
+    When I click the "Submit for review" button and capture the created account number
+    Then I see "You've submitted this account for review" text on the page
 
 
 
