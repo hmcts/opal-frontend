@@ -22,6 +22,7 @@ export const FinesDraftStore = signalStore(
     account_status_date: '' as string | null,
     fragment: '',
     amend: false,
+    viewAllAccounts: false,
     bannerMessage: '',
   })),
   withHooks((store) => {
@@ -118,6 +119,9 @@ export const FinesDraftStore = signalStore(
     },
     setFragmentAndAmend(fragment: string, state: boolean) {
       patchState(store, { fragment, amend: state });
+    },
+    setViewAllAccounts: (viewAllAccounts: boolean) => {
+      patchState(store, { viewAllAccounts });
     },
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });

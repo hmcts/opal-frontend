@@ -9,6 +9,7 @@ import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from './constants/fines-dr
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_TITLES } from './constants/fines-draft-check-and-manage-routing-titles.constant';
 import { finesDraftCheckAndManageTabResolver } from './resolvers/fines-draft-check-and-manage-tab.resolver';
 import { finesDraftCheckAndManageRejectedCountResolver } from './resolvers/fines-draft-check-and-manage-rejected-count.resolver';
+import { finesDraftCheckAndManageViewAllRejectedResolver } from './resolvers/fines-draft-check-and-manage-view-all-rejected.resolver';
 
 const draftCreateAndManageRootPath = FINES_DRAFT_ROUTING_PATHS.children.createAndManage;
 const draftCreateAndManagePermissionId =
@@ -50,6 +51,9 @@ export const routing: Routes = [
       routePermissionId: [draftCreateAndManagePermissionId],
       title: FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_TITLES.children.viewAllRejected,
     },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+      allRejectedAccounts: finesDraftCheckAndManageViewAllRejectedResolver,
+    },
   },
 ];

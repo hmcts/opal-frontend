@@ -40,6 +40,7 @@ describe('finesDraftCheckAndManageRejectedCountResolver', () => {
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
       statuses: [OpalFinesDraftAccountStatuses.rejected],
     });
   });

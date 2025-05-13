@@ -10,6 +10,7 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-sta
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 
 describe('finesDraftCheckAndManageTabResolver', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => finesDraftCheckAndManageTabResolver(...resolverParameters));
 

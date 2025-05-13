@@ -166,4 +166,14 @@ describe('FinesDraftStore', () => {
     store.resetBannerMessage();
     expect(store.bannerMessage()).toEqual('');
   });
+
+  it('should set view all accounts', () => {
+    store.setViewAllAccounts(true);
+    expect(store.viewAllAccounts()).toEqual(true);
+  });
+
+  it('should reset view all accounts', () => {
+    store.setViewAllAccounts(false);
+    expect(store.viewAllAccounts()).toEqual(false);
+  });
 });

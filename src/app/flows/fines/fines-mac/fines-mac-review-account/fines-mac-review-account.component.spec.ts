@@ -198,6 +198,16 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(handleRequestErrorSpy).toHaveBeenCalled();
   });
 
+  it('should handle submitPayload failure', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
+    mockOpalFinesService.putDraftAddAccountPayload = jasmine
+      .createSpy('putDraftAddAccountPayload')
+      .and.returnValue(throwError(() => new Error('Something went wrong')));
+    component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    expect(handleRequestErrorSpy).toHaveBeenCalled();
+  });
+
   it('should test processPutResponse', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
     const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
@@ -335,6 +345,16 @@ describe('FinesMacReviewAccountComponent', () => {
     );
   });
 
+  it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    finesDraftStore.setViewAllAccounts(true);
+    component.isReadOnly = true;
+    component.navigateBack();
+    expect(routerSpy).toHaveBeenCalledWith([
+      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.viewAllRejected}`,
+    ]);
+  });
+
   it('should submit payload on submitForReview', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
@@ -350,6 +370,16 @@ describe('FinesMacReviewAccountComponent', () => {
     component.handleRoute('test');
 
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+  });
+
+  it('should navigate on handleRoute with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
+
+    component.handleRoute('test', true, event);
+
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 
   it('should navigate on handleRoute to delete account', () => {
@@ -381,5 +411,11 @@ describe('FinesMacReviewAccountComponent', () => {
 
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
+  });
+
+  it('should scroll to top and return null on handleRequestError', () => {
+    const result = component['handleRequestError']();
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(result).toBeNull();
   });
 });

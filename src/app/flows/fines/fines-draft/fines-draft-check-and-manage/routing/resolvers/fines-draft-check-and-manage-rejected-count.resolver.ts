@@ -11,9 +11,11 @@ export const finesDraftCheckAndManageRejectedCountResolver: ResolveFn<number> = 
 
   const userState = globalStore.userState();
   const businessUnitIds = userState.business_unit_user.map((u) => u.business_unit_id);
+  const businessUnitUserIds = userState.business_unit_user.map((u) => u.business_unit_user_id);
 
   const params = {
     businessUnitIds,
+    submittedBy: businessUnitUserIds,
     statuses: [OpalFinesDraftAccountStatuses.rejected],
   };
 

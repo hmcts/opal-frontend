@@ -9,12 +9,12 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
+import { FinesDraftService } from '../../services/fines-draft.service';
+import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 
 describe('FinesDraftCheckAndManageTabsComponent', () => {
   let component: FinesDraftCheckAndManageTabsComponent;
@@ -25,6 +25,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
   let routerEventSubject: Subject<NavigationEnd>;
   let mockRouter: jasmine.SpyObj<Router>;
   let activatedRoute: ActivatedRoute;
+  let finesDraftService: jasmine.SpyObj<FinesDraftService>;
 
   beforeEach(async () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
@@ -33,6 +34,11 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'getDraftAccountById']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
     mockOpalFinesService.getDraftAccountById.and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+
+    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
+      'onDefendantClick',
+      'populateTableData',
+    ]);
 
     const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
       'getDaysAgo',
@@ -48,6 +54,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
+        { provide: FinesDraftService, useValue: finesDraftService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -80,45 +87,6 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should populate table data correctly', () => {
-    const response = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
-    const tableData = component['populateTableData'](response);
-    expect(tableData.length).toEqual(response.summaries.length);
-    expect(tableData[0]['Defendant id']).toEqual(response.summaries[0].draft_account_id);
-  });
-
-  it('should navigate to review account', () => {
-    const draftAccountId = 1;
-    component.activeTab = 'review';
-    component['navigateToReviewAccount'](draftAccountId);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-      draftAccountId,
-    ]);
-    expect(finesDraftStore.fragment()).toEqual('review');
-    expect(finesDraftStore.amend()).toBeFalse();
-  });
-
-  it('should navigate to review account when rejected', () => {
-    const draftAccountId = 1;
-    component.activeTab = 'rejected';
-    component['navigateToReviewAccount'](draftAccountId);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-      draftAccountId,
-    ]);
-    expect(finesDraftStore.fragment()).toEqual('rejected');
-    expect(finesDraftStore.amend()).toBeTrue();
-  });
-
-  it('should handle defendant click', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'navigateToReviewAccount');
-    component.onDefendantClick(1);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).navigateToReviewAccount).toHaveBeenCalled();
   });
 
   it('should handle tab switch', () => {
@@ -161,6 +129,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
   });
 
   it('should use default values when resolver data is empty', async () => {
+    finesDraftService.populateTableData.and.returnValue([]);
     activatedRoute.snapshot.data = {
       draftAccounts: { count: 0, summaries: [] },
       rejectedCount: 0,
@@ -187,6 +156,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
   });
 
   it('should fetch tab data via API in setupTabDataStream when fragment does not match initial tab', async () => {
+    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     activatedRoute.fragment = of('rejected');
     activatedRoute.snapshot.data = {
       draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
@@ -206,8 +176,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     const tabData = await firstValueFrom(component.tabData$);
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
 
-    const expected = component['populateTableData'](OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
-    expect(tabData).toEqual(expected);
+    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 
   it('should update rejected count on tab change with count over threshold and call formatCount', async () => {
@@ -240,5 +209,21 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
 
     expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
     expect(component['formatCount']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.count);
+  });
+
+  it('should call setFragmentAndAmend and onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is not "rejected"', () => {
+    component.activeTab = 'review';
+    component.onDefendantClick(123);
+    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.amend()).toBeFalsy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, component.PATH_REVIEW_ACCOUNT);
+  });
+
+  it('should call setFragmentAndAmend and onDefendantClick with PATH_AMEND_ACCOUNT when activeTab is "rejected"', () => {
+    component.activeTab = 'rejected';
+    component.onDefendantClick(456);
+    expect(finesDraftStore.fragment()).toEqual('rejected');
+    expect(finesDraftStore.amend()).toBeTruthy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, component.PATH_AMEND_ACCOUNT);
   });
 });

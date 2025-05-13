@@ -1,14 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import {
@@ -35,6 +31,9 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { FinesDraftService } from '../../services/fines-draft.service';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
@@ -50,18 +49,19 @@ import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-servic
 })
 export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
-  private readonly dateService = inject(DateService);
   protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly businessUnitIds = this.globalStore
-    .userState()
-    .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
-  private readonly businessUnitUserIds = this.globalStore
-    .userState()
-    .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_user_id);
+  public readonly finesDraftService = inject(FinesDraftService);
+  private readonly userState = this.globalStore.userState();
+  private readonly businessUnitIds = this.userState.business_unit_user.map(
+    (business_unit_user) => business_unit_user.business_unit_id,
+  );
+  private readonly businessUnitUserIds = this.userState.business_unit_user.map(
+    (business_unit_user) => business_unit_user.business_unit_user_id,
+  );
 
   protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
@@ -70,50 +70,9 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public activeTab!: string;
-
-  /**
-   * Populates table data from the given response.
-   *
-   * @param {IOpalFinesDraftAccountsResponse} response - The response containing draft account summaries.
-   * @returns {IFinesDraftTableWrapperTableData[]} An array of table data objects.
-   */
-  private populateTableData(response: IOpalFinesDraftAccountsResponse): IFinesDraftTableWrapperTableData[] {
-    return response.summaries.map(({ draft_account_id, account_snapshot }) => {
-      const { defendant_name, date_of_birth, created_date, account_type, business_unit_name } = account_snapshot;
-
-      return {
-        Account: '',
-        'Defendant id': draft_account_id,
-        Defendant: defendant_name,
-        'Date of birth': date_of_birth,
-        CreatedDate: created_date,
-        Created: this.dateService.getDaysAgo(created_date),
-        'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
-        'Business unit': business_unit_name,
-      };
-    });
-  }
-
-  /**
-   * Navigates to the review account page for the given draft account ID.
-   *
-   * @param draftAccountId - The ID of the draft account to review.
-   * @returns void
-   */
-  private navigateToReviewAccount(draftAccountId: number): void {
-    this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
-    if (this.finesDraftStore.amend()) {
-      this.router.navigate([
-        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-        draftAccountId,
-      ]);
-    } else {
-      this.router.navigate([
-        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-        draftAccountId,
-      ]);
-    }
-  }
+  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
+  public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
+  public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
   /**
    * Sets up a data stream for managing tab-specific data in the component.
@@ -146,7 +105,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
       tap((tab) => (this.activeTab = tab)),
       switchMap((tab) => {
         if (tab === initialTab) {
-          return of(this.populateTableData(initialData));
+          return of(this.finesDraftService.populateTableData(initialData));
         }
 
         return this.opalFinesService
@@ -156,7 +115,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
             submittedBy: this.businessUnitUserIds,
           })
           .pipe(
-            map((res) => this.populateTableData(res)),
+            map((res) => this.finesDraftService.populateTableData(res)),
             shareReplay(1),
           );
       }),
@@ -201,6 +160,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
         } else {
           const params = {
             businessUnitIds: this.businessUnitIds,
+            submittedBy: this.businessUnitUserIds,
             statuses: [OpalFinesDraftAccountStatuses.rejected],
           };
           return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
@@ -210,14 +170,20 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
   }
 
   /**
-   * Handles the click event on a defendant item.
-   * Navigates to the review account page for the specified defendant.
+   * Handles the click event on a defendant item within the fines draft flow.
    *
-   * @param {number} id - The unique identifier of the defendant.
-   * @returns {void}
+   * Sets the current fragment and amend state in the fines draft store based on the active tab,
+   * then triggers the defendant click logic in the fines draft service, navigating to the appropriate
+   * path depending on whether the draft is being amended or reviewed.
+   *
+   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
    */
-  public onDefendantClick(id: number): void {
-    this.navigateToReviewAccount(id);
+  public onDefendantClick(draftAccountId: number): void {
+    this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
+    this.finesDraftService.onDefendantClick(
+      draftAccountId,
+      this.finesDraftStore.amend() ? this.PATH_AMEND_ACCOUNT : this.PATH_REVIEW_ACCOUNT,
+    );
   }
 
   /**
