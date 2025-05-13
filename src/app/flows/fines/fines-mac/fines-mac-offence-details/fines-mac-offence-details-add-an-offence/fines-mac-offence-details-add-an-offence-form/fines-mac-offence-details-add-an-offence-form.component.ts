@@ -462,6 +462,25 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Validates minor creditor selections in the impositions form array.
+   * If a creditor is required, set to 'minor', and no corresponding minor creditor exists,
+   * an error is applied to the creditor control at that row.
+   *
+   * @returns {void}
+   */
+  private checkImpositionMinorCreditors(): void {
+    const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
+    formArray.controls.forEach((control, rowIndex) => {
+      const needsCreditor = control.get(`fm_offence_details_needs_creditor_${rowIndex}`)?.value;
+      const creditorControl = control.get(`fm_offence_details_creditor_${rowIndex}`);
+      const selectedCreditor = creditorControl?.value;
+      if (needsCreditor && selectedCreditor === 'minor' && !this.minorCreditors?.[rowIndex]) {
+        creditorControl?.setErrors({ minorCreditorMissing: true });
+      }
+    });
+  }
+
+  /**
    * Navigates to the minor creditor page for the specified row index.
    *
    * @param rowIndex - The index of the row.
@@ -580,6 +599,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
       return acc;
     }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden);
+  }
+
+  /**
+   * Handles the form submission for adding an offence.
+   * This method first validates minor creditor selections and then
+   * invokes the base class submission logic.
+   *
+   * @param event - The submit event triggered by the form submission.
+   */
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.checkImpositionMinorCreditors();
+    super.handleFormSubmit(event);
   }
 
   /**
