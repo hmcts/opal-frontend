@@ -1035,6 +1035,132 @@ Feature: Manual account creation - Offence Details
     And I click the search button
     Then I see "Search results" on the page header
 
+  Scenario: AC7. Back button navigation retains search field values
+    And I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
+
+    # Test with results found
+    When I enter "TP11003" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "Transport Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "TP11003" in the "Offence code" field
+    And I see "Transport" in the "Short title" field
+    And I see "Transport Act" in the "Act and section" text field
+
+    # Test with no results found
+    When I enter "XYZ999" into the "Offence code" field
+    And I enter "NonExistent" into the "Short title" field
+    And I enter "Invalid Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "There are no matching results" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "XYZ999" in the "Offence code" field
+    And I see "NonExistent" in the "Short title" field
+    And I see "Invalid Act" in the "Act and section" text field
+
+  Scenario: AC1c-h. Search functionality behavior and requirements
+    And I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
+
+    # AC1b At least 1 character needed
+    And I click the search button
+    Then I see "Search offences" on the page header
+
+    # AC1c - Active/Inactive offences filter
+    When I enter "AB0" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Present" in the Search results table in the "Used to" column
+    And I do not see any dates in the "Used to" column
+
+    When I click on the "Back" link
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "23 Mar 2011" in the Search results table in the "Used to" column
+    And I see "Present" in the Search results table in the "Used to" column
+
+    # AC1d - Combination search across multiple fields
+    When I click on the "Back" link
+    And I enter "TP" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "London" into the "Act and section" text field
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+    And I see "TP" in the Search results table in the "Code" column
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1e - Case insensitive search
+    When I click on the "Back" link
+    And I enter "tp11003" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP11003" in the Search results table in the "Code" column
+
+    When I click on the "Back" link
+    And I enter "TRANSPORT" into the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+
+    When I click on the "Back" link
+    And I enter "LONDON" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1f - Offence Code starts with search
+    When I click on the "Back" link
+    And I enter "TP47" into the "Offence code" field
+    And I clear the "Short title" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP47033" in the Search results table in the "Code" column
+    And I see "TP47032" in the Search results table in the "Code" column
+
+    # AC1g - Short Title contains search
+    When I click on the "Back" link
+    And I enter "dangerous" into the "Short title" field
+    And I clear the "Offence Code" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "dangerous item" in the Search results table in the "Short title" column
+    And I see "dangerous driving" in the Search results table in the "Short title" column
+
+
+    # AC1h - Act and Section contains search
+    When I click on the "Back" link
+    And I enter "London" into the "Act and section" text field
+    And I clear the "Offence Code" field
+    And I clear the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport for London" in the Search results table in the "Act and section" column
+
+
+    # Max 100 responses
+    When I click on the "Back" link
+    And I enter "A" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "100 offences" text on the page
+
+
+
+
 
 
 

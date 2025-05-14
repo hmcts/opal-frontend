@@ -101,9 +101,6 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.shortTitleSpecialCharPattern)
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.actAndSectionSpecialCharPattern);
 
-          for (const [, value] of Object.entries(SEARCH_OFFENCES_FORMAT_CHECK)) {
-            cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-          }
         });
       });
     },
