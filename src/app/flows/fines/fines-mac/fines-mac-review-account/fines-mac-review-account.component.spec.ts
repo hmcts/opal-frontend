@@ -135,10 +135,28 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have state and populate data$', () => {
-    expect(component['enforcementCourtsData$']).not.toBeUndefined();
-    expect(component['localJusticeAreasData$']).not.toBeUndefined();
-    expect(component['groupLjaAndCourtData$']).not.toBeUndefined();
+  it('should have state and populate data$', (done) => {
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+
+    component['activatedRoute'].snapshot = {
+      data: {
+        reviewAccountFetchMap: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component.ngOnInit();
+
+    component['enforcementCourtsData$'].subscribe(() => {
+      expect(component['enforcementCourtsData']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData);
+      component['localJusticeAreasData$'].subscribe(() => {
+        expect(component['localJusticeAreasData']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData);
+        done();
+      });
+    });
   });
 
   it('should test setReviewAccountStatus when draft state is null', () => {
@@ -180,6 +198,16 @@ describe('FinesMacReviewAccountComponent', () => {
     component['reviewAccountFetchedMappedPayload']();
 
     expect(component.isReadOnly).toBeTrue();
+  });
+
+  it('should handle submitPayload failure', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
+    mockOpalFinesService.putDraftAddAccountPayload = jasmine
+      .createSpy('putDraftAddAccountPayload')
+      .and.returnValue(throwError(() => new Error('Something went wrong')));
+    component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    expect(handleRequestErrorSpy).toHaveBeenCalled();
   });
 
   it('should call handleRoute with submitConfirmation on submitPayload success', () => {
@@ -344,6 +372,16 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(submitPayloadSpy).toHaveBeenCalled();
   });
 
+  it('should navigate on handleRoute with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
+
+    component.handleRoute('test', true, event);
+
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
   it('should navigate on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -381,5 +419,38 @@ describe('FinesMacReviewAccountComponent', () => {
 
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
+  });
+
+  it('should call setup methods from reviewAccountFetchedMappedPayload', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupCourtsSpy = spyOn<any>(component, 'setupEnforcementCourtsData').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupLJASpy = spyOn<any>(component, 'setupLocalJusticeAreasData').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setupGroupSpy = spyOn<any>(component, 'setupGroupLjaAndCourtData').and.callThrough();
+
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+
+    component['activatedRoute'].snapshot = {
+      data: {
+        reviewAccountFetchMap: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component['reviewAccountFetchedMappedPayload']();
+
+    expect(setupCourtsSpy).toHaveBeenCalled();
+    expect(setupLJASpy).toHaveBeenCalled();
+    expect(setupGroupSpy).toHaveBeenCalled();
+  });
+
+  it('should scroll to top and return null on handleRequestError', () => {
+    const result = component['handleRequestError']();
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(result).toBeNull();
   });
 });

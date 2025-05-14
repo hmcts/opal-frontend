@@ -84,28 +84,61 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
 
-  private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
-    .getCourts(this.finesMacStore.getBusinessUnitId())
-    .pipe(
-      tap((response: IOpalFinesCourtRefData) => {
+  protected enforcementCourtsData$!: Observable<IOpalFinesCourtRefData>;
+  protected localJusticeAreasData$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
+  protected groupLjaAndCourtData$!: Observable<{
+    enforcementCourtsData: IOpalFinesCourtRefData;
+    localJusticeAreasData: IOpalFinesLocalJusticeAreaRefData;
+  }>;
+
+  /**
+   * Initializes the observable `enforcementCourtsData$` with court data retrieved from the Opal Fines service
+   * based on the current business unit ID. The retrieved court reference data is also assigned to the
+   * `enforcementCourtsData` property for local use. The observable completes when `ngUnsubscribe` emits.
+   *
+   * @private
+   */
+  private setupEnforcementCourtsData(): void {
+    const businessUnitId = this.finesMacStore.getBusinessUnitId();
+
+    this.enforcementCourtsData$ = this.opalFinesService.getCourts(businessUnitId).pipe(
+      tap((response) => {
         this.enforcementCourtsData = response.refData;
       }),
       takeUntil(this.ngUnsubscribe),
     );
+  }
 
-  private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
-    .getLocalJusticeAreas()
-    .pipe(
-      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
+  /**
+   * Initializes the observable `localJusticeAreasData$` by fetching local justice areas data
+   * from the `opalFinesService`. The retrieved data is assigned to the `localJusticeAreasData`
+   * property. The observable completes when `ngUnsubscribe` emits, ensuring proper cleanup.
+   *
+   * @private
+   */
+  private setupLocalJusticeAreasData(): void {
+    this.localJusticeAreasData$ = this.opalFinesService.getLocalJusticeAreas().pipe(
+      tap((response) => {
         this.localJusticeAreasData = response.refData;
       }),
       takeUntil(this.ngUnsubscribe),
     );
+  }
 
-  protected groupLjaAndCourtData$ = forkJoin({
-    enforcementCourtsData: this.enforcementCourtsData$,
-    localJusticeAreasData: this.localJusticeAreasData$,
-  });
+  /**
+   * Initializes the `groupLjaAndCourtData$` observable by combining the latest values
+   * from `enforcementCourtsData$` and `localJusticeAreasData$` using `forkJoin`.
+   * This allows consumers to access both enforcement courts and local justice areas data
+   * as a single observable object.
+   *
+   * @private
+   */
+  private setupGroupLjaAndCourtData(): void {
+    this.groupLjaAndCourtData$ = forkJoin({
+      enforcementCourtsData: this.enforcementCourtsData$,
+      localJusticeAreasData: this.localJusticeAreasData$,
+    });
+  }
 
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
@@ -124,14 +157,18 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fetches and maps the review account payload from the activated route snapshot.
+   * Handles the mapping and initialization of the review account payload from the activated route snapshot.
    *
-   * This method retrieves the `reviewAccountFetchMap` data from the route snapshot,
-   * updates the `finesMacState` and `finesDraftState` in the `finesService`, and sets
-   * the review account status. It also sets the component to read-only mode.
+   * This method performs the following actions:
+   * - Retrieves the `reviewAccountFetchMap` data from the current route snapshot.
+   * - Updates the fines MAC and draft stores with the corresponding state from the payload.
+   * - Sets the review account status.
+   * - Initializes enforcement courts, local justice areas, and grouped LJA and court data.
+   * - Sets the component to read-only mode.
+   *
+   * Returns early if the route snapshot or the expected payload is not available.
    *
    * @private
-   * @returns {void}
    */
   private reviewAccountFetchedMappedPayload(): void {
     const snapshot = this.activatedRoute.snapshot;
@@ -146,6 +183,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
     // Grab the status from the payload
     this.setReviewAccountStatus();
+
+    this.setupEnforcementCourtsData();
+    this.setupLocalJusticeAreasData();
+    this.setupGroupLjaAndCourtData();
 
     this.isReadOnly = true;
   }
