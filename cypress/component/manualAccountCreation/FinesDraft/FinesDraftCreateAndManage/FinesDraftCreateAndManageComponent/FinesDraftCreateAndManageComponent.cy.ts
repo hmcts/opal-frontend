@@ -123,7 +123,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
         .contains('' + NAVIGATION_LINKS[0])
         .click();
 
-      cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
@@ -217,7 +217,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
         .contains('' + NAVIGATION_LINKS[1])
         .click();
 
-      cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
@@ -311,7 +311,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
         .contains('' + NAVIGATION_LINKS[2])
         .click();
 
-      cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
@@ -405,7 +405,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
         .contains('' + NAVIGATION_LINKS[3])
         .click();
 
-      cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');

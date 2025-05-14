@@ -1,5 +1,6 @@
 export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-two-thirds',
+  errorSummary: 'div.govuk-error-summary',
 
   //heading
   heading: 'h1.govuk-heading-l',
@@ -18,4 +19,7 @@ export const DOM_ELEMENTS = {
 
   //buttons
   searchButton: 'button[id = "submitForm"]',
+
+  //search results page
+  backButton: '',
 };

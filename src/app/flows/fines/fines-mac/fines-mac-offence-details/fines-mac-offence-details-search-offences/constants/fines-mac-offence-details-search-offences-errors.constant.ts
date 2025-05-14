@@ -10,6 +10,10 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
+    specialCharactersPattern: {
+      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 3,
+    },
   },
   fm_offence_details_search_offences_short_title: {
     maxlength: {
@@ -20,6 +24,10 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
+    specialCharactersPattern: {
+      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 3,
+    },
   },
   fm_offence_details_search_offences_act_and_section: {
     maxlength: {
@@ -29,6 +37,10 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
     alphabeticalTextPattern: {
       message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
+    },
+    specialCharactersPattern: {
+      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 3,
     },
   },
 };
