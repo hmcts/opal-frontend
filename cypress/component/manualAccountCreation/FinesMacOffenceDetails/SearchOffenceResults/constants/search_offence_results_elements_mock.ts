@@ -38,5 +38,5 @@ export const DOM_ELEMENTS = {
   noResultsMessage: 'p:contains("There are no matching results.")',
   noResultsFollowupMessage: 'p:contains("Check your search and try again.")',
   tableStatusMessage: 'opal-lib-moj-sortable-table-status',
-  clipboardConfirmation: '.moj-banner--success, .govuk-notification-banner--success',
+  clipboardConfirmation: '',
 };

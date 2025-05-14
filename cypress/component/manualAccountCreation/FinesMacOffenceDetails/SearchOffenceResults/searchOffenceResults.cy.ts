@@ -116,7 +116,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
   });
 
-  it.only('Handles pagination buttons correctly (AC6a), (AC6b, AC6c)', { tags: ['@PO-545', '@PO-987'] }, () => {
+  it('Handles pagination buttons correctly (AC6a), (AC6b, AC6c)', { tags: ['@PO-545', '@PO-987'] }, () => {
     setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
     //Handling Next and Previous buttons
