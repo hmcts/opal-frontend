@@ -24,6 +24,8 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
+
 @Component({
   selector: 'app-fines-mac-court-details-form',
   imports: [
@@ -61,7 +63,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
       fm_court_details_prosecutor_case_reference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+        Validators.pattern(ALPHANUMERIC_WITH_SPACES_PATTERN),
       ]),
       fm_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
       fm_court_details_originator_name: new FormControl(),
