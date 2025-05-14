@@ -95,11 +95,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to court ref data API', () => {
-    const business_unit = 1;
+    const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${business_unit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
 
-    service.getCourts(business_unit).subscribe((response) => {
+    service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
     });
 
@@ -110,11 +110,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
-    const business_unit = 1;
+    const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${business_unit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
 
-    service.getCourts(business_unit).subscribe((response) => {
+    service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
     });
 
@@ -124,7 +124,7 @@ describe('OpalFines', () => {
     req.flush(mockCourts);
 
     // Make a second call to searchCourt with the same search body
-    service.getCourts(business_unit).subscribe((response) => {
+    service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
     });
 
