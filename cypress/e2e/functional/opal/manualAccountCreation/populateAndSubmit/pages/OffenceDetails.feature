@@ -1019,8 +1019,9 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
-    And I am moving to "search the offence list" tab
+
+  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered [@PO-545, @PO-667]
+    And I open the "search the offence list" link in the same tab
 
     And I see "Search offences" on the page header
     And I click the search button
@@ -1156,6 +1157,19 @@ Feature: Manual account creation - Offence Details
     And I click the search button
     Then I see "Search results" on the page header
     And I see "100 offences" text on the page
+
+  Scenario: Offence search screen - Axe core
+    # check accessibility on Add an offence screen
+    And I open the "search the offence list" link in the same tab
+
+    #Check accessibility of Search offences screen
+    And I enter "ABC123" into the "Offence code" field
+    And I enter "Title name" into the "Short title" field
+    And I enter "testing the new field" into the "Act and section" text field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I check accessibility
 
 
 

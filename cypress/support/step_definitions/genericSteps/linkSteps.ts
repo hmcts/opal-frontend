@@ -47,6 +47,9 @@ Then('I click the {string} link for offence {string}', (linkText: string, offenc
 Then('I see the {string} link for offence {string}', (linkText: string, offence: string) => {
   cy.contains('app-fines-mac-offence-details-review-offence', offence).find('a').contains(linkText).should('exist');
 });
+
 Then('I am moving to {string} tab', (linkText: string) => {
+
+Then('I open the {string} link in the same tab', (linkText: string) => {
   cy.get('a').contains(linkText).invoke('removeAttr', 'target').click();
 });
