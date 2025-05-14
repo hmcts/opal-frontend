@@ -84,61 +84,28 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
 
-  protected enforcementCourtsData$!: Observable<IOpalFinesCourtRefData>;
-  protected localJusticeAreasData$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
-  protected groupLjaAndCourtData$!: Observable<{
-    enforcementCourtsData: IOpalFinesCourtRefData;
-    localJusticeAreasData: IOpalFinesLocalJusticeAreaRefData;
-  }>;
-
-  /**
-   * Initializes the observable `enforcementCourtsData$` with court data retrieved from the Opal Fines service
-   * based on the current business unit ID. The retrieved court reference data is also assigned to the
-   * `enforcementCourtsData` property for local use. The observable completes when `ngUnsubscribe` emits.
-   *
-   * @private
-   */
-  private setupEnforcementCourtsData(): void {
-    const businessUnitId = this.finesMacStore.accountDetails().formData.fm_create_account_business_unit_id!;
-
-    this.enforcementCourtsData$ = this.opalFinesService.getCourts(businessUnitId).pipe(
-      tap((response) => {
+  private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
+    .getCourts(this.finesMacStore.getBusinessUnitId())
+    .pipe(
+      tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
       }),
       takeUntil(this.ngUnsubscribe),
     );
-  }
 
-  /**
-   * Initializes the observable `localJusticeAreasData$` by fetching local justice areas data
-   * from the `opalFinesService`. The retrieved data is assigned to the `localJusticeAreasData`
-   * property. The observable completes when `ngUnsubscribe` emits, ensuring proper cleanup.
-   *
-   * @private
-   */
-  private setupLocalJusticeAreasData(): void {
-    this.localJusticeAreasData$ = this.opalFinesService.getLocalJusticeAreas().pipe(
-      tap((response) => {
+  private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
+    .getLocalJusticeAreas()
+    .pipe(
+      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
         this.localJusticeAreasData = response.refData;
       }),
       takeUntil(this.ngUnsubscribe),
     );
-  }
 
-  /**
-   * Initializes the `groupLjaAndCourtData$` observable by combining the latest values
-   * from `enforcementCourtsData$` and `localJusticeAreasData$` using `forkJoin`.
-   * This allows consumers to access both enforcement courts and local justice areas data
-   * as a single observable object.
-   *
-   * @private
-   */
-  private setupGroupLjaAndCourtData(): void {
-    this.groupLjaAndCourtData$ = forkJoin({
-      enforcementCourtsData: this.enforcementCourtsData$,
-      localJusticeAreasData: this.localJusticeAreasData$,
-    });
-  }
+  protected groupLjaAndCourtData$ = forkJoin({
+    enforcementCourtsData: this.enforcementCourtsData$,
+    localJusticeAreasData: this.localJusticeAreasData$,
+  });
 
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
@@ -185,20 +152,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.setReviewAccountStatus();
 
     this.isReadOnly = true;
-  }
-
-  /**
-   * Initializes and prepares court and local justice area (LJA) related data.
-   *
-   * This method sequentially sets up enforcement courts data, local justice areas data,
-   * and groups the LJA and court data for further processing or display.
-   *
-   * @private
-   */
-  private getCourtAndLjaData(): void {
-    this.setupEnforcementCourtsData();
-    this.setupLocalJusticeAreasData();
-    this.setupGroupLjaAndCourtData();
   }
 
   /**
@@ -419,6 +372,5 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.reviewAccountFetchedMappedPayload();
-    this.getCourtAndLjaData();
   }
 }

@@ -403,21 +403,6 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 
-  it('should call setup methods from reviewAccountFetchedMappedPayload', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setupCourtsSpy = spyOn<any>(component, 'setupEnforcementCourtsData').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setupLJASpy = spyOn<any>(component, 'setupLocalJusticeAreasData').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setupGroupSpy = spyOn<any>(component, 'setupGroupLjaAndCourtData').and.callThrough();
-
-    component['getCourtAndLjaData']();
-
-    expect(setupCourtsSpy).toHaveBeenCalled();
-    expect(setupLJASpy).toHaveBeenCalled();
-    expect(setupGroupSpy).toHaveBeenCalled();
-  });
-
   it('should scroll to top and return null on handleRequestError', () => {
     const result = component['handleRequestError']();
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();

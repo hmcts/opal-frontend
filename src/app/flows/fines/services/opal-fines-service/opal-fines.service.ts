@@ -70,14 +70,14 @@ export class OpalFines {
    * @param business_unit - The business unit for which to retrieve the court data.
    * @returns An Observable that emits the court data for the specified business unit.
    */
-  public getCourts(business_unit: number): Observable<IOpalFinesCourtRefData> {
-    if (!this.courtRefDataCache$[business_unit]) {
-      this.courtRefDataCache$[business_unit] = this.http
-        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { business_unit } })
+  public getCourts(businessUnit: number): Observable<IOpalFinesCourtRefData> {
+    if (!this.courtRefDataCache$[businessUnit]) {
+      this.courtRefDataCache$[businessUnit] = this.http
+        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
         .pipe(shareReplay(1));
     }
 
-    return this.courtRefDataCache$[business_unit];
+    return this.courtRefDataCache$[businessUnit];
   }
 
   /**
