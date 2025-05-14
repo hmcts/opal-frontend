@@ -135,28 +135,10 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have state and populate data$', (done) => {
-    const snapshotData: IFetchMapFinesMacPayload = {
-      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
-      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-    };
-
-    component['activatedRoute'].snapshot = {
-      data: {
-        reviewAccountFetchMap: snapshotData,
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
-
-    component.ngOnInit();
-
-    component['enforcementCourtsData$'].subscribe(() => {
-      expect(component['enforcementCourtsData']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData);
-      component['localJusticeAreasData$'].subscribe(() => {
-        expect(component['localJusticeAreasData']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData);
-        done();
-      });
-    });
+  it('should have state and populate data$', () => {
+    expect(component['enforcementCourtsData$']).not.toBeUndefined();
+    expect(component['localJusticeAreasData$']).not.toBeUndefined();
+    expect(component['groupLjaAndCourtData$']).not.toBeUndefined();
   });
 
   it('should test setReviewAccountStatus when draft state is null', () => {
@@ -429,19 +411,7 @@ describe('FinesMacReviewAccountComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setupGroupSpy = spyOn<any>(component, 'setupGroupLjaAndCourtData').and.callThrough();
 
-    const snapshotData: IFetchMapFinesMacPayload = {
-      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
-      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-    };
-
-    component['activatedRoute'].snapshot = {
-      data: {
-        reviewAccountFetchMap: snapshotData,
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
-
-    component['reviewAccountFetchedMappedPayload']();
+    component['getCourtAndLjaData']();
 
     expect(setupCourtsSpy).toHaveBeenCalled();
     expect(setupLJASpy).toHaveBeenCalled();

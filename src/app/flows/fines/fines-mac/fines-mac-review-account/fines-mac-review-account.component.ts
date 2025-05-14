@@ -99,7 +99,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @private
    */
   private setupEnforcementCourtsData(): void {
-    const businessUnitId = this.finesMacStore.getBusinessUnitId();
+    const businessUnitId = this.finesMacStore.accountDetails().formData.fm_create_account_business_unit_id!;
 
     this.enforcementCourtsData$ = this.opalFinesService.getCourts(businessUnitId).pipe(
       tap((response) => {
@@ -184,11 +184,21 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     // Grab the status from the payload
     this.setReviewAccountStatus();
 
+    this.isReadOnly = true;
+  }
+
+  /**
+   * Initializes and prepares court and local justice area (LJA) related data.
+   *
+   * This method sequentially sets up enforcement courts data, local justice areas data,
+   * and groups the LJA and court data for further processing or display.
+   *
+   * @private
+   */
+  private getCourtAndLjaData(): void {
     this.setupEnforcementCourtsData();
     this.setupLocalJusticeAreasData();
     this.setupGroupLjaAndCourtData();
-
-    this.isReadOnly = true;
   }
 
   /**
@@ -409,5 +419,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.reviewAccountFetchedMappedPayload();
+    this.getCourtAndLjaData();
   }
 }
