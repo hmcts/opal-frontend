@@ -124,18 +124,14 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles the mapping and initialization of the review account payload from the activated route snapshot.
+   * Fetches and maps the review account payload from the activated route snapshot.
    *
-   * This method performs the following actions:
-   * - Retrieves the `reviewAccountFetchMap` data from the current route snapshot.
-   * - Updates the fines MAC and draft stores with the corresponding state from the payload.
-   * - Sets the review account status.
-   * - Initializes enforcement courts, local justice areas, and grouped LJA and court data.
-   * - Sets the component to read-only mode.
-   *
-   * Returns early if the route snapshot or the expected payload is not available.
+   * This method retrieves the `reviewAccountFetchMap` data from the route snapshot,
+   * updates the `finesMacState` and `finesDraftState` in the `finesService`, and sets
+   * the review account status. It also sets the component to read-only mode.
    *
    * @private
+   * @returns {void}
    */
   private reviewAccountFetchedMappedPayload(): void {
     const snapshot = this.activatedRoute.snapshot;
