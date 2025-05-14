@@ -1019,8 +1019,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-
-  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered [@PO-545, @PO-667]
+  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
     And I open the "search the offence list" link in the same tab
 
     And I see "Search offences" on the page header
@@ -1036,7 +1035,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Search results" on the page header
 
   Scenario: AC7. Back button navigation retains search field values
-    And I am moving to "search the offence list" tab
+    And I open the "search the offence list" link in the same tab
     And I see "Search offences" on the page header
 
     # Test with results found
@@ -1068,7 +1067,7 @@ Feature: Manual account creation - Offence Details
     And I see "Invalid Act" in the "Act and section" text field
 
   Scenario: AC1c-h. Search functionality behavior and requirements
-    And I am moving to "search the offence list" tab
+    And I open the "search the offence list" link in the same tab
     And I see "Search offences" on the page header
 
     # AC1b At least 1 character needed

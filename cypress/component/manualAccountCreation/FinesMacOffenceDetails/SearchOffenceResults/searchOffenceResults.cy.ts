@@ -48,8 +48,8 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
             snapshot: {
               url: [{ path: 'manual-account-creation' }],
               data: {
-                searchResults: mockSearchResults
-              }
+                searchResults: mockSearchResults,
+              },
             },
           },
         },
@@ -169,7 +169,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
     cy.get(DOM_ELEMENTS.paginationElement).contains('1');
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    
+
     cy.get(DOM_ELEMENTS.paginationText).should('exist');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
     cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS075');
@@ -182,6 +182,5 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS052');
 
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
-
   });
 });
