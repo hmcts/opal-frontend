@@ -67,17 +67,17 @@ export class OpalFines {
   /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
-   * @param businessUnit - The business unit for which to retrieve the court data.
+   * @param business_unit - The business unit for which to retrieve the court data.
    * @returns An Observable that emits the court data for the specified business unit.
    */
-  public getCourts(businessUnit: number): Observable<IOpalFinesCourtRefData> {
-    if (!this.courtRefDataCache$[businessUnit]) {
-      this.courtRefDataCache$[businessUnit] = this.http
-        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
+  public getCourts(business_unit: number): Observable<IOpalFinesCourtRefData> {
+    if (!this.courtRefDataCache$[business_unit]) {
+      this.courtRefDataCache$[business_unit] = this.http
+        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { business_unit } })
         .pipe(shareReplay(1));
     }
 
-    return this.courtRefDataCache$[businessUnit];
+    return this.courtRefDataCache$[business_unit];
   }
 
   /**
@@ -131,7 +131,7 @@ export class OpalFines {
    * @returns The pretty name of the local justice area.
    */
   public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea): string {
-    return `${localJusticeArea.name} (${localJusticeArea.lja_code})`;
+    return `${localJusticeArea.name} (${localJusticeArea.local_justice_area_id})`;
   }
 
   /**
