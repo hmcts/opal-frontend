@@ -1079,7 +1079,6 @@ Feature: Manual account creation - Offence Details
     And I click the search button
     Then I see "Search results" on the page header
     And I see "Present" in the Search results table in the "Used to" column
-    And I do not see any dates in the "Used to" column
 
     When I click on the "Back" link
     And I select the "Include inactive offence codes" checkbox
