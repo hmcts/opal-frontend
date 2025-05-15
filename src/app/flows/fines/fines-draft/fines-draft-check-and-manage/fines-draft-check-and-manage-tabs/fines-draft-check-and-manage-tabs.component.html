@@ -46,19 +46,19 @@
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
     @case ('review') {
-      <h3 class="govuk-heading-m">In review</h3>
+      <h2 class="govuk-heading-m">In review</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('rejected') {
-      <h3 class="govuk-heading-m">Rejected</h3>
+      <h2 class="govuk-heading-m">Rejected</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('approved') {
-      <h3 class="govuk-heading-m">Approved</h3>
+      <h2 class="govuk-heading-m">Approved</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('deleted') {
-      <h3 class="govuk-heading-m">Deleted</h3>
+      <h2 class="govuk-heading-m">Deleted</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
   }
