@@ -4,7 +4,7 @@ export const DOM_ELEMENTS = {
   navigationLinks: 'a.moj-sub-navigation__link.cursor-pointer',
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
-  satusHeading: 'h3.govuk-heading-m',
+  statusHeading: 'h3.govuk-heading-m',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
   defendant: 'td[id = "defendant"]',
@@ -14,4 +14,5 @@ export const DOM_ELEMENTS = {
   businessUnit: 'td[id = "businessUnit"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
+
 };
