@@ -23,7 +23,7 @@ Feature: Manual account creation - Create Draft Account
     When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
     Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-    When I enter "ACTON (820)" into the "Enforcement court" search box
+    When I enter "Aram Court (100)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -258,7 +258,7 @@ Feature: Manual account creation - Create Draft Account
     When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
     Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-    When I enter "ACTON (820)" into the "Enforcement court" search box
+    When I enter "Aram Court (100)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -425,7 +425,7 @@ Feature: Manual account creation - Create Draft Account
     When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
     Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
 
-    When I enter "ACTON (820)" into the "Enforcement court" search box
+    When I enter "Aram Court (100)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
