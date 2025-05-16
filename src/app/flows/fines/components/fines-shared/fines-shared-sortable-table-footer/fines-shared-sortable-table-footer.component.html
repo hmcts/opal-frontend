@@ -1,0 +1,13 @@
+<opal-lib-moj-sortable-table-status
+  [columnTitle]="sortedColumnTitleSignal()"
+  [sortDirection]="sortedColumnDirectionSignal()"
+/>
+
+@if (abstractTableDataSignal().length > paginatedTableDataComputed().length) {
+  <opal-lib-govuk-pagination
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="abstractTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  />
+}
