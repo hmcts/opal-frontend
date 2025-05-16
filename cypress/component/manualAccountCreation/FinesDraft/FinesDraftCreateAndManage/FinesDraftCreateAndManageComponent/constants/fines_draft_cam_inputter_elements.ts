@@ -7,6 +7,8 @@ export const DOM_ELEMENTS = {
   statusHeading: 'h3.govuk-heading-m',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
+
+  tableRow: 'table.govuk-table>tbody>tr',
   defendant: 'td[id = "defendant"]',
   dob: 'td[id = "dob"]',
   created: 'td[id = "created"]',
@@ -14,5 +16,4 @@ export const DOM_ELEMENTS = {
   businessUnit: 'td[id = "businessUnit"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
-
 };

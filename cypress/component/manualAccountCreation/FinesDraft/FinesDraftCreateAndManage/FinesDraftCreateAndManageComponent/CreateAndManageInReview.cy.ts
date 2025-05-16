@@ -12,13 +12,15 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock
 import { routes } from './constants/fines_draft_cam_inputter_routes';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
-import { interceptGetRejectedAccounts, interceptGetInReviewAccounts } from './intercepts/fines-draft-intercepts.cy';
+import {
+  interceptGetRejectedAccounts,
+  interceptGetInReviewAccounts,
+  interceptGetDeletedAccounts,
+  interceptGetApprovedAccounts,
+} from './intercepts/fines-draft-intercepts';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 
 describe('FinesDraftCheckAndManageInReviewComponent', () => {
-  let mockData: any = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
-  const dateService = new DateService();
-
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCheckAndManageTabsComponent, {
@@ -43,86 +45,107 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
     });
   };
 
-  it('should render component', () => {
+  it('(AC.1) render all the fields In review account', { tags: ['@PO-584'] }, () => {
+    const noAccountsMockData = { count: 0, summaries: [] };
+    interceptGetRejectedAccounts(200, noAccountsMockData);
+    interceptGetInReviewAccounts(200, noAccountsMockData);
+    interceptGetDeletedAccounts(200, noAccountsMockData);
+    interceptGetApprovedAccounts(200, noAccountsMockData);
+
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').should('be.focused');
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+    cy.get('p').should('exist').and('contain', 'You have no rejected accounts.');
+    cy.get(DOM_ELEMENTS.table).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
+    cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
+    cy.get(DOM_ELEMENTS.table).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+    cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+    cy.get(DOM_ELEMENTS.table).should('not.exist');
+  });
+
+  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584'] }, () => {
     const rejectedMockData = { count: 0, summaries: [] };
     const inReviewMockData = { count: 0, summaries: [] };
     interceptGetRejectedAccounts(200, rejectedMockData);
     interceptGetInReviewAccounts(200, inReviewMockData);
 
     setupComponent();
-    cy.get(DOM_ELEMENTS.app).should('exist');
+
     cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
-  });
 
-  it.only('(AC.1) render all the fields In review account', { tags: ['@PO-584'] }, () => {
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks)
-      .contains('' + NAVIGATION_LINKS[0])
-      .click();
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
-
-    for (const link of NAVIGATION_LINKS) {
-      cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
-    }
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').should('be.focused');
-    cy.get(DOM_ELEMENTS.statusHeading)
-      .should('exist')
-      .and('contain', '' + NAVIGATION_LINKS[0]);
-
-    for (const heading of TABLE_HEADINGS) {
-      cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
-
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
-      cy.get('p').should('exist').and('contain', 'You have no rejected accounts.');
-      cy.get(DOM_ELEMENTS.table).should('not.exist');
-
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
-      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
-      cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
-      cy.get(DOM_ELEMENTS.table).should('not.exist');
-
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
-      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
-      cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-      cy.get(DOM_ELEMENTS.table).should('not.exist');
-    }
-  });
-  it('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584'] }, () => {
-    setupComponent();
-    mockData = {
-      count: 0,
-      summaries: [],
-    };
-
-    //You have no accounts in review
-    cy.get(DOM_ELEMENTS.navigationLinks)
-      .contains('' + NAVIGATION_LINKS[0])
-      .click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('In review');
     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
     cy.get('p').should('exist').and('contain', 'You have no accounts in review');
     cy.get(DOM_ELEMENTS.table).should('not.exist');
   });
-  it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
+
+  it.only('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
+    const rejectedMockData = { count: 0, summaries: [] };
+    const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, inReviewMockData);
+
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist').and('contains', 'Defendant');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist').and('contains', 'Date of Birth');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist').and('contains', 'Created');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist').and('contains', 'Account type');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist').and('contains', 'Business unit');
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Defendant').should('exist');
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Date of birth').should('exist');
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Account type').should('exist');
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Business unit').should('exist');
+
+    //Check table row data in row 1
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(0)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+      });
+
+    //Check table row data in row 2
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(1)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.dob).contains('—');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+      });
   });
+  //NOTE AC4 the wording is incorrect, please check this
+  //AC4. The default ordering of accounts listed on the screen, will be by date created - descending (i.e. accounts created most recently, will be displayed at the bottom of the list)
+  //A decending order means that the most recent date will be at the top of the list, not the bottom.
+  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {});
 
   it(
-    '(AC.4)should have pagination enabled for over 25 draft accounts for In Review accounts',
+    '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
     { tags: ['@PO-584'] },
     () => {
+      const rejectedMockData = { count: 0, summaries: [] };
+      const inReviewMockData = { count: 0, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
+      interceptGetRejectedAccounts(200, rejectedMockData);
+      interceptGetInReviewAccounts(200, inReviewMockData);
+
       setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks)
-        .contains('' + NAVIGATION_LINKS[0])
-        .click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
       cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
@@ -139,7 +162,6 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-      mockData = OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK;
     },
   );
 });
