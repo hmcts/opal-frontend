@@ -26,7 +26,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends Abstrac
     this.finesMacOffenceDetailsSearchOffencesStore.setSearchOffences(form);
 
     const {
-      fm_offence_details_search_offences_act_and_section,
+      fm_offence_details_search_offences_act_section,
       fm_offence_details_search_offences_code,
       fm_offence_details_search_offences_inactive,
       fm_offence_details_search_offences_short_title,
@@ -40,7 +40,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends Abstrac
         payload: {
           code: fm_offence_details_search_offences_code,
           short_title: fm_offence_details_search_offences_short_title,
-          act_and_section: fm_offence_details_search_offences_act_and_section,
+          act_section: fm_offence_details_search_offences_act_section,
           inactive: fm_offence_details_search_offences_inactive,
         },
       },
