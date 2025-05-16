@@ -10,7 +10,7 @@ export const finesMacOffenceDetailsSearchOffencesFlowStateGuard = hasFlowStateGu
     return (
       !!searchOffences.formData.fm_offence_details_search_offences_code ||
       !!searchOffences.formData.fm_offence_details_search_offences_short_title ||
-      !!searchOffences.formData.fm_offence_details_search_offences_act_and_section
+      !!searchOffences.formData.fm_offence_details_search_offences_act_section
     );
   },
   () =>

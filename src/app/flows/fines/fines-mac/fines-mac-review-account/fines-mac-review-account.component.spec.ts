@@ -182,6 +182,16 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(component.isReadOnly).toBeTrue();
   });
 
+  it('should handle submitPayload failure', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
+    mockOpalFinesService.putDraftAddAccountPayload = jasmine
+      .createSpy('putDraftAddAccountPayload')
+      .and.returnValue(throwError(() => new Error('Something went wrong')));
+    component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    expect(handleRequestErrorSpy).toHaveBeenCalled();
+  });
+
   it('should call handleRoute with submitConfirmation on submitPayload success', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
     component['submitPayload']();
@@ -344,6 +354,16 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(submitPayloadSpy).toHaveBeenCalled();
   });
 
+  it('should navigate on handleRoute with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
+
+    component.handleRoute('test', true, event);
+
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
   it('should navigate on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -381,5 +401,11 @@ describe('FinesMacReviewAccountComponent', () => {
 
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
+  });
+
+  it('should scroll to top and return null on handleRequestError', () => {
+    const result = component['handleRequestError']();
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(result).toBeNull();
   });
 });

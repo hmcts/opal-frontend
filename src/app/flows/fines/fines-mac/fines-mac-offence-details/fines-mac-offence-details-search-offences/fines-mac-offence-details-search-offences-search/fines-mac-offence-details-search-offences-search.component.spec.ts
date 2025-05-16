@@ -62,7 +62,7 @@ describe('FinesMacOffenceDetailsSearchOffencesSearchComponent', () => {
           payload: {
             code: formSubmit.formData.fm_offence_details_search_offences_code,
             short_title: formSubmit.formData.fm_offence_details_search_offences_short_title,
-            act_and_section: formSubmit.formData.fm_offence_details_search_offences_act_and_section,
+            act_section: formSubmit.formData.fm_offence_details_search_offences_act_section,
             inactive: formSubmit.formData.fm_offence_details_search_offences_inactive,
           },
         },

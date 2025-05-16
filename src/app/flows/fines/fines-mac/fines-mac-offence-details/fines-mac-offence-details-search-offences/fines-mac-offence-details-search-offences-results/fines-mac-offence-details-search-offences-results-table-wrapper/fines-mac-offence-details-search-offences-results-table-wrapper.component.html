@@ -59,12 +59,14 @@
           {{ row['Code'] }}
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="utilsService.copyToClipboard(row['Code'])"
-            (keyup.enter)="utilsService.copyToClipboard(row['Code'])"
+            #codeLink
+            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
+            (keyup.enter)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
             tabindex="0"
           >
-            Copy code
+            {{ COPY_CODE_TO_CLIPBOARD }}
           </a>
+          <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
         </td>
         <td opal-lib-moj-sortable-table-row-data id="shortTitle">
           {{ row['Short title'] }}
