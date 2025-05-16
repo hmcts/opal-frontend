@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SharedSortableTableFooterComponent } from './shared-sortable-table-footer.component';
+import { FinesSharedSortableTableFooterComponent } from './fines-shared-sortable-table-footer.component';
 
 describe('SharedSortableTableFooterComponent', () => {
-  let component: SharedSortableTableFooterComponent;
-  let fixture: ComponentFixture<SharedSortableTableFooterComponent>;
+  let component: FinesSharedSortableTableFooterComponent;
+  let fixture: ComponentFixture<FinesSharedSortableTableFooterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedSortableTableFooterComponent],
+      imports: [FinesSharedSortableTableFooterComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SharedSortableTableFooterComponent);
+    fixture = TestBed.createComponent(FinesSharedSortableTableFooterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -22,7 +22,8 @@ describe('SharedSortableTableFooterComponent', () => {
 
   it('should call super.onPageChange and emit changePage on page change', () => {
     const emitSpy = spyOn(component.changePage, 'emit');
-    const superSpy = spyOn<any>(SharedSortableTableFooterComponent.prototype, 'onPageChange').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const superSpy = spyOn<any>(FinesSharedSortableTableFooterComponent.prototype, 'onPageChange').and.callThrough();
 
     component.onPageChange(2);
 

@@ -5,12 +5,12 @@ import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 
 @Component({
-  selector: 'app-shared-sortable-table-footer',
+  selector: 'app-fines-shared-sortable-table-footer',
   imports: [CommonModule, MojSortableTableStatusComponent, GovukPaginationComponent],
-  templateUrl: './shared-sortable-table-footer.component.html',
+  templateUrl: './fines-shared-sortable-table-footer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SharedSortableTableFooterComponent extends AbstractSortableTablePaginationComponent {
+export class FinesSharedSortableTableFooterComponent extends AbstractSortableTablePaginationComponent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input({ required: true }) set abstractTableData(abstractTableData: any[]) {
     this.abstractTableDataSignal.set(abstractTableData);

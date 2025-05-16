@@ -16,7 +16,7 @@ import {
   COPIED_CODE_TO_CLIPBOARD,
   COPY_CODE_TO_CLIPBOARD_TIMEOUT,
 } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
-import { SharedSortableTableFooterComponent } from '../../../../../../../components/shared/shared-sortable-table-footer/shared-sortable-table-footer.component';
+import { FinesSharedSortableTableFooterComponent } from '../../../../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
@@ -28,7 +28,7 @@ import { SharedSortableTableFooterComponent } from '../../../../../../../compone
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
     DateFormatPipe,
-    SharedSortableTableFooterComponent,
+    FinesSharedSortableTableFooterComponent,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-results-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
