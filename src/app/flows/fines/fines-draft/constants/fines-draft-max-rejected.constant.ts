@@ -1,0 +1,1 @@
+export const FINES_DRAFT_MAX_REJECTED = 99;

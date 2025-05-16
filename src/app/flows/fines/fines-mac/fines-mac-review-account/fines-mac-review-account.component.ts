@@ -316,12 +316,17 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
-        false,
-        undefined,
-        this.finesDraftStore.fragment(),
-      );
+      const path = this.finesDraftStore.viewAllAccounts()
+        ? `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.viewAllRejected}`
+        : `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`;
+
+      // return true when going back to view-all-accounts
+      // and false when going back to tabbed fragment
+      if (this.finesDraftStore.viewAllAccounts()) {
+        this.handleRoute(path, true);
+      } else {
+        this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
+      }
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);
     }

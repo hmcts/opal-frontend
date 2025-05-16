@@ -5,24 +5,41 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
+import { FinesDraftService } from '../../services/fines-draft.service';
+import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 
 describe('FinesDraftViewAllRejectedComponent', () => {
   let component: FinesDraftViewAllRejectedComponent;
   let fixture: ComponentFixture<FinesDraftViewAllRejectedComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let finesDraftStore: FinesDraftStoreType;
+  let finesDraftService: jasmine.SpyObj<FinesDraftService>;
 
   beforeEach(async () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+
+    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
+      'onDefendantClick',
+      'populateTableData',
+    ]);
+    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesDraftViewAllRejectedComponent, GovukBackLinkComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: FinesDraftService, useValue: finesDraftService },
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: { snapshot: { url: ['check-and-manage'] } },
+            snapshot: {
+              url: ['check-and-manage'],
+              data: {
+                allRejectedAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+              },
+              fragment: 'rejected',
+            },
           },
         },
       ],
@@ -48,5 +65,12 @@ describe('FinesDraftViewAllRejectedComponent', () => {
       relativeTo: component['activatedRoute'].parent,
       fragment: finesDraftStore.fragment(),
     });
+  });
+
+  it('should call viewAllAccounts and amend then call onDefendantClick with PATH_REVIEW_ACCOUNT', () => {
+    component.onDefendantClick(123);
+    expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
+    expect(finesDraftStore.amend()).toBeFalsy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, component.PATH_REVIEW_ACCOUNT);
   });
 });
