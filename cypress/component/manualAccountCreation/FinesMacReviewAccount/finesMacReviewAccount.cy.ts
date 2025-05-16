@@ -163,10 +163,9 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1a)should render court details and offence details for all defendant types',
     { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657'] },
     () => {
+      setupComponent();
       cy.wait('@getOffenceByCjsCode');
       cy.wait('@getCourts');
-      setupComponent();
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = null;
 
       cy.get(DOM_ELEMENTS.originatorName).should('exist');
       cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');
