@@ -86,18 +86,10 @@
       </tr>
     }
   </ng-container>
-  <ng-container status>
-    <opal-lib-moj-sortable-table-status
-      [columnTitle]="sortedColumnTitleSignal()"
-      [sortDirection]="sortedColumnDirectionSignal()"
-    ></opal-lib-moj-sortable-table-status>
-  </ng-container>
 </opal-lib-moj-sortable-table>
-@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
-  <opal-lib-govuk-pagination
-    [currentPage]="currentPageSignal()"
-    [limit]="itemsPerPageSignal()"
-    [total]="abstractTableDataSignal().length"
-    (changePage)="onPageChange($event)"
-  ></opal-lib-govuk-pagination>
-}
+<app-shared-sortable-table-footer
+  [abstractTableData]="abstractTableDataSignal()"
+  [currentPage]="currentPageSignal()"
+  [itemsPerPage]="itemsPerPageSignal()"
+  (changePage)="onPageChange($event)"
+/>

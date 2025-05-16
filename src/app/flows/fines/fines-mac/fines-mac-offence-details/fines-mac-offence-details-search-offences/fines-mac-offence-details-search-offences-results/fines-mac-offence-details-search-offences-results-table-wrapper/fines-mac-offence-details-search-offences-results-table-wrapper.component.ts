@@ -1,13 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, Input, signal, Signal } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
-import { GovukPaginationComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-pagination';
 import {
   MojSortableTableComponent,
   MojSortableTableHeaderComponent,
   MojSortableTableRowComponent,
   MojSortableTableRowDataComponent,
-  MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData } from './interfaces/fines-mac-offence-details-search-offences-results-table-wrapper-table-data.interface';
@@ -18,6 +16,7 @@ import {
   COPIED_CODE_TO_CLIPBOARD,
   COPY_CODE_TO_CLIPBOARD_TIMEOUT,
 } from './constants/fines-mac-offence-details-search-offences-results-table-wrapper-link-defaults.constant';
+import { SharedSortableTableFooterComponent } from '../../../../../../../components/shared/shared-sortable-table-footer/shared-sortable-table-footer.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
@@ -28,9 +27,8 @@ import {
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
-    MojSortableTableStatusComponent,
-    GovukPaginationComponent,
     DateFormatPipe,
+    SharedSortableTableFooterComponent,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-results-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
