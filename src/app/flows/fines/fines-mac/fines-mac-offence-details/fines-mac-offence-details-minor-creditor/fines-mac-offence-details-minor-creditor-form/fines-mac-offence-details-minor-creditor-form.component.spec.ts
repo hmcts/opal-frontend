@@ -44,13 +44,22 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set individual validators for forenames and surname controls', () => {
+  it('should set individual validators for title, forenames and surname controls', () => {
+    const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
     // Call the method to set validators
     component['setIndividualValidators']();
     fixture.detectChanges();
+
+    // Test required validator on forenames
+    titleControl.setValue('');
+    expect(titleControl.errors?.['required']).toBeTruthy();
+
+    // Test required validator on forenames
+    forenamesControl.setValue('');
+    expect(forenamesControl.errors?.['required']).toBeTruthy();
 
     // Test max length validator on forenames
     forenamesControl.setValue('A very long name exceeding twenty characters');
@@ -283,6 +292,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   it('should reset and set individual validators when creditorType is individual', () => {
     const creditorTypeControl = component.form.controls['fm_offence_details_minor_creditor_creditor_type'];
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
+    const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
@@ -294,6 +304,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Spy on updateValueAndValidity for form controls
     const companyNameUpdateSpy = spyOn(companyNameControl, 'updateValueAndValidity').and.callThrough();
+    const titleUpdateSpy = spyOn(titleControl, 'updateValueAndValidity').and.callThrough();
     const forenamesUpdateSpy = spyOn(forenamesControl, 'updateValueAndValidity').and.callThrough();
     const surnameUpdateSpy = spyOn(surnameControl, 'updateValueAndValidity').and.callThrough();
 
@@ -312,6 +323,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Check that updateValueAndValidity was called for the form controls
     expect(companyNameUpdateSpy).toHaveBeenCalled();
+    expect(titleUpdateSpy).toHaveBeenCalled();
     expect(forenamesUpdateSpy).toHaveBeenCalled();
     expect(surnameUpdateSpy).toHaveBeenCalled();
   });
@@ -319,6 +331,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   it('should reset and set company validators when creditorType is company', () => {
     const creditorTypeControl = component.form.controls['fm_offence_details_minor_creditor_creditor_type'];
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
+    const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
@@ -330,6 +343,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Spy on updateValueAndValidity for form controls
     const companyNameUpdateSpy = spyOn(companyNameControl, 'updateValueAndValidity').and.callThrough();
+    const titleUpdateSpy = spyOn(titleControl, 'updateValueAndValidity').and.callThrough();
     const forenamesUpdateSpy = spyOn(forenamesControl, 'updateValueAndValidity').and.callThrough();
     const surnameUpdateSpy = spyOn(surnameControl, 'updateValueAndValidity').and.callThrough();
 
@@ -348,6 +362,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Check that updateValueAndValidity was called for the form controls
     expect(companyNameUpdateSpy).toHaveBeenCalled();
+    expect(titleUpdateSpy).toHaveBeenCalled();
     expect(forenamesUpdateSpy).toHaveBeenCalled();
     expect(surnameUpdateSpy).toHaveBeenCalled();
   });

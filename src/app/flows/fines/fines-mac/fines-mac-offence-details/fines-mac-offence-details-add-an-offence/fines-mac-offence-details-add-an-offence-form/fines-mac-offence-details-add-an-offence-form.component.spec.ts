@@ -276,41 +276,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
 
-  it('should populate offence details draft when navigating to search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
-  it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
-    component['initialAddAnOffenceDetailsSetup']();
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
-  it('should populate offence details draft when navigating to search offences when draft is populated - search offences', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component['initialAddAnOffenceDetailsSetup']();
-
-    component.goToSearchOffences();
-
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
   it('should go to minor creditor', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -508,11 +473,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const event = jasmine.createSpyObj('event', ['preventDefault']);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'calculateBalanceRemaining');
+    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as jasmine.Spy;
 
     component.handleAddAnOffenceSubmit(event);
 
     expect(component['calculateBalanceRemaining']).toHaveBeenCalled();
-    expect(component.handleFormSubmit).toHaveBeenCalledWith(event);
+    expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
   });
 
   it('should initialize the form and setup listeners', () => {
@@ -729,5 +695,33 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.minorCreditors).toEqual({});
     expect(component.minorCreditorsHidden).toEqual({});
+  });
+
+  it('should set minorCreditorMissing error when needsCreditor is true, selectedCreditor is minor, and no minor creditor exists', () => {
+    const formArray = new FormArray([
+      new FormGroup({
+        fm_offence_details_needs_creditor_0: new FormControl(true),
+        fm_offence_details_creditor_0: new FormControl('minor'),
+      }),
+    ]);
+    component.minorCreditors = {};
+    component.form.setControl('fm_offence_details_impositions', formArray);
+
+    component['checkImpositionMinorCreditors']();
+
+    const creditorControl = formArray.at(0).get('fm_offence_details_creditor_0');
+    expect(creditorControl?.errors).toEqual({ minorCreditorMissing: true });
+  });
+
+  it('should call checkImpositionMinorCreditors and super.handleFormSubmit on handleFormSubmit', () => {
+    const event = new SubmitEvent('submit');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const checkImpositionSpy = spyOn(component as any, 'checkImpositionMinorCreditors');
+    const superHandleFormSubmitSpy = AbstractFormArrayBaseComponent.prototype.handleFormSubmit as jasmine.Spy;
+
+    component.handleFormSubmit(event);
+
+    expect(checkImpositionSpy).toHaveBeenCalled();
+    expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
   });
 });
