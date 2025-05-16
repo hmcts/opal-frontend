@@ -69,7 +69,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
       //This creates the component with invalid offence code pre-loaded in the form
       offenceSearchFormData.formData.fm_offence_details_search_offences_code = 'a'.repeat(10);
       offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = 'a'.repeat(121);
-      offenceSearchFormData.formData.fm_offence_details_search_offences_act_and_section = 'a'.repeat(4001);
+      offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = 'a'.repeat(4001);
       setupComponent(mockFormSubmit);
 
       cy.contains('button', 'Search').click();
@@ -92,7 +92,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
         cy.then(() => {
           offenceSearchFormData.formData.fm_offence_details_search_offences_code = input;
           offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = input;
-          offenceSearchFormData.formData.fm_offence_details_search_offences_act_and_section = input;
+          offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = input;
           setupComponent(mockFormSubmit);
           cy.contains('button', 'Search').click();
 

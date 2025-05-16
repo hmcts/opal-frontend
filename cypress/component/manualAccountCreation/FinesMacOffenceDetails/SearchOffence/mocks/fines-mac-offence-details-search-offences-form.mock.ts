@@ -5,7 +5,7 @@ export const SEARCH_OFFENCES_DEFAULT_FORM_MOCK: IFinesMacOffenceDetailsSearchOff
   formData: {
     fm_offence_details_search_offences_code: null,
     fm_offence_details_search_offences_short_title: null,
-    fm_offence_details_search_offences_act_and_section: null,
+    fm_offence_details_search_offences_act_section: null,
     fm_offence_details_search_offences_inactive: false,
   },
   nestedFlow: false,

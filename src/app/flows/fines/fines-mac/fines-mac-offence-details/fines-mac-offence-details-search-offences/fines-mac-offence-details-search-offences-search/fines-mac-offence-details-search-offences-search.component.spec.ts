@@ -58,6 +58,14 @@ describe('FinesMacOffenceDetailsSearchOffencesSearchComponent', () => {
       [FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.children.searchOffencesResults],
       {
         relativeTo: component['activatedRoute'].parent,
+        state: {
+          payload: {
+            code: formSubmit.formData.fm_offence_details_search_offences_code,
+            short_title: formSubmit.formData.fm_offence_details_search_offences_short_title,
+            act_section: formSubmit.formData.fm_offence_details_search_offences_act_section,
+            inactive: formSubmit.formData.fm_offence_details_search_offences_inactive,
+          },
+        },
       },
     );
   });

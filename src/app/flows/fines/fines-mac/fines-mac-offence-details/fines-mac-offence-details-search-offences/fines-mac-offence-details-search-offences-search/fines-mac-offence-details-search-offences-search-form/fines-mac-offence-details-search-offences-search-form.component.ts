@@ -46,7 +46,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
    *   validated to allow only alphabetical text.
    * - `fm_offence_details_search_offences_short_title`: A text field with a maximum length of 120 characters,
    *   validated to allow only alphabetical text.
-   * - `fm_offence_details_search_offences_act_and_section`: A text field with a maximum length of 4000 characters,
+   * - `fm_offence_details_search_offences_act_section`: A text field with a maximum length of 4000 characters,
    *   validated to allow only alphabetical text.
    * - `fm_offence_details_search_offences_inactive`: A boolean field initialized to `false`.
    *
@@ -64,7 +64,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
         alphabeticalTextValidator(),
         specialCharactersValidator(),
       ]),
-      fm_offence_details_search_offences_act_and_section: new FormControl(null, [
+      fm_offence_details_search_offences_act_section: new FormControl(null, [
         Validators.maxLength(4000),
         alphabeticalTextValidator(),
         specialCharactersValidator(),

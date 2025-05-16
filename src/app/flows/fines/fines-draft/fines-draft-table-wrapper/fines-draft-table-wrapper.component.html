@@ -1,9 +1,9 @@
-@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
-  <strong
-    >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
-  </strong>
-}
 <opal-lib-moj-sortable-table>
+  @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+    <ng-container caption>
+      Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
+    </ng-container>
+  }
   <ng-container head>
     @if (isApprovedTab) {
       <th

@@ -8,13 +8,13 @@ export const DOM_ELEMENTS = {
   //input labels
   offenceCodeLabel: 'label[for = "fm_offence_details_search_offences_code"]',
   shortTitleLabel: 'label[for = "fm_offence_details_search_offences_short_title"]',
-  actAndSectionLabel: 'label[for = "fm_offence_details_search_offences_act_and_section"]',
+  actAndSectionLabel: 'label[for = "fm_offence_details_search_offences_act_section"]',
   inactiveLabel: 'label[for = "fm_offence_details_search_offences_inactive"]',
 
   //input fields
   offenceCodeInput: 'input[id = "fm_offence_details_search_offences_code"]',
   shortTitleInput: 'input[id = "fm_offence_details_search_offences_short_title"]',
-  actAndSectionInput: 'textarea[id = "fm_offence_details_search_offences_act_and_section"]',
+  actAndSectionInput: 'textarea[id = "fm_offence_details_search_offences_act_section"]',
   inactiveInput: 'input[id = "fm_offence_details_search_offences_inactive"]',
 
   //buttons

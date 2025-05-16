@@ -25,7 +25,26 @@ export class FinesMacOffenceDetailsSearchOffencesSearchComponent extends Abstrac
   public handleSearchOffencesSubmit(form: IFinesMacOffenceDetailsSearchOffencesForm): void {
     this.finesMacOffenceDetailsSearchOffencesStore.setSearchOffences(form);
 
-    this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.children.searchOffencesResults);
+    const {
+      fm_offence_details_search_offences_act_section,
+      fm_offence_details_search_offences_code,
+      fm_offence_details_search_offences_inactive,
+      fm_offence_details_search_offences_short_title,
+    } = form.formData;
+
+    this.routerNavigate(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.children.searchOffencesResults,
+      undefined,
+      undefined,
+      {
+        payload: {
+          code: fm_offence_details_search_offences_code,
+          short_title: fm_offence_details_search_offences_short_title,
+          act_section: fm_offence_details_search_offences_act_section,
+          inactive: fm_offence_details_search_offences_inactive,
+        },
+      },
+    );
   }
 
   /**
