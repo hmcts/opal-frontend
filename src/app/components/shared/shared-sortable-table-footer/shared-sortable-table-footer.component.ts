@@ -26,8 +26,14 @@ export class SharedSortableTableFooterComponent extends AbstractSortableTablePag
 
   @Output() changePage = new EventEmitter<number>();
 
+  /**
+   * Handles the page change event by invoking the parent class's `onPageChange` method
+   * and emitting the `changePage` event with the new page number.
+   *
+   * @param newPage - The number of the new page to navigate to.
+   */
   public override onPageChange(newPage: number): void {
-    super.onPageChange(newPage); // Keep internal state updates
-    this.changePage.emit(newPage); // Let parent optionally react
+    super.onPageChange(newPage);
+    this.changePage.emit(newPage);
   }
 }

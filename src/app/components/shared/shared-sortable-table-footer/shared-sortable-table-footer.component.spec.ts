@@ -19,4 +19,14 @@ describe('SharedSortableTableFooterComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call super.onPageChange and emit changePage on page change', () => {
+    const emitSpy = spyOn(component.changePage, 'emit');
+    const superSpy = spyOn<any>(SharedSortableTableFooterComponent.prototype, 'onPageChange').and.callThrough();
+
+    component.onPageChange(2);
+
+    expect(superSpy).toHaveBeenCalledWith(2);
+    expect(emitSpy).toHaveBeenCalledWith(2);
+  });
 });
