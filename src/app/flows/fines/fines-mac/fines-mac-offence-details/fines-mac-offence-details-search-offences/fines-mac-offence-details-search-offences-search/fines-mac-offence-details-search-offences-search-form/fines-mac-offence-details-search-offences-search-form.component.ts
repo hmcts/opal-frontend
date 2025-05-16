@@ -23,6 +23,7 @@ import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validato
     GovukTextInputComponent,
     GovukCheckboxesItemComponent,
     GovukErrorSummaryComponent,
+    CapitalisationDirective,
   ],
   templateUrl: './fines-mac-offence-details-search-offences-search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
