@@ -13,6 +13,7 @@ import { routes } from './constants/fines_draft_cam_inputter_routes';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
+import { mock } from 'node:test';
 
 describe('FinesDraftCheckAndManageTabsComponent', () => {
   let mockData: any = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
@@ -71,9 +72,9 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('(AC.3,AC.4)should show summary table with correct data for In review accounts', { tags: ['@PO-584'] }, () => {
+  it('(AC.1)should show summary table with correct data for In review accounts', { tags: ['@PO-584'] }, () => {
     setupComponent();
-    setupComponent();
+
     cy.get(DOM_ELEMENTS.navigationLinks)
       .contains('' + NAVIGATION_LINKS[0])
       .click();
@@ -83,7 +84,8 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
     }
 
-    cy.get(DOM_ELEMENTS.satusHeading)
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').should('be.focused');
+    cy.get(DOM_ELEMENTS.statusHeading)
       .should('exist')
       .and('contain', '' + NAVIGATION_LINKS[0]);
 
@@ -112,6 +114,46 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
     cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
     mockData = OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK;
+  });
+  it(
+    ' AC.1bi The Rejected, Approved, Deleted tabs will display blank screens when displayed',
+    { tags: '@PO-584' },
+    () => {
+      //AC.1b
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+      cy.get('p').should('exist').and('contain', 'You have no rejected accounts.');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
+      cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+      cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
+
+  it.only('AC.2 When user has not associated accounts, that are in review', { tags: ['@PO-584'] }, () => {
+    setupComponent();
+    mockData = {
+      count: 0,
+      summaries: [],
+    };
+    mockData.count = 0;
+    mockData.summaries = [];
+
+    //You have no accounts in review
+    cy.get(DOM_ELEMENTS.navigationLinks)
+      .contains('' + NAVIGATION_LINKS[0])
+      .click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review');
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
+    cy.get('p').should('exist').and('contain', 'You have no accounts in review');
+    cy.get(DOM_ELEMENTS.table).should('not.exist');
   });
 
   it(
@@ -177,7 +219,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
     }
 
-    cy.get(DOM_ELEMENTS.satusHeading)
+    cy.get(DOM_ELEMENTS.statusHeading)
       .should('exist')
       .and('contain', '' + NAVIGATION_LINKS[1]);
 
@@ -271,7 +313,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
     }
 
-    cy.get(DOM_ELEMENTS.satusHeading)
+    cy.get(DOM_ELEMENTS.statusHeading)
       .should('exist')
       .and('contain', '' + NAVIGATION_LINKS[2]);
 
@@ -365,7 +407,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
     }
 
-    cy.get(DOM_ELEMENTS.satusHeading)
+    cy.get(DOM_ELEMENTS.statusHeading)
       .should('exist')
       .and('contain', '' + NAVIGATION_LINKS[3]);
 
@@ -477,13 +519,13 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
   });
 
-  it(
+  it.only(
     '(AC.2) should show empty value statement for In Review status when no accounts have been submitted/resubmitted',
     { tags: ['@PO-584'] },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
-      cy.get(DOM_ELEMENTS.satusHeading).should('exist').and('contain', 'In review');
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
       cy.get('p').should('exist').and('contain', 'You have no accounts in review.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
       mockData = {
@@ -499,7 +541,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-      cy.get(DOM_ELEMENTS.satusHeading).should('exist').and('contain', 'Rejected');
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
       cy.get('p').should('exist').and('contain', 'You have no rejected accounts.');
       cy.get('p').should('exist').and('contain', 'To resubmit accounts for other team members, you can');
       cy.get('a.govuk-link').should('exist').and('contain', 'view all rejected accounts');
@@ -518,7 +560,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
-      cy.get(DOM_ELEMENTS.satusHeading).should('exist').and('contain', 'Approved');
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
       mockData = {
@@ -528,15 +570,16 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     },
   );
 
-  it(
-    '(AC.1)should show empty value statement for Deleted status when no accounts have been Deleted',
-    { tags: ['@PO-584'] },
-    () => {
-      setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
-      cy.get(DOM_ELEMENTS.satusHeading).should('exist').and('contain', 'Deleted');
-      cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-      cy.get(DOM_ELEMENTS.table).should('not.exist');
-    },
-  );
+  // covered this as part of PO-584 AC.1
+  // it.only(
+  //   '(AC.1)should show empty value statement for Deleted status when no accounts have been Deleted',
+  //   { tags: ['@PO-584'] },
+  //   () => {
+  //     setupComponent();
+  //     cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+  //     cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+  //     cy.get(DOM_ELEMENTS.table).should('not.exist');
+  //   },
+  // );
 });
