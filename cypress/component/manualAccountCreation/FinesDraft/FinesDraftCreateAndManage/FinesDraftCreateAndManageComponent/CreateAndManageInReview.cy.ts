@@ -92,7 +92,7 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
     cy.get(DOM_ELEMENTS.table).should('not.exist');
   });
 
-  it.only('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
+  it('AC.3 verify the table of headers in review tab', { tags: ['@PO-584'] }, () => {
     const rejectedMockData = { count: 0, summaries: [] };
     const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
     interceptGetRejectedAccounts(200, rejectedMockData);
@@ -133,7 +133,48 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
   //NOTE AC4 the wording is incorrect, please check this
   //AC4. The default ordering of accounts listed on the screen, will be by date created - descending (i.e. accounts created most recently, will be displayed at the bottom of the list)
   //A decending order means that the most recent date will be at the top of the list, not the bottom.
-  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {});
+  it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
+    const rejectedMockData = { count: 0, summaries: [] };
+    const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, inReviewMockData);
+
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'descending');
+
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(0)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
+      });
+
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(1)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+      });
+
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
+    cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
+
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(0)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+      });
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(1)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
+      });
+  });
 
   it(
     '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
