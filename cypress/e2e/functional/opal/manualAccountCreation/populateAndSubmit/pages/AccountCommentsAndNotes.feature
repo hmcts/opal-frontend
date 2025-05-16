@@ -76,7 +76,7 @@ Feature: Manual account creation - Account Comments and Notes
     Then I click on the "Court details" link
     And I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "West London VPFPO" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 

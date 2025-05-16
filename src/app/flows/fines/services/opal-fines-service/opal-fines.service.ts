@@ -134,7 +134,7 @@ export class OpalFines {
    * @returns The pretty name of the local justice area.
    */
   public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea): string {
-    return `${localJusticeArea.name} (${localJusticeArea.lja_code})`;
+    return `${localJusticeArea.name} (${localJusticeArea.local_justice_area_id})`;
   }
 
   /**
