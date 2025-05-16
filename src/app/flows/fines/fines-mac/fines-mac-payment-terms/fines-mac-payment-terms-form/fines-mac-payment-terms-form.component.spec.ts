@@ -468,6 +468,23 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component.form.get('fm_payment_terms_collection_order_date')!.value).toBe(component.today);
   });
 
+  it('should set collection order date when make collection order today is false', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
+    component.today = '31/08/2024';
+    component['addCollectionOrderFormControls']();
+    component['hasCollectionOrderListener']();
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+    hasCollectionOrderControl.setValue(false);
+
+    const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
+    makeCollectionOrderToday.setValue(false);
+
+    component['setCollectionOrderDate']();
+
+    expect(component.form.get('fm_payment_terms_collection_order_date')!.value).toBeNull();
+  });
+
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);

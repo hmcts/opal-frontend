@@ -26,6 +26,9 @@ export const finesMacPayloadMapAccountAccountNotesPayload = (
         if (account_note_serial === 2) {
           mappedFinesMacState.accountCommentsNotes.formData.fm_account_comments_notes_notes = account_note_text;
         }
+        if (account_note_serial === 1) {
+          mappedFinesMacState.accountCommentsNotes.formData.fm_account_comments_notes_system_notes = account_note_text;
+        }
         break;
     }
   });

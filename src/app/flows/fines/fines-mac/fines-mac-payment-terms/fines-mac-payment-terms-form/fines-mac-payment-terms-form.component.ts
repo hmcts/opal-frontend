@@ -526,6 +526,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
     if (makeCollectionOrderTodayControl?.value === true) {
       collectionOrderDateControl?.setValue(this.today);
+    } else if (makeCollectionOrderTodayControl?.value === false) {
+      collectionOrderDateControl?.setValue(null);
     }
   }
 

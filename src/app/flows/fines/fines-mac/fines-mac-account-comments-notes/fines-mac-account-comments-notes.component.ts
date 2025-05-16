@@ -23,6 +23,9 @@ export class FinesMacAccountCommentsNotesComponent extends AbstractFormParentBas
    * @returns void
    */
   public handleAccountCommentsNoteSubmit(form: IFinesMacAccountCommentsNotesForm): void {
+    // Add system-generated note if applicable
+    form.formData.fm_account_comments_notes_system_notes =
+      this.finesMacStore.accountCommentsNotes().formData.fm_account_comments_notes_system_notes;
     this.finesMacStore.setAccountCommentsNotes(form);
 
     // Navigate to the next route
