@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, Observable, of } from 'rxjs';
-import { finesDraftCheckAndManageRejectedCountResolver } from './fines-draft-check-and-manage-rejected-count.resolver';
+import { finesDraftCreateAndManageRejectedCountResolver } from './fines-draft-create-and-manage-rejected-count.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
@@ -9,9 +9,9 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-servi
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, RouterStateSnapshot } from '@angular/router';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 
-describe('finesDraftCheckAndManageRejectedCountResolver', () => {
+describe('finesDraftCreateAndManageRejectedCountResolver', () => {
   const executeResolver: ResolveFn<number> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => finesDraftCheckAndManageRejectedCountResolver(...resolverParameters));
+    TestBed.runInInjectionContext(() => finesDraftCreateAndManageRejectedCountResolver(...resolverParameters));
 
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
   let globalStoreMock: GlobalStoreType;

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
@@ -12,13 +12,13 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 @Component({
-  selector: 'app-fines-draft-view-all-rejected',
+  selector: 'app-fines-draft-create-and-manage-view-all-rejected',
   standalone: true,
   imports: [GovukBackLinkComponent, FinesDraftTableWrapperComponent],
-  templateUrl: './fines-draft-view-all-rejected.component.html',
+  templateUrl: './fines-draft-create-and-manage-view-all-rejected.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftViewAllRejectedComponent implements OnInit {
+export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesDraftStore = inject(FinesDraftStore);
@@ -43,7 +43,7 @@ export class FinesDraftViewAllRejectedComponent implements OnInit {
    * @returns {void}
    */
   public navigateBack(): void {
-    this.router.navigate([`${FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs}`], {
+    this.router.navigate([`${FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs}`], {
       relativeTo: this.activatedRoute.parent,
       fragment: this.finesDraftStore.fragment(),
     });

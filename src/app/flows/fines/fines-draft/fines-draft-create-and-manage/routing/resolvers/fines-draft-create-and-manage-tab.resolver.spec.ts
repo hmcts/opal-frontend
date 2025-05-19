@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, Observable, of } from 'rxjs';
-import { finesDraftCheckAndManageTabResolver } from './fines-draft-check-and-manage-tab.resolver';
+import { finesDraftCreateAndManageTabResolver } from './fines-draft-create-and-manage-tab.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
@@ -9,10 +9,10 @@ import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 
-describe('finesDraftCheckAndManageTabResolver', () => {
+describe('finesDraftCreateAndManageTabResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => finesDraftCheckAndManageTabResolver(...resolverParameters));
+    TestBed.runInInjectionContext(() => finesDraftCreateAndManageTabResolver(...resolverParameters));
 
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
   let globalStoreMock: GlobalStoreType;

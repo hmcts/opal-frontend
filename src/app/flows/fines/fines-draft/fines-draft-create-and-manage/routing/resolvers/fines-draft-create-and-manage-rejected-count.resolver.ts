@@ -5,7 +5,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
-export const finesDraftCheckAndManageRejectedCountResolver: ResolveFn<number> = () => {
+export const finesDraftCreateAndManageRejectedCountResolver: ResolveFn<number> = () => {
   const opalFinesService = inject(OpalFines);
   const globalStore = inject(GlobalStore);
 

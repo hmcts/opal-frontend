@@ -6,7 +6,7 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
-export const finesDraftCheckAndManageTabResolver: ResolveFn<IOpalFinesDraftAccountsResponse> = (
+export const finesDraftCreateAndManageTabResolver: ResolveFn<IOpalFinesDraftAccountsResponse> = (
   route: ActivatedRouteSnapshot,
 ) => {
   const opalFinesService = inject(OpalFines);
