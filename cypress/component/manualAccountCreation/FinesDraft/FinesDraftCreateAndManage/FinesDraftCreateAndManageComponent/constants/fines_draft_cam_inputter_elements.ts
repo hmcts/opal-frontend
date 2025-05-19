@@ -16,4 +16,5 @@ export const DOM_ELEMENTS = {
   businessUnit: 'td[id = "businessUnit"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
+  rejectedAccounts: 'a.govuk-link'
 };

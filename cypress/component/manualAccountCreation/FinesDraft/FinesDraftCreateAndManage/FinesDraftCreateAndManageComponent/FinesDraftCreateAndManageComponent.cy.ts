@@ -519,7 +519,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
   });
 
-  it.only(
+  it(
     '(AC.2) should show empty value statement for In Review status when no accounts have been submitted/resubmitted',
     { tags: ['@PO-584'] },
     () => {

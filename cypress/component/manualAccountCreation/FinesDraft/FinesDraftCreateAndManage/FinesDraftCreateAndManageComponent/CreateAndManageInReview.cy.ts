@@ -132,7 +132,7 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
   });
   //NOTE AC4 the wording is incorrect, please check this
   //AC4. The default ordering of accounts listed on the screen, will be by date created - descending (i.e. accounts created most recently, will be displayed at the bottom of the list)
-  //A decending order means that the most recent date will be at the top of the list, not the bottom.
+  //A descending order means that the most recent date will be at the top of the list, not the bottom.
   it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
     const rejectedMockData = { count: 0, summaries: [] };
     const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
