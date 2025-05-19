@@ -91,7 +91,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('(AC.1) should render the component', { tags: ['@PO-566'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+    setupComponent('adultOrYouthOnly');
     cy.get(DOM_ELEMENTS['finesMacPaymentTermsForm']).should('exist');
   });
   //Dom-Elements check for each defendant type
@@ -100,7 +100,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4,)should load all elements on the screen correctly for adult or youth defendant types',
     { tags: ['@PO-566', '@PO-429', '@PO-471', '@PO-272'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('exist');
@@ -209,7 +209,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344'] },
     () => {
-      setupComponent(null, 'parentOrGuardianToPay');
+      setupComponent('parentOrGuardianToPay');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('exist');
@@ -296,7 +296,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4)Should load all elements for company defendant type',
     { tags: ['@PO-566', '@PO-592', '@PO-345'] },
     () => {
-      setupComponent(null, 'company');
+      setupComponent('company');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('exist');
@@ -368,7 +368,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
   //Collection order tests
   it('(AC.1) should only load collection order for adult over 18 years old', { tags: ['@PO-471', '@PO-272'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
+    setupComponent('adultOrYouthOnly');
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     cy.get(DOM_ELEMENTS.collectionOrderMadeTrue).should('exist');
@@ -386,7 +386,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.businessUnit.business_unit_id = 17;
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
           cy.get(DOM_ELEMENTS.collectionNo).click();
           cy.get(DOM_ELEMENTS.makeCollection).should('exist');
           cy.get(DOM_ELEMENTS.makeCollectionLabel).should('contain', 'Make collection order today');
@@ -399,7 +399,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1) should not load collection order for adult or youth under 18 years old',
     { tags: ['@PO-471', '@PO-272'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2020';
       cy.get(DOM_ELEMENTS.collectionNo).should('not.exist');
@@ -414,7 +414,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).should('have.value', '01/10/2022');
         });
@@ -428,7 +428,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('01/02/2004', { delay: 0 });
@@ -445,7 +445,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.submitButton).first().click();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionError);
@@ -460,7 +460,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
@@ -477,7 +477,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
@@ -510,7 +510,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
-        setupComponent(null, defendantType);
+        setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.payInFull).click();
         cy.get(DOM_ELEMENTS.datePickerButton).click();
@@ -529,7 +529,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] },
     () => {
       defendantTypes.forEach((defendantType) => {
-        setupComponent(null, defendantType);
+        setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.instalmentsOnly).click();
         cy.get(DOM_ELEMENTS.datePickerButton).click();
@@ -547,20 +547,20 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.16a) should load button for next page for adultOrYouthOnly Defendant',
     { tags: ['@PO-429', '@PO-272'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
     },
   );
 
   it('(AC.16a) should load button for next page for AYPG Defendant', { tags: ['@PO-429', '@PO-344'] }, () => {
-    setupComponent(null);
+    setupComponent('parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
   });
 
   it('(AC.17a) should load button for next page for Company Defendant', { tags: ['@PO-592', '@PO-345'] }, () => {
-    setupComponent(null, 'company');
+    setupComponent('company');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
   });
@@ -603,7 +603,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
@@ -621,7 +621,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
@@ -639,7 +639,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
@@ -658,7 +658,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
@@ -677,7 +677,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.paymentTerms);
@@ -697,7 +697,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           cy.get(DOM_ELEMENTS.lumpSumPlusInstalments).click();
           cy.get(DOM_ELEMENTS.lumpSumAmount).type('100.5', { delay: 0 });
@@ -717,7 +717,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
           finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01,01.2022';
@@ -734,7 +734,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
           finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '32/01/2022';
@@ -748,7 +748,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('(AC.9)should handle errors for Installment', { tags: ['@PO-587', '@PO-429', '@PO-592', '@PO-545'] }, () => {
     defendantTypes.forEach((defendantType) => {
       cy.then(() => {
-        setupComponent(null, defendantType);
+        setupComponent(defendantType);
 
         cy.get(DOM_ELEMENTS.instalmentsOnly).click({ multiple: true });
 
@@ -767,7 +767,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
@@ -784,7 +784,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/21/12212';
@@ -801,7 +801,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
@@ -818,7 +818,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           cy.get(DOM_ELEMENTS.lumpSumPlusInstalments).click({ multiple: true });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
@@ -837,7 +837,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = -1;
@@ -854,7 +854,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
@@ -871,7 +871,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/202555';
@@ -888,7 +888,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       defendantTypes.forEach((defendantType) => {
         cy.then(() => {
-          setupComponent(null, defendantType);
+          setupComponent(defendantType);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
@@ -904,7 +904,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.2,AC.3) should load days in default for adult or youth over 18 only',
     { tags: ['@PO-432', '@PO-272'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly');
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
 
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
@@ -927,7 +927,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1) should not load days in default for adult or youth under 18 years old',
     { tags: ['@PO-432', '@PO-588', '@PO-272'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly');
+      setupComponent('adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2010';
       cy.get(DOM_ELEMENTS.hasDaysInDefault).should('not.exist');
@@ -940,7 +940,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
@@ -958,7 +958,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
@@ -977,7 +977,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
@@ -993,7 +993,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
           cy.get(DOM_ELEMENTS.suspendedCommittalDate).type('01/01/2022', { delay: 0 });
@@ -1027,14 +1027,14 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
           cy.get(DOM_ELEMENTS.caculateLink).first().click();
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'Cannot calculate total time in days');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
 
-          setupComponent(null, 'parentOrGuardianToPay');
+          setupComponent('parentOrGuardianToPay');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'Cannot calculate total time in days');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
         });
@@ -1047,7 +1047,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     { tags: ['@PO-432', '@PO-588', '@PO-272', '@PO-344'] },
     () => {
       for (let i = 0; i < 2; i++) {
-        setupComponent(null, defendantTypes[i]);
+        setupComponent(defendantTypes[i]);
 
         finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
         finesMacState.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
@@ -1064,7 +1064,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.addEnforcementAction).click();
           cy.get(DOM_ELEMENTS.prisLabel).should('exist');
@@ -1094,7 +1094,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null, defendantTypes[i]);
+          setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.addEnforcementAction).click();
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
@@ -1110,7 +1110,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
@@ -1140,7 +1140,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
@@ -1157,7 +1157,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     () => {
       for (let i = 0; i < 2; i++) {
         cy.then(() => {
-          setupComponent(null);
+          setupComponent(defendantTypes[i]);
 
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
@@ -1183,7 +1183,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+      setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
@@ -1211,7 +1211,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+      setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
@@ -1236,7 +1236,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
@@ -1258,7 +1258,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+    setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
     cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
@@ -1280,7 +1280,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
@@ -1320,7 +1320,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+    setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1361,7 +1361,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1409,7 +1409,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+      setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
