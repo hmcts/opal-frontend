@@ -68,4 +68,19 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
 
     expect(linkElement.getAttribute('aria-live')).toBe('polite');
   }));
+
+  it('should clear the copyCodeTimeoutId on ngOnDestroy if timeout is set', () => {
+    component['copyCodeTimeoutId'] = setTimeout(() => {}, 1000);
+    spyOn(window, 'clearTimeout');
+    component.ngOnDestroy();
+    expect(window.clearTimeout).toHaveBeenCalledWith(jasmine.any(Number));
+    expect(component['copyCodeTimeoutId']).not.toBeNull(); // The property is set to null inside the timeout, not here
+  });
+
+  it('should not call clearTimeout on ngOnDestroy if copyCodeTimeoutId is null', () => {
+    component['copyCodeTimeoutId'] = null;
+    spyOn(window, 'clearTimeout');
+    component.ngOnDestroy();
+    expect(window.clearTimeout).not.toHaveBeenCalled();
+  });
 });

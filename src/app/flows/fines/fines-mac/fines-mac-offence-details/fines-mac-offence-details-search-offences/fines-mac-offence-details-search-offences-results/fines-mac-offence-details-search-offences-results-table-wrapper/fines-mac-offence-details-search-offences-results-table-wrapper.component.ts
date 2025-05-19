@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input, signal, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, signal, Signal } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import {
   MojSortableTableComponent,
@@ -33,7 +33,10 @@ import { FinesSharedSortableTableFooterComponent } from '../../../../../componen
   templateUrl: './fines-mac-offence-details-search-offences-results-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent extends AbstractSortableTablePaginationComponent {
+export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
+  extends AbstractSortableTablePaginationComponent
+  implements OnDestroy
+{
   protected readonly utilsService = inject(UtilsService);
   public override abstractTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
     [],
@@ -54,6 +57,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent ex
     this.abstractExistingSortState = existingSortState;
   }
 
+  private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
   protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss`;
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   public readonly COPY_CODE_TO_CLIPBOARD = COPY_CODE_TO_CLIPBOARD;
@@ -82,7 +86,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent ex
     // Set ARIA live assertive for immediate SR announcement
     linkElement.setAttribute('aria-live', 'assertive');
 
-    setTimeout(() => {
+    this.copyCodeTimeoutId = setTimeout(() => {
       linkElement.innerText = originalText;
       if (originalAriaLive) {
         linkElement.setAttribute('aria-live', originalAriaLive);
@@ -90,6 +94,17 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent ex
         linkElement.removeAttribute('aria-live');
       }
       liveRegion.textContent = '';
+      this.copyCodeTimeoutId = null;
     }, COPY_CODE_TO_CLIPBOARD_TIMEOUT);
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   * Clears any pending timeout associated with copying code to prevent memory leaks.
+   */
+  public ngOnDestroy(): void {
+    if (this.copyCodeTimeoutId) {
+      clearTimeout(this.copyCodeTimeoutId);
+    }
   }
 }
