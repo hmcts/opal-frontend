@@ -14,7 +14,6 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { PAYMENT_TERMS_SESSION_USER_STATE_MOCK } from './mocks/fines-payment-terms-session-user-mock';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { mock } from 'node:test';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
@@ -22,7 +21,6 @@ describe('FinesMacPaymentTermsComponent', () => {
   const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
 
   const setupComponent = (
-    formSubmit: any,
     defendantTypeMock: string | undefined = '',
     mockSetAccountCommentsNote: any | undefined = null,
   ) => {
@@ -61,7 +59,6 @@ describe('FinesMacPaymentTermsComponent', () => {
         },
       ],
       componentProperties: {
-        //handlePaymentTermsSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
     });
