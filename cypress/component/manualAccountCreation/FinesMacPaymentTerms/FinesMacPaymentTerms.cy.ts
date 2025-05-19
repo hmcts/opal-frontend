@@ -14,13 +14,18 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { PAYMENT_TERMS_SESSION_USER_STATE_MOCK } from './mocks/fines-payment-terms-session-user-mock';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { mock } from 'node:test';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
   const date = new Date();
   const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
 
-  const setupComponent = (formSubmit: any, defendantTypeMock: string | undefined = '') => {
+  const setupComponent = (
+    formSubmit: any,
+    defendantTypeMock: string | undefined = '',
+    mockSetAccountCommentsNote: any | undefined = null,
+  ) => {
     mount(FinesMacPaymentTermsComponent, {
       providers: [
         OpalFines,
@@ -39,6 +44,8 @@ describe('FinesMacPaymentTermsComponent', () => {
           useFactory: () => {
             const store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
+            store.setAccountCommentsNotes = mockSetAccountCommentsNote;
+
             return store;
           },
         },
@@ -54,7 +61,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         },
       ],
       componentProperties: {
-        handlePaymentTermsSubmit: formSubmit,
+        //handlePaymentTermsSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
     });
@@ -1162,6 +1169,286 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);
         });
       }
+    },
+  );
+  it.only(
+    '(AC.1,4,5a) correct system note - A collection order was previously made - AY',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('05/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order was previously made on 05/01/2023');
+      });
+    },
+  );
+  it.only(
+    '(AC.1,4,5b) correct system note - A collection order was previously made - AYPG',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('05/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order was previously made on 05/01/2023');
+      });
+    },
+  );
+  it.only(
+    '(AC.2,4,5a) correct system note - Make collection order today - AY',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+    },
+  );
+
+  it.only(
+    '(AC.2,4,5b) correct system note - Make collection order today - AYPG',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+    },
+  );
+  it.only(
+    '(AC3a,c,4,5a) update system note - Made today - Previously made - AY ',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 01/01/2023 prior to this account creation',
+        );
+      });
+    },
+  );
+
+  it.only(
+    '(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 01/01/2023 prior to this account creation',
+        );
+      });
+    },
+  );
+
+  it.only(
+    '(AC3b,d,4,5a) update system note - previously made - made today - AY ',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'adultOrYouthOnly', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 01/01/2023 prior to this account creation',
+        );
+      });
+    },
+  );
+
+  it.only(
+    '(AC3b,d,4,5b) update system note - previously made - made today - AYPG ',
+    { tags: ['@PO-545', '@PO-651'] },
+    () => {
+      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+
+      finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+      finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+      finesMacState.businessUnit.business_unit_id = 17;
+
+      setupComponent(null, 'parentOrGuardianToPay', mockSetAccountCommentsNotes);
+
+      cy.get(DOM_ELEMENTS.collectionNo).check();
+      cy.get(DOM_ELEMENTS.makeCollection).check();
+
+      cy.get(DOM_ELEMENTS.payInFull).check();
+      cy.get(DOM_ELEMENTS.payByDate).type('01/01/2023', { delay: 0, force: true });
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[0][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+      });
+
+      cy.get(DOM_ELEMENTS.collectionYes).check();
+      cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
+      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+        cy.log('Calls:', calls);
+        const arg = calls.args[1][0];
+        const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+        cy.log('System note:', systemNote);
+        expect(systemNote).to.equal(
+          'A collection order was previously made on 01/01/2023 prior to this account creation',
+        );
+      });
     },
   );
 });
