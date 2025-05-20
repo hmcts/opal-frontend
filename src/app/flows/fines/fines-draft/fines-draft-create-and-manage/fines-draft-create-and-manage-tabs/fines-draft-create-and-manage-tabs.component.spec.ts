@@ -243,7 +243,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
