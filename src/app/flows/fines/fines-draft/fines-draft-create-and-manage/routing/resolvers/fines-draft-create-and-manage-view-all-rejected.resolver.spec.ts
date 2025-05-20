@@ -52,10 +52,12 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
 
   it('should return { count: 0, summaries: [] }', async () => {
     const originalStatuses = [...FINES_DRAFT_TAB_STATUSES];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (FINES_DRAFT_TAB_STATUSES as any).length = 0; // clears the array in-place
 
     const mockRoute = {} as ActivatedRouteSnapshot;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any));
 
     expect(result).toEqual({ count: 0, summaries: [] });
