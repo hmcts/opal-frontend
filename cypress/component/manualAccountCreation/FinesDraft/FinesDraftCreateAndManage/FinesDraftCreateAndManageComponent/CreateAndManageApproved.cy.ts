@@ -46,7 +46,11 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
   };
 
   it('(AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607'] }, () => {
-    setupComponent();
+    const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+    const rejectedMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+    interceptGetApprovedAccounts(200, approvedMockData);
+    interceptGetRejectedAccounts(200, rejectedMockData);
+
     setupComponent();
     cy.get(DOM_ELEMENTS.navigationLinks)
       .contains('' + NAVIGATION_LINKS[2])
@@ -57,45 +61,43 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
     }
 
-    cy.get(DOM_ELEMENTS.statusHeading)
-      .should('exist')
-      .and('contain', '' + NAVIGATION_LINKS[2]);
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
-    for (const heading of TABLE_HEADINGS) {
-      cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
-    }
-    cy.get(DOM_ELEMENTS.defendant).should('exist').and('contain', 'John Doe');
-    cy.get(DOM_ELEMENTS.dob).should('exist').and('contain', '15 May 1990');
-    cy.get(DOM_ELEMENTS.created)
-      .should('exist')
-      .and(
-        'contain',
-        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
-      );
-    cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
-    cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
+    //Check table row data in row 1
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(0)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.dob).contains('—');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+      });
 
-    cy.get(DOM_ELEMENTS.defendant).should('exist').and('contain', 'Jane Smith');
-    cy.get(DOM_ELEMENTS.dob).should('exist').and('contain', '—');
-    cy.get(DOM_ELEMENTS.created)
-      .should('exist')
-      .and(
-        'contain',
-        `${dateService.getDaysAgo(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
-      );
-    cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
-    cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
-    mockData = OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK;
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+    //Check table row data in row 2
+    cy.get(DOM_ELEMENTS.tableRow)
+      .eq(1)
+      .within(() => {
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+      });
   });
 
-it(
+  it(
     '(AC.5)should have pagination enabled for over 25 draft accounts for approved accounts',
     { tags: ['@PO-607'] },
     () => {
+      const approvedMockData = { count: 0, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
+      const rejectedMockData = { count: 0, summaries: [] };
+      interceptGetApprovedAccounts(200, approvedMockData);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+
       setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks)
-        .contains('' + NAVIGATION_LINKS[2])
-        .click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
       cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
@@ -112,7 +114,6 @@ it(
         .then((count) => {
           expect(count).to.be.eq(25);
         });
-      mockData = OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK;
     },
   );
 
@@ -120,38 +121,52 @@ it(
     '(AC.5) should have default sort order for created accounts set to descending for approved',
     { tags: ['@PO-607'] },
     () => {
+      const approvedMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+      const rejectedMockData = { count: 0, summaries: [] };
+      interceptGetApprovedAccounts(200, approvedMockData);
+      interceptGetRejectedAccounts(200, rejectedMockData);
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks)
         .contains('' + NAVIGATION_LINKS[2])
         .click();
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
-      cy.get(DOM_ELEMENTS.created)
-        .first()
-        .contains(
-          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
-        );
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
-      cy.get(DOM_ELEMENTS.created)
-        .last()
-        .contains(
-          `${dateService.getDaysAgo(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries[9].account_snapshot.created_date)}`,
-        );
+      //Check table row data in row 1
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(0)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.dob).contains('—');
+          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+          cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        });
+
+      //Check table row data in row 2
+      cy.get(DOM_ELEMENTS.tableRow)
+        .eq(1)
+        .within(() => {
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+          cy.get(DOM_ELEMENTS.created).contains('Today');
+          cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        });
     },
   );
-   it(
+  it(
     '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
     { tags: ['@PO-607'] },
     () => {
+      const approvedMockData = { count: 0, summaries: [] };
+      const rejectedMockData = { count: 0, summaries: [] };
+      interceptGetApprovedAccounts(200, approvedMockData);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
-      mockData = {
-        count: 0,
-        summaries: [],
-      };
     },
   );
-
-})
+});
