@@ -34,6 +34,8 @@ import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-servic
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
@@ -55,6 +57,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   public readonly finesDraftService = inject(FinesDraftService);
+  private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
   private readonly businessUnitIds = this.userState.business_unit_user.map(
     (business_unit_user) => business_unit_user.business_unit_id,
@@ -108,16 +111,24 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
           return of(this.finesDraftService.populateTableData(initialData));
         }
 
-        return this.opalFinesService
-          .getDraftAccounts({
-            businessUnitIds: this.businessUnitIds,
-            statuses: FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab)?.statuses,
-            submittedBy: this.businessUnitUserIds,
-          })
-          .pipe(
-            map((res) => this.finesDraftService.populateTableData(res)),
-            shareReplay(1),
-          );
+        const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
+
+        const params: IOpalFinesDraftAccountParams = {
+          businessUnitIds: this.businessUnitIds,
+          statuses: currentTab?.statuses,
+          submittedBy: this.businessUnitUserIds,
+        };
+
+        if (currentTab?.historicWindowInDays) {
+          const { from, to } = this.dateService.getDateRange(currentTab.historicWindowInDays, 0);
+          params.accountStatusDateFrom = [from];
+          params.accountStatusDateTo = [to];
+        }
+
+        return this.opalFinesService.getDraftAccounts(params).pipe(
+          map((res) => this.finesDraftService.populateTableData(res)),
+          shareReplay(1),
+        );
       }),
     );
   }

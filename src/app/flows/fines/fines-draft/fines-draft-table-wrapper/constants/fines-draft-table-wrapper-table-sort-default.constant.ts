@@ -5,6 +5,7 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT: IFinesDraftTableWrapperTabl
   Defendant: 'none',
   'Date of birth': 'none',
   Created: 'descending',
+  Deleted: 'none',
   CreatedAgo: 'none',
   'Account type': 'none',
   'Business unit': 'none',

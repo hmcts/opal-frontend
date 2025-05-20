@@ -21,6 +21,7 @@ export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
     tab: 'deleted',
     statuses: [OpalFinesDraftAccountStatuses.deleted],
     prettyName: 'Deleted',
+    historicWindowInDays: 7,
   },
   {
     tab: 'error',

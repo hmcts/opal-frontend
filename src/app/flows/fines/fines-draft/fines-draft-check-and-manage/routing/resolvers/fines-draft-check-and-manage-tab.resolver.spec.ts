@@ -8,6 +8,7 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-servi
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 describe('finesDraftCheckAndManageTabResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,13 +16,19 @@ describe('finesDraftCheckAndManageTabResolver', () => {
     TestBed.runInInjectionContext(() => finesDraftCheckAndManageTabResolver(...resolverParameters));
 
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
+  let dateServiceMock: jasmine.SpyObj<DateService>;
   let globalStoreMock: GlobalStoreType;
 
   beforeEach(() => {
     opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
+    dateServiceMock = jasmine.createSpyObj('dateService', ['getDateRange']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: opalFinesServiceMock }, GlobalStore],
+      providers: [
+        { provide: OpalFines, useValue: opalFinesServiceMock },
+        GlobalStore,
+        { provide: DateService, useValue: dateServiceMock },
+      ],
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);
@@ -66,5 +73,33 @@ describe('finesDraftCheckAndManageTabResolver', () => {
 
     expect(result).toEqual({ count: 0, summaries: [] });
     expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should include account status date range in request body if historicWindowIndays is set ', async () => {
+    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    const dateFrom = '2023-01-01';
+    const dateTo = '2023-01-07';
+
+    dateServiceMock.getDateRange.and.returnValue({
+      from: dateFrom,
+      to: dateTo,
+    });
+
+    const tab = FINES_DRAFT_TAB_STATUSES[3];
+    const fragment = tab.tab;
+    const statuses = tab.statuses;
+    const mockRoute = { fragment } as ActivatedRouteSnapshot;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
+
+    expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      statuses,
+      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      accountStatusDateFrom: [dateFrom],
+      accountStatusDateTo: [dateTo],
+    });
+    expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(tab.historicWindowInDays, 0);
   });
 });

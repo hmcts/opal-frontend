@@ -65,7 +65,7 @@
         <app-fines-draft-table-wrapper
           [tableData]="draftAccounts"
           [existingSortState]="tableSort"
-          [isApprovedTab]="false"
+          [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
         ></app-fines-draft-table-wrapper>
       } @else {
