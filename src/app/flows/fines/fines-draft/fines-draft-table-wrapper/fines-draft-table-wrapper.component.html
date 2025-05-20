@@ -47,8 +47,8 @@
     } @else {
       <th
         opal-lib-moj-sortable-table-header
-        columnKey="Created"
-        [sortDirection]="sortStateSignal()['Created']"
+        columnKey="CreatedDate"
+        [sortDirection]="sortStateSignal()['CreatedDate']"
         (sortChange)="onSortChange($event)"
         [dataIndex]="2"
       >
@@ -95,7 +95,7 @@
         @if (activeTab === 'deleted') {
           <td opal-lib-moj-sortable-table-row-data id="deleted">{{ row['Changed'] | daysAgo }}</td>
         } @else {
-          <td opal-lib-moj-sortable-table-row-data id="created">{{ row['Created'] | daysAgo }}</td>
+          <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
         }
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>

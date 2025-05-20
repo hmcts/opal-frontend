@@ -126,12 +126,12 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.ljaInput).focus().clear().type('court', { delay: 0 });
     cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (1450)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (1080)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (1920)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
     cy.get(DOM_ELEMENTS.ljaAutocomplete)
       .find('li')
-      .should('contain', "Birmingham and Solihull Magistrates' Court (2922)");
+      .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
   });
   it('(AC.3) should dynamically filter Enforcement court field', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');

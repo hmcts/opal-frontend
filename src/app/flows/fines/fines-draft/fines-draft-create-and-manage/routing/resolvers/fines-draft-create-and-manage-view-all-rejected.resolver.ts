@@ -6,7 +6,7 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
-export const finesDraftCheckAndManageViewAllRejectedResolver: ResolveFn<IOpalFinesDraftAccountsResponse> = () => {
+export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFinesDraftAccountsResponse> = () => {
   const opalFinesService = inject(OpalFines);
   const globalStore = inject(GlobalStore);
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-manage-tabs.component';
+import { FinesDraftCreateAndManageTabsComponent } from './fines-draft-create-and-manage-tabs.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of, firstValueFrom, Subject } from 'rxjs';
@@ -16,9 +16,9 @@ import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 
-describe('FinesDraftCheckAndManageTabsComponent', () => {
-  let component: FinesDraftCheckAndManageTabsComponent;
-  let fixture: ComponentFixture<FinesDraftCheckAndManageTabsComponent>;
+describe('FinesDraftCreateAndManageTabsComponent', () => {
+  let component: FinesDraftCreateAndManageTabsComponent;
+  let fixture: ComponentFixture<FinesDraftCreateAndManageTabsComponent>;
   let globalStore: GlobalStoreType;
   let finesDraftStore: FinesDraftStoreType;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
@@ -51,7 +51,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate'], { events: routerEventSubject.asObservable() });
 
     await TestBed.configureTestingModule({
-      imports: [FinesDraftCheckAndManageTabsComponent],
+      imports: [FinesDraftCreateAndManageTabsComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
@@ -79,7 +79,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
 
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
 
     activatedRoute = TestBed.inject(ActivatedRoute);
@@ -106,7 +106,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
 
   it('should initialize with default state when fragment is null', () => {
     activatedRoute.snapshot.fragment = null;
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,7 +136,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       draftAccounts: { count: 0, summaries: [] },
       rejectedCount: 0,
     };
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     const tabData = await firstValueFrom(component.tabData$);
@@ -150,7 +150,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
       draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
       rejectedCount: 100,
     };
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     const rejectedCount = await firstValueFrom(component.rejectedCount$);
@@ -167,7 +167,7 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
 
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
-    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 

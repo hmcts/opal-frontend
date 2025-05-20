@@ -20,7 +20,7 @@ Feature: Manual account creation - Court Details
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "Bridport Magistrates' Court (121)" into the "Enforcement court" search box
+    And I enter "West London VPFPO (101)" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -29,7 +29,7 @@ Feature: Manual account creation - Court Details
     When I click on the "Court details" link
     And I see "Avon & Somerset Magistrates' Court (1450)" in the "Sending area or Local Justice Area (LJA)" searchbox
     And I see "1234" in the "Prosecutor Case Reference (PCR)" field
-    And I see "Bridport Magistrates' Court (121)" in the "Enforcement court" searchbox
+    And I see "West London VPFPO (101)" in the "Enforcement court" searchbox
 
     When I reload the page
     Then I see "Business unit and defendant type" on the page header
@@ -49,7 +49,7 @@ Feature: Manual account creation - Court Details
   Scenario: (AC.10, AC.11) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
     When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "West London VPFPO" into the "Enforcement court" search box
 
     Then I click Cancel, a window pops up and I click Ok
 
@@ -63,7 +63,7 @@ Feature: Manual account creation - Court Details
 
     Then I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "West London VPFPO" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -95,7 +95,7 @@ Feature: Manual account creation - Court Details
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
     When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "West London VPFPO" into the "Enforcement court" search box
 
     When I click the "Add personal details" button
 

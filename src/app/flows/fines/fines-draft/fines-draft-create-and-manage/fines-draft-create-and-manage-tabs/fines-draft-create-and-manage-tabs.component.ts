@@ -12,7 +12,7 @@ import {
   MojSubNavigationComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import {
   distinctUntilChanged,
   filter,
@@ -37,7 +37,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fi
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 @Component({
-  selector: 'app-fines-draft-check-and-manage-tabs',
+  selector: 'app-fines-draft-create-and-manage-tabs',
   imports: [
     CommonModule,
     MojBannerComponent,
@@ -46,10 +46,10 @@ import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service
     MojBadgeComponent,
     FinesDraftTableWrapperComponent,
   ],
-  templateUrl: './fines-draft-check-and-manage-tabs.component.html',
+  templateUrl: './fines-draft-create-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy {
+export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly opalFinesService = inject(OpalFines);
@@ -66,7 +66,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit, OnDestroy 
     (business_unit_user) => business_unit_user.business_unit_user_id,
   );
 
-  protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCreateAndManageRoutingPaths = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
 
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public rejectedCount$!: Observable<string>;

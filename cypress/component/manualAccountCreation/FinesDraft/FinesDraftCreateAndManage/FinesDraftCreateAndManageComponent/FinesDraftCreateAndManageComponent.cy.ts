@@ -1,5 +1,5 @@
 import { mount } from 'cypress/angular';
-import { FinesDraftCheckAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/fines-draft-check-and-manage-tabs/fines-draft-check-and-manage-tabs.component';
+import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
@@ -14,12 +14,12 @@ import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 
-describe('FinesDraftCheckAndManageTabsComponent', () => {
+describe('FinesDraftCreateAndManageTabsComponent', () => {
   let mockData: any = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
   const dateService = new DateService();
 
   const setupComponent = () => {
-    mount(FinesDraftCheckAndManageTabsComponent, {
+    mount(FinesDraftCreateAndManageTabsComponent, {
       providers: [
         provideHttpClient(),
         provideRouter(routes),
