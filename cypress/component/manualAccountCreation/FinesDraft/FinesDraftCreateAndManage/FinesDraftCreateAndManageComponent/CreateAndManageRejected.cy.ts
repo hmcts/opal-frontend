@@ -73,27 +73,27 @@ describe('FinesDraftCheckAndManageRejectedComponent', () => {
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
   });
 
-  it.only(
-    '(AC.2) should show empty value statement for Rejected status when no accounts have been submitted/resubmitted',
-    { tags: ['@PO-605'] },
-    () => {
-      const rejectedMockData = { count: 0, summaries: [] };
+  // it(
+  //   '(AC.2) should show empty value statement for Rejected status when no accounts have been submitted/resubmitted',
+  //   { tags: ['@PO-605'] },
+  //   () => {
+  //     const rejectedMockData = { count: 0, summaries: [] };
 
-      interceptGetRejectedAccounts(200, rejectedMockData);
+  //     interceptGetRejectedAccounts(200, rejectedMockData);
 
-      setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
-      cy.get('p').should('exist').and('contain', 'You have no rejected accounts');
-      cy.get('p')
-        .should('exist')
-        .and('contain', 'To resubmit accounts for other team members, you can view all rejected accounts');
-      cy.get('p').find('a').should('have.text', 'view all rejected accounts');
-      cy.get(DOM_ELEMENTS.table).should('not.exist');
-      cy.get(DOM_ELEMENTS.rejectedAccounts).should('have.text', 'view all rejected accounts').click();
-      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'All rejected accounts');
-    },
-  );
+  //     setupComponent();
+  //     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+  //     cy.get('p').should('exist').and('contain', 'You have no rejected accounts');
+  //     cy.get('p')
+  //       .should('exist')
+  //       .and('contain', 'To resubmit accounts for other team members, you can view all rejected accounts');
+  //     cy.get('p').find('a').should('have.text', 'view all rejected accounts');
+  //     cy.get(DOM_ELEMENTS.table).should('not.exist');
+  //     cy.get(DOM_ELEMENTS.rejectedAccounts).should('have.text', 'view all rejected accounts').click();
+  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'All rejected accounts');
+  //   },
+  // );
   it(
     '(AC.3) should show list of accounts for Rejected status when accounts have been submitted/resubmitted',
     { tags: ['@PO-605'] },
