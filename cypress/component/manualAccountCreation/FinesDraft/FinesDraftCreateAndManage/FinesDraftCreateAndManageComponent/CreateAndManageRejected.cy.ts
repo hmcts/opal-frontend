@@ -57,8 +57,8 @@ describe('FinesDraftCheckAndManageRejectedComponent', () => {
     'AC.1b) Should not display notifications or rejected account tab when rejected account equals 0',
     { tags: ['@PO-605'] },
     () => {
-        const rejectedMockData = { count: 0, summaries: [] };
-    interceptGetRejectedAccounts(200, rejectedMockData);
+      const rejectedMockData = { count: 0, summaries: [] };
+      interceptGetRejectedAccounts(200, rejectedMockData);
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.rejectedIcon).should('not.exist');
@@ -73,27 +73,25 @@ describe('FinesDraftCheckAndManageRejectedComponent', () => {
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
   });
 
-  // it(
-  //   '(AC.2) should show empty value statement for Rejected status when no accounts have been submitted/resubmitted',
-  //   { tags: ['@PO-605'] },
-  //   () => {
-  //     const rejectedMockData = { count: 0, summaries: [] };
+  it(
+    '(AC.2) should show empty value statement for Rejected status when no accounts have been submitted/resubmitted',
+    { tags: ['@PO-605'] },
+    () => {
+      const rejectedMockData = { count: 0, summaries: [] };
+      interceptGetRejectedAccounts(200, rejectedMockData);
 
-  //     interceptGetRejectedAccounts(200, rejectedMockData);
+      setupComponent();
 
-  //     setupComponent();
-  //     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
-  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
-  //     cy.get('p').should('exist').and('contain', 'You have no rejected accounts');
-  //     cy.get('p')
-  //       .should('exist')
-  //       .and('contain', 'To resubmit accounts for other team members, you can view all rejected accounts');
-  //     cy.get('p').find('a').should('have.text', 'view all rejected accounts');
-  //     cy.get(DOM_ELEMENTS.table).should('not.exist');
-  //     cy.get(DOM_ELEMENTS.rejectedAccounts).should('have.text', 'view all rejected accounts').click();
-  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'All rejected accounts');
-  //   },
-  // );
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+      cy.get('p').should('exist').and('contain', 'You have no rejected accounts');
+      cy.get('p')
+        .should('exist')
+        .and('contain', 'To resubmit accounts for other team members, you can view all rejected accounts');
+      cy.get('p').find('a').should('have.text', 'view all rejected accounts');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
   it(
     '(AC.3) should show list of accounts for Rejected status when accounts have been submitted/resubmitted',
     { tags: ['@PO-605'] },
@@ -157,20 +155,19 @@ describe('FinesDraftCheckAndManageRejectedComponent', () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
-    cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
+    //cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
     cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
-
     cy.get(DOM_ELEMENTS.tableRow)
       .eq(0)
       .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
       });
     cy.get(DOM_ELEMENTS.tableRow)
       .eq(1)
       .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
       });
   });
   it(

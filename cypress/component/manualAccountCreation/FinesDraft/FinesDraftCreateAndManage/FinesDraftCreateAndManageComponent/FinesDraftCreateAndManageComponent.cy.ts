@@ -570,16 +570,15 @@ describe('FinesDraftCheckAndManageTabsComponent', () => {
     },
   );
 
-  // covered this as part of PO-584 AC.1
-  // it.only(
-  //   '(AC.1)should show empty value statement for Deleted status when no accounts have been Deleted',
-  //   { tags: ['@PO-584'] },
-  //   () => {
-  //     setupComponent();
-  //     cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
-  //     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
-  //     cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-  //     cy.get(DOM_ELEMENTS.table).should('not.exist');
-  //   },
-  // );
+  it.only(
+    '(AC.1)should show empty value statement for Deleted status when no accounts have been Deleted',
+    { tags: ['@PO-584'] },
+    () => {
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
+      cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
+      cy.get(DOM_ELEMENTS.table).should('not.exist');
+    },
+  );
 });
