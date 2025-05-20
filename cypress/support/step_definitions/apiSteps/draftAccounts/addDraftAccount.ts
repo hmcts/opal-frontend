@@ -26,10 +26,27 @@ function convertDataTableToNestedObject(dataTable: DataTable): Record<string, an
   return overrides;
 }
 
-When('I create a draft account with the following details:', (data: DataTable) => {
+type DefendantType = 'company' | 'adultOrYouthOnly' | 'parentOrGuardianToPay';
+
+/**
+ * Get the appropriate payload file name based on the account type
+ */
+function getPayloadFileForAccountType(accountType: DefendantType): string {
+  const payloadFiles = {
+    company: 'draftAccountPayload.json',
+    adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
+    parentOrGuardianToPay: 'parentOrGuardianPayload.json'
+  };
+  return payloadFiles[accountType];
+}
+
+
+When('I create a {string} draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
   const overrides = convertDataTableToNestedObject(data);
 
-  cy.fixture('draftAccount.json').then((draftAccount) => {
+  // Load the appropriate base payload for this account type
+  const payloadFile = getPayloadFileForAccountType(accountType);
+  cy.fixture(`draftAccounts/${payloadFile}`).then((draftAccount) => {
     const requestBody = _.merge({}, draftAccount, overrides);
 
     cy.request('POST', 'opal-fines-service/draft-accounts', requestBody).then((response) => {
@@ -39,4 +56,47 @@ When('I create a draft account with the following details:', (data: DataTable) =
       createdAccounts.push(draftAccountId);
     });
   });
+});
+
+When('I update the last created draft account with status {string}', (status: string) => {
+  cy.wrap(createdAccounts).its(createdAccounts.length - 1).then((accountId) => {
+    // Fetch the current draft account to get required fields
+    cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
+      const account = getResp.body;
+      const business_unit_id = account.business_unit_id;
+      const version = account.version;
+      const validated_by = account.submitted_by || 'opal-test';
+      const now = new Date().toISOString();
+      const updateBody = {
+        business_unit_id,
+        account_status: status,
+        validated_by,
+        version,
+        timeline_data: [
+          {
+            username: validated_by,
+            status,
+            status_date: now,
+            reason_text: 'Test reason'
+          }
+        ]
+      };
+      cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
+        expect(response.status).to.eq(200);
+      });
+    });
+  });
+});
+
+
+afterEach(() => {
+  cy.log('Createdaccount length: ' + createdAccounts.length);
+
+  if (createdAccounts.length > 0) {
+    cy.log('Cleaning up accounts: ' + createdAccounts.join(', '));
+    createdAccounts.forEach((accountId) => {
+      cy.request('DELETE', `/opal-fines-service/draft-accounts/${accountId}?ignoreMissing=true`);
+      createdAccounts = createdAccounts.filter((id) => id !== accountId);
+    });
+  }
 });

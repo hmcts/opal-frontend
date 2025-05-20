@@ -7,7 +7,6 @@ export const DOM_ELEMENTS = {
   accountType: 'div[summaryListRowId="accountType"]',
   defendantType: 'div[summaryListRowId="defendantType"]',
   languagePreferences: 'div[summaryListRowId="languagePreferences"]',
-  hearingPreferences: 'div[summaryListRowId="hearingPreferences"]',
   courtDetails: 'opal-lib-govuk-task-list[taskListId="courtDetails"]',
   defendantDetails: 'opal-lib-govuk-task-list[taskListId="defendantDetails"]',
   parentOrGuardianDetails: 'opal-lib-govuk-task-list[taskListId="parentOrGuardianDetails"]',

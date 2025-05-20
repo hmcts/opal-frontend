@@ -20,7 +20,7 @@ When(
 );
 
 When('I click on the rejected tab and ensure there are no accounts', () => {
-  cy.fixture('/getDraftAccounts/zeroRejectedAccounts.json').then((zeroRejectedAccounts) => {
+  cy.fixture('getDraftAccounts/zeroRejectedAccounts.json').then((zeroRejectedAccounts) => {
     cy.intercept(
       'GET',
       '/opal-fines-service/draft-accounts?business_unit=73&business_unit=77&business_unit=65&business_unit=78&business_unit=80&business_unit=66&status=Rejected&submitted_by=L073JG&submitted_by=L077JG&submitted_by=L065JG&submitted_by=L078JG&submitted_by=L080JG&submitted_by=L066JG',
@@ -30,15 +30,14 @@ When('I click on the rejected tab and ensure there are no accounts', () => {
         });
       },
     ).as('getRejectedDraftAccounts');
+
+    cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+    cy.wait('@getRejectedDraftAccounts');
   });
-
-  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
-
-  cy.wait('@getRejectedDraftAccounts');
 });
 
 When('I click on the rejected tab and ensure there are three accounts', () => {
-  cy.fixture('/getDraftAccounts/threeRejectedAccounts.json').then((threeRejectedAccounts) => {
+  cy.fixture('getDraftAccounts/threeRejectedAccounts.json').then((threeRejectedAccounts) => {
     // Manipulate dates in the fixture before sending it back
     threeRejectedAccounts.summaries.forEach((summary: any, idx: number) => {
       const daysAgo = idx + 1;
@@ -67,14 +66,14 @@ When('I click on the rejected tab and ensure there are three accounts', () => {
         });
       },
     ).as('getRejectedDraftAccounts');
+
+    cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+    cy.wait('@getRejectedDraftAccounts');
   });
-
-  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
-
-  cy.wait('@getRejectedDraftAccounts');
 });
+
 When('I click on the rejected tab and ensure there are 26 accounts', () => {
-  cy.fixture('/getDraftAccounts/twentySixRejectedAccounts.json').then((twentySixRejectedAccounts) => {
+  cy.fixture('getDraftAccounts/twentySixRejectedAccounts.json').then((twentySixRejectedAccounts) => {
     // Manipulate dates in the fixture before sending it back
     twentySixRejectedAccounts.summaries.forEach((summary: any, idx: number) => {
       const daysAgo = idx + 1;
@@ -103,9 +102,8 @@ When('I click on the rejected tab and ensure there are 26 accounts', () => {
         });
       },
     ).as('getRejectedDraftAccounts');
+
+    cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
+    cy.wait('@getRejectedDraftAccounts');
   });
-
-  cy.get('opal-lib-moj-sub-navigation-item[subnavitemid="inputter-rejected-tab"]').children('li').children('a').click();
-
-  cy.wait('@getRejectedDraftAccounts');
 });
