@@ -27,4 +27,9 @@ export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
     statuses: [OpalFinesDraftAccountStatuses.errorInPublishing],
     prettyName: 'Error',
   },
+  {
+    tab: 'to-review',
+    statuses: [OpalFinesDraftAccountStatuses.submitted, OpalFinesDraftAccountStatuses.resubmitted],
+    prettyName: 'To review',
+  },
 ];

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesDraftCreateAndManageTabsComponent } from './fines-draft-create-and-manage-tabs.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
-import { of, firstValueFrom, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
+import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -37,6 +38,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
     finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
       'onDefendantClick',
+      'createTabDataStream',
+      'createRejectedCountStream',
+      'handleTabSwitch',
       'populateTableData',
     ]);
 
@@ -89,14 +93,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle tab switch', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'handleTabSwitch').and.callThrough();
-    component.handleTabSwitch('review');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).handleTabSwitch).toHaveBeenCalledWith('review');
-  });
-
   it('should initialize with default state', () => {
     component.ngOnInit();
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
@@ -122,108 +118,232 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
   it('should handle route navigation correctly', () => {
     const route = 'some/route';
-    component.activeTab = 'review';
+    finesDraftService.activeTab = 'review';
+
     component.handleRoute(route);
+
     expect(finesDraftStore.fragment()).toEqual('review');
     expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 
-  it('should use default values when resolver data is empty', async () => {
-    finesDraftService.populateTableData.and.returnValue([]);
-    activatedRoute.snapshot.data = {
-      draftAccounts: { count: 0, summaries: [] },
-      rejectedCount: 0,
-    };
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    const tabData = await firstValueFrom(component.tabData$);
-    expect(tabData).toEqual([]);
-    const rejectedCount = await firstValueFrom(component.rejectedCount$);
-    expect(rejectedCount).toBe('0');
-  });
-
-  it('should display "99+" when rejectedCount is 100 in resolver data', async () => {
-    activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      rejectedCount: 100,
-    };
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    const rejectedCount = await firstValueFrom(component.rejectedCount$);
-    expect(rejectedCount).toBe('99+');
-  });
-
-  it('should fetch tab data via API in setupTabDataStream when fragment does not match initial tab', async () => {
-    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-    activatedRoute.fragment = of('rejected');
-    activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      rejectedCount: 2,
-    };
-
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
-
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    component.activeTab = 'review';
-
-    component.ngOnInit();
-
-    const tabData = await firstValueFrom(component.tabData$);
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-
-    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-  });
-
-  it('should update rejected count on tab change with count over threshold and call formatCount', async () => {
-    const largeRejectedCountResponse = { count: 150, summaries: [] };
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(largeRejectedCountResponse));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'formatCount').and.callThrough();
-
-    component.activeTab = 'review';
-
-    // Update the fragment in the snapshot to simulate tab change to 'rejected'
-    activatedRoute.snapshot.fragment = 'rejected';
-
-    // Emit a navigation end event to simulate router navigation
-    routerEventSubject.next(new NavigationEnd(1, '/some-url', '/some-url'));
-
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-    expect(component['formatCount']).toHaveBeenCalledWith(largeRejectedCountResponse.count);
-  });
-
-  it('should update rejected count on tab change with count over threshold and call formatCount', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'formatCount').and.callThrough();
-
-    // Update the fragment in the snapshot
-    activatedRoute.snapshot.fragment = null;
-
-    // Emit a navigation end event to simulate router navigation
-    routerEventSubject.next(new NavigationEnd(1, '/some-url', '/some-url'));
-
-    expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
-    expect(component['formatCount']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.count);
-  });
-
   it('should call setFragmentAndAmend and onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is not "rejected"', () => {
-    component.activeTab = 'review';
+    component.finesDraftService.activeTab = 'review';
+
     component.onDefendantClick(123);
+
     expect(finesDraftStore.fragment()).toEqual('review');
     expect(finesDraftStore.amend()).toBeFalsy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, component.PATH_REVIEW_ACCOUNT);
   });
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_AMEND_ACCOUNT when activeTab is "rejected"', () => {
-    component.activeTab = 'rejected';
+    component.finesDraftService.activeTab = 'rejected';
+
     component.onDefendantClick(456);
+
     expect(finesDraftStore.fragment()).toEqual('rejected');
     expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, component.PATH_AMEND_ACCOUNT);
+  });
+
+  it('should call setupTabDataStream with correct arguments on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = spyOn<any>(component, 'setupTabDataStream').and.callThrough();
+
+    component.ngOnInit();
+
+    expect(spy).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK, 'review');
+  });
+
+  it('should call setupRejectedCountStream with correct arguments on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const spy = spyOn<any>(component, 'setupRejectedCountStream').and.callThrough();
+
+    component.ngOnInit();
+
+    expect(spy).toHaveBeenCalledWith(2, 'review');
+  });
+
+  it('should assign tabData$ observable from finesDraftService.createTabDataStream', () => {
+    const mockTabData$ = of(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    finesDraftService.createTabDataStream.and.returnValue(mockTabData$);
+
+    component['setupTabDataStream'](OPAL_FINES_DRAFT_ACCOUNTS_MOCK, 'review');
+
+    expect(component.tabData$).toBe(mockTabData$);
+    expect(finesDraftService.createTabDataStream).toHaveBeenCalled();
+  });
+
+  it('should call createTabDataStream with correct parameters and assign tabData$', () => {
+    const mockTabData$ = of(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    const initialTab = 'review';
+    finesDraftService.createTabDataStream.and.returnValue(mockTabData$);
+
+    component['setupTabDataStream'](OPAL_FINES_DRAFT_ACCOUNTS_MOCK, initialTab);
+
+    expect(component.tabData$).toBe(mockTabData$);
+    expect(finesDraftService.createTabDataStream).toHaveBeenCalledWith(
+      OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      initialTab,
+      jasmine.any(Object),
+      jasmine.any(Function),
+    );
+
+    const paramsFn = finesDraftService.createTabDataStream.calls.mostRecent().args[3];
+    const result = paramsFn(initialTab);
+    expect(result).toEqual({
+      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      statuses: jasmine.any(Array),
+      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+    });
+  });
+
+  it('should process fragment$ correctly and update activeTab via tap', () => {
+    const mockTabData$ = of(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    const initialTab = 'review';
+
+    finesDraftService.createTabDataStream.and.callFake((_initialData, _initialTab, fragment$, getParams) => {
+      fragment$.subscribe();
+
+      const result = getParams('review');
+      expect(result).toEqual({
+        businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+        statuses: jasmine.any(Array),
+        submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      });
+
+      return mockTabData$;
+    });
+
+    component['setupTabDataStream'](OPAL_FINES_DRAFT_ACCOUNTS_MOCK, initialTab);
+
+    expect(finesDraftService.createTabDataStream).toHaveBeenCalled();
+  });
+
+  it('should assign rejectedCount$ observable from finesDraftService.createRejectedCountStream', () => {
+    const mockRejectedCount$ = of('2');
+    finesDraftService.createRejectedCountStream.and.returnValue(mockRejectedCount$);
+
+    component['setupRejectedCountStream'](2, 'review');
+
+    expect(component.rejectedCount$).toBe(mockRejectedCount$);
+    expect(finesDraftService.createRejectedCountStream).toHaveBeenCalled();
+  });
+
+  it('should process fragment$ correctly and trigger createRejectedCountStream logic', () => {
+    const mockRejectedCount$ = of('2');
+    const initialTab = 'review';
+
+    finesDraftService.createRejectedCountStream.and.callFake(
+      (_initialTab, _resolverRejectedCount, fragment$, getParams) => {
+        fragment$.subscribe();
+
+        const result = getParams();
+        expect(result).toEqual({
+          businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+          submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+          statuses: [OpalFinesDraftAccountStatuses.rejected],
+        });
+
+        return mockRejectedCount$;
+      },
+    );
+
+    component['setupRejectedCountStream'](2, initialTab);
+
+    expect(finesDraftService.createRejectedCountStream).toHaveBeenCalled();
+  });
+
+  it('should trigger rejected count logic on NavigationEnd event', () => {
+    const mockRejectedCount$ = of('3');
+    const initialTab = 'review';
+
+    finesDraftService.createRejectedCountStream.and.callFake(
+      (_initialTab, _resolverRejectedCount, fragment$, getParams) => {
+        fragment$.subscribe();
+
+        const result = getParams();
+        expect(result).toEqual({
+          businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+          submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+          statuses: [OpalFinesDraftAccountStatuses.rejected],
+        });
+
+        return mockRejectedCount$;
+      },
+    );
+
+    component['setupRejectedCountStream'](2, initialTab);
+
+    routerEventSubject.next(new NavigationEnd(1, '/some-url', '/some-url#to-review'));
+
+    expect(finesDraftService.createRejectedCountStream).toHaveBeenCalled();
+  });
+
+  it('should call createRejectedCountStream with correct parameters and map fragment correctly', () => {
+    const mockRejectedCount$ = of('2');
+    const initialTab = 'review';
+
+    finesDraftService.createRejectedCountStream.and.callFake((tabArg, rejectedCountArg, fragment$, getParamsFn) => {
+      fragment$.subscribe((frag) => {
+        expect(frag).toBe(initialTab);
+      });
+
+      const result = getParamsFn();
+      expect(result).toEqual({
+        businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+        submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+        statuses: [OpalFinesDraftAccountStatuses.rejected],
+      });
+
+      return mockRejectedCount$;
+    });
+
+    component['setupRejectedCountStream'](2, initialTab);
+
+    expect(finesDraftService.createRejectedCountStream).toHaveBeenCalled();
+  });
+
+  it('should fallback to "review" when fragment is null during navigation', () => {
+    const mockRejectedCount$ = of('1');
+    const initialTab = 'review';
+
+    const originalFragment = activatedRoute.snapshot.fragment;
+    activatedRoute.snapshot.fragment = null;
+
+    finesDraftService.createRejectedCountStream.and.callFake(
+      (_initialTab, _resolverRejectedCount, fragment$, getParams) => {
+        fragment$.subscribe((frag) => {
+          expect(frag).toBe('review');
+        });
+
+        const result = getParams();
+        expect(result).toEqual({
+          businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+          submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+          statuses: [OpalFinesDraftAccountStatuses.rejected],
+        });
+
+        return mockRejectedCount$;
+      },
+    );
+
+    component['setupRejectedCountStream'](1, initialTab);
+
+    routerEventSubject.next(new NavigationEnd(1, '/url', '/url'));
+
+    activatedRoute.snapshot.fragment = originalFragment;
+  });
+
+  it('should clean up destroy$ on ngOnDestroy', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const destroySpy = spyOn<any>(component['destroy$'], 'next').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const completeSpy = spyOn<any>(component['destroy$'], 'complete').and.callThrough();
+
+    component.ngOnDestroy();
+
+    expect(destroySpy).toHaveBeenCalled();
+    expect(completeSpy).toHaveBeenCalled();
   });
 });

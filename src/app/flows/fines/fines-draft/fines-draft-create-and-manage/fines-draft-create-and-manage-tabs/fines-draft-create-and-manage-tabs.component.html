@@ -3,17 +3,20 @@
     <opal-lib-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></opal-lib-moj-banner>
   }
   <h2 class="govuk-heading-l">Create accounts</h2>
-  <opal-lib-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+  <opal-lib-moj-sub-navigation
+    subNavId="inputter-tabs"
+    (activeSubNavItemFragment)="finesDraftService.handleTabSwitch($event)"
+  >
     <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-in-review-tab"
-      [activeSubNavItemFragment]="activeTab"
+      [activeSubNavItemFragment]="finesDraftService.activeTab"
       subNavItemFragment="review"
       subNavItemText="In review"
     ></opal-lib-moj-sub-navigation-item>
     @if (rejectedCount$ | async; as rejectedCount) {
       <opal-lib-moj-sub-navigation-item
         subNavItemId="inputter-rejected-tab"
-        [activeSubNavItemFragment]="activeTab"
+        [activeSubNavItemFragment]="finesDraftService.activeTab"
         subNavItemFragment="rejected"
         subNavItemText="Rejected"
       >
@@ -26,18 +29,18 @@
     }
     <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-approved-tab"
-      [activeSubNavItemFragment]="activeTab"
+      [activeSubNavItemFragment]="finesDraftService.activeTab"
       subNavItemFragment="approved"
       subNavItemText="Approved"
     ></opal-lib-moj-sub-navigation-item>
     <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-deleted-tab"
-      [activeSubNavItemFragment]="activeTab"
+      [activeSubNavItemFragment]="finesDraftService.activeTab"
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
     ></opal-lib-moj-sub-navigation-item>
   </opal-lib-moj-sub-navigation>
-  @switch (activeTab) {
+  @switch (finesDraftService.activeTab) {
     @case ('review') {
       <h3 class="govuk-heading-m">In review</h3>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
@@ -59,7 +62,7 @@
   <ng-template #tableWrapper>
     @if (tabData$ | async; as draftAccounts) {
       @if (draftAccounts.length) {
-        @if (activeTab === 'rejected') {
+        @if (finesDraftService.activeTab === 'rejected') {
           <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
         }
         <app-fines-draft-table-wrapper
@@ -69,7 +72,7 @@
           (linkClicked)="onDefendantClick($event)"
         ></app-fines-draft-table-wrapper>
       } @else {
-        @switch (activeTab) {
+        @switch (finesDraftService.activeTab) {
           @case ('review') {
             <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
           }
