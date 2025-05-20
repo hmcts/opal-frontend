@@ -1,3 +1,4 @@
+import { getDaysAgo, getToday } from 'cypress/support/utils/dateUtils';
 import { IOpalFinesDraftAccountsResponse } from '../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 
 export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
@@ -10,9 +11,9 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       business_unit_id: 77,
       account_snapshot: {
         account_type: 'fine',
-        created_date: '2023-01-01',
+        created_date: getToday(),
         submitted_by: 'user1',
-        defendant_name: 'John Doe',
+        defendant_name: 'DOE, John',
         submitted_by_name: 'User One',
         business_unit_name: 'Business Unit A',
         date_of_birth: '1990-05-15',
@@ -27,9 +28,9 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       business_unit_id: 17,
       account_snapshot: {
         account_type: 'fixedPenalty',
-        created_date: '2023-01-02',
+        created_date: getDaysAgo(4),
         submitted_by: 'user2',
-        defendant_name: 'Jane Smith',
+        defendant_name: 'SMITH, Jane',
         submitted_by_name: 'User Two',
         business_unit_name: 'Business Unit B',
         date_of_birth: null,
