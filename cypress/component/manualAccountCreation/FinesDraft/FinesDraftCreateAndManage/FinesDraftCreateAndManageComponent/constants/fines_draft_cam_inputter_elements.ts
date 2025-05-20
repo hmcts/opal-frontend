@@ -1,10 +1,10 @@
 export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
-  heading: 'h2.govuk-heading-l',
+  heading: 'h1.govuk-heading-l',
   navigationLinks: 'a.moj-sub-navigation__link.cursor-pointer',
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
-  satusHeading: 'h3.govuk-heading-m',
+  satusHeading: 'h2.govuk-heading-m',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
   defendant: 'td[id = "defendant"]',
