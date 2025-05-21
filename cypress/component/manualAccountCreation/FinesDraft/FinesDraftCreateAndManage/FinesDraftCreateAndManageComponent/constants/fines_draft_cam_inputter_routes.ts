@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { FinesDraftCheckAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/fines-draft-check-and-manage-tabs/fines-draft-check-and-manage-tabs.component';
+import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
 
 export const routes: Routes = [
   {
     path: 'manual-account-creation',
-    component: FinesDraftCheckAndManageTabsComponent,
+    component: FinesDraftCreateAndManageTabsComponent,
     children: [
-      { path: 'review', component: FinesDraftCheckAndManageTabsComponent },
-      { path: 'rejected', component: FinesDraftCheckAndManageTabsComponent },
-      { path: 'approved', component: FinesDraftCheckAndManageTabsComponent },
-      { path: 'deleted', component: FinesDraftCheckAndManageTabsComponent },
+      { path: 'review', component: FinesDraftCreateAndManageTabsComponent },
+      { path: 'rejected', component: FinesDraftCreateAndManageTabsComponent },
+      { path: 'approved', component: FinesDraftCreateAndManageTabsComponent },
+      { path: 'deleted', component: FinesDraftCreateAndManageTabsComponent },
       { path: '', redirectTo: 'review', pathMatch: 'full' },
     ],
   },

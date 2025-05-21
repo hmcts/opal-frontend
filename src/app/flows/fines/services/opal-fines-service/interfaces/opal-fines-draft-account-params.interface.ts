@@ -3,4 +3,6 @@ export interface IOpalFinesDraftAccountParams {
   statuses?: string[];
   submittedBy?: string[];
   notSubmittedBy?: string[];
+  accountStatusDateFrom?: string[];
+  accountStatusDateTo?: string[];
 }

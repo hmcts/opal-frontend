@@ -42,7 +42,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
   }
-  @Input({ required: true }) public isApprovedTab: boolean = false;
+  @Input({ required: true }) public activeTab: string = 'review';
   @Output() public linkClicked = new EventEmitter<number>();
 
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';

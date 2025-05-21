@@ -7,7 +7,7 @@ import { IFinesDraftRoutingPermissions } from './interfaces/fines-draft-routing-
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_ROUTING_TITLES } from './constants/fines-draft-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { routing as checkAndManageRouting } from '../fines-draft-check-and-manage/routing/fines-draft-check-and-manage.routes';
+import { routing as createAndManageRouting } from '../fines-draft-create-and-manage/routing/fines-draft-create-and-manage.routes';
 
 const draftCheckAndValidateRootPath = FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate;
 const draftCheckAndValidatePermissionId =
@@ -26,10 +26,10 @@ export const routing: Routes = [
     path: FINES_DRAFT_ROUTING_PATHS.children.createAndManage,
 
     loadComponent: () =>
-      import('../fines-draft-check-and-manage/fines-draft-check-and-manage.component').then(
-        (c) => c.FinesDraftCheckAndManageComponent,
+      import('../fines-draft-create-and-manage/fines-draft-create-and-manage.component').then(
+        (c) => c.FinesDraftCreateAndManageComponent,
       ),
-    children: checkAndManageRouting,
+    children: createAndManageRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
       routePermissionId: [draftCreateAndManagePermissionId],

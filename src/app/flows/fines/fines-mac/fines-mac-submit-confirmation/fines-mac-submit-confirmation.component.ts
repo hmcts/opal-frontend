@@ -5,7 +5,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { GovukPanelComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-panel';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-submit-confirmation',
@@ -46,7 +46,7 @@ export class FinesMacSubmitConfirmationComponent {
 
     this.router.navigate(
       [
-        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}/${FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs}`,
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}/${FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs}`,
       ],
       {
         fragment: 'review',
