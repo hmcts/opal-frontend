@@ -1,0 +1,15 @@
+{
+    "count": 1,
+    "refData": [
+        {
+            "major_creditor_id": 3614,
+            "major_creditor_name": "Test Creditor",
+            "address_line1": "123 Creditor Street",
+            "address_line2": "Creditor Town",
+            "address_line3": "County",
+            "postcode": "CR1 1TOR",
+            "telephone": "01234567890",
+            "email_address": "creditor@example.com"
+        }
+    ]
+}
