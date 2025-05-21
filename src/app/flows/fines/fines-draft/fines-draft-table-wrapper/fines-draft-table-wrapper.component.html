@@ -80,7 +80,9 @@
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
         </td>
-        <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
+        <td opal-lib-moj-sortable-table-row-data id="createdDate">
+          {{ row['Created'] | daysAgo }}
+        </td>
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
       </tr>
