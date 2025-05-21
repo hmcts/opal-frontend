@@ -1,30 +1,30 @@
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { IFinesDraftTabStatuses } from '../interfaces/fines-draft-tab-statuses.interface';
 
 export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
   {
     tab: 'review',
-    statuses: [OpalFinesDraftAccountStatuses.submitted, OpalFinesDraftAccountStatuses.resubmitted],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.submitted, OPAL_FINES_DRAFT_ACCOUNT_STATUSES.resubmitted],
     prettyName: 'In review',
   },
   {
     tab: 'rejected',
-    statuses: [OpalFinesDraftAccountStatuses.rejected],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
     prettyName: 'Rejected',
   },
   {
     tab: 'approved',
-    statuses: [OpalFinesDraftAccountStatuses.approved],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.approved],
     prettyName: 'Approved',
   },
   {
     tab: 'deleted',
-    statuses: [OpalFinesDraftAccountStatuses.deleted],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.deleted],
     prettyName: 'Deleted',
   },
   {
     tab: 'error',
-    statuses: [OpalFinesDraftAccountStatuses.errorInPublishing],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.errorInPublishing],
     prettyName: 'Error',
   },
 ];
