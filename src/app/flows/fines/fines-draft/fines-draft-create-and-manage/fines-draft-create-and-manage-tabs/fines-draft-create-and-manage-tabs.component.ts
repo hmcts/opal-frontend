@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
+import {
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
+} from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
@@ -105,7 +108,14 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
       map((tab) => tab!),
       distinctUntilChanged(),
       takeUntil(this.destroy$),
-      tap((tab) => (this.activeTab = tab)),
+      tap((tab) => {
+        this.activeTab = tab;
+        if (tab === 'deleted') {
+          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
+        } else {
+          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
+        }
+      }),
       switchMap((tab) => {
         if (tab === initialTab) {
           return of(this.finesDraftService.populateTableData(initialData));

@@ -19,7 +19,7 @@ export class FinesDraftService {
    * @returns {IFinesDraftTableWrapperTableData[]} An array of table data objects.
    */
   public populateTableData(response: IOpalFinesDraftAccountsResponse): IFinesDraftTableWrapperTableData[] {
-    return response.summaries.map(({ draft_account_id, account_snapshot, account_status_date = '2025-05-10' }) => {
+    return response.summaries.map(({ draft_account_id, account_snapshot, account_status_date }) => {
       const { defendant_name, date_of_birth, created_date, account_type, business_unit_name } = account_snapshot;
 
       return {
