@@ -25,10 +25,6 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
-      getMajorCreditors: jasmine
-        .createSpy('getMajorCreditors')
-        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
       getOffenceByCjsCode: jasmine
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
@@ -46,6 +42,12 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('offence-details'),
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+              },
+            },
           },
         },
       ],
@@ -67,10 +69,6 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have state and populate resultCodeData$', () => {
-    expect(component.referenceData$).not.toBeUndefined();
   });
 
   it('should remove the offence and set offenceRemoved to true', () => {
