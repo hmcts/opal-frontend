@@ -2,7 +2,7 @@
   @if (finesDraftStore.bannerMessage().length > 0) {
     <opal-lib-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></opal-lib-moj-banner>
   }
-  <h2 class="govuk-heading-l">Create accounts</h2>
+  <h1 class="govuk-heading-l">Create accounts</h1>
   <opal-lib-moj-sub-navigation
     subNavId="inputter-tabs"
     (activeSubNavItemFragment)="finesDraftService.handleTabSwitch($event)"
@@ -42,19 +42,19 @@
   </opal-lib-moj-sub-navigation>
   @switch (finesDraftService.activeTab) {
     @case ('review') {
-      <h3 class="govuk-heading-m">In review</h3>
+      <h2 class="govuk-heading-m">In review</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('rejected') {
-      <h3 class="govuk-heading-m">Rejected</h3>
+      <h2 class="govuk-heading-m">Rejected</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('approved') {
-      <h3 class="govuk-heading-m">Approved</h3>
+      <h2 class="govuk-heading-m">Approved</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
     @case ('deleted') {
-      <h3 class="govuk-heading-m">Deleted</h3>
+      <h2 class="govuk-heading-m">Deleted</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
   }
