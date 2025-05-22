@@ -5,19 +5,19 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I am on the dashboard
 
         Given I navigate to Create and Manage Draft Accounts
-        Given I intercept reference data for offence details
 
     @PO-640
     Scenario: AC8 - Navigate, edit and save data within account sections
 
 
         Given I create a "company" draft account with the following details:
-            | account_status | Submitted |
+          | account.defendant.company_name | TEST Rejected-PO-640 |
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
-        Then I click on the "TEST Rejected" link
+        Then I click on the "TEST Rejected-PO-640" link
 
+        And I see "TEST Rejected-PO-640" on the page header
         And I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
         And I see the status of "Company details" is "Provided"
@@ -190,11 +190,11 @@ Feature: PO-6 Navigate and edit sections from task list
             | Work telephone number   | 07123 456 789 |
 
         Then I see the following details for imposition 1 in the Offences and impositions table:
-            | imposition       | Compensation                          |
-            | creditor         | HM Courts & Tribunals Service (HMCTS) |
-            | amountImposed    | 122                                   |
-            | amountPaid       | 10                                    |
-            | balanceRemaining | 112                                   |
+            | imposition       | Compensation                    |
+            | creditor         | Crown Prosecution Service (DPP) |
+            | amountImposed    | 122                             |
+            | amountPaid       | 10                              |
+            | balanceRemaining | 112                             |
 
         Then I see the following in the "Payment terms" table:
             | Payment terms | Lump sum plus instalments |
