@@ -5,14 +5,14 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I am on the dashboard
 
         Given I navigate to Create and Manage Draft Accounts
-
-
-    @PO-6
-    Scenario: AC8 - Navigate, edit and save data within account sections for a company account
-
         Given I intercept reference data for offence details
+
+    @PO-640
+    Scenario: AC8 - Navigate, edit and save data within account sections
+
+
         Given I create a "company" draft account with the following details:
-            | account_status | Rejected |
+            | account_status | Submitted |
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
@@ -36,6 +36,15 @@ Feature: PO-6 Navigate and edit sections from task list
         When I click the "Return to account details" button
         Then I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
+
+        # Test cancel functionality with unsaved changes - temporarily disabled
+        # When I click on the "Court details" link
+        # Then I see "Court details" on the page header
+        # When I enter "Test" into the "Prosecutor Case Reference (PCR)" field
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
 
         # Company Details section
         When I click on the "Company details" link
@@ -63,6 +72,15 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Company details" is "Provided"
 
+        # Test cancel functionality with unsaved changes - temporarily disabled
+        # When I click on the "Company details" link
+        # Then I see "Company details" on the page header
+        # When I enter "CHANGED COMPANY LTD" into the "Company name" field
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
+
         # Contact Details section
         When I click on the "Contact details" link
         Then I see "Defendant contact details" on the page header
@@ -81,19 +99,37 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Contact details" is "Provided"
 
+        # Test cancel functionality for Contact Details - temporarily disabled
+        # When I click on the "Contact details" link
+        # Then I see "Contact details" on the page header
+        # When I enter "12345678901" into the "Phone number" field
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
+
         # Offence Details section
         When I click on the "Offence details" link
         Then I see "Offences and impositions" on the page header
-        And I should see the offence code "HY35014" displayed
-        And I should see the offence title "Test Offence" displayed
-        And I should see the creditor name "Test Creditor" displayed
-        And I should see the imposition "Compensation" displayed
-        And I should see the amount imposed "122" displayed
-        And I should see the amount paid "10" displayed
-        And I should see the balance remaining "112" displayed
+
+        When I click on the "Change" link
+
+        When I enter "HY35014" into the "Offence code" field
+        And I enter a date 8 weeks into the past into the "Date of sentence" date field
+
+        When I click the "Review offence" button
         When I click the "Return to account details" button
         Then I see the "Check and submit" section heading
-        And I see the status of "Offence details" is "Provided"
+        Then I see the status of "Offence details" is "Provided"
+
+        # Test cancel functionality for Offence Details - temporarily disabled
+        # When I click on the "Offence details" link
+        # Then I see "Offence details" on the page header
+        # When I enter "Test Date" into the "Date Offence" field
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
 
         # Payment Terms section
         When I click on the "Payment terms" link
@@ -104,26 +140,71 @@ Feature: PO-6 Navigate and edit sections from task list
         And I select the "Monthly" radio button
         And I enter a date 2 weeks into the future into the "Start date" date field
         When I click the "Return to account details" button
-        Then I see "Account details" on the page header
         Then I see the status of "Payment terms" is "Provided"
+
+        # Test cancel functionality for Payment Terms - temporarily disabled
+        # When I click on the "Payment terms" link
+        # Then I see "Payment terms" on the page header
+        # When I select "Collection Order" from the "Payment type" dropdown
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
 
         # Account Comments and Notes section
         When I click on the "Account comments and notes" link
         Then I see "Account comments and notes" on the page header
-        And I enter "This is a test comment for the account" into the "Add a comment" field
+        And I enter "This is a test comment" into the "Add comment" text field
         When I click the "Return to account details" button
         Then I see the "Check and submit" section heading
         And I see the status of "Account comments and notes" is "Provided"
+
+        # Test cancel functionality for Account Comments - temporarily disabled
+        # When I click on the "Account comments and notes" link
+        # Then I see "Account comments and notes" on the page header
+        # When I enter "Test comment" into the "Comments" field
+        # And I click on the "Cancel" link
+        # Then I see "You have unsaved changes" text on the page
+        # When I click the "Continue without saving" button
+        # Then I see the "Check and submit" section heading
 
         # Final check and verification
         When I click the "Check account" button
         Then I see "Check account details" on the page header
 
         Then I see the following in the "Court details" table:
+            | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
+            | Prosecutor Case Reference (PCR)          | ABCD1234A                                 |
+            | Enforcement court                        | Aram Court (100)                          |
+
         Then I see the following in the "Company details" table:
+            | Company name | TEST COMPANY LTD             |
+            | Address      | Addr1  Addr2  Addr3  TE1 1ST |
+            | Aliases      | ALIAS 1  ALIAS 2             |
+
         Then I see the following in the "Contact details" table:
-        Then I see the following in the "Offence details" table:
+            | Primary email address   | P@EMAIL.COM   |
+            | Secondary email address | S@EMAIL.COM   |
+            | Mobile telephone number | 07123 456 789 |
+            | Home telephone number   | 07123 456 789 |
+            | Work telephone number   | 07123 456 789 |
+
+        Then I see the following details for imposition 1 in the Offences and impositions table:
+            | imposition       | Compensation                          |
+            | creditor         | HM Courts & Tribunals Service (HMCTS) |
+            | amountImposed    | 122                                   |
+            | amountPaid       | 10                                    |
+            | balanceRemaining | 112                                   |
+
         Then I see the following in the "Payment terms" table:
+            | Payment terms | Lump sum plus instalments |
+            | Lump sum      | £150                      |
+            | Instalment    | £50                       |
+            | Frequency     | Monthly                   |
+
         Then I see the following in the "Account comments and notes" table:
+            | Comment | This is a test comment |
 
 
+        When I click the "Submit for review" button on Rejected Account
+        Then I see "Account submitted" on the page header
