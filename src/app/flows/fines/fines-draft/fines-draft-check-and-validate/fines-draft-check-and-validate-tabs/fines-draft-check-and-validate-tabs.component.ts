@@ -14,8 +14,8 @@ import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrappe
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FinesDraftService } from '../../services/fines-draft.service';
-import { AbstractTabData } from 'src/app/abstract/abstract-tab-data';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
