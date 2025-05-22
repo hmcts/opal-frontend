@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
-import { forkJoin, Observable, tap } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
@@ -40,26 +37,14 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
-  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public resultCode!: IOpalFinesResultsRefData;
-  private readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
-    .getResults(this.resultCodeArray)
-    .pipe(tap((response) => (this.resultCode = response)));
-  public majorCreditors!: IOpalFinesMajorCreditorRefData;
-  private readonly majorCreditorData$: Observable<IOpalFinesMajorCreditorRefData> = this.opalFinesService
-    .getMajorCreditors(this.finesMacStore.getBusinessUnitId())
-    .pipe(tap((response) => (this.majorCreditors = response)));
-  public groupResultCodeAndMajorCreditorData$ = forkJoin({
-    resultCodeData: this.resultCodeData$,
-    majorCreditorData: this.majorCreditorData$,
-  });
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
+  public results!: IOpalFinesResultsRefData;
+  public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public creditor!: string;
   public defaultCreditor: string = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
@@ -172,7 +157,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param formArray - The form array containing the controls.
    * @param formArrayControls - The array of form array controls.
    */
-  public getImpositionToBeRemoved(): void {
+  private getImpositionToBeRemoved(): void {
     const rowIndex = this.finesMacOffenceDetailsStore.rowIndex();
     const draft = this.finesMacOffenceDetailsStore.offenceDetailsDraft();
     const draftStripped = this.finesMacOffenceDetailsService.removeIndexFromImpositionKey(draft);
@@ -201,7 +186,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       return;
     }
 
-    const result = this.resultCode.refData.find((item) => item.result_id === resultCode);
+    const result = this.results.refData.find((item) => item.result_id === resultCode);
     if (result) {
       this.imposition = this.opalFinesService.getResultPrettyName(result);
       this.defaultCreditor = this.getDefaultCreditor(result.imposition_creditor);
@@ -234,5 +219,8 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public ngOnInit(): void {
     this.finesMacOffenceDetailsStore.resetOffenceCodeMessage();
+    this.results = this['activatedRoute'].snapshot.data['results'];
+    this.majorCreditors = this['activatedRoute'].snapshot.data['majorCreditors'];
+    this.getImpositionToBeRemoved();
   }
 }

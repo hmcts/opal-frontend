@@ -12,6 +12,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
+import { data } from 'cypress/types/jquery';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -36,9 +37,10 @@ describe('FinesMacCourtDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
             },
           },
@@ -50,17 +52,6 @@ describe('FinesMacCourtDetailsComponent', () => {
       },
     });
   };
-  //Mock OpalFines service http calls
-  beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
-      statusCode: 200,
-      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-    });
-    cy.intercept('GET', '**/opal-fines-service/courts**', {
-      statusCode: 200,
-      body: OPAL_FINES_COURT_REF_DATA_MOCK,
-    });
-  });
   //Clean up after each test
   afterEach(() => {
     finesMacState.courtDetails.formData = {
