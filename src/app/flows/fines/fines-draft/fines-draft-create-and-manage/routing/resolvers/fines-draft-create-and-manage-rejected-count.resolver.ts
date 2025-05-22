@@ -2,8 +2,8 @@ import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { map } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 export const finesDraftCreateAndManageRejectedCountResolver: ResolveFn<number> = () => {
   const opalFinesService = inject(OpalFines);
@@ -16,7 +16,7 @@ export const finesDraftCreateAndManageRejectedCountResolver: ResolveFn<number> =
   const params = {
     businessUnitIds,
     submittedBy: businessUnitUserIds,
-    statuses: [OpalFinesDraftAccountStatuses.rejected],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
   };
 
   return opalFinesService.getDraftAccounts(params).pipe(map((res) => res.count));
