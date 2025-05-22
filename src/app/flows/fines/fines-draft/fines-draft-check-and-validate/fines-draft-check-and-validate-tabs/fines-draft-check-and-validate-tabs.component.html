@@ -1,29 +1,26 @@
 <div class="govuk-grid-column-full">
   <h1 class="govuk-heading-l">Review accounts</h1>
-  <opal-lib-moj-sub-navigation
-    subNavId="checker-tabs"
-    (activeSubNavItemFragment)="finesDraftService.handleTabSwitch($event)"
-  >
+  <opal-lib-moj-sub-navigation subNavId="checker-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
     <opal-lib-moj-sub-navigation-item
       subNavItemId="checker-to-review-tab"
-      [activeSubNavItemFragment]="finesDraftService.activeTab"
+      [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="to-review"
       subNavItemText="To review"
     ></opal-lib-moj-sub-navigation-item>
     <opal-lib-moj-sub-navigation-item
       subNavItemId="checker-rejected-tab"
-      [activeSubNavItemFragment]="finesDraftService.activeTab"
+      [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="rejected"
       subNavItemText="Rejected"
     ></opal-lib-moj-sub-navigation-item>
     <opal-lib-moj-sub-navigation-item
       subNavItemId="checker-deleted-tab"
-      [activeSubNavItemFragment]="finesDraftService.activeTab"
+      [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
     ></opal-lib-moj-sub-navigation-item>
   </opal-lib-moj-sub-navigation>
-  @switch (finesDraftService.activeTab) {
+  @switch (activeTab) {
     @case ('to-review') {
       <h2 class="govuk-heading-m">To review</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
@@ -48,7 +45,7 @@
           [isChecker]="true"
         ></app-fines-draft-table-wrapper>
       } @else {
-        @switch (finesDraftService.activeTab) {
+        @switch (activeTab) {
           @case ('to-review') {
             <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
           }
