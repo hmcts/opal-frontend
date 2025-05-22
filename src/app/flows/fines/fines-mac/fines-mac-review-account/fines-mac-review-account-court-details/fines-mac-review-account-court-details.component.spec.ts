@@ -45,8 +45,8 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     component = fixture.componentInstance;
 
     component.courtDetails = FINES_MAC_COURT_DETAILS_STATE_MOCK;
-    component.enforcementCourtsData = OPAL_FINES_COURT_REF_DATA_MOCK.refData;
-    component.localJusticeAreasData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData;
+    component.localJusticeAreasData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    component.enforcementCourtsData = OPAL_FINES_COURT_REF_DATA_MOCK;
 
     fixture.detectChanges();
   });

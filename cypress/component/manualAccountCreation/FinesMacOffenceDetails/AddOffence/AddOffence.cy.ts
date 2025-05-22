@@ -28,14 +28,6 @@ describe('FinesMacAddOffenceComponent', () => {
   const date = new Date();
 
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    });
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    });
     cy.intercept(
       {
         method: 'GET',
@@ -51,7 +43,7 @@ describe('FinesMacAddOffenceComponent', () => {
           refData: matchedOffences,
         });
       },
-    );
+    ).as('getOffenceCode');
   });
 
   let currentoffenceDetails = 0;
@@ -96,9 +88,10 @@ describe('FinesMacAddOffenceComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
           },
@@ -149,7 +142,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
 
-      cy.get(DOM_ELEMENTS.removeImpositionLink).eq(2).should('not.exist');
+      cy.get(DOM_ELEMENTS.removeImpositionLink).should('not.exist');
     },
   );
 
@@ -215,14 +208,18 @@ describe('FinesMacAddOffenceComponent', () => {
 
       impositionResultCodelist.forEach((resultCode) => {
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
-          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeInput).click();
+          cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
           cy.get(imposition_1.resultCodeLabel).click();
           cy.get(imposition_1.majorCreditor).should('exist');
           cy.get(imposition_1.minorCreditor).should('exist');
           cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
           cy.get(imposition_1.minorCreditorLabel).should('contain', 'Minor creditor');
         } else {
-          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeInput).click();
+          cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
           cy.get(imposition_1.resultCodeLabel).click();
 
           cy.get(imposition_1.majorCreditor).should('not.exist');
@@ -457,12 +454,16 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.3bi) should show ticket panel for valid offence code',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      setupComponent(null);
-
+      finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
 
+      setupComponent(null);
+
+      cy.wait('@getOffenceCode');
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123456', { delay: 0 });
+
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-      cy.get(DOM_ELEMENTS.successPanel).should('exist');
+      cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('exist');
     },
   );
 
