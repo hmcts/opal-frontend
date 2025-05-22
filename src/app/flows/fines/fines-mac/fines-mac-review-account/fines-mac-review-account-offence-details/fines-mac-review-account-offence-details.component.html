@@ -5,6 +5,10 @@
     </ng-container>
   }
   <ng-container content>
-    <app-fines-mac-offence-details-review [isReadOnly]="true"></app-fines-mac-offence-details-review>
+    <app-fines-mac-offence-details-review
+      [isReadOnly]="true"
+      [results]="results"
+      [majorCreditors]="majorCreditors"
+    ></app-fines-mac-offence-details-review>
   </ng-container>
 </opal-lib-govuk-summary-card-list>

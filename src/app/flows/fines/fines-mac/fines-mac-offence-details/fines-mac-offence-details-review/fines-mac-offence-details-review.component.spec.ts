@@ -7,7 +7,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from './mocks/fines-mac-offence-details-review-summary-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
@@ -61,6 +61,18 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
             'upperCaseFirstLetter',
             'convertToMonetaryString',
           ]),
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('offence-details'),
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+              },
+            },
+          },
         },
       ],
     }).compileComponents();

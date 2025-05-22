@@ -97,7 +97,7 @@ describe('OpalFines', () => {
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
@@ -112,7 +112,7 @@ describe('OpalFines', () => {
   it('should return cached response for the same ref data search', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);

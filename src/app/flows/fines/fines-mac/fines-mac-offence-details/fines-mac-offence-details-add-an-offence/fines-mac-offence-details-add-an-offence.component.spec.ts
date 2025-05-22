@@ -66,6 +66,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('offence-details'),
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+              },
+            },
           },
         },
         {
@@ -88,11 +94,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have state and populate data$', () => {
-    expect(component['resultCodeData$']).not.toBeUndefined();
-    expect(component['majorCreditorData$']).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {

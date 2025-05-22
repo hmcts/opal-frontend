@@ -3,14 +3,9 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  IOpalFinesBusinessUnit,
-  IOpalFinesBusinessUnitRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
+import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
@@ -26,51 +21,38 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-prefe
 export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly opalFinesService = inject(OpalFines);
-  private businessUnits!: IOpalFinesBusinessUnit[];
+  private businessUnitsRefData!: IOpalFinesBusinessUnitRefData;
   private readonly configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
-  public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
-    .getBusinessUnits('CREATE_MANAGE_DRAFT_ACCOUNTS')
-    .pipe(
-      tap((response: IOpalFinesBusinessUnitRefData) => this.setBusinessUnit(response)),
-      map((response: IOpalFinesBusinessUnitRefData) => {
-        return this.createAutoCompleteItems(response);
-      }),
-    );
+  public data: IAlphagovAccessibleAutocompleteItem[] = [];
 
   /**
    * Sets the business unit for the account details.
    * If there is only one business unit available and the current business unit is null,
    * it sets the business unit to the first available business unit.
    *
-   * @param response - The response containing the business unit reference data.
+   * @param refData - The array of business unit reference data.
    */
-  private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
-    const { count, refData } = response;
+  private setBusinessUnit(result: IOpalFinesBusinessUnitRefData): void {
     const { fm_create_account_business_unit_id: businessUnit } = structuredClone(
       this.finesMacStore.accountDetails().formData,
     );
 
-    if (count === 1 && businessUnit === null) {
-      this.finesMacStore.setBusinessUnitId(refData[0].business_unit_id);
-      this.finesMacStore.setBusinessUnit(refData[0]);
+    if (result.refData.length === 1 && businessUnit === null) {
+      this.finesMacStore.setBusinessUnitId(result.refData[0].business_unit_id);
+      this.finesMacStore.setBusinessUnit(result.refData[0]);
     }
-    this.businessUnits = refData;
   }
 
   /**
-   * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the business unit reference data.
+   * Creates an array of autocomplete items based on the business unit data.
+   * @param refData - The array of business unit reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItems(response: IOpalFinesBusinessUnitRefData): IAlphagovAccessibleAutocompleteItem[] {
-    const businessUnits = response.refData;
-
-    return businessUnits.map((item) => {
-      return {
-        value: item.business_unit_id,
-        name: item.business_unit_name,
-      };
-    });
+  private createAutoCompleteItems(result: IOpalFinesBusinessUnitRefData): IAlphagovAccessibleAutocompleteItem[] {
+    return result.refData.map((item) => ({
+      value: item.business_unit_id,
+      name: item.business_unit_name,
+    }));
   }
 
   /**
@@ -79,7 +61,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleAccountDetailsSubmit(form: IFinesMacAccountDetailsForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find(
+    const businessUnit = this.businessUnitsRefData.refData.find(
       (unit) => unit.business_unit_id === form.formData.fm_create_account_business_unit_id,
     )!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
@@ -117,6 +99,9 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   }
 
   public ngOnInit(): void {
+    this.businessUnitsRefData = this['activatedRoute'].snapshot.data['businessUnits'];
+    this.setBusinessUnit(this.businessUnitsRefData);
+    this.data = this.createAutoCompleteItems(this.businessUnitsRefData);
     const businessUnitId = this.finesMacStore.getBusinessUnitId();
     this.finesMacStore.resetFinesMacStore();
     if (businessUnitId) {

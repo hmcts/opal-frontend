@@ -1,9 +1,7 @@
-@if (data$ | async; as data) {
-  <div class="govuk-grid-column-two-thirds">
-    <app-fines-mac-create-account-form
-      [autoCompleteItems]="data"
-      (formSubmit)="handleAccountDetailsSubmit($event)"
-      (unsavedChanges)="handleUnsavedChanges($event)"
-    ></app-fines-mac-create-account-form>
-  </div>
-}
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-mac-create-account-form
+    [autoCompleteItems]="data"
+    (formSubmit)="handleAccountDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-mac-create-account-form>
+</div>
