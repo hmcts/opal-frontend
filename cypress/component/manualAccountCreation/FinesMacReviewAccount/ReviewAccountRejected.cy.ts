@@ -17,6 +17,8 @@ import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { REJECTED_ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
+import { getToday } from 'cypress/support/utils/dateUtils';
+import { data } from 'cypress/types/jquery';
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -62,7 +64,12 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: {},
+            snapshot: {
+              data: {
+                finesMacState: {},
+                finesDraftState: {},
+              },
+            },
             parent: {
               snapshot: {
                 url: [{ path: 'manual-account-creation' }],
@@ -159,7 +166,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         //This Timeline data is added as a result of the user clicking the submit button
         expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Tester');
         expect(request.body.timeline_data[1]).to.have.property('status', 'Resubmitted');
-        expect(request.body.timeline_data[1]).to.have.property('status_date', '2025-05-21');
+        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
         expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
       });
     },
