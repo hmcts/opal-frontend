@@ -16,10 +16,10 @@ import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constant
 import { distinctUntilChanged, filter, map, Observable, startWith, Subject, takeUntil, tap } from 'rxjs';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -120,7 +120,7 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
       () => ({
         businessUnitIds: this.businessUnitIds,
         submittedBy: this.businessUnitUserIds,
-        statuses: [OpalFinesDraftAccountStatuses.rejected],
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
       }),
     );
   }

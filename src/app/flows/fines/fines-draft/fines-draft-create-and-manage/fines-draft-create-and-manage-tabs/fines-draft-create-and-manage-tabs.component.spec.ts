@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesDraftCreateAndManageTabsComponent } from './fines-draft-create-and-manage-tabs.component';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of, Subject } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
@@ -15,14 +13,13 @@ import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
   let fixture: ComponentFixture<FinesDraftCreateAndManageTabsComponent>;
   let globalStore: GlobalStoreType;
   let finesDraftStore: FinesDraftStoreType;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let routerEventSubject: Subject<NavigationEnd>;
   let mockRouter: jasmine.SpyObj<Router>;
   let activatedRoute: ActivatedRoute;
@@ -31,10 +28,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   beforeEach(async () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
       jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
-
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'getDraftAccountById']);
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
-    mockOpalFinesService.getDraftAccountById.and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
 
     finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
       'onDefendantClick',
@@ -55,7 +48,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesDraftCreateAndManageTabsComponent],
       providers: [
-        { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         { provide: FinesDraftService, useValue: finesDraftService },
@@ -242,7 +234,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
         expect(result).toEqual({
           businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
           submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
-          statuses: [OpalFinesDraftAccountStatuses.rejected],
+          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
         });
 
         return mockRejectedCount$;
@@ -266,7 +258,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
         expect(result).toEqual({
           businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
           submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
-          statuses: [OpalFinesDraftAccountStatuses.rejected],
+          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
         });
 
         return mockRejectedCount$;
@@ -293,7 +285,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       expect(result).toEqual({
         businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
         submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
-        statuses: [OpalFinesDraftAccountStatuses.rejected],
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
       });
 
       return mockRejectedCount$;
@@ -321,7 +313,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
         expect(result).toEqual({
           businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
           submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
-          statuses: [OpalFinesDraftAccountStatuses.rejected],
+          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
         });
 
         return mockRejectedCount$;
