@@ -24,6 +24,12 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('offence-details'),
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+              },
+            },
           },
         },
       ],
