@@ -9,6 +9,7 @@ import { ERROR_MESSAGES } from './constants/fines_mac_create_account_errors';
 import { provideHttpClient } from '@angular/common/http';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_CREATE_ACCOUNT_MOCK } from './mocks/fines_mac_create_account_mock';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 describe('FinesMacCreateAccountComponent', () => {
   const setupComponent = (formSubmit: any) => {
@@ -27,9 +28,10 @@ describe('FinesMacCreateAccountComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            parent: of('manual-account-creation'),
+            snapshot: {
+              data: {
+                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
               },
             },
           },
