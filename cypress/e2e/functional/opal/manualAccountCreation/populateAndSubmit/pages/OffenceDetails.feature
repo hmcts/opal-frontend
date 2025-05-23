@@ -1019,7 +1019,6 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-  @only
   Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     And I open the "search the offence list" link in the same tab
     And I see "Search offences" on the page header
@@ -1052,7 +1051,6 @@ Feature: Manual account creation - Offence Details
     And I see "NonExistent" in the "Short title" field
     And I see "Invalid Act" in the "Act and section" text field
 
-  @only
   Scenario: AC1a-h. Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
     # AC1b user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
     When I open the "search the offence list" link in the same tab
@@ -1173,6 +1171,9 @@ Feature: Manual account creation - Offence Details
     And I enter "ABC123" into the "Offence code" field
     And I enter "Title name" into the "Short title" field
     And I enter "testing the new field" into the "Act and section" text field
+
+    And I click the search button
+    Then I see "Search results" on the page header
     And I check accessibility
 
 
