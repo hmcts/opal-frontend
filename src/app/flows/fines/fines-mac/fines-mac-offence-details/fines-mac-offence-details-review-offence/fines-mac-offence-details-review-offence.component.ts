@@ -39,7 +39,11 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.impositionRefData = this.activatedRoute.snapshot.data['results'];
-    this.majorCreditorRefData = this.activatedRoute.snapshot.data['majorCreditors'];
+    if (this.activatedRoute.snapshot.data['results']) {
+      this.impositionRefData = this.activatedRoute.snapshot.data['results'];
+    }
+    if (this.activatedRoute.snapshot.data['majorCreditors']) {
+      this.majorCreditorRefData = this.activatedRoute.snapshot.data['majorCreditors'];
+    }
   }
 }

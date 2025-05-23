@@ -55,8 +55,12 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   }
 
   public ngOnInit(): void {
-    this.results = this.activatedRoute.snapshot.data['results'];
-    this.majorCreditors = this.activatedRoute.snapshot.data['majorCreditors'];
+    if (this.activatedRoute.snapshot.data['results']) {
+      this.results = this.activatedRoute.snapshot.data['results'];
+    }
+    if (this.activatedRoute.snapshot.data['majorCreditors']) {
+      this.majorCreditors = this.activatedRoute.snapshot.data['majorCreditors'];
+    }
     this.getOffencesImpositions();
   }
 

@@ -21,6 +21,10 @@ import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -345,6 +349,10 @@ describe('FinesMacAccountDetailsComponent', () => {
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), account_status: 'Rejected' },
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
@@ -368,6 +376,10 @@ describe('FinesMacAccountDetailsComponent', () => {
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
