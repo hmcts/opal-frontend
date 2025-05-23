@@ -68,6 +68,10 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
               data: {
                 finesMacState: {},
                 finesDraftState: {},
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
             parent: {
@@ -86,22 +90,6 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   };
 
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
-      statusCode: 200,
-      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-    }).as('getLocalJusticeAreas');
-    cy.intercept('GET', '**/opal-fines-service/courts**', {
-      statusCode: 200,
-      body: OPAL_FINES_COURT_REF_DATA_MOCK,
-    }).as('getCourts');
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    }).as('getResults');
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    }).as('getMajorCreditors');
     cy.intercept(
       {
         method: 'GET',
