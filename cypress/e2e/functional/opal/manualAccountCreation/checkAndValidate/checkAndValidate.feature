@@ -212,9 +212,10 @@ Feature: PO-6 Navigate and edit sections from task list
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y only
 
         And I remove all draft accounts
-        And I intercept reference data for offence details
         And I create a "adultOrYouthOnly" draft account with the following details:
-            | Account_status | Rejected |
+            | Account_status              | Rejected |
+            | account.defendant.forenames | FNAME    |
+            | account.defendant.surname   | LNAME    |
         And I update the last created draft account with status "Rejected"
         And I click on the "Rejected" link
         And I click on the "LNAME, FNAME" link
@@ -263,7 +264,6 @@ Feature: PO-6 Navigate and edit sections from task list
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y with parent/guardian to pay
 
         And I remove all draft accounts
-        And I intercept reference data for offence details
         And I create a "parentOrGuardianToPay" draft account with the following details:
             | Account_status | Rejected |
         And I update the last created draft account with status "Rejected"
@@ -318,7 +318,6 @@ Feature: PO-6 Navigate and edit sections from task list
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, Company
 
         And I remove all draft accounts
-        And I intercept reference data for offence details
         And I create a "company" draft account with the following details:
             | Account_status | Rejected |
         And I update the last created draft account with status "Rejected"
@@ -366,7 +365,6 @@ Feature: PO-6 Navigate and edit sections from task list
     Scenario: View the details of an account in review
 
         And I remove all draft accounts
-        And I intercept reference data for offence details
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
             | account.defendant.forenames             | Larry                     |
@@ -378,12 +376,12 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see "Mr Larry LINCOLN" on the page header
         And the account status is "In review"
         And I see the following in the "Court details" table:
-            | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
+            | Sending area or Local Justice Area (LJA) | Aberdeen JP Court (9251) |
 
         And I see the following in the "Personal details" table:
-            | First name | Larry          |
-            | Last name  | Lincoln        |
-            | Address    | Addr1  TE1 1ST |
+            | First name | Larry   |
+            | Last name  | Lincoln |
+            | Address    | Street  |
 
         And I see the following in the "Contact details" table:
             | Primary email address   | larry.lincoln@outlook.com |
@@ -391,11 +389,11 @@ Feature: PO-6 Navigate and edit sections from task list
             | Home telephone number   | 02078219385               |
 
         And I see the following in the "Employer details" table:
-            | Employer name | Test Corp |
+            | Employer name | — |
 
         And I see the following in the "Payment terms" table:
-            | Has a collection order been made? | No  |
-            | Make collection order today       | Yes |
+            | Payment terms | Pay in full |
+            | Pay by date   | 30 May 2025 |
 
         And I see the following in the "Account comments and notes" table:
             | Comment      | — |
