@@ -663,13 +663,3 @@ Feature: Manual account creation - Create Draft Account
     #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
     When I click the "Submit for review" button and capture the created account number
     Then I see "You've submitted this account for review" text on the page
-
-
-
-
-
-
-
-
-
-

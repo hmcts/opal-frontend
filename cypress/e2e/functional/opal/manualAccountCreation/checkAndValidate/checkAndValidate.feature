@@ -126,4 +126,195 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the following in the "Payment terms" table:
         Then I see the following in the "Account comments and notes" table:
 
+    @PO-657
+    Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y only
 
+        And I remove all draft accounts
+        And I intercept reference data for offence details
+        And I create a "adultOrYouthOnly" draft account with the following details:
+            | Account_status | Rejected |
+        And I update the last created draft account with status "Rejected"
+        And I click on the "Rejected" link
+        And I click on the "LNAME, FNAME" link
+        Then I see "Mr FNAME LNAME" on the page header
+
+        #Test back link
+
+        When I click the "Check account" button
+        And I see "Check account details" on the page header
+        And I click on the "Back" link
+        Then I see "Mr FNAME LNAME" on the page header
+        And I see "Test reason" text on the page
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Court details" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Personal details" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Contact details" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Employer details" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Offences and impositions" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Payment terms" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Account comments and notes" table
+        Then I see "Mr FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click the "Submit for review" button
+
+    @PO-657
+    Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y with parent/guardian to pay
+
+        And I remove all draft accounts
+        And I intercept reference data for offence details
+        And I create a "parentOrGuardianToPay" draft account with the following details:
+            | Account_status | Rejected |
+        And I update the last created draft account with status "Rejected"
+        And I click on the "Rejected" link
+        And I click on the "LNAME, FNAME" link
+        Then I see "Miss FNAME LNAME" on the page header
+
+        #Test back link
+
+        When I click the "Check account" button
+        And I see "Check account details" on the page header
+        And I click on the "Back" link
+        Then I see "Miss FNAME LNAME" on the page header
+        And I see "Test reason" text on the page
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Court details" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Parent or guardian details" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Contact details" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Employer details" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Defendant details" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Offences and impositions" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Payment terms" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Account comments and notes" table
+        Then I see "Miss FNAME LNAME" on the page header
+
+        When I click the "Check account" button
+        And I click the "Submit for review" button
+
+    @PO-657
+    Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, Company
+
+        And I remove all draft accounts
+        And I intercept reference data for offence details
+        And I create a "company" draft account with the following details:
+            | Account_status | Rejected |
+        And I update the last created draft account with status "Rejected"
+        And I click on the "Rejected" link
+        And I click on the "TEST Rejected" link
+        Then I see "TEST Rejected" on the page header
+        And the account status is "Rejected"
+
+        #Test back link
+
+        When I click the "Check account" button
+        And I see "Check account details" on the page header
+        And I click on the "Back" link
+        Then I see "TEST Rejected" on the page header
+        And I see "Test reason" text on the page
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Court details" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Company details" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Contact details" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Offences and impositions" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Payment terms" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click on the "Change" link in the "Account comments and notes" table
+        Then I see "TEST Rejected" on the page header
+
+        When I click the "Check account" button
+        And I click the "Submit for review" button
+
+    @PO-610
+    Scenario: View the details of an account in review
+
+        And I remove all draft accounts
+        And I intercept reference data for offence details
+        And I create a "adultOrYouthOnly" draft account with the following details:
+            | Account_status                          | Submitted                 |
+            | account.defendant.forenames             | Larry                     |
+            | account.defendant.surname               | Lincoln                   |
+            | account.defendant.email_address_1       | larry.lincoln@outlook.com |
+            | account.defendant.telephone_number_home | 02078219385               |
+        And I reload the page
+        And I click on the "Lincoln, Larry" link
+        Then I see "Mr Larry LINCOLN" on the page header
+        And the account status is "In review"
+        And I see the following in the "Court details" table:
+            | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
+
+        And I see the following in the "Personal details" table:
+            | First name | Larry          |
+            | Last name  | Lincoln        |
+            | Address    | Addr1  TE1 1ST |
+
+        And I see the following in the "Contact details" table:
+            | Primary email address   | larry.lincoln@outlook.com |
+            | Secondary email address | —                         |
+            | Home telephone number   | 02078219385               |
+
+        And I see the following in the "Employer details" table:
+            | Employer name | Test Corp |
+
+        And I see the following in the "Payment terms" table:
+            | Has a collection order been made? | No  |
+            | Make collection order today       | Yes |
+
+        And I see the following in the "Account comments and notes" table:
+            | Comment      | — |
+            | Account note | — |
