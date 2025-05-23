@@ -1051,8 +1051,8 @@ Feature: Manual account creation - Offence Details
     And I see "NonExistent" in the "Short title" field
     And I see "Invalid Act" in the "Act and section" text field
 
-  Scenario: AC1a-h. Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
-    # AC1b user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
+  Scenario: AC1a-h, AC2a-b, Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
+    # AC1b & AC2 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
     When I open the "search the offence list" link in the same tab
 
     And I see "Search offences" on the page header
