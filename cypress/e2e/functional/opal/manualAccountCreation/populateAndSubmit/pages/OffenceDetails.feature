@@ -1166,7 +1166,9 @@ Feature: Manual account creation - Offence Details
 
   Scenario: Offence search / results screen - Axe core [@PO-545, @PO-667, PO-987]
     # check accessibility on Add an offence screen
-    And I open the "search the offence list" link in the same tab
+    When I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
+
     #Check accessibility of Search offences screen
     And I check accessibility
 
