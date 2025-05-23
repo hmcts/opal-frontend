@@ -49,8 +49,6 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
 
     setupComponent(allRejectedMockData);
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
-
     cy.get(DOM_ELEMENTS.tableHeadings).contains('Defendant').should('exist');
     cy.get(DOM_ELEMENTS.tableHeadings).contains('Date of birth').should('exist');
     cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
@@ -83,8 +81,6 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
 
     setupComponent(allRejectedMockData);
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
     cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
     cy.get(DOM_ELEMENTS.tableRow)
@@ -122,10 +118,9 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     '(AC.4b)should have pagination enabled for over 25 draft accounts for In Review accounts',
     { tags: ['@PO-618'] },
     () => {
-      const allRejectedMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+      const allRejectedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
 
       setupComponent(allRejectedMockData);
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
 
       cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
