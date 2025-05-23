@@ -1166,7 +1166,14 @@ Feature: Manual account creation - Offence Details
     And I see "100 offences" text on the page
 
 
-
+  Scenario: Offence search screen - Axe core
+    # check accessibility on Add an offence screen
+    And I open the "search the offence list" link in the same tab
+    #Check accessibility of Search offences screen
+    And I enter "ABC123" into the "Offence code" field
+    And I enter "Title name" into the "Short title" field
+    And I enter "testing the new field" into the "Act and section" text field
+    And I check accessibility
 
 
 

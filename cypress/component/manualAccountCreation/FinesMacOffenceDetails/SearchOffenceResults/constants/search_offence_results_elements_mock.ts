@@ -35,8 +35,7 @@ export const DOM_ELEMENTS = {
   paginationPage4: '.govuk-pagination__item:nth-child(4)',
 
   // Messages
-  noResultsMessage: 'p:contains("There are no matching results.")',
-  noResultsFollowupMessage: 'p:contains("Check your search and try again.")',
+  noResultsMessage: '.govuk-grid-column-full-width > p:nth-of-type(1)',
+  noResultsFollowupMessage: '.govuk-grid-column-full-width > p:nth-of-type(2)',
   tableStatusMessage: 'opal-lib-moj-sortable-table-status',
-  clipboardConfirmation: '',
 };
