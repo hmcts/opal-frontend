@@ -14,4 +14,5 @@ export interface IFinesMacAddAccountPayload {
   created_at: string | null;
   account_snapshot: IFinesMacPayloadAccountSnapshot | null;
   account_status_date: string | null;
+  version: number | null;
 }
