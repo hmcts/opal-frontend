@@ -3,148 +3,108 @@
     "created_at": null,
     "account_snapshot": null,
     "account_status_date": null,
-    "business_unit_id": 73,
-    "submitted_by": "L073JG",
+    "business_unit_id": 77,
+    "submitted_by": "L077JG",
     "submitted_by_name": "opal-test",
     "account": {
-      "account_type": "fine",
-      "defendant_type": "adultOrYouthOnly",
-      "originator_name": "Avon & Somerset Magistrates' Court",
-      "originator_id": 1450,
-      "prosecutor_case_reference": "ABCD1234A",
-      "enforcement_court_id": 730000000102,
-      "collection_order_made": false,
-      "collection_order_made_today": true,
-      "collection_order_date": "2025-05-22",
-      "suspended_committal_date": "2025-05-15",
-      "payment_card_request": true,
-      "account_sentence_date": "2025-03-20",
-      "defendant": {
-        "company_flag": false,
-        "title": "Mr",
-        "surname": "LNAME",
-        "forenames": "FNAME",
-        "company_name": null,
-        "dob": "1990-01-01",
-        "address_line_1": "Addr1",
-        "address_line_2": null,
-        "address_line_3": null,
-        "address_line_4": null,
-        "address_line_5": null,
-        "post_code": "TE1 1ST",
-        "telephone_number_home": null,
-        "telephone_number_business": null,
-        "telephone_number_mobile": null,
-        "email_address_1": null,
-        "email_address_2": null,
-        "national_insurance_number": "QQ123456C",
-        "driving_licence_number": null,
-        "pnc_id": null,
-        "nationality_1": null,
-        "nationality_2": null,
-        "ethnicity_self_defined": null,
-        "ethnicity_observed": null,
-        "cro_number": null,
-        "occupation": null,
-        "gender": null,
-        "custody_status": null,
-        "prison_number": null,
-        "interpreter_lang": null,
-        "debtor_detail": {
-          "vehicle_make": "FORD FOCUS",
-          "vehicle_registration_mark": "AS18 BTY",
-          "document_language": null,
-          "hearing_language": null,
-          "employee_reference": "AB123456C",
-          "employer_company_name": "Test Corp",
-          "employer_address_line_1": "Addr1",
-          "employer_address_line_2": "Addr2",
-          "employer_address_line_3": "Addr3",
-          "employer_address_line_4": "Addr4",
-          "employer_address_line_5": "Addr5",
-          "employer_post_code": "TE12 3ST",
-          "employer_telephone_number": "01234567890",
-          "employer_email_address": "employer@example.com",
-          "aliases": [
-            {
-              "alias_forenames": "fname1",
-              "alias_surname": "LNAME1",
-              "alias_company_name": null
-            }
-          ]
+        "account_type": "fine",
+        "defendant_type": "adultOrYouthOnly",
+        "originator_name": "Aberdeen JP Court",
+        "originator_id": 9251,
+        "prosecutor_case_reference": "AADS",
+        "enforcement_court_id": 360000000003,
+        "collection_order_made": null,
+        "collection_order_made_today": null,
+        "collection_order_date": null,
+        "suspended_committal_date": null,
+        "payment_card_request": null,
+        "account_sentence_date": "2025-05-15",
+        "defendant": {
+            "company_flag": false,
+            "title": "Mr",
+            "surname": "TEST",
+            "forenames": "Jonathan",
+            "company_name": null,
+            "dob": "2025-05-08",
+            "address_line_1": "Street",
+            "address_line_2": null,
+            "address_line_3": null,
+            "address_line_4": null,
+            "address_line_5": null,
+            "post_code": null,
+            "telephone_number_home": null,
+            "telephone_number_business": null,
+            "telephone_number_mobile": null,
+            "email_address_1": null,
+            "email_address_2": null,
+            "national_insurance_number": "AA123456A",
+            "driving_licence_number": null,
+            "pnc_id": null,
+            "nationality_1": null,
+            "nationality_2": null,
+            "ethnicity_self_defined": null,
+            "ethnicity_observed": null,
+            "cro_number": null,
+            "occupation": null,
+            "gender": null,
+            "custody_status": null,
+            "prison_number": null,
+            "interpreter_lang": null,
+            "debtor_detail": {
+                "vehicle_make": null,
+                "vehicle_registration_mark": null,
+                "document_language": null,
+                "hearing_language": null,
+                "employee_reference": null,
+                "employer_company_name": null,
+                "employer_address_line_1": null,
+                "employer_address_line_2": null,
+                "employer_address_line_3": null,
+                "employer_address_line_4": null,
+                "employer_address_line_5": null,
+                "employer_post_code": null,
+                "employer_telephone_number": null,
+                "employer_email_address": null,
+                "aliases": null
+            },
+            "parent_guardian": null
         },
-        "parent_guardian": null
-      },
-      "offences": [
-        {
-          "date_of_sentence": "20/03/2025",
-          "imposing_court_id": 730000000102,
-          "offence_id": 33369,
-          "impositions": [
+        "offences": [
             {
-              "result_id": "FCOMP",
-              "amount_imposed": 300,
-              "amount_paid": 100,
-              "major_creditor_id": null,
-              "minor_creditor": {
-                "company_flag": false,
-                "title": "Mr",
-                "company_name": null,
-                "surname": "LNAME",
-                "forenames": "FNAME",
-                "dob": null,
-                "address_line_1": "Addr1",
-                "address_line_2": "Addr2",
-                "address_line_3": "Addr3",
-                "post_code": "TE1 1ST",
-                "telephone": null,
-                "email_address": null,
-                "payout_hold": true,
-                "pay_by_bacs": true,
-                "bank_account_type": 1,
-                "bank_sort_code": "123456",
-                "bank_account_number": "12345678",
-                "bank_account_name": "F LNAME",
-                "bank_account_ref": "REF"
-              }
+                "date_of_sentence": "15/05/2025",
+                "imposing_court_id": 360000000003,
+                "offence_id": 33369,
+                "impositions": [
+                    {
+                        "result_id": "FCOST",
+                        "amount_imposed": 125,
+                        "amount_paid": 10,
+                        "major_creditor_id": 3859,
+                        "minor_creditor": null
+                    }
+                ]
             }
-          ]
-        }
-      ],
-      "fp_ticket_detail": null,
-      "payment_terms": {
-        "payment_terms_type_code": "I",
-        "effective_date": "2025-06-05",
-        "instalment_period": "M",
-        "lump_sum_amount": 150,
-        "instalment_amount": 300,
-        "default_days_in_jail": 100,
-        "enforcements": [
-          {
-            "result_id": "COLLO",
-            "enforcement_result_responses": null
-          },
-          {
-            "result_id": "NOENF",
-            "enforcement_result_responses": [
-              {
-                "parameter_name": "reason",
-                "response": "Reason account is on NOENF"
-              }
-            ]
-          }
-        ]
-      },
-      "account_notes": null
+        ],
+        "fp_ticket_detail": null,
+        "payment_terms": {
+            "payment_terms_type_code": "B",
+            "effective_date": "2025-05-30",
+            "instalment_period": null,
+            "lump_sum_amount": null,
+            "instalment_amount": null,
+            "default_days_in_jail": null,
+            "enforcements": null
+        },
+        "account_notes": null
     },
     "account_type": "fine",
     "account_status": "Submitted",
     "timeline_data": [
-      {
-        "username": "opal-test",
-        "status": "Submitted",
-        "status_date": "2025-05-22",
-        "reason_text": null
-      }
+        {
+            "username": "opal-test",
+            "status": "Submitted",
+            "status_date": "2025-05-21",
+            "reason_text": null
+        }
     ]
-  }
+}
