@@ -385,7 +385,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dashed line if Data is empty for non required details',
+    '(AC.3,AC.7) should show dashed line if Data is empty for non required details',
     { tags: ['@PO-560', '@PO-272', '@PO-657'] },
     () => {
       setupComponent();
@@ -440,7 +440,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dash lines for non required fields in the details',
+    '(AC.3,AC.7) should show dash lines for non required fields in the details',
     { tags: ['@PO-560', '@PO-272', '@PO-657'] },
     () => {
       setupComponent();
@@ -673,7 +673,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dash lines for non required fields in the details AYPG',
+    '(AC.3,AC.7) should show dash lines for non required fields in the details AYPG',
     { tags: ['@PO-662', '@PO-344', '@PO-657'] },
     () => {
       setupComponent();
@@ -792,7 +792,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
   it(
-    '(AC.3) should show dashed line if Data is empty for non required details Company',
+    '(AC.3,AC.7) should show dashed line if Data is empty for non required details Company',
     { tags: ['@PO-663', '@PO-345', '@PO-657'] },
     () => {
       setupComponent();
