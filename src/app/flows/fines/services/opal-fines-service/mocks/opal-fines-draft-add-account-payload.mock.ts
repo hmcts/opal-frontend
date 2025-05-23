@@ -152,4 +152,5 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
       reason_text: null,
     },
   ],
+  version: 1,
 };
