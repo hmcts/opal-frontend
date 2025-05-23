@@ -8,4 +8,5 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT: IFinesDraftTableWrapperTabl
   CreatedDate: 'ascending',
   'Account type': 'none',
   'Business unit': 'none',
+  'Submitted by': 'none',
 };

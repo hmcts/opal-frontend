@@ -10,4 +10,5 @@ export interface IFinesDraftTableWrapperTableData extends IAbstractTableData<Sor
   CreatedDate: string;
   'Account type': string;
   'Business unit': string;
+  'Submitted by': string;
 }

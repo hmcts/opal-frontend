@@ -8,6 +8,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_ROUTING_TITLES } from './constants/fines-draft-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { routing as createAndManageRouting } from '../fines-draft-create-and-manage/routing/fines-draft-create-and-manage.routes';
+import { routing as checkAndValidateRouting } from '../fines-draft-check-and-validate/routing/fines-draft-check-and-validate.routes';
 
 const draftCheckAndValidateRootPath = FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate;
 const draftCheckAndValidatePermissionId =
@@ -40,9 +41,10 @@ export const routing: Routes = [
   {
     path: FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate,
     loadComponent: () =>
-      import(
-        '../fines-draft-check-and-validate/fines-draft-check-and-validate-tabs/fines-draft-check-and-validate-tabs.component'
-      ).then((c) => c.FinesDraftCheckAndValidateTabsComponent),
+      import('../fines-draft-check-and-validate/fines-draft-check-and-validate.component').then(
+        (c) => c.FinesDraftCheckAndValidateComponent,
+      ),
+    children: checkAndValidateRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
       routePermissionId: [draftCheckAndValidatePermissionId],
