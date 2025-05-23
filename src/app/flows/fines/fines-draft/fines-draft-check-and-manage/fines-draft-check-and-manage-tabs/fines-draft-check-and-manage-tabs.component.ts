@@ -14,7 +14,6 @@ import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrappe
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import {
   MojSubNavigationItemComponent,
@@ -22,6 +21,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
@@ -89,7 +89,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
    * @returns {void}
    */
   private getRejectedCount(): void {
-    const params = { businessUnitIds: this.businessUnitIds, statuses: [OpalFinesDraftAccountStatuses.rejected] };
+    const params = { businessUnitIds: this.businessUnitIds, statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected] };
 
     this.rejectedCount$ = this.opalFinesService.getDraftAccounts(params).pipe(
       map((response) => {

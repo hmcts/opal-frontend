@@ -25,13 +25,9 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getLocalJusticeAreas: jasmine
-        .createSpy('getLocalJusticeAreas')
-        .and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
       getLocalJusticeAreaPrettyName: jasmine
         .createSpy('getLocalJusticeAreaPrettyName')
         .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
-      getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     };
     formSubmit = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
@@ -47,6 +43,12 @@ describe('FinesMacCourtDetailsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('manual-account-creation'),
+            snapshot: {
+              data: {
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+              },
+            },
           },
         },
       ],
@@ -65,12 +67,6 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have state and populate data$', () => {
-    expect(component['sendingCourtData$']).not.toBeUndefined();
-    expect(component['enforcementCourtData$']).not.toBeUndefined();
-    expect(component['groupLjaAndCourtData$']).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {

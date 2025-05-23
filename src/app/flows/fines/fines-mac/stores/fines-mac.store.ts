@@ -111,7 +111,10 @@ export const FinesMacStore = signalStore(
       }),
       accountCommentsNotesStatus: computed(() => {
         return utilsService.getFormStatus(
-          store.accountCommentsNotes().formData,
+          [
+            store.accountCommentsNotes().formData.fm_account_comments_notes_notes,
+            store.accountCommentsNotes().formData.fm_account_comments_notes_comments,
+          ],
           FINES_MAC_STATUS.PROVIDED,
           FINES_MAC_STATUS.NOT_PROVIDED,
         );
