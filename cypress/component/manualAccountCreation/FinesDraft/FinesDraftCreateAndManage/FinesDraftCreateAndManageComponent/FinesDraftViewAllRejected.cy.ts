@@ -1,17 +1,10 @@
 import { mount } from 'cypress/angular';
-import { provideRouter } from '@angular/router';
 import { FinesDraftCreateAndManageViewAllRejectedComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
-import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
-import { interceptGetAllRejectedAccounts } from './intercepts/fines-draft-intercepts';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
-//import { FinesDraftCheckAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
 
 describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   const setupComponent = (allRejectedAccountMock: any) => {
