@@ -5,7 +5,7 @@ export const DOM_ELEMENTS = {
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
   statusHeading: 'h2.govuk-heading-m',
-
+  tableCaption: 'caption.govuk-table__caption',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
 
