@@ -12,7 +12,7 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/moc
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 
@@ -80,7 +80,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
 
     expect(routerSpy).toHaveBeenCalledWith(
       [
-        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}/${FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs}`,
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}/${FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs}`,
       ],
       {
         fragment: 'review',

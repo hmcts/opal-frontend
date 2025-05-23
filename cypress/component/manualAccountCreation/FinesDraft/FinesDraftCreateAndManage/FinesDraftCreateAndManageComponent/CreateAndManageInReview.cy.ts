@@ -130,7 +130,7 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
   });
-  //A descending order means that the most recent date will be at the top of the list, not the bottom.
+ 
   it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
     const rejectedMockData = { count: 0, summaries: [] };
     const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };

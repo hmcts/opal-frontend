@@ -11,25 +11,18 @@
       subNavItemText="In review"
     ></opal-lib-moj-sub-navigation-item>
     @if (rejectedCount$ | async; as rejectedCount) {
-      @if (rejectedCount === '0') {
-        <opal-lib-moj-sub-navigation-item
-          subNavItemId="inputter-rejected-tab"
-          [activeSubNavItemFragment]="activeTab"
-          subNavItemFragment="rejected"
-          subNavItemText="Rejected"
-        ></opal-lib-moj-sub-navigation-item>
-      } @else {
-        <opal-lib-moj-sub-navigation-item
-          subNavItemId="inputter-rejected-tab"
-          [activeSubNavItemFragment]="activeTab"
-          subNavItemFragment="rejected"
-          subNavItemText="Rejected"
-        >
-          <opal-lib-moj-badge badge badgeId="inputter-rejected-tab-rejected-count">{{
-            rejectedCount
-          }}</opal-lib-moj-badge>
-        </opal-lib-moj-sub-navigation-item>
-      }
+      <opal-lib-moj-sub-navigation-item
+        subNavItemId="inputter-rejected-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="rejected"
+        subNavItemText="Rejected"
+      >
+        @if (rejectedCount !== '0') {
+          <opal-lib-moj-badge badge badgeId="inputter-rejected-tab-rejected-count">
+            {{ rejectedCount }}
+          </opal-lib-moj-badge>
+        }
+      </opal-lib-moj-sub-navigation-item>
     }
     <opal-lib-moj-sub-navigation-item
       subNavItemId="inputter-approved-tab"
@@ -64,7 +57,7 @@
   }
 
   <ng-template #tableWrapper>
-    @if (draftAccounts$ | async; as draftAccounts) {
+    @if (tabData$ | async; as draftAccounts) {
       @if (draftAccounts.length) {
         @if (activeTab === 'rejected') {
           <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
@@ -105,8 +98,8 @@
       To resubmit accounts for other team members, you can
       <a
         class="govuk-link"
-        (click)="handleRoute(finesDraftCheckAndManageRoutingPaths.children.viewAllRejected)"
-        (keydown.enter)="handleRoute(finesDraftCheckAndManageRoutingPaths.children.viewAllRejected)"
+        (click)="handleRoute(finesDraftCreateAndManageRoutingPaths.children.viewAllRejected)"
+        (keydown.enter)="handleRoute(finesDraftCreateAndManageRoutingPaths.children.viewAllRejected)"
         tabindex="0"
         >view all rejected accounts</a
       >.
