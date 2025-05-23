@@ -1019,23 +1019,8 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
-    And I am moving to "search the offence list" tab
-
-    And I see "Search offences" on the page header
-    And I click the search button
-
-    Then I see "Search offences" on the page header
-
-    And I enter "ABC123" into the "Offence code" field
-    And I enter "Title name" into the "Short title" field
-    And I enter "testing the new field" into the "Act and section" text field
-
-    And I click the search button
-    Then I see "Search results" on the page header
-
   @only
-  Scenario: AC7. Back button navigation retains search field values
+  Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     And I open the "search the offence list" link in the same tab
     And I see "Search offences" on the page header
 
@@ -1068,20 +1053,42 @@ Feature: Manual account creation - Offence Details
     And I see "Invalid Act" in the "Act and section" text field
 
   @only
-  Scenario: AC1c-h. Search functionality behavior and requirements
-    And I open the "search the offence list" link in the same tab
-    And I see "Search offences" on the page header
+  Scenario: AC1a-h. Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
+    # AC1b user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
+    When I open the "search the offence list" link in the same tab
 
-    # AC1b At least 1 character needed
+    And I see "Search offences" on the page header
     And I click the search button
+
     Then I see "Search offences" on the page header
+
+    And I enter "A" into the "Offence code" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I enter "d" into the "Short title" field
+    And I clear the "Offence Code" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I enter "e" into the "Act and section" text field
+    And I clear the "Short title" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I clear the "Act and section" text field
 
     # AC1c - Active/Inactive offences filter
     When I enter "AB0" into the "Offence code" field
     And I click the search button
     Then I see "Search results" on the page header
     And I see "Present" in the Search results table in the "Used to" column
-    # And I do not see any dates in the "Used to" column
 
     When I click on the "Back" link
     And I select the "Include inactive offence codes" checkbox
