@@ -20,7 +20,7 @@ import {
 } from './intercepts/fines-draft-intercepts';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 
-describe('FinesDraftCheckAndManageInReviewComponent', () => {
+describe('FinesDraftCheckAndManageApprovedComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCheckAndManageTabsComponent, {
