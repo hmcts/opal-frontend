@@ -6,6 +6,7 @@ import { FinesMacOffenceDetailsSearchOffencesStoreType } from '../stores/types/f
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
+import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-search-offences.mock';
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesResultsComponent;
@@ -23,6 +24,11 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('search-offences'),
+            snapshot: {
+              data: {
+                searchResults: OPAL_FINES_SEARCH_OFFENCES_MOCK,
+              },
+            },
           },
         },
       ],
