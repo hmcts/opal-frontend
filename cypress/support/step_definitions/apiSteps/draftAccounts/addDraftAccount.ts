@@ -35,11 +35,10 @@ function getPayloadFileForAccountType(accountType: DefendantType): string {
   const payloadFiles = {
     company: 'draftAccountPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
-    parentOrGuardianToPay: 'parentOrGuardianPayload.json'
+    parentOrGuardianToPay: 'parentOrGuardianPayload.json',
   };
   return payloadFiles[accountType];
 }
-
 
 When('I create a {string} draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
   const overrides = convertDataTableToNestedObject(data);
@@ -59,35 +58,36 @@ When('I create a {string} draft account with the following details:', (accountTy
 });
 
 When('I update the last created draft account with status {string}', (status: string) => {
-  cy.wrap(createdAccounts).its(createdAccounts.length - 1).then((accountId) => {
-    // Fetch the current draft account to get required fields
-    cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
-      const account = getResp.body;
-      const business_unit_id = account.business_unit_id;
-      const version = account.version;
-      const validated_by = account.submitted_by || 'opal-test';
-      const now = new Date().toISOString();
-      const updateBody = {
-        business_unit_id,
-        account_status: status,
-        validated_by,
-        version,
-        timeline_data: [
-          {
-            username: validated_by,
-            status,
-            status_date: now,
-            reason_text: 'Test reason'
-          }
-        ]
-      };
-      cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
-        expect(response.status).to.eq(200);
+  cy.wrap(createdAccounts)
+    .its(createdAccounts.length - 1)
+    .then((accountId) => {
+      // Fetch the current draft account to get required fields
+      cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
+        const account = getResp.body;
+        const business_unit_id = account.business_unit_id;
+        const version = account.version;
+        const validated_by = account.submitted_by || 'opal-test';
+        const now = new Date().toISOString();
+        const updateBody = {
+          business_unit_id,
+          account_status: status,
+          validated_by,
+          version,
+          timeline_data: [
+            {
+              username: validated_by,
+              status,
+              status_date: now,
+              reason_text: 'Test reason',
+            },
+          ],
+        };
+        cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
+          expect(response.status).to.eq(200);
+        });
       });
     });
-  });
 });
-
 
 afterEach(() => {
   cy.log('Createdaccount length: ' + createdAccounts.length);
