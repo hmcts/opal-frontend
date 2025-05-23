@@ -100,7 +100,7 @@ describe('FinesDraftCheckAndManageDeletedComponent', () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
-      cy.get('strong').contains('Showing 1 - 25 of 50 accounts').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
