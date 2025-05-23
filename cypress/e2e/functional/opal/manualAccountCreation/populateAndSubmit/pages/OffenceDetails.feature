@@ -1,4 +1,4 @@
-@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680 @PO-1395
+@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680 @PO-1395 @PO-987
 Feature: Manual account creation - Offence Details
   #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the Offence screens component tests
@@ -1019,25 +1019,154 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered [@PO-545, @PO-667]
+  Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     And I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
+
+    # Test with results found
+    When I enter "TP11003" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "Transport Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "TP11003" in the "Offence code" field
+    And I see "Transport" in the "Short title" field
+    And I see "Transport Act" in the "Act and section" text field
+
+    # Test with no results found
+    When I enter "XYZ999" into the "Offence code" field
+    And I enter "NonExistent" into the "Short title" field
+    And I enter "Invalid Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "There are no matching results" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "XYZ999" in the "Offence code" field
+    And I see "NonExistent" in the "Short title" field
+    And I see "Invalid Act" in the "Act and section" text field
+
+  Scenario: AC1a-h. Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
+    # AC1b user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
+    When I open the "search the offence list" link in the same tab
 
     And I see "Search offences" on the page header
     And I click the search button
 
     Then I see "Search offences" on the page header
 
-    And I enter "ABC123" into the "Offence code" field
-    And I enter "Title name" into the "Short title" field
-    And I enter "testing the new field" into the "Act and section" text field
+    And I enter "A" into the "Offence code" field
 
     And I click the search button
     Then I see "Search results" on the page header
 
+    When I click on the "Back" link
+    And I enter "d" into the "Short title" field
+    And I clear the "Offence Code" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I enter "e" into the "Act and section" text field
+    And I clear the "Short title" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I clear the "Act and section" text field
+
+    # AC1c - Active/Inactive offences filter
+    When I enter "AB0" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Present" in the Search results table in the "Used to" column
+
+    When I click on the "Back" link
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "23 Mar 2011" in the Search results table in the "Used to" column
+    And I see "Present" in the Search results table in the "Used to" column
+
+    # AC1d - Combination search across multiple fields
+    When I click on the "Back" link
+    And I enter "TP" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "London" into the "Act and section" text field
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+    And I see "TP" in the Search results table in the "Code" column
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1e - Case insensitive search
+    When I click on the "Back" link
+    And I enter "tp11003" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP11003" in the Search results table in the "Code" column
+
+    When I click on the "Back" link
+    And I enter "TRANSPORT" into the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+
+    When I click on the "Back" link
+    And I enter "LONDON" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1f - Offence Code starts with search
+    When I click on the "Back" link
+    And I enter "TP47" into the "Offence code" field
+    And I clear the "Short title" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP47033" in the Search results table in the "Code" column
+    And I see "TP47032" in the Search results table in the "Code" column
+
+    # AC1g - Short Title contains search
+    When I click on the "Back" link
+    And I enter "dangerous" into the "Short title" field
+    And I clear the "Offence Code" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "dangerous item" in the Search results table in the "Short title" column
+    And I see "dangerous driving" in the Search results table in the "Short title" column
+
+    # AC1h - Act and Section contains search
+    When I click on the "Back" link
+    And I enter "London" into the "Act and section" text field
+    And I clear the "Offence Code" field
+    And I clear the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "London Byelaws" in the Search results table in the "Act and section" column
+
+    # Max 100 responses
+    When I click on the "Back" link
+    And I enter "A" into the "Offence code" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "100 offences" text on the page
+
+
   Scenario: Offence search screen - Axe core
     # check accessibility on Add an offence screen
     And I open the "search the offence list" link in the same tab
-
     #Check accessibility of Search offences screen
     And I enter "ABC123" into the "Offence code" field
     And I enter "Title name" into the "Short title" field
@@ -1046,8 +1175,6 @@ Feature: Manual account creation - Offence Details
     And I click the search button
     Then I see "Search results" on the page header
     And I check accessibility
-
-
 
 
 
