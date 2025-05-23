@@ -88,6 +88,10 @@ describe('FinesMacReviewAccountComponent', () => {
                   FinesMacStore: finesMacState,
                   FinesMacDraft: activatedRouteMock,
                 },
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
               parent: {
                 snapshot: {
@@ -102,22 +106,6 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   };
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
-      statusCode: 200,
-      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-    }).as('getLocalJusticeAreas');
-    cy.intercept('GET', '**/opal-fines-service/courts**', {
-      statusCode: 200,
-      body: OPAL_FINES_COURT_REF_DATA_MOCK,
-    }).as('getCourts');
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    }).as('getResults');
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    }).as('getMajorCreditors');
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -165,7 +153,6 @@ describe('FinesMacReviewAccountComponent', () => {
     () => {
       setupComponent();
       cy.wait('@getOffenceByCjsCode');
-      cy.wait('@getCourts');
 
       cy.get(DOM_ELEMENTS.originatorName).should('exist');
       cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');

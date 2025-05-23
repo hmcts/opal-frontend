@@ -1,12 +1,10 @@
-@if (groupLjaAndCourtData$ | async; as data) {
-  <div class="govuk-grid-column-two-thirds">
-    <app-fines-mac-court-details-form
-      [defendantType]="defendantType"
-      [localJusticeAreas]="localJusticeAreas"
-      [sendingCourtAutoCompleteItems]="data.sendingCourtData"
-      [enforcingCourtAutoCompleteItems]="data.enforcementCourtData"
-      (formSubmit)="handleCourtDetailsSubmit($event)"
-      (unsavedChanges)="handleUnsavedChanges($event)"
-    ></app-fines-mac-court-details-form>
-  </div>
-}
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-mac-court-details-form
+    [defendantType]="defendantType"
+    [localJusticeAreas]="localJusticeAreas"
+    [sendingCourtAutoCompleteItems]="sendingCourtData"
+    [enforcingCourtAutoCompleteItems]="enforcementCourtData"
+    (formSubmit)="handleCourtDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-mac-court-details-form>
+</div>
