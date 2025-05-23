@@ -38,18 +38,6 @@ describe('FinesMacReviewAccountComponent', () => {
         UtilsService,
         FinesMacPayloadService,
         Router,
-
-        {
-          provide: FinesMacPayloadService,
-          useValue: {
-            buildAddAccountPayload: () => {
-              return finesAccountPayload;
-            },
-            buildReplaceAccountPayload: () => {
-              return finesAccountPayload;
-            },
-          },
-        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -85,8 +73,8 @@ describe('FinesMacReviewAccountComponent', () => {
             snapshot: {
               data: {
                 reviewAccountFetchMap: {
-                  FinesMacStore: finesMacState,
-                  FinesMacDraft: activatedRouteMock,
+                  finesMacStore: finesMacState,
+                  finesMacDraft: activatedRouteMock,
                 },
                 results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
                 majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
@@ -847,7 +835,7 @@ describe('FinesMacReviewAccountComponent', () => {
       reason_text: null,
     });
 
-    setupComponent(finesAccountPayload, finesAccountPayload);
+    setupComponent(finesAccountPayload, finesAccountPayload, true);
 
     cy.get(DOM_ELEMENTS.timeLine).should('exist');
     const timelineEntries = [
