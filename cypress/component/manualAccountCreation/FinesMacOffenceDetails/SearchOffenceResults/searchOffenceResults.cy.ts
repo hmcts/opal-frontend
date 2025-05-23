@@ -10,7 +10,19 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 
 describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
   beforeEach(() => {
-    cy.intercept('navigator.clipboard.writeText', {}).as('copyToClipboard');
+    cy.window().then((win) => {
+      const originalClipboard = win.navigator.clipboard;
+    
+      const clipboardWriteTextStub = cy.stub().as('clipboardWriteText').resolves();
+
+      Object.defineProperty(win.navigator, 'clipboard', {
+        value: {
+          ...originalClipboard,
+          writeText: clipboardWriteTextStub
+        },
+        configurable: true
+      });
+    });
   });
 
   let searchResultState = {
@@ -96,15 +108,17 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     cy.get(DOM_ELEMENTS.usedToHeader).should('contain', 'Used to');
   });
 
-  it.only('Displays "Copy Code" link between Code and Short Title columns (AC5)', { tags: ['@PO-545', '@PO-987'] }, () => {
+  it('Displays "Copy Code" link between Code and Short Title columns (AC5)', { tags: ['@PO-545', '@PO-987'] }, () => {
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.copyCodeLink).should('exist').should('contain', 'Copy code');
-    cy.get(DOM_ELEMENTS.copyCodeLink).should('contain', 'Copy code');
-
-    cy.get(DOM_ELEMENTS.copyCodeLink).should('exist').click();
-
-    cy.get(DOM_ELEMENTS.copyCodeLink).should('contain', 'Code Copied');
+    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('exist')
+    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Copy code');
+    
+    cy.get(DOM_ELEMENTS.copyCodeLink).first().click();
+  
+    cy.get('@clipboardWriteText').should('have.been.called');
+    
+    cy.get(DOM_ELEMENTS.copyCodeLink).first().should('contain', 'Code copied');
   });
 
   it('Correctly handles pagination with 25 results per page (AC6b)', { tags: ['@PO-545', '@PO-987'] }, () => {
@@ -165,23 +179,68 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 - 100 of 100 offences');
   });
 
-  it('Handles column sorting and resets to page 1 (AC6a)', { tags: ['@PO-545', '@PO-987'] }, () => {
+  it('Handles column sorting and resets to page 1 for all columns (AC6a)', { tags: ['@PO-545', '@PO-987'] }, () => {
     setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
+    // Navigate to page 2 to verify sorting resets pagination
     cy.get(DOM_ELEMENTS.paginationElement).contains('1');
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-
-    cy.get(DOM_ELEMENTS.paginationText).should('exist');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    
+    // Test Code column sorting
     cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS075');
     cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS074');
-
+    
     cy.get(DOM_ELEMENTS.codeHeader).should('exist');
     cy.get(DOM_ELEMENTS.codeHeader).click();
-
-    cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS051');
-    cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS052');
-
+    
+    // Verify sort and pagination reset
+    cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS001');
+    cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS002');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    
+    // Test Short Title column sorting
+    cy.get(DOM_ELEMENTS.nextPageButton).click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    
+    cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
+    cy.get(DOM_ELEMENTS.shortTitleHeader).click();
+    
+    // Verify sort and pagination reset
+    cy.get(DOM_ELEMENTS.shortTitleCell).eq(0).should('contain', 'Offence Title 1');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    
+    // Test Act and Section column sorting
+    cy.get(DOM_ELEMENTS.nextPageButton).click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    
+    cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
+    cy.get(DOM_ELEMENTS.actAndSectionHeader).click();
+    
+    // Verify sort and pagination reset
+    cy.get(DOM_ELEMENTS.actAndSectionCell).eq(0).should('contain', 'Section 1.1');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    
+    // Test Used From column sorting
+    cy.get(DOM_ELEMENTS.nextPageButton).click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    
+    cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
+    cy.get(DOM_ELEMENTS.usedFromHeader).click();
+    
+    // Verify sort and pagination reset
+    cy.get(DOM_ELEMENTS.usedFromCell).eq(0).should('contain', '01 Jan 2024');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    
+    // Test Used To column sorting
+    cy.get(DOM_ELEMENTS.nextPageButton).click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    
+    cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
+    cy.get(DOM_ELEMENTS.usedToHeader).click();
+    
+    // Verify sort and pagination reset
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.usedToCell).eq(0).should('contain', '31 Dec 2025');
   });
 });

@@ -5,10 +5,10 @@ export const DOM_ELEMENTS = {
 
   // Table headers
   codeHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Code"] button[data-index="0"]',
-  shortTitleHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Short title"]',
-  actAndSectionHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Act and section"]',
-  usedFromHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used from"]',
-  usedToHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used to"]',
+  shortTitleHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Short title"] button[data-index="1"]',
+  actAndSectionHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Act and section"] button[data-index="2"]',
+  usedFromHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used from"] button[data-index="3"]',
+  usedToHeader: 'th[opal-lib-moj-sortable-table-header][columnkey="Used to"] button[data-index="4"]',
 
   // Table cells
   codeCell: 'td[opal-lib-moj-sortable-table-row-data][id="code"]',
