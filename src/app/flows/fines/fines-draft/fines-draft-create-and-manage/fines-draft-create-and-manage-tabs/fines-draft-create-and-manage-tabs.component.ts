@@ -17,8 +17,6 @@ import { distinctUntilChanged, filter, map, Observable, startWith, Subject, take
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftService } from '../../services/fines-draft.service';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -58,9 +56,6 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   public rejectedCount$!: Observable<string>;
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
-  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
-  public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
-  public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
   /**
    * Initializes and sets up the observable data stream for tab-specific data in the fines draft management component.
@@ -150,7 +145,9 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
     this.finesDraftService.onDefendantClick(
       draftAccountId,
-      this.finesDraftStore.amend() ? this.PATH_AMEND_ACCOUNT : this.PATH_REVIEW_ACCOUNT,
+      this.finesDraftStore.amend()
+        ? this.finesDraftService.PATH_AMEND_ACCOUNT
+        : this.finesDraftService.PATH_REVIEW_ACCOUNT,
     );
   }
 

@@ -127,7 +127,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
     expect(finesDraftStore.fragment()).toEqual('review');
     expect(finesDraftStore.amend()).toBeFalsy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, component.PATH_REVIEW_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, finesDraftService.PATH_REVIEW_ACCOUNT);
   });
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_AMEND_ACCOUNT when activeTab is "rejected"', () => {
@@ -137,7 +137,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
     expect(finesDraftStore.fragment()).toEqual('rejected');
     expect(finesDraftStore.amend()).toBeTruthy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, component.PATH_AMEND_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_AMEND_ACCOUNT);
   });
 
   it('should call setupTabDataStream with correct arguments on ngOnInit', () => {

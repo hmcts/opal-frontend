@@ -16,7 +16,10 @@ export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesMacStore = inject(FinesMacStore);
 
-  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  public readonly createAccountRoute = this.finesMacRoutes.children.createAccount;
+  public readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
+  public readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
 
   /**
    * Navigates to the specified route.

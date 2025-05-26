@@ -4,6 +4,8 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { FINES_MAC_ACCOUNT_TYPES } from '../../fines-mac/constants/fines-mac-account-types';
 import { IFinesDraftTableWrapperTableData } from '../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { Router } from '@angular/router';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +13,10 @@ import { Router } from '@angular/router';
 export class FinesDraftService {
   private readonly router = inject(Router);
   private readonly dateService = inject(DateService);
+
+  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
+  public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
+  public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
   /**
    * Navigates to the review account page for the given draft account ID.

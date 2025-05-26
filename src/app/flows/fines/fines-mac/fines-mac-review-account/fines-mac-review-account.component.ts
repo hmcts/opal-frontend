@@ -33,6 +33,9 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FinesMacReviewAccountDecisionComponent } from './fines-mac-review-account-decision/fines-mac-review-account-decision.component';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -51,6 +54,7 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
     FinesMacReviewAccountParentGuardianDetailsComponent,
     FinesMacReviewAccountCompanyDetailsComponent,
     FinesMacReviewAccountHistoryComponent,
+    FinesMacReviewAccountDecisionComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,6 +76,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
   protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
+
+  protected readonly createAndManageTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`;
+  protected readonly viewAllAccountsTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`;
+  protected readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
@@ -79,6 +88,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public courts!: IOpalFinesCourtRefData;
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
+
+  public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
@@ -289,9 +300,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      const path = this.finesDraftStore.viewAllAccounts()
-        ? `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`
-        : `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`;
+      const path = this.finesDraftStore.checker()
+        ? this.checkAndValidateTabs
+        : this.finesDraftStore.viewAllAccounts()
+          ? this.viewAllAccountsTabs
+          : this.createAndManageTabs;
 
       // return true when going back to view-all-accounts
       // and false when going back to tabbed fragment

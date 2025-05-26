@@ -1,0 +1,54 @@
+<form (submit)="handleFormSubmit($event)">
+  <opal-lib-govuk-radio
+    fieldSetId="fm_review_account_decision"
+    legendText="Decision"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['fm_review_account_decision']"
+  >
+    @for (decisionOption of DECISION_OPTIONS; track decisionOption.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="decisionOption.label"
+        [inputId]="decisionOption.key"
+        [inputName]="'fm_review_account_decision'"
+        [inputValue]="decisionOption.key"
+        [control]="form.controls['fm_review_account_decision']"
+      ></div>
+      @if (form.get('fm_review_account_decision')!.value === 'reject' && decisionOption.key === 'reject') {
+        <div opal-lib-govuk-radios-conditional conditionalId="fm_review_account_decision">
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-area
+              labelText="Enter reason for rejection"
+              labelClasses="govuk-label--s"
+              inputId="fm_review_account_rejection_reason"
+              inputName="fm_review_account_rejection_reason"
+              inputClasses="govuk-!-width-two-thirds"
+              [control]="form.controls['fm_review_account_rejection_reason']"
+              [errors]="formControlErrorMessages['fm_review_account_rejection_reason']"
+              [rows]="4"
+              [maxCharacterLimit]="250"
+              [characterCountEnabled]="true"
+            >
+            </opal-lib-govuk-text-area>
+          </div>
+        </div>
+      }
+    }
+  </opal-lib-govuk-radio>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Continue</opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <a
+        class="govuk-link govuk-error-colour"
+        (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        tabindex="0"
+        >Delete account</a
+      >
+    </div>
+  </div>
+</form>

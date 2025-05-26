@@ -76,6 +76,20 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     );
   }
 
+  /**
+   * Handles the click event for a defendant in the fines draft process.
+   *
+   * Sets the current fragment and checker state in the fines draft store,
+   * then triggers the defendant click logic in the fines draft service,
+   * navigating to the review account path.
+   *
+   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   */
+  public onDefendantClick(draftAccountId: number): void {
+    this.finesDraftStore.setFragmentAndChecker(this.activeTab, true);
+    this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_REVIEW_ACCOUNT);
+  }
+
   public ngOnInit(): void {
     const resolvedDraftAccounts = this['activatedRoute'].snapshot.data[
       'draftAccounts'

@@ -102,6 +102,10 @@
       </div>
     </div>
   }
+
+  @if (finesDraftStore.checker()) {
+    <app-fines-mac-review-account-decision></app-fines-mac-review-account-decision>
+  }
 </div>
 
 <ng-template #parentGuardianDetails>
