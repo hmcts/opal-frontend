@@ -33,10 +33,10 @@ import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-reject
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 @Component({
@@ -182,7 +182,7 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
           const params = {
             businessUnitIds: this.businessUnitIds,
             submittedBy: this.businessUnitUserIds,
-            statuses: [OpalFinesDraftAccountStatuses.rejected],
+            statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
           };
           return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
         }

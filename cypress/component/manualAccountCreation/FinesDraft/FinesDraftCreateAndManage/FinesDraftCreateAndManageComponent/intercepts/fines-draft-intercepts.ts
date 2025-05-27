@@ -29,3 +29,15 @@ export function interceptGetDeletedAccounts(statusCode: number, responseBody: an
     body: responseBody,
   }).as('getDeletedAccounts');
 }
+export function interceptGetAllRejectedAccounts(statusCode: number, responseBody: any) {
+  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Rejected*', {
+    statusCode: statusCode,
+    body: responseBody,
+  }).as('getAllRejectedAccounts');
+}
+export function interceptGetAllRejectedAccountsList(statusCode: number, responseBody: any) {
+  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Rejected*', {
+    statusCode: statusCode,
+    body: responseBody,
+  }).as('getAllRejectedAccounts');
+}

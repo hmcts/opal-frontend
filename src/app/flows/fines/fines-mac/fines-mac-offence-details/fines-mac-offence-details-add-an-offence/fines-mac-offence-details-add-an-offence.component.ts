@@ -3,11 +3,8 @@ import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDe
 import { RouterModule } from '@angular/router';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { Observable, forkJoin, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
@@ -16,6 +13,7 @@ import { AbstractFormArrayParentBaseComponent } from '@hmcts/opal-frontend-commo
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -28,33 +26,17 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   implements OnInit, OnDestroy
 {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly dateService = inject(DateService);
-  public defendantType = this.finesMacStore.getDefendantType();
-  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
-    .getResults(this.resultCodeArray)
-    .pipe(
-      map((response: IOpalFinesResultsRefData) => {
-        return this.createAutoCompleteItemsResults(response);
-      }),
-    );
-  private readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
-    .getMajorCreditors(this.finesMacStore.getBusinessUnitId())
-    .pipe(
-      map((response: IOpalFinesMajorCreditorRefData) => {
-        return this.createAutoCompleteItemsMajorCreditors(response);
-      }),
-    );
-
-  protected groupResultCodeAndMajorCreditorData$ = forkJoin({
-    resultCodeData: this.resultCodeData$,
-    majorCreditorData: this.majorCreditorData$,
-  });
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+  public defendantType = this.finesMacStore.getDefendantType();
+  public results!: IOpalFinesResultsRefData;
+  public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public resultsCodeData!: IAlphagovAccessibleAutocompleteItem[];
+  public majorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
   public offenceIndex!: number;
   public showOffenceDetailsForm: boolean = true;
 
@@ -252,6 +234,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   public ngOnInit(): void {
+    this.results = this['activatedRoute'].snapshot.data['results'];
+    this.majorCreditors = this['activatedRoute'].snapshot.data['majorCreditors'];
+    this.resultsCodeData = this.createAutoCompleteItemsResults(this.results);
+    this.majorCreditorData = this.createAutoCompleteItemsMajorCreditors(this.majorCreditors);
     this.retrieveFormData();
   }
 

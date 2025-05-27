@@ -7,7 +7,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, RouterStateSnapshot } from '@angular/router';
-import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 describe('finesDraftCreateAndManageRejectedCountResolver', () => {
   const executeResolver: ResolveFn<number> = (...resolverParameters) =>
@@ -41,7 +41,7 @@ describe('finesDraftCreateAndManageRejectedCountResolver', () => {
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
       submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
-      statuses: [OpalFinesDraftAccountStatuses.rejected],
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
     });
   });
 });

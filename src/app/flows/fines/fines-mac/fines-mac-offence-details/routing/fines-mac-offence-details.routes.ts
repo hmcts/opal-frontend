@@ -8,6 +8,8 @@ import { routing as searchOffencesRouting } from '../fines-mac-offence-details-s
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES } from '../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-titles.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
+import { fetchResultsResolver } from './resolvers/fetch-results-resolver/fetch-results.resolver';
+import { fetchMajorCreditorsResolver } from './resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
 
 export const routing: Routes = [
   {
@@ -23,7 +25,7 @@ export const routing: Routes = [
       ),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.reviewOffences },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
@@ -33,7 +35,7 @@ export const routing: Routes = [
       ),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.addOffence },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root,
@@ -55,7 +57,7 @@ export const routing: Routes = [
       ).then((c) => c.FinesMacOffenceDetailsRemoveImpositionComponent),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeImposition },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor,
@@ -86,6 +88,6 @@ export const routing: Routes = [
       ).then((c) => c.FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeOffence },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
   },
 ];
