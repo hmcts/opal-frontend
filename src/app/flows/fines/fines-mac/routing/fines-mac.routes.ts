@@ -209,10 +209,6 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       reviewAccountFetchMap: fetchMapFinesMacPayloadResolver,
-      courts: fetchEnforcementCourtsResolver,
-      localJusticeAreas: fetchSendingCourtsResolver,
-      results: fetchResultsResolver,
-      majorCreditors: fetchMajorCreditorsResolver,
     },
     data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
   },

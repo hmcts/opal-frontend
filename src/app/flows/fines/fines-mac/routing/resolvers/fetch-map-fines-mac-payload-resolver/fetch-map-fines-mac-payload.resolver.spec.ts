@@ -12,6 +12,10 @@ import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../../../services/fines-mac-p
 import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
@@ -29,6 +33,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       'getDraftAccountById',
       'getBusinessUnitById',
       'getOffenceById',
+      'getCourts',
+      'getMajorCreditors',
+      'getLocalJusticeAreas',
+      'getResults',
     ]);
     mockFinesMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['mapAccountPayload']);
 
@@ -51,6 +59,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     mockOpalFinesService.getOffenceById.and.returnValue(
       of(structuredClone(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK)),
     );
+    mockOpalFinesService.getCourts.and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
+    mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
+    mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
+    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
     mockFinesMacPayloadService.mapAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,11 +74,19 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     expect(result).toEqual({
       finesMacState: FINES_MAC_PAYLOAD_FINES_MAC_STATE,
       finesMacDraft: FINES_MAC_PAYLOAD_ADD_ACCOUNT,
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     });
 
     // Verify calls were made with the correct arguments
     expect(mockOpalFinesService.getDraftAccountById).toHaveBeenCalledWith(DRAFT_ACCOUNT_ID);
     expect(mockOpalFinesService.getBusinessUnitById).toHaveBeenCalledWith(61);
+    expect(mockOpalFinesService.getCourts).toHaveBeenCalledWith(61);
+    expect(mockOpalFinesService.getMajorCreditors).toHaveBeenCalledWith(61);
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResults).toHaveBeenCalled();
   });
 
   it('should resolve data when all API calls succeed - empty offences', async () => {
@@ -79,6 +99,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     mockOpalFinesService.getBusinessUnitById.and.returnValue(
       of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
     );
+    mockOpalFinesService.getCourts.and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK));
+    mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
+    mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
+    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
 
     const mapPayloadResult = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     mapPayloadResult.offenceDetails = [];
@@ -94,11 +118,19 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     expect(result).toEqual({
       finesMacState: mapPayloadResult,
       finesMacDraft: draftAccountWithEmptyOffences,
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     });
 
     // Verify calls were made with the correct arguments
     expect(mockOpalFinesService.getDraftAccountById).toHaveBeenCalledWith(DRAFT_ACCOUNT_ID);
     expect(mockOpalFinesService.getBusinessUnitById).toHaveBeenCalledWith(61);
+    expect(mockOpalFinesService.getCourts).toHaveBeenCalled();
+    expect(mockOpalFinesService.getMajorCreditors).toHaveBeenCalled();
+    expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResults).toHaveBeenCalled();
     expect(mockOpalFinesService.getOffenceById).not.toHaveBeenCalled();
   });
 

@@ -386,6 +386,10 @@ describe('FinesMacReviewAccountComponent', () => {
       const snapshotData: IFetchMapFinesMacPayload = {
         finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
         finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+        localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
       };
       const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
       component = setup.component;
