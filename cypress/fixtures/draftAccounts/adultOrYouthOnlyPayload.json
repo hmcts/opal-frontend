@@ -12,7 +12,7 @@
         "originator_name": "Aberdeen JP Court",
         "originator_id": 9251,
         "prosecutor_case_reference": "AADS",
-        "enforcement_court_id": 360000000003,
+        "enforcement_court_id": 770000000021,
         "collection_order_made": null,
         "collection_order_made_today": null,
         "collection_order_date": null,
@@ -72,14 +72,14 @@
         "offences": [
             {
                 "date_of_sentence": "15/05/2025",
-                "imposing_court_id": 360000000003,
+                "imposing_court_id": 770000000021,
                 "offence_id": 33369,
                 "impositions": [
                     {
                         "result_id": "FCOST",
                         "amount_imposed": 125,
                         "amount_paid": 10,
-                        "major_creditor_id": 3859,
+                        "major_creditor_id": 770000000041,
                         "minor_creditor": null
                     }
                 ]

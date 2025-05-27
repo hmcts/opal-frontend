@@ -31,7 +31,7 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see "Court details" on the page header
         When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
         When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
-        When I enter "Aram Court (100)" into the "Enforcement court" search box
+        When I enter "ATCM Test (828)" into the "Enforcement court" search box
         Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
         When I click the "Return to account details" button
         Then I see the "Check and submit" section heading
@@ -175,7 +175,7 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the following in the "Court details" table:
             | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
             | Prosecutor Case Reference (PCR)          | ABCD1234A                                 |
-            | Enforcement court                        | Aram Court (100)                          |
+            | Enforcement court                        | ATCM Test (828)                           |
 
         Then I see the following in the "Company details" table:
             | Company name | TEST COMPANY LTD             |
@@ -214,48 +214,48 @@ Feature: PO-6 Navigate and edit sections from task list
         And I remove all draft accounts
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status              | Rejected |
-            | account.defendant.forenames | FNAME    |
-            | account.defendant.surname   | LNAME    |
+            | account.defendant.forenames | Mike     |
+            | account.defendant.surname   | Mills    |
         And I update the last created draft account with status "Rejected"
         And I click on the "Rejected" link
-        And I click on the "LNAME, FNAME" link
-        Then I see "Mr FNAME LNAME" on the page header
+        And I click on the "Mills, Mike" link
+        Then I see "Mr Mike MILLS" on the page header
 
         #Test back link
 
         When I click the "Check account" button
         And I see "Check account details" on the page header
         And I click on the "Back" link
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
         And I see "Test reason" text on the page
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Court details" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Personal details" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Contact details" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Employer details" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Offences and impositions" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Payment terms" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Account comments and notes" table
-        Then I see "Mr FNAME LNAME" on the page header
+        Then I see "Mr Mike MILLS" on the page header
 
         When I click the "Check account" button
         And I click the "Submit for review" button
@@ -265,51 +265,53 @@ Feature: PO-6 Navigate and edit sections from task list
 
         And I remove all draft accounts
         And I create a "parentOrGuardianToPay" draft account with the following details:
-            | Account_status | Rejected |
+            | Account_status              | Rejected |
+            | account.defendant.forenames | Samantha |
+            | account.defendant.surname   | Sellers  |
         And I update the last created draft account with status "Rejected"
         And I click on the "Rejected" link
-        And I click on the "LNAME, FNAME" link
-        Then I see "Miss FNAME LNAME" on the page header
+        And I click on the "Sellers, Samantha" link
+        Then I see "Miss Samantha SELLERS" on the page header
 
         #Test back link
 
         When I click the "Check account" button
         And I see "Check account details" on the page header
         And I click on the "Back" link
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
         And I see "Test reason" text on the page
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Court details" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Parent or guardian details" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Contact details" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Employer details" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Defendant details" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Offences and impositions" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Payment terms" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Account comments and notes" table
-        Then I see "Miss FNAME LNAME" on the page header
+        Then I see "Miss Samantha SELLERS" on the page header
 
         When I click the "Check account" button
         And I click the "Submit for review" button
@@ -392,8 +394,8 @@ Feature: PO-6 Navigate and edit sections from task list
             | Employer name | — |
 
         And I see the following in the "Payment terms" table:
-            | Payment terms | Pay in full |
-            | Pay by date   | 30 May 2025 |
+            | Payment terms       | Pay in full |
+            | Pay by date - exact | 30 May 2025 |
 
         And I see the following in the "Account comments and notes" table:
             | Comment      | — |

@@ -18,7 +18,7 @@
           }
         ],
         "date_of_sentence": "08/05/2025",
-        "imposing_court_id": 600000000003
+        "imposing_court_id": 770000000021
       }
     ],
     "defendant": {
@@ -86,7 +86,7 @@
     "defendant_type": "company",
     "originator_name": "Aberdeen JP Court",
     "fp_ticket_detail": null,
-    "enforcement_court_id": 600000000003,
+    "enforcement_court_id": 770000000021,
     "payment_card_request": null,
     "account_sentence_date": "2025-05-08",
     "collection_order_date": null,
