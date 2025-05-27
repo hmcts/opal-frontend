@@ -117,6 +117,12 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
     this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
 
+    // Get reference data into variables
+    this.localJusticeAreas = fetchMap.localJusticeAreas;
+    this.courts = fetchMap.courts;
+    this.results = fetchMap.results;
+    this.majorCreditors = fetchMap.majorCreditors;
+
     // Grab the status from the payload
     this.setReviewAccountStatus();
 

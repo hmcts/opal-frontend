@@ -36,6 +36,7 @@
   } @else {
     <app-fines-mac-review-account-company-details
       [companyDetails]="finesMacStore.companyDetails().formData"
+      [isReadOnly]="isReadOnly"
       (emitChangeCompanyDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
     >
@@ -44,6 +45,7 @@
 
   <app-fines-mac-review-account-contact-details
     [contactDetails]="finesMacStore.contactDetails().formData"
+    [isReadOnly]="isReadOnly"
     (emitChangeContactDetails)="navigateBack()"
     [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-contact-details>
@@ -55,6 +57,7 @@
   @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== 'company') {
     <app-fines-mac-review-account-employer-details
       [employerDetails]="finesMacStore.employerDetails().formData"
+      [isReadOnly]="isReadOnly"
       (emitChangeEmployerDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-employer-details>
@@ -71,12 +74,14 @@
     [paymentTermsState]="finesMacStore.paymentTerms().formData"
     [businessUnit]="finesMacStore.businessUnit()"
     [defendantType]="finesMacStore.accountDetails().formData.fm_create_account_defendant_type!"
+    [isReadOnly]="isReadOnly"
     (emitChangePaymentTerms)="navigateBack()"
     [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-payment-terms>
 
   <app-fines-mac-review-account-account-comments-and-notes
     [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
+    [isReadOnly]="isReadOnly"
     (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
     [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-account-comments-and-notes>
@@ -106,6 +111,7 @@
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
     [parentGuardianDetails]="finesMacStore.parentGuardianDetails().formData"
+    [isReadOnly]="isReadOnly"
     (emitChangeParentGuardianDetails)="navigateBack()"
     [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-parent-guardian-details>
