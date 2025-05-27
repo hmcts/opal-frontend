@@ -14,14 +14,6 @@ import { DOM_ELEMENTS } from './constants/review_summary_elements';
 
 describe('ReviewSummaryComponent', () => {
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    });
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    });
     cy.intercept(
       {
         method: 'GET',
@@ -66,9 +58,10 @@ describe('ReviewSummaryComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
           },

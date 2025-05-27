@@ -96,4 +96,5 @@ export const FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
   account_type: null,
   account_status: null,
   timeline_data: [],
+  version: null,
 };

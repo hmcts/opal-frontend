@@ -1,4 +1,4 @@
-@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680 @PO-1395
+@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680 @PO-1395 @PO-987
 Feature: Manual account creation - Offence Details
   #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the Offence screens component tests
@@ -72,8 +72,8 @@ Feature: Manual account creation - Offence Details
     And I enter "100" into the "Amount paid" field for imposition 2
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
-    And I enter "Transport for London" into the "Search using name or code" search box
-    And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 2
+    And I enter "Temporary Creditor" into the "Search using name or code" search box
+    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
 
 
     #Imposition 3 - default creditor
@@ -94,7 +94,7 @@ Feature: Manual account creation - Offence Details
     When the table with offence code "TP11003" should contain the following data:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
-      | Compensation     | Transport for London (TFL2)           | £300.00        | £100.00     | £200.00           |
+      | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
 
@@ -331,8 +331,8 @@ Feature: Manual account creation - Offence Details
     #change to major creditor
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
-    And I enter "Transport for London" into the "Search using name or code" search box
-    And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 2
+    And I enter "Temporary Creditor" into the "Search using name or code" search box
+    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
 
     # Add another imposition with a minor creditor
     Then I click the "Add another imposition" button
@@ -373,11 +373,11 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
 
     When the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                    | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | Mr FNAME2_EDIT LNAME2_EDIT  | £200.00        | £100.00     | £100.00           |
-      | Compensation | Transport for London (TFL2) | £200.00        | £100.00     | £100.00           |
-      | Compensation | CNAME3                      | £200.00        | £100.00     | £100.00           |
-      | Totals       |                             | £600.00        | £300.00     | £300.00           |
+      | Imposition   | Creditor                   | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | Mr FNAME2_EDIT LNAME2_EDIT | £200.00        | £100.00     | £100.00           |
+      | Compensation | Temporary Creditor (TEMP)  | £200.00        | £100.00     | £100.00           |
+      | Compensation | CNAME3                     | £200.00        | £100.00     | £100.00           |
+      | Totals       |                            | £600.00        | £300.00     | £300.00           |
 
   Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684, @PO-1395]
     When I enter "TP11003" into the "Offence code" field
@@ -403,8 +403,8 @@ Feature: Manual account creation - Offence Details
     And I enter "300" into the "Amount imposed" field for imposition 2
     And I enter "100" into the "Amount paid" field for imposition 2
     And I select the "Major creditor" radio button
-    And I enter "Transport for London" into the "Search using name or code" search box
-    And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 2
+    And I enter "Temporary Creditor" into the "Search using name or code" search box
+    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
 
     # Imposition 3 - default creditor
     And I click the "Add another imposition" button
@@ -441,8 +441,8 @@ Feature: Manual account creation - Offence Details
     When I click on the "Remove imposition" link for imposition 1
     Then I see "Are you sure you want to remove this imposition?" on the page header
     And row number 1 should have the following data:
-      | Imposition    | Creditor                    | Amount imposed | Amount paid | Balance remaining |
-      | Costs (FCOST) | Transport for London (TFL2) | £300.00        | £100.00     | £200.00           |
+      | Imposition    | Creditor                  | Amount imposed | Amount paid | Balance remaining |
+      | Costs (FCOST) | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
 
     When I click the "Yes - remove imposition" button
     Then I see "Add an offence" on the page header
@@ -458,8 +458,8 @@ Feature: Manual account creation - Offence Details
     And I enter "300" into the "Amount imposed" field for imposition 2
     And I enter "100" into the "Amount paid" field for imposition 2
     And I select the "Major creditor" radio button for imposition 2
-    And I enter "Transport for London" into the "Search using name or code" search box
-    And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 2
+    And I enter "Temporary Creditor" into the "Search using name or code" search box
+    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
 
     # Imposition 3 - minor creditor
     And I click the "Add another imposition" button
@@ -488,7 +488,7 @@ Feature: Manual account creation - Offence Details
 
     When the table with offence code "TP11003" should contain the following data:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation     | Transport for London (TFL2)           | £300.00        | £100.00     | £200.00           |
+      | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Costs            | CNAME3                                | £200.00        | £100.00     | £100.00           |
       | Costs to Crown   | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
@@ -537,7 +537,7 @@ Feature: Manual account creation - Offence Details
 
     When the table with offence code "TP11003" should contain the following data:
       | Imposition     | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation   | Transport for London (TFL2)           | £300.00        | £100.00     | £200.00           |
+      | Compensation   | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Costs          | CNAME3                                | £900.00        | £134.00     | £766.00           |
       | Vehicle Excise | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
       | Totals         |                                       | £1300.00       | £284.00     | £1016.00          |
@@ -725,15 +725,15 @@ Feature: Manual account creation - Offence Details
     And I enter "100" into the "Amount paid" field for imposition 2
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
-    And I enter "BTPO" into the "Search using name or code" search box
-    And I see "British Transport Police (BTPO)" in the "Search using name or code" field for imposition 2
+    And I enter "LBUS" into the "Search using name or code" search box
+    And I see "LBUSMajorCreditor (LBUS)" in the "Search using name or code" field for imposition 2
     And I click the "Review offence" button
     Then I see "Offences and impositions" on the page header
     And I see "Offence TP11003 added" text on the page
 
     And the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
+      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
@@ -750,7 +750,7 @@ Feature: Manual account creation - Offence Details
     And I enter "100" into the "Amount paid" field for imposition 2
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
-    And I enter "Tesco Stores (TESC)" into the "Search using name or code" search box
+    And I enter "Temporary Creditor (TEMP)" into the "Search using name or code" search box
 
     When I click the "Add another offence" button
     And I see "Add an offence" on the page header
@@ -768,13 +768,13 @@ Feature: Manual account creation - Offence Details
 
     Then the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
+      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
     And the table with offence code "HY35014" should contain the following data:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Costs      | Tesco Stores (TESC)                   | £250.00        | £100.00     | £150.00           |
+      | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
@@ -787,7 +787,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
     And the table with offence code "HY35014" should contain the following data:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Costs      | Tesco Stores (TESC)                   | £250.00        | £100.00     | £150.00           |
+      | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
@@ -796,13 +796,13 @@ Feature: Manual account creation - Offence Details
 
     Then the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
+      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
     And the table with offence code "HY35014" should contain the following data:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Costs      | Tesco Stores (TESC)                   | £250.00        | £100.00     | £150.00           |
+      | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
@@ -815,7 +815,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
     And the table with offence code "HY35014" should contain the following data:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Costs      | Tesco Stores (TESC)                   | £250.00        | £100.00     | £150.00           |
+      | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
@@ -824,7 +824,7 @@ Feature: Manual account creation - Offence Details
 
     And the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
+      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
@@ -839,7 +839,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
     And the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
+      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
@@ -1019,35 +1019,168 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
     And I check accessibility
 
-  Scenario: AC.1c, AC.1d, AC.3, AC.4 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered [@PO-545, @PO-667]
+  Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     And I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
+
+    # Test with results found
+    When I enter "TP11003" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "Transport Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "TP11003" in the "Offence code" field
+    And I see "Transport" in the "Short title" field
+    And I see "Transport Act" in the "Act and section" text field
+
+    # Test with no results found
+    When I enter "XYZ999" into the "Offence code" field
+    And I enter "NonExistent" into the "Short title" field
+    And I enter "Invalid Act" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "There are no matching results" text on the page
+
+    When I click on the "Back" link
+    Then I see "Search offences" on the page header
+    And I see "XYZ999" in the "Offence code" field
+    And I see "NonExistent" in the "Short title" field
+    And I see "Invalid Act" in the "Act and section" text field
+
+  Scenario: AC1a-h, AC2a-b, Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
+    # AC1b & AC2 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
+    When I open the "search the offence list" link in the same tab
 
     And I see "Search offences" on the page header
     And I click the search button
 
     Then I see "Search offences" on the page header
 
-    And I enter "ABC123" into the "Offence code" field
-    And I enter "Title name" into the "Short title" field
-    And I enter "testing the new field" into the "Act and section" text field
+    And I enter "A" into the "Offence code" field
 
     And I click the search button
     Then I see "Search results" on the page header
 
-  Scenario: Offence search screen - Axe core
+    When I click on the "Back" link
+    And I enter "d" into the "Short title" field
+    And I clear the "Offence Code" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I enter "e" into the "Act and section" text field
+    And I clear the "Short title" field
+
+    And I click the search button
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I clear the "Act and section" text field
+
+    # AC1c - Active/Inactive offences filter
+    When I enter "AB0" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Present" in the Search results table in the "Used to" column
+
+    When I click on the "Back" link
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "23 Mar 2011" in the Search results table in the "Used to" column
+    And I see "Present" in the Search results table in the "Used to" column
+
+    # AC1d - Combination search across multiple fields
+    When I click on the "Back" link
+    And I enter "TP" into the "Offence code" field
+    And I enter "Transport" into the "Short title" field
+    And I enter "London" into the "Act and section" text field
+    And I select the "Include inactive offence codes" checkbox
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+    And I see "TP" in the Search results table in the "Code" column
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1e - Case insensitive search
+    When I click on the "Back" link
+    And I enter "tp11003" into the "Offence code" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP11003" in the Search results table in the "Code" column
+
+    When I click on the "Back" link
+    And I enter "TRANSPORT" into the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "Transport" in the Search results table in the "Short title" column
+
+    When I click on the "Back" link
+    And I enter "LONDON" into the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "London" in the Search results table in the "Act and section" column
+
+    # AC1f - Offence Code starts with search
+    When I click on the "Back" link
+    And I enter "TP47" into the "Offence code" field
+    And I clear the "Short title" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "TP47033" in the Search results table in the "Code" column
+    And I see "TP47032" in the Search results table in the "Code" column
+
+    # AC1g - Short Title contains search
+    When I click on the "Back" link
+    And I enter "dangerous" into the "Short title" field
+    And I clear the "Offence Code" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "dangerous item" in the Search results table in the "Short title" column
+    And I see "dangerous driving" in the Search results table in the "Short title" column
+
+    # AC1h - Act and Section contains search
+    When I click on the "Back" link
+    And I enter "London" into the "Act and section" text field
+    And I clear the "Offence Code" field
+    And I clear the "Short title" field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "London Byelaws" in the Search results table in the "Act and section" column
+
+    # Max 100 responses
+    When I click on the "Back" link
+    And I enter "A" into the "Offence code" field
+    And I clear the "Act and section" text field
+    And I click the search button
+    Then I see "Search results" on the page header
+    And I see "100 offences" text on the page
+
+
+  Scenario: Offence search / results screen - Axe core [@PO-545, @PO-667, PO-987]
     # check accessibility on Add an offence screen
-    And I open the "search the offence list" link in the same tab
+    When I open the "search the offence list" link in the same tab
+    And I see "Search offences" on the page header
 
     #Check accessibility of Search offences screen
+    And I check accessibility
+
     And I enter "ABC123" into the "Offence code" field
     And I enter "Title name" into the "Short title" field
     And I enter "testing the new field" into the "Act and section" text field
 
     And I click the search button
+
+    #Check accessibility of Search results screen
     Then I see "Search results" on the page header
     And I check accessibility
-
-
 
 
 

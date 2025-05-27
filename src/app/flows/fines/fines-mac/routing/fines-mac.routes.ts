@@ -8,6 +8,11 @@ import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { fetchBusinessUnitsResolver } from './resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { fetchEnforcementCourtsResolver } from './resolvers/fetch-enforcement-courts-resolver/fetch-enforcement-courts.resolver';
+import { fetchSendingCourtsResolver } from './resolvers/fetch-sending-courts-resolver/fetch-sending-courts.resolver';
+import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-results-resolver/fetch-results.resolver';
+import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
 
 export const routing: Routes = [
   {
@@ -23,8 +28,11 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.createAccount },
-    resolve: { title: TitleResolver },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.createAccount, permission: 'CREATE_MANAGE_DRAFT_ACCOUNTS' },
+    resolve: {
+      title: TitleResolver,
+      businessUnits: fetchBusinessUnitsResolver,
+    },
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.accountDetails,
@@ -102,7 +110,11 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.courtDetails },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+      courts: fetchEnforcementCourtsResolver,
+      localJusticeAreas: fetchSendingCourtsResolver,
+    },
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes,
@@ -157,7 +169,9 @@ export const routing: Routes = [
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.offenceDetails },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+    },
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.reviewAccount,
@@ -167,7 +181,13 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+      courts: fetchEnforcementCourtsResolver,
+      localJusticeAreas: fetchSendingCourtsResolver,
+      results: fetchResultsResolver,
+      majorCreditors: fetchMajorCreditorsResolver,
+    },
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.submitConfirmation,
@@ -186,7 +206,10 @@ export const routing: Routes = [
         (c) => c.FinesMacReviewAccountComponent,
       ),
     canActivate: [authGuard],
-    resolve: { title: TitleResolver, reviewAccountFetchMap: fetchMapFinesMacPayloadResolver },
+    resolve: {
+      title: TitleResolver,
+      reviewAccountFetchMap: fetchMapFinesMacPayloadResolver,
+    },
     data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
   },
   {

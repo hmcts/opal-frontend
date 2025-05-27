@@ -6,9 +6,15 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import {
+  IOpalFinesCourt,
+  IOpalFinesCourtRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -23,8 +29,8 @@ import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/i
 })
 export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public courtDetails!: IFinesMacCourtDetailsState;
-  @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourt[];
-  @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
+  @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
+  @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
 
@@ -42,7 +48,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    * @returns {void}
    */
   private getEnforcementCourt(): void {
-    const court = this.enforcementCourtsData.find(
+    const court = this.enforcementCourtsData.refData.find(
       (court: IOpalFinesCourt) => court.court_id === +this.courtDetails.fm_court_details_imposing_court_id!,
     )!;
 
@@ -58,7 +64,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    * @returns {void}
    */
   private getSendingCourt(): void {
-    const lja = this.localJusticeAreasData.find(
+    const lja = this.localJusticeAreasData.refData.find(
       (lja: IOpalFinesLocalJusticeArea) =>
         lja.local_justice_area_id === +this.courtDetails.fm_court_details_originator_id!,
     )!;
