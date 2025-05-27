@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
-import { FinesDraftCheckAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/fines-draft-check-and-manage-tabs/fines-draft-check-and-manage-tabs.component';
-import { provideRouter } from '@angular/router';
+import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -12,18 +12,15 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock
 import { routes } from './constants/fines_draft_cam_inputter_routes';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
-import {
-  interceptGetRejectedAccounts,
-  interceptGetInReviewAccounts,
-  interceptGetDeletedAccounts,
-  interceptGetApprovedAccounts,
-} from './intercepts/fines-draft-intercepts';
+import { of } from 'rxjs';
+import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
+import { mock } from 'node:test';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 
-describe('FinesDraftCheckAndManageApprovedComponent', () => {
-  const setupComponent = () => {
+describe('FinesDraftCreateAndManageApprovedComponent', () => {
+  const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, mockRejectedCount: number) => {
     cy.then(() => {
-      mount(FinesDraftCheckAndManageTabsComponent, {
+      mount(FinesDraftCreateAndManageTabsComponent, {
         providers: [
           provideHttpClient(),
           provideRouter(routes),
@@ -39,6 +36,19 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
               return store;
             },
           },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              fragment: of('approved'),
+              snapshot: {
+                data: {
+                  draftAccounts: mockTableData,
+                  rejectedCount: mockRejectedCount,
+                },
+                fragment: 'approved',
+              },
+            },
+          },
         ],
         componentProperties: {},
       });
@@ -47,21 +57,18 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
 
   it('(AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607'] }, () => {
     const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    interceptGetApprovedAccounts(200, approvedMockData);
-    interceptGetRejectedAccounts(200, rejectedMockData);
+    const rejectedCountMockData = 0;
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks)
-      .contains('' + NAVIGATION_LINKS[2])
-      .click();
+    setupComponent(approvedMockData, rejectedCountMockData);
+
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
 
     for (const link of NAVIGATION_LINKS) {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
+      if (link === 'Approved') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
+      }
     }
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
     //Check table row data in row 1
     cy.get(DOM_ELEMENTS.tableRow)
@@ -74,7 +81,6 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
     //Check table row data in row 2
     cy.get(DOM_ELEMENTS.tableRow)
       .eq(1)
@@ -91,13 +97,10 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
     '(AC.5)should have pagination enabled for over 25 draft accounts for approved accounts',
     { tags: ['@PO-607'] },
     () => {
-      const approvedMockData = { count: 0, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedMockData = { count: 0, summaries: [] };
-      interceptGetApprovedAccounts(200, approvedMockData);
-      interceptGetRejectedAccounts(200, rejectedMockData);
+      const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
+      const rejectedCountMockData = 0;
 
-      setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+      setupComponent(approvedMockData, rejectedCountMockData);
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
@@ -121,14 +124,10 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
     '(AC.5) should have default sort order for created accounts set to descending for approved',
     { tags: ['@PO-607'] },
     () => {
-      const approvedMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedMockData = { count: 0, summaries: [] };
-      interceptGetApprovedAccounts(200, approvedMockData);
-      interceptGetRejectedAccounts(200, rejectedMockData);
-      setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks)
-        .contains('' + NAVIGATION_LINKS[2])
-        .click();
+      const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
+      const rejectedCountMockData = 0;
+
+      setupComponent(approvedMockData, rejectedCountMockData);
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
       //Check table row data in row 1
       cy.get(DOM_ELEMENTS.tableRow)
@@ -158,12 +157,9 @@ describe('FinesDraftCheckAndManageApprovedComponent', () => {
     { tags: ['@PO-607'] },
     () => {
       const approvedMockData = { count: 0, summaries: [] };
-      const rejectedMockData = { count: 0, summaries: [] };
-      interceptGetApprovedAccounts(200, approvedMockData);
-      interceptGetRejectedAccounts(200, rejectedMockData);
+      const rejectedCountMockData = 0;
 
-      setupComponent();
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
+      setupComponent(approvedMockData, rejectedCountMockData);
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
