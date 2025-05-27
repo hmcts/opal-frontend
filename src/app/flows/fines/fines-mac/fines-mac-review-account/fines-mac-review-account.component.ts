@@ -199,7 +199,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
     this.handleRoute(
-      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
       false,
       undefined,
       this.finesDraftStore.fragment(),
