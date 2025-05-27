@@ -30,6 +30,9 @@ import {
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
+import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
+import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -67,17 +70,17 @@ export class OpalFines {
   /**
    * Retrieves the court data for a specific business unit.
    * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
-   * @param businessUnit - The business unit for which to retrieve the court data.
+   * @param business_unit - The business unit for which to retrieve the court data.
    * @returns An Observable that emits the court data for the specified business unit.
    */
-  public getCourts(businessUnit: number): Observable<IOpalFinesCourtRefData> {
-    if (!this.courtRefDataCache$[businessUnit]) {
-      this.courtRefDataCache$[businessUnit] = this.http
-        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
+  public getCourts(business_unit: number): Observable<IOpalFinesCourtRefData> {
+    if (!this.courtRefDataCache$[business_unit]) {
+      this.courtRefDataCache$[business_unit] = this.http
+        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { business_unit } })
         .pipe(shareReplay(1));
     }
 
-    return this.courtRefDataCache$[businessUnit];
+    return this.courtRefDataCache$[business_unit];
   }
 
   /**
@@ -296,5 +299,16 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
     );
+  }
+
+  /**
+   * Searches for offences based on the provided parameters.
+   *
+   * @param body - The parameters for searching offences, adhering to the `IOpalFinesSearchOffencesParams` interface.
+   * @returns An observable that emits the offences reference data, conforming to the `IOpalFinesSearchOffencesData` interface.
+   */
+  public searchOffences(body: IOpalFinesSearchOffencesParams): Observable<IOpalFinesSearchOffencesData> {
+    body.maxResults = 100; // Set the maximum number of results to 100
+    return this.http.post<IOpalFinesSearchOffencesData>(`${OPAL_FINES_PATHS.searchOffences}`, body);
   }
 }

@@ -37,8 +37,8 @@ export const DOM_ELEMENTS = {
 
   //link
   offenceLink: 'a.govuk-link.govuk-task-list_link.govuk-link--no-visited-state',
-  minorCreditorLink: 'a.govuk-link.govuk-link--no-visited-state',
-  removeImpositionLink: 'a.govuk-link.govuk-link--no-visited-state',
+  minorCreditorLink: 'a:contains("Add minor creditor details")',
+  removeImpositionLink: 'a:contains("Remove imposition")',
 };
 
 export const impostitionSelectors = (number: number) => ({

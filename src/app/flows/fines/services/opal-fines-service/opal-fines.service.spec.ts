@@ -33,6 +33,8 @@ import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-a
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
+import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
+import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 describe('OpalFines', () => {
@@ -97,7 +99,7 @@ describe('OpalFines', () => {
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
@@ -112,7 +114,7 @@ describe('OpalFines', () => {
   it('should return cached response for the same ref data search', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
@@ -412,5 +414,41 @@ describe('OpalFines', () => {
     expect(req.request.body).toEqual(body);
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+  });
+
+  it('should send a POST request to search offences API with correct body', () => {
+    const filters = OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK;
+    const expectedResponse = OPAL_FINES_SEARCH_OFFENCES_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchOffences}`;
+
+    service.searchOffences(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
+  });
+
+  it('should handle errors when search offences API fails', () => {
+    const filters = OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchOffences}`;
+    const errorMessage = 'Failed to search offences';
+
+    service.searchOffences(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 });

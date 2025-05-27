@@ -21,15 +21,13 @@
   >
   </app-fines-mac-review-account-account-details>
 
-  @if (groupLjaAndCourtData$ | async; as data) {
-    <app-fines-mac-review-account-court-details
-      [courtDetails]="finesMacStore.courtDetails().formData"
-      [enforcementCourtsData]="data.enforcementCourtsData.refData"
-      [localJusticeAreasData]="data.localJusticeAreasData.refData"
-      [isReadOnly]="isReadOnly"
-      (emitChangeCourtDetails)="navigateBack()"
-    ></app-fines-mac-review-account-court-details>
-  }
+  <app-fines-mac-review-account-court-details
+    [courtDetails]="finesMacStore.courtDetails().formData"
+    [enforcementCourtsData]="courts"
+    [localJusticeAreasData]="localJusticeAreas"
+    [isReadOnly]="isReadOnly"
+    (emitChangeCourtDetails)="navigateBack()"
+  ></app-fines-mac-review-account-court-details>
 
   @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
@@ -65,6 +63,8 @@
   <app-fines-mac-review-account-offence-details
     (emitChangeOffenceDetails)="navigateBack()"
     [isReadOnly]="isReadOnly"
+    [results]="results"
+    [majorCreditors]="majorCreditors"
   ></app-fines-mac-review-account-offence-details>
 
   <app-fines-mac-review-account-payment-terms
