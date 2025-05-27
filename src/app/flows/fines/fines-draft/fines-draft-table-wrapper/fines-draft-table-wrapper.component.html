@@ -1,9 +1,9 @@
-@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
-  <strong
-    >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
-  </strong>
-}
 <opal-lib-moj-sortable-table>
+  @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+    <ng-container caption>
+      Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
+    </ng-container>
+  }
   <ng-container head>
     @if (isApprovedTab) {
       <th
@@ -102,18 +102,10 @@
       </tr>
     }
   </ng-container>
-  <ng-container status>
-    <opal-lib-moj-sortable-table-status
-      [columnTitle]="sortedColumnTitleSignal()"
-      [sortDirection]="sortedColumnDirectionSignal()"
-    ></opal-lib-moj-sortable-table-status>
-  </ng-container>
 </opal-lib-moj-sortable-table>
-@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
-  <opal-lib-govuk-pagination
-    [currentPage]="currentPageSignal()"
-    [limit]="itemsPerPageSignal()"
-    [total]="abstractTableDataSignal().length"
-    (changePage)="onPageChange($event)"
-  ></opal-lib-govuk-pagination>
-}
+<app-fines-shared-sortable-table-footer
+  [abstractTableData]="abstractTableDataSignal()"
+  [currentPage]="currentPageSignal()"
+  [itemsPerPage]="itemsPerPageSignal()"
+  (changePage)="onPageChange($event)"
+/>

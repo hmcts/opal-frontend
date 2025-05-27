@@ -16,6 +16,7 @@ export const FinesDraftStore = signalStore(
     account_type: '' as string | null,
     account_status: '' as string | null,
     timeline_data: [{}] as IFinesMacAccountTimelineData[],
+    version: 0 as number | null,
     draft_account_id: 0 as number | null,
     created_at: '' as string | null,
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,
@@ -85,6 +86,7 @@ export const FinesDraftStore = signalStore(
         account_type: finesDraftState.account_type,
         account_status: finesDraftState.account_status,
         timeline_data: finesDraftState.timeline_data,
+        version: finesDraftState.version,
       });
     },
     getFinesDraftState: () => {
@@ -100,6 +102,7 @@ export const FinesDraftStore = signalStore(
         account_type: store.account_type(),
         account_status: store.account_status(),
         timeline_data: store.timeline_data(),
+        version: store.version(),
       };
       return finesDraftStore;
     },
