@@ -39,6 +39,7 @@
     <app-fines-mac-review-account-company-details
       [companyDetails]="finesMacStore.companyDetails().formData"
       (emitChangeCompanyDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
     >
     </app-fines-mac-review-account-company-details>
   }
@@ -46,6 +47,7 @@
   <app-fines-mac-review-account-contact-details
     [contactDetails]="finesMacStore.contactDetails().formData"
     (emitChangeContactDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-contact-details>
 
   @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'parentOrGuardianToPay') {
@@ -56,6 +58,7 @@
     <app-fines-mac-review-account-employer-details
       [employerDetails]="finesMacStore.employerDetails().formData"
       (emitChangeEmployerDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-employer-details>
   }
 
@@ -69,11 +72,13 @@
     [businessUnit]="finesMacStore.businessUnit()"
     [defendantType]="finesMacStore.accountDetails().formData.fm_create_account_defendant_type!"
     (emitChangePaymentTerms)="navigateBack()"
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-payment-terms>
 
   <app-fines-mac-review-account-account-comments-and-notes
     [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
     (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-account-comments-and-notes>
 
   @if (!isReadOnly) {
@@ -101,7 +106,8 @@
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
     [parentGuardianDetails]="finesMacStore.parentGuardianDetails().formData"
-    (emitChangeParentGuardianDetails)="navigateBack()"
+    (emitChangeParentGuardianDetails)="navigateBack()"    
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-parent-guardian-details>
 </ng-template>
 
