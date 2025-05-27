@@ -7805,11 +7805,11 @@ __metadata:
   linkType: hard
 
 "csrf-csrf@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "csrf-csrf@npm:4.0.2"
+  version: 4.0.3
+  resolution: "csrf-csrf@npm:4.0.3"
   dependencies:
     http-errors: "npm:^2.0.0"
-  checksum: 10/2c3f1679aaa1368a1e3349ba719f6fb8ae43ab83e91c442ac1ecc8d60aa4142b1c46ec24d6578986f1136f1a0c6c96fea93bfa1692f034f90769f989877b07db
+  checksum: 10/456c33b637aaf56d19dfb77cae760f15bc14b773089482ee47e62ebb603189095ef01ad4dc21f1e8eb1c27078d36fc3e367175d210fb8f0581c5fd6c011c1c6c
   languageName: node
   linkType: hard
 
