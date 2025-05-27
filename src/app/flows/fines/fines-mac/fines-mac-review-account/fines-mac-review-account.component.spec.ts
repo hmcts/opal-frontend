@@ -220,7 +220,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
       expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
         false,
         undefined,
         finesDraftStore.fragment(),
@@ -301,7 +301,7 @@ describe('FinesMacReviewAccountComponent', () => {
       component['submitPayload']();
 
       expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
         false,
         undefined,
         finesDraftStore.fragment(),
@@ -406,6 +406,10 @@ describe('FinesMacReviewAccountComponent', () => {
       const snapshotData: IFetchMapFinesMacPayload = {
         finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
         finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+        localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
       };
       const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
       component = setup.component;

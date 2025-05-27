@@ -36,6 +36,10 @@ Then('I enter {string} into the {string} text field', (value: string, fieldName:
     .type(value, { delay: 0 });
 });
 
+Then('I clear the {string} text field', (fieldName: string) => {
+  cy.contains('opal-lib-govuk-text-area', fieldName, { matchCase: false }).find('textarea').clear();
+});
+
 Then('I enter {string} into the {string} payment field', (value: string, fieldName: string) => {
   cy.contains('.govuk-form-group', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 0 });
 });

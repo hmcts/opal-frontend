@@ -38,18 +38,6 @@ describe('FinesMacReviewAccountComponent', () => {
         UtilsService,
         FinesMacPayloadService,
         Router,
-
-        {
-          provide: FinesMacPayloadService,
-          useValue: {
-            buildAddAccountPayload: () => {
-              return finesAccountPayload;
-            },
-            buildReplaceAccountPayload: () => {
-              return finesAccountPayload;
-            },
-          },
-        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -85,7 +73,7 @@ describe('FinesMacReviewAccountComponent', () => {
             snapshot: {
               data: {
                 reviewAccountFetchMap: {
-                  FinesMacStore: finesMacState,
+                  finesMacStore: finesMacState,
                   finesMacDraft: activatedRouteMock,
                 },
                 results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
@@ -399,6 +387,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -633,6 +622,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -795,6 +785,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -844,7 +835,7 @@ describe('FinesMacReviewAccountComponent', () => {
       reason_text: null,
     });
 
-    setupComponent(finesAccountPayload, finesAccountPayload);
+    setupComponent(finesAccountPayload, finesAccountPayload, true);
 
     cy.get(DOM_ELEMENTS.timeLine).should('exist');
     const timelineEntries = [
@@ -1191,6 +1182,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
       cy.wrap(defendantTypes).each((type: string) => {
         cy.then(() => {

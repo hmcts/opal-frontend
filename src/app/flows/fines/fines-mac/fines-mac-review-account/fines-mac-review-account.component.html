@@ -37,6 +37,7 @@
   } @else {
     <app-fines-mac-review-account-company-details
       [companyDetails]="finesMacStore.companyDetails().formData"
+      [isReadOnly]="isReadOnly"
       (emitChangeCompanyDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
     >
@@ -107,6 +108,7 @@
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
     [parentGuardianDetails]="finesMacStore.parentGuardianDetails().formData"
+    [isReadOnly]="isReadOnly"
     (emitChangeParentGuardianDetails)="navigateBack()"
   ></app-fines-mac-review-account-parent-guardian-details>
 </ng-template>

@@ -105,4 +105,5 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
       reason_text: null,
     },
   ],
+  version: 0,
 };
