@@ -5,5 +5,5 @@ import {
 
 export interface IFinesMacReviewAccountDecisionFieldErrors extends IAbstractFormBaseFieldErrors {
   fm_review_account_decision: IAbstractFormBaseFieldError;
-  fm_review_account_rejection_reason: IAbstractFormBaseFieldError;
+  fm_review_account_decision_reason: IAbstractFormBaseFieldError;
 }

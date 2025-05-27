@@ -7,7 +7,7 @@ export const FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS: IFinesMacReviewAcco
       priority: 1,
     },
   },
-  fm_review_account_rejection_reason: {
+  fm_review_account_decision_reason: {
     required: {
       message: 'Enter reason for rejection',
       priority: 1,

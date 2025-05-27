@@ -53,10 +53,10 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
   it('should initialize the form with correct controls and validators', () => {
     expect(component.form.contains('fm_review_account_decision')).toBeTrue();
-    expect(component.form.contains('fm_review_account_rejection_reason')).toBeTrue();
+    expect(component.form.contains('fm_review_account_decision_reason')).toBeTrue();
 
     const decisionControl = component.form.get('fm_review_account_decision');
-    const rejectionReasonControl = component.form.get('fm_review_account_rejection_reason');
+    const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
 
     decisionControl?.setValue(null);
     expect(decisionControl?.valid).toBeFalse();
@@ -68,7 +68,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
   });
 
   it('should add required validator to rejection reason when decision is reject', () => {
-    const rejectionReasonControl = component.form.get('fm_review_account_rejection_reason');
+    const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
     const decisionControl = component.form.get('fm_review_account_decision');
 
     decisionControl?.setValue('reject');
@@ -83,7 +83,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
   });
 
   it('should remove required validator from rejection reason when decision is not reject', () => {
-    const rejectionReasonControl = component.form.get('fm_review_account_rejection_reason');
+    const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
     const decisionControl = component.form.get('fm_review_account_decision');
 
     decisionControl?.setValue('reject');
@@ -98,7 +98,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
   });
 
   it('should reset rejection reason control and update validity on decision change', () => {
-    const rejectionReasonControl = component.form.get('fm_review_account_rejection_reason');
+    const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
     const decisionControl = component.form.get('fm_review_account_decision');
 
     rejectionReasonControl?.setValue('Some value');

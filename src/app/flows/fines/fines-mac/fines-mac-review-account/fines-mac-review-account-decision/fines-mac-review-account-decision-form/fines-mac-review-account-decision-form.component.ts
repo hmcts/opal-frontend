@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-review-account-decision-form.interface';
-import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-devision-options.constant';
+import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-decision-options.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
@@ -56,7 +56,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   private setupDecisionForm(): void {
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
-      fm_review_account_rejection_reason: new FormControl(null, [
+      fm_review_account_decision_reason: new FormControl(null, [
         specialCharactersValidator(),
         alphabeticalTextValidator(),
       ]),
@@ -81,22 +81,22 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
   /**
    * Handles changes to the decision selection in the form.
    *
-   * Updates the validators for the 'fm_review_account_rejection_reason' form control based on the selected decision.
-   * - If the decision is 'reject', the rejection reason becomes required.
+   * Updates the validators for the 'fm_review_account_decision_reason' form control based on the selected decision.
+   * - If the decision is 'reject', the decision reason becomes required.
    * - Otherwise, the required validator is removed.
    * The control is then reset and its validity is updated.
    *
    * @param decision - The selected decision value, typically 'reject' or another string.
    */
   private handleDecisionChange(decision: string): void {
-    const rejectionReasonControl = this.form.get('fm_review_account_rejection_reason')!;
+    const decisionReasonControl = this.form.get('fm_review_account_decision_reason')!;
     if (decision === 'reject') {
-      rejectionReasonControl.addValidators([Validators.required]);
+      decisionReasonControl.addValidators([Validators.required]);
     } else {
-      rejectionReasonControl.removeValidators([Validators.required]);
+      decisionReasonControl.removeValidators([Validators.required]);
     }
-    rejectionReasonControl.reset();
-    rejectionReasonControl.updateValueAndValidity();
+    decisionReasonControl.reset();
+    decisionReasonControl.updateValueAndValidity();
   }
 
   /**
