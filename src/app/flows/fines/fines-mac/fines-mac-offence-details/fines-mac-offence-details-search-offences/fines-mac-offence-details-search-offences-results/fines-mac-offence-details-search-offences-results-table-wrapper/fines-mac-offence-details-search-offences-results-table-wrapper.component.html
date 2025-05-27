@@ -1,0 +1,96 @@
+<opal-lib-moj-sortable-table>
+  @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+    <ng-container caption
+      >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
+      {{ abstractTableDataSignal().length }} offences</ng-container
+    >
+  }
+  <ng-container head>
+    <th
+      opal-lib-moj-sortable-table-header
+      columnKey="Code"
+      [sortDirection]="sortStateSignal()['Code']"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="0"
+    >
+      Code
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      columnKey="Short title"
+      [sortDirection]="sortStateSignal()['Short title']"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="1"
+    >
+      Short title
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      columnKey="Act and section"
+      [sortDirection]="sortStateSignal()['Act and section']"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="2"
+    >
+      Act and section
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      columnKey="Used from"
+      [sortDirection]="sortStateSignal()['Used from']"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="3"
+    >
+      Used from
+    </th>
+    <th
+      opal-lib-moj-sortable-table-header
+      columnKey="Used to"
+      [sortDirection]="sortStateSignal()['Used to']"
+      (sortChange)="onSortChange($event)"
+      [dataIndex]="4"
+    >
+      Used to
+    </th>
+  </ng-container>
+  <ng-container row>
+    @for (row of paginatedTableDataComputed(); track row['Code']) {
+      <tr opal-lib-moj-sortable-table-row>
+        <td opal-lib-moj-sortable-table-row-data id="code">
+          {{ row['Code'] }}
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            #codeLink
+            (click)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
+            (keyup.enter)="copyCodeToClipboard(codeLink, liveRegion, row['Code'])"
+            tabindex="0"
+          >
+            {{ COPY_CODE_TO_CLIPBOARD }}
+          </a>
+          <span #liveRegion class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></span>
+        </td>
+        <td opal-lib-moj-sortable-table-row-data id="shortTitle">
+          {{ row['Short title'] }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data id="actAndSection">
+          {{ row['Act and section'] }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data id="usedFrom">
+          {{ row['Used from'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+        </td>
+        <td opal-lib-moj-sortable-table-row-data id="usedTo">
+          @if (row['Used to']) {
+            {{ row['Used to'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+          } @else {
+            <p>Present</p>
+          }
+        </td>
+      </tr>
+    }
+  </ng-container>
+</opal-lib-moj-sortable-table>
+<app-fines-shared-sortable-table-footer
+  [abstractTableData]="abstractTableDataSignal()"
+  [currentPage]="currentPageSignal()"
+  [itemsPerPage]="itemsPerPageSignal()"
+  (changePage)="onPageChange($event)"
+/>

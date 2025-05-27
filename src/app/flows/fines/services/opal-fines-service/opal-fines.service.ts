@@ -30,6 +30,9 @@ import {
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
+import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
+import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -300,5 +303,16 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
     );
+  }
+
+  /**
+   * Searches for offences based on the provided parameters.
+   *
+   * @param body - The parameters for searching offences, adhering to the `IOpalFinesSearchOffencesParams` interface.
+   * @returns An observable that emits the offences reference data, conforming to the `IOpalFinesSearchOffencesData` interface.
+   */
+  public searchOffences(body: IOpalFinesSearchOffencesParams): Observable<IOpalFinesSearchOffencesData> {
+    body.maxResults = 100; // Set the maximum number of results to 100
+    return this.http.post<IOpalFinesSearchOffencesData>(`${OPAL_FINES_PATHS.searchOffences}`, body);
   }
 }
