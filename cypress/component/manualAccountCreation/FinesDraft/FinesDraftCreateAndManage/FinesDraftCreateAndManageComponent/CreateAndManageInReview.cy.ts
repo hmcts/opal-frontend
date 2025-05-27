@@ -130,7 +130,7 @@ describe('FinesDraftCheckAndManageInReviewComponent', () => {
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
   });
- 
+
   it('(AC.4a) The table should have the correct default ordering', { tags: ['@PO-584'] }, () => {
     const rejectedMockData = { count: 0, summaries: [] };
     const inReviewMockData = { count: 0, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
