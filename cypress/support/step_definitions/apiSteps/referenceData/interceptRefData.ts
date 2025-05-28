@@ -16,7 +16,7 @@ When('I intercept reference data for offence details', () => {
     offenceData.refData.forEach((offence: any) => {
       cy.intercept('GET', `/opal-fines-service/offences?q=${offence.offence_cjs_code}`, {
         count: 1,
-        refData: [offence]
+        refData: [offence],
       }).as(`getOffenceByCjsCode${offence.offence_cjs_code}`);
     });
     cy.intercept('GET', '/opal-fines-service/offences?*', offenceData).as('getOffenceRefData');
@@ -28,5 +28,3 @@ Then('all reference data should be loaded', () => {
   cy.wait('@getImpositionRefData').its('response.statusCode').should('eq', 200);
   cy.wait('@getOffenceRefData').its('response.statusCode').should('eq', 200);
 });
-
-
