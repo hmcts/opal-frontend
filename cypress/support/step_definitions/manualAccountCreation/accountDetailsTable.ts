@@ -72,6 +72,15 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
         .contains('dt', key)
         .next()
         .should('have.text', formatDateString(calculateWeeksInFuture(weeksInFuture)));
+    } else if (tableName === 'Payment terms' && key === 'Pay by date - exact') {
+      const updatedKey = key.replace(' - exact', '');
+      tableSelector
+        .contains('dt', updatedKey)
+        .next()
+        .invoke('text')
+        .then((actualText) => {
+          expect(actualText.trim()).to.equal(value);
+        });
     } else {
       tableSelector
         .contains('dt', key)
