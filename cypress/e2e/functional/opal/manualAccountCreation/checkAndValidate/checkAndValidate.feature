@@ -1,4 +1,4 @@
-Feature: PO-6 Navigate and edit sections from task list
+Feature: Navigate and edit sections from task list
 
     Background:
         Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
@@ -6,8 +6,8 @@ Feature: PO-6 Navigate and edit sections from task list
 
         Given I navigate to Create and Manage Draft Accounts
 
-    @PO-640
-    Scenario: AC8 - Navigate, edit and save data within account sections
+    @PO-640 @only
+    Scenario: AC8, AC9 - Navigate, edit and save data within account sections
 
         # Create a company account with rejected status for testing
         Given I create a "company" draft account with the following details:
@@ -37,14 +37,13 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
 
-        # Test cancel functionality with unsaved changes - temporarily disabled
-        # When I click on the "Court details" link
-        # Then I see "Court details" on the page header
-        # When I enter "Test" into the "Prosecutor Case Reference (PCR)" field
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        # Test cancel functionality with unsaved changes for Court Details
+        When I click on the "Court details" link
+        Then I see "Court details" on the page header
+        When I enter "Test" into the "Prosecutor Case Reference (PCR)" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
+
 
         # Company Details section
         When I click on the "Company details" link
@@ -72,14 +71,12 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Company details" is "Provided"
 
-        # Test cancel functionality with unsaved changes
-        # When I click on the "Company details" link
-        # Then I see "Company details" on the page header
-        # When I enter "CHANGED COMPANY LTD" into the "Company name" field
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        # Test cancel functionality with unsaved changes for Company Details
+        When I click on the "Company details" link
+        Then I see "Company details" on the page header
+        When I enter "CHANGED COMPANY LTD" into the "Company name" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
 
         # Contact Details section
         When I click on the "Contact details" link
@@ -99,14 +96,12 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Contact details" is "Provided"
 
-        # Test cancel functionality for Contact Details - temporarily disabled
-        # When I click on the "Contact details" link
-        # Then I see "Contact details" on the page header
-        # When I enter "12345678901" into the "Phone number" field
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        # Test cancel functionality for Contact Details for Contact Details
+        When I click on the "Contact details" link
+        Then I see "Defendant contact details" on the page header
+        When I enter "12345678901" into the "Phone number" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
 
         # Offence Details section
         When I click on the "Offence details" link
@@ -123,13 +118,13 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the status of "Offence details" is "Provided"
 
         # Test cancel functionality for Offence Details
-        # When I click on the "Offence details" link
-        # Then I see "Offence details" on the page header
-        # When I enter "Test Date" into the "Date Offence" field
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        When I click on the "Offence details" link
+        Then I see "Offences and impositions" on the page header
+        When I click on the "Change" link
+        When I enter "HY80508" into the "Offence code" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I click the "Return to account details" button
+        Then I see the "Check and submit" section heading
 
         # Payment Terms section
         When I click on the "Payment terms" link
@@ -143,13 +138,11 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the status of "Payment terms" is "Provided"
 
         # Test cancel functionality for Payment Terms
-        # When I click on the "Payment terms" link
-        # Then I see "Payment terms" on the page header
-        # When I select "Collection Order" from the "Payment type" dropdown
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        When I click on the "Payment terms" link
+        Then I see "Payment terms" on the page header
+        And I enter a date 8 weeks into the future into the "Start date" date field
+        Then I click "Cancel", a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
 
         # Account Comments and Notes section
         When I click on the "Account comments and notes" link
@@ -160,13 +153,11 @@ Feature: PO-6 Navigate and edit sections from task list
         And I see the status of "Account comments and notes" is "Provided"
 
         # Test cancel functionality for Account Comments
-        # When I click on the "Account comments and notes" link
-        # Then I see "Account comments and notes" on the page header
-        # When I enter "Test comment" into the "Comments" field
-        # And I click on the "Cancel" link
-        # Then I see "You have unsaved changes" text on the page
-        # When I click the "Continue without saving" button
-        # Then I see the "Check and submit" section heading
+        When I click on the "Account comments and notes" link
+        Then I see "Account comments and notes" on the page header
+        When I enter "Test comment" into the "Add comment" text field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
 
         # Final check and verification
         When I click the "Check account" button
@@ -265,6 +256,14 @@ Feature: PO-6 Navigate and edit sections from task list
         And I see the "Check and submit" section heading
         And I see the status of "Personal details" is "Provided"
 
+        # Test cancel functionality for Personal Details
+        When I click on the "Personal details" link
+        Then I see "Personal details" on the page header
+        When I enter "Test Name" into the "First names" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
+
+
         # Contact Details section
         When I click on the "Contact details" link
         Then I see "Defendant contact details" on the page header
@@ -332,6 +331,13 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see "TE12 3ST" in the "Postcode" field
         And I click the "Return to account details" button
         Then I see the status of "Employer details" is "Provided"
+
+        # Test cancel functionality for Employer Details
+        When I click on the "Employer details" link
+        Then I see "Employer details" on the page header
+        When I enter "Testing Corp" into the "Employer name" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
 
         # Account Comments and Notes section
         When I click on the "Account comments and notes" link
@@ -471,6 +477,13 @@ Feature: PO-6 Navigate and edit sections from task list
         Then I see the "Check and submit" section heading
         And I see the status of "Parent or guardian details" is "Provided"
 
+        # Test cancel functionality for Parent or Guardian Details
+        When I click on the "Parent or guardian details" link
+        Then I see "Parent or guardian details" on the page header
+        When I enter "Test Name" into the "First names" field
+        Then I click Cancel, a window pops up and I click Ok
+        Then I see the "Check and submit" section heading
+
         # Contact Details section
         When I click on the "Contact details" link
         Then I see "Parent or guardian contact details" on the page header
@@ -598,5 +611,47 @@ Feature: PO-6 Navigate and edit sections from task list
 
         When I click the "Submit for review" button
         Then I see "Create accounts" on the page header
+
+    @PO-640
+    Scenario: AC10 - Back button functionality for rejected account
+
+        # Create a company account with rejected status for testing
+        Given I create a "company" draft account with the following details:
+            | account.defendant.company_name | TEST Rejected-PO-640-BackButton |
+        When I update the last created draft account with status "Rejected"
+
+        Then I click on the "Rejected" link
+        Then I click on the "TEST Rejected-PO-640-BackButton" link
+
+        And I see "TEST Rejected-PO-640" on the page header
+        And I see the "Check and submit" section heading
+        And I see the status of "Court details" is "Provided"
+
+        When I click on the "Back" link
+        Then I see "Create accounts" on the page header
+
+        # Test back button with no amendments made - AC10
+        Then I click on the "TEST Rejected-PO-640-BackButton" link
+
+        When I click on the "Court details" link
+        Then I see "Court details" on the page header
+        When I enter "Updated PCR" into the "Prosecutor Case Reference (PCR)" field
+        Then I click the "Return to account details" button
+        Then I see the "Check and submit" section heading
+
+        When I click "Back", a window pops up and I click Ok
+        Then I see "Create accounts" on the page header
+
+        Then I click on the "TEST Rejected-PO-640-BackButton" link
+
+        # Test back button with amendments again
+        When I click on the "Court details" link
+        Then I see "Court details" on the page header
+        When I enter "Another PCR Update" into the "Prosecutor Case Reference (PCR)" field
+        Then I click the "Return to account details" button
+        Then I see the "Check and submit" section heading
+
+        When I click "Back", a window pops up and I click Cancel
+        Then I see the "Check and submit" section heading
 
 
