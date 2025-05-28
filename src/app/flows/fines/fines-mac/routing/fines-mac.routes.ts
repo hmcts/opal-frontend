@@ -13,6 +13,10 @@ import { fetchEnforcementCourtsResolver } from './resolvers/fetch-enforcement-co
 import { fetchSendingCourtsResolver } from './resolvers/fetch-sending-courts-resolver/fetch-sending-courts.resolver';
 import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-results-resolver/fetch-results.resolver';
 import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../../fines-draft/routing/constants/fines-draft-routing-permissions.constant';
+
+const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -26,9 +30,13 @@ export const routing: Routes = [
       import('../fines-mac-create-account/fines-mac-create-account.component').then(
         (c) => c.FinesMacCreateAccountComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.createAccount, permission: 'CREATE_MANAGE_DRAFT_ACCOUNTS' },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.createAccount,
+      permission: 'CREATE_MANAGE_DRAFT_ACCOUNTS',
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: {
       title: TitleResolver,
       businessUnits: fetchBusinessUnitsResolver,
@@ -40,9 +48,12 @@ export const routing: Routes = [
       import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.accountDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -51,9 +62,12 @@ export const routing: Routes = [
       import('../fines-mac-employer-details/fines-mac-employer-details.component').then(
         (c) => c.FinesMacEmployerDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.employerDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.employerDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -62,9 +76,12 @@ export const routing: Routes = [
       import('../fines-mac-contact-details/fines-mac-contact-details.component').then(
         (c) => c.FinesMacContactDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.contactDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.contactDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -73,9 +90,12 @@ export const routing: Routes = [
       import('../fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component').then(
         (c) => c.FinesMacParentGuardianDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.parentGuardianDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.parentGuardianDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -84,9 +104,12 @@ export const routing: Routes = [
       import('../fines-mac-personal-details/fines-mac-personal-details.component').then(
         (c) => c.FinesMacPersonalDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.personalDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.personalDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
 
@@ -96,9 +119,12 @@ export const routing: Routes = [
       import('../fines-mac-company-details/fines-mac-company-details.component').then(
         (c) => c.FinesMacCompanyDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.companyDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.companyDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -107,9 +133,12 @@ export const routing: Routes = [
       import('../fines-mac-court-details/fines-mac-court-details.component').then(
         (c) => c.FinesMacCourtDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.courtDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.courtDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
@@ -122,9 +151,12 @@ export const routing: Routes = [
       import('../fines-mac-account-comments-notes/fines-mac-account-comments-notes.component').then(
         (c) => c.FinesMacAccountCommentsNotesComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.accountCommentsNotes },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.accountCommentsNotes,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -133,9 +165,12 @@ export const routing: Routes = [
       import('../fines-mac-payment-terms/fines-mac-payment-terms.component').then(
         (c) => c.FinesMacPaymentTermsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.paymentTerms },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.paymentTerms,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -144,8 +179,11 @@ export const routing: Routes = [
       import('../fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component').then(
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation },
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -154,9 +192,12 @@ export const routing: Routes = [
       import('../fines-mac-language-preferences/fines-mac-language-preferences.component').then(
         (c) => c.FinesMacLanguagePreferencesComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.languagePreferences },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.languagePreferences,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -166,9 +207,12 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsComponent,
       ),
     children: offenceDetailsRouting,
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.offenceDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.offenceDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: {
       title: TitleResolver,
     },
@@ -179,8 +223,11 @@ export const routing: Routes = [
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
         (c) => c.FinesMacReviewAccountComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.reviewAccount,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
@@ -195,8 +242,11 @@ export const routing: Routes = [
       import('../fines-mac-submit-confirmation/fines-mac-submit-confirmation.component').then(
         (c) => c.FinesMacSubmitConfirmationComponent,
       ),
-    canActivate: [authGuard],
-    data: { title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation },
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
     resolve: { title: TitleResolver },
   },
   {
@@ -205,12 +255,15 @@ export const routing: Routes = [
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
         (c) => c.FinesMacReviewAccountComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     resolve: {
       title: TitleResolver,
       reviewAccountFetchMap: fetchMapFinesMacPayloadResolver,
     },
-    data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.reviewAccount,
+      routePermissionId: [draftRootPermissionIds['create-and-manage'], draftRootPermissionIds['check-and-validate']],
+    },
   },
   {
     path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
@@ -218,9 +271,12 @@ export const routing: Routes = [
       import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
-    data: { title: FINES_MAC_ROUTING_TITLES.children.accountDetails },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
   },
 ];

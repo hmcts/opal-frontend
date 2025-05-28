@@ -3,19 +3,13 @@ import { FINES_DRAFT_ROUTING_PATHS } from './constants/fines-draft-routing-paths
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_DRAFT_ROUTING_PERMISSIONS } from './constants/fines-draft-routing-permissions.constant';
-import { IFinesDraftRoutingPermissions } from './interfaces/fines-draft-routing-permissions.interface';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_ROUTING_TITLES } from './constants/fines-draft-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { routing as createAndManageRouting } from '../fines-draft-create-and-manage/routing/fines-draft-create-and-manage.routes';
 import { routing as checkAndValidateRouting } from '../fines-draft-check-and-validate/routing/fines-draft-check-and-validate.routes';
 
-const draftCheckAndValidateRootPath = FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate;
-const draftCheckAndValidatePermissionId =
-  FINES_DRAFT_ROUTING_PERMISSIONS[draftCheckAndValidateRootPath as keyof IFinesDraftRoutingPermissions];
-const draftCreateAndManageRootPath = FINES_DRAFT_ROUTING_PATHS.children.createAndManage;
-const draftCreateAndManagePermissionId =
-  FINES_DRAFT_ROUTING_PERMISSIONS[draftCreateAndManageRootPath as keyof IFinesDraftRoutingPermissions];
+const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -33,7 +27,7 @@ export const routing: Routes = [
     children: createAndManageRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftCreateAndManagePermissionId],
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
       title: FINES_DRAFT_ROUTING_TITLES.children.createAndManage,
     },
     resolve: { title: TitleResolver },
@@ -47,7 +41,7 @@ export const routing: Routes = [
     children: checkAndValidateRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftCheckAndValidatePermissionId],
+      routePermissionId: [draftRootPermissionIds['check-and-validate']],
       title: FINES_DRAFT_ROUTING_TITLES.children.checkAndValidate,
     },
     resolve: { title: TitleResolver },
