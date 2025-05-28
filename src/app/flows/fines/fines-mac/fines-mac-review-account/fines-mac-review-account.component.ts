@@ -130,7 +130,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
     this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
 
-    this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();
+    if (this.finesDraftStore.timeline_data()) {
+      this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();
+    }
 
     // Get reference data into variables
     this.localJusticeAreas = fetchMap.localJusticeAreas;
