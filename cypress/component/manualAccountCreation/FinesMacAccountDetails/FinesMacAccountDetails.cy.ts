@@ -439,22 +439,16 @@ describe('FinesMacAccountDetailsComponent', () => {
     },
   );
 
-  it(
-    '(AC.4d) should show Document and Language Preferences if BU is Welsh speaking',
-    { tags: ['@PO-640'] },
-    () => {
+  it('(AC.4d) should show Document and Language Preferences if BU is Welsh speaking', { tags: ['@PO-640'] }, () => {
+    FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+    FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
 
+    FINES_COMP_CHECK_ACCOUNT_MOCK.businessUnit.welsh_language = true;
 
-      FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-      FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+    setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
 
-      FINES_COMP_CHECK_ACCOUNT_MOCK.businessUnit.welsh_language = true;
-
-      setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
-      
-      // Verify Welsh language preferences are displayed
-      cy.get(DOM_ELEMENTS.languagePreferences).should('exist');
-      cy.get(DOM_ELEMENTS.languagePreferences).should('contain', 'Welsh and English');
-    },
-  );
+    // Verify Welsh language preferences are displayed
+    cy.get(DOM_ELEMENTS.languagePreferences).should('exist');
+    cy.get(DOM_ELEMENTS.languagePreferences).should('contain', 'Welsh and English');
+  });
 });
