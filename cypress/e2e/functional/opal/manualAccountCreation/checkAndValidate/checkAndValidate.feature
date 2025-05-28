@@ -658,7 +658,7 @@ Feature: Navigate and edit sections from task list
     @PO-657
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y only
 
-        And I remove all draft accounts
+
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status              | Rejected |
             | account.defendant.forenames | Mike     |
@@ -710,7 +710,7 @@ Feature: Navigate and edit sections from task list
     @PO-657
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, A/Y with parent/guardian to pay
 
-        And I remove all draft accounts
+
         And I create a "parentOrGuardianToPay" draft account with the following details:
             | Account_status              | Rejected |
             | account.defendant.forenames | Samantha |
@@ -766,13 +766,14 @@ Feature: Navigate and edit sections from task list
     @PO-657
     Scenario: AC.8, AC.9 & AC.10 View account details of rejected account, Company
 
-        And I remove all draft accounts
+
         And I create a "company" draft account with the following details:
-            | Account_status | Rejected |
+            | Account_status                 | Rejected                     |
+            | account.defendant.company_name | TEST Rejected PO-657-Company |
         And I update the last created draft account with status "Rejected"
         And I click on the "Rejected" link
-        And I click on the "TEST Rejected" link
-        Then I see "TEST Rejected" on the page header
+        And I click on the "TEST Rejected PO-657-Company" link
+        Then I see "TEST Rejected PO-657-Company" on the page header
         And the account status is "Rejected"
 
         #Test back link
@@ -780,32 +781,32 @@ Feature: Navigate and edit sections from task list
         When I click the "Check account" button
         And I see "Check account details" on the page header
         And I click on the "Back" link
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
         And I see "Test reason" text on the page
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Court details" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Company details" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Contact details" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Offences and impositions" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Payment terms" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click on the "Change" link in the "Account comments and notes" table
-        Then I see "TEST Rejected" on the page header
+        Then I see "TEST Rejected PO-657-Company" on the page header
 
         When I click the "Check account" button
         And I click the "Submit for review" button
@@ -813,7 +814,7 @@ Feature: Navigate and edit sections from task list
     @PO-610
     Scenario: View the details of an account in review
 
-        And I remove all draft accounts
+
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
             | account.defendant.forenames             | Larry                     |
