@@ -6,7 +6,7 @@ Feature: Navigate and edit sections from task list
 
         Given I navigate to Create and Manage Draft Accounts
 
-    @PO-640 @only
+    @PO-640
     Scenario: AC8, AC9 - Navigate, edit and save data within account sections
 
         # Create a company account with rejected status for testing
