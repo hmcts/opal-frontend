@@ -181,11 +181,11 @@ Feature: Navigate and edit sections from task list
             | Work telephone number   | 07123 456 789 |
 
         Then I see the following details for imposition 1 in the Offences and impositions table:
-            | imposition       | Costs              |
-            | creditor         | ASDA Stores (ASDA) |
-            | amountImposed    | 122                |
-            | amountPaid       | 10                 |
-            | balanceRemaining | 112                |
+            | imposition       | Costs                    |
+            | creditor         | TFL2 ATCM Testing (TFL2) |
+            | amountImposed    | 122                      |
+            | amountPaid       | 10                       |
+            | balanceRemaining | 112                      |
 
         Then I see the following in the "Payment terms" table:
             | Payment terms | Lump sum plus instalments |
@@ -374,11 +374,11 @@ Feature: Navigate and edit sections from task list
             | Work telephone number   | 07123 456 789 |
 
         Then I see the following details for imposition 1 in the Offences and impositions table:
-            | imposition       | Costs              |
-            | creditor         | ASDA Stores (ASDA) |
-            | amountImposed    | 125                |
-            | amountPaid       | 10                 |
-            | balanceRemaining | 115                |
+            | imposition       | Costs                    |
+            | creditor         | TFL2 ATCM Testing (TFL2) |
+            | amountImposed    | 125                      |
+            | amountPaid       | 10                       |
+            | balanceRemaining | 115                      |
 
         Then I see the following in the "Payment terms" table:
             | Has a collection order been made? | No                                  |
