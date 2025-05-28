@@ -1,94 +1,160 @@
 {
-  "draft_account_id": 41,
-  "business_unit_id": 77,
-  "created_at": "2025-05-20T09:52:41.399955Z",
-  "submitted_by": "L065JG",
+  "draft_account_id": null,
+  "created_at": null,
+  "account_snapshot": null,
+  "account_status_date": null,
+  "business_unit_id": 73,
+  "submitted_by": "L073JG",
   "submitted_by_name": "opal-test",
   "account": {
+    "account_type": "fine",
+    "defendant_type": "parentOrGuardianToPay",
+    "originator_name": "Bedfordshire Magistrates' Court",
+    "originator_id": 1080,
+    "prosecutor_case_reference": "ABCD1234A",
+    "enforcement_court_id": 730000000102,
+    "collection_order_made": false,
+    "collection_order_made_today": true,
+    "collection_order_date": "2025-05-22",
+    "suspended_committal_date": null,
+    "payment_card_request": null,
+    "account_sentence_date": "2025-03-20",
+    "defendant": {
+      "company_flag": false,
+      "title": "Miss",
+      "surname": "LNAME",
+      "forenames": "FNAME",
+      "company_name": null,
+      "dob": null,
+      "address_line_1": "1 Address Street",
+      "address_line_2": null,
+      "address_line_3": null,
+      "address_line_4": null,
+      "address_line_5": null,
+      "post_code": "RG12 8EU",
+      "telephone_number_home": null,
+      "telephone_number_business": null,
+      "telephone_number_mobile": null,
+      "email_address_1": null,
+      "email_address_2": null,
+      "national_insurance_number": "AB122398B",
+      "driving_licence_number": null,
+      "pnc_id": null,
+      "nationality_1": null,
+      "nationality_2": null,
+      "ethnicity_self_defined": null,
+      "ethnicity_observed": null,
+      "cro_number": null,
+      "occupation": null,
+      "gender": null,
+      "custody_status": null,
+      "prison_number": null,
+      "interpreter_lang": null,
+      "debtor_detail": null,
+      "parent_guardian": {
+        "company_flag": false,
+        "company_name": null,
+        "surname": "LNAME",
+        "forenames": "FNAME",
+        "dob": null,
+        "national_insurance_number": "AB122398B",
+        "address_line_1": "1 Address Street",
+        "address_line_2": null,
+        "address_line_3": null,
+        "address_line_4": null,
+        "address_line_5": null,
+        "post_code": "RG12 8EU",
+        "telephone_number_home": null,
+        "telephone_number_business": null,
+        "telephone_number_mobile": null,
+        "email_address_1": null,
+        "email_address_2": null,
+        "debtor_detail": {
+          "vehicle_make": "CarMake",
+          "vehicle_registration_mark": "CARREG",
+          "document_language": null,
+          "hearing_language": null,
+          "employee_reference": "AB122398B",
+          "employer_company_name": "XYZ company",
+          "employer_address_line_1": "1 Address Street",
+          "employer_address_line_2": null,
+          "employer_address_line_3": null,
+          "employer_address_line_4": null,
+          "employer_address_line_5": null,
+          "employer_post_code": "RG12 8EU",
+          "employer_telephone_number": null,
+          "employer_email_address": null,
+          "aliases": [
+            {
+              "alias_forenames": "fname1",
+              "alias_surname": "LNAME1",
+              "alias_company_name": null
+            }
+          ]
+        }
+      }
+    },
     "offences": [
       {
+        "date_of_sentence": "20/03/2025",
+        "imposing_court_id": 730000000102,
         "offence_id": 33369,
         "impositions": [
           {
             "result_id": "FCOMP",
-            "amount_paid": 10,
-            "amount_imposed": 122,
-            "minor_creditor": null,
-            "major_creditor_id": 3614
+            "amount_imposed": 300,
+            "amount_paid": 100,
+            "major_creditor_id": null,
+            "minor_creditor": {
+              "company_flag": false,
+              "title": "Mr",
+              "company_name": null,
+              "surname": "LNAME",
+              "forenames": "FNAME",
+              "dob": null,
+              "address_line_1": null,
+              "address_line_2": null,
+              "address_line_3": null,
+              "post_code": "NE13 8ED",
+              "telephone": null,
+              "email_address": null,
+              "payout_hold": true,
+              "pay_by_bacs": true,
+              "bank_account_type": 1,
+              "bank_sort_code": "123456",
+              "bank_account_number": "12345678",
+              "bank_account_name": "F LNAME",
+              "bank_account_ref": "REF123AB"
+            }
           }
-        ],
-        "date_of_sentence": "08/05/2025",
-        "imposing_court_id": 600000000003
+        ]
       }
     ],
-    "defendant": {
-      "company_flag": false,
-      "title": "Master",
-      "surname": "Doe Junior",
-      "forenames": "John",
-      "dob": "2010-01-01",
-      "address_line_1": "123 Main Street",
-      "address_line_2": "Apt 4B",
-      "address_line_3": null,
-      "post_code": "AB43 4RN",
-      "national_insurance_number": null,
-      "debtor_detail": {
-        "aliases": null,
-        "vehicle_make": null,
-        "hearing_language": "English",
-        "document_language": "English",
-        "vehicle_registration_mark": null
-      },
-      "parent_guardian": {
-        "company_flag": false,
-        "surname": "Doe Senior",
-        "forenames": "Jack",
-        "dob": "1980-01-01",
-        "address_line_1": "456 Parent Street",
-        "address_line_2": null,
-        "address_line_3": null,
-        "post_code": "AB12 3CD",
-        "telephone_number_home": null,
-        "telephone_number_business": null,
-        "telephone_number_mobile": "07700900999",
-        "email_address_1": "jack.doe@example.com",
-        "email_address_2": null,
-        "national_insurance_number": null,
-        "debtor_detail": {
-          "aliases": null,
-          "vehicle_make": null,
-          "hearing_language": null,
-          "document_language": null,
-          "vehicle_registration_mark": null
-        }
-      }
-    },
-    "account_type": "fine",
-    "account_notes": null,
-    "originator_id": 9251,
+    "fp_ticket_detail": null,
     "payment_terms": {
-      "enforcements": null,
-      "effective_date": "2025-05-31",
+      "payment_terms_type_code": "B",
+      "effective_date": "2025-04-01",
+      "instalment_period": null,
       "lump_sum_amount": null,
       "instalment_amount": null,
-      "instalment_period": null,
       "default_days_in_jail": null,
-      "payment_terms_type_code": "B"
+      "enforcements": [
+        {
+          "result_id": "COLLO",
+          "enforcement_result_responses": null
+        }
+      ]
     },
-    "defendant_type": "parentOrGuardianToPay",
-    "originator_name": "Aberdeen JP Court",
-    "enforcement_court_id": 600000000003,
-    "payment_card_request": null,
-    "account_sentence_date": "2025-05-08",
-    "collection_order_date": null,
-    "collection_order_made": null,
-    "suspended_committal_date": null,
-    "prosecutor_case_reference": "ASD",
-    "collection_order_made_today": null
+    "account_notes": null
   },
-  "account_snapshot": {
-    "account_type": "fine",
-    "created_date": "2025-05-20T09:52:41.399954718Z",
-    "submitted_by": "L065JG"
-  }
+  "account_type": "fine",
+  "account_status": "Submitted",
+  "timeline_data": [
+    {
+      "username": "opal-test",
+      "status": "Submitted",
+      "status_date": "2025-05-22",
+      "reason_text": null
+    }
+  ]
 }
