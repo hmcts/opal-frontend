@@ -15,10 +15,7 @@ Then('I click the {string} button and capture the created account number', (butt
 });
 
 afterEach(() => {
-  cy.log('Createdaccount length: ' + createdAccount.length);
-
   if (createdAccount.length > 0) {
-    cy.log('Cleaning up accounts: ' + createdAccount.join(', '));
     createdAccount.forEach((accountId) => {
       cy.request('DELETE', `/opal-fines-service/draft-accounts/${accountId}?ignoreMissing=true`);
       createdAccount = createdAccount.filter((id) => id !== accountId);
