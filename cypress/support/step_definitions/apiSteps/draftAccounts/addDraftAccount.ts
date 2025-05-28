@@ -33,7 +33,7 @@ type DefendantType = 'company' | 'adultOrYouthOnly' | 'parentOrGuardianToPay';
  */
 function getPayloadFileForAccountType(accountType: DefendantType): string {
   const payloadFiles = {
-    company: 'draftAccountPayload.json',
+    company: 'companyPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
     parentOrGuardianToPay: 'parentOrGuardianPayload.json',
   };
