@@ -6,7 +6,7 @@ Feature: Navigate and edit sections from task list
 
         Given I navigate to Create and Manage Draft Accounts
 
-    @PO-640
+    @PO-640 @PO-618
     Scenario: AC8, AC9 - Navigate, edit and save data within account sections
 
         # Create a company account with rejected status for testing
@@ -15,6 +15,14 @@ Feature: Navigate and edit sections from task list
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
+
+        ### PO-618 AC1 - All rejected accounts navigation test ###
+        When I click on the "view all rejected accounts" link
+        Then I see "All rejected accounts" on the page header
+        When I click on the "Back" link
+        Then I see "Create accounts" on the page header
+
+        ### Continue Rest of Test ###
         Then I click on the "TEST Rejected-PO-640-company" link
 
         And I see "TEST Rejected-PO-640" on the page header
@@ -204,11 +212,12 @@ Feature: Navigate and edit sections from task list
 
         # Create a adultOrYouthOnly account with rejected status for testing
         Given I create a "adultOrYouthOnly" draft account with the following details:
-            | account.defendant.company_name | TEST Rejected-PO-640-AdultOrYouthOnly |
+            | account.defendant.surname   | TEST                             |
+            | account.defendant.forenames | Rejected-PO-640-AdultOrYouthOnly |
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
-        Then I click on the "TEST Rejected-PO-640-AdultOrYouthOnly" link
+        Then I click on the "TEST, Rejected-PO-640-AdultOrYouthOnly" link
 
         And I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
@@ -409,11 +418,12 @@ Feature: Navigate and edit sections from task list
 
         # Create a parentOrGuardianToPay account with rejected status for testing
         Given I create a "parentOrGuardianToPay" draft account with the following details:
-            | account.defendant.company_name | TEST Rejected-PO-640-ParentOrGuardianToPay |
+            | account.defendant.surname   | TEST                                  |
+            | account.defendant.forenames | Rejected-PO-640-ParentOrGuardianToPay |
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
-        Then I click on the "TEST Rejected-PO-640-ParentOrGuardianToPay" link
+        Then I click on the "TEST, Rejected-PO-640-ParentOrGuardianToPay" link
 
         And I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
@@ -712,7 +722,6 @@ Feature: Navigate and edit sections from task list
 
 
         And I create a "parentOrGuardianToPay" draft account with the following details:
-            | Account_status              | Rejected |
             | account.defendant.forenames | Samantha |
             | account.defendant.surname   | Sellers  |
         And I update the last created draft account with status "Rejected"

@@ -32,7 +32,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from '../fines-mac-review-account/fines-mac-review-account-history/fines-mac-review-account-history.component';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 
 @Component({
@@ -80,7 +80,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
-  protected readonly finesDraftCheckAndManageRoutes = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
 
   public accountDetailsStatus!: string;
 
@@ -239,7 +239,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public navigateBack(): void {
     if (this.finesDraftStore.amend()) {
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
         false,
         undefined,
         this.finesDraftStore.fragment(),

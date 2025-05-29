@@ -11,6 +11,7 @@
           : finesMacStore.getPersonalDetailsName()
       "
       [timelineData]="finesDraftStore.timeline_data()"
+      [isRejected]="reviewAccountStatus === 'Rejected'"
     ></app-fines-mac-review-account-history>
   }
 
@@ -38,6 +39,7 @@
       [companyDetails]="finesMacStore.companyDetails().formData"
       [isReadOnly]="isReadOnly"
       (emitChangeCompanyDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
     >
     </app-fines-mac-review-account-company-details>
   }

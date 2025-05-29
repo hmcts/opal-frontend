@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-fines-draft-check-and-manage',
+  selector: 'app-fines-draft-create-and-manage',
   imports: [RouterOutlet],
-  templateUrl: './fines-draft-check-and-manage.component.html',
+  templateUrl: './fines-draft-create-and-manage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCheckAndManageComponent {}
+export class FinesDraftCreateAndManageComponent {}

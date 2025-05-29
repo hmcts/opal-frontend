@@ -128,7 +128,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     expect(routerSpy).toHaveBeenCalledWith(
       [
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
       ],
       {
         fragment: finesDraftStore.fragment(),
