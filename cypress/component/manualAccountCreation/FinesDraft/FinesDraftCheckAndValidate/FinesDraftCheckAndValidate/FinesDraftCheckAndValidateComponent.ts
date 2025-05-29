@@ -10,8 +10,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_checker_inputter_elements';
 import { NAVIGATION_LINKS } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/constants/fines_draft_cam_inputter_tableConstants';
-import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from 'cypress/component/manualAccountCreation/FinesDraft/FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
+import { DRAFT_SESSION_USER_STATE_MOCK } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock'
 
 describe('FinesDraftCheckAndValidateComponent', () => {
   const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, toReviewAccountsMockData: number) => {
@@ -27,20 +27,20 @@ describe('FinesDraftCheckAndValidateComponent', () => {
             provide: GlobalStore,
             useFactory: () => {
               let store = new GlobalStore();
-              store.setUserState(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+              store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
               return store;
             },
           },
           {
             provide: ActivatedRoute,
             useValue: {
-              fragment: of('approved'),
+              fragment: of('review'),
               snapshot: {
                 data: {
                   draftAccounts: mockTableData,
                   rejectedCount: toReviewAccountsMockData,
                 },
-                fragment: 'approved',
+                fragment: 'review',
               },
             },
           },
