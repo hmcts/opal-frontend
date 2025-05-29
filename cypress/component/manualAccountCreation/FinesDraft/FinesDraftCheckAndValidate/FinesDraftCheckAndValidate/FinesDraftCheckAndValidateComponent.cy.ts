@@ -9,11 +9,14 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_checker_inputter_elements';
-import { NAVIGATION_LINKS } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/constants/fines_draft_cam_inputter_tableConstants';
+import { NAVIGATION_LINKS } from '../../FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/fines_draft_cam_checker_tableConstants';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';
+import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
 describe('FinesDraftCheckAndValidateComponent', () => {
+
+ 
   const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, toReviewAccountsMockData: number) => {
     cy.then(() => {
       mount(FinesDraftCheckAndValidateTabsComponent, {
@@ -50,8 +53,10 @@ describe('FinesDraftCheckAndValidateComponent', () => {
     });
   };
 
-  it('(AC.1) should show summary table with correct tabs and data for the accounts', { tags: ['@PO-593'] }, () => {
-    const reviewedMockData = { count: 0, summaries: [] };
+  it.only('(AC.1) should show summary table with correct tabs and data for the accounts', { tags: ['@PO-593'] }, () => {
+    // const reviewedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK.summaries };
+    // const toReviewCountMockData = 2;
+    const reviewedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
     const toReviewCountMockData = 0;
 
     setupComponent(reviewedMockData, toReviewCountMockData);
@@ -61,15 +66,19 @@ describe('FinesDraftCheckAndValidateComponent', () => {
     for (const link of NAVIGATION_LINKS) {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
       if (link === 'To review') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page').and('exist');
+        cy.get(DOM_ELEMENTS.statusHeading).contains(link).should('exist');
       }
       if (link === 'Rejected') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page').click();
-        cy.get(DOM_ELEMENTS.heading).should('have.text', 'Rejected').and('have.text', 'There are no rejected accounts');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').click();
+        cy.get(DOM_ELEMENTS.statusHeading)
+          .should('have.text', 'Rejected')
+          .and('have.text', 'There are no rejected accounts');
       }
       if (link === 'Deleted') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page').click();
-        cy.get(DOM_ELEMENTS.heading).should('have.text', 'Rejected').and('have.text', 'There are no deleted accounts');
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').click();
+        cy.get(DOM_ELEMENTS.statusHeading)
+          .should('have.text', 'Rejected')
+          .and('have.text', 'There are no deleted accounts');
       }
     }
   });

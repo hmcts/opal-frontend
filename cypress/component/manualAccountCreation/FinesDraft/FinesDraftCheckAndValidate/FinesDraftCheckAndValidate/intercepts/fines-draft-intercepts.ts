@@ -30,3 +30,18 @@ export function interceptGetDeletedAccounts(statusCode: number, responseBody: an
     },
   ).as('getToReviewAccounts');
 }
+export function interceptGetAccounts(statusCode: number, responseBody: any) {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: 'http://localhost:4550/testing-support/token/user',
+      headers: {
+        'X-User-Email': 'opal-test-10@hmcts.net',
+      },
+    },
+    {
+      statusCode: statusCode,
+      body: responseBody,
+    },
+  ).as('getUser10');
+}
