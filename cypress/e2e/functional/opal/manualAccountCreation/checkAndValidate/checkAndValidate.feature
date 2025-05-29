@@ -217,7 +217,7 @@ Feature: Navigate and edit sections from task list
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
-        Then I click on the "TEST Rejected-PO-640-AdultOrYouthOnly" link
+        Then I click on the "TEST, Rejected-PO-640-AdultOrYouthOnly" link
 
         And I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"
@@ -423,7 +423,7 @@ Feature: Navigate and edit sections from task list
         When I update the last created draft account with status "Rejected"
 
         Then I click on the "Rejected" link
-        Then I click on the "TEST Rejected-PO-640-ParentOrGuardianToPay" link
+        Then I click on the "TEST, Rejected-PO-640-ParentOrGuardianToPay" link
 
         And I see the "Check and submit" section heading
         And I see the status of "Court details" is "Provided"

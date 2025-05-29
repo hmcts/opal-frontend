@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
@@ -75,27 +75,24 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
   public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
   /**
-   * Sets up a data stream for managing tab-specific data in the component.
+   * Initializes and manages the observable stream for tab data in the fines draft create and manage component.
    *
-   * This method initializes an observable (`tabData$`) that listens to changes in the
-   * route fragment and dynamically fetches or processes data based on the active tab.
-   * It also updates the `activeTab` property whenever the tab changes.
+   * This method sets up `tabData$` as an observable that reacts to changes in the route fragment (representing the active tab).
+   * It emits the appropriate table data for the selected tab, using the provided initial data for the first tab load,
+   * and fetching fresh data from the API for subsequent tab changes.
    *
-   * @param initialData - The initial data to populate the table when the component is initialized.
-   * @param initialTab - The default tab to be used when the component is first loaded.
+   * @param initialData - The initial fines draft accounts response used to populate the table data for the first tab load.
+   * @param initialTab - The name of the tab to be initially selected and loaded.
    *
-   * The observable performs the following steps:
-   * - Listens to the route fragment and starts with the `initialTab`.
-   * - Filters out invalid fragments and ensures only valid strings are processed.
-   * - Updates the `activeTab` property whenever the tab changes.
-   * - Fetches data for the active tab:
-   *   - If the tab matches the `initialTab`, it uses the provided `initialData`.
-   *   - Otherwise, it fetches data from the `opalFinesService` based on the tab's statuses,
-   *     business unit IDs, and user IDs.
-   * - Shares the fetched data across multiple subscribers using `shareReplay`.
-   * - Cleans up the observable when the component is destroyed using `takeUntil`.
+   * @remarks
+   * - Uses Angular's `ActivatedRoute` to listen for fragment changes (tab selection).
+   * - Ensures the initial data is only used once for the first tab load.
+   * - Fetches and populates table data for other tabs using the `opalFinesService`.
+   * - Cleans up the observable stream on component destruction.
    */
   private setupTabDataStream(initialData: IOpalFinesDraftAccountsResponse, initialTab: string): void {
+    let initialTabUsed = false;
+
     this.tabData$ = this.activatedRoute.fragment.pipe(
       filter((frag): frag is string => !!frag),
       startWith(initialTab),
@@ -104,7 +101,10 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
       takeUntil(this.destroy$),
       tap((tab) => (this.activeTab = tab)),
       switchMap((tab) => {
-        if (tab === initialTab) {
+        const isFirstInitialTab = tab === initialTab && !initialTabUsed;
+
+        if (isFirstInitialTab) {
+          initialTabUsed = true;
           return of(this.finesDraftService.populateTableData(initialData));
         }
 
@@ -135,36 +135,44 @@ export class FinesDraftCreateAndManageTabsComponent implements OnInit, OnDestroy
   }
 
   /**
-   * Sets up a stream to manage the rejected count for fines draft tabs.
-   * This stream listens to router navigation events and updates the rejected count
-   * based on the currently active tab. If the active tab matches the initial tab,
-   * it uses the provided `resolverRejectedCount`. Otherwise, it fetches the rejected
-   * count dynamically from the `opalFinesService`.
+   * Initializes and manages the observable stream `rejectedCount$` that tracks the count of rejected draft accounts
+   * based on the currently active tab and route fragment. The stream emits a formatted count value, either from the
+   * provided resolver on the initial tab load or by fetching updated counts from the backend service when the tab changes.
    *
-   * @param resolverRejectedCount - The initial rejected count to use for the default tab.
-   * @param initialTab - The name of the initial tab to compare against during navigation.
-   * @returns An observable that emits the formatted rejected count as a string.
+   * @param resolverRejectedCount - The initial count of rejected draft accounts, typically resolved before component initialization.
+   * @param initialTab - The name of the tab to be used as the initial active tab.
+   *
+   * @remarks
+   * - The stream listens to changes in the route fragment to determine the active tab.
+   * - On the first load of the initial tab, it emits the provided resolver count without making a backend call.
+   * - For subsequent tab changes, it fetches the rejected count from the backend using the current filter parameters.
+   * - The observable is automatically unsubscribed when the component is destroyed.
    */
   private setupRejectedCountStream(resolverRejectedCount: number, initialTab: string): void {
-    const tab$ = this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.activatedRoute.snapshot.fragment || 'review'),
-      distinctUntilChanged(),
+    let initialTabUsed = false;
+
+    this.rejectedCount$ = this.activatedRoute.fragment.pipe(
+      filter((frag): frag is string => !!frag),
       startWith(initialTab),
-    );
-    this.rejectedCount$ = tab$.pipe(
+      map((tab) => tab!),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      tap((tab) => (this.activeTab = tab)),
       switchMap((tab) => {
-        if (tab === initialTab) {
+        const isFirstInitialTab = tab === initialTab && !initialTabUsed;
+
+        if (isFirstInitialTab) {
+          initialTabUsed = true;
           const capped = this.formatCount(resolverRejectedCount);
           return of(capped);
-        } else {
-          const params = {
-            businessUnitIds: this.businessUnitIds,
-            submittedBy: this.businessUnitUserIds,
-            statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
-          };
-          return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
         }
+
+        const params = {
+          businessUnitIds: this.businessUnitIds,
+          submittedBy: this.businessUnitUserIds,
+          statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+        };
+        return this.opalFinesService.getDraftAccounts(params).pipe(map((res) => this.formatCount(res.count)));
       }),
     );
   }
