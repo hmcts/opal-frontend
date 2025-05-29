@@ -1,7 +1,7 @@
 Feature: Global API Interceptor shows error banner for all CEP error codes
 
   @PO-1574
-  Scenario Outline: Global API Interceptor - Error Hnadling banner is triggered for all CEP error codes
+  Scenario Outline: Error Handling banner is triggered for <errorCode> error code
     ## CEP Error codes 400, 401, 403, 404, 406, 408, 415, 503, 500
     ## https://tools.hmcts.net/confluence/display/PO/API+Response+Handling+-+Common+Acceptance+Criteria
 
@@ -24,6 +24,3 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       | 415       |
       | 503       |
       | 500       |
-
-
-

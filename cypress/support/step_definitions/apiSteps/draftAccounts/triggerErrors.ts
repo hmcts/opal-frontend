@@ -12,10 +12,15 @@ Given(
     }).as('getBusinessUnitsError');
     cy.get('a').contains('Manual Account Creation').click();
     cy.wait('@getBusinessUnitsError');
+
+    cy.get('@getBusinessUnitsError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.error).to.equal('Internal Server Error');
+    });
   },
 );
 Then('I should see the global error banner', () => {
-  cy.get('opal-lib-moj-banner').should('exist').and('contain.text', globalErrorBannerText);
+  cy.get('opal-lib-moj-banner', { timeout: 20_000 }).should('exist').and('contain.text', globalErrorBannerText);
 });
 
 Then('I should not see the global error banner', () => {
