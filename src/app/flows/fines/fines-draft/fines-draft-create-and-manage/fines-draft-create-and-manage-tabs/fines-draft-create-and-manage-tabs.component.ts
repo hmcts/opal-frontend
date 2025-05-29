@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
-import { NavigationEnd } from '@angular/router';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
@@ -13,7 +11,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
-import { distinctUntilChanged, filter, map, Observable, startWith, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftService } from '../../services/fines-draft.service';
@@ -63,31 +61,21 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
   /**
-   * Initializes and sets up the observable data stream for tab-specific data in the fines draft management component.
+   * Initializes the tab data stream for the fines draft create and manage tabs component.
    *
-   * @param initialData - The initial data response containing fines draft account information.
-   * @param initialTab - The tab identifier to be selected initially.
+   * This method sets up a reactive data stream (`tabData$`) that updates the tab's data based on the current fragment (tab)
+   * and relevant parameters such as business unit IDs, statuses, and user IDs. It also ensures that the draft accounts cache
+   * is cleared when the tab changes. The data stream fetches draft account data from the service and processes it for table display.
    *
-   * This method:
-   * - Listens to changes in the route fragment to detect tab changes.
-   * - Filters and maps the fragment to ensure a valid tab string is used.
-   * - Uses the fragment observable to drive the data stream for the selected tab.
-   * - Constructs the necessary parameters for fetching tab data based on the current tab.
-   * - Fetches the draft accounts data from the service and processes it for table display.
-   * - Assigns the resulting observable to `tabData$` for use in the component template.
+   * @private
+   * @returns {void}
    */
-  private setupTabDataStream(initialData: IOpalFinesDraftAccountsResponse, initialTab: string): void {
-    const fragment$ = this['activatedRoute'].fragment.pipe(
-      startWith(initialTab),
-      filter((frag): frag is string => !!frag),
-      map((tab) => tab!),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$),
+  private setupTabDataStream(): void {
+    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('review', this.destroy$), () =>
+      this.opalFinesService.clearDraftAccountsCache(),
     );
 
     this.tabData$ = this.createTabDataStream(
-      initialData,
-      initialTab,
       fragment$,
       (tab) => ({
         businessUnitIds: this.businessUnitIds,
@@ -100,32 +88,22 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   }
 
   /**
-   * Initializes and sets up the observable stream for tracking the count of rejected draft fines.
+   * Initializes the observable stream `rejectedCount$` to track the count of rejected draft accounts.
    *
-   * This method listens to Angular router navigation events to detect changes in the URL fragment,
-   * which determines the currently active tab. It then creates an observable (`rejectedCount$`)
-   * that emits the formatted count of rejected draft fines, capped at a predefined maximum.
+   * This method sets up a stream that:
+   * - Listens for changes to the 'review' tab fragment.
+   * - Clears the draft accounts cache when the tab changes.
+   * - Fetches the count of rejected draft accounts using the current business unit and user IDs.
+   * - Formats the count with a cap defined by `FINES_DRAFT_MAX_REJECTED`.
    *
-   * @param resolverRejectedCount - The initial count of rejected draft fines, typically resolved from a route resolver.
-   * @param initialTab - The name of the tab to be selected initially, used as the default fragment.
-   *
-   * @remarks
-   * - The stream is automatically unsubscribed when the component is destroyed.
-   * - The count is fetched from the backend using `opalFinesService.getDraftAccounts` with appropriate filter parameters.
-   * - The count is formatted and capped using `formatCountWithCap`.
+   * @private
    */
-  private setupRejectedCountStream(resolverRejectedCount: number, initialTab: string): void {
-    const fragment$ = this['router'].events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this['activatedRoute'].snapshot.fragment || 'review'),
-      distinctUntilChanged(),
-      startWith(initialTab),
-      takeUntil(this.destroy$),
+  private setupRejectedCountStream(): void {
+    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('review', this.destroy$), () =>
+      this.opalFinesService.clearDraftAccountsCache(),
     );
 
     this.rejectedCount$ = this.createCountStream(
-      initialTab,
-      resolverRejectedCount,
       fragment$,
       () => ({
         businessUnitIds: this.businessUnitIds,
@@ -139,10 +117,11 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   }
 
   /**
-   * Handles the click event for a defendant in the fines draft context.
+   * Handles the click event for a defendant in the fines draft process.
    *
-   * Sets the current fragment and amend state in the fines draft store based on the active tab,
-   * then triggers the defendant click logic in the fines draft service with the appropriate path.
+   * Sets the current fragment and amendment state based on the active tab,
+   * then triggers the defendant click logic in the fines draft service,
+   * navigating to the appropriate path depending on whether the draft is being amended or reviewed.
    *
    * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
    */
@@ -155,27 +134,37 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   }
 
   /**
-   * Navigates to the specified route relative to the parent route.
+   * Navigates to the specified route relative to the parent of the current activated route.
+   * Also sets the current active tab as a fragment in the fines draft store.
    *
-   * @param route - The route to navigate to.
+   * @param route - The route path to navigate to.
    */
   public handleRoute(route: string): void {
     this.finesDraftStore.setFragment(this.activeTab);
     this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
   }
 
+  /**
+   * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
+   *
+   * This method performs the following initialization tasks:
+   * - Resets the fine draft state in the store.
+   * - Resets fragment and amendment state in the store.
+   * - Sets up the data stream for tab information.
+   * - Sets up the stream to track the count of rejected items.
+   */
   public ngOnInit(): void {
     this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndAmend();
-    const resolvedDraftAccounts = this['activatedRoute'].snapshot.data[
-      'draftAccounts'
-    ] as IOpalFinesDraftAccountsResponse;
-    const resolvedRejectedAccounts = this['activatedRoute'].snapshot.data['rejectedCount'] as number;
-    const initialTab = this['activatedRoute'].snapshot.fragment ?? 'review';
-    this.setupTabDataStream(resolvedDraftAccounts, initialTab);
-    this.setupRejectedCountStream(resolvedRejectedAccounts, initialTab);
+    this.setupTabDataStream();
+    this.setupRejectedCountStream();
   }
 
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   * Emits a value and completes the `destroy$` subject to clean up subscriptions
+   * and prevent memory leaks.
+   */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

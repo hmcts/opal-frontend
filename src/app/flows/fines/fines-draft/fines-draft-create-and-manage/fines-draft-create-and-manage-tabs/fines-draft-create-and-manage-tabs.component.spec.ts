@@ -31,7 +31,11 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
       jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'getDraftAccountById']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
+      'getDraftAccounts',
+      'getDraftAccountById',
+      'clearDraftAccountsCache',
+    ]);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
     mockOpalFinesService.getDraftAccountById.and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
 
@@ -60,10 +64,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
           useValue: {
             fragment: of('review'),
             snapshot: {
-              data: {
-                draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-                rejectedCount: 2,
-              },
               fragment: 'review',
             },
           },
@@ -102,22 +102,19 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 
-  it('should initialize with default state when fragment is null', () => {
+  it('should initialise tab data using default fragment when fragment is null', async () => {
+    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+
     activatedRoute.snapshot.fragment = null;
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
+    activatedRoute.fragment = of(null); // simulate fallback to default
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupTabDataStream').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupRejectedCountStream').and.callThrough();
-
-    fixture.detectChanges();
     component.ngOnInit();
 
-    expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
-    expect(component['setupTabDataStream']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK, 'review');
-    expect(component['setupRejectedCountStream']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.count, 'review');
+    const result = await firstValueFrom(component.tabData$);
+
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    expect(result).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 
   it('should handle route navigation correctly', () => {
@@ -128,25 +125,24 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 
-  it('should use default values when resolver data is empty', async () => {
+  it('should show "0" when getDraftAccounts returns count 0', async () => {
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 0, summaries: [] }));
     finesDraftService.populateTableData.and.returnValue([]);
-    activatedRoute.snapshot.data = {
-      draftAccounts: { count: 0, summaries: [] },
-      rejectedCount: 0,
-    };
+
     component.ngOnInit();
-    const tabData = await firstValueFrom(component.tabData$);
-    expect(tabData).toEqual([]);
+
     const rejectedCount = await firstValueFrom(component.rejectedCount$);
     expect(rejectedCount).toBe('0');
+
+    const tabData = await firstValueFrom(component.tabData$);
+    expect(tabData).toEqual([]);
   });
 
-  it('should display "99+" when rejectedCount is 100 in resolver data', async () => {
-    activatedRoute.snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-      rejectedCount: 100,
-    };
+  it('should display "99+" when getDraftAccounts returns count >= 100', async () => {
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 100, summaries: [] }));
+
     component.ngOnInit();
+
     const rejectedCount = await firstValueFrom(component.rejectedCount$);
     expect(rejectedCount).toBe('99+');
   });
