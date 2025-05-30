@@ -39,9 +39,9 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(component.abstractExistingSortState).toEqual(sortState);
   });
 
-  it('should accept isApprovedTab input', () => {
-    component.isApprovedTab = true;
-    expect(component.isApprovedTab).toBeTrue();
+  it('should accept activeTab input', () => {
+    component.activeTab = 'approved';
+    expect(component.activeTab).toBe('approved');
   });
 
   it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {

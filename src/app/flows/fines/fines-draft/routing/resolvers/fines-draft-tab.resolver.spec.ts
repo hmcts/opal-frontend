@@ -10,9 +10,12 @@ import { finesDraftTabResolver } from './fines-draft-tab.resolver';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from './constants/fines-draft-resolver-empty-response.constant';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
+import { IFinesDraftTabStatuses } from '../../interfaces/fines-draft-tab-statuses.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 describe('finesDraftTabResolver', () => {
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
+  const dateServiceMock: jasmine.SpyObj<DateService> = jasmine.createSpyObj('DateService', ['getDateRange']);
   let globalStoreMock: GlobalStoreType;
 
   const executeResolver =
@@ -35,7 +38,11 @@ describe('finesDraftTabResolver', () => {
     opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: opalFinesServiceMock }, GlobalStore],
+      providers: [
+        { provide: OpalFines, useValue: opalFinesServiceMock },
+        GlobalStore,
+        { provide: DateService, useValue: dateServiceMock },
+      ],
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);
@@ -102,5 +109,34 @@ describe('finesDraftTabResolver', () => {
       statuses: defaultStatuses,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+  });
+
+  it('should include accountStatusDateFrom and accountStatusDateTo if historicWindowInDays is set', async () => {
+    // Find a tab and set historicWindowInDays for this test
+    const tab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === 'deleted') as IFinesDraftTabStatuses;
+    const originalHistoricWindow = tab.historicWindowInDays;
+    tab.historicWindowInDays = 7;
+
+    // Mock DateService
+    const dateFrom = '2023-01-01';
+    const dateTo = '2023-01-07';
+    dateServiceMock.getDateRange.and.returnValue({ from: dateFrom, to: dateTo });
+
+    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+
+    const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
+
+    expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(7, 0);
+    expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      statuses: tab.statuses,
+      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      accountStatusDateFrom: [dateFrom],
+      accountStatusDateTo: [dateTo],
+    });
+    expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+    // Restore original value to avoid side effects
+    tab.historicWindowInDays = originalHistoricWindow;
   });
 });
