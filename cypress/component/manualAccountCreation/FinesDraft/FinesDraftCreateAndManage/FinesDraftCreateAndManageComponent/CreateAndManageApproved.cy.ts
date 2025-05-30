@@ -10,7 +10,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
+import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_tableConstants';
 import { of } from 'rxjs';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { mock } from 'node:test';
