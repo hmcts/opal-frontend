@@ -148,20 +148,6 @@ withPipeline(type, product, component) {
     setupTestSpecifications()
 }
 
-  afterAlways('test') {
-  script {
-    def labels = getProjectLabels()
-    def isMasterBranch = env.BRANCH_NAME == 'master'
-
-    if (labels.contains('test_opal_component') || isMasterBranch) {
-      echo "Running opal component tests (label present or on master)"
-      yarnBuilder.yarn('test:opalComponent')
-    } else {
-      echo "Skipping opal component tests (no label and not master)"
-    }
-  }
-}
-
   afterSuccess('test') {
     script {
         def sourceJobName = env.JOB_NAME
@@ -177,9 +163,23 @@ withPipeline(type, product, component) {
         archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/component-parallel-weights.json', allowEmptyArchive: true
         }
   }
-  afterAlways('test'){
+
+  afterAlways('test') {
+  script {
+    def labels = getProjectLabels()
+    def isMasterBranch = env.BRANCH_NAME == 'master'
+
+    if (labels.contains('test_opal_component') || isMasterBranch) {
+      echo "Running opal component tests (label present or on master)"
+      yarnBuilder.yarn('test:opalComponent')
+    } else {
+      echo "Skipping opal component tests (no label and not master)"
+    }
+
+    // Always archive functional-output
     archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }
+}
 
   afterSuccess('functionalTest:dev') {
     script {
