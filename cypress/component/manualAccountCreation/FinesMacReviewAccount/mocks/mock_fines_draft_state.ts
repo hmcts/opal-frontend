@@ -103,5 +103,5 @@ export const MOCK_FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
       reason_text: '',
     },
   ],
-  version: null,
+  version: 0,
 };

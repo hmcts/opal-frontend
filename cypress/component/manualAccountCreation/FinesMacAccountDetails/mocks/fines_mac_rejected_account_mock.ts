@@ -105,5 +105,5 @@ export const FINES_REJECTED_ACCOUNT_MOCK: IFinesMacAddAccountPayload = {
       reason_text: 'Account rejected due to incorrect information',
     },
   ],
-  version: null,
+  version: 0,
 };
