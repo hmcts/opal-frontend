@@ -7,9 +7,9 @@ import { IFinesDraftCreateAndManageRoutingPermissions } from './interfaces/fines
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PERMISSIONS } from './constants/fines-draft-create-and-manage-routing-permissions.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from './constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES } from './constants/fines-draft-create-and-manage-routing-titles.constant';
-import { finesDraftCreateAndManageTabResolver } from './resolvers/fines-draft-create-and-manage-tab.resolver';
 import { finesDraftCreateAndManageRejectedCountResolver } from './resolvers/fines-draft-create-and-manage-rejected-count.resolver';
 import { finesDraftCreateAndManageViewAllRejectedResolver } from './resolvers/fines-draft-create-and-manage-view-all-rejected.resolver';
+import { finesDraftTabResolver } from '../../routing/resolvers/fines-draft-tab.resolver';
 
 const draftCreateAndManageRootPath = FINES_DRAFT_ROUTING_PATHS.children.createAndManage;
 const draftCreateAndManagePermissionId =
@@ -36,7 +36,10 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
-      draftAccounts: finesDraftCreateAndManageTabResolver,
+      draftAccounts: finesDraftTabResolver({
+        useFragmentForStatuses: true,
+        includeSubmittedBy: true,
+      }),
       rejectedCount: finesDraftCreateAndManageRejectedCountResolver,
     },
   },

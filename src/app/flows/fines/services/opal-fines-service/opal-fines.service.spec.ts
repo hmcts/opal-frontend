@@ -1,21 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-
 import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
-
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
@@ -325,9 +321,8 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
   });
 
-  it('should send a GET request to draft accounts API with correct query parameters', () => {
+  it('should send a GET request to draft accounts API with correct query parameters and use cache on repeated call', () => {
     const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
-
     const expectedResponse = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
 
     service.getDraftAccounts(filters).subscribe((response) => {
@@ -335,9 +330,7 @@ describe('OpalFines', () => {
     });
 
     const req = httpMock.expectOne((request) => {
-      // Validate the URL and query parameters
       const url = request.urlWithParams;
-
       return (
         url.includes(OPAL_FINES_PATHS.draftAccounts) &&
         url.includes(`business_unit=${filters.businessUnitIds![0]}`) &&
@@ -358,6 +351,37 @@ describe('OpalFines', () => {
     expect(req.request.params.getAll('not_submitted_by')).toEqual(['user3', 'user4']);
 
     req.flush(expectedResponse);
+
+    // Second call should hit the cache and not trigger a new request
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
+  });
+
+  it('should clear the draft accounts cache', () => {
+    const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
+
+    // Prime the cache
+    service.getDraftAccounts(filters).subscribe();
+    const req = httpMock.expectOne((req) => req.url.startsWith(OPAL_FINES_PATHS.draftAccounts));
+    req.flush(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+    // Confirm cache is used
+    service.getDraftAccounts(filters).subscribe();
+    httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
+
+    // Clear the cache
+    service.clearDraftAccountsCache();
+
+    // After clearing, a new request should be made and return correct data
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    });
+    const newReq = httpMock.expectOne((req) => req.url.startsWith(OPAL_FINES_PATHS.draftAccounts));
+    expect(newReq.request.method).toBe('GET');
+    newReq.flush(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
 
   it('should GET the draft account by id', () => {
@@ -467,5 +491,21 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should generate a consistent cache key for undefined or empty filter params', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const key1 = (service as any).generateDraftAccountsCacheKey({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const key2 = (service as any).generateDraftAccountsCacheKey({
+      businessUnitIds: [],
+      statuses: [],
+      submittedBy: [],
+      notSubmittedBy: [],
+    });
+
+    expect(key1).toBe(key2);
+    expect(typeof key1).toBe('string');
+    expect(() => JSON.parse(key1)).not.toThrow();
   });
 });
