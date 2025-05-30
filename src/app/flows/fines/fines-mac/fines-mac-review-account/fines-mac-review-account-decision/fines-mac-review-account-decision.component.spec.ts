@@ -84,7 +84,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should set banner message to approved and reset unsaved changes when decision is approve', () => {
     const response = {
-      account_snapshot: { defendant_name: 'John Doe' },
+      account: { defendant: { company_name: 'Testing Co Ltd' } },
       account_status: 'Publishing Pending',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
@@ -92,7 +92,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     component['successfulSubmission'](response);
 
-    expect(finesDraftStore.bannerMessage()).toEqual('You have approved John Doe account');
+    expect(finesDraftStore.bannerMessage()).toEqual(`You have approved Testing Co Ltd's account`);
     expect(finesMacStore.stateChanges()).toBeFalsy();
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {
@@ -102,7 +102,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should set banner message to rejected and reset unsaved changes when decision is reject', () => {
     const response = {
-      account_snapshot: { defendant_name: 'Jane Doe' },
+      account: { defendant: { forenames: 'Jane', surname: 'Doe' } },
       account_status: 'Rejected',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
@@ -110,7 +110,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     component['successfulSubmission'](response);
 
-    expect(finesDraftStore.bannerMessage()).toEqual('You have rejected Jane Doe account');
+    expect(finesDraftStore.bannerMessage()).toEqual(`You have rejected Jane Doe's account`);
     expect(finesMacStore.stateChanges()).toBeFalsy();
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {
