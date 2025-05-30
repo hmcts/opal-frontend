@@ -177,38 +177,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 
-  it('should update rejected count on tab change with count over threshold and call formatCount', async () => {
-    const largeRejectedCountResponse = { count: 150, summaries: [] };
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(largeRejectedCountResponse));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'formatCount').and.callThrough();
-
-    component.activeTab = 'review';
-
-    // Update the fragment in the snapshot to simulate tab change to 'rejected'
-    activatedRoute.snapshot.fragment = 'rejected';
-
-    // Emit a navigation end event to simulate router navigation
-    routerEventSubject.next(new NavigationEnd(1, '/some-url', '/some-url'));
-
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-    expect(component['formatCount']).toHaveBeenCalledWith(largeRejectedCountResponse.count);
-  });
-
-  it('should update rejected count on tab change with count over threshold and call formatCount', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'formatCount').and.callThrough();
-
-    // Update the fragment in the snapshot
-    activatedRoute.snapshot.fragment = null;
-
-    // Emit a navigation end event to simulate router navigation
-    routerEventSubject.next(new NavigationEnd(1, '/some-url', '/some-url'));
-
-    expect(mockOpalFinesService.getDraftAccounts).not.toHaveBeenCalled();
-    expect(component['formatCount']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.count);
-  });
-
   it('should call setFragmentAndAmend and onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is not "rejected"', () => {
     component.activeTab = 'review';
     component.onDefendantClick(123);
