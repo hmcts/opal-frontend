@@ -24,7 +24,7 @@ export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
   },
   {
     tab: 'error',
-    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.errorInPublishing],
+    statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
     prettyName: 'Error',
   },
   {

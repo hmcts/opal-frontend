@@ -1,4 +1,7 @@
 <div class="govuk-grid-column-full">
+  @if (finesDraftStore.bannerMessage().length > 0) {
+    <opal-lib-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></opal-lib-moj-banner>
+  }
   <h1 class="govuk-heading-l">Review accounts</h1>
   <opal-lib-moj-sub-navigation subNavId="checker-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
     <opal-lib-moj-sub-navigation-item
