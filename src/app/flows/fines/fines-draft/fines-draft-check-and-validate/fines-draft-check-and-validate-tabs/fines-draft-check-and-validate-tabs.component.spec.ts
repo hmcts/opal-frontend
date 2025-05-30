@@ -19,7 +19,6 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let fixture: ComponentFixture<FinesDraftCheckAndValidateTabsComponent>;
   let globalStore: GlobalStoreType;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let activatedRoute: ActivatedRoute;
   let finesDraftService: jasmine.SpyObj<FinesDraftService>;
   let finesDraftStore: FinesDraftStoreType;
 
