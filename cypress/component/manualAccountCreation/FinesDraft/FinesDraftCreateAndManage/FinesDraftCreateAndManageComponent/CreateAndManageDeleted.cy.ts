@@ -15,7 +15,6 @@ import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over
 import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
-
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
@@ -128,6 +127,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
       setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
       cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
       cy.get(DOM_ELEMENTS.tableRow)
