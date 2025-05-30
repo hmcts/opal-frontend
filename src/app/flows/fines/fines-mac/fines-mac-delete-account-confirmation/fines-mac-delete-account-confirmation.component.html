@@ -5,7 +5,7 @@
       <opal-lib-govuk-button
         buttonId="confirmDeletion"
         buttonClasses="govuk-button--warning"
-        (buttonClickEvent)="handleRoute(finesMacRoutes.children.createAccount)"
+        (buttonClickEvent)="handleRoute(createAccountRoute)"
       >
         Yes - delete
       </opal-lib-govuk-button>
@@ -16,11 +16,7 @@
       <opal-lib-govuk-cancel-link
         cancelLinkText="No - cancel"
         (linkClickEvent)="
-          handleRoute(
-            finesMacStore.deleteFromCheckAccount()
-              ? finesMacRoutes.children.reviewAccount
-              : finesMacRoutes.children.accountDetails
-          )
+          handleRoute(finesMacStore.deleteFromCheckAccount() ? reviewAccountRoute : accountDetailsRoute)
         "
       ></opal-lib-govuk-cancel-link>
     </div>

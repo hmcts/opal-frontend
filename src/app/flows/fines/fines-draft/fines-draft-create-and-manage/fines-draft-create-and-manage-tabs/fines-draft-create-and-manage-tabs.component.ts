@@ -129,7 +129,9 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
     this.finesDraftService.onDefendantClick(
       draftAccountId,
-      this.finesDraftStore.amend() ? this.PATH_AMEND_ACCOUNT : this.PATH_REVIEW_ACCOUNT,
+      this.finesDraftStore.amend()
+        ? this.finesDraftService.PATH_AMEND_ACCOUNT
+        : this.finesDraftService.PATH_REVIEW_ACCOUNT,
     );
   }
 
