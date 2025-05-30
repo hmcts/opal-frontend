@@ -13,10 +13,9 @@ import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-serv
 import { IFinesDraftTabStatuses } from '../../interfaces/fines-draft-tab-statuses.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
-
 describe('finesDraftTabResolver', () => {
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
-  let dateServiceMock: jasmine.SpyObj<DateService> = jasmine.createSpyObj('DateService', ['getDateRange']);
+  const dateServiceMock: jasmine.SpyObj<DateService> = jasmine.createSpyObj('DateService', ['getDateRange']);
   let globalStoreMock: GlobalStoreType;
 
   const executeResolver =
@@ -39,7 +38,11 @@ describe('finesDraftTabResolver', () => {
     opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: opalFinesServiceMock }, GlobalStore, { provide: DateService, useValue: dateServiceMock }],
+      providers: [
+        { provide: OpalFines, useValue: opalFinesServiceMock },
+        GlobalStore,
+        { provide: DateService, useValue: dateServiceMock },
+      ],
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);
@@ -110,7 +113,7 @@ describe('finesDraftTabResolver', () => {
 
   it('should include accountStatusDateFrom and accountStatusDateTo if historicWindowInDays is set', async () => {
     // Find a tab and set historicWindowInDays for this test
-    const tab = FINES_DRAFT_TAB_STATUSES.find(t => t.tab === 'deleted') as IFinesDraftTabStatuses;
+    const tab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === 'deleted') as IFinesDraftTabStatuses;
     const originalHistoricWindow = tab.historicWindowInDays;
     tab.historicWindowInDays = 7;
 
@@ -121,10 +124,7 @@ describe('finesDraftTabResolver', () => {
 
     opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
 
-    const result = await runResolverWithOptions(
-      { useFragmentForStatuses: true, includeSubmittedBy: true },
-      tab.tab
-    );
+    const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
 
     expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(7, 0);
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({

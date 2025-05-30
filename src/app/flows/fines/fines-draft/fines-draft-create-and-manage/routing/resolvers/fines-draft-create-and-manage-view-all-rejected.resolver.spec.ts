@@ -9,7 +9,6 @@ import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { IFinesDraftTabStatuses } from '../../../interfaces/fines-draft-tab-statuses.interface';
 
 describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +72,4 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
 
     FINES_DRAFT_TAB_STATUSES.push(...originalStatuses); // restore original
   });
-
- 
 });
