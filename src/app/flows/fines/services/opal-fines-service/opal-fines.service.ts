@@ -70,19 +70,19 @@ export class OpalFines {
 
   /**
    * Generates a unique cache key string for draft accounts based on the provided filter parameters.
-   * The key is created by serializing a sorted version of the filter arrays to ensure consistent ordering,
-   * which prevents cache misses due to different array orders.
+   * The key is created by serializing a normalized object containing sorted arrays of filter values,
+   * ensuring consistent key generation regardless of input order.
    *
    * @param filters - The filter parameters used to generate the cache key, including business unit IDs,
    *                  statuses, submittedBy, and notSubmittedBy arrays.
-   * @returns A stringified JSON object representing the sorted filter parameters, suitable for use as a cache key.
+   * @returns A string representing the unique cache key for the given filter parameters.
    */
   private generateDraftAccountsCacheKey(filters: IOpalFinesDraftAccountParams): string {
     return JSON.stringify({
-      businessUnitIds: [...(filters.businessUnitIds ?? [])].sort(),
-      statuses: [...(filters.statuses ?? [])].sort(),
-      submittedBy: [...(filters.submittedBy ?? [])].sort(),
-      notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort(),
+      businessUnitIds: [...(filters.businessUnitIds ?? [])].sort((a, b) => a - b),
+      statuses: [...(filters.statuses ?? [])].sort((a, b) => a.localeCompare(b)),
+      submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
+      notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
     });
   }
 

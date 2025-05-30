@@ -9,13 +9,14 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
-import { NAVIGATION_LINKS } from './constants/fines_draft_cav_tableConstants';
+import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
   interceptCAVGetRejectedAccounts,
   interceptCAVGetToReviewAccounts,
 } from './intercepts/check-and-validate-intercepts';
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
+import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
 describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   const setupComponent = () => {
