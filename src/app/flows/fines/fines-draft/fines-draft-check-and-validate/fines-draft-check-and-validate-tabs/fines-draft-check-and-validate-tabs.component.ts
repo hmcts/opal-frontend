@@ -16,10 +16,11 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
+import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
-  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
+  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent, MojBannerComponent],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

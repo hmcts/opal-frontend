@@ -1,39 +1,137 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStore } from '../stores/fines-mac.store';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
-import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { IFinesMacDeleteAccountConfirmationForm } from './interfaces/fines-mac-delete-account-confirmation-form.interface';
+import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form/fines-mac-delete-account-confirmation-form.component';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
+import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacPatchAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-patch-account.interface';
+import { ActivatedRoute } from '@angular/router';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
-  imports: [GovukButtonComponent, GovukCancelLinkComponent],
+  imports: [FinesMacDeleteAccountConfirmationFormComponent],
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
+  private readonly route = inject(ActivatedRoute);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly userState = this.globalStore.userState();
+  private readonly utilsService = inject(UtilsService);
   protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
+  protected readonly opalFinesService = inject(OpalFines);
 
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-  public readonly createAccountRoute = this.finesMacRoutes.children.createAccount;
-  public readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
-  public readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
+  private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
+  private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
+  public readonly referer = this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
+  private readonly accountId = this.route.snapshot.paramMap.get('draftAccountId');
 
-  /**
-   * Navigates to the specified route.
-   *
-   * @param route - The route to navigate to.
-   */
-  public handleRoute(route: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
-  }
+  private readonly finesRoutes = FINES_ROUTING_PATHS;
+  private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
+  private readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
+  private readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
   public ngOnDestroy(): void {
     this.finesMacStore.setDeleteFromCheckAccount(false);
   }
+
+  /**
+   * Handles the submission of the account comments and notes form.
+   *
+   * @param form - The form data for the account comments and notes.
+   * @returns void
+   */
+  public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
+    const reason_text = form.formData.fm_delete_account_confirmation_reason;
+    this.finesMacStore.setDeleteAccountConfirmation(form);
+
+    const payload: IFinesMacPatchAccountPayload = {
+      validated_by: null,
+      account_status: 'Deleted',
+      validated_by_name: null,
+      business_unit_id: this.finesMacStore.getBusinessUnitId(),
+      version: 0,
+      timeline_data: [{
+        username: this.userState.name,
+        status: 'Deleted',
+        status_date: new Date().toISOString(),
+        reason_text,
+      }]
+    };
+    this.handlePatchRequest(payload);
+  }
+
+
+
+  /**
+   * Handles the PATCH request to update an account payload.
+   *
+   * @param payload - The payload containing the account information to be patched.
+   *
+   * This method sends the payload to the `opalFinesService` to update the draft account information.
+   * It processes the response using `processPatchResponse` method and handles any errors by scrolling to the top of the page.
+   * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
+   */
+  private handlePatchRequest(payload: IFinesMacPatchAccountPayload): void {
+    if (!this.accountId) {
+      console.error('Account ID is not defined');
+      return;
+    }
+
+    this.opalFinesService
+      .patchDraftAccountPayload(this.accountId, payload)
+      .pipe(
+        tap((response) => this.processPatchResponse(response)),
+        catchError(() => {
+          return of(this.handleRequestError());
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+
+
+  private processPatchResponse(response: IFinesMacAddAccountPayload): void {
+    const accountName = response.account_snapshot?.defendant_name;
+    this.finesDraftStore.setBannerMessage(`You have deleted ${accountName}'s account`);
+    this.finesMacStore.resetStateChangesUnsavedChanges();
+
+    this['router'].navigate([this.checkAndValidateTabs], {
+      fragment: this.finesDraftStore.fragment(),
+    });
+  }
+
+  /**
+   * Handles the request error by scrolling to the top of the page.
+   *
+   * @returns {null} Always returns null.
+   */
+  private handleRequestError(): null {
+    this.utilsService.scrollToTop();
+    return null;
+  }
+
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
+    this.stateUnsavedChanges = unsavedChanges;
+  }
+
 }

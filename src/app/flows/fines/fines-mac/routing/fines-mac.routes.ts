@@ -174,7 +174,7 @@ export const routing: Routes = [
     resolve: { title: TitleResolver },
   },
   {
-    path: FINES_MAC_ROUTING_PATHS.children.deleteAccountConfirmation,
+    path: `${FINES_MAC_ROUTING_PATHS.children.deleteAccountConfirmation}/:draftAccountId`,
     loadComponent: () =>
       import('../fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component').then(
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
@@ -182,7 +182,7 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
-      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+      routePermissionId: [draftRootPermissionIds['create-and-manage'], draftRootPermissionIds['check-and-validate']],
     },
     resolve: { title: TitleResolver },
   },

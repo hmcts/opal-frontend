@@ -95,8 +95,8 @@
       <div class="govuk-grid-column-full">
         <a
           class="govuk-link govuk-error-colour"
-          (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
-          (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+          (click)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
+          (keyup.enter)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
           tabindex="0"
           >Delete account</a
         >
@@ -105,7 +105,7 @@
   }
 
   @if (finesDraftStore.checker()) {
-    <app-fines-mac-review-account-decision></app-fines-mac-review-account-decision>
+    <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
   }
 </div>
 
