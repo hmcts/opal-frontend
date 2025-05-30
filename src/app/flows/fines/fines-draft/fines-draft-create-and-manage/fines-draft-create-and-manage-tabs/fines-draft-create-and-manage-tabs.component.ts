@@ -103,7 +103,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
           params.accountStatusDateTo = [to];
         }
 
-        return params
+        return params;
       },
       (params) => this.opalFinesService.getDraftAccounts(params),
       (res) => this.finesDraftService.populateTableData(res),

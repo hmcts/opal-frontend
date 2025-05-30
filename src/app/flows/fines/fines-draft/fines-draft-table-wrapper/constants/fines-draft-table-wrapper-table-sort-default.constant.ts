@@ -10,6 +10,7 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT: IFinesDraftTableWrapperTabl
   ChangedDate: 'none',
   'Account type': 'none',
   'Business unit': 'none',
+  'Submitted by': 'none',
 };
 
 export const FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED: IFinesDraftTableWrapperTableSort = {
