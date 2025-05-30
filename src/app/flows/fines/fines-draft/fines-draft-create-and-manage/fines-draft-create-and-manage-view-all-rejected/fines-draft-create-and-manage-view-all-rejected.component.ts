@@ -54,7 +54,7 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
       'allRejectedAccounts'
     ] as IOpalFinesDraftAccountsResponse;
 
-    this.rejectedAccounts = this.finesDraftService['populateTableData'](allRejectedAccounts);
+    this.rejectedAccounts = this.finesDraftService.populateTableData(allRejectedAccounts);
     this.finesDraftStore.setViewAllAccounts(false);
   }
 }

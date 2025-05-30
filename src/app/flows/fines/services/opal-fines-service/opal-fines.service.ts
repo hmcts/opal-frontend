@@ -44,6 +44,7 @@ export class OpalFines {
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
+  private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -67,6 +68,24 @@ export class OpalFines {
       });
     }
     return params;
+  }
+
+  /**
+   * Generates a unique cache key string for draft accounts based on the provided filter parameters.
+   * The key is created by serializing a normalized object containing sorted arrays of filter values,
+   * ensuring consistent key generation regardless of input order.
+   *
+   * @param filters - The filter parameters used to generate the cache key, including business unit IDs,
+   *                  statuses, submittedBy, and notSubmittedBy arrays.
+   * @returns A string representing the unique cache key for the given filter parameters.
+   */
+  private generateDraftAccountsCacheKey(filters: IOpalFinesDraftAccountParams): string {
+    return JSON.stringify({
+      businessUnitIds: [...(filters.businessUnitIds ?? [])].sort((a, b) => a - b),
+      statuses: [...(filters.statuses ?? [])].sort((a, b) => a.localeCompare(b)),
+      submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
+      notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
+    });
   }
 
   /**
@@ -226,38 +245,54 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves draft accounts based on the provided filters.
+   * Retrieves draft accounts based on the provided filter parameters.
+   * Utilizes an internal cache to avoid redundant HTTP requests for the same filter set.
    *
-   * @param filters - An object containing the filter parameters for the draft accounts.
-   * @returns An Observable that emits the response containing the draft accounts.
-   *
-   * The filters object can contain the following properties:
-   * - businessUnitIds: An array of business unit IDs to filter by.
-   * - statuses: An array of statuses to filter by.
-   * - submittedBy: An array of user IDs who submitted the accounts.
-   * - notSubmittedBy: An array of user IDs who did not submit the accounts.
+   * @param filters - The filter parameters used to query draft accounts.
+   *   - businessUnitIds: Optional array of business unit IDs to filter by.
+   *   - statuses: Optional array of statuses to filter by.
+   *   - submittedBy: Optional array of user IDs who submitted the accounts.
+   *   - notSubmittedBy: Optional array of user IDs who did not submit the accounts.
+   * @returns An Observable that emits the response containing the draft accounts matching the filters.
    */
   public getDraftAccounts(filters: IOpalFinesDraftAccountParams): Observable<IOpalFinesDraftAccountsResponse> {
-    let params = new HttpParams();
+    const cacheKey = this.generateDraftAccountsCacheKey(filters);
 
-    const filterMapping = {
-      [this.PARAM_BUSINESS_UNIT]: filters.businessUnitIds?.filter((id) => id != null),
-      [this.PARAM_STATUS]: filters.statuses,
-      [this.PARAM_SUBMITTED_BY]: filters.submittedBy,
-      [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
-      [this.PARAM_ACCOUNT_STATUS_DATE_FROM]: filters.accountStatusDateFrom,
-      [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
-    };
+    if (!this.draftAccountsCache$[cacheKey]) {
+      let params = new HttpParams();
 
-    Object.entries(filterMapping).forEach(([key, values]) => {
-      params = this.appendArrayParams(
-        params,
-        key,
-        values?.filter((value) => value != null),
-      );
-    });
+      const filterMapping = {
+        [this.PARAM_BUSINESS_UNIT]: filters.businessUnitIds?.filter((id) => id != null),
+        [this.PARAM_STATUS]: filters.statuses,
+        [this.PARAM_SUBMITTED_BY]: filters.submittedBy,
+        [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
+        [this.PARAM_ACCOUNT_STATUS_DATE_FROM]: filters.accountStatusDateFrom,
+        [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
+      };
 
-    return this.http.get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params });
+      Object.entries(filterMapping).forEach(([key, values]) => {
+        params = this.appendArrayParams(
+          params,
+          key,
+          values?.filter((v) => v != null),
+        );
+      });
+
+      this.draftAccountsCache$[cacheKey] = this.http
+        .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })
+        .pipe(shareReplay(1));
+    }
+
+    return this.draftAccountsCache$[cacheKey];
+  }
+
+  /**
+   * Clears the cache of draft accounts by resetting the `draftAccountsCache$` property to an empty object.
+   * This method is typically used to remove all cached draft account data, ensuring that subsequent operations
+   * fetch fresh data or start with a clean state.
+   */
+  public clearDraftAccountsCache(): void {
+    this.draftAccountsCache$ = {};
   }
 
   /**

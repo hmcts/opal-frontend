@@ -73,6 +73,17 @@
     >
       Business unit
     </th>
+    @if (isChecker) {
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Submitted by"
+        [sortDirection]="sortStateSignal()['Submitted by']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="isApprovedTab ? 6 : 5"
+      >
+        Submitted by
+      </th>
+    }
   </ng-container>
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
@@ -99,6 +110,9 @@
         }
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+        @if (isChecker) {
+          <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
+        }
       </tr>
     }
   </ng-container>

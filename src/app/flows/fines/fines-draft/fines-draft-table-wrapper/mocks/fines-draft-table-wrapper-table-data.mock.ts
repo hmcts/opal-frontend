@@ -12,6 +12,7 @@ export const FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK: IFinesDraftTableWrapperT
     Changed: 5,
     'Account type': 'Individual',
     'Business unit': 'Finance',
+    'Submitted by': 'Alice Johnson',
   },
   {
     Account: 'ACC0987654321',
@@ -24,5 +25,6 @@ export const FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK: IFinesDraftTableWrapperT
     Changed: 0,
     'Account type': 'Corporate',
     'Business unit': 'Marketing',
+    'Submitted by': 'Bob Brown',
   },
 ];

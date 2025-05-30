@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { lastValueFrom, Observable, of } from 'rxjs';
-import { finesDraftCreateAndManageTabResolver } from './fines-draft-create-and-manage-tab.resolver';
+import { lastValueFrom, of, Observable } from 'rxjs';
+import { finesDraftCreateAndManageViewAllRejectedResolver } from './fines-draft-create-and-manage-view-all-rejected.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
@@ -10,10 +10,10 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-sta
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
-describe('finesDraftCreateAndManageTabResolver', () => {
+describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const executeResolver: ResolveFn<any> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => finesDraftCreateAndManageTabResolver(...resolverParameters));
+    TestBed.runInInjectionContext(() => finesDraftCreateAndManageViewAllRejectedResolver(...resolverParameters));
 
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
   let dateServiceMock: jasmine.SpyObj<DateService>;
@@ -35,44 +35,42 @@ describe('finesDraftCreateAndManageTabResolver', () => {
     globalStoreMock.setUserState(SESSION_USER_STATE_MOCK);
   });
 
-  it('should call opalFinesService.getDraftAccounts with correct params and return observable result', async () => {
-    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+  const originalStatuses = [...FINES_DRAFT_TAB_STATUSES];
 
-    const tab = FINES_DRAFT_TAB_STATUSES[0];
-    const fragment = tab.tab;
-    const statuses = tab.statuses;
-    const mockRoute = { fragment } as ActivatedRouteSnapshot;
+  afterEach(() => {
+    FINES_DRAFT_TAB_STATUSES.length = 0;
+    FINES_DRAFT_TAB_STATUSES.push(...originalStatuses);
+  });
+
+  it('should return result from getDraftAccounts with expected params', async () => {
+    opalFinesServiceMock.getDraftAccounts.and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)));
+    const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
-      statuses,
-      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      statuses: ['Rejected'],
+      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
 
-  it('should return { count: 0, summaries: [] } when statuses is null (fragment not found)', async () => {
-    const invalidFragment = 'non-existent-fragment';
-    const mockRoute = { fragment: invalidFragment } as ActivatedRouteSnapshot;
+  it('should return { count: 0, summaries: [] }', async () => {
+    const originalStatuses = [...FINES_DRAFT_TAB_STATUSES];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (FINES_DRAFT_TAB_STATUSES as any).length = 0; // clears the array in-place
+
+    const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
+    const result = await lastValueFrom(executeResolver(mockRoute, {} as any));
 
     expect(result).toEqual({ count: 0, summaries: [] });
     expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
-  });
 
-  it('should return { count: 0, summaries: [] } when fragment is null', async () => {
-    const mockRoute = { fragment: null } as ActivatedRouteSnapshot;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
-
-    expect(result).toEqual({ count: 0, summaries: [] });
-    expect(opalFinesServiceMock.getDraftAccounts).not.toHaveBeenCalled();
+    FINES_DRAFT_TAB_STATUSES.push(...originalStatuses); // restore original
   });
 
   it('should include account status date range in request body if historicWindowIndays is set ', async () => {
