@@ -1,9 +1,7 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
-import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -14,43 +12,73 @@ import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_in
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { of } from 'rxjs';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTES } from './mocks/create-and-manage-routes-mock';
+import {
+  interceptGetApprovedAccounts,
+  interceptGetDeletedAccounts,
+  interceptGetInReviewAccounts,
+  interceptGetRejectedAccounts,
+} from './mocks/create-and-manage-intercepts';
+import { FinesDraftService } from 'src/app/flows/fines/fines-draft/services/fines-draft.service';
+import { FinesDraftCreateAndManageComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage.component';
+import { provideRouter, Router } from '@angular/router';
 
 describe('FinesDraftCreateAndManageInReviewComponent', () => {
+  function setDraftResolvers(data: IOpalFinesDraftAccountsResponse, rejectedCount: number) {
+    (FinesDraftCreateAndManageTabsComponent as any).__mockDraftAccounts = () => of(data);
+    (FinesDraftCreateAndManageTabsComponent as any).__mockRejectedCount = () => of(rejectedCount);
+  }
+
   const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, mockRejectedCount: number) => {
     cy.then(() => {
-      mount(FinesDraftCreateAndManageTabsComponent, {
+      mount(FinesDraftCreateAndManageComponent, {
         providers: [
           provideHttpClient(),
           OpalFines,
           DateService,
-          FinesMacPayloadService,
+          FinesDraftService,
           FinesDraftStore,
+          provideRouter(FINES_DRAFT_CREATE_AND_MANAGE_ROUTES),
           {
             provide: GlobalStore,
             useFactory: () => {
-              let store = new GlobalStore();
+              const store = new GlobalStore();
               store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
               return store;
             },
           },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              fragment: of('review'),
-              snapshot: {
-                data: {
-                  draftAccounts: mockTableData,
-                  rejectedCount: mockRejectedCount,
-                },
-                fragment: 'review',
-              },
-            },
-          },
         ],
-        componentProperties: {},
+      }).then(({ fixture }) => {
+        const router = fixture.debugElement.injector.get(Router);
+        router.navigateByUrl('/#review').then(() => {
+          router.initialNavigation();
+        });
       });
     });
   };
+
+  afterEach(() => {
+    delete (FinesDraftCreateAndManageTabsComponent as any).__mockDraftAccounts;
+    delete (FinesDraftCreateAndManageTabsComponent as any).__mockRejectedCount;
+  });
+
+  it.only('AC.0 should render the component', () => {
+    const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    const rejectedCountMockData = 50;
+
+    setDraftResolvers(inReviewAccountsMockData, rejectedCountMockData);
+
+    interceptGetInReviewAccounts(200, inReviewAccountsMockData);
+    interceptGetRejectedAccounts(200, { count: rejectedCountMockData, summaries: [] });
+    interceptGetApprovedAccounts(200, { count: 0, summaries: [] });
+    interceptGetDeletedAccounts(200, inReviewAccountsMockData);
+
+    setupComponent(inReviewAccountsMockData, rejectedCountMockData);
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'In review');
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+    cy.wait('@getDeletedAccounts');
+  });
 
   it('(AC.1) render all the fields In review account', { tags: ['@PO-584'] }, () => {
     const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);

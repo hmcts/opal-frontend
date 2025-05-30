@@ -136,9 +136,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       draftAccounts: { count: 0, summaries: [] },
       rejectedCount: 0,
     };
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.ngOnInit();
     const tabData = await firstValueFrom(component.tabData$);
     expect(tabData).toEqual([]);
     const rejectedCount = await firstValueFrom(component.rejectedCount$);
@@ -150,9 +148,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
       rejectedCount: 100,
     };
-    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.ngOnInit();
     const rejectedCount = await firstValueFrom(component.rejectedCount$);
     expect(rejectedCount).toBe('99+');
   });
