@@ -15,9 +15,10 @@ import { of } from 'rxjs';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { mock } from 'node:test';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
+import { interceptGetApprovedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageApprovedComponent', () => {
-  const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, mockRejectedCount: number) => {
+  const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
         providers: [
@@ -26,6 +27,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
           DateService,
           FinesMacPayloadService,
           FinesDraftStore,
+          provideRouter([]),
           {
             provide: GlobalStore,
             useFactory: () => {
@@ -34,30 +36,23 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
               return store;
             },
           },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              fragment: of('approved'),
-              snapshot: {
-                data: {
-                  draftAccounts: mockTableData,
-                  rejectedCount: mockRejectedCount,
-                },
-                fragment: 'approved',
-              },
-            },
-          },
         ],
-        componentProperties: {},
+        componentProperties: {
+          activeTab: 'review',
+        },
       });
     });
   };
 
   it('(AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607'] }, () => {
     const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedCountMockData = 0;
 
-    setupComponent(approvedMockData, rejectedCountMockData);
+    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+    interceptGetApprovedAccounts(200, approvedMockData);
+
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
 
@@ -96,9 +91,13 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     { tags: ['@PO-607'] },
     () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
-      const rejectedCountMockData = 0;
 
-      setupComponent(approvedMockData, rejectedCountMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetApprovedAccounts(200, approvedMockData);
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
@@ -123,9 +122,13 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     { tags: ['@PO-607'] },
     () => {
       const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedCountMockData = 0;
 
-      setupComponent(approvedMockData, rejectedCountMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetApprovedAccounts(200, approvedMockData);
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
       //Check table row data in row 1
       cy.get(DOM_ELEMENTS.tableRow)
@@ -155,9 +158,13 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     { tags: ['@PO-607'] },
     () => {
       const approvedMockData = { count: 0, summaries: [] };
-      const rejectedCountMockData = 0;
 
-      setupComponent(approvedMockData, rejectedCountMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptGetApprovedAccounts(200, approvedMockData);
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Approved');
       cy.get('p').should('exist').and('contain', 'No accounts have been approved in the past 7 days.');
       cy.get(DOM_ELEMENTS.table).should('not.exist');
