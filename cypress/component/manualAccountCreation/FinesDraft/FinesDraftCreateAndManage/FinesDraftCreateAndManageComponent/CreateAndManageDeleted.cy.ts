@@ -12,13 +12,12 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
-import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { of } from 'rxjs';
+import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
   const dateService = new DateService();
 
-  const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, mockRejectedCount: number) => {
+  const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
         providers: [
@@ -27,6 +26,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
           DateService,
           FinesMacPayloadService,
           FinesDraftStore,
+          provideRouter([]),
           {
             provide: GlobalStore,
             useFactory: () => {
@@ -35,30 +35,23 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
               return store;
             },
           },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              fragment: of('deleted'),
-              snapshot: {
-                data: {
-                  draftAccounts: mockTableData,
-                  rejectedCount: mockRejectedCount,
-                },
-                fragment: 'deleted',
-              },
-            },
-          },
         ],
-        componentProperties: {},
+        componentProperties: {
+          activeTab: 'review',
+        },
       });
     });
   };
 
   it('(AC.3,AC.4)should show summary table with correct data for deleted accounts', { tags: ['@PO-609'] }, () => {
     const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
-    const rejectedCountMockData = 0;
 
-    setupComponent(deletedAccountsMockData, rejectedCountMockData);
+    interceptGetDeletedAccounts(200, deletedAccountsMockData);
+    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
 
@@ -100,9 +93,13 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     { tags: ['@PO-609'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
-      const rejectedCountMockData = 0;
 
-      setupComponent(deletedAccountsMockData, rejectedCountMockData);
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
       cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
@@ -127,9 +124,13 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     { tags: ['@PO-609'] },
     () => {
       const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
-      const rejectedCountMockData = 0;
 
-      setupComponent(deletedAccountsMockData, rejectedCountMockData);
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
       cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
       cy.get(DOM_ELEMENTS.tableRow)
