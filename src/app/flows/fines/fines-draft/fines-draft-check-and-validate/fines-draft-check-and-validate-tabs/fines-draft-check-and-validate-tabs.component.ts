@@ -4,8 +4,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import { distinctUntilChanged, filter, map, Observable, of, startWith, Subject, takeUntil } from 'rxjs';
-import { FinesDraftStore } from '../../stores/fines-draft.store';
+import { Observable, Subject } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
@@ -16,6 +15,7 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -40,31 +40,23 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
 
-  public tabData$: Observable<IFinesDraftTableWrapperTableData[]> = of([]);
+  public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
 
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in the route fragment (representing the active tab),
-   * and updates the tab data stream accordingly. It uses the provided initial data and tab,
+   * and updates the tab data stream accordingly. It uses the provided initial tab,
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
-   * @param initialData - The initial response data for the fines draft accounts.
-   * @param initialTab - The initial tab identifier to be selected.
    */
-  private setupTabDataStream(initialData: IOpalFinesDraftAccountsResponse, initialTab: string): void {
-    const fragment$ = this['activatedRoute'].fragment.pipe(
-      startWith(initialTab),
-      filter((frag): frag is string => !!frag),
-      map((tab) => tab!),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$),
+  private setupTabDataStream(): void {
+    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
+      this.opalFinesService.clearDraftAccountsCache(),
     );
 
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
-      initialData,
-      initialTab,
       fragment$,
       (tab) => ({
         businessUnitIds: this.businessUnitIds,
@@ -91,11 +83,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   }
 
   public ngOnInit(): void {
-    const resolvedDraftAccounts = this['activatedRoute'].snapshot.data[
-      'draftAccounts'
-    ] as IOpalFinesDraftAccountsResponse;
-    const initialTab = this['activatedRoute'].snapshot.fragment ?? 'to-review';
-    this.setupTabDataStream(resolvedDraftAccounts, initialTab);
+    this.setupTabDataStream();
   }
 
   public ngOnDestroy(): void {

@@ -7,7 +7,7 @@ import { IFinesDraftCheckAndValidateRoutingPermissions } from './interfaces/fine
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PERMISSIONS } from './constants/fines-draft-check-and-validate-routing-permissions.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from './constants/fines-draft-check-and-validate-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_TITLES } from './constants/fines-draft-check-and-validate-routing-titles.constant';
-import { finesDraftCheckAndValidateTabResolver } from './resolvers/fines-draft-check-and-validate-tab.resolver';
+import { finesDraftTabResolver } from '../../routing/resolvers/fines-draft-tab.resolver';
 
 const draftCreateAndValidateRootPath = FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate;
 const draftCreateAndValidatePermissionId =
@@ -34,7 +34,10 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
-      draftAccounts: finesDraftCheckAndValidateTabResolver,
+      draftAccounts: finesDraftTabResolver({
+        useFragmentForStatuses: true,
+        includeNotSubmittedBy: true,
+      }),
     },
   },
 ];

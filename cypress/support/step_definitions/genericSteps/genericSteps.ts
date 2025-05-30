@@ -115,3 +115,7 @@ When('I see {string} text under the {string} field', (text: string, inputField: 
 Then('I see green banner on the top of the page', () => {
   cy.get('opal-lib-moj-banner').should('exist');
 });
+
+Then('the account status is {string}', (expectedStatus: string) => {
+  cy.get('.govuk-tag[id="status"]').should('be.visible').and('have.text', expectedStatus);
+});
