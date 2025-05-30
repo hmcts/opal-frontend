@@ -13,6 +13,16 @@ export class FinesDraftService {
   private readonly dateService = inject(DateService);
 
   /**
+   * Navigates to the review account page for the given draft account ID.
+   *
+   * @param draftAccountId - The ID of the draft account to review.
+   * @returns void
+   */
+  private navigateToReviewAccount(draftAccountId: number, path: string): void {
+    this.router.navigate([path, draftAccountId]);
+  }
+
+  /**
    * Populates table data from the given response.
    *
    * @param {IOpalFinesDraftAccountsResponse} response - The response containing draft account summaries.
@@ -20,7 +30,8 @@ export class FinesDraftService {
    */
   public populateTableData(response: IOpalFinesDraftAccountsResponse): IFinesDraftTableWrapperTableData[] {
     return response.summaries.map(({ draft_account_id, account_snapshot }) => {
-      const { defendant_name, date_of_birth, created_date, account_type, business_unit_name } = account_snapshot;
+      const { defendant_name, date_of_birth, created_date, account_type, business_unit_name, submitted_by_name } =
+        account_snapshot;
 
       return {
         Account: '',
@@ -31,18 +42,9 @@ export class FinesDraftService {
         Created: this.dateService.getDaysAgo(created_date),
         'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
         'Business unit': business_unit_name,
+        'Submitted by': submitted_by_name,
       };
     });
-  }
-
-  /**
-   * Navigates to the review account page for the given draft account ID.
-   *
-   * @param draftAccountId - The ID of the draft account to review.
-   * @returns void
-   */
-  private navigateToReviewAccount(draftAccountId: number, path: string): void {
-    this.router.navigate([path, draftAccountId]);
   }
 
   /**
