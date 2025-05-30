@@ -176,21 +176,4 @@ describe('FinesDraftStore', () => {
     store.setViewAllAccounts(false);
     expect(store.viewAllAccounts()).toEqual(false);
   });
-
-  it('should set fragment and checker', () => {
-    store.setFragmentAndChecker('rejected', true);
-    expect(store.checker()).toEqual(true);
-    expect(store.fragment()).toEqual('rejected');
-  });
-
-  it('should set checker', () => {
-    store.setChecker(true);
-    expect(store.checker()).toEqual(true);
-  });
-
-  it('should reset checker', () => {
-    store.setFragmentAndChecker('rejected', true);
-    store.resetChecker();
-    expect(store.checker()).toEqual(false);
-  });
 });

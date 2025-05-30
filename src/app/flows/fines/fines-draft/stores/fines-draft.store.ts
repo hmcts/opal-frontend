@@ -24,7 +24,6 @@ export const FinesDraftStore = signalStore(
     fragment: '',
     amend: false,
     viewAllAccounts: false,
-    checker: false,
     bannerMessage: '',
   })),
   withHooks((store) => {
@@ -124,17 +123,8 @@ export const FinesDraftStore = signalStore(
     setFragmentAndAmend(fragment: string, state: boolean) {
       patchState(store, { fragment, amend: state });
     },
-    setFragmentAndChecker(fragment: string, checker: boolean) {
-      patchState(store, { fragment, checker });
-    },
     setViewAllAccounts: (viewAllAccounts: boolean) => {
       patchState(store, { viewAllAccounts });
-    },
-    setChecker: (checker: boolean) => {
-      patchState(store, { checker });
-    },
-    resetChecker() {
-      patchState(store, { checker: false });
     },
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });

@@ -35,7 +35,6 @@ import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/int
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacReviewAccountDecisionComponent } from './fines-mac-review-account-decision/fines-mac-review-account-decision.component';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -76,11 +75,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
   protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
-  protected readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
-
-  protected readonly createAndManageTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`;
-  protected readonly viewAllAccountsTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`;
-  protected readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
@@ -307,11 +301,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      const path = this.finesDraftStore.checker()
-        ? this.checkAndValidateTabs
-        : this.finesDraftStore.viewAllAccounts()
-          ? this.viewAllAccountsTabs
-          : this.createAndManageTabs;
+      const path = this.finesDraftStore.viewAllAccounts()
+        ? `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`
+        : `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`;
 
       // return true when going back to view-all-accounts
       // and false when going back to tabbed fragment

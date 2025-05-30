@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -10,13 +10,11 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
-import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { of } from 'rxjs';
+import { interceptGetInReviewAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageRejectedComponent', () => {
-  const setupComponent = (mockTableData: IOpalFinesDraftAccountsResponse, mockRejectedCount: number) => {
+  const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
         providers: [
@@ -25,6 +23,7 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
           DateService,
           FinesMacPayloadService,
           FinesDraftStore,
+          provideRouter([]),
           {
             provide: GlobalStore,
             useFactory: () => {
@@ -33,65 +32,66 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
               return store;
             },
           },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              fragment: of('rejected'),
-              snapshot: {
-                data: {
-                  draftAccounts: mockTableData,
-                  rejectedCount: mockRejectedCount,
-                },
-                fragment: 'rejected',
-              },
-            },
-          },
         ],
-        componentProperties: {},
+        componentProperties: {
+          activeTab: 'review',
+        },
       });
     });
   };
 
   it('AC.1 should display number of rejected accounts in a icon on values of 1-99', { tags: ['@PO-605'] }, () => {
     const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedCount = 2;
 
-    setupComponent(rejectedMockData, rejectedCount);
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+    setupComponent();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '2');
   });
   it(
     'AC.1b) Should not display notifications or rejected account tab when rejected account equals 0',
     { tags: ['@PO-605'] },
     () => {
-      const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedCount = 0;
+      const rejectedMockData = { count: 0, summaries: [] };
 
-      setupComponent(rejectedMockData, rejectedCount);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.rejectedIcon).should('not.exist');
     },
   );
   it('(AC.1) should display rejected icon count up to 99 then after display 99+', { tags: ['@PO-605'] }, () => {
-    const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedCount = 100;
+    const rejectedMockData = { count: 100, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
-    setupComponent(rejectedMockData, rejectedCount);
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
+    setupComponent();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
     cy.get(DOM_ELEMENTS.rejectedIcon).should('exist').and('contain', '99+');
   });
 
   it(
-    '(AC.2) should show empty value statement for Rejected status when no accounts have been submitted/resubmitted',
+    '(AC.2) should show empty value statement for Rejected status when no accounts have been rejected',
     { tags: ['@PO-605'] },
     () => {
-      const rejectedMockData = { count: 2, summaries: [] };
-      const rejectedCount = 2;
+      const rejectedMockData = { count: 0, summaries: [] };
 
-      setupComponent(rejectedMockData, rejectedCount);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
 
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
+      cy.get(DOM_ELEMENTS.rejectedIcon).should('not.exist');
       cy.get('p').should('exist').and('contain', 'You have no rejected accounts');
       cy.get('p')
         .should('exist')
@@ -105,9 +105,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
     { tags: ['@PO-605'] },
     () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedCount = 2;
 
-      setupComponent(rejectedMockData, rejectedCount);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
       cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Rejected');
       cy.get('p')
@@ -123,9 +126,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
   );
   it('AC.4 verify the table of headers in review tab', { tags: ['@PO-605'] }, () => {
     const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedCount = 2;
 
-    setupComponent(rejectedMockData, rejectedCount);
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+    setupComponent();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
     cy.get(DOM_ELEMENTS.tableHeadings).contains('Defendant').should('exist');
@@ -158,9 +164,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
 
   it('(AC.5a) The table should have the correct default ordering', { tags: ['@PO-605'] }, () => {
     const rejectedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    const rejectedCount = 2;
 
-    setupComponent(rejectedMockData, rejectedCount);
+    interceptGetRejectedAccounts(200, rejectedMockData);
+    interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+    setupComponent();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
     //cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').click();
@@ -183,9 +192,12 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
     { tags: ['@PO-605'] },
     () => {
       const rejectedMockData = { count: 2, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
-      const rejectedCount = 2;
 
-      setupComponent(rejectedMockData, rejectedCount);
+      interceptGetRejectedAccounts(200, rejectedMockData);
+      interceptGetInReviewAccounts(200, { count: 0, summaries: [] });
+
+      setupComponent();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');

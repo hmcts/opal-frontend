@@ -11,29 +11,22 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
-import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
   let fixture: ComponentFixture<FinesDraftCheckAndValidateTabsComponent>;
   let globalStore: GlobalStoreType;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let activatedRoute: ActivatedRoute;
   let finesDraftService: jasmine.SpyObj<FinesDraftService>;
-  let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
       jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearDraftAccountsCache']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
-    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
-      'onDefendantClick',
-      'populateTableData',
-    ]);
+    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', ['populateTableData']);
 
     const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
       'getDaysAgo',
@@ -52,9 +45,6 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
           useValue: {
             fragment: of('review'),
             snapshot: {
-              data: {
-                draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-              },
               fragment: 'to-review',
             },
           },
@@ -67,9 +57,6 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
     component = fixture.componentInstance;
-    finesDraftStore = TestBed.inject(FinesDraftStore);
-
-    activatedRoute = TestBed.inject(ActivatedRoute);
 
     fixture.detectChanges();
   });
@@ -78,49 +65,9 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default state when fragment is null', () => {
-    activatedRoute.snapshot.fragment = null;
-    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
-    component = fixture.componentInstance;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupTabDataStream').and.callThrough();
-
-    fixture.detectChanges();
-    component.ngOnInit();
-
-    expect(component['setupTabDataStream']).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK, 'to-review');
-  });
-
-  it('should emit expected data', (done) => {
+  it('should fetch and populate tabData$ based on the current fragment', (done) => {
     finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-
-    component['setupTabDataStream'](OPAL_FINES_DRAFT_ACCOUNTS_MOCK, 'to-review');
-
-    component.tabData$.pipe(take(1)).subscribe((result) => {
-      expect(result).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-      expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
-      done();
-    });
-  });
-
-  it('should fetch data from service if tab is not the initialTab', (done) => {
-    const nonInitialTab = 'rejected';
-
-    const draftResponse = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
-    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
-
-    mockOpalFinesService.getDraftAccounts.and.returnValue(of(draftResponse));
-
-    const route = TestBed.inject(ActivatedRoute);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (route as any).fragment = of(nonInitialTab);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (route as any).snapshot.fragment = 'to-review';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (route as any).snapshot.data = {
-      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-    };
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
     component = fixture.componentInstance;
@@ -128,19 +75,9 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
     component.tabData$.pipe(take(1)).subscribe((data) => {
       expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-      expect(finesDraftService.populateTableData).toHaveBeenCalledWith(draftResponse);
+      expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
       expect(data).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
       done();
     });
-  });
-
-  it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {
-    component.activeTab = 'to-review';
-
-    component.onDefendantClick(456);
-
-    expect(finesDraftStore.fragment()).toEqual('to-review');
-    expect(finesDraftStore.checker()).toBeTruthy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_REVIEW_ACCOUNT);
   });
 });

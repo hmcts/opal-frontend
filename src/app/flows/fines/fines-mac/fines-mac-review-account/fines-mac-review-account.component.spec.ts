@@ -338,31 +338,12 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
-      finesDraftStore.setFragment('review');
       finesDraftStore.setViewAllAccounts(true);
-      finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
       expect(routerSpy).toHaveBeenCalledWith([
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
       ]);
-    });
-
-    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-      finesDraftStore.setFragment('review');
-      finesDraftStore.setViewAllAccounts(false);
-      finesDraftStore.setChecker(true);
-      component.isReadOnly = true;
-      component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.checkAndValidate}/${component['finesDraftCheckAndValidateRoutes'].children.tabs}`,
-        ],
-        {
-          fragment: finesDraftStore.fragment(),
-        },
-      );
     });
 
     it('should submit payload on submitForReview', () => {
