@@ -16,6 +16,7 @@ import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -27,6 +28,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly destroy$ = new Subject<void>();
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   public readonly finesDraftService = inject(FinesDraftService);
 
   private readonly userState = this.globalStore.userState();
@@ -65,6 +67,20 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
       (params) => this.opalFinesService.getDraftAccounts(params),
       (res) => this.finesDraftService.populateTableData(res),
     );
+  }
+
+  /**
+   * Handles the click event for a defendant in the fines draft process.
+   *
+   * Sets the current fragment and checker state in the fines draft store,
+   * then triggers the defendant click logic in the fines draft service,
+   * navigating to the review account path.
+   *
+   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   */
+  public onDefendantClick(draftAccountId: number): void {
+    this.finesDraftStore.setFragmentAndChecker(this.activeTab, true);
+    this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_REVIEW_ACCOUNT);
   }
 
   public ngOnInit(): void {

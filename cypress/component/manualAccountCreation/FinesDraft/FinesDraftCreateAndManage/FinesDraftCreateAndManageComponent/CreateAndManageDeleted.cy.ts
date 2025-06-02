@@ -15,6 +15,8 @@ import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over
 import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
+  const dateService = new DateService();
+
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCreateAndManageTabsComponent, {
