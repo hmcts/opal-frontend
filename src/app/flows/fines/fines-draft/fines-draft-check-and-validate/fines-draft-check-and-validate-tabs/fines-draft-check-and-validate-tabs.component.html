@@ -22,6 +22,12 @@
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
     ></opal-lib-moj-sub-navigation-item>
+    <opal-lib-moj-sub-navigation-item
+      subNavItemId="checker-failed-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="failed"
+      subNavItemText="Failed"
+    ></opal-lib-moj-sub-navigation-item>
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
     @case ('to-review') {
@@ -34,6 +40,10 @@
     }
     @case ('deleted') {
       <h2 class="govuk-heading-m">Deleted</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('failed') {
+      <h2 class="govuk-heading-m">Failed</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
   }
@@ -60,6 +70,9 @@
           @case ('deleted') {
             <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
           }
+          @case ('failed') {
+            <ng-container *ngTemplateOutlet="failedNoData"></ng-container>
+          }
         }
       }
     }
@@ -72,5 +85,8 @@
   </ng-template>
   <ng-template #deletedNoData>
     <p>No accounts have been deleted in the past 7 days.</p>
+  </ng-template>
+  <ng-template #failedNoData>
+    <p>There are no failed accounts</p>
   </ng-template>
 </div>
