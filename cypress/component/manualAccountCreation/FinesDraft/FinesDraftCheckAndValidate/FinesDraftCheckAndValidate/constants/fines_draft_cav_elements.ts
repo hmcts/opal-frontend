@@ -17,4 +17,7 @@ export const DOM_ELEMENTS = {
   submittedBy: 'td[id = "submittedBy"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
+
+  accountStatus: 'strong[id="status"]',
+  reviewHistory: 'h3.govuk-heading-m govuk-!-margin-top-4',
 };

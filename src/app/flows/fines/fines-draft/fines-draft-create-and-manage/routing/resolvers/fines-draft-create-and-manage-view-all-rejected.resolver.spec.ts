@@ -5,9 +5,10 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,13 +16,19 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
     TestBed.runInInjectionContext(() => finesDraftCreateAndManageViewAllRejectedResolver(...resolverParameters));
 
   let opalFinesServiceMock: jasmine.SpyObj<OpalFines>;
+  let dateServiceMock: jasmine.SpyObj<DateService>;
   let globalStoreMock: GlobalStoreType;
 
   beforeEach(() => {
     opalFinesServiceMock = jasmine.createSpyObj('OpalFines', ['getDraftAccounts']);
+    dateServiceMock = jasmine.createSpyObj('dateService', ['getDateRange']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: opalFinesServiceMock }, GlobalStore],
+      providers: [
+        { provide: OpalFines, useValue: opalFinesServiceMock },
+        GlobalStore,
+        { provide: DateService, useValue: dateServiceMock },
+      ],
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);

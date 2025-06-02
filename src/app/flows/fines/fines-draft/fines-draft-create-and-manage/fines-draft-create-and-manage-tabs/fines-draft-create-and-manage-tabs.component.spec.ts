@@ -26,6 +26,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let activatedRoute: ActivatedRoute;
   let finesDraftService: jasmine.SpyObj<FinesDraftService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
@@ -44,9 +45,10 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       'populateTableData',
     ]);
 
-    const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
+    mockDateService = jasmine.createSpyObj<DateService>('DateService', [
       'getDaysAgo',
       'getFromFormatToFormat',
+      'getDateRange',
     ]);
 
     routerEventSubject = new Subject<NavigationEnd>();
@@ -185,5 +187,37 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     expect(finesDraftStore.fragment()).toEqual('rejected');
     expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_AMEND_ACCOUNT);
+  });
+
+  it('should pass additional params for historicWindowInDays if set on this tab', async () => {
+    mockDateService.getDateRange.and.returnValue({
+      from: '2023-01-01',
+      to: '2023-01-07',
+    });
+    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    activatedRoute.fragment = of('deleted');
+    activatedRoute.snapshot.data = {
+      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      deletedCount: 2,
+    };
+
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.ngOnInit();
+
+    const tabData = await firstValueFrom(component.tabData$);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      statuses: ['Deleted'],
+      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      accountStatusDateFrom: ['2023-01-01'],
+      accountStatusDateTo: ['2023-01-07'],
+    });
+
+    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 });

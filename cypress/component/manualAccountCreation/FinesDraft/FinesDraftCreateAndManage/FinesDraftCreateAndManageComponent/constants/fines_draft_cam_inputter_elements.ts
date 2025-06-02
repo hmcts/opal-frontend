@@ -12,6 +12,7 @@ export const DOM_ELEMENTS = {
   tableRow: 'table.govuk-table>tbody>tr',
   defendant: 'td[id = "defendant"]',
   dob: 'td[id = "dob"]',
+  deleted: 'td[id = "changedDate"]',
   created: 'td[id = "createdDate"]',
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
