@@ -5,7 +5,7 @@
     <app-fines-draft-table-wrapper
       [tableData]="rejectedAccounts"
       [existingSortState]="tableSort"
-      [isApprovedTab]="false"
+      activeTab="rejected"
       (linkClicked)="onDefendantClick($event)"
     ></app-fines-draft-table-wrapper>
   } @else {
