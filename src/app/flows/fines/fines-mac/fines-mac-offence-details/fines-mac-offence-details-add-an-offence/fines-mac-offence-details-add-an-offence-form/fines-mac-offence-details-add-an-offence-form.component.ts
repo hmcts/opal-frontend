@@ -28,7 +28,7 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../consta
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -72,7 +72,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../f
     GovukCancelLinkComponent,
     GovukRadiosConditionalComponent,
     GovukTextInputComponent,
-    MojBannerComponent,
+    MojAlertComponent,
     FinesMacOffenceDetailsMinorCreditorInformationComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',

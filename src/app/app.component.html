@@ -18,25 +18,25 @@
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
               @let minutesText = minutes === 1 ? 'minute' : 'minutes';
-              <opal-lib-moj-banner
+              <opal-lib-moj-alert
                 text="Warning: Your session will expire in {{ minutes }} {{
                   minutesText
                 }}. Please save your work and log out, then log back in to continue."
                 type="warning"
-              ></opal-lib-moj-banner>
+              ></opal-lib-moj-alert>
             </div>
           }
         }
 
         @if (showExpiredWarning) {
-          <opal-lib-moj-banner
+          <opal-lib-moj-alert
             text="Warning: Your session has expired. Please log back in."
             type="warning"
-          ></opal-lib-moj-banner>
+          ></opal-lib-moj-alert>
         }
 
         @if (globalStore.authenticated() && globalStore.error().error) {
-          <opal-lib-moj-banner type="warning" [text]="globalStore.error().message"></opal-lib-moj-banner>
+          <opal-lib-moj-alert type="warning" [text]="globalStore.error().message"></opal-lib-moj-alert>
         }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>

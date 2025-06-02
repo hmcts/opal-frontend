@@ -6,7 +6,7 @@ import {
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
@@ -24,7 +24,7 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
     CommonModule,
     MojHeaderComponent,
     MojHeaderNavigationItemComponent,
-    MojBannerComponent,
+    MojAlertComponent,
     GovukFooterComponent,
   ],
   templateUrl: './app.component.html',

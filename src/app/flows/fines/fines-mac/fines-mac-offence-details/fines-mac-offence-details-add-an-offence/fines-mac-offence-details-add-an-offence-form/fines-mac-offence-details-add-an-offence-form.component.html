@@ -1,8 +1,8 @@
 @if (finesMacOffenceDetailsStore.minorCreditorAdded()) {
-  <opal-lib-moj-banner type="success" text="Minor creditor added"></opal-lib-moj-banner>
+  <opal-lib-moj-alert type="success" text="Minor creditor added"></opal-lib-moj-alert>
 }
 @if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
-  <opal-lib-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></opal-lib-moj-banner>
+  <opal-lib-moj-alert type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></opal-lib-moj-alert>
 }
 <h1 class="govuk-heading-l">Add an offence</h1>
 <opal-lib-govuk-error-summary
