@@ -38,7 +38,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
   public readonly referer = this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
-  private readonly accountId = this.route.snapshot.paramMap.get('draftAccountId');
+  private accountId = this.route.snapshot.paramMap.get('draftAccountId');
 
   private readonly finesRoutes = FINES_ROUTING_PATHS;
   private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
@@ -105,8 +105,15 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       .subscribe();
   }
 
-
-
+  /**
+   * Handles the response from a patch request to delete an account.
+   * 
+   * Updates the UI by setting a banner message indicating the account deletion,
+   * resets any unsaved state changes, and navigates to the appropriate tab with
+   * the current fragment.
+   *
+   * @param response - The payload returned from the patch request, containing account snapshot information.
+   */
   private processPatchResponse(response: IFinesMacAddAccountPayload): void {
     const accountName = response.account_snapshot?.defendant_name;
     this.finesDraftStore.setBannerMessage(`You have deleted ${accountName}'s account`);

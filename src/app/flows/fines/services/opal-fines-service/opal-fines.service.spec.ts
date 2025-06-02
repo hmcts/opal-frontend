@@ -491,4 +491,21 @@ describe('OpalFines', () => {
     expect(typeof key1).toBe('string');
     expect(() => JSON.parse(key1)).not.toThrow();
   });
+
+  it('should send a PATCH request to update the draft account payload', () => {
+    const accountId = '456';
+    const body = { mockField: 'mockValue' } as any;
+    const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;
+
+    service.patchDraftAccountPayload(accountId, body).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(expectedResponse);
+  });
 });
