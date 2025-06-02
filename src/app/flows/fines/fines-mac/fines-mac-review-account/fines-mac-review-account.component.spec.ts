@@ -220,7 +220,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
       expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
         false,
         undefined,
         finesDraftStore.fragment(),
@@ -301,7 +301,7 @@ describe('FinesMacReviewAccountComponent', () => {
       component['submitPayload']();
 
       expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
         false,
         undefined,
         finesDraftStore.fragment(),
@@ -326,12 +326,22 @@ describe('FinesMacReviewAccountComponent', () => {
       component.navigateBack();
       expect(routerSpy).toHaveBeenCalledWith(
         [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
         ],
         {
           fragment: finesDraftStore.fragment(),
         },
       );
+    });
+
+    it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      finesDraftStore.setViewAllAccounts(true);
+      component.isReadOnly = true;
+      component.navigateBack();
+      expect(routerSpy).toHaveBeenCalledWith([
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
+      ]);
     });
 
     it('should submit payload on submitForReview', () => {
@@ -359,6 +369,16 @@ describe('FinesMacReviewAccountComponent', () => {
       component.handleRoute('test');
 
       expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+    });
+
+    it('should navigate on handleRoute with event', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      const event = jasmine.createSpyObj(Event, ['preventDefault']);
+
+      component.handleRoute('test', true, event);
+
+      expect(routerSpy).toHaveBeenCalledWith(['test']);
+      expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('should navigate on handleRoute to delete account', () => {

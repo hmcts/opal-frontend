@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
-import { FinesDraftCheckAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-manage/fines-draft-check-and-manage-tabs/fines-draft-check-and-manage-tabs.component';
-import { provideRouter } from '@angular/router';
+import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -9,30 +9,24 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock';
-import { routes } from './constants/fines_draft_cam_inputter_routes';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_inputter_tableConstants';
-import {
-  interceptGetRejectedAccounts,
-  interceptGetInReviewAccounts,
-  interceptGetDeletedAccounts,
-  interceptGetApprovedAccounts,
-} from './intercepts/fines-draft-intercepts';
+import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
+import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
-describe('FinesDraftCheckAndManageDeletedComponent', () => {
+describe('FinesDraftCreateAndManageDeletedComponent', () => {
   const dateService = new DateService();
 
   const setupComponent = () => {
     cy.then(() => {
-      mount(FinesDraftCheckAndManageTabsComponent, {
+      mount(FinesDraftCreateAndManageTabsComponent, {
         providers: [
           provideHttpClient(),
-          provideRouter(routes),
           OpalFines,
           DateService,
           FinesMacPayloadService,
           FinesDraftStore,
+          provideRouter([]),
           {
             provide: GlobalStore,
             useFactory: () => {
@@ -42,29 +36,35 @@ describe('FinesDraftCheckAndManageDeletedComponent', () => {
             },
           },
         ],
-        componentProperties: {},
+        componentProperties: {
+          activeTab: 'review',
+        },
       });
     });
   };
 
   it('(AC.3,AC.4)should show summary table with correct data for deleted accounts', { tags: ['@PO-609'] }, () => {
-    const noAccountsMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-    interceptGetRejectedAccounts(200, noAccountsMockData);
-    interceptGetInReviewAccounts(200, noAccountsMockData);
-    interceptGetDeletedAccounts(200, noAccountsMockData);
-    interceptGetApprovedAccounts(200, noAccountsMockData);
+    const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+    interceptGetDeletedAccounts(200, deletedAccountsMockData);
+    interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains(NAVIGATION_LINKS[3]).click();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
+
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Create accounts');
 
     for (const link of NAVIGATION_LINKS) {
-      cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
+      if (link === 'Deleted') {
+        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist').should('have.attr', 'aria-current', 'page');
+      } else {
+        cy.get(DOM_ELEMENTS.navigationLinks)
+          .contains(link)
+          .should('exist')
+          .should('not.have.attr', 'aria-current', 'page');
+      }
     }
-
-    cy.get(DOM_ELEMENTS.statusHeading)
-      .should('exist')
-      .and('contain', '' + NAVIGATION_LINKS[3]);
 
     for (const heading of TABLE_HEADINGS) {
       cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');
@@ -92,12 +92,13 @@ describe('FinesDraftCheckAndManageDeletedComponent', () => {
     '(AC.5)should have pagination enabled for over 25 draft accounts for deleted accounts',
     { tags: ['@PO-609'] },
     () => {
-      const rejectedMockData = { count: 0, summaries: [] };
-      const deletedMockData = { count: 0, summaries: OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK.summaries };
-      interceptGetRejectedAccounts(200, rejectedMockData);
-      interceptGetDeletedAccounts(200, deletedMockData);
+      const deletedAccountsMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
+
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
       setupComponent();
+
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
       cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
@@ -122,10 +123,10 @@ describe('FinesDraftCheckAndManageDeletedComponent', () => {
     '(AC.5) should have default sort order for created accounts set to descending for Deleted',
     { tags: ['@PO-609'] },
     () => {
-      const rejectedMockData = { count: 0, summaries: [] };
-      const deletedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-      interceptGetRejectedAccounts(200, rejectedMockData);
-      interceptGetDeletedAccounts(200, deletedMockData);
+      const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+      interceptGetDeletedAccounts(200, deletedAccountsMockData);
+      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
       setupComponent();
 

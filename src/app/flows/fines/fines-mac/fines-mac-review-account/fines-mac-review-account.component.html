@@ -11,6 +11,7 @@
           : finesMacStore.getPersonalDetailsName()
       "
       [timelineData]="finesDraftStore.timeline_data()"
+      [isRejected]="reviewAccountStatus === 'Rejected'"
     ></app-fines-mac-review-account-history>
   }
 

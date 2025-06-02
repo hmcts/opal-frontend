@@ -9,4 +9,5 @@ export interface IFinesDraftTableWrapperTableSort extends IAbstractSortState {
   CreatedDate: SortDirectionType;
   'Account type': SortDirectionType;
   'Business unit': SortDirectionType;
+  'Submitted by': SortDirectionType;
 }
