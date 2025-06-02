@@ -19,8 +19,8 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
         date_of_birth: '1990-05-15',
       },
       account_type: 'fine',
-      account_status: 'ACTIVE',
-      account_status_date: '2023-01-01',
+      account_status: 'DELETED',
+      account_status_date: getDaysAgo(1),
     },
     {
       draft_account_id: 102,
@@ -37,8 +37,8 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
         date_of_birth: null,
       },
       account_type: 'fixedPenalty',
-      account_status: 'PENDING',
-      account_status_date: '2023-01-01',
+      account_status: 'DELETED',
+      account_status_date: getDaysAgo(3),
     },
   ],
 };

@@ -16,7 +16,6 @@ export const DOM_ELEMENTS = {
   created: 'td[id = "createdDate"]',
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
-  
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
   rejectedAccounts: 'a.govuk-link',
