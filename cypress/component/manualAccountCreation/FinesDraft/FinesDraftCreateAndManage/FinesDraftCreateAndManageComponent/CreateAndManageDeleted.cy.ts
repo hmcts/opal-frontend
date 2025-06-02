@@ -43,7 +43,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     });
   };
 
-  it('(AC.1) when user does not have accounts that submitted by user', { tags: ['@PO-609'] }, () => {
+  it('(AC.1) should not have table when user does not have accounts submitted', { tags: ['@PO-609'] }, () => {
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptGetDeletedAccounts(200, { count: 0, summaries: [] });
 
