@@ -2,7 +2,7 @@ import { IFinesMacAccountTimelineData } from './fines-mac-payload-account-timeli
 
 export interface IFinesMacPatchAccountPayload {
   business_unit_id: number | null;
-  version: number;
+  version: number | null;
   validated_by: string | null;
   validated_by_name: string | null;
   account_status: string | null;

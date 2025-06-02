@@ -15,6 +15,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
@@ -31,6 +32,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly opalFinesService = inject(OpalFines);
+  private readonly dateService = inject(DateService);
 
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
@@ -48,7 +50,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   }
 
   /**
-   * Handles the submission of the account comments and notes form.
+   * Handles the submission of the delete account confirmation form.
    *
    * @param form - The form data for the account comments and notes.
    * @returns void
@@ -56,20 +58,21 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
     this.finesMacStore.setDeleteAccountConfirmation(form);
+    const { version, timeline_data} = this.finesDraftStore.getFinesDraftState();
+    const status_date = this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd');
+    const status = 'Deleted';
+    const username = this.userState.name;
+    const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
     const payload: IFinesMacPatchAccountPayload = {
       validated_by: null,
-      account_status: 'Deleted',
+      account_status: status,
       validated_by_name: null,
-      business_unit_id: this.finesMacStore.getBusinessUnitId(),
-      version: 0,
-      timeline_data: [{
-        username: this.userState.name,
-        status: 'Deleted',
-        status_date: new Date().toISOString(),
-        reason_text,
-      }]
+      business_unit_id,
+      version,
+      timeline_data: [...timeline_data, {username, status, status_date, reason_text}]
     };
+
     this.handlePatchRequest(payload);
   }
 
