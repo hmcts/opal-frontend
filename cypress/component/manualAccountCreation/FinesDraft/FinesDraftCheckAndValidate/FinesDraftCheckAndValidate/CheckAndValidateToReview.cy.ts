@@ -18,6 +18,7 @@ import {
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
+
 describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -45,7 +46,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593'] }, () => {
+  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593','@PO-594'] }, () => {
     const emptyMockData = { count: 0, summaries: [] };
 
     interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -74,6 +75,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'To review');
         cy.get('p').should('exist').and('contain', 'There are no accounts to review');
       }
+      //the below two verifications covered as part of PO-593
       if (link === 'Rejected') {
         cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
         cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
@@ -220,4 +222,6 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         expect(count).to.be.eq(25);
       });
   });
+
+
 });
