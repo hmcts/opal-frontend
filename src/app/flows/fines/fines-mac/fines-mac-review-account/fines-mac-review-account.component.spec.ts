@@ -91,6 +91,12 @@ function createTestModule(snapshotData?: any) {
         useValue: {
           parent: of('manual-account-creation'),
           snapshot: {
+            paramMap: {
+              get: (key: string) => {
+                if (key === 'draftAccountId') return '1';
+                return null;
+              }
+            },
             data: defaultData,
           },
         },
