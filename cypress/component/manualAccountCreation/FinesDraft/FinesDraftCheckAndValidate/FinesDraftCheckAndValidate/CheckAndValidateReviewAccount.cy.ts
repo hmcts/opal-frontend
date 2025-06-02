@@ -165,8 +165,7 @@ describe('FinesMacReviewAccountComponent', () => {
       if (status === 'Created') {
         cy.get(DOM_ELEMENTS.navigationLinks).contains(status).should('have.attr', 'aria-current', 'page');
         cy.get('p').should('exist').and('contain', 'user1');
-        cy.get('').should('exist').and('contain','')
-
+        cy.get('').should('exist').and('contain', '');
       }
     }
   });

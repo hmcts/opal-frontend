@@ -18,7 +18,6 @@ import {
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
-
 describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
@@ -46,7 +45,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593','@PO-594'] }, () => {
+  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593', '@PO-594'] }, () => {
     const emptyMockData = { count: 0, summaries: [] };
 
     interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -222,6 +221,4 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         expect(count).to.be.eq(25);
       });
   });
-
-
 });
