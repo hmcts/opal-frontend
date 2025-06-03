@@ -5,7 +5,7 @@
     </ng-container>
   }
   <ng-container head>
-    @if (isApprovedTab) {
+    @if (activeTab === 'approved') {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Account"
@@ -21,7 +21,7 @@
       columnKey="Defendant"
       [sortDirection]="sortStateSignal()['Defendant']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="isApprovedTab ? 1 : 0"
+      [dataIndex]="activeTab === 'approved' ? 1 : 0"
     >
       Defendant
     </th>
@@ -30,25 +30,37 @@
       columnKey="Date of birth"
       [sortDirection]="sortStateSignal()['Date of birth']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="isApprovedTab ? 2 : 1"
+      [dataIndex]="activeTab === 'approved' ? 2 : 1"
     >
       Date of birth
     </th>
-    <th
-      opal-lib-moj-sortable-table-header
-      columnKey="CreatedDate"
-      [sortDirection]="sortStateSignal()['CreatedDate']"
-      (sortChange)="onSortChange($event)"
-      [dataIndex]="isApprovedTab ? 3 : 2"
-    >
-      Created
-    </th>
+    @if (activeTab === 'deleted') {
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="ChangedDate"
+        [sortDirection]="sortStateSignal()['ChangedDate']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        Deleted
+      </th>
+    } @else {
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="CreatedDate"
+        [sortDirection]="sortStateSignal()['CreatedDate']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        Created
+      </th>
+    }
     <th
       opal-lib-moj-sortable-table-header
       columnKey="Account type"
       [sortDirection]="sortStateSignal()['Account type']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="isApprovedTab ? 4 : 3"
+      [dataIndex]="activeTab === 'approved' ? 4 : 3"
     >
       Account type
     </th>
@@ -57,7 +69,7 @@
       columnKey="Business unit"
       [sortDirection]="sortStateSignal()['Business unit']"
       (sortChange)="onSortChange($event)"
-      [dataIndex]="isApprovedTab ? 5 : 4"
+      [dataIndex]="activeTab === 'approved' ? 5 : 4"
     >
       Business unit
     </th>
@@ -76,7 +88,7 @@
   <ng-container row>
     @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
       <tr opal-lib-moj-sortable-table-row>
-        @if (isApprovedTab) {
+        @if (activeTab === 'approved') {
           <td opal-lib-moj-sortable-table-row-data id="account">{{ row['Account'] }}</td>
         }
         <td opal-lib-moj-sortable-table-row-data id="defendant">
@@ -91,9 +103,11 @@
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
         </td>
-        <td opal-lib-moj-sortable-table-row-data id="createdDate">
-          {{ row['Created'] | daysAgo }}
-        </td>
+        @if (activeTab === 'deleted') {
+          <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
+        } @else {
+          <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
+        }
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
         @if (isChecker) {

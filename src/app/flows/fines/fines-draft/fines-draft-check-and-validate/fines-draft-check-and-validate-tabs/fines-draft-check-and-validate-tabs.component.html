@@ -47,6 +47,7 @@
           [isApprovedTab]="false"
           [isChecker]="true"
           (linkClicked)="onDefendantClick($event)"
+          [activeTab]="activeTab"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {
