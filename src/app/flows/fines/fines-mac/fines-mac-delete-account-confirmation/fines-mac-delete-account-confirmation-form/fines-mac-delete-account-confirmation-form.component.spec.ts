@@ -1,4 +1,3 @@
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form.component';
@@ -12,9 +11,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule, FinesMacDeleteAccountConfirmationFormComponent],
-      providers: [
-        { provide: ActivatedRoute, useValue: {} }
-    ],
+      providers: [{ provide: ActivatedRoute, useValue: {} }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacDeleteAccountConfirmationFormComponent);
@@ -55,10 +52,12 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     const form = fixture.debugElement.query(By.css('form'));
     form.triggerEventHandler('submit', { preventDefault: () => {} });
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(jasmine.objectContaining({
-      formData: jasmine.objectContaining({
-        fm_delete_account_confirmation_reason: 'Valid reason'
-      })
-    }));
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: jasmine.objectContaining({
+          fm_delete_account_confirmation_reason: 'Valid reason',
+        }),
+      }),
+    );
   });
 });

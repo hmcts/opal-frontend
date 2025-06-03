@@ -20,7 +20,13 @@ import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
-  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent, MojBannerComponent],
+  imports: [
+    CommonModule,
+    MojSubNavigationComponent,
+    MojSubNavigationItemComponent,
+    FinesDraftTableWrapperComponent,
+    MojBannerComponent,
+  ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

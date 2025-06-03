@@ -273,5 +273,4 @@ describe('FinesMacStore', () => {
     expect(store.stateChanges()).toBe(false);
     expect(store.unsavedChanges()).toBe(false);
   });
-
 });

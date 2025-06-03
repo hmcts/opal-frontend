@@ -95,7 +95,7 @@ function createTestModule(snapshotData?: any) {
               get: (key: string) => {
                 if (key === 'draftAccountId') return '1';
                 return null;
-              }
+              },
             },
             data: defaultData,
           },

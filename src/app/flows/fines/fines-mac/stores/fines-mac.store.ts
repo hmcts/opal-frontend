@@ -50,7 +50,7 @@ export const FinesMacStore = signalStore(
     unsavedChanges: false,
     stateChanges: false,
     deleteFromCheckAccount: false,
-    deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM
+    deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
   })),
   withHooks((store) => {
     return {

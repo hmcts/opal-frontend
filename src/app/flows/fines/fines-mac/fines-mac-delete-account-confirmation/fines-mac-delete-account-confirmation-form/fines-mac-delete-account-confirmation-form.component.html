@@ -14,20 +14,14 @@
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <opal-lib-govuk-button
-          buttonId="confirmDeletion"
-          buttonClasses="govuk-button--warning"
-          type="submit"
-        >
-          Yes - delete
-        </opal-lib-govuk-button>
+      <opal-lib-govuk-button buttonId="confirmDeletion" buttonClasses="govuk-button--warning" type="submit">
+        Yes - delete
+      </opal-lib-govuk-button>
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(referer)"
-      ></opal-lib-govuk-cancel-link>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleRoute(referer)"></opal-lib-govuk-cancel-link>
     </div>
   </div>
 </form>

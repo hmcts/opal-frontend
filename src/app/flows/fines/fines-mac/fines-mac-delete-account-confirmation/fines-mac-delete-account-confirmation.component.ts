@@ -37,7 +37,9 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
-  public readonly referer = this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
+  public readonly referer = this.finesMacStore.deleteFromCheckAccount()
+    ? this.reviewAccountRoute
+    : this.accountDetailsRoute;
   private accountId = this.route.snapshot.paramMap.get('draftAccountId');
 
   private readonly finesRoutes = FINES_ROUTING_PATHS;
@@ -58,7 +60,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
     this.finesMacStore.setDeleteAccountConfirmation(form);
-    const { version, timeline_data} = this.finesDraftStore.getFinesDraftState();
+    const { version, timeline_data } = this.finesDraftStore.getFinesDraftState();
     const status_date = this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd');
     const status = 'Deleted';
     const username = this.userState.name;
@@ -70,13 +72,11 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       validated_by_name: null,
       business_unit_id,
       version,
-      timeline_data: [...timeline_data, {username, status, status_date, reason_text}]
+      timeline_data: [...timeline_data, { username, status, status_date, reason_text }],
     };
 
     this.handlePatchRequest(payload);
   }
-
-
 
   /**
    * Handles the PATCH request to update an account payload.
@@ -107,7 +107,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
 
   /**
    * Handles the response from a patch request to delete an account.
-   * 
+   *
    * Updates the UI by setting a banner message indicating the account deletion,
    * resets any unsaved state changes, and navigates to the appropriate tab with
    * the current fragment.
@@ -143,5 +143,4 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
     this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
-
 }

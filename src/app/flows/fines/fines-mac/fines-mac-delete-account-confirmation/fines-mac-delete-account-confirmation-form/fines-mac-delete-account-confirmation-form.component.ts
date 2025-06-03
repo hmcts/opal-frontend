@@ -36,21 +36,29 @@ import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validator
   templateUrl: './fines-mac-delete-account-confirmation-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDeleteAccountConfirmationFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacDeleteAccountConfirmationFormComponent
+  extends AbstractFormBaseComponent
+  implements OnInit, OnDestroy
+{
   @Input({ required: true }) public referer!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacDeleteAccountConfirmationForm>();
 
   public readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-  override fieldErrors: IFinesMacDeleteAccountConfirmationFieldErrors = FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS;
+  override fieldErrors: IFinesMacDeleteAccountConfirmationFieldErrors =
+    FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS;
 
   /**
    * Sets up the delete account confirmation form with the necessary form controls.
    */
   private setupDeleteAccountConfirmationForm(): void {
     this.form = new FormGroup({
-      fm_delete_account_confirmation_reason: new FormControl<string | null>(null, [Validators.required, optionalMaxLengthValidator(250), alphabeticalTextValidator()]),
+      fm_delete_account_confirmation_reason: new FormControl<string | null>(null, [
+        Validators.required,
+        optionalMaxLengthValidator(250),
+        alphabeticalTextValidator(),
+      ]),
     });
   }
 

@@ -343,12 +343,12 @@ export class OpalFines {
    * @param body - The payload containing the account information to be patched as well as the draft account ID.
    * @returns An Observable of the updated account payload.
    */
-  public patchDraftAccountPayload(accountId: string, body: IFinesMacPatchAccountPayload): Observable<IFinesMacAddAccountPayload> {
-  return this.http.patch<IFinesMacAddAccountPayload>(
-    `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`,
-    body,
-  );
-}
+  public patchDraftAccountPayload(
+    accountId: string,
+    body: IFinesMacPatchAccountPayload,
+  ): Observable<IFinesMacAddAccountPayload> {
+    return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${accountId}`, body);
+  }
 
   /**
    * Searches for offences based on the provided parameters.

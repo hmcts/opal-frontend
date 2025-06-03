@@ -32,6 +32,7 @@ import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-
 import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -494,7 +495,7 @@ describe('OpalFines', () => {
 
   it('should send a PATCH request to update the draft account payload', () => {
     const accountId = '456';
-    const body = { mockField: 'mockValue' } as any;
+    const body = OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK;
     const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;
 

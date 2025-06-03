@@ -29,5 +29,5 @@ export const FINES_MAC_STATE: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
-  deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM
+  deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
 };
