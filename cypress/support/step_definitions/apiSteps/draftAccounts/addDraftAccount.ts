@@ -115,7 +115,6 @@ When('I update the last created draft account with the {string} and status {stri
         const today = new Date();
         const pastDate = new Date(today);
        const daysAgo= pastDate.setDate(today.getDate() - days).toString();
-        //const now = new Date().toISOString();
         const updateBody = {
           business_unit_id,
           account_status: status,
