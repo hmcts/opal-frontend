@@ -858,3 +858,18 @@ Feature: Navigate and edit sections from task list
     And I see the following in the "Account comments and notes" table:
       | Comment      | — |
       | Account note | — |
+  @only
+  @PO-609
+  Scenario: Deleted accounts should not appear if deleted 8 or more days ago
+    Given I create a "adultOrYouthOnly" draft account with the following details:
+      | account.defendant.surname   | TEST                            |
+      | account.defendant.forenames | PO-609-AdultOrYouthOnly-Deleted*1 |
+    And I update the last created draft account with the "Deleted" and status "10" days ago
+
+    Then I click on the "Deleted" link
+
+    Then I see "Deleted" on the status heading
+    Then I see "Showing accounts Deleted in the past 7 days" on the text on the page
+    Then I see the following in the "Court details" table:
+      | Defendant                            | Date of birth | Deleted | Account type | Business unit    |
+      | TEST,PO-609-AdultOrYouthOnly-Deleted | 08 May 2025   | Today   | Fine         | Camberwell Green |

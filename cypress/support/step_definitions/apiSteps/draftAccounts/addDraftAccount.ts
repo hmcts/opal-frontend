@@ -100,3 +100,39 @@ afterEach(() => {
     });
   }
 });
+
+
+When('I update the last created draft account with the {string} and status {string} days ago', (status: string, days: number) => {
+  cy.wrap(createdAccounts)
+    .its(createdAccounts.length - 1)
+    .then((accountId) => {
+      // Fetch the current draft account to get required fields
+      cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
+        const account = getResp.body;
+        const business_unit_id = account.business_unit_id;
+        const version = account.version;
+        const validated_by = account.submitted_by || 'opal-test';
+        const today = new Date();
+        const pastDate = new Date(today);
+       const daysAgo= pastDate.setDate(today.getDate() - days).toString();
+        //const now = new Date().toISOString();
+        const updateBody = {
+          business_unit_id,
+          account_status: status,
+          validated_by,
+          version,
+          timeline_data: [
+            {
+              username: validated_by,
+              status,
+              status_date: daysAgo,
+              reason_text: 'Test reason',
+            },
+          ],
+        };
+        cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
+          expect(response.status).to.eq(200);
+        });
+      });
+    });
+});

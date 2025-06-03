@@ -112,3 +112,9 @@ Then('{string} is verified as disabled', (link: string) => {
 Then('{string} is verified as enabled', (link: string) => {
   cy.contains('a', link).invoke('is', 'enabled');
 });
+Then('I see {string} on the text on the page', (text:string) => {
+  cy.get('p').should('contain',text)
+})
+Then('I see {string} on the status heading', (statusHeading:string) => {
+  cy.get('h2.govuk-heading-m').should('contain', statusHeading)
+})

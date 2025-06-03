@@ -2,7 +2,7 @@ import { getDaysAgo, getToday } from 'cypress/support/utils/dateUtils';
 import { IOpalFinesDraftAccountsResponse } from '../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 
 export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
-  count: 2,
+  count: 3,
   summaries: [
     {
       draft_account_id: 101,
