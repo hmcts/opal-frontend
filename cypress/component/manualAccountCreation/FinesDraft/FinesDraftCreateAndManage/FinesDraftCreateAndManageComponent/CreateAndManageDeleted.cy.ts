@@ -91,7 +91,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
         .then((relativeDateText) => {
           const text = relativeDateText.trim().toLowerCase();
           let daysAgo = null;
-  
+
           // if (daysAgo !== null) {
           //   expect(daysAgo).to.be.lessThan(8, `Account was deleted ${daysAgo} days ago`);
           if (daysAgo !== null && daysAgo >= 8) {
