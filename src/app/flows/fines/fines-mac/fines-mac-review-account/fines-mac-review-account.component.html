@@ -1,5 +1,8 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  @if (reviewAccountStatus === 'Failed') {
+    <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
+  }
   @if (!isReadOnly) {
     <h1 class="govuk-heading-l">Check account details</h1>
   } @else {
