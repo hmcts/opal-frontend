@@ -75,7 +75,8 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             let store = new FinesDraftStore();
             store.setFinesDraftState(finesDraftStateMock);
-            store.setAmend(amend);
+            //store.setAmend(amend);
+            store.setChecker(true);
             return store;
           },
         },
@@ -95,7 +96,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
               parent: {
                 snapshot: {
-                  url: [{ path: 'manual-account-creation' }],
+                  //url:[{path: 'manual-account-creation'}]
+                  url: [{ path: 'review-account' }],
                 },
               },
             },
