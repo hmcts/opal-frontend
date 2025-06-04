@@ -42,6 +42,7 @@ describe('FinesMacReviewAccountComponent', () => {
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
     amend: boolean = true,
+    checker: boolean = false,
   ) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
@@ -75,8 +76,8 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             let store = new FinesDraftStore();
             store.setFinesDraftState(finesDraftStateMock);
-            //store.setAmend(amend);
-            store.setChecker(true);
+            store.setAmend(amend);
+            store.setChecker(checker);
             return store;
           },
         },
@@ -96,8 +97,8 @@ describe('FinesMacReviewAccountComponent', () => {
               },
               parent: {
                 snapshot: {
-                  //url:[{path: 'manual-account-creation'}]
-                  url: [{ path: 'review-account' }],
+                  url: [{ path: 'manual-account-creation' }],
+                  //url: [{ path: 'review-account' }],
                 },
               },
             },
@@ -143,28 +144,31 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
-  it.only('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
     const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, toReviewMockData);
     interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
-    setupComponent();
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'DOE, John');
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Submitted');
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
   });
-  it('AC.2c, AC3 When user has submitted the account for the first time', { tags: ['@PO-594'] }, () => {
+
+  it.only('AC.2c, AC3 When user has submitted the account for the first time', { tags: ['@PO-594'] }, () => {
     const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, toReviewMockData);
     interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
 
-    setupComponent();
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.reviewHistory).should('exist').and('contain', 'Review history');
 
     for (const status of REVIEW_HISTORY) {
       cy.get(DOM_ELEMENTS.navigationLinks).contains(status).should('exist');
-      if (status === 'Created') {
+      if (status === 'Submitted') {
         cy.get(DOM_ELEMENTS.navigationLinks).contains(status).should('have.attr', 'aria-current', 'page');
         cy.get('p').should('exist').and('contain', 'user1');
         cy.get('').should('exist').and('contain', '');
