@@ -858,3 +858,6 @@ Feature: Navigate and edit sections from task list
     And I see the following in the "Account comments and notes" table:
       | Comment      | — |
       | Account note | — |
+
+     
+
