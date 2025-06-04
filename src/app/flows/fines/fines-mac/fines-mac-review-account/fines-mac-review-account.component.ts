@@ -37,6 +37,7 @@ import { FinesMacReviewAccountDecisionComponent } from './fines-mac-review-accou
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
+import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -56,6 +57,7 @@ import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/inte
     FinesMacReviewAccountCompanyDetailsComponent,
     FinesMacReviewAccountHistoryComponent,
     FinesMacReviewAccountDecisionComponent,
+    FinesMacReviewAccountFailedBannerComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,9 +1,13 @@
 <h1 class="govuk-heading-l">
   {{ defendantName }}
 </h1>
-<opal-lib-govuk-tag [tagClasses]="isRejected ? 'govuk-tag govuk-tag--red' : 'govuk-tag'" tagId="status">{{
-  accountStatus
-}}</opal-lib-govuk-tag>
+<opal-lib-govuk-tag
+  [tagClasses]="
+    accountStatus === 'Deleted' || accountStatus === 'Failed' || isRejected ? 'govuk-tag govuk-tag--red' : 'govuk-tag'
+  "
+  tagId="status"
+  >{{ accountStatus }}</opal-lib-govuk-tag
+>
 <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
 <opal-lib-moj-timeline>
   @for (timelineItem of timelineData; track $index) {
