@@ -30,6 +30,7 @@ describe('FinesMacReviewAccountComponent', () => {
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
     amend: boolean = true,
+    checker: boolean = false,
   ) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
@@ -64,6 +65,7 @@ describe('FinesMacReviewAccountComponent', () => {
             let store = new FinesDraftStore();
             store.setFinesDraftState(finesDraftStateMock);
             store.setAmend(amend);
+            store.setChecker(checker);
             return store;
           },
         },
@@ -1203,4 +1205,10 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     },
   );
+
+  it('(AC.8) should display decision radio buttons when user is a checker', { tags: ['@PO-610', '@PO-584'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+  });
 });
