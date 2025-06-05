@@ -33,14 +33,22 @@ Feature: Navigate and edit sections from task list of draft accounts
         And I click on the "Lincoln, Larry" link
         Then I see "Mr Larry LINCOLN" on the page header
 
+        #AC.9 user selects the 'Back' button, they will be returned to the 'Review Accounts - To Review' screen
+        And I click the back button link
+
+        And I click on the "Lincoln, Larry" link
+        Then I see "Mr Larry LINCOLN" on the page header
+
         And I select the "Reject" radio button
         And I enter "Testing review history" into the "Enter reason for rejection" text field
         And I click on continue button
         And I see "Review accounts" on the page header
 
+
         And I click on the "Lincoln, Larry" link
         And I click on the "Delete account" link
         Then I see "Are you sure you want to delete this account?" on the page header
+
 
 
 

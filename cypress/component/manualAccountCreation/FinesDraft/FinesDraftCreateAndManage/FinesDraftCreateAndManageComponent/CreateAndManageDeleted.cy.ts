@@ -141,7 +141,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       .within(() => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.deleted).contains('1 day ago');
+        cy.get(DOM_ELEMENTS.deleted).contains('Today');
         cy.get(DOM_ELEMENTS.accountType).contains('Fine');
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
@@ -197,29 +197,28 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       cy.get(DOM_ELEMENTS.tableRow)
         .eq(0)
         .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-          cy.get(DOM_ELEMENTS.deleted).contains('1 day ago');
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
         });
       cy.get(DOM_ELEMENTS.tableRow)
         .eq(1)
         .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.deleted).contains('Today');
         });
-
       cy.get(DOM_ELEMENTS.tableHeadings).contains('Deleted').click();
       cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Deleted').should('have.attr', 'aria-sort', 'descending');
       cy.get(DOM_ELEMENTS.tableRow)
         .eq(0)
         .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
+          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+          cy.get(DOM_ELEMENTS.deleted).contains('Today');
         });
       cy.get(DOM_ELEMENTS.tableRow)
         .eq(1)
         .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-          cy.get(DOM_ELEMENTS.deleted).contains('1 day ago');
+          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+          cy.get(DOM_ELEMENTS.deleted).contains('3 days ago');
         });
     },
   );

@@ -4,6 +4,9 @@ When('I click the back button', () => {
   cy.get('#back').click();
 });
 
+When('I click the back button link', ()=> {
+  cy.get('[class="govuk-back-link"]').click();
+})
 Then('I am presented with a result matching', (table: DataTable) => {
   const searchResult = table.rowsHash();
   cy.get('tbody > :nth-child(1) > .cdk-column-name').contains(searchResult['name']);
