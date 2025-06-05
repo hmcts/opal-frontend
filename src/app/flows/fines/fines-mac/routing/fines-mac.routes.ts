@@ -182,7 +182,7 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
-      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+      routePermissionId: [draftRootPermissionIds['create-and-manage'], draftRootPermissionIds['check-and-validate']],
     },
     resolve: { title: TitleResolver },
   },
