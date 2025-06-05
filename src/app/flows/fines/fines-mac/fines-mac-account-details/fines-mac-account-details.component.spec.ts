@@ -210,6 +210,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'accountDetailsFetchedMappedPayload');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'fetchTimelineData');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountDetailsStatus');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
@@ -225,6 +227,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['initialAccountDetailsSetup']();
 
     expect(component['accountDetailsFetchedMappedPayload']).toHaveBeenCalled();
+    expect(component['fetchTimelineData']).toHaveBeenCalled();
     expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
@@ -393,6 +396,32 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
     expect(component['setAccountDetailsStatus']).not.toHaveBeenCalled();
+  });
+
+  it('should test fetchTimelineData when timeline_data is null', () => {
+    finesDraftStore.setFinesDraftState(structuredClone(FINES_DRAFT_STATE));
+    component['fetchTimelineData']();
+    expect(component.timelineData).toEqual([]);
+  });
+
+  it('should test fetchTimelineData when timeline_data is populated', () => {
+    const timelineData = [
+      {
+        status: 'Submitted',
+        username: 'opal-test',
+        reason_text: null,
+        status_date: '2025-05-28',
+      },
+      {
+        status: 'Rejected',
+        username: 'opal-test-10',
+        reason_text: 'Please add defendant contact details',
+        status_date: '2025-05-28',
+      },
+    ];
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), timeline_data: timelineData });
+    component['fetchTimelineData']();
+    expect(component.timelineData).toEqual(timelineData.reverse());
   });
 
   it('should test setAccountDetailsStatus when draft state is null', () => {

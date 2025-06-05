@@ -32,6 +32,7 @@ import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-a
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
+import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -349,5 +350,19 @@ export class OpalFines {
   public searchOffences(body: IOpalFinesSearchOffencesParams): Observable<IOpalFinesSearchOffencesData> {
     body.maxResults = 100; // Set the maximum number of results to 100
     return this.http.post<IOpalFinesSearchOffencesData>(`${OPAL_FINES_PATHS.searchOffences}`, body);
+  }
+
+  /**
+   * Sends a PATCH request to update a draft account with the specified payload.
+   *
+   * @param draftAccountId - The unique identifier of the draft account to update.
+   * @param payload - The partial payload containing the fields to update in the draft account.
+   * @returns An Observable emitting the updated account payload as an `IFinesMacAddAccountPayload`.
+   */
+  public patchDraftAccountPayload(
+    draftAccountId: number,
+    payload: IOpalFinesDraftAccountPatchPayload,
+  ): Observable<IFinesMacAddAccountPayload> {
+    return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, payload);
   }
 }
