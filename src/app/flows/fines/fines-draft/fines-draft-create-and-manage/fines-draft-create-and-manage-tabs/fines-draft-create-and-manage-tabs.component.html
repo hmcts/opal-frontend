@@ -1,6 +1,11 @@
 <div class="govuk-grid-column-full">
   @if (finesDraftStore.bannerMessage().length > 0) {
-    <opal-lib-moj-alert [text]="finesDraftStore.bannerMessage()" type="success"></opal-lib-moj-alert>
+    <div opal-lib-moj-alert type="success" ariaLabel="success">
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ finesDraftStore.bannerMessage() }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </div>
   }
   <h1 class="govuk-heading-l">Create accounts</h1>
   <opal-lib-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">

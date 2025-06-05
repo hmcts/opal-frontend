@@ -5,6 +5,9 @@ import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { MojAlertContentComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { MojAlertTextComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { MojAlertIconComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import {
   MojSubNavigationItemComponent,
   MojSubNavigationComponent,
@@ -27,6 +30,9 @@ import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-reject
   imports: [
     CommonModule,
     MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertTextComponent,
+    MojAlertIconComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     MojBadgeComponent,

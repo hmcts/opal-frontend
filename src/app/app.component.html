@@ -18,25 +18,37 @@
           @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
               @let minutesText = minutes === 1 ? 'minute' : 'minutes';
-              <opal-lib-moj-alert
-                text="Warning: Your session will expire in {{ minutes }} {{
-                  minutesText
-                }}. Please save your work and log out, then log back in to continue."
-                type="warning"
-              ></opal-lib-moj-alert>
+              <div opal-lib-moj-alert ariaLabel="Your session will expire" type="warning">
+                <opal-lib-moj-alert-icon type="warning"></opal-lib-moj-alert-icon>
+                <opal-lib-moj-alert-content
+                  ><opal-lib-moj-alert-content-text
+                    >"Warning: Your session will expire in {{ minutes }} {{ minutesText }}. Please save your work and
+                    log out, then log back in to continue."
+                  </opal-lib-moj-alert-content-text>
+                </opal-lib-moj-alert-content>
+              </div>
             </div>
           }
         }
 
         @if (showExpiredWarning) {
-          <opal-lib-moj-alert
-            text="Warning: Your session has expired. Please log back in."
-            type="warning"
-          ></opal-lib-moj-alert>
+          <div opal-lib-moj-alert ariaLabel="Your session has expired" type="warning">
+            <opal-lib-moj-alert-icon type="warning"></opal-lib-moj-alert-icon>
+            <opal-lib-moj-alert-content
+              ><opal-lib-moj-alert-content-text
+                >"Warning: Your session has expired. Please log back in.
+              </opal-lib-moj-alert-content-text>
+            </opal-lib-moj-alert-content>
+          </div>
         }
 
         @if (globalStore.authenticated() && globalStore.error().error) {
-          <opal-lib-moj-alert type="warning" [text]="globalStore.error().message"></opal-lib-moj-alert>
+          <div opal-lib-moj-alert ariaLabel="Authentication Message" type="warning">
+            <opal-lib-moj-alert-icon type="warning"></opal-lib-moj-alert-icon>
+            <opal-lib-moj-alert-content
+              ><opal-lib-moj-alert-content-text>{{ globalStore.error().message }} </opal-lib-moj-alert-content-text>
+            </opal-lib-moj-alert-content>
+          </div>
         }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>
