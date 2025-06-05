@@ -11,7 +11,7 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
       business_unit_id: 77,
       account_snapshot: {
         account_type: 'fine',
-        created_date: getDaysAgo(1),
+        created_date: 'Today',
         submitted_by: 'user1',
         defendant_name: 'DOE, John',
         submitted_by_name: 'User One',
@@ -20,7 +20,7 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
       },
       account_type: 'fine',
       account_status: 'DELETED',
-      account_status_date: getDaysAgo(1),
+      account_status_date: getToday(),
     },
     {
       draft_account_id: 102,
@@ -39,6 +39,24 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
       account_type: 'fixedPenalty',
       account_status: 'DELETED',
       account_status_date: getDaysAgo(3),
+    },
+    {
+      draft_account_id: 103,
+      created_at: '2025-05-29T11:30:00Z',
+      submitted_by: 'user3',
+      business_unit_id: 17,
+      account_snapshot: {
+        account_type: 'fixedPenalty',
+        created_date: getDaysAgo(15),
+        submitted_by: 'user3',
+        defendant_name: 'DAN, Jack',
+        submitted_by_name: 'User Three',
+        business_unit_name: 'Business Unit B',
+        date_of_birth: '2000-09-18',
+      },
+      account_type: 'fixedPenalty',
+      account_status: 'DELETED',
+      account_status_date: getDaysAgo(15),
     },
   ],
 };
