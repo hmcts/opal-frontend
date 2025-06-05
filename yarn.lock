@@ -7821,11 +7821,11 @@ __metadata:
   linkType: hard
 
 "csrf-csrf@npm:^3.0.6":
-  version: 3.1.0
-  resolution: "csrf-csrf@npm:3.1.0"
+  version: 3.2.2
+  resolution: "csrf-csrf@npm:3.2.2"
   dependencies:
     http-errors: "npm:^2.0.0"
-  checksum: 10/0792acaf819f36910a5df410237c0989c1577a59bd6c20b590ddd0f08f49ed8b8205df4157481e1530d47b3071effb69c5264ecc6c1c3a595cc6a13c87a5d2fe
+  checksum: 10/d21dc324d1c3c81e7693a638c631d689be6723d84bdf7b2fd77e6d88ec73330215beef719976792f122f0281fa10c7b4e9e8a67129cef86904e234c62fb40b9b
   languageName: node
   linkType: hard
 
