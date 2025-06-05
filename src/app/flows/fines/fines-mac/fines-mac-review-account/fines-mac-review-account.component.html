@@ -10,7 +10,7 @@
           ? finesMacStore.getCompanyDetailsName()
           : finesMacStore.getPersonalDetailsName()
       "
-      [timelineData]="finesDraftStore.timeline_data()"
+      [timelineData]="finesDraftStore.timeline_data().reverse()"
       [isRejected]="reviewAccountStatus === 'Rejected'"
     ></app-fines-mac-review-account-history>
   }
@@ -102,6 +102,10 @@
         >
       </div>
     </div>
+  }
+
+  @if (finesDraftStore.checker()) {
+    <app-fines-mac-review-account-decision></app-fines-mac-review-account-decision>
   }
 </div>
 

@@ -20,6 +20,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
+      account_status_date: 'getToday()',
     },
     {
       draft_account_id: 102,
@@ -37,6 +38,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
+      account_status_date: 'getDaysAgo(4)',
     },
   ],
 };
