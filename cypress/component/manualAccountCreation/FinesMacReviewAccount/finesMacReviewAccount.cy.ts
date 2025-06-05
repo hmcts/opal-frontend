@@ -30,7 +30,6 @@ describe('FinesMacReviewAccountComponent', () => {
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
     amend: boolean = true,
-  
   ) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
@@ -1204,6 +1203,4 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     },
   );
-
- 
 });
