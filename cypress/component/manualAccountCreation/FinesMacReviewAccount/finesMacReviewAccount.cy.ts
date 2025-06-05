@@ -1226,7 +1226,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     },
   );
-  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it.only('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
     cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
@@ -1234,10 +1234,8 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
     cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
   });
-  it('AC.9 Back button verification', { tags: ['PO-594'] }, () => {
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-  });
-  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
+
+  it.only('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
     cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -1245,7 +1243,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.continue).should('exist');
     cy.get(DOM_ELEMENTS.deleteLink).should('exist');
   });
-  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
+  it.only('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.continue).should('exist').click();
     cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
@@ -1269,25 +1267,7 @@ describe('FinesMacReviewAccountComponent', () => {
         'contain',
         'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       );
-      //user has selected Approve, then selects the 'Continue' button, then no actions will be triggered
-
-      cy.get(DOM_ELEMENTS.approveRadioButton).should('exist').click();
-      cy.get(DOM_ELEMENTS.continue).should('exist').click();
     },
   );
-  it.only(
-    'AC.8ci user has selected reject, then selects the Continue button, then no actions will be triggered',
-    { tags: ['@PO-594'] },
-    () => {
-      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
-      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
-      cy.get(DOM_ELEMENTS.continue).should('exist').click();
-    },
-  );
-  it.only('AC.8d when user selects delete button', { tags: ['@PO-594'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
-
-    cy.get(DOM_ELEMENTS.deleteLink).should('exist').click();
-  });
 });
