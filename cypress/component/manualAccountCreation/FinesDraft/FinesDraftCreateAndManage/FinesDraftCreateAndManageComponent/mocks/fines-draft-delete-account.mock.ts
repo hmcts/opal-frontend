@@ -11,7 +11,7 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
       business_unit_id: 77,
       account_snapshot: {
         account_type: 'fine',
-        created_date: getDaysAgo(1),
+        created_date: 'Today',
         submitted_by: 'user1',
         defendant_name: 'DOE, John',
         submitted_by_name: 'User One',
@@ -20,7 +20,7 @@ export const OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRespo
       },
       account_type: 'fine',
       account_status: 'DELETED',
-      account_status_date: getDaysAgo(1),
+      account_status_date: getToday(),
     },
     {
       draft_account_id: 102,

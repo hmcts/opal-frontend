@@ -11,6 +11,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
+import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
@@ -18,6 +20,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let globalStore: GlobalStoreType;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let finesDraftService: jasmine.SpyObj<FinesDraftService>;
+  let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
@@ -26,7 +29,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearDraftAccountsCache']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
-    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', ['populateTableData']);
+    finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
+      'onDefendantClick',
+      'populateTableData',
+    ]);
 
     const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
       'getDaysAgo',
@@ -54,10 +60,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    finesDraftStore = TestBed.inject(FinesDraftStore);
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
@@ -79,5 +85,15 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       expect(data).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
       done();
     });
+  });
+
+  it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {
+    component.activeTab = 'to-review';
+
+    component.onDefendantClick(456);
+
+    expect(finesDraftStore.fragment()).toEqual('to-review');
+    expect(finesDraftStore.checker()).toBeTruthy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_REVIEW_ACCOUNT);
   });
 });
