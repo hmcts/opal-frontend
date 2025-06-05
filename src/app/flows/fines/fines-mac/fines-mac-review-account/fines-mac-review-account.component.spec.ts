@@ -329,7 +329,7 @@ describe('FinesMacReviewAccountComponent', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
       finesDraftStore.setViewAllAccounts(false);
-      // finesDraftStore.setChecker(false);
+      finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
       expect(routerSpy).toHaveBeenCalledWith(

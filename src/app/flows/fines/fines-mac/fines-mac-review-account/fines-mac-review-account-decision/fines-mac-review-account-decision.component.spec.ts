@@ -32,7 +32,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
     component = fixture.componentInstance;
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
-    // finesDraftStore.setChecker(true);
+    finesDraftStore.setChecker(true);
     finesDraftStore.setFragment('to-review');
 
     fixture.detectChanges();

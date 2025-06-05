@@ -92,6 +92,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
+  public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
+
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
    * It searches for a matching status in the FINES_DRAFT_TAB_STATUSES array based on the account status.
