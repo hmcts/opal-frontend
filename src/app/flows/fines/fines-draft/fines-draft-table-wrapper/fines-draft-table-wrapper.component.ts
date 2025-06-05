@@ -40,7 +40,8 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
   }
-  @Input({ required: true }) public isApprovedTab: boolean = false;
+  @Input({ required: false }) public activeTab: string = 'review';
+  @Input({ required: false }) public isApprovedTab: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;
   @Output() public linkClicked = new EventEmitter<number>();
 

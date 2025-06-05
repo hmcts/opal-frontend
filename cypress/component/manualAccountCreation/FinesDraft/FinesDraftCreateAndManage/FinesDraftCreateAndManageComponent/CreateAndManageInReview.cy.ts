@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -12,7 +12,6 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/fines-draft-account.mock
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
-import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTES } from './mocks/create-and-manage-routes-mock';
 import { interceptGetInReviewAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 
 describe('FinesDraftCreateAndManageInReviewComponent', () => {
