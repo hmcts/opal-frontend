@@ -57,7 +57,7 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
     cy.get(DOM_ELEMENTS.table).should('not.exist');
   });
 
-  it.only('(AC.2)Deleted accounts should not appear if deleted 8 or more days ago', { tags: ['@PO-609'] }, () => {
+  it('(AC.2)Deleted accounts should not appear if deleted 8 or more days ago', { tags: ['@PO-609'] }, () => {
     const deletedAccountsMockData = structuredClone(OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK);
 
     interceptGetDeletedAccounts(200, deletedAccountsMockData);
