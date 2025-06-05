@@ -122,7 +122,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
     expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
-  
+
   it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {
     component.activeTab = 'to-review';
 
