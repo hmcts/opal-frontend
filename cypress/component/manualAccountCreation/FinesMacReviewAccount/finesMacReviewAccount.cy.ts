@@ -1269,5 +1269,4 @@ describe('FinesMacReviewAccountComponent', () => {
       );
     },
   );
-
 });
