@@ -76,7 +76,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
         const params: IOpalFinesDraftAccountParams = {
           businessUnitIds: this.businessUnitIds,
           statuses: currentTab?.statuses,
-          submittedBy: this.businessUnitUserIds,
+          notSubmittedBy: this.businessUnitUserIds,
         };
 
         if (currentTab?.historicWindowInDays) {

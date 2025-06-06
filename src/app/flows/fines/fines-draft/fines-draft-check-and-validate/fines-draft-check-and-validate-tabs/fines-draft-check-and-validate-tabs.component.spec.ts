@@ -115,7 +115,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
       statuses: ['Deleted'],
-      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
     });
