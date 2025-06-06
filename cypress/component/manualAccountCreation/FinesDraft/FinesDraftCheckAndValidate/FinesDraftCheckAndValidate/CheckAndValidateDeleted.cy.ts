@@ -9,16 +9,16 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
+import { TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
   interceptCAVGetRejectedAccounts,
   interceptCAVGetToReviewAccounts,
 } from './intercepts/check-and-validate-intercepts';
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
-import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
+import { OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-delete-account.mock';
 
-describe('FinesDraftCheckAndValidateToReviewComponent', () => {
+describe('FinesDraftCheckAndValidateDeleteComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCheckAndValidateTabsComponent, {
@@ -45,82 +45,20 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593', '@PO-600','@PO-602'] }, () => {
-    const emptyMockData = { count: 0, summaries: [] };
-
-    interceptCAVGetRejectedAccounts(200, emptyMockData);
-    interceptCAVGetToReviewAccounts(200, emptyMockData);
-    interceptCAVGetDeletedAccounts(200, emptyMockData);
-
-    setupComponent();
-
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
-
-    cy.get(DOM_ELEMENTS.navigationLinks).each((link, index) => {
-      const expectedLink = NAVIGATION_LINKS[index];
-      cy.wrap(link).should('contain', expectedLink);
-      if (expectedLink === 'To review') {
-        cy.wrap(link).should('have.attr', 'aria-current', 'page');
-      } else {
-        cy.wrap(link).should('not.have.attr', 'aria-current', 'page');
-      }
-    });
-
-    for (const link of NAVIGATION_LINKS) {
-      cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('exist');
-      if (link === 'To review') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'To review');
-        cy.get('p').should('exist').and('contain', 'There are no accounts to review');
-      }
-      //the below two verifications covered as part of PO-593
-      if (link === 'Rejected') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Rejected');
-        cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
-      }
-      if (link === 'Deleted') {
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
-        cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', 'page');
-        cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Deleted');
-        cy.get('p').should('exist').and('contain', 'No accounts have been deleted in the past 7 days.');
-      }
-    }
-  });
-
-  it('(AC.2) should display To review tab correctly when there are zero draft records', { tags: ['@PO-593'] }, () => {
-    const emptyMockData = { count: 0, summaries: [] };
-
-    interceptCAVGetRejectedAccounts(200, emptyMockData);
-    interceptCAVGetToReviewAccounts(200, emptyMockData);
-    interceptCAVGetDeletedAccounts(200, emptyMockData);
-
-    setupComponent();
-
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
-
-    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'To review');
-    cy.get('p').should('exist').and('contain', 'There are no accounts to review');
-    cy.get(DOM_ELEMENTS.table).should('not.exist');
-  });
-
-  it('(AC.3) should display To review tab correctly when there are draft records', { tags: ['@PO-593'] }, () => {
-    const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+  it.only('(AC.3) should display Deleted tab correctly when there are draft records', { tags: ['@PO-602'] }, () => {
+    const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetToReviewAccounts(200, toReviewMockData);
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetDeletedAccounts(200, deletedMockData);
 
     //Get the test user and business unit from the mock data
     const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id;
     const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_id;
 
     setupComponent();
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Deleted');
     cy.get(DOM_ELEMENTS.table).should('exist');
 
     //Ensure the request created by the frontend is correct
@@ -136,15 +74,15 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   });
 
-  it('(AC.4a) should have default sort order for created accounts set to ascending', { tags: ['@PO-593'] }, () => {
-    const toReviewMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
+  it('(AC.4a) should have default sort order for created accounts set to ascending', { tags: ['@PO-602'] }, () => {
+    const deletedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetToReviewAccounts(200, toReviewMockData);
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetDeletedAccounts(200, deletedMockData);
 
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
     cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Created').should('have.attr', 'aria-sort', 'ascending');
 
@@ -193,15 +131,15 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
       });
   });
 
-  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-593'] }, () => {
-    const toReviewMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
+  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-602'] }, () => {
+    const deletedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
-    interceptCAVGetToReviewAccounts(200, toReviewMockData);
-    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetDeletedAccounts(200, deletedMockData);
 
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
     cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
     cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
