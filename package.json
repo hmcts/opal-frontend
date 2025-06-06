@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false; yarn test:opalComponent",
+    "test": "ng test --watch=false",
     "test:coverage": "ng test --no-watch --code-coverage",
     "test:a11y": "echo 'Covered in cypress testing' && exit 0",
     "test:dev:smoke": "TEST_URL=https://localhost:4000/ cypress run --browser chrome --spec 'cypress/e2e/smoke/*-spec.cy.ts' --reporter-options 'mochaFile=smoke-output/dev/test-output-[hash].xml' && yarn test:dev:smoke:combine:reports",
