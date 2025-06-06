@@ -1,24 +1,7 @@
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Are you sure you want to delete this account?</h1>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <opal-lib-govuk-button
-        buttonId="confirmDeletion"
-        buttonClasses="govuk-button--warning"
-        (buttonClickEvent)="handleRoute(createAccountRoute)"
-      >
-        Yes - delete
-      </opal-lib-govuk-button>
-    </div>
-  </div>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <opal-lib-govuk-cancel-link
-        cancelLinkText="No - cancel"
-        (linkClickEvent)="
-          handleRoute(finesMacStore.deleteFromCheckAccount() ? reviewAccountRoute : accountDetailsRoute)
-        "
-      ></opal-lib-govuk-cancel-link>
-    </div>
-  </div>
+  <app-fines-mac-delete-account-confirmation-form
+    (formSubmit)="handleDeleteAccountConfirmationSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    [referer]="referer"
+  ></app-fines-mac-delete-account-confirmation-form>
 </div>

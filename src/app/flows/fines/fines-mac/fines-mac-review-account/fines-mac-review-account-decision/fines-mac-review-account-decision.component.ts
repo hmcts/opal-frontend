@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMacReviewAccountDecisionFormComponent } from './fines-mac-review-account-decision-form/fines-mac-review-account-decision-form.component';
 import { IFinesMacReviewAccountDecisionForm } from './interfaces/fines-mac-review-account-decision-form.interface';
@@ -14,6 +14,7 @@ import { FinesDraftStore } from '../../../fines-draft/stores/fines-draft.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBaseComponent {
+  @Input({ required: true }) public accountId!: number;
   private readonly finesDraftStore = inject(FinesDraftStore);
   private readonly finesRoutes = FINES_ROUTING_PATHS;
   private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;

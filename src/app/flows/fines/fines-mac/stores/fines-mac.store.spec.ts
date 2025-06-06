@@ -24,11 +24,13 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../fines-mac-offence-detail
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from '../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-form.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../fines-mac-payment-terms/mocks/fines-mac-payment-terms-form.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK } from '../fines-mac-delete-account-confirmation/mocks/fines-mac-delete-account-confirmation-form.mock';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
@@ -66,6 +68,7 @@ describe('FinesMacStore', () => {
     expect(store.offenceDetails()).toEqual(FINES_MAC_OFFENCE_DETAILS_FORM);
     expect(store.paymentTerms()).toEqual(FINES_MAC_PAYMENT_TERMS_FORM);
     expect(store.languagePreferences()).toEqual(FINES_MAC_LANGUAGE_PREFERENCES_FORM);
+    expect(store.deleteAccountConfirmation()).toEqual(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM);
     expect(store.businessUnit()).toEqual(FINES_MAC_BUSINESS_UNIT_STATE);
     expect(store.unsavedChanges()).toBe(false);
     expect(store.stateChanges()).toBe(false);
@@ -110,6 +113,7 @@ describe('FinesMacStore', () => {
     store.setUnsavedChanges(false);
     store.setDeleteFromCheckAccount(false);
     store.setBusinessUnitId(businessUnit.business_unit_id);
+    store.setDeleteAccountConfirmation(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK);
 
     expect(store.accountDetails()).toEqual(accountDetails);
     expect(store.businessUnit()).toEqual(businessUnit);
@@ -129,6 +133,7 @@ describe('FinesMacStore', () => {
     expect(store.unsavedChanges()).toBe(false);
     expect(store.deleteFromCheckAccount()).toBe(false);
     expect(store.accountDetails().formData.fm_create_account_business_unit_id).toBe(businessUnit.business_unit_id);
+    expect(store.deleteAccountConfirmation()).toEqual(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK);
   });
 
   it('should reset payment terms and put status to incomplete', () => {
@@ -182,6 +187,7 @@ describe('FinesMacStore', () => {
     expect(store.accountCommentsNotesStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
     expect(store.offenceDetailsStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
     expect(store.paymentTermsStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(store.deleteAccountConfirmationStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
     expect(store.adultOrYouthSectionsCompleted()).toEqual(true);
     expect(store.parentGuardianSectionsCompleted()).toEqual(true);
     expect(store.companySectionsCompleted()).toEqual(true);

@@ -88,6 +88,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public courts!: IOpalFinesCourtRefData;
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 

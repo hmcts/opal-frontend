@@ -174,7 +174,7 @@ export const routing: Routes = [
     resolve: { title: TitleResolver },
   },
   {
-    path: FINES_MAC_ROUTING_PATHS.children.deleteAccountConfirmation,
+    path: `${FINES_MAC_ROUTING_PATHS.children.deleteAccountConfirmation}/:draftAccountId`,
     loadComponent: () =>
       import('../fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component').then(
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
