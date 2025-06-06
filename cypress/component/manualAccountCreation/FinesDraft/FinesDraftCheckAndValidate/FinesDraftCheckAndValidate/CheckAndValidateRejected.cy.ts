@@ -45,31 +45,6 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it.only('(AC.1) Review account is created as per design artefact', { tags: ['@PO-600'] }, () => {
-    const emptyMockData = { count: 0, summaries: [] };
-
-    interceptCAVGetRejectedAccounts(200, emptyMockData);
-    interceptCAVGetToReviewAccounts(200, emptyMockData);
-    interceptCAVGetDeletedAccounts(200, emptyMockData);
-
-    setupComponent();
-
-    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
-
-    cy.get(DOM_ELEMENTS.navigationLinks).each((link, index) => {
-      const expectedLink = NAVIGATION_LINKS[index];
-      cy.wrap(link).should('contain', expectedLink);
-      if (expectedLink === 'Rejected') {
-        cy.wrap(link).should('have.attr', 'aria-current', 'page');
-      } else {
-        cy.wrap(link).should('not.have.attr', 'aria-current', 'page');
-      }
-    });
-
-    cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'Rejected');
-    cy.get('p').should('exist').and('contain', 'There are no rejected accounts');
-  });
-
   it('(AC.2) should display rejected tab correctly when there are zero draft records', { tags: ['@PO-600'] }, () => {
     const emptyMockData = { count: 0, summaries: [] };
 

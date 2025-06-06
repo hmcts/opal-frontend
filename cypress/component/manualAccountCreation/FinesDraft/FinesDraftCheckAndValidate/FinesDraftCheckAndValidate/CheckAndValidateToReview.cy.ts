@@ -45,7 +45,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593'] }, () => {
+  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593','@PO-600'] }, () => {
     const emptyMockData = { count: 0, summaries: [] };
 
     interceptCAVGetRejectedAccounts(200, emptyMockData);
