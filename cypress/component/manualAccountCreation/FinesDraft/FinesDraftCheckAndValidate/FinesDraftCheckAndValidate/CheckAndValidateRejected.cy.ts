@@ -18,7 +18,7 @@ import {
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
-describe('FinesDraftCheckAndValidateToReviewComponent', () => {
+describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCheckAndValidateTabsComponent, {

@@ -39,7 +39,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
           },
         ],
         componentProperties: {
-          activeTab: 'to-review',
+  
         },
       });
     });
