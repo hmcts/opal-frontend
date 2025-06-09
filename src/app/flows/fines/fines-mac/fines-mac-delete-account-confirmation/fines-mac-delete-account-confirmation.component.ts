@@ -158,9 +158,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    */
   private setReferrer(): string {
     if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
-    
-    return this.finesMacStore.deleteFromCheckAccount()
-    ? this.reviewAccountRoute
-    : this.accountDetailsRoute;
+
+    return this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
   }
 }
