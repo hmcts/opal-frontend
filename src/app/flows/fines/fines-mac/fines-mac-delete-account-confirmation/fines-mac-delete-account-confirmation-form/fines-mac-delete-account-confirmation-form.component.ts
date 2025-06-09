@@ -85,7 +85,6 @@ export class FinesMacDeleteAccountConfirmationFormComponent
     if (this.accountId) {
       super.handleFormSubmit(event);
     } else {
-      
       this.handleRoute(this.fineMacRoutingPaths.children.createAccount);
     }
   }
