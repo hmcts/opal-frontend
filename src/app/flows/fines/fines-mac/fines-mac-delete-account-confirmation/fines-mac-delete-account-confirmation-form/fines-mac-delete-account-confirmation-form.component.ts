@@ -85,7 +85,7 @@ export class FinesMacDeleteAccountConfirmationFormComponent
     if (this.accountId) {
       super.handleFormSubmit(event);
     } else {
-      this.finesMacStore.resetFinesMacStore();
+      
       this.handleRoute(this.fineMacRoutingPaths.children.createAccount);
     }
   }
