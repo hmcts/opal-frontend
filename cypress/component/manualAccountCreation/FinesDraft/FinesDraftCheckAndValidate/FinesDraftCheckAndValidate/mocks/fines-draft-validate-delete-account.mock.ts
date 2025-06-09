@@ -24,7 +24,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAcco
     },
     {
       draft_account_id: 102,
-      created_at: '2025-05-29T11:30:00Z',
+      created_at: '2025-06-07T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
       account_snapshot: {

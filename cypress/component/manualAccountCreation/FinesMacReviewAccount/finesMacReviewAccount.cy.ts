@@ -1226,7 +1226,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     },
   );
-  it.only('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
     cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
@@ -1235,7 +1235,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
   });
 
-  it.only('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
     cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
@@ -1243,13 +1243,13 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.continue).should('exist');
     cy.get(DOM_ELEMENTS.deleteLink).should('exist');
   });
-  it.only('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
+  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
     cy.get(DOM_ELEMENTS.continue).should('exist').click();
     cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
     cy.get('p').should('contain', 'Select whether approved or rejected');
   });
-  it.only(
+  it(
     'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
     { tags: ['@PO-594'] },
     () => {
