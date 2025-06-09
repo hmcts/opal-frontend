@@ -1,7 +1,7 @@
 <h1 class="govuk-heading-l">
   {{ defendantName }}
 </h1>
-<opal-lib-govuk-tag [tagClasses]="isRejected ? 'govuk-tag govuk-tag--red' : 'govuk-tag'" tagId="status">{{
+<opal-lib-govuk-tag [tagClasses]="isRejected || accountStatus === 'Deleted' ? 'govuk-tag govuk-tag--red' : 'govuk-tag'" tagId="status">{{
   accountStatus
 }}</opal-lib-govuk-tag>
 <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>

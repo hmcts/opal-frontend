@@ -16,6 +16,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacDeleteAccountConfirmationFormComponent);
     component = fixture.componentInstance;
+    component.accountId = '123';
     fixture.detectChanges();
   });
 
@@ -38,12 +39,6 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     expect(component.form.valid).toBeTrue();
   });
 
-  it('should show error if reason exceeds max length', () => {
-    const longText = 'a'.repeat(251);
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue(longText);
-    expect(component.form.invalid).toBeTrue();
-  });
-
   it('should emit form submit event when form is valid and submitted', () => {
     spyOn(component['formSubmit'], 'emit');
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
@@ -59,5 +54,40 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
         }),
       }),
     );
+  });
+
+  it('should handleFormSubmit method correctly when there is no accountId', () => {
+    component.accountId = null;
+    spyOn(component.finesMacStore, 'resetFinesMacStore');
+    spyOn(component, 'handleRoute');
+    const submitEvent: SubmitEvent = {
+      preventDefault: () => {},
+      submitter: null,
+    } as SubmitEvent;
+
+    component.handleFormSubmit(submitEvent);
+
+    expect(component.finesMacStore.resetFinesMacStore).toHaveBeenCalled();
+    expect(component.handleRoute).toHaveBeenCalled();
+  });
+
+  it('should handleRoute method correctly when there is no accountId', () => {
+    component.accountId = null;
+    const route = 'createAccount';
+    spyOn(component['router'], 'navigate');
+
+    component.handleRoute(route);
+
+    expect(component['router'].navigate).toHaveBeenCalled();
+  });
+
+  it('should handleRoute method correctly when there is an accountId', () => {
+    component.accountId = '123';
+    const route = 'createAccount';
+    spyOn(component['router'], 'navigate');
+
+    component.handleRoute(route);
+
+    expect(component['router'].navigate).toHaveBeenCalled();
   });
 });

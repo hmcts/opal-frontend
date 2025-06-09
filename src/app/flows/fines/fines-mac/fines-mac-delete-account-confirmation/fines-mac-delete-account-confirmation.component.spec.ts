@@ -142,7 +142,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     expect(component['handleRequestError']).toHaveBeenCalled();
   });
 
-  it('should set referer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
+  it('should set referrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
     spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(true);
 
     // Need to destroy and recreate the component to re-run constructor logic
@@ -151,12 +151,56 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    // The referer should now be set to reviewAccountRoute
-    expect(component.referer).toBe(component['reviewAccountRoute']);
+    // The referrer should now be set to reviewAccountRoute
+    expect(component.referrer).toBe(component['reviewAccountRoute']);
   });
 
-  it('should set referer to accountDetailsRoute when deleteFromCheckAccount is false', () => {
-    // Already set in beforeEach, but test explicitly
-    expect(component.referer).toBe(component['accountDetailsRoute']);
+  it('should set referrer to accountDetailsRoute when deleteFromCheckAccount is false', () => {
+    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(false);
+    expect(component.referrer).toBe(component['accountDetailsRoute']);
+  });
+
+  it('should create a patch payload', () => {
+    component['userState'].name = 'Test User';
+    const form = {
+      ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
+    };
+    form.formData = { fm_delete_account_confirmation_reason: 'Test reason' };
+    const payload = component['createPatchPayload'](form);
+    expect(payload).toEqual({
+      validated_by: null,
+      account_status: 'Deleted',
+      validated_by_name: null,
+      business_unit_id: finesMacStore.getBusinessUnitId(),
+      version: finesDraftStore.getFinesDraftState().version,
+      timeline_data: [
+        {
+          username: 'Test User',
+          status: 'Deleted',
+          status_date: '2024-01-01',
+          reason_text: 'Test reason',
+        },
+      ],
+    });
+  });
+
+  it('should setReferrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {
+    spyOn(finesDraftStore, 'checker').and.returnValue(false);
+    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(true);
+    component.referrer = component['setReferrer']();
+    expect(component.referrer).toBe(component['reviewAccountRoute']);
+  });
+
+  it('should setReferrer to accountDetailsRoute when deleteFromCheckAccount is false', () => {
+    spyOn(finesDraftStore, 'checker').and.returnValue(false);
+    spyOn(finesMacStore, 'deleteFromCheckAccount').and.returnValue(false);
+    component.referrer = component['setReferrer']();
+    expect(component.referrer).toBe(component['accountDetailsRoute']);
+  });
+
+  it('should setReferrer to reviewAccountRoute when user is a checker', () => {
+    spyOn(finesDraftStore, 'checker').and.returnValue(true);
+    component.referrer = component['setReferrer']();
+    expect(component.referrer).toBe(component['reviewAccountRoute']);
   });
 });

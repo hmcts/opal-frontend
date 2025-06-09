@@ -40,7 +40,8 @@ export class FinesMacDeleteAccountConfirmationFormComponent
   extends AbstractFormBaseComponent
   implements OnInit, OnDestroy
 {
-  @Input({ required: true }) public referer!: string;
+  @Input({ required: true }) public referrer!: string;
+  @Input({ required: true }) public accountId!: string | null;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacDeleteAccountConfirmationForm>();
 
   public readonly finesMacStore = inject(FinesMacStore);
@@ -74,7 +75,33 @@ export class FinesMacDeleteAccountConfirmationFormComponent
   }
 
   public override ngOnInit(): void {
-    this.initialDeleteAccountConfirmationSetup();
-    super.ngOnInit();
+    if (this.accountId) {
+      this.initialDeleteAccountConfirmationSetup();
+      super.ngOnInit();
+    }
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    if (this.accountId) {
+      super.handleFormSubmit(event);
+    } else {
+      this.finesMacStore.resetFinesMacStore();
+      this.handleRoute(this.fineMacRoutingPaths.children.createAccount);
+    }
+  }
+
+  public override ngOnDestroy(): void {
+    if (this.accountId) {
+      super.ngOnDestroy();
+    }
+  }
+
+  public override handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+    if (this.accountId) {
+      route = `${route}/${this.accountId}`;
+      super.handleRoute(route, nonRelative, event);
+    } else {
+      this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
+    }
   }
 }

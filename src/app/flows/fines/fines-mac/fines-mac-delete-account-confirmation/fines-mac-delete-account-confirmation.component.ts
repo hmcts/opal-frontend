@@ -37,10 +37,8 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
-  public readonly referer = this.finesMacStore.deleteFromCheckAccount()
-    ? this.reviewAccountRoute
-    : this.accountDetailsRoute;
-  private accountId = this.route.snapshot.paramMap.get('draftAccountId');
+  public accountId = this.route.snapshot.paramMap.get('draftAccountId');
+  public referrer = this.setReferrer();
 
   private readonly finesRoutes = FINES_ROUTING_PATHS;
   private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
@@ -58,15 +56,26 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * @returns void
    */
   public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
-    const reason_text = form.formData.fm_delete_account_confirmation_reason;
     this.finesMacStore.setDeleteAccountConfirmation(form);
+    const payload = this.createPatchPayload(form);
+    this.handlePatchRequest(payload);
+  }
+
+  /**
+   * Creates the payload for the PATCH request to delete an account.
+   *
+   * @param form - The form data for the account comments and notes.
+   * @returns {IFinesMacPatchAccountPayload} The payload containing the account information to be patched.
+   */
+  private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IFinesMacPatchAccountPayload {
+    const reason_text = form.formData.fm_delete_account_confirmation_reason;
     const { version, timeline_data } = this.finesDraftStore.getFinesDraftState();
     const status_date = this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd');
     const status = 'Deleted';
     const username = this.userState.name;
     const business_unit_id = this.finesMacStore.getBusinessUnitId();
 
-    const payload: IFinesMacPatchAccountPayload = {
+    return {
       validated_by: null,
       account_status: status,
       validated_by_name: null,
@@ -74,8 +83,6 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       version,
       timeline_data: [...timeline_data, { username, status, status_date, reason_text }],
     };
-
-    this.handlePatchRequest(payload);
   }
 
   /**
@@ -142,5 +149,18 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /**
+   * Sets the referrer for the delete account confirmation page.
+   *
+   * @returns {string} The referrer path to navigate back to the review account page.
+   */
+  private setReferrer(): string {
+    if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
+    
+    return this.finesMacStore.deleteFromCheckAccount()
+    ? this.reviewAccountRoute
+    : this.accountDetailsRoute;
   }
 }
