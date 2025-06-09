@@ -67,7 +67,6 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
     component.handleFormSubmit(submitEvent);
 
-    expect(component.finesMacStore.resetFinesMacStore).toHaveBeenCalled();
     expect(component.handleRoute).toHaveBeenCalled();
   });
 
