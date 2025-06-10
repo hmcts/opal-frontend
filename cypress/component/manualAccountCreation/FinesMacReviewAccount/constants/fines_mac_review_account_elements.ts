@@ -100,4 +100,14 @@ export const DOM_ELEMENTS = {
   timeLineTitle: 'h2.moj-timeline__title',
   timelineAuthor: 'p.moj-timeline__byline',
   timelineDate: 'p.moj-timeline__date',
+
+  accountStatus: 'strong[id="status"]',
+  timeLineStatus: 'h2.moj-timeline__title',
+
+  //Decision section
+  approveRadioButton: 'input[id="approve"]',
+  rejectRadioButton: 'input[id="reject"]',
+  rejectionText: 'h1.govuk-label-wrapper',
+  continue: 'button[id = "submitForm"]',
+  textArea: 'textarea[id="fm_review_account_decision_reason"]',
 };
