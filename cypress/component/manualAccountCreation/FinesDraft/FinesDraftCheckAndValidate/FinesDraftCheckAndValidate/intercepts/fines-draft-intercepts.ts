@@ -17,7 +17,7 @@ export function interceptGetRejectedAccounts(statusCode: number, responseBody: a
       statusCode: statusCode,
       body: responseBody,
     },
-  ).as('getToReviewAccounts');
+  ).as('getToRejectedAccounts');
 }
 
 export function interceptGetDeletedAccounts(statusCode: number, responseBody: any) {
@@ -28,5 +28,6 @@ export function interceptGetDeletedAccounts(statusCode: number, responseBody: an
       statusCode: statusCode,
       body: responseBody,
     },
-  ).as('getToReviewAccounts');
+  ).as('getDeletedAccounts');
 }
+
