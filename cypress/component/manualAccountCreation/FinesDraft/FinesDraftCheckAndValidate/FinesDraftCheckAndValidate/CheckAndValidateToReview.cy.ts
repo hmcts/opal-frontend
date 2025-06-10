@@ -45,7 +45,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     });
   };
 
-  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593'] }, () => {
+  it('(AC.1) Review account is created as per design artefact', { tags: ['@PO-593', '@PO-600'] }, () => {
     const emptyMockData = { count: 0, summaries: [] };
 
     interceptCAVGetRejectedAccounts(200, emptyMockData);
@@ -74,6 +74,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
         cy.get(DOM_ELEMENTS.statusHeading).should('have.text', 'To review');
         cy.get('p').should('exist').and('contain', 'There are no accounts to review');
       }
+      //the below two verifications covered as part of PO-593
       if (link === 'Rejected') {
         cy.get(DOM_ELEMENTS.navigationLinks).contains(link).should('have.attr', 'aria-current', '');
         cy.get(DOM_ELEMENTS.navigationLinks).contains(link).click();
