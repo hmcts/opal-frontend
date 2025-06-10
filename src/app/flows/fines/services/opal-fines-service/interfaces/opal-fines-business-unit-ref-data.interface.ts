@@ -11,7 +11,7 @@ export interface IOpalFinesBusinessUnit {
   opal_domain: null | string;
   business_unit_id: number;
   business_unit_name: string;
-  configurationItems: IOpalFinesBusinessUnitConfigurationItems[];
+  configuration_items: IOpalFinesBusinessUnitConfigurationItems[];
   welsh_language: boolean | null;
 }
 
