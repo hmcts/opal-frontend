@@ -126,6 +126,4 @@ Then('I see {string} on the status heading',(expectedStatus:string) => {
 Then('I see success message on the banner {string}',(expectedMessage:string) => {
   cy.get('div[id="success-message"]').should('exist').and('contain',expectedMessage)
 })
-Then('I click on {string} tab',(tabName:string) => {
-  cy.get('[class="moj-sub-navigation__item"]').should('exist').and('contain',tabName).click();
-})
+
