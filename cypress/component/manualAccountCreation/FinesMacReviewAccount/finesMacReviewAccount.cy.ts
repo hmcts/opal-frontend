@@ -1270,8 +1270,5 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
 
-  //PO-969
-  it('AC.1b, AC.1bi update draft account and get the record', () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
-  })
+ 
 });
