@@ -9,7 +9,6 @@ import {
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-header';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -44,7 +43,6 @@ describe('AppComponent - browser', () => {
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
-        MojBannerComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
@@ -218,7 +216,6 @@ describe('AppComponent - server', () => {
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
-        MojBannerComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
