@@ -38,9 +38,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
             },
           },
         ],
-        componentProperties: {
-  
-        },
+        componentProperties: {},
       });
     });
   };

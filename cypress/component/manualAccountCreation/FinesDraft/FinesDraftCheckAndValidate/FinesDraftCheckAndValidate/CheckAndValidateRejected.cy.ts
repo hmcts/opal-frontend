@@ -19,7 +19,6 @@ import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_d
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
 describe('FinesDraftCheckAndValidateRejectedComponent', () => {
-
   const setupComponent = () => {
     cy.then(() => {
       mount(FinesDraftCheckAndValidateTabsComponent, {
@@ -63,7 +62,6 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   });
 
   it('(AC.3) should display Rejected tab correctly when there are draft records', { tags: ['@PO-600'] }, () => {
-
     const rejectedMockData = structuredClone(OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, rejectedMockData);
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });

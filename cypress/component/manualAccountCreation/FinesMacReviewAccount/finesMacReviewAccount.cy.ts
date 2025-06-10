@@ -801,22 +801,18 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
     },
   );
-  it(
-    '(AC.2,AC,3a,AC.3bi) should show in review for accounts in review',
-    { tags: ['@PO-610', '@PO-584'] },
-    () => {
-      setupComponent(finesAccountPayload, finesAccountPayload);
+  it('(AC.2,AC,3a,AC.3bi) should show in review for accounts in review', { tags: ['@PO-610', '@PO-584'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload);
 
-      cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
-      cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
-      cy.get(DOM_ELEMENTS.status).contains('In review').should('exist');
-      cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
-      cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
-      cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
-      cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
-    },
-  );
+    cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+    cy.get(DOM_ELEMENTS.status).contains('In review').should('exist');
+    cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
+    cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+    cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+  });
 
   it(
     'should not load review component if account is not in review and should load normal Check account details heading',
@@ -828,39 +824,35 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
 
-  it(
-    '(AC.3bii,AC.3biii,AC.3c)should show history of timeline data',
-    { tags: ['@PO-610', '@PO-584'] },
-    () => {
-      finesAccountPayload.timeline_data.push({
-        username: 'Timmy Test',
-        status: 'Rejected',
-        status_date: '2023-07-05',
-        reason_text: null,
-      });
-      finesAccountPayload.timeline_data.push({
-        username: 'Timmy Test',
-        status: 'Submitted',
-        status_date: '2023-07-07',
-        reason_text: null,
-      });
+  it('(AC.3bii,AC.3biii,AC.3c)should show history of timeline data', { tags: ['@PO-610', '@PO-584'] }, () => {
+    finesAccountPayload.timeline_data.push({
+      username: 'Timmy Test',
+      status: 'Rejected',
+      status_date: '2023-07-05',
+      reason_text: null,
+    });
+    finesAccountPayload.timeline_data.push({
+      username: 'Timmy Test',
+      status: 'Submitted',
+      status_date: '2023-07-07',
+      reason_text: null,
+    });
 
-      setupComponent(finesAccountPayload, finesAccountPayload, true);
+    setupComponent(finesAccountPayload, finesAccountPayload, true);
 
-      cy.get(DOM_ELEMENTS.timeLine).should('exist');
-      const timelineEntries = [
-        { title: 'Submitted', author: 'by Timmy Test', date: '03 July 2023' },
-        { title: 'Rejected', author: 'by Timmy Test', date: '05 July 2023' },
-        { title: 'Submitted', author: 'by Timmy Test', date: '07 July 2023' },
-      ];
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    const timelineEntries = [
+      { title: 'Submitted', author: 'by Timmy Test', date: '03 July 2023' },
+      { title: 'Rejected', author: 'by Timmy Test', date: '05 July 2023' },
+      { title: 'Submitted', author: 'by Timmy Test', date: '07 July 2023' },
+    ];
 
-      timelineEntries.forEach((entry) => {
-        cy.get(DOM_ELEMENTS.timeLineTitle).contains(entry.title).should('exist');
-        cy.get(DOM_ELEMENTS.timelineAuthor).contains(entry.author).should('exist');
-        cy.get(DOM_ELEMENTS.timelineDate).contains(entry.date).should('exist');
-      });
-    },
-  );
+    timelineEntries.forEach((entry) => {
+      cy.get(DOM_ELEMENTS.timeLineTitle).contains(entry.title).should('exist');
+      cy.get(DOM_ELEMENTS.timelineAuthor).contains(entry.author).should('exist');
+      cy.get(DOM_ELEMENTS.timelineDate).contains(entry.date).should('exist');
+    });
+  });
 
   it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-610', '@PO-584'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);

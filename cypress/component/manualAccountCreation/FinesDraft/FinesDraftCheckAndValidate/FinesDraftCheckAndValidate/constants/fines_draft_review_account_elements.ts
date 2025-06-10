@@ -111,6 +111,4 @@ export const DOM_ELEMENTS = {
   rejectionText: 'h1.govuk-label-wrapper',
   continue: 'button[id = "submitForm"]',
   textArea: 'textarea[id="fm_review_account_decision_reason"]',
-
-
 };
