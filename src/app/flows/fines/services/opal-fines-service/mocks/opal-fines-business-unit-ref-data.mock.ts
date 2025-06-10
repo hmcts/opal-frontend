@@ -10,7 +10,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Fines',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item1',
           item_value: 'Item1',
@@ -26,7 +26,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Fines',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item2',
           item_value: 'Item2',
@@ -42,7 +42,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Confiscation',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item3',
           item_value: 'Item3',
@@ -58,7 +58,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Fines',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item4',
           item_value: 'Item4',
@@ -74,7 +74,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Fines',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item5',
           item_value: 'Item5',
@@ -90,7 +90,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'Fines',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item6',
           item_value: 'Item6',
@@ -106,7 +106,7 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       business_unit_type: 'Accounting Division',
       account_number_prefix: null,
       opal_domain: 'RM',
-      configurationItems: [
+      configuration_items: [
         {
           item_name: 'Item7',
           item_value: 'Item7',
