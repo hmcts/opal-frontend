@@ -32,7 +32,6 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
     MojAlertTextComponent,
     MojAlertIconComponent,
     GovukFooterComponent,
-
   ],
   templateUrl: './app.component.html',
 })
