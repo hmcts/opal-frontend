@@ -5,6 +5,8 @@ import { IFinesMacPayloadAccountSnapshot } from '../../fines-mac/services/fines-
 import { FINES_DRAFT_STATE } from '../constants/fines-draft-state.constant';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { computed } from '@angular/core';
+import { FINES_DRAFT_BANNER_MESSAGES } from './constants/fines-draft-store-banner-messages.constant';
+import { FinesDraftBannerType } from './types/fines-draft-banner.type';
 
 export const FinesDraftStore = signalStore(
   { providedIn: 'root' },
@@ -37,6 +39,16 @@ export const FinesDraftStore = signalStore(
   withComputed((store) => ({
     getAccountStatus: computed(() => {
       return store.account_status() ?? '';
+    }),
+    getDefendantName: computed(() => {
+      if (
+        store.account().defendant_type === 'adultOrYouthOnly' ||
+        store.account().defendant_type === 'parentOrGuardianToPay'
+      ) {
+        return `${store.account().defendant.forenames} ${store.account().defendant.surname}`;
+      } else {
+        return `${store.account().defendant.company_name}`;
+      }
     }),
   })),
   withMethods((store) => ({
@@ -138,6 +150,11 @@ export const FinesDraftStore = signalStore(
     },
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });
+    },
+    setBannerMessageByType: (bannerType: FinesDraftBannerType, name?: string) => {
+      const messageFn = FINES_DRAFT_BANNER_MESSAGES[bannerType];
+      if (!messageFn) return;
+      patchState(store, { bannerMessage: messageFn(name) });
     },
     setBannerMessage: (bannerMessage: string) => {
       patchState(store, { bannerMessage });

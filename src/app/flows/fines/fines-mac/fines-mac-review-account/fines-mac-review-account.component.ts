@@ -195,18 +195,19 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Processes the response from a PUT request and updates the state accordingly.
+   * Handles the response from a PUT request to add or update a fines MAC account.
    *
-   * @param response - The response payload from the PUT request containing account details.
-   * @param response.account_snapshot - Snapshot of the account details.
-   * @param response.account_snapshot.defendant_name - The name of the defendant associated with the account.
+   * This method performs the following actions:
+   * - Retrieves the defendant's name from the response payload.
+   * - Sets a banner message indicating the submission, using the defendant's name.
+   * - Resets any unsaved state changes in the fines MAC store.
+   * - Navigates to the "Create and Manage" tabs route, preserving the current fragment.
    *
-   * Updates the fines draft banner message with the defendant's name, sets the state changes and unsaved changes flags to false,
-   * and handles routing to the inputter route.
+   * @param response - The payload returned from the PUT request, containing account and defendant information.
    */
   private processPutResponse(response: IFinesMacAddAccountPayload): void {
-    const accountName = response.account_snapshot?.defendant_name;
-    this.finesDraftStore.setBannerMessage(`You have submitted ${accountName}'s account for review`);
+    const defendantName = this.finesMacPayloadService.getDefendantName(response);
+    this.finesDraftStore.setBannerMessageByType('submitted', defendantName);
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
     this.handleRoute(

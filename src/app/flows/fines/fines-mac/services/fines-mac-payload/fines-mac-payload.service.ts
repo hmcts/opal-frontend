@@ -283,4 +283,25 @@ export class FinesMacPayloadService {
 
     return finesMacState;
   }
+
+  /**
+   * Returns the defendant's name based on the defendant type in the provided payload.
+   *
+   * - If the defendant type is 'adultOrYouthOnly' or 'parentOrGuardianToPay', the name is constructed
+   *   from the defendant's forenames and surname.
+   * - Otherwise, the company name is returned.
+   *
+   * @param payload - The payload containing account and defendant information.
+   * @returns The defendant's full name or company name as a string.
+   */
+  public getDefendantName(payload: IFinesMacAddAccountPayload): string {
+    if (
+      payload.account.defendant_type === 'adultOrYouthOnly' ||
+      payload.account.defendant_type === 'parentOrGuardianToPay'
+    ) {
+      return `${payload.account.defendant.forenames} ${payload.account.defendant.surname}`;
+    } else {
+      return `${payload.account.defendant.company_name}`;
+    }
+  }
 }
