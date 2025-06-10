@@ -15,6 +15,7 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
   submittedBy: 'td[id = "submittedBy"]',
+  deleted: 'td[id = "changedDate"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
 
