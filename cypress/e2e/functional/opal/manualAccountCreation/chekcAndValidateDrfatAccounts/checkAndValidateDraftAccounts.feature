@@ -5,7 +5,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I am on the dashboard
 
     @PO-594
-    Scenario: AC.1, AC.8ci, AC.8d, Ac.9 view the details of an account in review account screen
+    Scenario: AC.1, AC.8ci view the details of an account in review account screen when user approves then continues
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -32,7 +32,7 @@ Feature: Navigate and edit sections from task list of draft accounts
 
 
     @PO-594
-    Scenario: AC.8ci, AC.8d, Ac.9 view the details of an account in review account screen
+    Scenario: AC.8ci, Ac.9 view the details of an account in review account screen when user selects reject radio button with reason
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -65,7 +65,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         And I see "Review accounts" on the page header
 
     @PO-594
-    Scenario: AC.8ci, AC.8d, Ac.9 view the details of an account in review account screen
+    Scenario: AC.8d when user selects delete button
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -90,7 +90,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I see "Are you sure you want to delete this account?" on the page header
 
     @PO-969
-    Scenario: AC.1,  Selecting both reject radio button and providing reason
+    Scenario: AC.1 When user selecting reject radio button with providing reason and continues
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                |
