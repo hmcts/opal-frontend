@@ -1,15 +1,15 @@
 @if (finesMacOffenceDetailsStore.minorCreditorAdded()) {
   <opal-lib-moj-alert type="success" ariaLabel="Minor creditor added">
-    <opal-lib-moj-alert-icon type="success"></opal-lib-moj-alert-icon>
-    <opal-lib-moj-alert-content>
+    <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+    <opal-lib-moj-alert-content content>
       <opal-lib-moj-alert-content-text> Minor creditor added successfully. </opal-lib-moj-alert-content-text>
     </opal-lib-moj-alert-content>
   </opal-lib-moj-alert>
 }
 @if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
   <opal-lib-moj-alert type="success" ariaLabel="Offence code message">
-    <opal-lib-moj-alert-icon type="success"></opal-lib-moj-alert-icon>
-    <opal-lib-moj-alert-content>
+    <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+    <opal-lib-moj-alert-content content>
       <opal-lib-moj-alert-content-text>{{
         finesMacOffenceDetailsStore.offenceCodeMessage()
       }}</opal-lib-moj-alert-content-text>

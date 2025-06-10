@@ -33,8 +33,8 @@
 
         @if (showExpiredWarning) {
           <div opal-lib-moj-alert ariaLabel="Your session has expired" type="warning">
-            <opal-lib-moj-alert-icon type="warning"></opal-lib-moj-alert-icon>
-            <opal-lib-moj-alert-content
+            <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+            <opal-lib-moj-alert-content content
               ><opal-lib-moj-alert-content-text
                 >"Warning: Your session has expired. Please log back in.
               </opal-lib-moj-alert-content-text>
@@ -44,8 +44,8 @@
 
         @if (globalStore.authenticated() && globalStore.error().error) {
           <div opal-lib-moj-alert ariaLabel="Authentication Message" type="warning">
-            <opal-lib-moj-alert-icon type="warning"></opal-lib-moj-alert-icon>
-            <opal-lib-moj-alert-content
+            <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+            <opal-lib-moj-alert-content content
               ><opal-lib-moj-alert-content-text>{{ globalStore.error().message }} </opal-lib-moj-alert-content-text>
             </opal-lib-moj-alert-content>
           </div>
