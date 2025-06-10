@@ -3,7 +3,7 @@ import { FinesDraftCheckAndValidateTabsComponent } from './fines-draft-check-and
 import { ActivatedRoute } from '@angular/router';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { of, take } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -22,11 +22,14 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let globalStore: GlobalStoreType;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let finesDraftService: jasmine.SpyObj<FinesDraftService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
+  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
-    const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
-      jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
+    mockFinesMacPayloadService = jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', [
+      'mapAccountPayload',
+    ]);
 
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearDraftAccountsCache']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
@@ -36,9 +39,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       'populateTableData',
     ]);
 
-    const mockDateService: jasmine.SpyObj<DateService> = jasmine.createSpyObj<DateService>('DateService', [
+    mockDateService = jasmine.createSpyObj<DateService>('DateService', [
       'getDaysAgo',
       'getFromFormatToFormat',
+      'getDateRange',
     ]);
 
     await TestBed.configureTestingModule({
@@ -87,6 +91,38 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       expect(data).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
       done();
     });
+  });
+
+  it('should pass additional params for historicWindowInDays if set on this tab', async () => {
+    mockDateService.getDateRange.and.returnValue({
+      from: '2023-01-01',
+      to: '2023-01-07',
+    });
+    finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+    component.activatedRoute.fragment = of('deleted');
+    component.activatedRoute.snapshot.data = {
+      draftAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+      deletedCount: 2,
+    };
+
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+    fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.ngOnInit();
+
+    const tabData = await firstValueFrom(component.tabData$);
+    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      statuses: ['Deleted'],
+      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      accountStatusDateFrom: ['2023-01-01'],
+      accountStatusDateTo: ['2023-01-07'],
+    });
+
+    expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 
   it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {

@@ -83,7 +83,7 @@
     >
       Business unit
     </th>
-    @if (isChecker) {
+    @if (isChecker && activeTab !== 'deleted') {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="Submitted by"
@@ -132,7 +132,7 @@
         }
         <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
         <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-        @if (isChecker) {
+        @if (isChecker && activeTab !== 'deleted') {
           <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
         }
       </tr>
