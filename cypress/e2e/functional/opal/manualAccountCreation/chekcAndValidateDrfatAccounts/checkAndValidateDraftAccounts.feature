@@ -54,9 +54,9 @@ Feature: Navigate and edit sections from task list of draft accounts
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
-            | account.defendant.forenames             | Larry                     |
-            | account.defendant.surname               | Lincoln                   |
-            | account.defendant.email_address_1       | larry.lincoln@outlook.com |
+            | account.defendant.forenames             | Harry                     |
+            | account.defendant.surname               | Potter                   |
+            | account.defendant.email_address_1       | harry.potter@outlook.com |
             | account.defendant.telephone_number_home | 02078219385               |
 
         Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
