@@ -24,14 +24,6 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED: IFinesDraftTableWrapperTabl
 };
 
 export const FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED: IFinesDraftTableWrapperTableSort = {
-  Account: 'none',
-  Defendant: 'none',
-  'Date of birth': 'none',
-  Created: 'none',
-  CreatedDate: 'none',
-  Changed: 'none',
+  ...FINES_DRAFT_TABLE_WRAPPER_SORT_BASE,
   ChangedDate: 'ascending',
-  'Account type': 'none',
-  'Business unit': 'none',
-  'Submitted by': 'none',
 };
