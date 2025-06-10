@@ -20,4 +20,5 @@ export const DOM_ELEMENTS = {
 
   accountStatus: 'strong[id="status"]',
   reviewHistory: 'h3.govuk-heading-m govuk-!-margin-top-4',
+  reviewComponent: 'app-fines-mac-review-account-history',
 };

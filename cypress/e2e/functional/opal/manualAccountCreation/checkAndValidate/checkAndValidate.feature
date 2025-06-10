@@ -820,7 +820,7 @@ Feature: Navigate and edit sections from task list
     When I click the "Check account" button
     And I click the "Submit for review" button
 
-  @PO-610 @only
+  @PO-610 
   Scenario: View the details of an account in review
     And I create a "adultOrYouthOnly" draft account with the following details:
       | Account_status                          | Submitted                 |
@@ -858,3 +858,6 @@ Feature: Navigate and edit sections from task list
     And I see the following in the "Account comments and notes" table:
       | Comment      | — |
       | Account note | — |
+
+     
+
