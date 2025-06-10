@@ -3,6 +3,23 @@ export const DOM_ELEMENTS = {
   heading: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
 
+  //Alerts
+  errorBanner: 'app-fines-mac-review-account-failed-banner',
+
+  //Summary cards
+  summaryCard: 'opal-lib-govuk-summary-card-list',
+
+  courtsSummaryCard: 'app-fines-mac-review-account-court-details',
+  personalDetailsSummaryCard: 'app-fines-mac-review-account-personal-details',
+  contactDetailsSummaryCard: 'app-fines-mac-review-account-contact-details',
+  employerDetailsSummaryCard: 'app-fines-mac-review-account-employer-details',
+  offenceDetailsSummaryCard: 'app-fines-mac-review-account-offence-details',
+  paymentTermsSummaryCard: 'app-fines-mac-review-account-payment-terms',
+  accountCommentsAndNotesSummaryCard: 'app-fines-mac-review-account-comments-notes',
+  languagePreferencesSummaryCard: 'app-fines-mac-review-account-language-preferences',
+  parentGuardianDetailsSummaryCard: 'app-fines-mac-review-account-parent-guardian-details',
+  companyDetailsSummaryCard: 'app-fines-mac-review-account-company-details',
+
   //Account details
   businessUnitData: 'div[id = "accountDetailsBusinessUnit"]',
   accountTypeData: 'div[id = "accountDetailsAccountType"]',
@@ -100,6 +117,7 @@ export const DOM_ELEMENTS = {
   timeLineTitle: 'h2.moj-timeline__title',
   timelineAuthor: 'p.moj-timeline__byline',
   timelineDate: 'p.moj-timeline__date',
+  timelineDescription: '.moj-timeline__description',
 
   accountStatus: 'strong[id="status"]',
   timeLineStatus: 'h2.moj-timeline__title',
