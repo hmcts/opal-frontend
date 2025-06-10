@@ -201,7 +201,7 @@ describe('FinesMacPayloadService', () => {
       opal_domain: businessUnitRefData.opalDomain,
       business_unit_id: businessUnitRefData.businessUnitId,
       business_unit_name: businessUnitRefData.businessUnitName,
-      configurationItems: businessUnitRefData.configurationItems.map((item) => ({
+      configuration_items: businessUnitRefData.configurationItems.map((item) => ({
         item_name: item.itemName,
         item_value: item.itemValue,
         item_values: item.itemValues,
