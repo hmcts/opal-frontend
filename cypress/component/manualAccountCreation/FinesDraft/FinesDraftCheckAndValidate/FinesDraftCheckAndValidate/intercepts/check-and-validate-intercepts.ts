@@ -22,8 +22,9 @@ export function interceptCAVGetRejectedAccounts(statusCode: number, responseBody
 }
 
 export function interceptCAVGetDeletedAccounts(statusCode: number, responseBody: any) {
-  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Deleted&not_submitted_by=L077JG', {
+  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Deleted&not_submitted_by=*', {
     statusCode: statusCode,
     body: responseBody,
   }).as('getDeletedAccounts');
 }
+
