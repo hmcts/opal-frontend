@@ -86,7 +86,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
     opal_domain: null,
     business_unit_id: 0,
     business_unit_name: '',
-    configurationItems: [],
+    configuration_items: [],
     welsh_language: false,
   },
   unsavedChanges: false,
