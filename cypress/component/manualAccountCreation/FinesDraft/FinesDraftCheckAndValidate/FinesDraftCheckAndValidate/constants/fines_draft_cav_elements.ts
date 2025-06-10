@@ -15,6 +15,11 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
   submittedBy: 'td[id = "submittedBy"]',
+  deleted: 'td[id = "changedDate"]',
 
   paginationLinks: 'a.govuk-link.govuk-pagination__link',
+
+  accountStatus: 'strong[id="status"]',
+  reviewHistory: 'h3.govuk-heading-m govuk-!-margin-top-4',
+  reviewComponent: 'app-fines-mac-review-account-history',
 };

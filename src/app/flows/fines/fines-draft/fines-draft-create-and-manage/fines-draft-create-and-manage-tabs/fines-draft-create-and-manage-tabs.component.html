@@ -64,13 +64,18 @@
   <ng-template #tableWrapper>
     @if (tabData$ | async; as draftAccounts) {
       @if (draftAccounts.length) {
-        @if (activeTab === 'rejected') {
-          <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
+        @switch (activeTab) {
+          @case ('rejected') {
+            <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
+          }
+          @case ('deleted') {
+            <ng-container *ngTemplateOutlet="deletedIntroText"></ng-container>
+          }
         }
         <app-fines-draft-table-wrapper
           [tableData]="draftAccounts"
           [existingSortState]="tableSort"
-          [isApprovedTab]="false"
+          [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
         ></app-fines-draft-table-wrapper>
       } @else {
@@ -115,5 +120,8 @@
   </ng-template>
   <ng-template #deletedNoData>
     <p>No accounts have been deleted in the past 7 days.</p>
+  </ng-template>
+  <ng-template #deletedIntroText>
+    <p>Showing accounts Deleted in the past 7 days.</p>
   </ng-template>
 </div>

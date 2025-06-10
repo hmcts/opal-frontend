@@ -19,6 +19,7 @@ import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCre
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
+import { REVIEW_HISTORY } from './constants/fines_draft_cav_tableConstants';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -30,6 +31,7 @@ describe('FinesMacReviewAccountComponent', () => {
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
     amend: boolean = true,
+    checker: boolean = false,
   ) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
@@ -64,6 +66,7 @@ describe('FinesMacReviewAccountComponent', () => {
             let store = new FinesDraftStore();
             store.setFinesDraftState(finesDraftStateMock);
             store.setAmend(amend);
+            store.setChecker(checker);
             return store;
           },
         },

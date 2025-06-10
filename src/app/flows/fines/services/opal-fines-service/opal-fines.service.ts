@@ -50,6 +50,8 @@ export class OpalFines {
   private readonly PARAM_STATUS = 'status';
   private readonly PARAM_SUBMITTED_BY = 'submitted_by';
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
+  private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
+  private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
 
   /**
    * Appends an array of values to the given HttpParams object under the specified key.
@@ -163,7 +165,7 @@ export class OpalFines {
    * @returns The value of the configuration item, or null if the item is not found.
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configurationItems.find((item) => item.item_name === itemName)?.item_value ?? null;
+    return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
   }
 
   /**
@@ -264,6 +266,8 @@ export class OpalFines {
         [this.PARAM_STATUS]: filters.statuses,
         [this.PARAM_SUBMITTED_BY]: filters.submittedBy,
         [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
+        [this.PARAM_ACCOUNT_STATUS_DATE_FROM]: filters.accountStatusDateFrom,
+        [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
       };
 
       Object.entries(filterMapping).forEach(([key, values]) => {

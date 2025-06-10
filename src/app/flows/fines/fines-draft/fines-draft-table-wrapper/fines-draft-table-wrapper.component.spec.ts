@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesDraftTableWrapperComponent } from './fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
-import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-draft-table-wrapper-table-sort-default.constant';
+import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from './constants/fines-draft-table-wrapper-table-sort.constants';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from './mocks/fines-draft-table-wrapper-table-data.mock';
 
 describe('FinesDraftTableWrapperComponent', () => {
@@ -39,9 +39,9 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(component.abstractExistingSortState).toEqual(sortState);
   });
 
-  it('should accept isApprovedTab input', () => {
-    component.isApprovedTab = true;
-    expect(component.isApprovedTab).toBeTrue();
+  it('should accept activeTab input', () => {
+    component.activeTab = 'approved';
+    expect(component.activeTab).toBe('approved');
   });
 
   it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {
