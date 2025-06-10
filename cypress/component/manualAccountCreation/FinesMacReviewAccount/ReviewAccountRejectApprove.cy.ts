@@ -21,7 +21,7 @@ import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 
-describe('FinesDraftReviewAccountComponent', () => {
+describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(FINES_DRAFT_STATE);
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
