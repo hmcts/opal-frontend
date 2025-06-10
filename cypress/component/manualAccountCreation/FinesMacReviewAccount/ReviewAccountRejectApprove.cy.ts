@@ -568,6 +568,4 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       );
     });
   });
-
-
 });
