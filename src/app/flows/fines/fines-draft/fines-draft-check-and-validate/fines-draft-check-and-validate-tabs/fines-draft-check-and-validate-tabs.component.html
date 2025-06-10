@@ -45,6 +45,7 @@
           [isChecker]="true"
           [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
+          (accountClicked)="onAccountClick($event)"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {

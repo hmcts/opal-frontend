@@ -13,6 +13,8 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
+import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
@@ -95,5 +97,17 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(finesDraftStore.fragment()).toEqual('to-review');
     expect(finesDraftStore.checker()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_REVIEW_ACCOUNT);
+  });
+
+  it('should route to account details page onAccountClick', () => {
+    spyOn(component['router'], 'navigate');
+    const accountNumber = 'ACC123';
+    component.onAccountClick(accountNumber);
+    expect(component['router'].navigate).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      accountNumber,
+      FINES_ACC_ROUTING_PATHS.children.details,
+    ]);
   });
 });

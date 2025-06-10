@@ -15,6 +15,13 @@ import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
+import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import {
+  FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED,
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
+} from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -219,5 +226,43 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     });
 
     expect(tabData).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+  });
+
+  it('should route to account details page onAccountClick', () => {
+    const accountNumber = 'ACC123';
+    component.onAccountClick(accountNumber);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      accountNumber,
+      FINES_ACC_ROUTING_PATHS.children.details,
+    ]);
+  });
+
+  it('should use the relevant table sorting based when the active tab is APPROVED', () => {
+    activatedRoute.fragment = of('approved');
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.ngOnInit();
+    expect(component.tableSort).toEqual(FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED);
+  });
+
+  it('should use the relevant table sorting based when the active tab is DELETED', () => {
+    activatedRoute.fragment = of('deleted');
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.ngOnInit();
+    expect(component.tableSort).toEqual(FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED);
+  });
+
+  it('should use the relevant table sorting based when the active tab is IN REVIEW', () => {
+    activatedRoute.fragment = of('in review');
+    fixture = TestBed.createComponent(FinesDraftCreateAndManageTabsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.ngOnInit();
+    expect(component.tableSort).toEqual(FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT);
   });
 });

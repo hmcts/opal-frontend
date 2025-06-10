@@ -16,6 +16,8 @@ import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
+import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -80,6 +82,22 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   public onDefendantClick(draftAccountId: number): void {
     this.finesDraftStore.setFragmentAndChecker(this.activeTab, true);
     this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_REVIEW_ACCOUNT);
+  }
+
+  /**
+   * Handles the click event for an account.
+   *
+   * Navigates to the Account Details page for the specified account number.
+   *
+   * @param accountNumber - The account number of the clicked account.
+   */
+  public onAccountClick(accountNumber: string): void {
+    this['router'].navigate([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      accountNumber,
+      FINES_ACC_ROUTING_PATHS.children.details,
+    ]);
   }
 
   public ngOnInit(): void {
