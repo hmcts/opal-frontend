@@ -125,7 +125,7 @@ Feature: Navigate and edit sections from task list of draft accounts
     Then I see "Mr Harry POTTER" on the page header
     And the account status is "Rejected"
 
-  @PO-1073 @only
+  @PO-1073
   Scenario: As a user I can view an account that has failed to publish
     #AC1. If a user is on the Review Accounts screen - Failed tab, and selects the name of a defendant associated to an account listed on the tab,
     # the user will be navigated to the Failed Account screen for the draft account.
