@@ -132,8 +132,4 @@ describe('ReviewAccountDeletionComponent', () => {
       finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     });
   });
-
-
-
-
-})
+});
