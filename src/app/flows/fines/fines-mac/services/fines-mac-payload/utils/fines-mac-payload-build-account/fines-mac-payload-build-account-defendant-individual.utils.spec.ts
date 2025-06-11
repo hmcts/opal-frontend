@@ -64,4 +64,31 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
 
     expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK);
   });
+
+  it('should return null for alias forenames and surname if dynamic keys are missing', () => {
+    if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    // Set up state to include an alias but omit the dynamic keys
+    personalDetailsState.fm_personal_details_add_alias = true;
+    personalDetailsState.fm_personal_details_aliases = [
+      {}, // no keys like fm_personal_details_alias_forenames_0 or surname_0
+    ];
+
+    const result = finesMacPayloadBuildAccountDefendantIndividual(
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      languagePreferencesState,
+    );
+
+    expect(result.debtor_detail.aliases).toEqual([
+      {
+        alias_forenames: null,
+        alias_surname: null,
+      },
+    ]);
+  });
 });

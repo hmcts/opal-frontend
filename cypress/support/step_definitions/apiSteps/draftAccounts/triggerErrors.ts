@@ -20,9 +20,9 @@ Given(
   },
 );
 Then('I should see the global error banner', () => {
-  cy.get('opal-lib-moj-banner', { timeout: 20_000 }).should('exist').and('contain.text', globalErrorBannerText);
+  cy.get('div[opal-lib-moj-alert]', { timeout: 20_000 }).should('exist').and('contain.text', globalErrorBannerText);
 });
 
 Then('I should not see the global error banner', () => {
-  cy.get('opal-lib-moj-banner').should('not.exist');
+  cy.get('div[opal-lib-moj-alert]').should('not.exist');
 });
