@@ -8,6 +8,9 @@ Then('I see {string} on the page header', (bodyHeader) => {
   cy.get('h1').should('contain', bodyHeader);
 });
 
+Then('I see {string} on the status heading', (statusHeading:string) => {
+  cy.get('h2').should('contain',statusHeading)
+})
 Then('I navigate back to {string} page', (bodyHeader) => {
   cy.get('[class="govuk-back-link"]').click();
   cy.get('h1').should('contain', bodyHeader);

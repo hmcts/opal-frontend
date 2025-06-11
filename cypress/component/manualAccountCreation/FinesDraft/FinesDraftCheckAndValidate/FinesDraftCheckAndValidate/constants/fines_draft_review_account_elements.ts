@@ -111,4 +111,11 @@ export const DOM_ELEMENTS = {
   rejectionText: 'h1.govuk-label-wrapper',
   continue: 'button[id = "submitForm"]',
   textArea: 'textarea[id="fm_review_account_decision_reason"]',
+
+  //confirm delete page
+  reasonLabel: 'h1.govuk-label-wrapper',
+  commentInput: 'textarea[id="fm_delete_account_confirmation_reason"]',
+  commentCharHint: 'div[id="fm_delete_account_confirmation_reason-hint"]',
+  deleteConfirmation: 'button[id="confirmDeletion"]',
+  cancelLink: 'a.govuk-link.button-link'
 };
