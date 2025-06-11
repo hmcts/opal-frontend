@@ -89,7 +89,9 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I see "Are you sure you want to delete this account?" on the page header
 
     @PO-969
-    Scenario: AC.1 When user selecting reject radio button with providing reason and continues
+    Scenario: AC.1, AC.1a, AC.1c user can be reject an account with reason
+    #AC.1 If a checker has opened a draft account with a submitted or resubmitted status via the Review Accounts - 
+    #To Review screen, and has selected both the 'Reject' radio button and provided a reason for rejection, then the following will occur upon the user selecting the 'Continue' button:
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                |
