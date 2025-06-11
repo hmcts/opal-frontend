@@ -1206,7 +1206,7 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     },
   );
-  it.only('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
     cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
