@@ -5,7 +5,8 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I am on the dashboard
 
     @PO-594
-    Scenario: AC.1, AC.8ci user can approve the account from review account screen        #Given I create a "adultOrYouthOnly" draft account with the following details:
+    Scenario: As a user I can approve the account from review account screen      
+      #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
             | account.defendant.forenames             | Larry                     |
@@ -31,7 +32,7 @@ Feature: Navigate and edit sections from task list of draft accounts
 
 
     @PO-594
-    Scenario: AC.8ci, Ac.9 user can reject an account from review account screen
+    Scenario: As a user I can reject an account from review account screen
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -64,7 +65,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         And I see "Review accounts" on the page header
 
     @PO-594
-    Scenario: AC.8d user can delete an account in review screen
+    Scenario: As a user I can delete an account from review screen
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -89,7 +90,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I see "Are you sure you want to delete this account?" on the page header
 
     @PO-969
-    Scenario: AC.1, AC.1a, AC.1c user can be reject an account with reason
+    Scenario: As a user I can reject an account with reason
     #AC.1 If a checker has opened a draft account with a submitted or resubmitted status via the Review Accounts - 
     #To Review screen, and has selected both the 'Reject' radio button and provided a reason for rejection, then the following will occur upon the user selecting the 'Continue' button:
         #Given I create a "adultOrYouthOnly" draft account with the following details:
