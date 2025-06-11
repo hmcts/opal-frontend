@@ -102,4 +102,40 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
 
     expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK);
   });
+
+  it('should return null for alias forenames and surname if dynamic keys are missing in parent guardian aliases', () => {
+    if (
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !parentGuardianDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    personalDetailsState.fm_personal_details_add_alias = false;
+    personalDetailsState.fm_personal_details_aliases = [];
+    personalDetailsState.fm_personal_details_vehicle_make = null;
+    personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
+
+    parentGuardianDetailsState.fm_parent_guardian_details_add_alias = true;
+    parentGuardianDetailsState.fm_parent_guardian_details_aliases = [{}]; // no dynamic keys
+
+    const result = finesMacPayloadBuildAccountDefendantParentGuardian(
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      parentGuardianDetailsState,
+      languagePreferencesState,
+    );
+
+    expect(result.parent_guardian.debtor_detail.aliases).toEqual([
+      {
+        alias_forenames: null,
+        alias_surname: null,
+      },
+    ]);
+  });
 });

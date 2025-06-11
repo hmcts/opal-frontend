@@ -9,12 +9,10 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/fines-draft-session-mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS, TABLE_HEADINGS_DELETED } from './constants/fines_draft_cam_tableConstants';
+import { NAVIGATION_LINKS, TABLE_HEADINGS_DELETED } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { interceptGetDeletedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
 import { OPAL_FINES_DRAFT_DELETE_ACCOUNTS_MOCK } from './mocks/fines-draft-delete-account.mock';
-import { getDaysAgo, getToday } from 'cypress/support/utils/dateUtils';
-import { text } from 'stream/consumers';
 
 describe('FinesDraftCreateAndManageDeletedComponent', () => {
   const dateService = new DateService();

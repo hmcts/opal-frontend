@@ -8,7 +8,12 @@ import {
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertTextComponent,
+  MojAlertIconComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import {
   MojSubNavigationItemComponent,
   MojSubNavigationComponent,
@@ -33,7 +38,10 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
   selector: 'app-fines-draft-create-and-manage-tabs',
   imports: [
     CommonModule,
-    MojBannerComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertTextComponent,
+    MojAlertIconComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     MojBadgeComponent,
