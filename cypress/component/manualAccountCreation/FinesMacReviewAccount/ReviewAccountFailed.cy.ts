@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { mount } from 'cypress/angular';
@@ -40,7 +40,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         OpalFines,
         UtilsService,
         FinesMacPayloadService,
-        Router,
+        provideRouter([]),
         FinesMacStore,
         FinesDraftStore,
 
@@ -62,11 +62,6 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
             snapshot: {
               data: {
                 reviewAccountFetchMap: FetchMap,
-              },
-            },
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
               },
             },
           },
@@ -96,6 +91,34 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   it('AC.2,4 - should render correctly - AY', { tags: ['@PO-1073'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.errorBanner).should(
+      'contain.text',
+      'There was a problem publishing this account. Please contact your line manager.',
+    );
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+
+    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.personalDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('contain.html', DOM_ELEMENTS.employerDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
+
+    cy.get(DOM_ELEMENTS.parentGuardianDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.companyDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+  });
+
+  it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacDraft.timeline_data.push({
       username: 'Admin1',
       status: 'Approved',
@@ -110,6 +133,94 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
       reason_text: 'Created in error',
     });
 
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
+    cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
+    cy.get(DOM_ELEMENTS.timelineDate).should('exist');
+    cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
+
+    //Confirm if this should exist AC3c
+    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
+    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
+    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
+
+    //Confirm if this should exist AC3c
+    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
+    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
+    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'All good');
+
+    cy.get(DOM_ELEMENTS.timelineAuthor).should('contain.text', 'Test User 1');
+    cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
+    cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
+  });
+
+  it('AC.2,5 - should render correctly - AYPG', { tags: ['@PO-1073'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.errorBanner).should(
+      'contain.text',
+      'There was a problem publishing this account. Contact the service desk to resolve the issue.',
+    );
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+
+    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.personalDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('contain.html', DOM_ELEMENTS.employerDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(8).should('contain.html', DOM_ELEMENTS.parentGuardianDetailsSummaryCard);
+
+    cy.get(DOM_ELEMENTS.companyDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+  });
+
+  it('AC.2,6 - should render correctly - COMP', { tags: ['@PO-1073'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.errorBanner).should(
+      'contain.text',
+      'There was a problem publishing this account. Contact the service desk to resolve the issue.',
+    );
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+
+    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.companyDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
+
+    cy.get(DOM_ELEMENTS.personalDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.employerDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.parentGuardianDetailsSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+  });
+
+  it('AC.7 - should show em-dash for empty values', { tags: ['@PO-1073'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
     fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
 
     fetchMap.finesMacState.offenceDetails.push({
@@ -158,58 +269,12 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     setupComponent(fetchMap);
 
     cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Contact the service desk to resolve the issue.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
-  });
 
-  it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073'] }, () => {
-    let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin1',
-      status: 'Approved',
-      status_date: '2025-02-01',
-      reason_text: 'All good',
-    });
+    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
-    fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin2',
-      status: 'Deleted',
-      status_date: '2025-02-02',
-      reason_text: 'Created in error',
-    });
-
-    setupComponent(fetchMap);
-
-    cy.get(DOM_ELEMENTS.reviewHistory).should('contain.text', 'Review history');
-    cy.get(DOM_ELEMENTS.timeLine).should('exist');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('exist');
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDate).should('exist');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
-
-    //Confirm if this should exist AC3c
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
-
-    //Confirm if this should exist AC3c
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'All good');
-
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('contain.text', 'Test User 1');
-    cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
+    cy.get(DOM_ELEMENTS.creditor);
   });
 });
-
 // AC2. The Failed Account screen will be created as per the design artefact linked above, such that:
 
 // AC2a. The full name of the defendant will be displayed as a heading in the format of <title> <first name> <LAST NAME> or <Company name>
