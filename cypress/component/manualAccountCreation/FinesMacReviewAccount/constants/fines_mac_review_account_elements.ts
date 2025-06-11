@@ -9,6 +9,7 @@ export const DOM_ELEMENTS = {
   //Summary cards
   summaryCard: 'opal-lib-govuk-summary-card-list',
 
+  accountDetailsSummaryCard: 'app-fines-mac-review-account-account-details',
   courtsSummaryCard: 'app-fines-mac-review-account-court-details',
   personalDetailsSummaryCard: 'app-fines-mac-review-account-personal-details',
   contactDetailsSummaryCard: 'app-fines-mac-review-account-contact-details',
