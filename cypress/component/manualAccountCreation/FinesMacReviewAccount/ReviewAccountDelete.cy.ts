@@ -21,6 +21,8 @@ import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { getToday } from 'cypress/support/utils/dateUtils';
 
 describe('ReviewAccountDeletionComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -132,4 +134,74 @@ describe('ReviewAccountDeletionComponent', () => {
       finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     });
   });
+
+  it.only('AC.1, AC.2 Reason for deletion screen created as per the design artefact', { tags: ['@PO-597'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, true);
+
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
+
+    cy.get(DOM_ELEMENTS.reasonLabel).should('exist').and('contain', 'Reason');
+    cy.get(DOM_ELEMENTS.commentCharHint).should('exist').and('contain', 'You have 250 characters remaining');
+    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(5), { delay: 0 });
+    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 245 characters remaining');
+  });
+  it(
+    'AC.3ai,AC.3aii Yes - Delete button under the character count once a reason is entered ',
+    { tags: ['@PO-597'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, true);
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get('p').should('contain', 'Enter reason for deletion');
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
+
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').type('a23;b:');
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+      cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
+
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+
+  it(
+    'AC.3bii a request to update draft account with patch method with status of deleted',
+    { tags: ['@PO-597'] },
+    () => {
+      cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+      let payload = structuredClone(finesAccountPayload);
+      payload.draft_account_id = 342;
+      setupComponent(finesAccountPayload, payload, false, true);
+
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').type('test reason');
+      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
+
+      cy.wait('@patchDraftAccount').then(({ request }) => {
+        expect(request.body).to.exist;
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
+        expect(request.method).to.equal('PATCH');
+
+        expect(request.body).to.have.property('account_status', 'Deleted');
+        expect(request.body).to.have.property('timeline_data');
+
+        expect(request.body.timeline_data[0]).to.have.property('username', 'Test 1');
+        expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+        expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+        expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
+
+        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+        expect(request.body.timeline_data[1]).to.have.property('status', 'Deleted');
+        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+        expect(request.body.timeline_data[1]).to.have.property(
+          'reason_text',
+          'I have rejected this account because the surname is incorrect',
+        );
+      });
+    },
+  );
+
+  it('AC.4 Cancel link displayed below the delete button',{tags: ['@PO-597']}, ()=> {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
+    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+  })
 });

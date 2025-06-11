@@ -133,7 +133,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   });
 
   it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-594'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload, true);
+   setupComponent(finesAccountPayload, finesAccountPayload, true); 
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
