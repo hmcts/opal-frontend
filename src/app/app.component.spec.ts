@@ -17,6 +17,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { ISessionTokenExpiry } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SSO_ENDPOINTS } from '@hmcts/opal-frontend-common/services/auth-service/constants';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -43,6 +44,7 @@ describe('AppComponent - browser', () => {
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
+        MojAlertComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
@@ -216,6 +218,7 @@ describe('AppComponent - server', () => {
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
+        MojAlertComponent,
         RouterModule.forRoot([]),
       ],
       providers: [
