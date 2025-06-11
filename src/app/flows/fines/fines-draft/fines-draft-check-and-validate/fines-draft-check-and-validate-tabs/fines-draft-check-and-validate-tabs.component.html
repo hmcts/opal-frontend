@@ -1,8 +1,8 @@
 <div class="govuk-grid-column-full">
   @if (finesDraftStore.bannerMessage().length > 0) {
     <div opal-lib-moj-alert [ariaLabel]="finesDraftStore.bannerMessage()" type="success">
-      <opal-lib-moj-alert-icon type="success"></opal-lib-moj-alert-icon>
-      <opal-lib-moj-alert-content
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content
         ><opal-lib-moj-alert-content-text>{{ finesDraftStore.bannerMessage() }} </opal-lib-moj-alert-content-text>
       </opal-lib-moj-alert-content>
     </div>
