@@ -5,6 +5,6 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES:
     defaultCreditor: 'HM Courts & Tribunals Service (HMCTS)',
     defaultMinorCreditor: 'Minor Creditor',
     defaultCpsCreditor: 'Crown Prosecution Service (CPS)',
-    defaultNotProvided: '-',
+    defaultNotProvided: '&mdash;',
     defaultPaymentMethod: 'Pay by BACS',
   };

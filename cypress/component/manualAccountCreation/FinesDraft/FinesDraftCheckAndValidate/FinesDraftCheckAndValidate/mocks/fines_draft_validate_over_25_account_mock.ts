@@ -20,7 +20,6 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
-      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 102,
@@ -38,7 +37,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-02',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 103,
@@ -56,7 +55,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-03',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 104,
@@ -74,7 +73,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-04',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 105,
@@ -92,7 +91,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-05',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 106,
@@ -110,7 +109,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-06',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 107,
@@ -128,7 +127,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'PENDING',
-      account_status_date: '2023-01-07',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 108,
@@ -146,7 +145,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-08',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 109,
@@ -164,7 +163,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-09',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 110,
@@ -182,7 +181,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-10',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 101,
@@ -201,7 +200,6 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
-      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 102,
@@ -219,7 +217,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-02',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 103,
@@ -237,7 +235,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-03',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 104,
@@ -255,7 +253,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-04',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 105,
@@ -273,7 +271,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-05',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 106,
@@ -291,7 +289,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-06',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 107,
@@ -309,7 +307,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'PENDING',
-      account_status_date: '2023-01-07',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 108,
@@ -327,7 +325,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-08',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 109,
@@ -345,7 +343,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-09',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 110,
@@ -363,7 +361,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-10',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 101,
@@ -382,7 +380,6 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
-      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 102,
@@ -400,7 +397,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-02',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 103,
@@ -418,7 +415,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-03',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 104,
@@ -436,7 +433,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-04',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 105,
@@ -454,7 +451,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-05',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 106,
@@ -472,7 +469,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-06',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 107,
@@ -490,7 +487,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'PENDING',
-      account_status_date: '2023-01-07',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 108,
@@ -508,7 +505,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-08',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 109,
@@ -526,7 +523,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-09',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 110,
@@ -544,7 +541,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-10',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 101,
@@ -563,7 +560,6 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
-      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 102,
@@ -581,7 +577,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-02',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 103,
@@ -599,7 +595,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-03',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 104,
@@ -617,7 +613,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-04',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 105,
@@ -635,7 +631,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-05',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 106,
@@ -653,7 +649,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-06',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 107,
@@ -671,7 +667,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'PENDING',
-      account_status_date: '2023-01-07',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 108,
@@ -689,7 +685,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-08',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 109,
@@ -707,7 +703,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-09',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 110,
@@ -725,7 +721,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-10',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 101,
@@ -744,7 +740,6 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
-      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 102,
@@ -762,7 +757,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-02',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 103,
@@ -780,7 +775,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-03',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 104,
@@ -798,7 +793,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-04',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 105,
@@ -816,7 +811,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-05',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 106,
@@ -834,7 +829,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-06',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 107,
@@ -852,7 +847,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'PENDING',
-      account_status_date: '2023-01-07',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 108,
@@ -870,7 +865,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'CLOSED',
-      account_status_date: '2023-01-08',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 109,
@@ -888,7 +883,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fine',
       account_status: 'ACTIVE',
-      account_status_date: '2023-01-09',
+      account_status_date: '2023-01-01',
     },
     {
       draft_account_id: 110,
@@ -906,7 +901,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
       },
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
-      account_status_date: '2023-01-10',
+      account_status_date: '2023-01-01',
     },
   ],
 };

@@ -20,6 +20,7 @@ import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCre
 import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft/FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/fines_draft_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
+import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -532,4 +533,46 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       );
     },
   );
+
+  //PO-969
+  it.only('AC.1b update draft account with patch method', { tags: ['@PO-969'] }, () => {
+    cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
+    setupComponent(true);
+
+    cy.wait('@patchDraftAccount').then(({ request }) => {
+      expect(request.body).to.exist;
+      expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
+      expect(request.method).to.equal('PATCH');
+
+      expect(request.body).to.have.property('account_status', 'Rejected');
+      expect(request.body).to.have.property('timeline_data');
+
+      expect(request.body.timeline_data[0]).to.have.property('username', 'Test User 1');
+      expect(request.body.timeline_data[0]).to.have.property('status', 'Rejected');
+      expect(request.body.timeline_data[0]).to.have.property('status_date', '2025-01-01');
+      expect(request.body.timeline_data[0]).to.have.property('reason_text', '');
+    });
+  });
+
+  //PO-969
+  it.only('AC.1bi get draft account record in the table', { tags: ['@PO-969'] }, () => {
+    cy.intercept('GET', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('getDraftAccount');
+    setupComponent(true);
+
+    cy.wait('@getDraftAccount').then(({ request }) => {
+      expect(request.body).to.exist;
+      expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
+      expect(request.method).to.equal('PATCH');
+
+      expect(request.body).to.have.property('submitted_by', 'L017KG');
+
+      expect(request.body).to.have.property('account_status', 'Rejected');
+      expect(request.body).to.have.property('timeline_data');
+
+      expect(request.body.timeline_data[0]).to.have.property('username', 'Test User 1');
+      expect(request.body.timeline_data[0]).to.have.property('status', 'Rejected');
+      expect(request.body.timeline_data[0]).to.have.property('status_date', '2025-01-01');
+      expect(request.body.timeline_data[0]).to.have.property('reason_text', '');
+    });
+  });
 });

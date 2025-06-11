@@ -4,5 +4,7 @@ export interface IOpalFinesDraftAccountStatuses {
   deleted: string;
   approved: string;
   resubmitted: string;
-  errorInPublishing: string;
+  publishPending: string;
+  published: string;
+  publishFailed: string;
 }

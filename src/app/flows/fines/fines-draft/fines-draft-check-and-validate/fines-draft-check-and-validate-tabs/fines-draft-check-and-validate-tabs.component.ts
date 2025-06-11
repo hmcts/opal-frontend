@@ -21,10 +21,25 @@ import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
-  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
+  imports: [
+    CommonModule,
+    MojSubNavigationComponent,
+    MojSubNavigationItemComponent,
+    FinesDraftTableWrapperComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
+  ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -107,6 +122,8 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   }
 
   public ngOnInit(): void {
+    this.finesDraftStore.resetFineDraftState();
+    this.finesDraftStore.resetFragmentAndChecker();
     this.setupTabDataStream();
   }
 
