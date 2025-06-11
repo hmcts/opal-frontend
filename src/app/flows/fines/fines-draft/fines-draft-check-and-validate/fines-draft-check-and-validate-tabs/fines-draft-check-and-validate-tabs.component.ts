@@ -7,7 +7,10 @@ import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper
 import { Observable, Subject } from 'rxjs';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-validate-routing-paths.constant';
-import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
+import {
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
+  FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
+} from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
 import { CommonModule } from '@angular/common';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
@@ -15,6 +18,8 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
+import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 @Component({
@@ -27,6 +32,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly destroy$ = new Subject<void>();
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
+  private readonly dateService = inject(DateService);
   protected readonly finesDraftStore = inject(FinesDraftStore);
   public readonly finesDraftService = inject(FinesDraftService);
 
@@ -58,11 +64,29 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
       fragment$,
-      (tab) => ({
-        businessUnitIds: this.businessUnitIds,
-        statuses: FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab)?.statuses,
-        notSubmittedBy: this.businessUnitUserIds,
-      }),
+      (tab) => {
+        if (tab === 'deleted') {
+          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
+        } else {
+          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
+        }
+
+        const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
+
+        const params: IOpalFinesDraftAccountParams = {
+          businessUnitIds: this.businessUnitIds,
+          statuses: currentTab?.statuses,
+          notSubmittedBy: this.businessUnitUserIds,
+        };
+
+        if (currentTab?.historicWindowInDays) {
+          const { from, to } = this.dateService.getDateRange(currentTab.historicWindowInDays, 0);
+          params.accountStatusDateFrom = [from];
+          params.accountStatusDateTo = [to];
+        }
+
+        return params;
+      },
       (params) => this.opalFinesService.getDraftAccounts(params),
       (res) => this.finesDraftService.populateTableData(res),
     );
