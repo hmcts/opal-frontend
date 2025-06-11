@@ -113,17 +113,16 @@ When('I see {string} text under the {string} field', (text: string, inputField: 
 });
 
 Then('I see green banner on the top of the page', () => {
-  cy.get('opal-lib-moj-banner').should('exist');
+  cy.get('div[opal-lib-moj-alert]').should('exist');
 });
 
 Then('the account status is {string}', (expectedStatus: string) => {
   cy.get('.govuk-tag[id="status"]').should('be.visible').and('have.text', expectedStatus);
 });
-Then('I see {string} on the status heading',(expectedStatus:string) => {
+Then('I see {string} on the status heading', (expectedStatus: string) => {
   cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', expectedStatus);
-})
+});
 //div[id="success-message"]
-Then('I see success message on the banner {string}',(expectedMessage:string) => {
-  cy.get('div[id="success-message"]').should('exist').and('contain',expectedMessage)
-})
-
+Then('I see success message on the banner {string}', (expectedMessage: string) => {
+  cy.get('div[id="success-message"]').should('exist').and('contain', expectedMessage);
+});

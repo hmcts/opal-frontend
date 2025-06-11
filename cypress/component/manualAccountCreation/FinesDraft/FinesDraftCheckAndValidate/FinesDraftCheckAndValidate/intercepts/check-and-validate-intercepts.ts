@@ -27,4 +27,3 @@ export function interceptCAVGetDeletedAccounts(statusCode: number, responseBody:
     body: responseBody,
   }).as('getDeletedAccounts');
 }
-
