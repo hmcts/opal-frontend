@@ -9,22 +9,12 @@ export const DOM_ELEMENTS = {
   //Summary cards
   summaryCard: 'opal-lib-govuk-summary-card-list',
 
-  accountDetailsSummaryCard: 'app-fines-mac-review-account-account-details',
-  courtsSummaryCard: 'app-fines-mac-review-account-court-details',
-  personalDetailsSummaryCard: 'app-fines-mac-review-account-personal-details',
-  contactDetailsSummaryCard: 'app-fines-mac-review-account-contact-details',
-  employerDetailsSummaryCard: 'app-fines-mac-review-account-employer-details',
-  offenceDetailsSummaryCard: 'app-fines-mac-review-account-offence-details',
-  paymentTermsSummaryCard: 'app-fines-mac-review-account-payment-terms',
-  accountCommentsAndNotesSummaryCard: 'app-fines-mac-review-account-comments-notes',
-  languagePreferencesSummaryCard: 'app-fines-mac-review-account-language-preferences',
-  parentGuardianDetailsSummaryCard: 'app-fines-mac-review-account-parent-guardian-details',
-  companyDetailsSummaryCard: 'app-fines-mac-review-account-company-details',
-
   //Account details
   businessUnitData: 'div[id = "accountDetailsBusinessUnit"]',
   accountTypeData: 'div[id = "accountDetailsAccountType"]',
   defendantTypeData: 'div[id = "accountDetailsDefendantType"]',
+  langPrefDocLanguage: '[id="accountDetailsDocumentLanguage"]',
+  langPrefCourtHeatingLanguage: '[id="accountDetailsCourtHearingLanguage"]',
 
   //court details
   originatorName: 'div[id = "courtDetailsOriginatorName"]',
@@ -70,6 +60,7 @@ export const DOM_ELEMENTS = {
   amountImposed: 'td[id ="amountImposed"]',
   amountPaid: 'td[id ="amountPaid"]',
   balanceRemaining: 'td[id ="balanceRemaining"]',
+  minorCreditorPaymentMethodValue: 'dd[id="minorCreditorDataTablePaymentMethodValue"]',
 
   totalHeading: 'th[id="totalsHeading"]',
   totalAmountImposed: 'th[id="totalAmountImposed"]',

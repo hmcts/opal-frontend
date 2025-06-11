@@ -102,18 +102,26 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.personalDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('contain.html', DOM_ELEMENTS.employerDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'personal-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(5)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(7)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
 
-    cy.get(DOM_ELEMENTS.parentGuardianDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.companyDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
+      .should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
   it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073'] }, () => {
@@ -170,23 +178,31 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
     cy.get(DOM_ELEMENTS.errorBanner).should(
       'contain.text',
-      'There was a problem publishing this account. Contact the service desk to resolve the issue.',
+      'There was a problem publishing this account. Please contact your line manager.',
     );
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.personalDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('contain.html', DOM_ELEMENTS.employerDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(8).should('contain.html', DOM_ELEMENTS.parentGuardianDetailsSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(2)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'parent-guardian-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'defendant-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(6)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(8)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
 
-    cy.get(DOM_ELEMENTS.companyDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
   it('AC.2,6 - should render correctly - COMP', { tags: ['@PO-1073'] }, () => {
@@ -196,27 +212,82 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
     setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
     cy.get(DOM_ELEMENTS.errorBanner).should(
       'contain.text',
-      'There was a problem publishing this account. Contact the service desk to resolve the issue.',
+      'There was a problem publishing this account. Please contact your line manager.',
     );
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('contain.html', DOM_ELEMENTS.accountDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('contain.html', DOM_ELEMENTS.courtsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('contain.html', DOM_ELEMENTS.companyDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('contain.html', DOM_ELEMENTS.contactDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('contain.html', DOM_ELEMENTS.offenceDetailsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('contain.html', DOM_ELEMENTS.paymentTermsSummaryCard);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('contain.html', DOM_ELEMENTS.accountCommentsAndNotesSummaryCard);
+    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'company-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(4)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(6)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
 
-    cy.get(DOM_ELEMENTS.personalDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.employerDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.parentGuardianDetailsSummaryCard).should('not.exist');
-    cy.get(DOM_ELEMENTS.languagePreferencesSummaryCard).should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="personal-details"]').should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="employer-details"]').should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
+      .should('not.exist');
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
+
+  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['@PO-1073'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+    fetchMap.finesMacState.businessUnit.welsh_language = true;
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+  });
+  it(
+    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
+    { tags: ['@PO-1073'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+
+      setupComponent(fetchMap);
+
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
+  it(
+    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
+    { tags: ['@PO-1073'] },
+    () => {
+      let fetchMap = structuredClone(reviewAccountFetchMap);
+      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+      fetchMap.finesMacState.businessUnit.welsh_language = true;
+      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+
+      setupComponent(fetchMap);
+
+      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+    },
+  );
 
   it('AC.7 - should show em-dash for empty values', { tags: ['@PO-1073'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
@@ -272,7 +343,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
     cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain.text', '—');
 
-    cy.get(DOM_ELEMENTS.creditor);
+    cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
   });
 });
 // AC2. The Failed Account screen will be created as per the design artefact linked above, such that:
@@ -318,3 +389,25 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 // AC4g. Payment Terms
 
 // AC4h. Account comments and notes
+
+// AC5. The array of summary tables will be displayed in the following order, if the defendant is an Adult or Youth with a parent or guardian to pay, displaying the associated data as described in the Data section above:
+
+// AC5a. Business Unit, Account Type, Defendant type
+
+// AC5ai. Language Preferences will also be displayed if the associated BU is Welsh speaking
+
+// AC5b. Court Details
+
+// AC5c. Parent or guardian details
+
+// AC5d. Contact Details
+
+// AC5e. Employer Details
+
+// AC5f. Personal Details
+
+// AC5g. Offences and Impositions (a 'Hide' button will also be displayed against each offence)
+
+// AC5h. Payment Terms
+
+// AC5i. Account comments and notes
