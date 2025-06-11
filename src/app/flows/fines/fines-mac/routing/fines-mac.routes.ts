@@ -180,6 +180,7 @@ export const routing: Routes = [
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
       ),
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
       routePermissionId: [draftRootPermissionIds['create-and-manage'], draftRootPermissionIds['check-and-validate']],
