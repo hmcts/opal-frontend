@@ -162,4 +162,104 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       },
     ]);
   });
+
+  it('should fallback to null and false when optional fields are undefined in minor creditor childFormData', () => {
+    if (!offencesMockState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    offencesMockState = [
+      {
+        ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE),
+        formData: {
+          ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData),
+          fm_offence_details_id: 0,
+          fm_offence_details_date_of_sentence: null,
+          fm_offence_details_offence_cjs_code: null,
+          fm_offence_details_offence_id: null,
+          fm_offence_details_impositions: [
+            {
+              fm_offence_details_imposition_id: 0,
+              fm_offence_details_result_id: null,
+              fm_offence_details_amount_imposed: null,
+              fm_offence_details_amount_paid: null,
+              fm_offence_details_balance_remaining: null,
+              fm_offence_details_needs_creditor: null,
+              fm_offence_details_creditor: null,
+              fm_offence_details_major_creditor_id: null,
+            },
+          ],
+        },
+        childFormData: [
+          {
+            formData: {
+              fm_offence_details_minor_creditor_creditor_type: null,
+              fm_offence_details_minor_creditor_title: null,
+              fm_offence_details_minor_creditor_forenames: null,
+              fm_offence_details_minor_creditor_surname: null,
+              fm_offence_details_minor_creditor_company_name: null,
+              fm_offence_details_minor_creditor_address_line_1: null,
+              fm_offence_details_minor_creditor_address_line_2: null,
+              fm_offence_details_minor_creditor_address_line_3: null,
+              fm_offence_details_minor_creditor_post_code: null,
+              fm_offence_details_minor_creditor_pay_by_bacs: null,
+              fm_offence_details_minor_creditor_bank_account_name: null,
+              fm_offence_details_minor_creditor_bank_sort_code: null,
+              fm_offence_details_minor_creditor_bank_account_number: null,
+              fm_offence_details_minor_creditor_bank_account_ref: null,
+              fm_offence_details_imposition_position: 0,
+            },
+            nestedFlow: false,
+          },
+        ],
+      },
+    ];
+
+    const courtDetailsState = {
+      fm_court_details_originator_id: null,
+      fm_court_details_originator_name: null,
+      fm_court_details_prosecutor_case_reference: null,
+      fm_court_details_imposing_court_id: null,
+    };
+
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+
+    expect(results).toEqual([
+      {
+        date_of_sentence: null,
+        imposing_court_id: null,
+        offence_id: null,
+        impositions: [
+          {
+            result_id: null,
+            amount_imposed: null,
+            amount_paid: null,
+            major_creditor_id: null,
+            minor_creditor: {
+              company_flag: false,
+              title: null,
+              company_name: null,
+              surname: null,
+              forenames: null,
+              dob: null,
+              address_line_1: null,
+              address_line_2: null,
+              address_line_3: null,
+              post_code: null,
+              telephone: null,
+              email_address: null,
+              payout_hold: false,
+              pay_by_bacs: false,
+              bank_account_type: 1,
+              bank_sort_code: null,
+              bank_account_number: null,
+              bank_account_name: null,
+              bank_account_ref: null,
+            },
+          },
+        ],
+      },
+    ]);
+  });
 });
