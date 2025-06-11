@@ -47,7 +47,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     return null;
   }
 
-  const payByBacs = childFormData?.formData?.fm_offence_details_minor_creditor_pay_by_bacs ?? null;
+  const payByBacs = childFormData?.formData?.fm_offence_details_minor_creditor_pay_by_bacs ?? false;
   const payoutOnHold = getPayoutOnHold(payByBacs);
   const creditorType = childFormData?.formData?.fm_offence_details_minor_creditor_creditor_type ?? null;
   const companyFlag = getCompanyFlag(creditorType);
