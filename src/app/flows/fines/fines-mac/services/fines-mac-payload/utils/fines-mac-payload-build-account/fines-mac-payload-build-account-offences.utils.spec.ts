@@ -124,7 +124,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
               fm_offence_details_minor_creditor_address_line_2: null,
               fm_offence_details_minor_creditor_address_line_3: null,
               fm_offence_details_minor_creditor_post_code: null,
-              fm_offence_details_minor_creditor_pay_by_bacs: false,
+              fm_offence_details_minor_creditor_pay_by_bacs: null,
               fm_offence_details_minor_creditor_bank_account_name: null,
               fm_offence_details_minor_creditor_bank_sort_code: null,
               fm_offence_details_minor_creditor_bank_account_number: null,
