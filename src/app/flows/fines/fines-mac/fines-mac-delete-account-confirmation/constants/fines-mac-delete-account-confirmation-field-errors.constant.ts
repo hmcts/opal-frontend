@@ -7,7 +7,8 @@ export const FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS: IFinesMacDelete
       priority: 1,
     },
     alphabeticalTextPattern: {
-      message: 'Reason must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message:
+        'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
