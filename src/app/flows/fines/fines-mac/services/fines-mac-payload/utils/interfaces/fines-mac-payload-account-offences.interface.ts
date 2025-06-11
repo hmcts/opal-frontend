@@ -12,7 +12,7 @@ export interface IFinesMacPayloadAccountOffencesMinorCreditor {
   telephone: string | null;
   email_address: string | null;
   payout_hold: boolean | null;
-  pay_by_bacs: boolean | null;
+  pay_by_bacs: boolean;
   bank_account_type: number | null;
   bank_sort_code: string | null;
   bank_account_number: string | null;
