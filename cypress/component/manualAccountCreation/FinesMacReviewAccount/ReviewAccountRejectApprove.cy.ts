@@ -21,6 +21,7 @@ import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
+import { getToday } from 'cypress/support/utils/dateUtils';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -45,7 +46,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
           provide: GlobalStore,
           useFactory: () => {
             let store = new GlobalStore();
-            store.setUserState(SESSION_USER_STATE_MOCK);
+            store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
             store.setError({
               error: false,
               message: '',
@@ -535,44 +536,36 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   //PO-969
-  it.only('AC.1b update draft account with patch method', { tags: ['@PO-969'] }, () => {
+  it('AC.1b update draft account with patch method', { tags: ['@PO-969'] }, () => {
     cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
-    setupComponent(true);
+    let payload = structuredClone(finesAccountPayload);
+    payload.draft_account_id = 342;
+    setupComponent(finesAccountPayload, payload, false, true);
+
+    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+    cy.get(DOM_ELEMENTS.rejectionText).type('I have rejected this account because the surname is incorrect');
+    cy.get(DOM_ELEMENTS.continue).click();
 
     cy.wait('@patchDraftAccount').then(({ request }) => {
       expect(request.body).to.exist;
-      expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
+      expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
       expect(request.method).to.equal('PATCH');
 
       expect(request.body).to.have.property('account_status', 'Rejected');
       expect(request.body).to.have.property('timeline_data');
 
-      expect(request.body.timeline_data[0]).to.have.property('username', 'Test User 1');
-      expect(request.body.timeline_data[0]).to.have.property('status', 'Rejected');
-      expect(request.body.timeline_data[0]).to.have.property('status_date', '2025-01-01');
-      expect(request.body.timeline_data[0]).to.have.property('reason_text', '');
-    });
-  });
+      expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
+      expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
+      expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
 
-  //PO-969
-  it.only('AC.1bi get draft account record in the table', { tags: ['@PO-969'] }, () => {
-    cy.intercept('GET', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('getDraftAccount');
-    setupComponent(true);
-
-    cy.wait('@getDraftAccount').then(({ request }) => {
-      expect(request.body).to.exist;
-      expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
-      expect(request.method).to.equal('PATCH');
-
-      expect(request.body).to.have.property('submitted_by', 'L017KG');
-
-      expect(request.body).to.have.property('account_status', 'Rejected');
-      expect(request.body).to.have.property('timeline_data');
-
-      expect(request.body.timeline_data[0]).to.have.property('username', 'Test User 1');
-      expect(request.body.timeline_data[0]).to.have.property('status', 'Rejected');
-      expect(request.body.timeline_data[0]).to.have.property('status_date', '2025-01-01');
-      expect(request.body.timeline_data[0]).to.have.property('reason_text', '');
+      expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
+      expect(request.body.timeline_data[1]).to.have.property('status', 'Rejected');
+      expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+      expect(request.body.timeline_data[1]).to.have.property(
+        'reason_text',
+        'I have rejected this account because the surname is incorrect',
+      );
     });
   });
 });
