@@ -79,12 +79,11 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
    * @param response - The payload containing the account snapshot and status after submission.
    */
   private successfulSubmission(response: IFinesMacAddAccountPayload): void {
-    const defendant = response.account.defendant;
-    const name = defendant.company_name ? defendant.company_name : defendant.forenames + ' ' + defendant.surname;
+    const defendantName = this.finesMacPayloadService.getDefendantName(response);
     if (response.account_status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected) {
-      this.finesDraftStore.setBannerMessage(`You have rejected ${name}'s account`);
+      this.finesDraftStore.setBannerMessageByType('rejected', defendantName);
     } else {
-      this.finesDraftStore.setBannerMessage(`You have approved ${name}'s account`);
+      this.finesDraftStore.setBannerMessageByType('approved', defendantName);
     }
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
