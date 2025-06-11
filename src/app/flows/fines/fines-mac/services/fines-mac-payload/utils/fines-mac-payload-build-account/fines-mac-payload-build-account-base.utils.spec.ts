@@ -236,4 +236,32 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
     expect(result).toEqual(expectedPayload);
   });
+
+  it('should set nullable fields to null when undefined in payment terms', () => {
+    if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    paymentTermsState.fm_payment_terms_collection_order_made = undefined as unknown as boolean;
+    paymentTermsState.fm_payment_terms_collection_order_made_today = undefined as unknown as boolean;
+    paymentTermsState.fm_payment_terms_collection_order_date = undefined as unknown as string;
+    paymentTermsState.fm_payment_terms_suspended_committal_date = undefined as unknown as string;
+    paymentTermsState.fm_payment_terms_payment_card_request = undefined as unknown as boolean;
+
+    expectedPayload.collection_order_made = null;
+    expectedPayload.collection_order_made_today = null;
+    expectedPayload.collection_order_date = null;
+    expectedPayload.suspended_committal_date = null;
+    expectedPayload.payment_card_request = null;
+
+    const result = finesMacPayloadBuildAccountBase(
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+    );
+
+    expect(result).toEqual(expectedPayload);
+  });
 });

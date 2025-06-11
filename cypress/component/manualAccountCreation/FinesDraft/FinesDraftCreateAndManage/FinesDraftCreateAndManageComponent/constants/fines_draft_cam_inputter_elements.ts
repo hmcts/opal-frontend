@@ -1,7 +1,7 @@
 export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
   heading: 'h1.govuk-heading-l',
-  navigationLinks: 'a.moj-sub-navigation__link.cursor-pointer',
+  navigationLinks: 'a.moj-sub-navigation__link',
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
   statusHeading: 'h2.govuk-heading-m',

@@ -136,4 +136,18 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toEqual([]);
   });
+
+  it('should return mapped state directly if debtor_detail is null', () => {
+    if (!initialState) fail('Required mock state not initialised');
+
+    const payload = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK);
+
+    if (payload.parent_guardian) {
+      payload.parent_guardian.debtor_detail = null;
+    }
+
+    const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState as IFinesMacState, payload);
+
+    expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toEqual([]);
+  });
 });
