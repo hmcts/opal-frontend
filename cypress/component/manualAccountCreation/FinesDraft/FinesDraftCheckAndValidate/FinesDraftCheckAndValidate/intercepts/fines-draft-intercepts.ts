@@ -30,4 +30,3 @@ export function interceptGetDeletedAccounts(statusCode: number, responseBody: an
     },
   ).as('getDeletedAccounts');
 }
-

@@ -14,7 +14,7 @@ import {
   interceptCAVGetDeletedAccounts,
   interceptCAVGetRejectedAccounts,
   interceptCAVGetToReviewAccounts,
-  interceptCAVUpdateDraftAccount
+  interceptCAVUpdateDraftAccount,
 } from './intercepts/check-and-validate-intercepts';
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
@@ -175,5 +175,4 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         expect(count).to.be.eq(25);
       });
   });
-
 });
