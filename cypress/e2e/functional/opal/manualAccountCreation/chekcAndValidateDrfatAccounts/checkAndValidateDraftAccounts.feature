@@ -5,8 +5,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         Then I am on the dashboard
 
     @PO-594
-    Scenario: AC.1, AC.8ci view the details of an account in review account screen when user approves then continues
-        #Given I create a "adultOrYouthOnly" draft account with the following details:
+    Scenario: AC.1, AC.8ci user can approve the account from review account screen        #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
             | account.defendant.forenames             | Larry                     |
@@ -32,7 +31,7 @@ Feature: Navigate and edit sections from task list of draft accounts
 
 
     @PO-594
-    Scenario: AC.8ci, Ac.9 view the details of an account in review account screen when user selects reject radio button with reason
+    Scenario: AC.8ci, Ac.9 user can reject an account from review account screen
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
@@ -65,7 +64,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         And I see "Review accounts" on the page header
 
     @PO-594
-    Scenario: AC.8d when user selects delete button
+    Scenario: AC.8d user can delete an account in review screen
         #Given I create a "adultOrYouthOnly" draft account with the following details:
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                 |
