@@ -14,7 +14,12 @@ import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-of
 import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertTextComponent,
+  MojAlertIconComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 
@@ -24,7 +29,10 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
     CommonModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    MojBannerComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertTextComponent,
+    MojAlertIconComponent,
     FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent,
     FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent,
     FinesMacOffenceDetailsReviewOffenceComponent,

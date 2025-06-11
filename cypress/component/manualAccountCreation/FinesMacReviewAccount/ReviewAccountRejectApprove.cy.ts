@@ -20,7 +20,7 @@ import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCre
 import { DOM_ELEMENTS } from 'cypress/component/manualAccountCreation/FinesDraft/FinesDraftCheckAndValidate/FinesDraftCheckAndValidate/constants/fines_draft_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
-import {DRAFT_SESSION_USER_STATE_MOCK} from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock'
+import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -535,10 +535,9 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   );
 
   //PO-969
-  it.only('AC.1b update draft account with patch method',{tags: ['@PO-969']}, () => {
+  it.only('AC.1b update draft account with patch method', { tags: ['@PO-969'] }, () => {
     cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
     setupComponent(true);
-    
 
     cy.wait('@patchDraftAccount').then(({ request }) => {
       expect(request.body).to.exist;
@@ -556,7 +555,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   });
 
   //PO-969
-  it.only('AC.1bi get draft account record in the table', {tags: ['@PO-969']}, () => {
+  it.only('AC.1bi get draft account record in the table', { tags: ['@PO-969'] }, () => {
     cy.intercept('GET', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('getDraftAccount');
     setupComponent(true);
 

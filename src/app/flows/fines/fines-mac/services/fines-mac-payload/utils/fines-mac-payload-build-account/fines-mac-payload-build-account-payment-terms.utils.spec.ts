@@ -145,4 +145,105 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
     const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateNull);
     expect(result).toEqual(expectedPayload);
   });
+
+  it('should return null in enforcement result response if input is undefined', () => {
+    // Attempt to access buildEnforcementResultResponse utility function
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const buildEnforcementResultResponse = (finesMacPayloadBuildAccountPaymentTerms as any).__proto__.constructor
+      .__proto__.buildEnforcementResultResponse;
+    if (typeof buildEnforcementResultResponse === 'function') {
+      const result = buildEnforcementResultResponse('someParam', undefined);
+      expect(result).toEqual({
+        parameter_name: 'someParam',
+        response: null,
+      });
+    } else {
+      // If the function is not accessible, test via an augmented state
+      const paymentTermsStateWithUndefinedReason = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK);
+      if (paymentTermsStateWithUndefinedReason) {
+        paymentTermsStateWithUndefinedReason.fm_payment_terms_hold_enforcement_on_account = true;
+        paymentTermsStateWithUndefinedReason.fm_payment_terms_reason_account_is_on_noenf = null;
+
+        const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateWithUndefinedReason);
+        expect(result?.enforcements?.[0]?.enforcement_result_responses?.[0]?.response).toBeNull();
+      } else {
+        fail('Failed to clone or prepare mock state for undefined reason test');
+      }
+    }
+  });
+
+  it('should return COLLO enforcement with null when collection order not made but made today', () => {
+    const state: IFinesMacPaymentTermsState = {
+      fm_payment_terms_payment_terms: null,
+      fm_payment_terms_pay_by_date: null,
+      fm_payment_terms_start_date: null,
+      fm_payment_terms_instalment_period: null,
+      fm_payment_terms_lump_sum_amount: null,
+      fm_payment_terms_instalment_amount: null,
+      fm_payment_terms_default_days_in_jail: null,
+      fm_payment_terms_collection_order_made: false,
+      fm_payment_terms_collection_order_made_today: true,
+      fm_payment_terms_enforcement_action: null,
+      fm_payment_terms_earliest_release_date: null,
+      fm_payment_terms_prison_and_prison_number: null,
+      fm_payment_terms_reason_account_is_on_noenf: null,
+      fm_payment_terms_hold_enforcement_on_account: false,
+      fm_payment_terms_add_enforcement_action: null,
+      fm_payment_terms_collection_order_date: null,
+      fm_payment_terms_has_days_in_default: null,
+      fm_payment_terms_payment_card_request: null,
+      fm_payment_terms_suspended_committal_date: null,
+    };
+
+    const result = finesMacPayloadBuildAccountPaymentTerms(state);
+
+    expect(result.enforcements).toEqual([
+      {
+        result_id: 'COLLO',
+        enforcement_result_responses: null,
+      },
+    ]);
+  });
+
+  it('should build PRIS enforcement with null earliest release date and prison number', () => {
+    const state: IFinesMacPaymentTermsState = {
+      fm_payment_terms_payment_terms: null,
+      fm_payment_terms_pay_by_date: null,
+      fm_payment_terms_start_date: null,
+      fm_payment_terms_instalment_period: null,
+      fm_payment_terms_lump_sum_amount: null,
+      fm_payment_terms_instalment_amount: null,
+      fm_payment_terms_default_days_in_jail: null,
+      fm_payment_terms_collection_order_made: true,
+      fm_payment_terms_collection_order_made_today: false,
+      fm_payment_terms_enforcement_action: 'PRIS',
+      fm_payment_terms_earliest_release_date: null,
+      fm_payment_terms_prison_and_prison_number: null,
+      fm_payment_terms_reason_account_is_on_noenf: null,
+      fm_payment_terms_hold_enforcement_on_account: false,
+      fm_payment_terms_add_enforcement_action: null,
+      fm_payment_terms_collection_order_date: null,
+      fm_payment_terms_has_days_in_default: null,
+      fm_payment_terms_payment_card_request: null,
+      fm_payment_terms_suspended_committal_date: null,
+    };
+
+    const result = finesMacPayloadBuildAccountPaymentTerms(state);
+
+    expect(result.enforcements).toEqual([
+      {
+        result_id: 'PRIS',
+        enforcement_result_responses: [
+          {
+            parameter_name: 'earliestreleasedate',
+            response: null,
+          },
+          {
+            parameter_name: 'prisonandprisonnumber',
+            response: null,
+          },
+        ],
+      },
+    ]);
+  });
 });
