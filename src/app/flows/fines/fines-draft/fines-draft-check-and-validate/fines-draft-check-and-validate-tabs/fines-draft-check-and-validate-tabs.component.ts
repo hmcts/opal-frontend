@@ -21,7 +21,12 @@ import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -30,7 +35,10 @@ import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/m
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     FinesDraftTableWrapperComponent,
-    MojBannerComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
   ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
