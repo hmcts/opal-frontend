@@ -65,6 +65,9 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
               data: {
                 finesMacState: {},
                 finesDraftState: {},
