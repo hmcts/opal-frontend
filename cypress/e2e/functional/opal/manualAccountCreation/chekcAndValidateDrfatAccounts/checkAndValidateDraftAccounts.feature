@@ -89,7 +89,7 @@ Feature: Navigate and edit sections from task list of draft accounts
     And I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
 
-  @PO-969 @PO-601 @only
+  @PO-969 @PO-601
   Scenario: As a user I can reject an account with a reason, and view the details of the rejected account
     #PO-601
     #AC1. If a user is on the Review Accounts screen - Rejected tab, and selects the name of a defendant associated to an account listed on the tab,
