@@ -595,7 +595,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
       expect(request.body.timeline_data[1]).to.have.property('status', 'Publishing Pending');
       expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-      expect(request.body.timeline_data[1]).to.have.property('reason_text', 'You have approved John Doe\'s account');
+      expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
     });
   });
 });
