@@ -124,5 +124,5 @@ Then('I see {string} on the status heading', (expectedStatus: string) => {
 });
 //div[id="success-message"]
 Then('I see success message on the banner {string}', (expectedMessage: string) => {
-  cy.get('div[id="success-message"]').should('exist').and('contain', expectedMessage);
+  cy.get('div[type="success"]').should('exist').and('contain', expectedMessage);
 });
