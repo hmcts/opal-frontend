@@ -103,7 +103,7 @@
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
         </td>
-        @if (activeTab === 'deleted') {
+        @if (activeTab === 'deleted' || activeTab === 'failed') {
           <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
         } @else {
           <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>

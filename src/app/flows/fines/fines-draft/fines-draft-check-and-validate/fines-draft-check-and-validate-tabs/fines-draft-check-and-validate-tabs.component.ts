@@ -80,7 +80,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
       fragment$,
       (tab) => {
-        if (tab === 'deleted') {
+        if (tab === 'deleted' || tab === 'failed') {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
