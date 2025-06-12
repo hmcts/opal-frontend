@@ -122,7 +122,6 @@ Then('the account status is {string}', (expectedStatus: string) => {
 Then('I see {string} on the status heading', (expectedStatus: string) => {
   cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', expectedStatus);
 });
-//div[id="success-message"]
 Then('I see success message on the banner {string}', (expectedMessage: string) => {
-  cy.get('div[id="success-message"]').should('exist').and('contain', expectedMessage);
+  cy.get('div[opal-lib-moj-alert]').should('exist').and('contain', expectedMessage);
 });

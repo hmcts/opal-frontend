@@ -89,11 +89,15 @@ Feature: Navigate and edit sections from task list of draft accounts
     And I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
 
-  @PO-969
-  Scenario: As a user I can reject an account with reason
+  @PO-969 @PO-601 @only
+  Scenario: As a user I can reject an account with a reason, and view the details of the rejected account
+    #PO-601
+    #AC1. If a user is on the Review Accounts screen - Rejected tab, and selects the name of a defendant associated to an account listed on the tab,
+    # the user will be navigated to the Rejected Account screen for the draft account.
+
+    #PO-969
     #AC.1 If a checker has opened a draft account with a submitted or resubmitted status via the Review Accounts -
     #To Review screen, and has selected both the 'Reject' radio button and provided a reason for rejection, then the following will occur upon the user selecting the 'Continue' button:
-    #Given I create a "adultOrYouthOnly" draft account with the following details:
     And I create a "adultOrYouthOnly" draft account with the following details:
       | Account_status                          | Submitted                |
       | account.defendant.forenames             | Harry                    |
@@ -124,6 +128,12 @@ Feature: Navigate and edit sections from task list of draft accounts
     And I click on the "Potter, Harry" link
     Then I see "Mr Harry POTTER" on the page header
     And the account status is "Rejected"
+
+    #PO-601
+    #AC.8 I click the back link, I will be returned to the 'Review Accounts' screen
+    And I click on the "Back" link
+
+    Then I see "Review accounts" on the page header
 
   @PO-1073
   Scenario: As a user I can view an account that has failed to publish
