@@ -35,6 +35,7 @@ describe('FinesMacDeleteAccountConfirmation', () => {
               },
             },
           },
+          },
         },
       ],
       componentProperties: {},
