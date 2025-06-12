@@ -108,22 +108,22 @@ describe('ReviewAccountDeletionComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
+    // cy.intercept(
+    //   {
+    //     method: 'GET',
+    //     pathname: '/opal-fines-service/offences',
+    //   },
+    //   (req) => {
+    //     const requestedCjsCode = req.query['q'];
+    //     const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
+    //       (offence) => offence.get_cjs_code === requestedCjsCode,
+    //     );
+    //     req.reply({
+    //       count: matchedOffences.length,
+    //       refData: matchedOffences,
+    //     });
+    //   },
+    // ).as('getOffenceByCjsCode');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
