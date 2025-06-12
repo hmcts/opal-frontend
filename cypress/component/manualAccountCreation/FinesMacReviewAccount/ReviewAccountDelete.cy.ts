@@ -5,7 +5,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
-//../../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
@@ -77,6 +76,9 @@ describe('ReviewAccountDeletionComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
               data: {
                 reviewAccountFetchMap: {
                   finesMacStore: finesMacState,
@@ -108,22 +110,7 @@ describe('ReviewAccountDeletionComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
-    // cy.intercept(
-    //   {
-    //     method: 'GET',
-    //     pathname: '/opal-fines-service/offences',
-    //   },
-    //   (req) => {
-    //     const requestedCjsCode = req.query['q'];
-    //     const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-    //       (offence) => offence.get_cjs_code === requestedCjsCode,
-    //     );
-    //     req.reply({
-    //       count: matchedOffences.length,
-    //       refData: matchedOffences,
-    //     });
-    //   },
-    // ).as('getOffenceByCjsCode');
+
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -135,7 +122,7 @@ describe('ReviewAccountDeletionComponent', () => {
     });
   });
 
-  it.only('AC.1, AC.2 Reason for deletion screen created as per the design artefact', { tags: ['@PO-597'] }, () => {
+  it('AC.1, AC.2 Reason for deletion screen created as per the design artefact', { tags: ['@PO-597'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, true);
 
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
@@ -168,21 +155,21 @@ describe('ReviewAccountDeletionComponent', () => {
     () => {
       cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
       let payload = structuredClone(finesAccountPayload);
-      payload.draft_account_id = 342;
+      payload.draft_account_id = 42;
       setupComponent(finesAccountPayload, payload, false, true);
 
-      cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').type('test reason');
+      cy.get(DOM_ELEMENTS.commentInput).should('exist').type('test reason');
       cy.get(DOM_ELEMENTS.deleteConfirmation).should('exist').click();
 
       cy.wait('@patchDraftAccount').then(({ request }) => {
         expect(request.body).to.exist;
-        expect(request.url).to.include('/opal-fines-service/draft-accounts/342');
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/42');
         expect(request.method).to.equal('PATCH');
 
         expect(request.body).to.have.property('account_status', 'Deleted');
         expect(request.body).to.have.property('timeline_data');
 
-        expect(request.body.timeline_data[0]).to.have.property('username', 'Test 1');
+        expect(request.body.timeline_data[0]).to.have.property('username', 'Timmy Test');
         expect(request.body.timeline_data[0]).to.have.property('status', 'Submitted');
         expect(request.body.timeline_data[0]).to.have.property('status_date', '2023-07-03');
         expect(request.body.timeline_data[0]).to.have.property('reason_text', null);
@@ -190,12 +177,8 @@ describe('ReviewAccountDeletionComponent', () => {
         expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Test');
         expect(request.body.timeline_data[1]).to.have.property('status', 'Deleted');
         expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
-        expect(request.body.timeline_data[1]).to.have.property(
-          'reason_text',
-          'I have rejected this account because the surname is incorrect',
-        );
+        expect(request.body.timeline_data[1]).to.have.property('reason_text', 'test reason');
       });
     },
   );
-
 });

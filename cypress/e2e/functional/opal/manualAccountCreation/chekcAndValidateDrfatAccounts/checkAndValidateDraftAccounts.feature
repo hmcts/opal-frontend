@@ -64,8 +64,7 @@ Feature: Navigate and edit sections from task list of draft accounts
         Given I navigate to Check and Validate Draft Accounts
         And I see "Review accounts" on the page header
 
-        And the account status is "In review"
-        #And I see the "Review history" section heading
+        And I see "To review" tab on the page header
 
         And I click on the "Barn, Peter" link
         Then I see "Mr Peter BARN" on the page header
@@ -97,32 +96,28 @@ Feature: Navigate and edit sections from task list of draft accounts
         Given I navigate to Check and Validate Draft Accounts
         And I see "Review accounts" on the page header
 
-        And the account status is "In review"
-        #And I see the "Review history" section heading
+        And I see "To review" tab on the page header
 
         And I click on the "Barn, Peter" link
         Then I see "Mr Peter BARN" on the page header
         And I click on the "Delete account" link
 
         Then I see "Are you sure you want to delete this account?" on the page header
-        And I click on the "Cancel" link
-        And I see "Review accounts" on the page header
+        And I click on the "No - cancel" link
+        And I see "Mr Peter BARN" on the page header
 
-        And I click on the "Barn, Peter" link
-        Then I see "Mr Peter BARN" on the page header
         And I click on the "Delete account" link
-
         Then I see "Are you sure you want to delete this account?" on the page header
         And I enter "test reason" into the "Reason" text field
-        And I click on the "Cancel" link
+        And I click on the "No - cancel" link
 
         Then I select cancel on the pop up window
         Then I see "Are you sure you want to delete this account?" on the page header
 
-        And I enter "test reason" into the "Reason" text field
-        And I click on the "Cancel" link
-        And I select OK on the pop up window
-        And I see "Review accounts" on the page header
+        #And I click on the "No - cancel" link
+        And  I click "No - cancel", a window pops up and I click Ok
+        # And I select OK on the pop up window
+        And I see "Mr Peter BARN" on the page header
 
 
 
