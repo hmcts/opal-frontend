@@ -18,9 +18,8 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { REJECTED_ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
-import { set } from 'cypress/types/lodash';
 
-describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
+describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
   let reviewAccountFetchMap = {
@@ -150,13 +149,11 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     cy.get(DOM_ELEMENTS.timelineDate).should('exist');
     cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
 
-    //Confirm if this should exist AC3c
     cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
     cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
     cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
     cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
 
-    //Confirm if this should exist AC3c
     cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
     cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
     cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
@@ -346,68 +343,3 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     cy.get(DOM_ELEMENTS.minorCreditorPaymentMethodValue).children().should('contain.text', '—');
   });
 });
-// AC2. The Failed Account screen will be created as per the design artefact linked above, such that:
-
-// AC2a. The full name of the defendant will be displayed as a heading in the format of <title> <first name> <LAST NAME> or <Company name>
-
-// AC2b. Above the name of the defendant, a banner will be displayed stating the error message: "There was a problem publishing this account. Please contact your line manager."
-
-// AC2bi. This banner should always be displayed for accounts that have a status of 'Publishing failed'
-
-// AC2c. Below the defendant full name heading, will be a red status label displaying the text 'Failed'
-
-// AC2d. Below the status label, will be a Review History section as described in AC3
-
-// AC2e. Below the Review History section, will be an array of summary tables displaying the data entered during the manual account creation process, as described across AC4, 5 and 6.
-
-// AC3. The Review History will be displayed as follows;
-
-// AC3a. A heading of 'Review History' in bold
-
-// AC3b. The list of the history actions described in AC3b in PO-594 will be displayed
-
-// AC3c. History actions where an account has been approved or deleted, will not be shown
-
-// AC3d. History items will be ordered by date, such that the most recent history items will be displayed first
-
-// AC4. The array of summary tables will be displayed in the following order, if the defendant is an Adult or Youth only, displaying the associated data as described in the Data section above:
-
-// AC4a. Business Unit, Account Type, Defendant type
-
-// AC4ai. Language Preferences will also be displayed if the associated BU is Welsh speaking
-
-// AC4b. Court Details
-
-// AC4c. Personal Details
-
-// AC4d. Contact Details
-
-// AC4e. Employer Details
-
-// AC4f. Offences and Impositions (a 'Hide' button will also be displayed against each offence)
-
-// AC4g. Payment Terms
-
-// AC4h. Account comments and notes
-
-// AC5. The array of summary tables will be displayed in the following order, if the defendant is an Adult or Youth with a parent or guardian to pay, displaying the associated data as described in the Data section above:
-
-// AC5a. Business Unit, Account Type, Defendant type
-
-// AC5ai. Language Preferences will also be displayed if the associated BU is Welsh speaking
-
-// AC5b. Court Details
-
-// AC5c. Parent or guardian details
-
-// AC5d. Contact Details
-
-// AC5e. Employer Details
-
-// AC5f. Personal Details
-
-// AC5g. Offences and Impositions (a 'Hide' button will also be displayed against each offence)
-
-// AC5h. Payment Terms
-
-// AC5i. Account comments and notes
