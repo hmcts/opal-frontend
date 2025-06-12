@@ -198,10 +198,10 @@ describe('ReviewAccountDeletionComponent', () => {
     },
   );
 
-  it('AC.4 Cancel link displayed below the delete button',{tags: ['@PO-597']}, ()=> {
+  it('AC.4 Cancel link displayed below the delete button', { tags: ['@PO-597'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload, false, true);
 
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Are you sure you want to delete this account?');
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-  })
+  });
 });

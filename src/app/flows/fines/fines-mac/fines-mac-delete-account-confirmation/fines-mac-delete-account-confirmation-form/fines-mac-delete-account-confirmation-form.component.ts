@@ -103,4 +103,15 @@ export class FinesMacDeleteAccountConfirmationFormComponent
       this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
     }
   }
+
+  /**
+   * Checks whether the form is dirty and the reason field is not empty, and the form is not submitted
+   *
+   * @returns boolean
+   */
+  protected override hasUnsavedChanges(): boolean {
+    return (
+      this.form.dirty && this.form.controls['fm_delete_account_confirmation_reason'].value !== '' && !this.formSubmitted
+    );
+  }
 }

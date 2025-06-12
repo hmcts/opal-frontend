@@ -117,5 +117,5 @@ export const DOM_ELEMENTS = {
   commentInput: 'textarea[id="fm_delete_account_confirmation_reason"]',
   commentCharHint: 'div[id="fm_delete_account_confirmation_reason-hint"]',
   deleteConfirmation: 'button[id="confirmDeletion"]',
-  cancelLink: 'a.govuk-link.button-link'
+  cancelLink: 'a.govuk-link.button-link',
 };
