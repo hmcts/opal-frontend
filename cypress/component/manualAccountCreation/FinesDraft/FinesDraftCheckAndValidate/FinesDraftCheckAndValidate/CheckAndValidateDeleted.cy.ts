@@ -12,6 +12,7 @@ import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
 import { TABLE_HEADINGS_DELETED } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
+  interceptCAVGetFailedAccounts,
   interceptCAVGetRejectedAccounts,
   interceptCAVGetToReviewAccounts,
 } from './intercepts/check-and-validate-intercepts';
@@ -48,6 +49,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetDeletedAccounts(200, deletedMockData);
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     //Get the test user and business unit from the mock data
     const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id;
@@ -77,6 +79,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetDeletedAccounts(200, deletedMockData);
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 
@@ -135,6 +138,7 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetDeletedAccounts(200, deletedMockData);
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 

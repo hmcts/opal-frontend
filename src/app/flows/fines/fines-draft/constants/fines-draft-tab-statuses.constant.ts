@@ -24,9 +24,9 @@ export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
     historicWindowInDays: 7,
   },
   {
-    tab: 'error',
+    tab: 'failed',
     statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
-    prettyName: 'Error',
+    prettyName: 'Failed',
   },
   {
     tab: 'to-review',
