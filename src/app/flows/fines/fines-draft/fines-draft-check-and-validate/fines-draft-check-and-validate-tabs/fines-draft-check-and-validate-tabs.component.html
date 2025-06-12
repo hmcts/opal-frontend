@@ -27,12 +27,20 @@
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
     ></opal-lib-moj-sub-navigation-item>
-    <opal-lib-moj-sub-navigation-item
-      subNavItemId="checker-failed-tab"
-      [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="failed"
-      subNavItemText="Failed"
-    ></opal-lib-moj-sub-navigation-item>
+    @if (failedCount$ | async; as failedCount) {
+      <opal-lib-moj-sub-navigation-item
+        subNavItemId="checker-failed-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="failed"
+        subNavItemText="Failed"
+      >
+        @if (failedCount !== '0') {
+          <opal-lib-moj-badge badge badgeId="checker-failed-tab-failed-count">
+            {{ failedCount }}
+          </opal-lib-moj-badge>
+        }
+      </opal-lib-moj-sub-navigation-item>
+    }
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
     @case ('to-review') {
