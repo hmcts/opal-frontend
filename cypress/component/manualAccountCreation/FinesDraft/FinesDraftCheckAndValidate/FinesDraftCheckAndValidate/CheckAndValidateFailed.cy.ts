@@ -9,7 +9,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DRAFT_SESSION_USER_STATE_MOCK } from './mocks/check-and-validate-session-mock';
 import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
-import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
+import { NAVIGATION_LINKS, TABLE_HEADINGS, TABLE_HEADINGS_FAILED } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
   interceptCAVGetFailedAccounts,
@@ -107,14 +107,53 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
     interceptCAVGetRejectedAccounts(200, emptyMockData);
     interceptCAVGetToReviewAccounts(200, emptyMockData);
     interceptCAVGetDeletedAccounts(200, emptyMockData);
+    interceptCAVGetFailedAccounts(200, emptyMockData);
 
     setupComponent();
 
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
 
     cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Failed');
     cy.get('p').should('exist').and('contain', 'There are no failed accounts');
     cy.get(DOM_ELEMENTS.table).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.failedCountIcon).should('not.exist');
+  });
+
+  it('(AC.2c) should display the Failed account count for 1-99 accounts', { tags: ['@PO-1059'] }, () => {
+    const count = [1, 2, 30, 49, 80, 99];
+    cy.wrap(count).each((accountCount) => {
+      interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+      interceptCAVGetFailedAccounts(200, { count: accountCount, summaries: [] });
+
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+      cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
+      cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Failed');
+
+      cy.get(DOM_ELEMENTS.failedCountIcon).should('exist');
+      cy.get(DOM_ELEMENTS.failedCountIcon).should('contain', accountCount.toString());
+    });
+  });
+
+  it('(AC.2c) should display the Failed account count for 99+ accounts', { tags: ['@PO-1059'] }, () => {
+    interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetFailedAccounts(200, { count: 100, summaries: [] });
+
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
+    cy.get(DOM_ELEMENTS.statusHeading).should('exist').and('contain', 'Failed');
+
+    cy.get(DOM_ELEMENTS.failedCountIcon).should('exist');
+    cy.get(DOM_ELEMENTS.failedCountIcon).should('contain', '99+');
   });
 
   it('(AC.3) should display the Failed tab correctly when there are draft records', { tags: ['@PO-1059'] }, () => {
@@ -129,6 +168,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
     const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_id;
 
     setupComponent();
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
     cy.get(DOM_ELEMENTS.table).should('exist');
@@ -141,7 +181,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
     //Check table headings
     cy.get(DOM_ELEMENTS.tableHeadings).each((heading, index) => {
-      const expectedHeading = TABLE_HEADINGS[index];
+      const expectedHeading = TABLE_HEADINGS_FAILED[index];
       cy.wrap(heading).should('contain', expectedHeading);
     });
   });
@@ -155,6 +195,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
     setupComponent();
 
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
 
     cy.get(DOM_ELEMENTS.tableHeadings).contains('th', 'Date failed').should('have.attr', 'aria-sort', 'ascending');
@@ -165,7 +206,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
       .within(() => {
         cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
         cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.changed).contains('4 days ago');
         cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
@@ -176,7 +217,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
       .within(() => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.changed).contains('Today');
         cy.get(DOM_ELEMENTS.accountType).contains('Fine');
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
@@ -189,7 +230,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
       .within(() => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.changed).contains('Today');
         cy.get(DOM_ELEMENTS.accountType).contains('Fine');
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
@@ -198,13 +239,13 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
       .within(() => {
         cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
         cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.changed).contains('4 days ago');
         cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
   });
 
-  it.only('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-1059'] }, () => {
+  it('(AC.4b) should have pagination for over 25 accounts', { tags: ['@PO-1059'] }, () => {
     const failedMockData = structuredClone(OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK);
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, { count: 0, summaries: [] });
@@ -213,6 +254,7 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
 
     setupComponent();
 
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Failed').click();
 
     cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');

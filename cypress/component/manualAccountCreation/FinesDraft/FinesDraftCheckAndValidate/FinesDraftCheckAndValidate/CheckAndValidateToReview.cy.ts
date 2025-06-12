@@ -12,6 +12,7 @@ import { DOM_ELEMENTS } from './constants/fines_draft_cav_elements';
 import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cav_tableConstants';
 import {
   interceptCAVGetDeletedAccounts,
+  interceptCAVGetFailedAccounts,
   interceptCAVGetRejectedAccounts,
   interceptCAVGetToReviewAccounts,
 } from './intercepts/check-and-validate-intercepts';
@@ -51,6 +52,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     interceptCAVGetRejectedAccounts(200, emptyMockData);
     interceptCAVGetToReviewAccounts(200, emptyMockData);
     interceptCAVGetDeletedAccounts(200, emptyMockData);
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 
@@ -98,6 +100,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     interceptCAVGetRejectedAccounts(200, emptyMockData);
     interceptCAVGetToReviewAccounts(200, emptyMockData);
     interceptCAVGetDeletedAccounts(200, emptyMockData);
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 
@@ -113,6 +116,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, toReviewMockData);
     interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     //Get the test user and business unit from the mock data
     const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id;
@@ -141,6 +145,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, toReviewMockData);
     interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 
@@ -198,6 +203,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
     interceptCAVGetRejectedAccounts(200, { count: 0, summaries: [] });
     interceptCAVGetToReviewAccounts(200, toReviewMockData);
     interceptCAVGetDeletedAccounts(200, { count: 0, summaries: [] });
+    interceptCAVGetFailedAccounts(200, { count: 0, summaries: [] });
 
     setupComponent();
 
