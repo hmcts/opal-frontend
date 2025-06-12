@@ -122,3 +122,6 @@ Then('the account status is {string}', (expectedStatus: string) => {
 Then('I see {string} tab on the page header', (tabName: string) => {
   cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', tabName);
 });
+Then('I see success message on the banner {string}', (expectedMessage: string) => {
+  cy.get('div[type="success"]').should('exist').and('contain', expectedMessage);
+});

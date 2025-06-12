@@ -78,8 +78,8 @@ Feature: Navigate and edit sections from task list of draft accounts
         And I see "To review" on the status heading
 
         Then I see green banner on the top of the page
-    #this step covered in PO-969, waiting to be merged
-    #And I see success message on the banner "You have deleted Peter Barn account"
+
+        And I see success message on the banner "You have deleted Peter Barn account"
 
     @PO-597
     Scenario: As a user I can Cancel deleting the account
