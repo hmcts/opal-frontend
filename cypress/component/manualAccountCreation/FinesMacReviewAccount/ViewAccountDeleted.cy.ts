@@ -62,6 +62,12 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
               data: {
                 reviewAccountFetchMap: FetchMap,
               },
+              paramMap: {
+                get: (key: string) => {
+                  if (key === 'draftAccountId') return '1';
+                  return null;
+                },
+              },
             },
           },
         },
