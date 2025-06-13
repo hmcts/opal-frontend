@@ -73,8 +73,8 @@
           [existingSortState]="tableSort"
           [isApprovedTab]="false"
           [isChecker]="true"
-          [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
+          [activeTab]="activeTab"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {
