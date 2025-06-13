@@ -2418,13 +2418,13 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^22.0.0":
-  version: 22.0.1
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:22.0.1"
+  version: 22.1.0
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:22.1.0"
   dependencies:
     "@cucumber/ci-environment": "npm:^10.0.1"
     "@cucumber/cucumber": "npm:^11.0.0"
     "@cucumber/cucumber-expressions": "npm:^18.0.0"
-    "@cucumber/gherkin": "npm:^30.0.0"
+    "@cucumber/gherkin": "npm:^32.0.0"
     "@cucumber/html-formatter": "npm:^21.7.0"
     "@cucumber/message-streams": "npm:^4.0.1"
     "@cucumber/messages": "npm:^27.0.0"
@@ -2450,7 +2450,7 @@ __metadata:
     cucumber-html-formatter: dist/bin/cucumber-html-formatter.js
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
-  checksum: 10/90b9fe9b772e871b39b0f71cfd084ac6f2b223ef23298d32018b0d2657954f048fb2a4d20d8e8881ff427eef923be0854f448bb8f0010e618307f873b09e1d02
+  checksum: 10/bbb3b0c539d90b3025f748e461670548d84df2ccf51f7be8470b83b84d3486b0b659de420a6e1c443f551eb7dc2cfc9b544e9e7da2356845167a284d387c2be9
   languageName: node
   linkType: hard
 
@@ -2575,7 +2575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/gherkin@npm:30.0.4, @cucumber/gherkin@npm:^30.0.0":
+"@cucumber/gherkin@npm:30.0.4":
   version: 30.0.4
   resolution: "@cucumber/gherkin@npm:30.0.4"
   dependencies:
@@ -2590,6 +2590,15 @@ __metadata:
   dependencies:
     "@cucumber/messages": "npm:>=19.1.4 <=24"
   checksum: 10/f6c6f33e9afa30c45c837b37f00d9dc501703a2613a809ed9d4439ef47a3e365d79b4e80f090471838d962ba76db50e66442935fcc3df372eb818f3023b00f24
+  languageName: node
+  linkType: hard
+
+"@cucumber/gherkin@npm:^32.0.0":
+  version: 32.1.2
+  resolution: "@cucumber/gherkin@npm:32.1.2"
+  dependencies:
+    "@cucumber/messages": "npm:>=19.1.4 <28"
+  checksum: 10/f1a0d37a40d98303a4d3887927226ba18262c732bc4f57ed59937da175fdcbe65cee966ff8f5bce3592b8d2aca4c04fc5f7ec803a66270ff736a24413075e6df
   languageName: node
   linkType: hard
 
@@ -12880,8 +12889,8 @@ __metadata:
   linkType: hard
 
 "mocha@npm:^11.0.0, mocha@npm:^11.1.0":
-  version: 11.5.0
-  resolution: "mocha@npm:11.5.0"
+  version: 11.6.0
+  resolution: "mocha@npm:11.6.0"
   dependencies:
     browser-stdout: "npm:^1.3.1"
     chokidar: "npm:^4.0.1"
@@ -12899,14 +12908,14 @@ __metadata:
     serialize-javascript: "npm:^6.0.2"
     strip-json-comments: "npm:^3.1.1"
     supports-color: "npm:^8.1.1"
-    workerpool: "npm:^6.5.1"
+    workerpool: "npm:^9.2.0"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
     yargs-unparser: "npm:^2.0.0"
   bin:
     _mocha: bin/_mocha
     mocha: bin/mocha.js
-  checksum: 10/b0cd3be7c2721904f843c1ba8c283c45b38831a1cd9627b0f9a90b7581c8715c5d1f6c432c6771c4f8b150f70b8283288d4c9489469ef5599fe93ab11bd145f2
+  checksum: 10/1bbf367e92f32b15cdd52b4e7b05700877f004f8c92ea63310aa6e7983a66c345d20a54779b3312a9c6ab682d36b1caae880fe5df5e836758526090a7777bd68
   languageName: node
   linkType: hard
 
@@ -17422,10 +17431,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workerpool@npm:^6.5.1":
-  version: 6.5.1
-  resolution: "workerpool@npm:6.5.1"
-  checksum: 10/b1b00139fe62f2ebec556a2af8085bf6e7502ad26cf2a4dcb34fb4408b2e68aa12c88b0a50cb463b24f2806d60fa491fc0da933b56ec3b53646aeec0025d14cb
+"workerpool@npm:^9.2.0":
+  version: 9.3.2
+  resolution: "workerpool@npm:9.3.2"
+  checksum: 10/3d6354bea57aa7a459400858f04e3e9f19438b2783435f35d230248aee7b8c36e49596ea7574c4d8463e854784f28c50aab0a78a515e60315573f74c82d44c82
   languageName: node
   linkType: hard
 
