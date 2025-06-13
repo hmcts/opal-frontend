@@ -9,9 +9,9 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { of } from 'rxjs';
 import { DOM_ELEMENTS } from './constants/fines_draft_cam_checker_inputter_elements';
+import { NAVIGATION_LINKS } from './constants/fines_draft_cav_tableConstants';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../FinesDraftCreateAndManage/FinesDraftCreateAndManageComponent/mocks/fines-draft-session-mock';
-import { NAVIGATION_LINKS } from './constants/fines_draft_cav_tableConstants';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
 
 describe('FinesDraftCheckAndValidateComponent', () => {

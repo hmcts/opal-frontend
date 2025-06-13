@@ -132,4 +132,26 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     expect(finesDraftStore.checker()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_REVIEW_ACCOUNT);
   });
+
+  it('should show "0" when getDraftAccounts returns count 0', async () => {
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 0, summaries: [] }));
+    finesDraftService.populateTableData.and.returnValue([]);
+
+    component.ngOnInit();
+
+    const failedCount = await firstValueFrom(component.failedCount$);
+    expect(failedCount).toBe('0');
+
+    const tabData = await firstValueFrom(component.tabData$);
+    expect(tabData).toEqual([]);
+  });
+
+  it('should display "99+" when getDraftAccounts returns count >= 100', async () => {
+    mockOpalFinesService.getDraftAccounts.and.returnValue(of({ count: 100, summaries: [] }));
+
+    component.ngOnInit();
+
+    const failedCount = await firstValueFrom(component.failedCount$);
+    expect(failedCount).toBe('99+');
+  });
 });
