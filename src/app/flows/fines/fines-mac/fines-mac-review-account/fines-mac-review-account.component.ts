@@ -303,6 +303,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
+    if (this.finesMacStore.accountDetails().formData.fm_create_account_account_type === 'fixedPenalty') {
+      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      return;
+    }
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);

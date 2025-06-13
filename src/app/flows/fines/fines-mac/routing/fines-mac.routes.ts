@@ -247,7 +247,13 @@ export const routing: Routes = [
       title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation,
       routePermissionId: [draftRootPermissionIds['create-and-manage']],
     },
-    resolve: { title: TitleResolver },
+    resolve: { 
+      title: TitleResolver,      
+      courts: fetchEnforcementCourtsResolver,
+      localJusticeAreas: fetchSendingCourtsResolver,
+      results: fetchResultsResolver,
+      majorCreditors: fetchMajorCreditorsResolver, 
+    },
   },
   {
     path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:draftAccountId`,
@@ -276,6 +282,19 @@ export const routing: Routes = [
     resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+    },
+  },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails,
+    loadComponent: () =>
+      import('../fines-mac-fixed-penalty-details/fines-mac-fixed-penalty-details.component').then(
+        (c) => c.FinesMacFixedPenaltyDetailsComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    canDeactivate: [canDeactivateGuard],
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
       routePermissionId: [draftRootPermissionIds['create-and-manage']],
     },
   },

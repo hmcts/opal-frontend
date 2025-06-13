@@ -1,0 +1,7 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-mac-fixed-penalty-details-form
+    [defendantType]="defendantType"
+    (formSubmit)="handlePersonalDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-mac-fixed-penalty-details-form>
+</div>
