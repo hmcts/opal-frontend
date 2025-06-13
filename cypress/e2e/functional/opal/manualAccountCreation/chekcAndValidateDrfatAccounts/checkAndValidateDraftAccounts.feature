@@ -258,7 +258,7 @@ Feature: Check and Validate - Checker
     Given I navigate to Check and Validate Draft Accounts
     And I see "Review accounts" on the page header
 
-    And I see "To review" tab on the page header
+    And I see "To review" on the status heading
 
     And I click on the "Barn, Peter" link
     Then I see "Mr Peter BARN" on the page header
@@ -273,7 +273,7 @@ Feature: Check and Validate - Checker
 
     Then I see green banner on the top of the page
 
-    And I see success message on the banner "You have deleted Peter Barn account"
+    And I see success message on the banner "You have deleted Barn, Peter's account"
 
   @PO-597
   Scenario: As a user I can Cancel deleting the account
@@ -290,7 +290,7 @@ Feature: Check and Validate - Checker
     Given I navigate to Check and Validate Draft Accounts
     And I see "Review accounts" on the page header
 
-    And I see "To review" tab on the page header
+    And I see "To review" on the status heading
 
     And I click on the "Barn, Peter" link
     Then I see "Mr Peter BARN" on the page header
@@ -303,9 +303,9 @@ Feature: Check and Validate - Checker
     And I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
     And I enter "test reason" into the "Reason" text field
-    And I click on the "No - cancel" link
 
-    Then I select cancel on the pop up window
+
+    Then I click "No - cancel", a window pops up and I click Cancel
     Then I see "Are you sure you want to delete this account?" on the page header
 
     #And I click on the "No - cancel" link
