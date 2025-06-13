@@ -16,7 +16,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacDeleteAccountConfirmationFormComponent);
     component = fixture.componentInstance;
-    component.accountId = '123';
+    component.accountId = 123;
     fixture.detectChanges();
   });
 
@@ -81,7 +81,7 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
   });
 
   it('should handleRoute method correctly when there is an accountId', () => {
-    component.accountId = '123';
+    component.accountId = 123;
     const route = 'createAccount';
     spyOn(component['router'], 'navigate');
 

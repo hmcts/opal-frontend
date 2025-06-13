@@ -511,7 +511,7 @@ describe('OpalFines', () => {
   });
 
   it('should send a PATCH request to update the draft account payload', () => {
-    const accountId = '456';
+    const accountId = 456;
     const body = OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK;
     const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;

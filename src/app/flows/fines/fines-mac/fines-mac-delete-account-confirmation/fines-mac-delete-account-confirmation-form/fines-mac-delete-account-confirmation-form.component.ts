@@ -41,7 +41,7 @@ export class FinesMacDeleteAccountConfirmationFormComponent
   implements OnInit, OnDestroy
 {
   @Input({ required: true }) public referrer!: string;
-  @Input({ required: true }) public accountId!: string | null;
+  @Input({ required: false }) public accountId!: number | null;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacDeleteAccountConfirmationForm>();
 
   public readonly finesMacStore = inject(FinesMacStore);

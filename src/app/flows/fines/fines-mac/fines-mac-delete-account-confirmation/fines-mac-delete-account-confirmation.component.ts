@@ -6,7 +6,7 @@ import { IFinesMacDeleteAccountConfirmationForm } from './interfaces/fines-mac-d
 import { FinesMacDeleteAccountConfirmationFormComponent } from './fines-mac-delete-account-confirmation-form/fines-mac-delete-account-confirmation-form.component';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
-import { IFinesMacPatchAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-patch-account.interface';
+import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -37,7 +37,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
-  public accountId = this.route.snapshot.paramMap.get('draftAccountId');
+  public accountId: number | null = Number(this.route.snapshot.paramMap.get('draftAccountId'));
   public referrer = this.setReferrer();
 
   private readonly finesRoutes = FINES_ROUTING_PATHS;
@@ -65,9 +65,9 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * Creates the payload for the PATCH request to delete an account.
    *
    * @param form - The form data for the account comments and notes.
-   * @returns {IFinesMacPatchAccountPayload} The payload containing the account information to be patched.
+   * @returns {IOpalFinesDraftAccountPatchPayload} The payload containing the account information to be patched.
    */
-  private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IFinesMacPatchAccountPayload {
+  private createPatchPayload(form: IFinesMacDeleteAccountConfirmationForm): IOpalFinesDraftAccountPatchPayload {
     const reason_text = form.formData.fm_delete_account_confirmation_reason;
     const { version, timeline_data } = this.finesDraftStore.getFinesDraftState();
     const status_date = this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd');
@@ -80,8 +80,9 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       account_status: status,
       validated_by_name: null,
       business_unit_id,
-      version,
+      version: version || 0,
       timeline_data: [...timeline_data, { username, status, status_date, reason_text }],
+      reason_text,
     };
   }
 
@@ -94,7 +95,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    * It processes the response using `processPatchResponse` method and handles any errors by scrolling to the top of the page.
    * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private handlePatchRequest(payload: IFinesMacPatchAccountPayload): void {
+  private handlePatchRequest(payload: IOpalFinesDraftAccountPatchPayload): void {
     if (!this.accountId) {
       console.error('Account ID is not defined');
       return;

@@ -32,7 +32,6 @@ import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-a
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
-import { IFinesMacPatchAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-patch-account.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 
 @Injectable({
@@ -340,19 +339,6 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
     );
-  }
-
-  /**
-   * Sends a PATCH request to update the draft account.
-   *
-   * @param body - The payload containing the account information to be patched as well as the draft account ID.
-   * @returns An Observable of the updated account payload.
-   */
-  public patchDraftAccountPayload(
-    accountId: string,
-    body: IFinesMacPatchAccountPayload,
-  ): Observable<IFinesMacAddAccountPayload> {
-    return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${accountId}`, body);
   }
 
   /**

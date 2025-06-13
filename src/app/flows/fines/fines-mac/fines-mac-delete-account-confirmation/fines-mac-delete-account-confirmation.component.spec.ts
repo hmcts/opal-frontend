@@ -83,7 +83,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
 
     expect(finesMacStore.setDeleteAccountConfirmation).toHaveBeenCalledWith(form);
     expect(mockOpalFinesService.patchDraftAccountPayload).toHaveBeenCalledWith(
-      '42',
+      42,
       jasmine.objectContaining({
         account_status: 'Deleted',
         timeline_data: jasmine.any(Array),
@@ -172,7 +172,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
       account_status: 'Deleted',
       validated_by_name: null,
       business_unit_id: finesMacStore.getBusinessUnitId(),
-      version: finesDraftStore.getFinesDraftState().version,
+      version: finesDraftStore.getFinesDraftState().version || 0,
       timeline_data: [
         {
           username: 'Test User',
@@ -181,6 +181,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
           reason_text: 'Test reason',
         },
       ],
+      reason_text: 'Test reason',
     });
   });
 
