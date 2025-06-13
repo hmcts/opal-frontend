@@ -19,7 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 
-describe('FinesMacReviewAccountComponent - View Failed Account', () => {
+describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
   let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
   let reviewAccountFetchMap = {
@@ -87,18 +87,14 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     ).as('getOffenceByCjsCode');
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,4 - should render correctly - AY', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
 
     setupComponent(fetchMap);
 
     cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
     cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
@@ -123,21 +119,30 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.3 - should render Review History section correctly', { tags: ['@PO-1073'] }, () => {
+  it('AC.3 - should render Review History section correctly', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
+
+    fetchMap.finesMacDraft.timeline_data.pop();
     fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin1',
-      status: 'Approved',
-      status_date: '2025-02-01',
-      reason_text: 'All good',
+      username: 'User.testone',
+      status: 'Submitted',
+      status_date: '2025-01-01',
+      reason_text: '',
     });
 
     fetchMap.finesMacDraft.timeline_data.push({
-      username: 'Admin2',
+      username: 'Admin.testone',
       status: 'Deleted',
-      status_date: '2025-02-02',
-      reason_text: 'Created in error',
+      status_date: '2025-01-01',
+      reason_text: 'Missing aliases',
+    });
+
+    fetchMap.finesMacDraft.timeline_data.push({
+      username: 'User.testone',
+      status: 'Resubmitted',
+      status_date: '2025-01-02',
+      reason_text: '',
     });
 
     setupComponent(fetchMap);
@@ -149,35 +154,31 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.timelineDate).should('exist');
     cy.get(DOM_ELEMENTS.timelineDescription).should('exist');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'Admin2');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Deleted');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', 'Created in error');
+    cy.get(DOM_ELEMENTS.timelineAuthor).eq(0).should('contain.text', 'User.testone');
+    cy.get(DOM_ELEMENTS.timelineDate).eq(0).should('contain.text', '02 January 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).eq(0).should('contain.text', 'Resubmitted');
+    cy.get(DOM_ELEMENTS.timelineDescription).eq(0).should('contain.text', '');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin1');
-    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 February 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Approved');
-    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'All good');
+    cy.get(DOM_ELEMENTS.timelineAuthor).eq(1).should('contain.text', 'Admin.testone');
+    cy.get(DOM_ELEMENTS.timelineDate).eq(1).should('contain.text', '01 January 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).eq(1).should('contain.text', 'Deleted');
+    cy.get(DOM_ELEMENTS.timelineDescription).eq(1).should('contain.text', 'Missing aliases');
 
-    cy.get(DOM_ELEMENTS.timelineAuthor).should('contain.text', 'Test User 1');
-    cy.get(DOM_ELEMENTS.timelineDate).should('contain.text', '01 January 2025');
-    cy.get(DOM_ELEMENTS.timeLineTitle).should('contain.text', 'Rejected');
-    cy.get(DOM_ELEMENTS.timelineDescription).should('contain.text', '');
+    cy.get(DOM_ELEMENTS.timelineAuthor).eq(2).should('contain.text', 'User.testone');
+    cy.get(DOM_ELEMENTS.timelineDate).eq(2).should('contain.text', '01 January 2025');
+    cy.get(DOM_ELEMENTS.timeLineTitle).eq(2).should('contain.text', 'Submitted');
+    cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
   });
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,5 - should render correctly - AYPG', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
     setupComponent(fetchMap);
 
     cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
     cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
@@ -202,19 +203,15 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.2,6 - should render correctly - COMP', { tags: ['@PO-1073'] }, () => {
+  it('AC.2,6 - should render correctly - COMP', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
     setupComponent(fetchMap);
 
     cy.get(DOM_ELEMENTS.heading).should('contain.text', 'test company');
-    cy.get(DOM_ELEMENTS.errorBanner).should(
-      'contain.text',
-      'There was a problem publishing this account. Please contact your line manager.',
-    );
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Failed');
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
     cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
@@ -239,9 +236,9 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['@PO-1073'] }, () => {
+  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
     fetchMap.finesMacState.businessUnit.welsh_language = true;
@@ -251,44 +248,36 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
   });
-  it(
-    'AC5ai - should show language preferences if business unit is welsh speaking - AYPG',
-    { tags: ['@PO-1073'] },
-    () => {
-      let fetchMap = structuredClone(reviewAccountFetchMap);
-      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-      fetchMap.finesMacState.businessUnit.welsh_language = true;
-      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
-
-      setupComponent(fetchMap);
-
-      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
-  it(
-    'AC6ai - should show language preferences if business unit is welsh speaking - COMP',
-    { tags: ['@PO-1073'] },
-    () => {
-      let fetchMap = structuredClone(reviewAccountFetchMap);
-      fetchMap.finesMacDraft.account_status = 'Publishing Failed';
-      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
-      fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
-      fetchMap.finesMacState.businessUnit.welsh_language = true;
-      fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
-
-      setupComponent(fetchMap);
-
-      cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
-      cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
-    },
-  );
-
-  it('AC.7 - should show em-dash for empty values', { tags: ['@PO-1073'] }, () => {
+  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['PO-616'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
-    fetchMap.finesMacDraft.account_status = 'Publishing Failed';
+    fetchMap.finesMacDraft.account_status = 'Deleted';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+    fetchMap.finesMacState.businessUnit.welsh_language = true;
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+  });
+  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['PO-616'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Deleted';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+    fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+    fetchMap.finesMacState.businessUnit.welsh_language = true;
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
+  });
+
+  it('AC.7 - should show em-dash for empty values', { tags: ['PO-616'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
 
     fetchMap.finesMacState.offenceDetails.push({
