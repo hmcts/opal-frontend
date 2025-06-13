@@ -36,6 +36,8 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 import { FinesMacReviewAccountDecisionComponent } from './fines-mac-review-account-decision/fines-mac-review-account-decision.component';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
+import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
+import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -55,6 +57,7 @@ import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/
     FinesMacReviewAccountCompanyDetailsComponent,
     FinesMacReviewAccountHistoryComponent,
     FinesMacReviewAccountDecisionComponent,
+    FinesMacReviewAccountFailedBannerComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,6 +91,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public courts!: IOpalFinesCourtRefData;
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public timelineData!: IFinesMacAccountTimelineData[];
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -127,6 +131,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     // Get payload into Fines Mac State
     this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
     this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
+
+    if (this.finesDraftStore.timeline_data()) {
+      this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();
+    }
 
     // Get reference data into variables
     this.localJusticeAreas = fetchMap.localJusticeAreas;

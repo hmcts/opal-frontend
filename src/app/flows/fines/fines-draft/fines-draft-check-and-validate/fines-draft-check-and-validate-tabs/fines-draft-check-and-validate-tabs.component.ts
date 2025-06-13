@@ -21,10 +21,29 @@ import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract
 import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
+import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
-  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
+  imports: [
+    CommonModule,
+    MojSubNavigationComponent,
+    MojSubNavigationItemComponent,
+    FinesDraftTableWrapperComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
+    MojBadgeComponent,
+  ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -47,6 +66,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
 
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
+  public failedCount$!: Observable<string>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
 
   /**
@@ -65,7 +85,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
       fragment$,
       (tab) => {
-        if (tab === 'deleted') {
+        if (tab === 'deleted' || tab === 'failed') {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
         } else {
           this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
@@ -93,6 +113,35 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   }
 
   /**
+   * Initializes the `failedCount$` observable stream to track the number of draft accounts
+   * with a "publishFailed" status. This method sets up the stream to:
+   * - Listen for tab changes and clear the draft accounts cache when the "to-review" fragment is active.
+   * - Fetch the count of draft accounts matching the specified business unit IDs, user IDs, and status.
+   * - Format the resulting count with a cap defined by `FINES_DRAFT_MAX_REJECTED`.
+   *
+   * The stream is automatically cleaned up when the component is destroyed.
+   *
+   * @private
+   */
+  private setupFailedCountStream(): void {
+    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
+      this.opalFinesService.clearDraftAccountsCache(),
+    );
+
+    this.failedCount$ = this.createCountStream(
+      fragment$,
+      () => ({
+        businessUnitIds: this.businessUnitIds,
+        notSubmittedBy: this.businessUnitUserIds,
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+      }),
+      (params) => this.opalFinesService.getDraftAccounts(params),
+      (res) => res.count,
+      (count) => this.formatCountWithCap(count, FINES_DRAFT_MAX_REJECTED),
+    );
+  }
+
+  /**
    * Handles the click event for a defendant in the fines draft process.
    *
    * Sets the current fragment and checker state in the fines draft store,
@@ -107,7 +156,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   }
 
   public ngOnInit(): void {
+    this.finesDraftStore.resetFineDraftState();
+    this.finesDraftStore.resetFragmentAndChecker();
     this.setupTabDataStream();
+    this.setupFailedCountStream();
   }
 
   public ngOnDestroy(): void {
