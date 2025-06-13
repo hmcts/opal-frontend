@@ -43,6 +43,9 @@ def getProjectLabels() {
   for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
     testLabels.add(label)
   }
+  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'skip_')) {
+    labels.add(label)
+  }
   return testLabels
 }
 def performArtifactOperations() {
@@ -165,20 +168,20 @@ withPipeline(type, product, component) {
   }
 
   afterAlways('test') {
-  script {
-    def labels = getProjectLabels()
-    def skipLabel = 'skip_opal_component'
+    script {
+      def labels = getProjectLabels()
+      def skipLabel = 'skip_opal_component'
 
-    if (!labels.contains(skipLabel)) {
-      echo "Running opal component tests (no skip label present)"
-      yarnBuilder.yarn('test:opalComponent')
-    } else {
-      echo "Skipping opal component tests due to label: ${skipLabel}"
+      if (!labels.contains(skipLabel)) {
+        echo "Running opal component tests (no skip label present)"
+        yarnBuilder.yarn('test:opalComponent')
+      } else {
+        echo "Skipping opal component tests due to label: ${skipLabel}"
+      }
+
+      archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
     }
-
-    archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }
-}
 
   afterSuccess('functionalTest:dev') {
     script {
