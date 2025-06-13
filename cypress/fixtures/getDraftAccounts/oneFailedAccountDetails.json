@@ -1,0 +1,101 @@
+{
+  "draft_account_id": 36,
+  "business_unit_id": 77,
+  "created_at": "2025-06-09T00:00:00Z",
+  "submitted_by": "L077JG",
+  "submitted_by_name": "opal-test",
+  "account": {
+    "offences": [
+      {
+        "offence_id": 33369,
+        "impositions": [
+          {
+            "result_id": "FVS",
+            "amount_paid": 80,
+            "amount_imposed": 150,
+            "minor_creditor": null,
+            "major_creditor_id": null
+          }
+        ],
+        "date_of_sentence": "09/09/1999",
+        "imposing_court_id": 770000000021
+      }
+    ],
+    "defendant": {
+      "dob": "1999-09-09",
+      "title": "Mr",
+      "gender": "M",
+      "pnc_id": null,
+      "surname": "GREEN",
+      "forenames": "Oliver",
+      "post_code": "NG1 6AA",
+      "cro_number": null,
+      "occupation": null,
+      "company_flag": false,
+      "company_name": null,
+      "debtor_detail": null,
+      "nationality_1": null,
+      "nationality_2": null,
+      "prison_number": null,
+      "address_line_1": "9 Forest Road",
+      "address_line_2": null,
+      "address_line_3": null,
+      "address_line_4": null,
+      "address_line_5": null,
+      "custody_status": null,
+      "email_address_1": "oliver.green@example.com",
+      "email_address_2": null,
+      "parent_guardian": null,
+      "interpreter_lang": null,
+      "ethnicity_observed": null,
+      "telephone_number_home": "0115 123 9876",
+      "driving_licence_number": null,
+      "ethnicity_self_defined": null,
+      "telephone_number_mobile": "07700 666555",
+      "national_insurance_number": "QQ990011H",
+      "telephone_number_business": null
+    },
+    "account_type": "fine",
+    "account_notes": [
+      { "note_type": "AA", "account_note_text": "Publishing failed: Integration error.", "account_note_serial": 1 }
+    ],
+    "originator_id": 101,
+    "payment_terms": {
+      "enforcements": null,
+      "effective_date": "2023-03-22",
+      "lump_sum_amount": 50,
+      "instalment_amount": 25,
+      "instalment_period": "W",
+      "default_days_in_jail": null,
+      "payment_terms_type_code": "I"
+    },
+    "defendant_type": "adultOrYouthOnly",
+    "originator_name": "Aberdare County Court",
+    "fp_ticket_detail": null,
+    "enforcement_court_id": 770000000021,
+    "payment_card_request": null,
+    "account_sentence_date": "1999-09-09",
+    "collection_order_date": "1999-09-20",
+    "collection_order_made": false,
+    "suspended_committal_date": null,
+    "prosecutor_case_reference": "CRN2023123995",
+    "collection_order_made_today": null
+  },
+  "account_snapshot": {
+    "account_type": "fine",
+    "created_date": "2025-06-01T09:00:00.000000Z",
+    "submitted_by": "L077JG",
+    "date_of_birth": "1999-09-09",
+    "defendant_name": "GREEN, Oliver",
+    "submitted_by_name": "opal-test",
+    "business_unit_name": "Camberwell Green"
+  },
+  "account_type": "fine",
+  "account_status": "Publishing Failed",
+  "account_status_date": "2025-06-09T00:00:00Z",
+  "timeline_data": [
+    { "status": "Submitted", "username": "opal-test", "reason_text": null, "status_date": "2025-06-01" },
+    { "status": "Approved", "username": "opal-test", "reason_text": null, "status_date": "2025-06-01" }
+  ],
+  "version": 0
+}
