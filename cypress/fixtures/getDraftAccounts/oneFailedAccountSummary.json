@@ -1,0 +1,25 @@
+{
+  "count": 1,
+  "summaries": [
+    {
+      "draft_account_id": 36,
+      "created_at": "2025-06-09T00:00:00Z",
+      "submitted_by": "L077JG",
+      "business_unit_id": 77,
+      "account_snapshot": {
+        "account_type": "fine",
+        "created_date": "2025-06-01T09:00:00.000000Z",
+        "submitted_by": "L077JG",
+        "date_of_birth": "1999-09-09",
+        "defendant_name": "GREEN, Oliver",
+        "submitted_by_name": "opal-test",
+        "business_unit_name": "Camberwell Green"
+      },
+      "account_type": "fine",
+      "account_status": "Publishing Failed",
+      "submitted_by_name": "opal-test",
+      "account_status_date": "2025-06-09",
+      "version_number": 0
+    }
+  ]
+}

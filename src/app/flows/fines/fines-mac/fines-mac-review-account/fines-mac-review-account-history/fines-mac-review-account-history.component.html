@@ -2,7 +2,9 @@
   {{ defendantName }}
 </h1>
 <opal-lib-govuk-tag
-  [tagClasses]="accountStatus === 'Deleted' || isRejected ? 'govuk-tag govuk-tag--red' : 'govuk-tag'"
+  [tagClasses]="
+    accountStatus === 'Deleted' || accountStatus === 'Failed' || isRejected ? 'govuk-tag govuk-tag--red' : 'govuk-tag'
+  "
   tagId="status"
   >{{ accountStatus }}</opal-lib-govuk-tag
 >

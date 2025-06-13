@@ -1,5 +1,8 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  @if (reviewAccountStatus === 'Failed') {
+    <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
+  }
   @if (!isReadOnly) {
     <h1 class="govuk-heading-l">Check account details</h1>
   } @else {
@@ -10,7 +13,7 @@
           ? finesMacStore.getCompanyDetailsName()
           : finesMacStore.getPersonalDetailsName()
       "
-      [timelineData]="finesDraftStore.timeline_data().reverse()"
+      [timelineData]="timelineData"
       [isRejected]="reviewAccountStatus === 'Rejected'"
     ></app-fines-mac-review-account-history>
   }
@@ -108,7 +111,7 @@
     </div>
   }
 
-  @if (finesDraftStore.checker()) {
+  @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
     <app-fines-mac-review-account-decision></app-fines-mac-review-account-decision>
   }
 </div>
