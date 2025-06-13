@@ -119,8 +119,8 @@ Then('I see green banner on the top of the page', () => {
 Then('the account status is {string}', (expectedStatus: string) => {
   cy.get('strong[id="status"]').should('be.visible').and('have.text', expectedStatus);
 });
-Then('I see {string} tab on the page header', (tabName: string) => {
-  cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', tabName);
+Then('I see {string} on the status heading', (expectedStatus: string) => {
+  cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', expectedStatus);
 });
 Then('I see success message on the banner {string}', (expectedMessage: string) => {
   cy.get('div[type="success"]').should('exist').and('contain', expectedMessage);

@@ -112,7 +112,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   });
 
   it(
-    '(AC.1,2) should send a PUT request containing correct derrived values when a rejected account is resubmitted',
+    '(AC.1,2) should send a PUT request containing correct derived values when a rejected account is resubmitted',
     { tags: ['@PO-964'] },
     () => {
       cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');

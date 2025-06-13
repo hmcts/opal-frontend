@@ -15,6 +15,7 @@ import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opa
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -212,5 +213,73 @@ describe('FinesMacPayloadService', () => {
     };
 
     expect(result).toEqual(finesMacState);
+  });
+
+  it('should build a patch payload with provided status and reason', () => {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const status = 'Rejected';
+    const reasonText = 'Some reason';
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+
+    // We need to call the real util to get the expected timeline_data
+    const timeline_data = finesMacPayloadBuildAccountTimelineData(
+      sessionUserState['name'],
+      status,
+      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
+      reasonText,
+      finesMacPayloadAddAccount.timeline_data,
+    );
+
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+
+    expect(result).toEqual({
+      account_status: status,
+      business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
+      reason_text: reasonText,
+      timeline_data,
+      validated_by: null,
+      validated_by_name: null,
+      version: finesMacPayloadAddAccount.version!,
+    });
+  });
+
+  it('should build a patch payload with null reasonText', () => {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
+    const reasonText = null;
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+
+    const timeline_data = finesMacPayloadBuildAccountTimelineData(
+      sessionUserState['name'],
+      status,
+      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
+      reasonText,
+      finesMacPayloadAddAccount.timeline_data,
+    );
+
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+
+    expect(result).toEqual({
+      account_status: status,
+      business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
+      reason_text: reasonText,
+      timeline_data,
+      validated_by: service['getBusinessUnitBusinessUserId'](
+        finesMacPayloadAddAccount.business_unit_id!,
+        sessionUserState,
+      )!,
+      validated_by_name: sessionUserState['name'],
+      version: finesMacPayloadAddAccount.version!,
+    });
   });
 });

@@ -139,6 +139,9 @@ export const FinesDraftStore = signalStore(
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });
     },
+    resetFragmentAndChecker() {
+      patchState(store, { fragment: '', checker: false });
+    },
     setBannerMessage: (bannerMessage: string) => {
       patchState(store, { bannerMessage });
     },

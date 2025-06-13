@@ -34,7 +34,7 @@
     >
       Date of birth
     </th>
-    @if (activeTab === 'deleted') {
+    @if (activeTab === 'deleted' || activeTab === 'failed') {
       <th
         opal-lib-moj-sortable-table-header
         columnKey="ChangedDate"
@@ -42,7 +42,7 @@
         (sortChange)="onSortChange($event)"
         [dataIndex]="2"
       >
-        Deleted
+        {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
       </th>
     } @else {
       <th
@@ -103,7 +103,7 @@
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
         </td>
-        @if (activeTab === 'deleted') {
+        @if (activeTab === 'deleted' || activeTab === 'failed') {
           <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
         } @else {
           <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>

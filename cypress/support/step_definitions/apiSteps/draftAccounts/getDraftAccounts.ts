@@ -116,3 +116,20 @@ When('I click on the rejected tab and ensure there are 26 accounts', () => {
     cy.wait('@getRejectedDraftAccounts');
   });
 });
+
+When('I intercept the get failed accounts summaries to ensure there is an account returned', () => {
+  cy.fixture('getDraftAccounts/oneFailedAccountSummary.json').then((oneFailedAccount) => {
+    cy.intercept('GET', '/opal-fines-service/draft-accounts?*status=Publishing%20Failed&*', (req) => {
+      req.continue((res) => {
+        res.send(oneFailedAccount);
+      });
+    }).as('getFailedDraftAccountSummaries');
+  });
+});
+When('I intercept the get failed account details to ensure there is an account returned', () => {
+  cy.fixture('getDraftAccounts/oneFailedAccountDetails.json').then((failedAccountDetails) => {
+    cy.intercept('GET', '/opal-fines-service/draft-accounts/36', (req) => {
+      req.reply(failedAccountDetails);
+    }).as('getFailedDraftAccountDetails');
+  });
+});
