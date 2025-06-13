@@ -27,3 +27,9 @@ export function interceptCAVGetDeletedAccounts(statusCode: number, responseBody:
     body: responseBody,
   }).as('getDeletedAccounts');
 }
+export function interceptCAVGetFailedAccounts(statusCode: number, responseBody: any) {
+  cy.intercept('GET', '*opal-fines-service/draft-accounts*&status=Publishing%20Failed&not_submitted_by=*', {
+    statusCode: statusCode,
+    body: responseBody,
+  }).as('getFailedAccounts');
+}

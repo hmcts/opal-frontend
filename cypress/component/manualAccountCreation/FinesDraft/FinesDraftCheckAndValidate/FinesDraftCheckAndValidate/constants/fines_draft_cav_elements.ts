@@ -3,6 +3,8 @@ export const DOM_ELEMENTS = {
   heading: 'h1.govuk-heading-l',
   navigationLinks: 'a.moj-sub-navigation__link',
 
+  failedCountIcon: 'span[id = "checker-failed-tab-failed-count"]',
+
   statusHeading: 'h2.govuk-heading-m',
   tableHeadings: 'th.govuk-table__header',
   tableCaption: 'caption.govuk-table__caption',
@@ -12,6 +14,7 @@ export const DOM_ELEMENTS = {
   defendant: 'td[id = "defendant"]',
   dob: 'td[id = "dob"]',
   created: 'td[id = "createdDate"]',
+  changed: 'td[id = "changedDate"]',
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
   submittedBy: 'td[id = "submittedBy"]',
