@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMacReviewAccountDecisionFormComponent } from './fines-mac-review-account-decision-form/fines-mac-review-account-decision-form.component';
 import { IFinesMacReviewAccountDecisionForm } from './interfaces/fines-mac-review-account-decision-form.interface';
@@ -22,6 +22,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  @Input({ required: true }) public accountId!: number;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
