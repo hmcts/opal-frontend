@@ -123,5 +123,5 @@ Then('I see {string} on the status heading', (expectedStatus: string) => {
   cy.get('h2.govuk-heading-m').should('be.visible').and('have.text', expectedStatus);
 });
 Then('I see success message on the banner {string}', (expectedMessage: string) => {
-  cy.get('div[opal-lib-moj-alert]').should('exist').and('contain', expectedMessage);
+  cy.get('div[type="success"]').should('exist').and('contain', expectedMessage);
 });
