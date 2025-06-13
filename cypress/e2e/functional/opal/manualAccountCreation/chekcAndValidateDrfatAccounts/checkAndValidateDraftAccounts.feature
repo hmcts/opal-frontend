@@ -218,37 +218,12 @@ Feature: Check and Validate - Checker
     And I click on continue button
     And I see "Review accounts" on the page header
 
-  @PO-594
-  Scenario: As a user I can delete an account from review screen
-    #Given I create a "adultOrYouthOnly" draft account with the following details:
-    And I create a "adultOrYouthOnly" draft account with the following details:
-      | Account_status                          | Submitted                 |
-      | account.defendant.forenames             | Larry                     |
-      | account.defendant.surname               | Lincoln                   |
-      | account.defendant.email_address_1       | larry.lincoln@outlook.com |
-      | account.defendant.telephone_number_home | 02078219385               |
-
-    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
-    Then I am on the dashboard
-
-    Given I navigate to Check and Validate Draft Accounts
-    And I see "Review accounts" on the page header
-
-    And I click on the "Lincoln, Larry" link
-
-    Then I see "Mr Larry LINCOLN" on the page header
-    And the account status is "In review"
-    #And I see the "Review history" section heading
-
-    And I click on the "Delete account" link
-    Then I see "Are you sure you want to delete this account?" on the page header
-
-  @PO-597
-  Scenario: As a user I can delete the account with reason entered
+  @PO-597 @PO-616
+  Scenario: As a user I can delete the account with reason entered, and view the details of the deleted account
     And I create a "adultOrYouthOnly" draft account with the following details:
       | Account_status                          | Submitted              |
       | account.defendant.forenames             | Peter                  |
-      | account.defendant.surname               | Barn                   |
+      | account.defendant.surname               | BARNES                 |
       | account.defendant.email_address_1       | peter.barn@outlook.com |
       | account.defendant.telephone_number_home | 02078219334            |
 
@@ -260,12 +235,12 @@ Feature: Check and Validate - Checker
 
     And I see "To review" on the status heading
 
-    And I click on the "Barn, Peter" link
-    Then I see "Mr Peter BARN" on the page header
+    And I click on the "BARNES, Peter" link
+    Then I see "Mr Peter BARNES" on the page header
     And I click on the "Delete account" link
 
     Then I see "Are you sure you want to delete this account?" on the page header
-    And I enter "test reason" into the "Reason" text field
+    And I enter "test reason YXZ123" into the "Reason" text field
     When I click the "Yes - delete" button
 
     And I see "Review accounts" on the page header
@@ -273,7 +248,23 @@ Feature: Check and Validate - Checker
 
     Then I see green banner on the top of the page
 
-    And I see success message on the banner "You have deleted Barn, Peter's account"
+    And I see success message on the banner "You have deleted BARNES, Peter's account"
+
+    Then I click on the "Deleted" link
+
+    #PO-616 AC1
+    And I click on the "BARNES, Peter" link
+    Then I see "Mr Peter BARNES" on the page header
+    And the account status is "Deleted"
+
+    Then I see the following in item 1 of the review history
+      | title       | Deleted            |
+      | description | test reason YXZ123 |
+
+    #PO-616 AC8
+    Then I click on the "Back" link
+    And I see "Review accounts" on the page header
+    And I see "Deleted" on the status heading
 
   @PO-597
   Scenario: As a user I can Cancel deleting the account
