@@ -570,7 +570,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
   });
 
   //PO-968
-  it.only('AC.1b update draft account with patch method', { tags: ['@PO-968'] }, () => {
+  it('AC.1b update draft account with patch method', { tags: ['@PO-968'] }, () => {
     cy.intercept('PATCH', '**/opal-fines-service/draft-accounts/**', { statusCode: 200 }).as('patchDraftAccount');
     let payload = structuredClone(finesAccountPayload);
     payload.draft_account_id = 42;
