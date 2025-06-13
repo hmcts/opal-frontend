@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { routing as draftRouting } from '../fines-draft/routing/fines-draft.routes';
+import { routing as accRouting } from '../fines-acc/routing/fines-acc.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -28,6 +29,12 @@ export const finesRouting: Routes = [
         path: FINES_ROUTING_PATHS.children.draft.root,
         loadComponent: () => import('../fines-draft/fines-draft.component').then((c) => c.FinesDraftComponent),
         children: draftRouting,
+        canActivate: [authGuard],
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.acc.root,
+        loadComponent: () => import('../fines-acc/fines-acc.component').then((c) => c.FinesAccComponent),
+        children: accRouting,
         canActivate: [authGuard],
       },
     ],

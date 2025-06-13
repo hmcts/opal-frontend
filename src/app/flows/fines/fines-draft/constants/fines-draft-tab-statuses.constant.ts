@@ -16,6 +16,7 @@ export const FINES_DRAFT_TAB_STATUSES: IFinesDraftTabStatuses[] = [
     tab: 'approved',
     statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.approved],
     prettyName: 'Approved',
+    historicWindowInDays: 7,
   },
   {
     tab: 'deleted',

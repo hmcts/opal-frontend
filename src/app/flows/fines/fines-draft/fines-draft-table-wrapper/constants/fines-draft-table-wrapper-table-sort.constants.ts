@@ -22,3 +22,8 @@ export const FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED: IFinesDraftTableWrapperTabl
   ...FINES_DRAFT_TABLE_WRAPPER_SORT_BASE,
   ChangedDate: 'ascending',
 };
+
+export const FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED: IFinesDraftTableWrapperTableSort = {
+  ...FINES_DRAFT_TABLE_WRAPPER_SORT_BASE,
+  ChangedDate: 'ascending',
+};

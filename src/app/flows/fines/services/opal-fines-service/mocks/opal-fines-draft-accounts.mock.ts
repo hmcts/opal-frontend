@@ -20,6 +20,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       account_type: 'TYPE_A',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
+      account_number: 'TESTACC123',
     },
     {
       draft_account_id: 102,
@@ -38,6 +39,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       account_type: 'TYPE_B',
       account_status: 'PENDING',
       account_status_date: '2023-01-02',
+      account_number: 'TESTACC123',
     },
   ],
 };
