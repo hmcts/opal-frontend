@@ -219,7 +219,7 @@ Feature: Check and Validate - Checker
     And I see "Review accounts" on the page header
 
   @PO-597 @PO-616
-  Scenario: As a user I can delete the account with reason entered
+  Scenario: As a user I can delete the account with reason entered, and view the details of the deleted account
     And I create a "adultOrYouthOnly" draft account with the following details:
       | Account_status                          | Submitted              |
       | account.defendant.forenames             | Peter                  |
