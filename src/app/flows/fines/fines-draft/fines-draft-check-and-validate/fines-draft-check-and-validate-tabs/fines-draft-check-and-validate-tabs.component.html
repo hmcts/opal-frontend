@@ -9,26 +9,30 @@
   }
   <h1 class="govuk-heading-l">Review accounts</h1>
   <opal-lib-moj-sub-navigation subNavId="checker-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-    <opal-lib-moj-sub-navigation-item
+    <li
+      opal-lib-moj-sub-navigation-item
       subNavItemId="checker-to-review-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="to-review"
       subNavItemText="To review"
-    ></opal-lib-moj-sub-navigation-item>
-    <opal-lib-moj-sub-navigation-item
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
       subNavItemId="checker-rejected-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="rejected"
       subNavItemText="Rejected"
-    ></opal-lib-moj-sub-navigation-item>
-    <opal-lib-moj-sub-navigation-item
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
       subNavItemId="checker-deleted-tab"
       [activeSubNavItemFragment]="activeTab"
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
-    ></opal-lib-moj-sub-navigation-item>
+    ></li>
     @if (failedCount$ | async; as failedCount) {
-      <opal-lib-moj-sub-navigation-item
+      <li
+        opal-lib-moj-sub-navigation-item
         subNavItemId="checker-failed-tab"
         [activeSubNavItemFragment]="activeTab"
         subNavItemFragment="failed"
@@ -39,7 +43,7 @@
             {{ failedCount }}
           </opal-lib-moj-badge>
         }
-      </opal-lib-moj-sub-navigation-item>
+      </li>
     }
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
@@ -69,8 +73,8 @@
           [existingSortState]="tableSort"
           [isApprovedTab]="false"
           [isChecker]="true"
-          [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
+          [activeTab]="activeTab"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {

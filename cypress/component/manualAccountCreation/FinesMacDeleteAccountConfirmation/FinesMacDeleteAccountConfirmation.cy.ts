@@ -25,9 +25,14 @@ describe('FinesMacDeleteAccountConfirmation', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
+              parent: {
+                snapshot: {
+                  url: [{ path: 'manual-account-creation' }],
+                },
               },
             },
           },

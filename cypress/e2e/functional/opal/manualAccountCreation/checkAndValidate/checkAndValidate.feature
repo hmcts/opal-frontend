@@ -49,7 +49,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Court details" link
     Then I see "Court details" on the page header
     When I enter "Test" into the "Prosecutor Case Reference (PCR)" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
 
@@ -83,7 +83,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Company details" link
     Then I see "Company details" on the page header
     When I enter "CHANGED COMPANY LTD" into the "Company name" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
     # Contact Details section
@@ -108,7 +108,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Contact details" link
     Then I see "Defendant contact details" on the page header
     When I enter "12345678901" into the "Phone number" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
     # Offence Details section
@@ -130,7 +130,7 @@ Feature: Navigate and edit sections from task list
     Then I see "Offences and impositions" on the page header
     When I click on the "Change" link
     When I enter "HY80508" into the "Offence code" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I click the "Return to account details" button
     Then I see the "Check and submit" section heading
 
@@ -164,7 +164,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Account comments and notes" link
     Then I see "Account comments and notes" on the page header
     When I enter "Test comment" into the "Add comment" text field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
     # Final check and verification
@@ -269,7 +269,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Personal details" link
     Then I see "Personal details" on the page header
     When I enter "Test Name" into the "First names" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
 
@@ -345,7 +345,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Employer details" link
     Then I see "Employer details" on the page header
     When I enter "Testing Corp" into the "Employer name" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
     # Account Comments and Notes section
@@ -491,7 +491,7 @@ Feature: Navigate and edit sections from task list
     When I click on the "Parent or guardian details" link
     Then I see "Parent or guardian details" on the page header
     When I enter "Test Name" into the "First names" field
-    Then I click Cancel, a window pops up and I click Ok
+    Then I click "Cancel", a window pops up and I click Ok
     Then I see the "Check and submit" section heading
 
     # Contact Details section
