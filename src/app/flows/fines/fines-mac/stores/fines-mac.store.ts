@@ -29,6 +29,8 @@ import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-form';
+import { IFinesMacFixedPenaltyDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-form.interface';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
@@ -45,6 +47,7 @@ export const FinesMacStore = signalStore(
     paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
     languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
     businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
+    fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_FORM,
     unsavedChanges: false,
     stateChanges: false,
     deleteFromCheckAccount: false,
@@ -136,6 +139,13 @@ export const FinesMacStore = signalStore(
             FINES_MAC_STATUS.NOT_PROVIDED,
           );
         }
+      }),
+      fixedPenaltyDetailsStatus: computed(() => {
+        return utilsService.getFormStatus(
+          store.fixedPenaltyDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       adultOrYouthSectionsCompleted: computed(() => {
         const formsToCheck = [
@@ -236,6 +246,9 @@ export const FinesMacStore = signalStore(
     },
     setBusinessUnit: (businessUnit: IOpalFinesBusinessUnit) => {
       patchState(store, { businessUnit, stateChanges: true, unsavedChanges: false });
+    },
+    setFixedPenaltyDetails: (fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsForm) => {
+      patchState(store, { fixedPenaltyDetails, stateChanges: true, unsavedChanges: false });
     },
     setStateChanges: (stateChanges: boolean) => {
       patchState(store, { stateChanges });

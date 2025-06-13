@@ -247,12 +247,12 @@ export const routing: Routes = [
       title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation,
       routePermissionId: [draftRootPermissionIds['create-and-manage']],
     },
-    resolve: { 
-      title: TitleResolver,      
+    resolve: {
+      title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
       localJusticeAreas: fetchSendingCourtsResolver,
       results: fetchResultsResolver,
-      majorCreditors: fetchMajorCreditorsResolver, 
+      majorCreditors: fetchMajorCreditorsResolver,
     },
   },
   {

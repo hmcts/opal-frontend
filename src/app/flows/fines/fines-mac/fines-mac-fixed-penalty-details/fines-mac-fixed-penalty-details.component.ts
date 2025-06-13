@@ -21,8 +21,8 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @param form - The personal details form data.
    * @returns void
    */
-  public handlePersonalDetailsSubmit(form: IFinesMacFixedPenaltyDetailsForm): void {
-    this.finesMacStore.setPersonalDetails(form);
+  public handleFixedPenaltyDetailsSubmit(form: IFinesMacFixedPenaltyDetailsForm): void {
+    this.finesMacStore.setFixedPenaltyDetails(form);
     this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
   }
 

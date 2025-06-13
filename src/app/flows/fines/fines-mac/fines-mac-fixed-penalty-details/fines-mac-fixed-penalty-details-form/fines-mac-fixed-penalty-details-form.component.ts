@@ -10,16 +10,12 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
-import { IFinesMacPersonalDetailsFieldErrors } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
-import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-alias';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { takeUntil } from 'rxjs';
-import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_FP_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-vehicle-details-fields';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -43,6 +39,10 @@ import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_ALIAS } from '../constants/fines-mac-fixed-penalty-details-alias';
+import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac-fixed-penalty-details-field-errors.interface';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-fixed_penalty-details-vehicle-details-fields';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -63,7 +63,10 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   templateUrl: './fines-mac-fixed-penalty-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesMacFixedPenaltyDetailsFormComponent
+  extends AbstractFormAliasBaseComponent
+  implements OnInit, OnDestroy
+{
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacFixedPenaltyDetailsForm>();
 
@@ -72,8 +75,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
-    ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+  override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
+    ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
@@ -85,37 +88,37 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
   /**
    * Sets up the personal details form.
    */
-  private setupPersonalDetailsForm(): void {
+  private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
-      fm_personal_details_title: new FormControl(null, [Validators.required]),
-      fm_personal_details_forenames: new FormControl(null, [
+      fm_fp_personal_details_title: new FormControl(null, [Validators.required]),
+      fm_fp_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
         alphabeticalTextValidator(),
       ]),
-      fm_personal_details_surname: new FormControl(null, [
+      fm_fp_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         alphabeticalTextValidator(),
       ]),
-      fm_personal_details_aliases: new FormArray([]),
-      fm_personal_details_add_alias: new FormControl(null),
-      fm_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      fm_personal_details_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      fm_personal_details_address_line_1: new FormControl(null, [
+      fm_fp_personal_details_aliases: new FormArray([]),
+      fm_fp_personal_details_add_alias: new FormControl(null),
+      fm_fp_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      fm_fp_personal_details_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      fm_fp_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      fm_personal_details_address_line_2: new FormControl(null, [
+      fm_fp_personal_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
         specialCharactersValidator(),
       ]),
-      fm_personal_details_address_line_3: new FormControl(null, [
+      fm_fp_personal_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 
@@ -124,8 +127,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
    * The alias configuration includes the alias fields and controls validation.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = FINES_MAC_PERSONAL_DETAILS_ALIAS.map((control) => control.controlName);
-    this.aliasControlsValidation = FINES_MAC_PERSONAL_DETAILS_ALIAS;
+    this.aliasFields = FINES_MAC_FIXED_PENALTY_DETAILS_ALIAS.map((control) => control.controlName);
+    this.aliasControlsValidation = FINES_MAC_FIXED_PENALTY_DETAILS_ALIAS;
   }
 
   /**
@@ -133,7 +136,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
    * Iterates over the FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS array and creates a control for each field.
    */
   private addVehicleDetailsControls(): void {
-    FM_FP_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
+    FINES_MAC_FIXED_PENALTY_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
       this.createControl(control.controlName, control.validators);
     });
   }
@@ -142,7 +145,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
   private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['fm_personal_details_dob'];
+    const dobControl = this.form.controls['fm_fp_personal_details_dob'];
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -175,28 +178,28 @@ export class FinesMacFixedPenaltyDetailsFormComponent extends AbstractFormAliasB
    * adds vehicle details field errors if the defendant type is 'adultOrYouthOnly', sets initial
    * error messages, repopulates the form with personal details, and sets up the alias checkbox listener.
    */
-  private initialPersonalDetailsSetup(): void {
-    const { formData } = this.finesMacStore.personalDetails();
+  private initialFixedPenaltyDetailsSetup(): void {
+    const { formData } = this.finesMacStore.fixedPenaltyDetails();
     const key = this.defendantType as keyof IFinesMacDefendantTypes;
-    this.setupPersonalDetailsForm();
+    this.setupFixedPenaltyDetailsForm();
 
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...Array(formData.fm_personal_details_aliases.length).keys()],
-      'fm_personal_details_aliases',
+      [...Array(formData.fm_fp_personal_details_aliases.length).keys()],
+      'fm_fp_personal_details_aliases',
     );
     if (key === 'adultOrYouthOnly') {
       this.addVehicleDetailsControls();
     }
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.setUpAliasCheckboxListener('fm_personal_details_add_alias', 'fm_personal_details_aliases');
+    this.setUpAliasCheckboxListener('fm_fp_personal_details_add_alias', 'fm_fp_personal_details_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
   public override ngOnInit(): void {
-    this.initialPersonalDetailsSetup();
+    this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
   }
 }
