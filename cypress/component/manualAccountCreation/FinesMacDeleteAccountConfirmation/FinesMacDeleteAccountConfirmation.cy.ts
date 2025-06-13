@@ -29,12 +29,12 @@ describe('FinesMacDeleteAccountConfirmation', () => {
               paramMap: {
                 get: (key: string) => (key === 'draftAccountId' ? '42' : null),
               },
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+              parent: {
+                snapshot: {
+                  url: [{ path: 'manual-account-creation' }],
+                },
               },
             },
-          },
           },
         },
       ],
