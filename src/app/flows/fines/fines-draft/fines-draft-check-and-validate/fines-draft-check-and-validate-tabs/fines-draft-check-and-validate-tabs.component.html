@@ -1,4 +1,12 @@
 <div class="govuk-grid-column-full">
+  @if (finesDraftStore.bannerMessage().length > 0) {
+    <div opal-lib-moj-alert [ariaLabel]="finesDraftStore.bannerMessage()" type="success">
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content
+        ><opal-lib-moj-alert-content-text>{{ finesDraftStore.bannerMessage() }} </opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </div>
+  }
   <h1 class="govuk-heading-l">Review accounts</h1>
   <opal-lib-moj-sub-navigation subNavId="checker-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
     <opal-lib-moj-sub-navigation-item
@@ -19,6 +27,20 @@
       subNavItemFragment="deleted"
       subNavItemText="Deleted"
     ></opal-lib-moj-sub-navigation-item>
+    @if (failedCount$ | async; as failedCount) {
+      <opal-lib-moj-sub-navigation-item
+        subNavItemId="checker-failed-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="failed"
+        subNavItemText="Failed"
+      >
+        @if (failedCount !== '0') {
+          <opal-lib-moj-badge badge badgeId="checker-failed-tab-failed-count">
+            {{ failedCount }}
+          </opal-lib-moj-badge>
+        }
+      </opal-lib-moj-sub-navigation-item>
+    }
   </opal-lib-moj-sub-navigation>
   @switch (activeTab) {
     @case ('to-review') {
@@ -31,6 +53,10 @@
     }
     @case ('deleted') {
       <h2 class="govuk-heading-m">Deleted</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('failed') {
+      <h2 class="govuk-heading-m">Failed</h2>
       <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
   }
@@ -58,6 +84,9 @@
           @case ('deleted') {
             <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
           }
+          @case ('failed') {
+            <ng-container *ngTemplateOutlet="failedNoData"></ng-container>
+          }
         }
       }
     }
@@ -70,5 +99,8 @@
   </ng-template>
   <ng-template #deletedNoData>
     <p>No accounts have been deleted in the past 7 days.</p>
+  </ng-template>
+  <ng-template #failedNoData>
+    <p>There are no failed accounts</p>
   </ng-template>
 </div>

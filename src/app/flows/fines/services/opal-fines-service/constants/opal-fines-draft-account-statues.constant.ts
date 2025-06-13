@@ -6,5 +6,7 @@ export const OPAL_FINES_DRAFT_ACCOUNT_STATUSES: IOpalFinesDraftAccountStatuses =
   deleted: 'Deleted',
   approved: 'Published',
   resubmitted: 'Resubmitted',
-  errorInPublishing: 'Error in Publishing',
+  published: 'Published',
+  publishPending: 'Publishing Pending',
+  publishFailed: 'Publishing Failed',
 };
