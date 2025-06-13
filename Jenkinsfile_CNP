@@ -167,16 +167,15 @@ withPipeline(type, product, component) {
   afterAlways('test') {
   script {
     def labels = getProjectLabels()
-    def isMasterBranch = env.BRANCH_NAME == 'master'
+    def skipLabel = 'skip_opal_component'
 
-    if (labels.contains('test_opal_component') || isMasterBranch) {
-      echo "Running opal component tests (label present or on master)"
+    if (!labels.contains(skipLabel)) {
+      echo "Running opal component tests (no skip label present)"
       yarnBuilder.yarn('test:opalComponent')
     } else {
-      echo "Skipping opal component tests (no label and not master)"
+      echo "Skipping opal component tests due to label: ${skipLabel}"
     }
 
-    // Always archive functional-output
     archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }
 }
