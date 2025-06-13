@@ -35,7 +35,10 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['scrollToTop']);
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['buildPatchAccountPayload']);
+    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
+      'buildPatchAccountPayload',
+      'getDefendantName',
+    ]);
     mockFinesMacPayloadService.buildPatchAccountPayload.and.returnValue(
       structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD),
     );
@@ -89,10 +92,11 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesMacPayloadService.getDefendantName.and.returnValue('Testing Co Ltd');
 
     component['successfulSubmission'](response);
 
-    expect(finesDraftStore.bannerMessage()).toEqual(`You have approved Testing Co Ltd's account`);
+    expect(finesDraftStore.bannerMessage()).toEqual(`You have approved Testing Co Ltd's account.`);
     expect(finesMacStore.stateChanges()).toBeFalsy();
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {
@@ -107,10 +111,11 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesMacPayloadService.getDefendantName.and.returnValue('Jane Doe');
 
     component['successfulSubmission'](response);
 
-    expect(finesDraftStore.bannerMessage()).toEqual(`You have rejected Jane Doe's account`);
+    expect(finesDraftStore.bannerMessage()).toEqual(`You have rejected Jane Doe's account.`);
     expect(finesMacStore.stateChanges()).toBeFalsy();
     expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], {
