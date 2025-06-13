@@ -57,4 +57,29 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
 
     expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK);
   });
+
+  it('should return null for alias company name if dynamic key is missing', () => {
+    if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    // Add an alias entry but remove the dynamic key
+    companyDetailsState.fm_company_details_add_alias = true;
+    companyDetailsState.fm_company_details_aliases = [
+      {}, // This alias will have no dynamic key like `fm_company_details_alias_company_name_0`
+    ];
+
+    const result = finesMacPayloadBuildAccountDefendantCompany(
+      companyDetailsState,
+      contactDetailsState,
+      languagePreferencesState,
+    );
+
+    expect(result.debtor_detail.aliases).toEqual([
+      {
+        alias_company_name: null,
+      },
+    ]);
+  });
 });
