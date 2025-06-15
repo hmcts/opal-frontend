@@ -91,6 +91,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public courts!: IOpalFinesCourtRefData;
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
@@ -131,6 +132,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     // Get payload into Fines Mac State
     this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
     this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
+    this.finesDraftStore.resetBannerMessage();
 
     if (this.finesDraftStore.timeline_data()) {
       this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();

@@ -74,6 +74,9 @@ describe('FinesMacReviewAccountComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
               data: {
                 reviewAccountFetchMap: {
                   finesMacStore: finesMacState,

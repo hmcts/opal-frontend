@@ -1,0 +1,31 @@
+<h1 class="govuk-heading-l">Are you sure you want to delete this account?</h1>
+<form (submit)="handleFormSubmit($event)">
+  @if (accountId) {
+    <opal-lib-govuk-text-area
+      labelText="Reason"
+      labelClasses="govuk-label--s"
+      inputId="fm_delete_account_confirmation_reason"
+      inputName="fm_delete_account_confirmation_reason"
+      [control]="form.controls['fm_delete_account_confirmation_reason']"
+      [characterCountEnabled]="true"
+      [maxCharacterLimit]="250"
+      [rows]="4"
+      [errors]="formControlErrorMessages['fm_delete_account_confirmation_reason']"
+    ></opal-lib-govuk-text-area>
+  }
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="confirmDeletion" buttonClasses="govuk-button--warning" type="submit">
+        Yes - delete
+      </opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(referrer)"
+        cancelLinkText="No - cancel"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>
