@@ -64,22 +64,22 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     cy.get(DOM_ELEMENTS.tableRow)
       .eq(0)
       .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-        cy.get(DOM_ELEMENTS.dob).contains('—');
-        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
+        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
+        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
+        cy.get(DOM_ELEMENTS.created).contains('Today');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
 
     //Check table row data in row 2
     cy.get(DOM_ELEMENTS.tableRow)
       .eq(1)
       .within(() => {
-        cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-        cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-        cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
-        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
+        cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
+        cy.get(DOM_ELEMENTS.dob).contains('—');
+        cy.get(DOM_ELEMENTS.created).contains('4 days ago');
+        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
   });
 
@@ -114,42 +114,6 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     },
   );
 
-  it(
-    '(AC.5) should have default sort order for created accounts set to descending for approved',
-    { tags: ['@PO-607'] },
-    () => {
-      const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
-
-      interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
-      interceptGetApprovedAccounts(200, approvedMockData);
-
-      setupComponent();
-
-      cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
-      cy.get(DOM_ELEMENTS.tableHeadings).contains('Created').should('exist');
-      //Check table row data in row 1
-      cy.get(DOM_ELEMENTS.tableRow)
-        .eq(0)
-        .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
-          cy.get(DOM_ELEMENTS.dob).contains('—');
-          cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-          cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
-          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
-        });
-
-      //Check table row data in row 2
-      cy.get(DOM_ELEMENTS.tableRow)
-        .eq(1)
-        .within(() => {
-          cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
-          cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
-          cy.get(DOM_ELEMENTS.created).contains('Today');
-          cy.get(DOM_ELEMENTS.accountType).contains('Fine');
-          cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
-        });
-    },
-  );
   it(
     '(AC.1)should show empty value statement for Approved status when no accounts have been Approved',
     { tags: ['@PO-607'] },

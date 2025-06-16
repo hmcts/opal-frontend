@@ -17,7 +17,7 @@ export function interceptGetInReviewAccounts(statusCode: number, responseBody: a
 }
 
 export function interceptGetApprovedAccounts(statusCode: number, responseBody: any) {
-  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Approved*', {
+  cy.intercept('GET', '*opal-fines-service/draft-accounts?business_unit=77&status=Published&submitted_by=L073JG&account_status_date_from=*&account_status_date_to=*', {
     statusCode: statusCode,
     body: responseBody,
   }).as('getApprovedAccounts');
