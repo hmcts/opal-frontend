@@ -13,18 +13,22 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
-import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { MOCK_FINES_DRAFT_STATE_DELETE } from './mocks/mock_fines_draft_state_delete';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 
 describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
-  let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE);
+  let finesDraftState = structuredClone(MOCK_FINES_DRAFT_STATE_DELETE);
+  let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+
   let reviewAccountFetchMap = {
     finesMacState: finesMacState,
     finesMacDraft: finesDraftState,
+    finesAccountPayload: finesAccountPayload,
     courts: OPAL_FINES_COURT_REF_DATA_MOCK,
     majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
     localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
@@ -93,39 +97,19 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     ).as('getOffenceByCjsCode');
   });
 
-  it('AC.2,4 - should render correctly - AY', { tags: ['PO-616'] }, () => {
+  it('AC.2 The Reason for Deletion screen will be created as per the design artefact', { tags: ['@PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
-
     setupComponent(fetchMap);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
-    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
 
-    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'personal-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(5)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(7)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
-
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
-      .should('not.exist');
-    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
-
-    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
-    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'Deleted');
+    cy.get(DOM_ELEMENTS.reviewHistory).should('exist').and('contain', 'Review history');
   });
 
-  it('AC.3 - should render Review History section correctly', { tags: ['PO-616'] }, () => {
+  it('AC.3 - should render Delete History section correctly', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
 
@@ -176,7 +160,39 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.timelineDescription).eq(2).should('contain.text', '');
   });
 
-  it('AC.2,5 - should render correctly - AYPG', { tags: ['PO-616'] }, () => {
+  it('AC.2,4 should render summary tables under review account for AY', { tags: ['@PO-603'] }, () => {
+    let fetchMap = structuredClone(reviewAccountFetchMap);
+    fetchMap.finesMacDraft.account_status = 'Deleted';
+
+    setupComponent(fetchMap);
+
+    cy.get(DOM_ELEMENTS.heading).should('contain.text', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.status).should('contain.text', 'Deleted');
+
+    cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
+    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'personal-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(5)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
+    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .eq(7)
+      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
+
+    cy.get(DOM_ELEMENTS.summaryCard)
+      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
+      .should('not.exist');
+    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
+
+    cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
+    cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
+  });
+
+  it('(AC2,.5) should render all elements on the screen for AYPG', { tags: ['@PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
@@ -209,7 +225,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
 
-  it('AC.2,6 - should render correctly - COMP', { tags: ['PO-616'] }, () => {
+  it('(AC.6) should render all elements on the screen for company defendant type', { tags: ['@PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
@@ -241,8 +257,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
   });
-
-  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['PO-616'] }, () => {
+  it('AC4ai - should show language preferences if business unit is welsh speaking - AY', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -254,7 +269,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
   });
-  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['PO-616'] }, () => {
+  it('AC5ai - should show language preferences if business unit is welsh speaking - AYPG', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -267,7 +282,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
   });
-  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['PO-616'] }, () => {
+  it('AC6ai - should show language preferences if business unit is welsh speaking - COMP', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
@@ -281,7 +296,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('exist');
   });
 
-  it('AC.7 - should show em-dash for empty values', { tags: ['PO-616'] }, () => {
+  it('AC.7 - should show em-dash for empty values', { tags: ['PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
     fetchMap.finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = '';
