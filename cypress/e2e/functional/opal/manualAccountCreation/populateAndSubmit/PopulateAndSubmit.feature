@@ -5,7 +5,7 @@ Feature: Manual account creation - Create Draft Account
     Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
     Then I am on the dashboard
 
-  @PO-1448 @PO-1638
+  @PO-1448 @PO-1638 @PO-1872
   Scenario: As a user I can create a draft account for the Adult or youth only defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
@@ -128,15 +128,8 @@ Feature: Manual account creation - Create Draft Account
     When I enter "te1 1st" into the "Postcode" field
     Then I see "TE1 1ST" in the "Postcode" field
 
-
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-
-    # Test Capitalization in Payment Reference - PO-1448
-    When I enter "ref" into the "Payment reference" field
-    Then I see "REF" in the "Payment reference" field
+    # Not entering BACS info, coverage for PO-1872
+    And I validate the "I have BACS payment details" checkbox is not checked
 
     When I click the "Save" button
     Then I see "Add an offence" on the page header
@@ -224,17 +217,13 @@ Feature: Manual account creation - Create Draft Account
       | Employer address   | Addr1  Addr2  Addr3  Addr4  Addr5  TE12 3ST |
 
     Then I see the following details for imposition 1 in the Offences and impositions table:
-      | imposition        | Compensation                 |
-      | creditor          | Mr FNAME LNAME               |
-      | amountImposed     | 300                          |
-      | amountPaid        | 100                          |
-      | balanceRemaining  | 200                          |
-      | Address           | Addr1  Addr2  Addr3  TE1 1ST |
-      | Payment method    | Pay by BACS                  |
-      | Name on account   | F LNAME                      |
-      | Sort code         | 12-34-56                     |
-      | Account number    | 12345678                     |
-      | Payment reference | REF                          |
+      | imposition       | Compensation                 |
+      | creditor         | Mr FNAME LNAME               |
+      | amountImposed    | 300                          |
+      | amountPaid       | 100                          |
+      | balanceRemaining | 200                          |
+      | Address          | Addr1  Addr2  Addr3  TE1 1ST |
+      | Payment method   | —                            |
 
     #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
     When I click the "Submit for review" button and capture the created account number

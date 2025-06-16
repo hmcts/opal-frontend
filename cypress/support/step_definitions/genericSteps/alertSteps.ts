@@ -17,10 +17,10 @@ Then('I click {string}, a window pops up and I click Ok', (link: string) => {
 
 Then('I click {string}, a window pops up and I click Cancel', (link: string) => {
   cy.contains('a', link).click();
-  cy.on('window:alert', () => {
+  cy.once('window:alert', () => {
     return false;
   });
-  cy.on('window:confirm', () => {
+  cy.once('window:confirm', () => {
     return false;
   });
 });
