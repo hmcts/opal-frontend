@@ -219,4 +219,20 @@ describe('FinesDraftStore', () => {
     store.setBannerMessageByType('nonexistent' as any, 'Test Name');
     expect(store.bannerMessage()).toEqual('');
   });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Alice Williams');
+  });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    account.defendant_type = 'company';
+    account.defendant.company_name = 'Tech Innovations Ltd.';
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Tech Innovations Ltd.');
+  });
 });
