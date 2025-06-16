@@ -1,5 +1,5 @@
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
-export const REJECTED_ACCOUNT_SESSION_USER_STATE_MOCK: ISessionUserState = {
+export const ACCOUNT_SESSION_USER_STATE_MOCK: ISessionUserState = {
   user_id: 'gl.testUserTimmy',
   user_name: 'timmyTest@HMCTS.NET',
   name: 'Timmy Tester',
