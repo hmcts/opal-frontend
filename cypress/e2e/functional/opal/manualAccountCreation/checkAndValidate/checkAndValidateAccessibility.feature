@@ -31,4 +31,4 @@ Feature: Accessibility Tests for Check and Validate Screens
 
         # Submit for review screen - Axe Core
         When I click the "Submit for review" button
-        Then I see "You have submitted Test, Accessibility's account for review" text on the page
+        Then I see "You have submitted Accessibility Test's account for review" text on the page
