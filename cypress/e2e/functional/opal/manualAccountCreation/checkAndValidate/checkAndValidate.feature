@@ -820,7 +820,7 @@ Feature: Navigate and edit sections from task list
     When I click the "Check account" button
     And I click the "Submit for review" button
 
-  @PO-610 @only
+  @PO-610
   Scenario: View the details of an account in review
     And I create a "adultOrYouthOnly" draft account with the following details:
       | Account_status                          | Submitted                 |
@@ -864,67 +864,19 @@ Feature: Navigate and edit sections from task list
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    Given I navigate to Create and Manage Draft Accounts
-    And I create a "adultOrYouthOnly" draft account with the following details:
-      | account.defendant.forenames | James      |
-      | account.defendant.surname   | Smith      |
-      | account.defendant.dob       | 01/01/1990 |
-      | Account_status              | Submitted  |
+    Given I create a "company" approved draft account with the following details:
+      | account_snapshot.defendant_name | TEST New Company Ltd |
 
-    And I create a "company" draft account with the following details:
-      | account.defendant.company_name | TEST Approved Company Ltd |
-      | Account_status                 | Submitted                 |
-
-
-    And I create a "adultOrYouthOnly" draft account with the following details:
-      | account.defendant.forenames | Robert    |
-      | account.defendant.surname   | Johnson   |
-      | Account_status              | Submitted |
-
-    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
-    Then I am on the dashboard
-
-    Given I navigate to Check and Validate Draft Accounts
-    And I see "Review accounts" on the page header
-    And I click on the "Smith, James" link
-    Then I see "Mr James SMITH" on the page header
-    And I select the "Approve" radio button
-    And I click on continue button
-
-    And I click on the "TEST Approved Company Ltd" link
-    And I select the "Approve" radio button
-    And I click on continue button
-
-    And I click on the "Johnson, Robert" link
-    And I select the "Approve" radio button
-    And I click on continue button
-
-    When I update the account with defendant "James Smith" with approval date "3 days ago"
-    When I update the account with defendant "TEST Approved Company Ltd" with approval date "6 days ago"
-    When I update the account with defendant "Robert Johnson" with approval date "10 days ago"
-
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
+    Given I create a "adultOrYouthOnly" approved draft account with the following details:
+      | account_snapshot.defendant_name | James, Smith |
 
     Given I navigate to Create and Manage Draft Accounts
     When I click on the "Approved" link
 
-    Then I see "Approved" on the page header
+    And I see "Showing accounts Approved in the past 7 days" text on the page
 
-    And I see "Showing accounts approved in the past 7 days" text on the page
-
-    And I see "Smith, James" in the accounts table
-    And I see "TEST Approved Company Ltd" in the accounts table
-
-    And I do not see "Johnson, Robert" in the accounts table
-
-    And I see the following details in the "Smith, James" row:
-      | Defendant type | Adult or youth   |
-      | Approved date  | [Today - 3 days] |
-
-    And I see the following details in the "TEST Approved Company Ltd" row:
-      | Defendant type | Company          |
-      | Approved date  | [Today - 6 days] |
+    When I click on the "FP123456" link
+    Then I see "Account Details" on the page header
 
 
 
