@@ -23,7 +23,7 @@ export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS: IFinesMacCourtDetailsFieldErr
   },
   fm_court_details_imposing_court_id: {
     required: {
-      message: 'Enter an Enforcement court',
+      message: 'Enter an enforcement court',
       priority: 1,
     },
   },

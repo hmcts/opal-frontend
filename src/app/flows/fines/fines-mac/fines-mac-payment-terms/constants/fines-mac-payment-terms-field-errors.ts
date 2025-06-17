@@ -17,7 +17,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid calendar date`,
+      message: `Enter a valid date`,
       priority: 3,
     },
     invalidFutureDate: {
@@ -45,7 +45,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid calendar date`,
+      message: `Enter a valid date`,
       priority: 3,
     },
   },
@@ -85,7 +85,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid calendar date`,
+      message: `Enter a calendar date`,
       priority: 3,
     },
   },
@@ -99,7 +99,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid calendar date`,
+      message: `Enter a valid date`,
       priority: 3,
     },
     invalidDateOfBirth: {
@@ -147,7 +147,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a valid calendar date`,
+      message: `Enter a valid date`,
       priority: 3,
     },
     invalidPastDate: {
