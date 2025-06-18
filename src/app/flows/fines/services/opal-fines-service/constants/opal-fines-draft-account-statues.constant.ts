@@ -4,7 +4,7 @@ export const OPAL_FINES_DRAFT_ACCOUNT_STATUSES: IOpalFinesDraftAccountStatuses =
   submitted: 'Submitted',
   rejected: 'Rejected',
   deleted: 'Deleted',
-  approved: 'Approved',
+  approved: 'Published',
   resubmitted: 'Resubmitted',
   published: 'Published',
   publishPending: 'Publishing Pending',

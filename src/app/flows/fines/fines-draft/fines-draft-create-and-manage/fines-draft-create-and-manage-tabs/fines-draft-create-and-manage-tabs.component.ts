@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED,
   FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
   FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
@@ -31,6 +32,7 @@ import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -91,10 +93,16 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
     this.tabData$ = this.createTabDataStream(
       fragment$,
       (tab) => {
-        if (tab === 'deleted') {
-          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
-        } else {
-          this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
+        switch (tab) {
+          case 'approved':
+            this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_APPROVED;
+            break;
+          case 'deleted':
+            this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED;
+            break;
+          default:
+            this.tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
+            break;
         }
 
         const currentTab = FINES_DRAFT_TAB_STATUSES.find((t) => t.tab === tab);
@@ -164,6 +172,22 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
         ? this.finesDraftService.PATH_AMEND_ACCOUNT
         : this.finesDraftService.PATH_REVIEW_ACCOUNT,
     );
+  }
+
+  /**
+   * Handles the click event for an account.
+   *
+   * Navigates to the Account Details page for the specified account number.
+   *
+   * @param accountNumber - The account number of the clicked account.
+   */
+  public onAccountClick(accountNumber: string): void {
+    this['router'].navigate([
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      accountNumber,
+      FINES_ACC_ROUTING_PATHS.children.details,
+    ]);
   }
 
   /**

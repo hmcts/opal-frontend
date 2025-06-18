@@ -75,12 +75,16 @@
           @case ('deleted') {
             <ng-container *ngTemplateOutlet="deletedIntroText"></ng-container>
           }
+          @case ('approved') {
+            <ng-container *ngTemplateOutlet="approvedIntroText"></ng-container>
+          }
         }
         <app-fines-draft-table-wrapper
           [tableData]="draftAccounts"
           [existingSortState]="tableSort"
           [activeTab]="activeTab"
           (linkClicked)="onDefendantClick($event)"
+          (accountClicked)="onAccountClick($event)"
         ></app-fines-draft-table-wrapper>
       } @else {
         @switch (activeTab) {
@@ -127,5 +131,8 @@
   </ng-template>
   <ng-template #deletedIntroText>
     <p>Showing accounts Deleted in the past 7 days.</p>
+  </ng-template>
+  <ng-template #approvedIntroText>
+    <p>Showing accounts Approved in the past 7 days.</p>
   </ng-template>
 </div>
