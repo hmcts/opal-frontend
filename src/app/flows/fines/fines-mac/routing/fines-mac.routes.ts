@@ -293,6 +293,10 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
+    resolve: {
+      title: TitleResolver,
+      courts: fetchEnforcementCourtsResolver,
+    },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
       routePermissionId: [draftRootPermissionIds['create-and-manage']],

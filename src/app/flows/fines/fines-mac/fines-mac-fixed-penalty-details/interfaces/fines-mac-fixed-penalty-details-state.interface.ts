@@ -1,17 +1,26 @@
-import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 
 export interface IFinesMacFixedPenaltyDetailsState {
   fm_fp_personal_details_title: string | null;
   fm_fp_personal_details_forenames: string | null;
   fm_fp_personal_details_surname: string | null;
-  fm_fp_personal_details_add_alias: boolean | null;
-  fm_fp_personal_details_aliases: IFinesMacPersonalDetailsAliasState[];
   fm_fp_personal_details_dob: string | null;
-  fm_fp_personal_details_national_insurance_number: string | null;
   fm_fp_personal_details_address_line_1: string | null;
   fm_fp_personal_details_address_line_2: string | null;
   fm_fp_personal_details_address_line_3: string | null;
   fm_fp_personal_details_post_code: string | null;
-  fm_fp_personal_details_vehicle_make: string | null;
-  fm_fp_personal_details_vehicle_registration_mark: string | null;
+  fm_fp_court_details_imposing_court_id: string | null;
+  fm_fp_court_details_issuing_authority_id: string | null;
+  fm_fp_account_comments_notes_comments: string | null;
+  fm_fp_account_comments_notes_notes: string | null;
+  fm_fp_account_comments_notes_system_notes: string | null;
+  fm_fp_language_preferences_document_language: string | null;
+  fm_fp_language_preferences_hearing_language: string | null;
+  fm_fp_offence_details_notice_number: string | null,
+  fm_fp_offence_details_offence_type: string | null,
+  fm_fp_offence_details_date_of_offence: string | null,
+  fm_fp_offence_details_offence_id: null,
+  fm_fp_offence_details_offence_cjs_code: string | null,
+  fm_fp_offence_details_time_of_offence: string | null,
+  fm_fp_offence_details_place_of_offence: string | null,
+  fm_fp_offence_details_amount_imposed: string | null,
 }

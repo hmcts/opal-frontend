@@ -35,7 +35,6 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [

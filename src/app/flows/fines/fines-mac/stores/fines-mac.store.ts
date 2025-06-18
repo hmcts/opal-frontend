@@ -31,6 +31,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-form';
 import { IFinesMacFixedPenaltyDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-form.interface';
+import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-details-form';
+import { IFinesMacFixedPenaltyOffenceDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-offence-details-form.interface';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
@@ -47,7 +49,7 @@ export const FinesMacStore = signalStore(
     paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
     languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
     businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
-    fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_FORM,
+    fixedPenaltyOffenceDetails: FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM,
     unsavedChanges: false,
     stateChanges: false,
     deleteFromCheckAccount: false,
@@ -140,9 +142,9 @@ export const FinesMacStore = signalStore(
           );
         }
       }),
-      fixedPenaltyDetailsStatus: computed(() => {
+      fixedPenaltyOffenceDetailsStatus: computed(() => {
         return utilsService.getFormStatus(
-          store.fixedPenaltyDetails().formData,
+          store.fixedPenaltyOffenceDetails().formData,
           FINES_MAC_STATUS.PROVIDED,
           FINES_MAC_STATUS.NOT_PROVIDED,
         );
@@ -247,8 +249,8 @@ export const FinesMacStore = signalStore(
     setBusinessUnit: (businessUnit: IOpalFinesBusinessUnit) => {
       patchState(store, { businessUnit, stateChanges: true, unsavedChanges: false });
     },
-    setFixedPenaltyDetails: (fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsForm) => {
-      patchState(store, { fixedPenaltyDetails, stateChanges: true, unsavedChanges: false });
+    setFixedPenaltyOffenceDetails: (fixedPenaltyOffenceDetails: IFinesMacFixedPenaltyOffenceDetailsForm) => {
+      patchState(store, { fixedPenaltyOffenceDetails, stateChanges: true, unsavedChanges: false });
     },
     setStateChanges: (stateChanges: boolean) => {
       patchState(store, { stateChanges });
@@ -303,6 +305,7 @@ export const FinesMacStore = signalStore(
         unsavedChanges: store.unsavedChanges(),
         stateChanges: store.stateChanges(),
         deleteFromCheckAccount: store.deleteFromCheckAccount(),
+        fixedPenaltyOffenceDetails: store.fixedPenaltyOffenceDetails(),
       };
       return finesMacStore;
     },

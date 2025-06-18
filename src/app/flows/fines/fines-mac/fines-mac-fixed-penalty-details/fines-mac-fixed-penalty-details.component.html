@@ -1,6 +1,8 @@
 <div class="govuk-grid-column-two-thirds">
   <app-fines-mac-fixed-penalty-details-form
     [defendantType]="defendantType"
+    [enforcingCourtAutoCompleteItems]="enforcementCourtData"
+    [issuingAuthorityAutoCompleteItems]="issuingAuthoritiesData"
     (formSubmit)="handleFixedPenaltyDetailsSubmit($event)"
     (unsavedChanges)="handleUnsavedChanges($event)"
   ></app-fines-mac-fixed-penalty-details-form>
