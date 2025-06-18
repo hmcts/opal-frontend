@@ -185,7 +185,6 @@ describe('FinesDraftCreateAndManageDeletedComponent', () => {
       interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
 
       setupComponent();
-
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
       for (const heading of TABLE_HEADINGS_DELETED) {
         cy.get(DOM_ELEMENTS.tableHeadings).contains(heading).should('exist');

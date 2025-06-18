@@ -5,6 +5,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/co
 import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants/fines-mac-company-details-form';
 import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants/fines-mac-contact-details-form';
 import { FINES_MAC_COURT_DETAILS_FORM } from '../fines-mac-court-details/constants/fines-mac-court-details-form';
+import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/constants/fines-mac-employer-details-form';
 import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-details-form';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
@@ -35,6 +36,7 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   fixedPenaltyOffenceDetails: FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM,
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
+  deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
   unsavedChanges: false,
   stateChanges: false,

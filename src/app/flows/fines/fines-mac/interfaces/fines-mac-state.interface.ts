@@ -11,6 +11,7 @@ import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interf
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 import { IFinesMacFixedPenaltyOffenceDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-offence-details-form.interface';
+import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsForm;
@@ -29,4 +30,5 @@ export interface IFinesMacState {
   stateChanges: boolean;
   deleteFromCheckAccount: boolean;
   fixedPenaltyOffenceDetails: IFinesMacFixedPenaltyOffenceDetailsForm;
+  deleteAccountConfirmation: IFinesMacDeleteAccountConfirmationForm;
 }

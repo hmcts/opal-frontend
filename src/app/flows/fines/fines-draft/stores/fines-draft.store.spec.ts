@@ -193,4 +193,46 @@ describe('FinesDraftStore', () => {
     store.resetChecker();
     expect(store.checker()).toEqual(false);
   });
+
+  it('should set banner message by type - submitted', () => {
+    store.setBannerMessageByType('submitted', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have submitted Test Name's account for review.");
+  });
+
+  it('should set banner message by type - deleted', () => {
+    store.setBannerMessageByType('deleted', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have deleted Test Name's account.");
+  });
+
+  it('should set banner message by type - rejected', () => {
+    store.setBannerMessageByType('rejected', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have rejected Test Name's account.");
+  });
+
+  it('should set banner message by type - approved', () => {
+    store.setBannerMessageByType('approved', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have approved Test Name's account.");
+  });
+
+  it('should not set banner message if type does not exist', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    store.setBannerMessageByType('nonexistent' as any, 'Test Name');
+    expect(store.bannerMessage()).toEqual('');
+  });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Alice Williams');
+  });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    account.defendant_type = 'company';
+    account.defendant.company_name = 'Tech Innovations Ltd.';
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Tech Innovations Ltd.');
+  });
 });

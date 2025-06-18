@@ -10,6 +10,7 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../fines-mac-offence-details/con
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants/fines-mac-business-unit-state';
+import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 import { IFinesMacEmployerDetailsForm } from '../fines-mac-employer-details/interfaces/fines-mac-employer-details-form.interface';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { IFinesMacContactDetailsForm } from '../fines-mac-contact-details/interfaces/fines-mac-contact-details-form.interface';
@@ -33,6 +34,7 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM } from '../fines-mac-fixed-penalty
 import { IFinesMacFixedPenaltyDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-details-form';
 import { IFinesMacFixedPenaltyOffenceDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-offence-details-form.interface';
+import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
@@ -53,6 +55,7 @@ export const FinesMacStore = signalStore(
     unsavedChanges: false,
     stateChanges: false,
     deleteFromCheckAccount: false,
+    deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
   })),
   withHooks((store) => {
     return {
@@ -120,6 +123,13 @@ export const FinesMacStore = signalStore(
             store.accountCommentsNotes().formData.fm_account_comments_notes_notes,
             store.accountCommentsNotes().formData.fm_account_comments_notes_comments,
           ],
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
+      }),
+      deleteAccountConfirmationStatus: computed(() => {
+        return utilsService.getFormStatus(
+          store.deleteAccountConfirmation().formData,
           FINES_MAC_STATUS.PROVIDED,
           FINES_MAC_STATUS.NOT_PROVIDED,
         );
@@ -237,6 +247,9 @@ export const FinesMacStore = signalStore(
     setAccountCommentsNotes: (accountCommentsNotes: IFinesMacAccountCommentsNotesForm) => {
       patchState(store, { accountCommentsNotes, stateChanges: true, unsavedChanges: false });
     },
+    setDeleteAccountConfirmation: (deleteAccountConfirmation: IFinesMacDeleteAccountConfirmationForm) => {
+      patchState(store, { deleteAccountConfirmation, stateChanges: true, unsavedChanges: false });
+    },
     setOffenceDetails: (offenceDetails: IFinesMacOffenceDetailsForm[]) => {
       patchState(store, { offenceDetails, stateChanges: true, unsavedChanges: false });
     },
@@ -305,6 +318,7 @@ export const FinesMacStore = signalStore(
         unsavedChanges: store.unsavedChanges(),
         stateChanges: store.stateChanges(),
         deleteFromCheckAccount: store.deleteFromCheckAccount(),
+        deleteAccountConfirmation: store.deleteAccountConfirmation(),
         fixedPenaltyOffenceDetails: store.fixedPenaltyOffenceDetails(),
       };
       return finesMacStore;

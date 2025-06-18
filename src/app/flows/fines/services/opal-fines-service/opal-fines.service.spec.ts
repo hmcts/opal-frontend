@@ -32,6 +32,8 @@ import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-
 import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
 import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -440,6 +442,22 @@ describe('OpalFines', () => {
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
 
+  it('should send a PATCH request to update the draft account', () => {
+    const draftAccountId = 1;
+    const body = OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
+
+    service.patchDraftAccountPayload(draftAccountId, body).subscribe((response) => {
+      expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+  });
+
   it('should send a POST request to search offences API with correct body', () => {
     const filters = OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK;
     const expectedResponse = OPAL_FINES_SEARCH_OFFENCES_MOCK;
@@ -490,5 +508,22 @@ describe('OpalFines', () => {
     expect(key1).toBe(key2);
     expect(typeof key1).toBe('string');
     expect(() => JSON.parse(key1)).not.toThrow();
+  });
+
+  it('should send a PATCH request to update the draft account payload', () => {
+    const accountId = 456;
+    const body = OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK;
+    const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;
+
+    service.patchDraftAccountPayload(accountId, body).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(expectedResponse);
   });
 });
