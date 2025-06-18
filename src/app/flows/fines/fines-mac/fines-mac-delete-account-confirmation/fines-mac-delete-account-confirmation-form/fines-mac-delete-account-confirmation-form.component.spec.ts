@@ -89,4 +89,36 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
 
     expect(component['router'].navigate).toHaveBeenCalled();
   });
+
+  it('should return true from hasUnsavedChanges if form is dirty, reason has value, and form is not submitted', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
+    component.form.markAsDirty();
+    component['formSubmitted'] = false;
+
+    expect(component['hasUnsavedChanges']()).toBeTrue();
+  });
+
+  it('should return false from hasUnsavedChanges if form is pristine', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
+    component.form.markAsPristine();
+    component['formSubmitted'] = false;
+
+    expect(component['hasUnsavedChanges']()).toBeFalse();
+  });
+
+  it('should return false from hasUnsavedChanges if reason is empty', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue('');
+    component.form.markAsDirty();
+    component['formSubmitted'] = false;
+
+    expect(component['hasUnsavedChanges']()).toBeFalse();
+  });
+
+  it('should return false from hasUnsavedChanges if form is submitted', () => {
+    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Some reason');
+    component.form.markAsDirty();
+    component['formSubmitted'] = true;
+
+    expect(component['hasUnsavedChanges']()).toBeFalse();
+  });
 });

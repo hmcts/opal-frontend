@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FINES_MAC_REVIEW_ACCOUNT_FAILED_BANNER_MESSAGE } from './constant/fines-mac-review-account-failed-banner-message.constant';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
   MojAlertIconComponent,
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { FinesDraftStore } from '../../../fines-draft/stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-mac-review-account-failed-banner',
@@ -13,6 +13,14 @@ import {
   templateUrl: './fines-mac-review-account-failed-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountFailedBannerComponent {
-  public readonly failedBannerMessage = FINES_MAC_REVIEW_ACCOUNT_FAILED_BANNER_MESSAGE;
+export class FinesMacReviewAccountFailedBannerComponent implements OnInit, OnDestroy {
+  public readonly finesDraftStore = inject(FinesDraftStore);
+
+  public ngOnInit(): void {
+    this.finesDraftStore.setBannerMessageByType('error');
+  }
+
+  public ngOnDestroy(): void {
+    this.finesDraftStore.resetBannerMessage();
+  }
 }

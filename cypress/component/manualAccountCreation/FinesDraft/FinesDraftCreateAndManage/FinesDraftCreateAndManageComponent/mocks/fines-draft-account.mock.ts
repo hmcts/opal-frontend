@@ -21,6 +21,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       account_type: 'fine',
       account_status: 'ACTIVE',
       account_status_date: '2023-01-01',
+      account_number: 'FINE123456',
     },
     {
       draft_account_id: 102,
@@ -39,6 +40,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       account_type: 'fixedPenalty',
       account_status: 'PENDING',
       account_status_date: '2023-01-01',
+      account_number: 'FP123456',
     },
   ],
 };
