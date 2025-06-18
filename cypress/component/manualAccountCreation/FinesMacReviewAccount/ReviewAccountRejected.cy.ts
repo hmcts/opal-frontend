@@ -15,7 +15,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { MOCK_FINES_DRAFT_STATE } from './mocks/mock_fines_draft_state';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { REJECTED_ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
+import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { data } from 'cypress/types/jquery';
@@ -36,7 +36,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
           provide: GlobalStore,
           useFactory: () => {
             let globalStore = new GlobalStore();
-            globalStore.setUserState(REJECTED_ACCOUNT_SESSION_USER_STATE_MOCK);
+            globalStore.setUserState(ACCOUNT_SESSION_USER_STATE_MOCK);
             globalStore.setError({
               error: false,
               message: '',
@@ -65,6 +65,9 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
               data: {
                 finesMacState: {},
                 finesDraftState: {},

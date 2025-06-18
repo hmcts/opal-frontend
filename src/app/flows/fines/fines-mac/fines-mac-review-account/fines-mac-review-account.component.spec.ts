@@ -60,9 +60,11 @@ function createTestModule(snapshotData?: any) {
     'buildAddAccountPayload',
     'buildReplaceAccountPayload',
     'mapAccountPayload',
+    'getDefendantName',
   ]);
   mockFinesMacPayloadService.buildReplaceAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
   mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+  mockFinesMacPayloadService.getDefendantName.and.returnValue('Test Defendant Name');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const defaultData: any = {
@@ -91,6 +93,12 @@ function createTestModule(snapshotData?: any) {
         useValue: {
           parent: of('manual-account-creation'),
           snapshot: {
+            paramMap: {
+              get: (key: string) => {
+                if (key === 'draftAccountId') return '1';
+                return null;
+              },
+            },
             data: defaultData,
           },
         },
@@ -200,25 +208,14 @@ describe('FinesMacReviewAccountComponent', () => {
     it('should test processPutResponse', () => {
       const handleRouteSpy = spyOn(component, 'handleRoute');
       const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-      expectedResult.account_snapshot = {
-        ...expectedResult.account_snapshot,
-        defendant_name: 'Test Defendant Name',
-        date_of_birth: '01-01-2000',
-        created_date: '01-01-2000',
-        account_type: 'fine',
-        submitted_by: 'Test Submitted By',
-        submitted_by_name: 'Test Submitted By Name',
-        business_unit_name: 'Test Business; Unit Name',
-      };
       finesDraftStore.setFragment('review');
 
       component['processPutResponse'](expectedResult);
 
-      expect(finesDraftStore.bannerMessage()).toEqual(
-        `You have submitted ${expectedResult.account_snapshot?.defendant_name}'s account for review`,
-      );
+      expect(finesDraftStore.bannerMessage()).toEqual(`You have submitted Test Defendant Name's account for review.`);
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
+      expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
       expect(handleRouteSpy).toHaveBeenCalledWith(
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
         false,

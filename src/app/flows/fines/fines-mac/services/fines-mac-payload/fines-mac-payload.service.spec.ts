@@ -104,6 +104,7 @@ describe('FinesMacPayloadService', () => {
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
+    finesMacState.deleteAccountConfirmation.formData = FINES_MAC_STATE.deleteAccountConfirmation.formData;
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
 
     expect(result).toEqual(finesMacState);
@@ -193,6 +194,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.deleteAccountConfirmation.formData = { ...FINES_MAC_STATE.deleteAccountConfirmation.formData };
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
     finesMacState.businessUnit = {
@@ -279,5 +281,100 @@ describe('FinesMacPayloadService', () => {
       validated_by_name: sessionUserState['name'],
       version: finesMacPayloadAddAccount.version!,
     });
+  });
+
+  it('should return forenames and surname when defendant_type is "adultOrYouthOnly"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'adultOrYouthOnly',
+        defendant: {
+          forenames: 'John',
+          surname: 'Doe',
+          company_name: 'Acme Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('John Doe');
+  });
+
+  it('should return forenames and surname when defendant_type is "parentOrGuardianToPay"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'parentOrGuardianToPay',
+        defendant: {
+          forenames: 'Jane',
+          surname: 'Smith',
+          company_name: 'Widgets Inc',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('Jane Smith');
+  });
+
+  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "parentOrGuardianToPay"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'company',
+        defendant: {
+          forenames: 'N/A',
+          surname: 'N/A',
+          company_name: 'MegaCorp Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('MegaCorp Ltd');
+  });
+
+  it('should handle missing forenames or surname gracefully', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'adultOrYouthOnly',
+        defendant: {
+          forenames: undefined,
+          surname: null,
+          company_name: 'Fallback Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('undefined null');
+  });
+
+  it('should handle missing company_name gracefully', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'company',
+        defendant: {
+          forenames: 'N/A',
+          surname: 'N/A',
+          company_name: undefined,
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('undefined');
   });
 });

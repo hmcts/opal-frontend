@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMacReviewAccountDecisionFormComponent } from './fines-mac-review-account-decision-form/fines-mac-review-account-decision-form.component';
 import { IFinesMacReviewAccountDecisionForm } from './interfaces/fines-mac-review-account-decision-form.interface';
@@ -22,6 +22,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  @Input({ required: true }) public accountId!: number;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
@@ -79,12 +80,11 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
    * @param response - The payload containing the account snapshot and status after submission.
    */
   private successfulSubmission(response: IFinesMacAddAccountPayload): void {
-    const defendant = response.account.defendant;
-    const name = defendant.company_name ? defendant.company_name : defendant.forenames + ' ' + defendant.surname;
+    const defendantName = this.finesMacPayloadService.getDefendantName(response);
     if (response.account_status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected) {
-      this.finesDraftStore.setBannerMessage(`You have rejected ${name}'s account`);
+      this.finesDraftStore.setBannerMessageByType('rejected', defendantName);
     } else {
-      this.finesDraftStore.setBannerMessage(`You have approved ${name}'s account`);
+      this.finesDraftStore.setBannerMessageByType('approved', defendantName);
     }
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
