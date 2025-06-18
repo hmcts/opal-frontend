@@ -31,8 +31,7 @@ function convertDataTableToNestedObject(dataTable: DataTable): Record<string, an
 
     try {
       parsedValue = JSON.parse(value);
-    } catch (e) {
-    }
+    } catch (e) {}
     _.set(overrides, path, parsedValue);
   }
   return overrides;
@@ -72,33 +71,35 @@ function processDateFunctions(obj: any): any {
  * Creates a mock approved account with the specified account type and details
  * Similar to the regular draft account creation but mocks the API instead
  */
-When('I create a {string} approved draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
-  const overrides = convertDataTableToNestedObject(data);
+When(
+  'I create a {string} approved draft account with the following details:',
+  (accountType: DefendantType, data: DataTable) => {
+    const overrides = convertDataTableToNestedObject(data);
 
-  // Load the appropriate base payload for this account type
-  const payloadFile = getPayloadFileForApprovedAccountType(accountType);
-  cy.fixture(`draftAccounts/${payloadFile}`).then((accountData) => {
+    // Load the appropriate base payload for this account type
+    const payloadFile = getPayloadFileForApprovedAccountType(accountType);
+    cy.fixture(`draftAccounts/${payloadFile}`).then((accountData) => {
+      const requestBody = _.merge({}, accountData, overrides);
 
-    const requestBody = _.merge({}, accountData, overrides);
+      // Process any date function placeholders
+      const processedBody = processDateFunctions(requestBody);
 
-    // Process any date function placeholders
-    const processedBody = processDateFunctions(requestBody);
-    
-    // Ensure each account has a unique ID
-    if (approvedAccounts.length > 0) {
-      processedBody.draft_account_id = approvedAccounts[approvedAccounts.length - 1].draft_account_id + 1;
-    }
-    approvedAccounts.push(processedBody);
+      // Ensure each account has a unique ID
+      if (approvedAccounts.length > 0) {
+        processedBody.draft_account_id = approvedAccounts[approvedAccounts.length - 1].draft_account_id + 1;
+      }
+      approvedAccounts.push(processedBody);
 
-    cy.intercept('GET', '**/opal-fines-service/draft-accounts?**status=Published**', {
-      statusCode: 200,
-      body: {
-        count: approvedAccounts.length,
-        summaries: approvedAccounts
-      },
-    }).as('getApprovedAccount');
-  });
-});
+      cy.intercept('GET', '**/opal-fines-service/draft-accounts?**status=Published**', {
+        statusCode: 200,
+        body: {
+          count: approvedAccounts.length,
+          summaries: approvedAccounts,
+        },
+      }).as('getApprovedAccount');
+    });
+  },
+);
 
 beforeEach(() => {
   approvedAccounts = [];
@@ -113,8 +114,7 @@ When('I clear all approved draft accounts', () => {
     statusCode: 200,
     body: {
       count: 0,
-      summaries: []
+      summaries: [],
     },
   }).as('getApprovedAccount');
 });
-
