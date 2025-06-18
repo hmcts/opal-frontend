@@ -2,7 +2,7 @@ import { DataTable, When } from '@badeball/cypress-cucumber-preprocessor';
 import _ from 'lodash';
 import { getDaysAgo } from '../../../utils/dateUtils';
 
-type DefendantType = 'company' | 'adultOrYouthOnly';
+type DefendantType = 'company' | 'adultOrYouthOnly' | 'parentOrGuardianToPay';
 
 let approvedAccounts: any[] = [];
 
@@ -13,6 +13,7 @@ function getPayloadFileForApprovedAccountType(accountType: DefendantType): strin
   const payloadFiles = {
     company: 'approvedCompanyPayload.json',
     adultOrYouthOnly: 'approvedAccountPayload.json',
+    parentOrGuardianToPay: 'approvedParentOrGuardianPayload.json',
   };
   return payloadFiles[accountType];
 }

@@ -41,7 +41,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
     });
   };
 
-  it('(AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607'] }, () => {
+  it('(AC.2,AC.3,AC.4)should show summary table with correct data for approved accounts', { tags: ['@PO-607'] }, () => {
     const approvedMockData = { count: 2, summaries: OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries };
 
     interceptGetRejectedAccounts(200, { count: 0, summaries: [] });
@@ -84,7 +84,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
   });
 
   it(
-    '(AC.5)should have pagination enabled for over 25 draft accounts for approved accounts',
+    '(AC.4b)should have pagination enabled for over 25 draft accounts for approved accounts',
     { tags: ['@PO-607'] },
     () => {
       const approvedMockData = structuredClone(OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK);
