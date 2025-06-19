@@ -44,6 +44,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: false }) public isApprovedTab: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;
   @Output() public linkClicked = new EventEmitter<number>();
+  @Output() public accountClicked = new EventEmitter<string>();
 
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
@@ -57,5 +58,16 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
    */
   public onDefendantClick(id: number): void {
     this.linkClicked.emit(id);
+  }
+
+  /**
+   * Handles the click event on an account.
+   * Emits the clicked account number.
+   *
+   * @param {number} account_number - the account number of the clicked account.
+   * @returns {void}
+   */
+  public onAccountClick(account_number: string): void {
+    this.accountClicked.emit(account_number);
   }
 }

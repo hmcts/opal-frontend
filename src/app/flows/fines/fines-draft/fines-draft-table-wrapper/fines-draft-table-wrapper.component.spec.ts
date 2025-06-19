@@ -52,4 +52,13 @@ describe('FinesDraftTableWrapperComponent', () => {
 
     expect(component.linkClicked.emit).toHaveBeenCalledWith(testId);
   });
+
+  it('should emit accountClicked event with the correct account number when onAccountClick is called', () => {
+    spyOn(component.accountClicked, 'emit');
+
+    const testAccountNumber = 'ACC123';
+    component.onAccountClick(testAccountNumber);
+
+    expect(component.accountClicked.emit).toHaveBeenCalledWith(testAccountNumber);
+  });
 });
