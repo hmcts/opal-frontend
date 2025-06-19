@@ -17,7 +17,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { debounceTime, distinctUntilChanged, EMPTY, map, Observable, takeUntil, tap } from 'rxjs';
-import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -203,16 +202,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Listens for changes in the offence type and updates the required fields within the vehicle section.
    */
   private offenceTypeListener(): void {
-    console.log('offenceTypeListener called');
     const offenceTypeControl = this.form.controls['fm_fp_offence_details_offence_type'];
-
-    // Initial update if the date of birth is already populated
-    if (offenceTypeControl.value) {
-    }
 
     // Subscribe to changes in the offence type control
     offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
-      console.log('offenceTypeListener valueChanges called', offenceType);
       if (offenceType === 'vehicle') {
         this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators(Validators.required);
         this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators(Validators.required);
@@ -274,7 +267,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ...this.replaceKeys(this.finesMacStore.languagePreferences().formData),
       ...this.replaceKeys(this.finesMacStore.fixedPenaltyOffenceDetails().formData),
     };
-    const key = this.defendantType as keyof IFinesMacDefendantTypes;
     this.setupFixedPenaltyDetailsForm();
 
     this.setInitialErrorMessages();
@@ -286,7 +278,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   private replaceKeys<T extends object>(formData: T) {
-    const result: any = {};
+    const result: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(formData)) {
       const newKey = (key as string).replace('fm_', 'fm_fp_');

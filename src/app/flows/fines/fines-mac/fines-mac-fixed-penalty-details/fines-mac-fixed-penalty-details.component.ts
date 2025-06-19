@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesMacFixedPenaltyDetailsForm } from './interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FinesMacFixedPenaltyDetailsFormComponent } from './fines-mac-fixed-penalty-details-form/fines-mac-fixed-penalty-details-form.component';
@@ -25,7 +25,7 @@ import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from './constants/fines-
   templateUrl: './fines-mac-fixed-penalty-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent {
+export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   public defendantType = this.finesMacStore.getDefendantType();
@@ -60,7 +60,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   }
 
   private createPersonalDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacPersonalDetailsForm {
-    let _form: IFinesMacPersonalDetailsForm = FINES_MAC_PERSONAL_DETAILS_FORM;
+    const _form: IFinesMacPersonalDetailsForm = FINES_MAC_PERSONAL_DETAILS_FORM;
 
     _form.formData['fm_personal_details_title'] = form.formData['fm_fp_personal_details_title'];
     _form.formData['fm_personal_details_forenames'] = form.formData['fm_fp_personal_details_forenames'];
@@ -75,7 +75,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   }
 
   private createCourtDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacCourtDetailsForm {
-    let _form: IFinesMacCourtDetailsForm = FINES_MAC_COURT_DETAILS_FORM;
+    const _form: IFinesMacCourtDetailsForm = FINES_MAC_COURT_DETAILS_FORM;
 
     _form.formData['fm_court_details_imposing_court_id'] = form.formData['fm_fp_court_details_imposing_court_id'];
     _form.formData['fm_court_details_issuing_authority_id'] = form.formData['fm_fp_court_details_issuing_authority_id'];
@@ -86,7 +86,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createCommentsAndNotesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacAccountCommentsNotesForm {
-    let _form: IFinesMacAccountCommentsNotesForm = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM;
+    const _form: IFinesMacAccountCommentsNotesForm = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM;
 
     _form.formData['fm_account_comments_notes_comments'] = form.formData['fm_fp_account_comments_notes_comments'];
     _form.formData['fm_account_comments_notes_notes'] = form.formData['fm_fp_account_comments_notes_notes'];
@@ -99,7 +99,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createLanguagePreferencesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacLanguagePreferencesForm {
-    let _form: IFinesMacLanguagePreferencesForm = FINES_MAC_LANGUAGE_PREFERENCES_FORM;
+    const _form: IFinesMacLanguagePreferencesForm = FINES_MAC_LANGUAGE_PREFERENCES_FORM;
 
     _form.formData['fm_language_preferences_document_language'] =
       form.formData['fm_fp_language_preferences_document_language'];
@@ -112,7 +112,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createFixedPenaltyOffenceDetailsFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacFixedPenaltyOffenceDetailsForm {
-    let _form: IFinesMacFixedPenaltyOffenceDetailsForm = FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM;
+    const _form: IFinesMacFixedPenaltyOffenceDetailsForm = FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM;
 
     _form.formData['fm_offence_details_notice_number'] = form.formData['fm_fp_offence_details_notice_number'];
     _form.formData['fm_offence_details_offence_type'] = form.formData['fm_fp_offence_details_offence_type'];

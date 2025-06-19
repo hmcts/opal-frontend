@@ -30,8 +30,6 @@ import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-form';
-import { IFinesMacFixedPenaltyDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-details-form';
 import { IFinesMacFixedPenaltyOffenceDetailsForm } from '../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-offence-details-form.interface';
 import { IFinesMacDeleteAccountConfirmationForm } from '../fines-mac-delete-account-confirmation/interfaces/fines-mac-delete-account-confirmation-form.interface';
