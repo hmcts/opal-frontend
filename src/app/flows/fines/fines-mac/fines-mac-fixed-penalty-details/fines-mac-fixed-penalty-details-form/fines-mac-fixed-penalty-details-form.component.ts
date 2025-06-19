@@ -9,7 +9,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
@@ -22,11 +22,6 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-titl
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-// import {
-//   GovukCheckboxesComponent,
-//   GovukCheckboxesConditionalComponent,
-//   GovukCheckboxesItemComponent,
-// } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -44,17 +39,13 @@ import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-fixed-penalty-details-field-errors';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
-
-import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK } from '../mocks/fines-mac-fixed-penalty-details-issuing-authorities.mock';
 import {
   GovukRadioComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
@@ -62,6 +53,8 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../f
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
+import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -74,9 +67,6 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
     GovukSelectComponent,
     GovukCancelLinkComponent,
     GovukTextAreaComponent,
-    // GovukCheckboxesComponent,
-    // GovukCheckboxesItemComponent,
-    // GovukCheckboxesConditionalComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
@@ -118,8 +108,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
-  public yesterday!: string;
-
+  public today: string = this.dateService.getPreviousDate({ days: 0 });
+  public yesterday = this.dateService.getPreviousDate({ days: 1 });
   public age!: number;
   public ageLabel!: string;
 
@@ -130,7 +120,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
       // Personal Details
-      fm_fp_personal_details_title: new FormControl(null, [Validators.required]),
+      fm_fp_personal_details_title: new FormControl(null, [
+        Validators.required,
+      ]),
       fm_fp_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
@@ -141,7 +133,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         Validators.maxLength(30),
         alphabeticalTextValidator(),
       ]),
-      fm_fp_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      fm_fp_personal_details_dob: new FormControl(null, [
+        optionalValidDateValidator(), 
+        dateOfBirthValidator(),
+      ]),
       fm_fp_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -155,35 +150,103 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_fp_personal_details_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+      ]),
       // Court Details
-      fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null, [Validators.required]),
+      fm_fp_court_details_imposing_court_id: new FormControl(null, [
+        Validators.required,
+      ]),
+      fm_fp_court_details_issuing_authority_id: new FormControl(null, [
+        Validators.required,
+      ]),
       // Comments and Notes
-      fm_fp_account_comments_notes_comments: new FormControl(null),
-      fm_fp_account_comments_notes_notes: new FormControl(null),
+      fm_fp_account_comments_notes_comments: new FormControl(null, [
+        alphabeticalTextValidator(),
+      ]),
+      fm_fp_account_comments_notes_notes: new FormControl(null, [
+        alphabeticalTextValidator(),
+      ]),
       fm_fp_account_comments_notes_system_notes: new FormControl(null),
       // Language Preferences
       fm_fp_language_preferences_document_language: new FormControl(null),
       fm_fp_language_preferences_hearing_language: new FormControl(null),
       // Offence Details
-      fm_fp_offence_details_notice_number: new FormControl(null),
-      fm_fp_offence_details_offence_type: new FormControl(null),
-      fm_fp_offence_details_date_of_offence: new FormControl(null),
+      fm_fp_offence_details_notice_number: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(16),
+        alphabeticalTextValidator(),
+      ]),
+      fm_fp_offence_details_offence_type: new FormControl('vehicle'),
+      fm_fp_offence_details_date_of_offence: new FormControl(null,  [
+        Validators.maxLength(10),
+        optionalValidDateValidator(), 
+        futureDateValidator(),
+      ]),
       fm_fp_offence_details_offence_id: new FormControl(null),
-      fm_fp_offence_details_offence_cjs_code: new FormControl(null),
-      fm_fp_offence_details_time_of_offence: new FormControl(null),
-      fm_fp_offence_details_place_of_offence: new FormControl(null),
-      fm_fp_offence_details_amount_imposed: new FormControl(null),
+      fm_fp_offence_details_offence_cjs_code: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(8),
+        alphabeticalTextValidator(),
+      ]),
+      fm_fp_offence_details_time_of_offence: new FormControl(null, [
+        Validators.pattern(/^([01]\d|2[0-3]):[0-5]\d$/), // Matches time in HH:mm format, e.g., 12:34
+      ]),
+      fm_fp_offence_details_place_of_offence: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(30),
+        alphabeticalTextValidator(),   
+      ]),
+      fm_fp_offence_details_amount_imposed: new FormControl(null, [
+        Validators.required,
+        amountValidator(18,2),
+      ]),
       // Offence Details Vehicle
-      fm_fp_offence_details_vehicle_registration_number: new FormControl(null),
-      fm_fp_offence_details_driving_licence_number: new FormControl(null),
-      fm_fp_offence_details_nto_nth: new FormControl(null),
-      fm_fp_offence_details_date_nto_issued: new FormControl(null),
+      fm_fp_offence_details_vehicle_registration_number: new FormControl(null, [
+        Validators.required, 
+        Validators.maxLength(7),  
+      ]),
+      fm_fp_offence_details_driving_licence_number: new FormControl(null, [
+        Validators.required,
+        Validators.pattern(/^[A-Za-z]{5}\d{6}[A-Za-z]{2}[A-Za-z0-9]{3}$/), // Example pattern for driving licence number
+      ]),
+      fm_fp_offence_details_nto_nth: new FormControl(null, [
+        Validators.maxLength(10),
+      ]),
+      fm_fp_offence_details_date_nto_issued: new FormControl(null, [
+        Validators.maxLength(10),
+        optionalValidDateValidator(),  
+        futureDateValidator(),
+      ]),
     });
   }
 
+  /**
+   * Listens for changes in the offence type and updates the required fields within the vehicle section.
+   */
+  private offenceTypeListener(): void {
+    console.log('offenceTypeListener called');
+    const offenceTypeControl = this.form.controls['fm_fp_offence_details_offence_type'];
 
+    // Initial update if the date of birth is already populated
+    if (offenceTypeControl.value) {
+
+    }
+
+    // Subscribe to changes in the offence type control
+    offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
+      console.log('offenceTypeListener valueChanges called', offenceType);
+      if (offenceType === 'vehicle') {
+        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators(Validators.required);
+        this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators(Validators.required);
+      } else {
+        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].removeValidators(Validators.required);
+        this.form.controls['fm_fp_offence_details_driving_licence_number'].removeValidators(Validators.required);
+      }
+      this.form.controls['fm_fp_offence_details_vehicle_registration_number'].updateValueAndValidity();
+      this.form.controls['fm_fp_offence_details_driving_licence_number'].updateValueAndValidity();
+    });
+  }
 
   /**
    * Listens for changes in the date of birth control and updates the age and label accordingly.
@@ -216,9 +279,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     }
   }
 
-    public readonly languageOptions: { key: string; value: string }[] = Object.entries(
-      FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
-    ).map(([key, value]) => ({ key, value }));
+  public readonly languageOptions: { key: string; value: string }[] = Object.entries(
+    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
+  ).map(([key, value]) => ({ key, value }));
 
   /**
    * Sets up the initial personal details for the fines-mac-personal-details-form component.
@@ -239,9 +302,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.form.controls['fm_fp_offence_details_offence_type'].updateValueAndValidity();
     this.dateOfBirthListener();
-    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.offenceCodeListener();
+    this.offenceTypeListener();
   }
 
   private replaceKeys<T extends object>(formData: T) {
@@ -255,67 +319,65 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     return result;
   }
 
-   /**
-     * Listens for changes in the offence code control and performs actions based on the input.
-     * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
-     * @private
-     * @returns {void}
-     */
-    private offenceCodeListener(): void {
+  /**
+   * Listens for changes in the offence code control and performs actions based on the input.
+   * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
+   * @private
+   * @returns {void}
+   */
+  private offenceCodeListener(): void {
+    this.selectedOffenceConfirmation = false;
+
+    const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
+
+    // Populate the offence hint if the offence code is already set
+    if (offenceCodeControl.value) {
+      this.populateOffenceHint(offenceCodeControl.value);
+    }
+
+    // Listen for changes in the offence code control
+    offenceCodeControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap((cjs_code: string) => {
+          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
+          offenceCodeControl.setValue(cjs_code, { emitEvent: false });
+        }),
+        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe((cjs_code: string) => {
+        this.populateOffenceHint(cjs_code);
+      });
+  }
+
+
+  /**
+   * Populates the offence hint based on the provided CJS code.
+   * @param cjsCode - The CJS code used to retrieve the offence details.
+   */
+  private populateOffenceHint(cjsCode: string): void {
+    const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
+    const offenceIdControl = this.form.controls['fm_fp_offence_details_offence_id'];
+    offenceIdControl.setValue(null);
+
+    if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
+      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
+        tap((offence) => {
+          offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
+          offenceIdControl.setValue(offence.count !== 1 ? null : offence.refData[0].offence_id, { emitEvent: false });
+        }),
+        map((response) => response),
+        takeUntil(this.ngUnsubscribe),
+      );
+
+      this.selectedOffenceConfirmation = true;
+
+      this.changeDetector.detectChanges();
+    } else {
       this.selectedOffenceConfirmation = false;
-  
-      const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
-  
-      // Populate the offence hint if the offence code is already set
-      if (offenceCodeControl.value) {
-        this.populateOffenceHint(offenceCodeControl.value);
-      }
-  
-      // Listen for changes in the offence code control
-      offenceCodeControl.valueChanges
-        .pipe(
-          distinctUntilChanged(),
-          tap((cjs_code: string) => {
-            cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
-            offenceCodeControl.setValue(cjs_code, { emitEvent: false });
-          }),
-          debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
-          takeUntil(this.ngUnsubscribe),
-        )
-        .subscribe((cjs_code: string) => {
-          this.populateOffenceHint(cjs_code);
-        });
     }
-
-
-    /**
-     * Populates the offence hint based on the provided CJS code.
-     * @param cjsCode - The CJS code used to retrieve the offence details.
-     */
-    private populateOffenceHint(cjsCode: string): void {
-      const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
-      const offenceIdControl = this.form.controls['fm_fp_offence_details_offence_id'];
-      offenceIdControl.setValue(null);
-  
-      if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
-        this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
-          tap((offence) => {
-            offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
-            offenceIdControl.setValue(offence.count !== 1 ? null : offence.refData[0].offence_id, { emitEvent: false });
-          }),
-          map((response) => response),
-          takeUntil(this.ngUnsubscribe),
-        );
-  
-        this.selectedOffenceConfirmation = true;
-  
-        this.changeDetector.detectChanges();
-      } else {
-        this.selectedOffenceConfirmation = false;
-      }
-    }
-
-
+  }
 
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();

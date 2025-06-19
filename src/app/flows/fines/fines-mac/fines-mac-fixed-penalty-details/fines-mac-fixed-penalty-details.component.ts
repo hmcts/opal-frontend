@@ -26,9 +26,6 @@ import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from './constants/fines-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent {
-
-
-  
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   public defendantType = this.finesMacStore.getDefendantType();
@@ -95,7 +92,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form
   }
 
-    private createLanguagePreferencesFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacLanguagePreferencesForm{
+  private createLanguagePreferencesFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacLanguagePreferencesForm{
     let _form: IFinesMacLanguagePreferencesForm = FINES_MAC_LANGUAGE_PREFERENCES_FORM;
 
     _form.formData['fm_language_preferences_document_language'] = form.formData['fm_fp_language_preferences_document_language'];
@@ -116,6 +113,10 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     _form.formData['fm_offence_details_time_of_offence'] = form.formData['fm_fp_offence_details_time_of_offence'];
     _form.formData['fm_offence_details_place_of_offence'] = form.formData['fm_fp_offence_details_place_of_offence'];
     _form.formData['fm_offence_details_amount_imposed'] = form.formData['fm_fp_offence_details_amount_imposed'];
+    _form.formData['fm_offence_details_vehicle_registration_number'] = form.formData['fm_fp_offence_details_vehicle_registration_number'];
+    _form.formData['fm_offence_details_driving_licence_number'] = form.formData['fm_fp_offence_details_driving_licence_number'];
+    _form.formData['fm_offence_details_nto_nth'] = form.formData['fm_fp_offence_details_nto_nth'];
+    _form.formData['fm_offence_details_date_nto_issued'] = form.formData['fm_fp_offence_details_date_nto_issued'];
 
     return _form
   }

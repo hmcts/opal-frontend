@@ -2,7 +2,7 @@ import { IFinesMacFixedPenaltyOffenceDetailsState } from '../interfaces/fines-ma
 
 export const FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_STATE: IFinesMacFixedPenaltyOffenceDetailsState = {
   fm_offence_details_notice_number: null,
-  fm_offence_details_offence_type: null,
+  fm_offence_details_offence_type: 'vehicle',
   fm_offence_details_date_of_offence: null,
   fm_offence_details_offence_id: null,
   fm_offence_details_offence_cjs_code: null,

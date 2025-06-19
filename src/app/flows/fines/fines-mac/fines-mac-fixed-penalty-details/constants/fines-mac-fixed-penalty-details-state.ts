@@ -17,11 +17,15 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_STATE: IFinesMacFixedPenaltyDetails
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
   fm_fp_offence_details_notice_number: null,
-  fm_fp_offence_details_offence_type: null,
+  fm_fp_offence_details_offence_type: 'vehicle',
   fm_fp_offence_details_date_of_offence: null,
   fm_fp_offence_details_offence_id: null,
   fm_fp_offence_details_offence_cjs_code: null,
   fm_fp_offence_details_time_of_offence: null,
   fm_fp_offence_details_place_of_offence: null,
   fm_fp_offence_details_amount_imposed: null,
+  fm_fp_offence_details_vehicle_registration_number: null,
+  fm_fp_offence_details_driving_licence_number: null,
+  fm_fp_offence_details_nto_nth: null,
+  fm_fp_offence_details_date_nto_issued: null
 };
