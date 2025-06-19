@@ -102,7 +102,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public selectedOffenceSuccessful!: boolean;
   public selectedOffenceTitle!: string;
 
-
   override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
@@ -113,16 +112,13 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public age!: number;
   public ageLabel!: string;
 
-
   /**
    * Sets up the personal details form.
    */
   private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
       // Personal Details
-      fm_fp_personal_details_title: new FormControl(null, [
-        Validators.required,
-      ]),
+      fm_fp_personal_details_title: new FormControl(null, [Validators.required]),
       fm_fp_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
@@ -133,10 +129,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         Validators.maxLength(30),
         alphabeticalTextValidator(),
       ]),
-      fm_fp_personal_details_dob: new FormControl(null, [
-        optionalValidDateValidator(), 
-        dateOfBirthValidator(),
-      ]),
+      fm_fp_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       fm_fp_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -150,23 +143,13 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_fp_personal_details_post_code: new FormControl(null, [
-        optionalMaxLengthValidator(8),
-      ]),
+      fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       // Court Details
-      fm_fp_court_details_imposing_court_id: new FormControl(null, [
-        Validators.required,
-      ]),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null, [
-        Validators.required,
-      ]),
+      fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
+      fm_fp_court_details_issuing_authority_id: new FormControl(null, [Validators.required]),
       // Comments and Notes
-      fm_fp_account_comments_notes_comments: new FormControl(null, [
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_account_comments_notes_notes: new FormControl(null, [
-        alphabeticalTextValidator(),
-      ]),
+      fm_fp_account_comments_notes_comments: new FormControl(null, [alphabeticalTextValidator()]),
+      fm_fp_account_comments_notes_notes: new FormControl(null, [alphabeticalTextValidator()]),
       fm_fp_account_comments_notes_system_notes: new FormControl(null),
       // Language Preferences
       fm_fp_language_preferences_document_language: new FormControl(null),
@@ -178,9 +161,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         alphabeticalTextValidator(),
       ]),
       fm_fp_offence_details_offence_type: new FormControl('vehicle'),
-      fm_fp_offence_details_date_of_offence: new FormControl(null,  [
+      fm_fp_offence_details_date_of_offence: new FormControl(null, [
         Validators.maxLength(10),
-        optionalValidDateValidator(), 
+        optionalValidDateValidator(),
         futureDateValidator(),
       ]),
       fm_fp_offence_details_offence_id: new FormControl(null),
@@ -195,27 +178,22 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_offence_details_place_of_offence: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        alphabeticalTextValidator(),   
+        alphabeticalTextValidator(),
       ]),
-      fm_fp_offence_details_amount_imposed: new FormControl(null, [
-        Validators.required,
-        amountValidator(18,2),
-      ]),
+      fm_fp_offence_details_amount_imposed: new FormControl(null, [Validators.required, amountValidator(18, 2)]),
       // Offence Details Vehicle
       fm_fp_offence_details_vehicle_registration_number: new FormControl(null, [
-        Validators.required, 
-        Validators.maxLength(7),  
+        Validators.required,
+        Validators.maxLength(7),
       ]),
       fm_fp_offence_details_driving_licence_number: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^[A-Za-z]{5}\d{6}[A-Za-z]{2}[A-Za-z0-9]{3}$/), // Example pattern for driving licence number
       ]),
-      fm_fp_offence_details_nto_nth: new FormControl(null, [
-        Validators.maxLength(10),
-      ]),
+      fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10)]),
       fm_fp_offence_details_date_nto_issued: new FormControl(null, [
         Validators.maxLength(10),
-        optionalValidDateValidator(),  
+        optionalValidDateValidator(),
         futureDateValidator(),
       ]),
     });
@@ -230,7 +208,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     // Initial update if the date of birth is already populated
     if (offenceTypeControl.value) {
-
     }
 
     // Subscribe to changes in the offence type control
@@ -296,7 +273,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ...this.replaceKeys(this.finesMacStore.accountCommentsNotes().formData),
       ...this.replaceKeys(this.finesMacStore.languagePreferences().formData),
       ...this.replaceKeys(this.finesMacStore.fixedPenaltyOffenceDetails().formData),
-    }
+    };
     const key = this.defendantType as keyof IFinesMacDefendantTypes;
     this.setupFixedPenaltyDetailsForm();
 
@@ -350,7 +327,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         this.populateOffenceHint(cjs_code);
       });
   }
-
 
   /**
    * Populates the offence hint based on the provided CJS code.

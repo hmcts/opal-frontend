@@ -17,7 +17,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     required: {
       message: `Enter the Issuing authority`,
       priority: 1,
-    }
+    },
   },
   fm_fp_account_comments_notes_comments: {},
   fm_fp_account_comments_notes_notes: {},
@@ -54,12 +54,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_offence_details_offence_id: {},
-  fm_fp_offence_details_offence_cjs_code: FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS['fm_offence_details_offence_cjs_code'],
+  fm_fp_offence_details_offence_cjs_code:
+    FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS['fm_offence_details_offence_cjs_code'],
   fm_fp_offence_details_time_of_offence: {
     pattern: {
       message: `Enter a valid time for the offence (HH:MM)`,
       priority: 1,
-    }
+    },
   },
   fm_fp_offence_details_place_of_offence: {
     required: {
@@ -87,7 +88,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     invalidAmount: {
       message: `The Amount imposed is too large`,
       priority: 3,
-    }
+    },
   },
   fm_fp_offence_details_vehicle_registration_number: {
     required: {
@@ -110,8 +111,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
     pattern: {
       message: `The Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
-      priority: 1,  
-    }
+      priority: 1,
+    },
   },
   fm_fp_offence_details_nto_nth: {
     maxlength: {
