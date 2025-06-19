@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesMacFixedPenaltyDetailsForm } from './interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FinesMacFixedPenaltyDetailsFormComponent } from './fines-mac-fixed-penalty-details-form/fines-mac-fixed-penalty-details-form.component';
@@ -25,7 +25,7 @@ import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from './constants/fines-
   templateUrl: './fines-mac-fixed-penalty-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
+export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent {
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   public defendantType = this.finesMacStore.getDefendantType();
@@ -78,7 +78,6 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     const _form: IFinesMacCourtDetailsForm = FINES_MAC_COURT_DETAILS_FORM;
 
     _form.formData['fm_court_details_imposing_court_id'] = form.formData['fm_fp_court_details_imposing_court_id'];
-    _form.formData['fm_court_details_issuing_authority_id'] = form.formData['fm_fp_court_details_issuing_authority_id'];
 
     return _form;
   }
@@ -114,20 +113,32 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   ): IFinesMacFixedPenaltyOffenceDetailsForm {
     const _form: IFinesMacFixedPenaltyOffenceDetailsForm = FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM;
 
-    _form.formData['fm_offence_details_notice_number'] = form.formData['fm_fp_offence_details_notice_number'];
-    _form.formData['fm_offence_details_offence_type'] = form.formData['fm_fp_offence_details_offence_type'];
-    _form.formData['fm_offence_details_date_of_offence'] = form.formData['fm_fp_offence_details_date_of_offence'];
-    _form.formData['fm_offence_details_offence_id'] = form.formData['fm_fp_offence_details_offence_id'];
-    _form.formData['fm_offence_details_offence_cjs_code'] = form.formData['fm_fp_offence_details_offence_cjs_code'];
-    _form.formData['fm_offence_details_time_of_offence'] = form.formData['fm_fp_offence_details_time_of_offence'];
-    _form.formData['fm_offence_details_place_of_offence'] = form.formData['fm_fp_offence_details_place_of_offence'];
-    _form.formData['fm_offence_details_amount_imposed'] = form.formData['fm_fp_offence_details_amount_imposed'];
+    _form.formData['fm_offence_details_notice_number'] = 
+    form.formData['fm_fp_offence_details_notice_number'];
+    _form.formData['fm_offence_details_offence_type'] = 
+    form.formData['fm_fp_offence_details_offence_type'];
+    _form.formData['fm_offence_details_date_of_offence'] = 
+    form.formData['fm_fp_offence_details_date_of_offence'];
+    _form.formData['fm_offence_details_offence_id'] = 
+    form.formData['fm_fp_offence_details_offence_id'];
+    _form.formData['fm_offence_details_offence_cjs_code'] = 
+    form.formData['fm_fp_offence_details_offence_cjs_code'];
+    _form.formData['fm_offence_details_time_of_offence'] = 
+    form.formData['fm_fp_offence_details_time_of_offence'];
+    _form.formData['fm_offence_details_place_of_offence'] = 
+    form.formData['fm_fp_offence_details_place_of_offence'];
+    _form.formData['fm_offence_details_amount_imposed'] = 
+    form.formData['fm_fp_offence_details_amount_imposed'];
     _form.formData['fm_offence_details_vehicle_registration_number'] =
-      form.formData['fm_fp_offence_details_vehicle_registration_number'];
+    form.formData['fm_fp_offence_details_vehicle_registration_number'];
     _form.formData['fm_offence_details_driving_licence_number'] =
-      form.formData['fm_fp_offence_details_driving_licence_number'];
-    _form.formData['fm_offence_details_nto_nth'] = form.formData['fm_fp_offence_details_nto_nth'];
-    _form.formData['fm_offence_details_date_nto_issued'] = form.formData['fm_fp_offence_details_date_nto_issued'];
+    form.formData['fm_fp_offence_details_driving_licence_number'];
+    _form.formData['fm_offence_details_nto_nth'] = 
+    form.formData['fm_fp_offence_details_nto_nth'];
+    _form.formData['fm_offence_details_date_nto_issued'] = 
+    form.formData['fm_fp_offence_details_date_nto_issued'];
+    _form.formData['fm_court_details_issuing_authority_id'] = 
+    form.formData['fm_fp_court_details_issuing_authority_id'];
 
     return _form;
   }

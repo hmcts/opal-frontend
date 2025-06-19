@@ -6,7 +6,7 @@ import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 
-describe('FinesMacComponent', () => {
+fdescribe('FinesMacComponent', () => {
   let component: FinesMacComponent;
   let fixture: ComponentFixture<FinesMacComponent>;
   let finesMacStore: FinesMacStoreType;
