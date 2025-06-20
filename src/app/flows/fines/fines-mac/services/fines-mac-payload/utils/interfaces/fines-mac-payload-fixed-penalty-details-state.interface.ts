@@ -1,4 +1,5 @@
-export interface IFinesMacFixedPenaltyOffenceDetailsState {
+export interface IFinesMacPayloadFixedPenaltyDetailsState {
+  fm_court_details_issuing_authority_id: string | null;
   fm_offence_details_notice_number: string | null;
   fm_offence_details_offence_type: string | null;
   fm_offence_details_date_of_offence: string | null;
@@ -11,5 +12,4 @@ export interface IFinesMacFixedPenaltyOffenceDetailsState {
   fm_offence_details_driving_licence_number: string | null;
   fm_offence_details_nto_nth: string | null;
   fm_offence_details_date_nto_issued: string | null;
-  fm_court_details_issuing_authority_id: string | null;
 }
