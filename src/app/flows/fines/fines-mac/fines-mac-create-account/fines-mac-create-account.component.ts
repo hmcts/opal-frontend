@@ -85,7 +85,15 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     // Update the state with the form data
     this.finesMacStore.setAccountDetails(form, businessUnit, languagePreferenceForm);
 
-    this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
+    // Navigate to next screen, based on the account type
+    switch (form.formData.fm_create_account_account_type) {
+      case 'fixedPenalty':
+        this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails);
+        break;
+      default:
+        this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
+        break;
+    }
   }
 
   /**

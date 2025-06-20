@@ -10,6 +10,7 @@ import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/m
 import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/state/fines-mac-payload-payment-terms-state.mock';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_DELETE_ACCOUNT_CONFIRMATION_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-delete-account-confirmation-state.mock';
+import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   accountDetails: {
@@ -99,4 +100,10 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  fixedPenaltyOffenceDetails: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK,
+    },
+    nestedFlow: false,
+  },
 };
