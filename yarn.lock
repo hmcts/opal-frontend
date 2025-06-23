@@ -7852,15 +7852,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csrf-csrf@npm:^3.0.6":
-  version: 3.2.2
-  resolution: "csrf-csrf@npm:3.2.2"
-  dependencies:
-    http-errors: "npm:^2.0.0"
-  checksum: 10/d21dc324d1c3c81e7693a638c631d689be6723d84bdf7b2fd77e6d88ec73330215beef719976792f122f0281fa10c7b4e9e8a67129cef86904e234c62fb40b9b
-  languageName: node
-  linkType: hard
-
 "csrf-csrf@npm:^4.0.0":
   version: 4.0.3
   resolution: "csrf-csrf@npm:4.0.3"
@@ -13623,7 +13614,7 @@ __metadata:
     config: "npm:^3.3.9"
     connect-redis: "npm:^8.0.0"
     cookie-parser: "npm:^1.4.6"
-    csrf-csrf: "npm:^3.0.6"
+    csrf-csrf: "npm:^4.0.0"
     cypress: "npm:^14.0.0"
     cypress-axe: "npm:^1.5.0"
     cypress-multi-reporters: "npm:^2.0.0"
