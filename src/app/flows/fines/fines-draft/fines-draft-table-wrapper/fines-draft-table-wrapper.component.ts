@@ -12,15 +12,6 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
-import { MojFilterComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter';
-import { MojFilterPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel';
-import { MojFilterPanelHeaderComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-header';
-import { MojFilterPanelOptionComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option';
-import { MojFilterPanelOptionFormGroupKeywordComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option/moj-filter-panel-option-form-group-keyword';
-import { MojFilterPanelOptionFormGroupItemComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option/moj-filter-panel-option-form-group-item';
-import { MojFilterPanelSelectedComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-selected';
-import { MojFilterPanelSelectedTagComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-selected/moj-filter-panel-selected-tag';
-import { IAbstractTableFilterCategory } from '@hmcts/opal-frontend-common/components/abstract/abstract-table-filter/interfaces';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -34,14 +25,6 @@ import { IAbstractTableFilterCategory } from '@hmcts/opal-frontend-common/compon
     DaysAgoPipe,
     DateFormatPipe,
     FinesSharedSortableTableFooterComponent,
-    MojFilterComponent,
-    MojFilterPanelComponent,
-    MojFilterPanelHeaderComponent,
-    MojFilterPanelOptionComponent,
-    MojFilterPanelOptionFormGroupKeywordComponent,
-    MojFilterPanelOptionFormGroupItemComponent,
-    MojFilterPanelSelectedComponent,
-    MojFilterPanelSelectedTagComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,9 +41,6 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   }
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
-  }
-  @Input({ required: false }) set tags(tags: IAbstractTableFilterCategory[]) {
-    this.filterTags.set(tags);
   }
   @Input({ required: false }) public activeTab: string = 'review';
   @Input({ required: false }) public isApprovedTab: boolean = false;

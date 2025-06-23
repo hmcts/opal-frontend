@@ -3455,13 +3455,13 @@ __metadata:
 
 "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
   version: 0.0.18
-  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=4d76a1&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=4a6cec&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/53ba1bb312f299c31ea9f9895e7dacdda896991d243cd33a54f516da0c3ff925d17cf22c60cafe330f456f2c07239f68b2111cf047f6d0d1f39d65ee31c4551b
+  checksum: 10/38cb6f04ef054633d154ad499525a32a2e1e58376b118f26b43aee953047ae03e670e0852049cf2cfbeac59c06b097eb198e7cc4fb8d12e7c992fd8486c90c75
   languageName: node
   linkType: hard
 

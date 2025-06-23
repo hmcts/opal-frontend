@@ -109,7 +109,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
 
         const params: IOpalFinesDraftAccountParams = {
           businessUnitIds: this.businessUnitIds,
-          //statuses: currentTab?.statuses,
+          statuses: currentTab?.statuses,
           submittedBy: this.businessUnitUserIds,
         };
 
