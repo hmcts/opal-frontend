@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Signal, signal, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, signal, Output, computed } from '@angular/core';
 import {
   MojSortableTableHeaderComponent,
   MojSortableTableRowDataComponent,
@@ -12,6 +12,15 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
+import { MojFilterComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter';
+import { MojFilterPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel';
+import { MojFilterPanelHeaderComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-header';
+import { MojFilterPanelOptionComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option';
+import { MojFilterPanelOptionFormGroupKeywordComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option/moj-filter-panel-option-form-group-keyword';
+import { MojFilterPanelOptionFormGroupItemComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-option/moj-filter-panel-option-form-group-item';
+import { MojFilterPanelSelectedComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-selected';
+import { MojFilterPanelSelectedTagComponent } from '@hmcts/opal-frontend-common/components/moj/moj-filter/moj-filter-panel/moj-filter-panel-selected/moj-filter-panel-selected-tag';
+import { IAbstractTableFilterCategory } from '@hmcts/opal-frontend-common/components/abstract/abstract-table-filter/interfaces';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -25,20 +34,33 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
     DaysAgoPipe,
     DateFormatPipe,
     FinesSharedSortableTableFooterComponent,
+    MojFilterComponent,
+    MojFilterPanelComponent,
+    MojFilterPanelHeaderComponent,
+    MojFilterPanelOptionComponent,
+    MojFilterPanelOptionFormGroupKeywordComponent,
+    MojFilterPanelOptionFormGroupItemComponent,
+    MojFilterPanelSelectedComponent,
+    MojFilterPanelSelectedTagComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
-  public override abstractTableDataSignal = signal<IFinesDraftTableWrapperTableData[]>([]);
-  public override paginatedTableDataComputed!: Signal<IFinesDraftTableWrapperTableData[]>;
+  public override paginatedTableDataComputed = computed(() => {
+    const data = this.sortedTableDataSignal() as IFinesDraftTableWrapperTableData[];
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
+  });
+
   public override itemsPerPageSignal = signal(25);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
-    this.abstractTableDataSignal.set(tableData);
+    this.setTableData(tableData);
   }
-
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
+  }
+  @Input({ required: false }) set tags(tags: IAbstractTableFilterCategory[]) {
+    this.filterTags.set(tags);
   }
   @Input({ required: false }) public activeTab: string = 'review';
   @Input({ required: false }) public isApprovedTab: boolean = false;

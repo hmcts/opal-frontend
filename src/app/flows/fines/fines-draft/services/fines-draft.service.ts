@@ -6,6 +6,10 @@ import { IFinesDraftTableWrapperTableData } from '../fines-draft-table-wrapper/i
 import { Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import {
+  IAbstractTableFilterCategory,
+  IAbstractTableFilterOption,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-table-filter/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +21,8 @@ export class FinesDraftService {
   private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
   public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
   public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
+
+  public dataTags: IAbstractTableFilterCategory[] = [];
 
   /**
    * Navigates to the review account page for the given draft account ID.
@@ -35,6 +41,18 @@ export class FinesDraftService {
    * @returns {IFinesDraftTableWrapperTableData[]} An array of table data objects.
    */
   public populateTableData(response: IOpalFinesDraftAccountsResponse): IFinesDraftTableWrapperTableData[] {
+    this.dataTags.push({
+      categoryName: 'Defendant',
+      options: response.summaries.map(({ account_snapshot }) => {
+        const { defendant_name } = account_snapshot;
+        return {
+          label: defendant_name,
+          value: defendant_name,
+          selected: false,
+        };
+      }) as IAbstractTableFilterOption[],
+    });
+
     return response.summaries.map(({ draft_account_id, account_snapshot, account_status_date, account_number }) => {
       const { defendant_name, date_of_birth, created_date, account_type, business_unit_name, submitted_by_name } =
         account_snapshot;
