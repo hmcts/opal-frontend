@@ -78,7 +78,7 @@
     "applicationinsights": "~2.9.6",
     "axios": "^1.6.2",
     "body-parser": "^2.0.0",
-    "config": "^3.3.9",
+    "config": "^4.0.0",
     "connect-redis": "^8.0.0",
     "cookie-parser": "^1.4.6",
     "csrf-csrf": "^4.0.0",

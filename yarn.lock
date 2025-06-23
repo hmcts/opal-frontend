@@ -7588,6 +7588,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"config@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "config@npm:4.0.0"
+  dependencies:
+    json5: "npm:^2.2.3"
+  checksum: 10/a430adc25a8f6d448edf10dba331710db2e327b4b5d62dedb7ceb9a6800d0ca593373169912ad405e8acb96efb641db84db24ff59e0cdc3e16a162996f22be3c
+  languageName: node
+  linkType: hard
+
 "connect-history-api-fallback@npm:^1":
   version: 1.6.0
   resolution: "connect-history-api-fallback@npm:1.6.0"
@@ -13611,7 +13620,7 @@ __metadata:
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
     browser-sync: "npm:^3.0.2"
-    config: "npm:^3.3.9"
+    config: "npm:^4.0.0"
     connect-redis: "npm:^8.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
