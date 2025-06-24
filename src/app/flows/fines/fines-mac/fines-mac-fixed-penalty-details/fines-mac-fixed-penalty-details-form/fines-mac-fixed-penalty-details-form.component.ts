@@ -16,7 +16,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-m
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { debounceTime, distinctUntilChanged, EMPTY, map, Observable, takeUntil, tap } from 'rxjs';
+import { EMPTY, Observable, of, takeUntil} from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -50,10 +50,13 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details/fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { IAgeObject } from '../../interfaces/fines-mac-dates-interface';
+import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
+import { timeFormatValidator } from '@hmcts/opal-frontend-common/validators/time-format';
+import { drivingLicenceNumberValidator } from '@hmcts/opal-frontend-common/validators/driving-licence-number';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -92,9 +95,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
   protected readonly opalFinesService = inject(OpalFines);
+  protected readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-  public formReady = false;
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
   public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
   public selectedOffenceConfirmation!: boolean;
@@ -108,12 +111,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public today: string = this.dateService.getPreviousDate({ days: 0 });
   public yesterday = this.dateService.getPreviousDate({ days: 1 });
-  public age!: number;
-  public ageLabel!: string;
+  public age: IAgeObject | null = null;
 
-  /**
-   * Sets up the personal details form.
-   */
   private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
       // Personal Details
@@ -172,7 +171,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         alphabeticalTextValidator(),
       ]),
       fm_fp_offence_details_time_of_offence: new FormControl(null, [
-        Validators.pattern(/^([01]\d|2[0-3]):[0-5]\d$/), // Matches time in HH:mm format, e.g., 12:34
+        timeFormatValidator(),
       ]),
       fm_fp_offence_details_place_of_offence: new FormControl(null, [
         Validators.required,
@@ -187,7 +186,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       fm_fp_offence_details_driving_licence_number: new FormControl(null, [
         Validators.required,
-        Validators.pattern(/^[A-Za-z]{5}\d{6}[A-Za-z]{2}[A-Za-z0-9]{3}$/), // Example pattern for driving licence number
+        drivingLicenceNumberValidator(),
       ]),
       fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10)]),
       fm_fp_offence_details_date_nto_issued: new FormControl(null, [
@@ -226,27 +225,13 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
-      this.updateAgeAndLabel(dobControl.value);
+      this.age = this.dateService.getAgeObject(dobControl.value);
     }
 
     // Subscribe to changes in the date of birth control
     dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
-      this.updateAgeAndLabel(dateOfBirth);
+      this.age = this.dateService.getAgeObject(dateOfBirth);
     });
-  }
-
-  /**
-   * Updates the age and age label based on the provided date of birth.
-   *
-   * @param dateOfBirth - The date of birth in string format.
-   */
-  private updateAgeAndLabel(dateOfBirth: string): void {
-    if (this.dateService.isValidDate(dateOfBirth)) {
-      this.age = this.dateService.calculateAge(dateOfBirth);
-      this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
-
-      this.finesMacStore.resetPaymentTermsDaysInDefault();
-    }
   }
 
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
@@ -265,7 +250,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ...this.replaceKeys(this.finesMacStore.courtDetails().formData),
       ...this.replaceKeys(this.finesMacStore.accountCommentsNotes().formData),
       ...this.replaceKeys(this.finesMacStore.languagePreferences().formData),
-      ...this.replaceKeys(this.finesMacStore.fixedPenaltyOffenceDetails().formData),
+      ...this.replaceKeys(this.finesMacStore.fixedPenaltyDetails().formData),
     };
     this.setupFixedPenaltyDetailsForm();
 
@@ -273,9 +258,17 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.rePopulateForm(formData);
     this.form.controls['fm_fp_offence_details_offence_type'].updateValueAndValidity();
     this.dateOfBirthListener();
-    this.offenceCodeListener();
+    this.offenceDetailsService.initOffenceCodeListener(
+      this.form,
+      'fm_fp_offence_details_offence_cjs_code',
+      'fm_fp_offence_details_offence_id',
+      this.ngUnsubscribe,
+      this.changeDetector,
+      (result) => { this.offenceCode$ = of(result); },
+      (confirmed) => { this.selectedOffenceConfirmation = confirmed; }
+    );
     this.offenceTypeListener();
-  }
+    }
 
   private replaceKeys<T extends object>(formData: T) {
     const result: Record<string, string> = {};
@@ -286,65 +279,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     }
 
     return result;
-  }
-
-  /**
-   * Listens for changes in the offence code control and performs actions based on the input.
-   * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
-   * @private
-   * @returns {void}
-   */
-  private offenceCodeListener(): void {
-    this.selectedOffenceConfirmation = false;
-
-    const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
-
-    // Populate the offence hint if the offence code is already set
-    if (offenceCodeControl.value) {
-      this.populateOffenceHint(offenceCodeControl.value);
-    }
-
-    // Listen for changes in the offence code control
-    offenceCodeControl.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        tap((cjs_code: string) => {
-          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
-          offenceCodeControl.setValue(cjs_code, { emitEvent: false });
-        }),
-        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe((cjs_code: string) => {
-        this.populateOffenceHint(cjs_code);
-      });
-  }
-
-  /**
-   * Populates the offence hint based on the provided CJS code.
-   * @param cjsCode - The CJS code used to retrieve the offence details.
-   */
-  private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_fp_offence_details_offence_cjs_code'];
-    const offenceIdControl = this.form.controls['fm_fp_offence_details_offence_id'];
-    offenceIdControl.setValue(null);
-
-    if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
-      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
-        tap((offence) => {
-          offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
-          offenceIdControl.setValue(offence.count !== 1 ? null : offence.refData[0].offence_id, { emitEvent: false });
-        }),
-        map((response) => response),
-        takeUntil(this.ngUnsubscribe),
-      );
-
-      this.selectedOffenceConfirmation = true;
-
-      this.changeDetector.detectChanges();
-    } else {
-      this.selectedOffenceConfirmation = false;
-    }
   }
 
   public override ngOnInit(): void {

@@ -1,4 +1,4 @@
-export interface IFinesMacFixedPenaltyOffenceDetailsState {
+export interface IFinesMacFixedPenaltyDetailsStoreState {
   fm_offence_details_notice_number: string | null;
   fm_offence_details_offence_type: string | null;
   fm_offence_details_date_of_offence: string | null;

@@ -57,7 +57,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_offence_details_offence_cjs_code:
     FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS['fm_offence_details_offence_cjs_code'],
   fm_fp_offence_details_time_of_offence: {
-    pattern: {
+    invalidTimeFormat: {
       message: `Enter a valid time for the offence (HH:MM)`,
       priority: 1,
     },
@@ -109,7 +109,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter the Driving licence number`,
       priority: 1,
     },
-    pattern: {
+    invalidDrivingLicenceNumber: {
       message: `The Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
       priority: 1,
     },

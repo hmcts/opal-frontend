@@ -93,6 +93,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
+  public accountType = this.finesMacStore.getAccountType();
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -314,7 +315,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    if (this.finesMacStore.accountDetails().formData.fm_create_account_account_type === 'fixedPenalty') {
+    if (this.finesMacStore.getAccountType() === 'fixedPenalty') {
       this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
       return;
     }

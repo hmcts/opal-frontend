@@ -161,10 +161,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to false', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
-    offenceCodeControl.reset();
     component.selectedOffenceConfirmation = true;
 
-    component['offenceCodeListener']();
+    component['setupOffenceCodeListener']();   
+    offenceCodeControl.reset();
 
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
@@ -177,12 +177,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     };
 
     finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetails]);
-
-    component['initialAddAnOffenceDetailsSetup']();
-
     component.selectedOffenceConfirmation = false;
 
-    component['offenceCodeListener']();
+    component['initialAddAnOffenceDetailsSetup']();
 
     expect(component.selectedOffenceConfirmation).toBe(true);
   });
@@ -192,7 +189,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     mockUtilsService.upperCaseAllLetters.and.returnValue(mockCjsCode);
 
-    component['offenceCodeListener']();
     offenceCodeControl.setValue('lowercase');
 
     expect(offenceCodeControl.value).toBe(mockCjsCode);
@@ -203,78 +199,44 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const mockCjsCode = 'abc12345';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
-
-    component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
 
-  it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjs_code length is between 7 and 8', fakeAsync(() => {
+  it('should set selectedOffenceConfirmation to true when cjs_code length is between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'populateOffenceHint');
-
-    component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
     // Simulate the passage of time to account for defaultDebounceTime
     tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
-    // Check if service was called after debounce
-    expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
+    expect(component.selectedOffenceConfirmation).toBe(true);
   }));
 
-  it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', fakeAsync(() => {
-    const mockCjsCode = 'abc123450';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
-    offenceCodeControl.reset();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'populateOffenceHint');
+  // it('should set errors on offence code control', fakeAsync(() => {
+  //   const mockCjsCode = 'abc';
+  //   const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+  //   offenceCodeControl.setValue(mockCjsCode);
 
-    component['offenceCodeListener']();
-    offenceCodeControl.setValue(mockCjsCode);
+  //   // Simulate the passage of time to account for defaultDebounceTime
+  //   tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+  //   offenceCodeControl.updateValueAndValidity();
 
-    // Simulate the passage of time to account for defaultDebounceTime
-    tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+  //   // expect(component.selectedOffenceConfirmation).toBe(false);
+  //   expect(offenceCodeControl.errors).toBeTruthy();
+  //   expect(offenceCodeControl.errors!['invalidOffenceCode']).toBeTrue();
+  // }));
 
-    // Check if service was called after debounce
-    expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
-  }));
+  // it('should set selectedOffenceConfirmation to false when cjsCode length is not between 7 and 8', () => {
+  //   const cjsCode = 'abc123458';
 
-  it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjsCode length is between 7 and 8', () => {
-    const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
+  //   component['populateOffenceHint'](cjsCode);
 
-    component['populateOffenceHint'](cjsCode);
-
-    expect(component.selectedOffenceConfirmation).toBe(true);
-    expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(cjsCode);
-    expect(offenceCodeControl.errors).toEqual(null);
-  });
-
-  it('should set errors on offence code control', () => {
-    (mockOpalFinesService.getOffenceByCjsCode as jasmine.Spy).and.returnValue(of({ count: 0, refData: [] }));
-
-    const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
-
-    component['populateOffenceHint'](cjsCode);
-
-    expect(component.selectedOffenceConfirmation).toBe(true);
-    expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(cjsCode);
-    expect(offenceCodeControl.errors).toEqual({ invalidOffenceCode: true });
-  });
-
-  it('should set selectedOffenceConfirmation to false when cjsCode length is not between 7 and 8', () => {
-    const cjsCode = 'abc123458';
-
-    component['populateOffenceHint'](cjsCode);
-
-    expect(component.selectedOffenceConfirmation).toBe(false);
-  });
+  //   expect(component.selectedOffenceConfirmation).toBe(false);
+  // });
 
   it('should go to minor creditor', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
@@ -501,12 +463,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'offenceCodeListener');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControlsToFormArray');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupResultCodeListener');
     mockDateService.toFormat.and.returnValue('01/01/2022');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component['offenceDetailsService'], 'initOffenceCodeListener');
 
     // Call the method
     component['initialAddAnOffenceDetailsSetup']();
@@ -520,7 +482,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(offenceDetailsDraft.formData);
-    expect(component['offenceCodeListener']).toHaveBeenCalled();
+    expect(component['offenceDetailsService']['initOffenceCodeListener']).toHaveBeenCalled();
     expect(component['addControlsToFormArray']).not.toHaveBeenCalled();
     expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
     expect(component.today).toBe('01/01/2022');
@@ -724,4 +686,47 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(checkImpositionSpy).toHaveBeenCalled();
     expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
   });
+
+  it('should set up the offence code listener and update offenceCode$ and selectedOffenceConfirmation', () => {
+    // Arrange
+    const mockResult = { code: 'TEST123' };
+    const mockConfirmed = true;
+
+    // Spy on offenceDetailsService.initOffenceCodeListener and simulate callback invocations
+    const initOffenceCodeListenerSpy = spyOn(component['offenceDetailsService'], 'initOffenceCodeListener').and.callFake(
+      (
+        form,
+        codeControlName,
+        idControlName,
+        ngUnsubscribe,
+        changeDetector,
+        resultCallback,
+        confirmationCallback
+      ) => {
+        if (resultCallback) resultCallback(mockResult);
+        if (confirmationCallback) confirmationCallback(mockConfirmed);
+      }
+    );
+
+    // Act
+    component['setupOffenceCodeListener']();
+
+    // Assert
+    expect(initOffenceCodeListenerSpy).toHaveBeenCalledWith(
+      component.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      component['ngUnsubscribe'],
+      component['changeDetector'],
+      jasmine.any(Function),
+      jasmine.any(Function)
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let resultValue: any;
+    component.offenceCode$.subscribe(val => resultValue = val);
+    expect(resultValue).toEqual(mockResult);
+    expect(component.selectedOffenceConfirmation).toBe(true);
+  });
+
 });

@@ -16,8 +16,8 @@ import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comm
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK } from './mocks/fines-mac-fixed-penalty-details-issuing-authorities.mock';
-import { IFinesMacFixedPenaltyOffenceDetailsForm } from './interfaces/fines-mac-fixed-penalty-offence-details-form.interface';
-import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from './constants/fines-mac-fixed-penalty-offence-details-form';
+import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fixed-penalty-details-store-form.interface';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -45,7 +45,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     this.finesMacStore.setCourtDetails(this.createCourtDetailsFormForStore(form));
     this.finesMacStore.setAccountCommentsNotes(this.createCommentsAndNotesFormForStore(form));
     this.finesMacStore.setLanguagePreferences(this.createLanguagePreferencesFormForStore(form));
-    this.finesMacStore.setFixedPenaltyOffenceDetails(this.createFixedPenaltyOffenceDetailsFormForStore(form));
+    this.finesMacStore.setFixedPenaltyDetails(this.createFixedPenaltyDetailsFormForStore(form));
     this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
   }
 
@@ -108,10 +108,10 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form;
   }
 
-  private createFixedPenaltyOffenceDetailsFormForStore(
+  private createFixedPenaltyDetailsFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
-  ): IFinesMacFixedPenaltyOffenceDetailsForm {
-    const _form: IFinesMacFixedPenaltyOffenceDetailsForm = FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM;
+  ): IFinesMacFixedPenaltyDetailsStoreForm {
+    const _form: IFinesMacFixedPenaltyDetailsStoreForm = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM;
 
     _form.formData['fm_offence_details_notice_number'] = form.formData['fm_fp_offence_details_notice_number'];
     _form.formData['fm_offence_details_offence_type'] = form.formData['fm_fp_offence_details_offence_type'];

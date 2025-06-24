@@ -100,7 +100,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
-  fixedPenaltyOffenceDetails: {
+  fixedPenaltyDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK,
     },

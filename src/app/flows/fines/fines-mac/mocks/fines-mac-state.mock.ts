@@ -7,7 +7,7 @@ import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/con
 import { FINES_MAC_COURT_DETAILS_FORM } from '../fines-mac-court-details/constants/fines-mac-court-details-form';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/constants/fines-mac-employer-details-form';
-import { FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-details-form';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../fines-mac-offence-details/constants/fines-mac-offence-details-form.constant';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from '../fines-mac-parent-guardian-details/constants/fines-mac-parent-guardian-details-form';
@@ -33,7 +33,7 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   courtDetails: FINES_MAC_COURT_DETAILS_FORM,
   accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM,
   offenceDetails: FINES_MAC_OFFENCE_DETAILS_FORM,
-  fixedPenaltyOffenceDetails: FINES_MAC_FIXED_PENALTY_OFFENCE_DETAILS_FORM,
+  fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM,
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   deleteAccountConfirmation: FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,

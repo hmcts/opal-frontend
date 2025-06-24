@@ -1,12 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsService } from './fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
+import { FormControl, FormGroup } from '@angular/forms';
+import { of, Subject } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 
 describe('FinesMacOffenceDetailsService', () => {
   let service: FinesMacOffenceDetailsService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [OpalFines, provideHttpClient(), provideHttpClientTesting()],
+    });
     service = TestBed.inject(FinesMacOffenceDetailsService);
   });
 
@@ -87,4 +101,115 @@ describe('FinesMacOffenceDetailsService', () => {
     const result = service.removeIndexFromImpositionKey(offences);
     expect(result[0].formData.fm_offence_details_impositions[0]).toEqual(expected);
   });
+
+  describe('initOffenceListener', () => {
+    let form: FormGroup;
+    let destroy$: Subject<void>;
+    let changeDetector: jasmine.SpyObj<ChangeDetectorRef>;
+    let onResultSpy: jasmine.Spy;
+    let onConfirmChangeSpy: jasmine.Spy;
+    let getOffenceByCjsCode: jasmine.Spy;
+
+    const offenceMockResponse: IOpalFinesOffencesRefData = {
+      ...OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK
+    };
+
+    beforeEach(() => {
+      getOffenceByCjsCode = spyOn(service.opalFinesService, 'getOffenceByCjsCode').and.returnValue(of(offenceMockResponse));
+      
+      form = new FormGroup({
+        code: new FormControl(''),
+        id: new FormControl(''),
+      });
+
+      destroy$ = new Subject<void>();
+      changeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+      onResultSpy = jasmine.createSpy('onResult');
+      onConfirmChangeSpy = jasmine.createSpy('onConfirmChange'); 
+    });
+
+    afterEach(() => {
+      destroy$.next();
+      destroy$.complete();
+    });
+
+    it('should call populateHint immediately if initial code is present', fakeAsync(() => {
+
+      form.get('code')?.setValue('ab12345');
+
+      service.initOffenceCodeListener(
+        form, 'code', 'id', destroy$, changeDetector, onResultSpy, onConfirmChangeSpy
+      );
+
+      tick();
+
+      expect(getOffenceByCjsCode).toHaveBeenCalledWith('ab12345');
+      expect(form.get('id')?.value).toBe(314441);
+      expect(onResultSpy).toHaveBeenCalledWith(offenceMockResponse);
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+      expect(changeDetector.detectChanges).toHaveBeenCalled();
+    }));
+
+    it('should listen for value changes, uppercase input, and trigger populateHint', fakeAsync(() => {
+      const uppercaseAllLettersSpy = spyOn(service.utilsService, 'upperCaseAllLetters').and.callThrough();
+
+      service.initOffenceCodeListener(
+        form, 'code', 'id', destroy$, changeDetector, onResultSpy, onConfirmChangeSpy
+      );
+
+      form.get('code')?.setValue('xy98765');
+      form.get('code')?.updateValueAndValidity();
+
+      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(uppercaseAllLettersSpy).toHaveBeenCalledWith('xy98765');
+      expect(getOffenceByCjsCode).toHaveBeenCalledWith('XY98765');
+      expect(form.get('code')?.value).toBe('XY98765');
+      expect(form.get('id')?.value).toBe(314441);
+      expect(onResultSpy).toHaveBeenCalled();
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+      expect(changeDetector.detectChanges).toHaveBeenCalled();
+    }));
+
+    it('should mark code as invalid when response count is 0', fakeAsync(() => {
+      const invalidResponse = { count: 0, refData: [] };
+      getOffenceByCjsCode.and.returnValue(of(invalidResponse));
+
+      service.initOffenceCodeListener(
+        form, 'code', 'id', destroy$, changeDetector, onResultSpy, onConfirmChangeSpy
+      );
+
+      form.get('code')?.setValue('zz99999');
+      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(form.get('code')?.errors).toEqual({ invalidOffenceCode: true });
+      expect(form.get('id')?.value).toBeNull();
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
+    }));
+
+    it('should not call populateHint for short code', fakeAsync(() => {
+      service.initOffenceCodeListener(
+        form, 'code', 'id', destroy$, changeDetector, onResultSpy, onConfirmChangeSpy
+      );
+
+      form.get('code')?.setValue('ab12');
+      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(getOffenceByCjsCode).not.toHaveBeenCalled();
+      expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
+    }));
+
+    it('should unsubscribe on destroy', fakeAsync(() => {
+      service.initOffenceCodeListener(
+        form, 'code', 'id', destroy$, changeDetector, onResultSpy, onConfirmChangeSpy
+      );
+
+      destroy$.next();
+      form.get('code')?.setValue('cd12345');
+      tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
+
+      expect(getOffenceByCjsCode).not.toHaveBeenCalled();
+    }));
+  });
+
 });

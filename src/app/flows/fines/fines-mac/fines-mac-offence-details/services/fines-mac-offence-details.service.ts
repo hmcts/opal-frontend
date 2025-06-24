@@ -1,10 +1,17 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, inject, Injectable } from '@angular/core';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
+import { FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacOffenceDetailsService {
+   public opalFinesService = inject(OpalFines);
+   public utilsService = inject(UtilsService);
   /**
    * Reorders the imposition keys to maintain correct numbering.
    *
@@ -107,5 +114,70 @@ export class FinesMacOffenceDetailsService {
         childFormData: form.childFormData,
       };
     });
+  }
+
+  /**
+   * Initializes the offence code listener for a form control.
+   * @param form - The FormGroup containing the controls.
+   * @param codeControlName - The name of the control for the offence code.
+   * @param idControlName - The name of the control for the offence ID.
+   * @param destroy$ - Subject to signal when to unsubscribe from observables.
+   * @param changeDetector - ChangeDetectorRef to trigger change detection.
+   * @param onResult - Optional callback function to handle the result of the code lookup.
+   * @param onConfirmChange - Optional callback function to confirm if the code change was successful.
+   */
+  initOffenceCodeListener(
+    form: FormGroup,
+    codeControlName: string,
+    idControlName: string,
+    destroy$: Subject<void>,
+    changeDetector: ChangeDetectorRef,
+    onResult: (result: any) => void,
+    onConfirmChange?: (confirmed: boolean) => void
+  ): void {
+    const codeControl = form.controls[codeControlName];
+    const idControl = form.controls[idControlName];
+
+    const populateHint = (code: string) => {
+      idControl.setValue(null);
+
+      if (code?.length >= 7 && code?.length <= 8) {
+        const result$ = this.opalFinesService.getOffenceByCjsCode(code).pipe(
+          tap((response) => {
+            codeControl.setErrors(response.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
+            idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
+
+            if (typeof onResult === 'function') {
+              onResult(response);
+            }
+          }),
+          takeUntil(destroy$)
+        );
+
+        result$.subscribe();
+        if (onConfirmChange) onConfirmChange(true);
+        changeDetector.detectChanges();
+      } else {
+        if (onConfirmChange) onConfirmChange(false);
+      }
+    };
+
+    if (codeControl.value) {
+      populateHint(codeControl.value);
+    }
+
+    codeControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap((code: string) => {
+          code = this.utilsService.upperCaseAllLetters(code);
+          codeControl.setValue(code, { emitEvent: false });
+        }),
+        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime,),
+        takeUntil(destroy$),
+      )
+      .subscribe((code: string) => {
+        populateHint(code);
+      });
   }
 }

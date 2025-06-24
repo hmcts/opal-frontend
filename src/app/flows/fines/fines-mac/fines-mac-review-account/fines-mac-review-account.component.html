@@ -1,3 +1,6 @@
+@if (accountType === 'fixedPenalty') {
+  <h1 class="govuk-heading-l">Check fixed penalty account details</h1>
+} @else {
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
   @if (reviewAccountStatus === 'Failed') {
@@ -115,6 +118,8 @@
     <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
   }
 </div>
+  
+}
 
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details

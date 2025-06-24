@@ -75,6 +75,19 @@ describe('FinesMacCreateAccountComponent', () => {
     expect(mockOpalFinesService.getConfigurationItemValue).toHaveBeenCalled();
   });
 
+  it('should handle form submission and navigate to an alternative page when account type is fixed penalty', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    formSubmit.formData.fm_create_account_account_type = 'fixedPenalty';
+
+    component.handleAccountDetailsSubmit(formSubmit);
+
+    expect(finesMacStore.accountDetails()).toEqual(formSubmit);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+    expect(mockOpalFinesService.getConfigurationItemValue).toHaveBeenCalled();
+  });
+
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(finesMacStore.unsavedChanges()).toBeTruthy();

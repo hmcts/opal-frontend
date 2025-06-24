@@ -76,14 +76,14 @@
       (dateChange)="setInputValue($event, 'fm_fp_personal_details_dob')"
       [errors]="formControlErrorMessages['fm_fp_personal_details_dob']"
     ></opal-lib-moj-date-picker>
-    @if (age && ageLabel) {
+    @if (age) {
       <opal-lib-moj-ticket-panel
         componentClasses="govuk-!-width-one-third"
         sectionClasses="moj-ticket-panel__content--blue"
         [alert]="true"
       >
-        <strong>Age: {{ age }}</strong>
-        <p>{{ ageLabel }}</p>
+        <strong>Age: {{ age.value }}</strong>
+        <p>{{ age.group }}</p>
       </opal-lib-moj-ticket-panel>
     }
   </fieldset>
@@ -200,6 +200,7 @@
         search the offence list
       </a></opal-lib-govuk-text-input
     >
+
     @if (offenceCode$ | async; as offenceCode) {
       @if (selectedOffenceConfirmation) {
         @if (offenceCode.count === 1) {

@@ -46,6 +46,7 @@
       [errors]="formControlErrorMessages['fm_offence_details_offence_cjs_code']"
       [control]="form.controls['fm_offence_details_offence_cjs_code']"
     >
+      Offence code errors = ({{ form.controls['fm_offence_details_offence_cjs_code'].errors }})
       For example, HY35014. If you don't know the offence code, you can
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
