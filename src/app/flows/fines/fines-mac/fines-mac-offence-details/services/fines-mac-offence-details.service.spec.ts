@@ -7,8 +7,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { ChangeDetectorRef } from '@angular/core';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
@@ -222,17 +221,5 @@ describe('FinesMacOffenceDetailsService', () => {
 
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(false);
     }));
-
-    // it('should unsubscribe on destroy', fakeAsync(() => {
-    //   service.initOffenceCodeListener(
-    //     form, 'code', 'id', destroy$, changeDetector, getOffenceByCjsCode, onResultSpy, onConfirmChangeSpy
-    //   );
-
-    //   destroy$.next();
-    //   form.get('code')?.setValue('cd12345');
-    //   tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
-
-    //   expect(getOffenceByCjsCode).not.toHaveBeenCalled();
-    // }));
   });
 });

@@ -248,18 +248,17 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   ).map(([key, value]) => ({ key, value }));
 
   /**
-   * Sets up the initial personal details for the fines-mac-personal-details-form component.
-   * This method initializes the personal details form, alias configuration, alias form controls,
-   * adds vehicle details field errors if the defendant type is 'adultOrYouthOnly', sets initial
-   * error messages, repopulates the form with personal details, and sets up the alias checkbox listener.
+   * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data.
    */
   private initialFixedPenaltyDetailsSetup(): void {
+    const currentPrefix = 'fm_';
+    const replacementPrefix = 'fm_fp_';
     const formData = {
-      ...this.replaceKeys(this.finesMacStore.personalDetails().formData),
-      ...this.replaceKeys(this.finesMacStore.courtDetails().formData),
-      ...this.replaceKeys(this.finesMacStore.accountCommentsNotes().formData),
-      ...this.replaceKeys(this.finesMacStore.languagePreferences().formData),
-      ...this.replaceKeys(this.finesMacStore.fixedPenaltyDetails().formData),
+      ...this.replaceKeys(this.finesMacStore.personalDetails().formData, currentPrefix, replacementPrefix),
+      ...this.replaceKeys(this.finesMacStore.courtDetails().formData, currentPrefix, replacementPrefix),
+      ...this.replaceKeys(this.finesMacStore.accountCommentsNotes().formData, currentPrefix, replacementPrefix),
+      ...this.replaceKeys(this.finesMacStore.languagePreferences().formData, currentPrefix, replacementPrefix),
+      ...this.replaceKeys(this.finesMacStore.fixedPenaltyDetails().formData, currentPrefix, replacementPrefix),
     };
     this.setupFixedPenaltyDetailsForm();
 
@@ -288,11 +287,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     );
   }
 
-  private replaceKeys<T extends object>(formData: T) {
+  private replaceKeys<T extends object>(formData: T, currentPrefix: string, replacementPrefix: string) {
     const result: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(formData)) {
-      const newKey = (key as string).replace('fm_', 'fm_fp_');
+      const newKey = (key as string).replace(currentPrefix, replacementPrefix);
       result[newKey] = value;
     }
 

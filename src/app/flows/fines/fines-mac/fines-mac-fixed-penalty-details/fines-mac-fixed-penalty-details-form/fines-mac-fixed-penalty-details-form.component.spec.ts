@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -24,7 +24,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>; // Replace with actual service type if available
   let formSubmit: IFinesMacFixedPenaltyDetailsForm;
   let finesMacStore: FinesMacStoreType;
-  // let mockOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>; // Replace with actual service type if available
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, [
@@ -34,7 +33,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       'getAgeObject',
     ]);
     mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getOffenceByCjsCode']);
-    // mockOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, ['initOffenceCodeListener']);
 
     formSubmit = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK);
 
@@ -80,10 +78,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    // component.form.reset();
-  });
-
   afterEach(() => {
     component.ngOnDestroy();
   });
@@ -115,7 +109,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   it('should remove validators from the form controls', () => {
     component['setupFixedPenaltyDetailsForm']();
     component['offenceTypeListener']();
-    const formControls = component.form.controls;
     component.form.get('fm_fp_offence_details_offence_type')?.setValue('non-vehicle');
 
     expect(
