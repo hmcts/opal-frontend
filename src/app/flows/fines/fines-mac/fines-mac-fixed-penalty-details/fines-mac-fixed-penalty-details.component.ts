@@ -15,9 +15,9 @@ import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-form';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK } from './mocks/fines-mac-fixed-penalty-details-issuing-authorities.mock';
 import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
+import { IOpalFinesIssuingAuthorityRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-issuing-authority-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -30,9 +30,9 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private readonly finesMacStore = inject(FinesMacStore);
   public defendantType = this.finesMacStore.getDefendantType();
   public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
-  public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] =
-    FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK;
+  public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] = [];
   private courts!: IOpalFinesCourtRefData;
+  private issuingAuthorities!: IOpalFinesIssuingAuthorityRefData;
 
   /**
    * Handles the submission of personal details form.
@@ -148,8 +148,28 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     });
   }
 
+  /**
+   * Creates an array of autocomplete items based on the response from the server.
+   * @param response - The response object containing the local justice area reference data.
+   * @returns An array of autocomplete items.
+   */
+  private createAutoCompleteItemsAuthorities(
+    response: IOpalFinesIssuingAuthorityRefData,
+  ): IAlphagovAccessibleAutocompleteItem[] {
+    const issuingAuthorities = response.refData;
+
+    return issuingAuthorities.map((item) => {
+      return {
+        value: item.authority_id,
+        name: this.opalFinesService.getIssuingAuthorityPrettyName(item),
+      };
+    });
+  }
+
   public ngOnInit(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
+    this.issuingAuthorities = this['activatedRoute'].snapshot.data['issuingAuthorities'];
+    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.issuingAuthorities);
   }
 }

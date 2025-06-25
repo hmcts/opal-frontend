@@ -10,7 +10,6 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK } from '../mocks/fines-mac-fi
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
 import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-autocomplete-items.mock';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK } from '../mocks/fines-mac-fixed-penalty-details-issuing-authorities.mock';
 import { FormControl, Validators } from '@angular/forms';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -66,7 +65,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     component.defendantType = 'adultOrYouthOnly';
     component.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
-    component.issuingAuthorityAutoCompleteItems = FINES_MAC_FIXED_PENALTY_DETAILS_ISSUING_AUTHORIES_MOCK;
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);

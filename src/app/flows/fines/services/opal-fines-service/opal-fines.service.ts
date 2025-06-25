@@ -11,13 +11,16 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-
+import {
+  IOpalFinesIssuingAuthority,
+  IOpalFinesIssuingAuthorityRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-issuing-authority-ref-data.interface';
 import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -33,6 +36,7 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK } from './mocks/opal-fines-issuing-authority-ref-data.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +50,7 @@ export class OpalFines {
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
+  private issuingAuthorityDataCache$: { [key: string]: Observable<IOpalFinesIssuingAuthorityRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -112,6 +117,15 @@ export class OpalFines {
    */
   public getCourtPrettyName(court: IOpalFinesCourt): string {
     return `${court.name} (${court.court_code})`;
+  }
+
+  /**
+   * Returns the pretty name of a issuing authority.
+   * @param issuingAuthority - The issuing authority object.
+   * @returns The pretty name of the issuing authority.
+   */
+  public getIssuingAuthorityPrettyName(authority: IOpalFinesIssuingAuthority): string {
+    return `${authority.name} (${authority.authority_code})`;
   }
 
   /**
@@ -364,5 +378,23 @@ export class OpalFines {
     payload: IOpalFinesDraftAccountPatchPayload,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, payload);
+  }
+
+  /**
+   * Retrieves the issuing authority data for a specific business unit.
+   * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param business_unit - The business unit for which to retrieve the court data.
+   * @returns An Observable that emits the issuing authority data for the specified business unit.
+   */
+  public getIssuingAuthorities(business_unit: number): Observable<IOpalFinesIssuingAuthorityRefData> {
+    // if (!this.issuingAuthorityDataCache$[business_unit]) {
+    //   this.issuingAuthorityDataCache$[business_unit] = this.http
+    //     .get<IOpalFinesIssuingAuthorityRefData>(OPAL_FINES_PATHS.issuingAuthorityRefData, { params: { business_unit } })
+    //     .pipe(shareReplay(1));
+    // }
+
+    // return this.issuingAuthorityDataCache$[business_unit];
+    console.log('returning mock of issuing authorities for business unit:', business_unit);
+    return of(OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK); // For testing purposes, return the mocked data
   }
 }
