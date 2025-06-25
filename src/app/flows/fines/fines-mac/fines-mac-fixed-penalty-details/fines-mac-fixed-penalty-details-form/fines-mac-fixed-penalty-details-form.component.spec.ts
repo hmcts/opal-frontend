@@ -6,7 +6,6 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacFixedPenaltyDetailsFormComponent } from './fines-mac-fixed-penalty-details-form.component';
-import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK } from '../mocks/fines-mac-fixed-penalty-details-form.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
@@ -22,7 +21,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
   let fixture: ComponentFixture<FinesMacFixedPenaltyDetailsFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>; // Replace with actual service type if available
-  let formSubmit: IFinesMacFixedPenaltyDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
@@ -33,8 +31,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       'getAgeObject',
     ]);
     mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getOffenceByCjsCode']);
-
-    formSubmit = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacFixedPenaltyDetailsFormComponent],
@@ -180,6 +176,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     // Assert
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let value: any;
     component.offenceCode$.subscribe((v) => (value = v));
     expect(value).toEqual(OPAL_FINES_OFFENCES_REF_DATA_MOCK);

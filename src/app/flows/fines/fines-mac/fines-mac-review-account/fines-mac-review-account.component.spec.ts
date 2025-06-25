@@ -26,8 +26,6 @@ import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/se
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from '../fines-mac-language-preferences/mocks/fines-mac-language-preferences-form.mock';
-import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants/fines-mac-business-unit-state';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

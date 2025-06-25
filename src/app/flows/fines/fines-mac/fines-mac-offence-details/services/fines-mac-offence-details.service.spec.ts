@@ -114,7 +114,7 @@ describe('FinesMacOffenceDetailsService', () => {
     };
 
     beforeEach(() => {
-      getOffenceByCjsCode = (code: string) => of(offenceMockResponse);
+      getOffenceByCjsCode = () => of(offenceMockResponse);
 
       form = new FormGroup({
         code: new FormControl(''),
@@ -183,7 +183,7 @@ describe('FinesMacOffenceDetailsService', () => {
 
     it('should mark code as invalid when response count is 0', fakeAsync(() => {
       const invalidResponse = { count: 0, refData: [] };
-      getOffenceByCjsCode = (code: string) => of(invalidResponse);
+      getOffenceByCjsCode = () => of(invalidResponse);
 
       service.initOffenceCodeListener(
         form,

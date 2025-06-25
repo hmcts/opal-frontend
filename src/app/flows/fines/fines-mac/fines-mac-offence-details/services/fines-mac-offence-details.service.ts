@@ -132,6 +132,7 @@ export class FinesMacOffenceDetailsService {
     destroy$: Subject<void>,
     changeDetector: ChangeDetectorRef,
     getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onResult: (result: any) => void,
     onConfirmChange?: (confirmed: boolean) => void,
   ): void {

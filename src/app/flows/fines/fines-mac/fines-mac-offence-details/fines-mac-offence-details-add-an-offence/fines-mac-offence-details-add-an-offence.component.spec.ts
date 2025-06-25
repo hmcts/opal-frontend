@@ -161,6 +161,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update the impositions array with their respective index positions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component.removeIndexFromFormArrayData = (val: any[]) => val;
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 

@@ -15,7 +15,7 @@ import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-co
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map, of } from 'rxjs';
+import { Observable, EMPTY, distinctUntilChanged, takeUntil, of } from 'rxjs';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors.constant';
@@ -44,7 +44,6 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offenc
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {

@@ -91,7 +91,6 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
-    const { formData: fixedPenaltyDetails } = finesMacState.fixedPenaltyDetails;
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
