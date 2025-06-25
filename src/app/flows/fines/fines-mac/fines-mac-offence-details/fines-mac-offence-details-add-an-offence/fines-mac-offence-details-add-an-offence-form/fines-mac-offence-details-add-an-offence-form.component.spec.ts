@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form.component';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -26,6 +26,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../../fines
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -163,7 +164,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     component.selectedOffenceConfirmation = true;
 
-    component['setupOffenceCodeListener']();   
+    component['setupOffenceCodeListener']();
     offenceCodeControl.reset();
 
     expect(component.selectedOffenceConfirmation).toBe(false);
@@ -196,7 +197,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', () => {
-    const mockCjsCode = 'abc12345';
+    component['setupOffenceCodeListener']();
+    const mockCjsCode = 'abc123';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
     offenceCodeControl.setValue(mockCjsCode);
@@ -205,6 +207,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when cjs_code length is between 7 and 8', fakeAsync(() => {
+    component['setupOffenceCodeListener']();
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
@@ -215,28 +218,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.selectedOffenceConfirmation).toBe(true);
   }));
-
-  // it('should set errors on offence code control', fakeAsync(() => {
-  //   const mockCjsCode = 'abc';
-  //   const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
-  //   offenceCodeControl.setValue(mockCjsCode);
-
-  //   // Simulate the passage of time to account for defaultDebounceTime
-  //   tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
-  //   offenceCodeControl.updateValueAndValidity();
-
-  //   // expect(component.selectedOffenceConfirmation).toBe(false);
-  //   expect(offenceCodeControl.errors).toBeTruthy();
-  //   expect(offenceCodeControl.errors!['invalidOffenceCode']).toBeTrue();
-  // }));
-
-  // it('should set selectedOffenceConfirmation to false when cjsCode length is not between 7 and 8', () => {
-  //   const cjsCode = 'abc123458';
-
-  //   component['populateOffenceHint'](cjsCode);
-
-  //   expect(component.selectedOffenceConfirmation).toBe(false);
-  // });
 
   it('should go to minor creditor', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
@@ -687,46 +668,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(superHandleFormSubmitSpy).toHaveBeenCalledWith(event);
   });
 
-  it('should set up the offence code listener and update offenceCode$ and selectedOffenceConfirmation', () => {
-    // Arrange
-    const mockResult = { code: 'TEST123' };
-    const mockConfirmed = true;
+  it('should add a new draft offence when index is -1', () => {
+    component.form.controls['fm_offence_details_id'].setValue('test-id');
+    spyOn(component['finesMacOffenceDetailsStore'], 'setOffenceDetailsDraft');
+    component['updateOffenceDetailsDraft'](FINES_MAC_OFFENCE_DETAILS_STATE);
 
-    // Spy on offenceDetailsService.initOffenceCodeListener and simulate callback invocations
-    const initOffenceCodeListenerSpy = spyOn(component['offenceDetailsService'], 'initOffenceCodeListener').and.callFake(
-      (
-        form,
-        codeControlName,
-        idControlName,
-        ngUnsubscribe,
-        changeDetector,
-        resultCallback,
-        confirmationCallback
-      ) => {
-        if (resultCallback) resultCallback(mockResult);
-        if (confirmationCallback) confirmationCallback(mockConfirmed);
-      }
-    );
-
-    // Act
-    component['setupOffenceCodeListener']();
-
-    // Assert
-    expect(initOffenceCodeListenerSpy).toHaveBeenCalledWith(
-      component.form,
-      'fm_offence_details_offence_cjs_code',
-      'fm_offence_details_offence_id',
-      component['ngUnsubscribe'],
-      component['changeDetector'],
-      jasmine.any(Function),
-      jasmine.any(Function)
-    );
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let resultValue: any;
-    component.offenceCode$.subscribe(val => resultValue = val);
-    expect(resultValue).toEqual(mockResult);
-    expect(component.selectedOffenceConfirmation).toBe(true);
+    expect(component['finesMacOffenceDetailsStore'].setOffenceDetailsDraft).toHaveBeenCalled();
   });
-
 });

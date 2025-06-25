@@ -374,7 +374,7 @@ describe('FinesMacReviewAccountComponent', () => {
       ]);
     });
 
-    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {   
+    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
       spyOn(component['finesMacStore'], 'getAccountType').and.returnValue('fixedPenalty');
       const handleRouteSpy = spyOn(component, 'handleRoute');
 

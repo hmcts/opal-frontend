@@ -15,12 +15,30 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
   fm_fp_court_details_issuing_authority_id: {
     required: {
-      message: `Enter the Issuing authority`,
+      message: `Enter the issuing authority`,
       priority: 1,
     },
   },
-  fm_fp_account_comments_notes_comments: {},
-  fm_fp_account_comments_notes_notes: {},
+  fm_fp_account_comments_notes_comments: {
+    maxlength: {
+      message: `Add comment must be 30 characters or fewer`,
+      priority: 1,
+    },
+    alphabeticalTextPattern: {
+      message: `Add comment must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      priority: 2,
+    },
+  },
+  fm_fp_account_comments_notes_notes: {
+    maxlength: {
+      message: `Add account note must be 1000 characters or fewer`,
+      priority: 1,
+    },
+    alphabeticalTextPattern: {
+      message: `Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      priority: 2,
+    },
+  },
   fm_fp_account_comments_notes_system_notes: {},
   fm_fp_language_preferences_document_language: {},
   fm_fp_language_preferences_hearing_language: {},
@@ -30,26 +48,30 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 1,
     },
     maxlength: {
-      message: `The Notice number must be 16 characters or fewer`,
+      message: `Notice number must be 16 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `The Notice number must only contain alphabetical text`,
+      message: `Notice number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
   fm_fp_offence_details_offence_type: {},
   fm_fp_offence_details_date_of_offence: {
     required: {
-      message: `Enter the Date of offence`,
+      message: `Enter date of offence `,
       priority: 1,
     },
+    invalidDateFormat: {
+      message: `Offence date must be in the format DD/MM/YYYY`,
+      priority: 2,
+    },
     invalidDate: {
-      message: `Enter a valid Date of offence`,
+      message: `Enter a valid offence date`,
       priority: 2,
     },
     invalidFutureDate: {
-      message: `The Date of offence must not be in the future`,
+      message: `Date of offence must be in the past`,
       priority: 3,
     },
   },
@@ -58,83 +80,83 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS['fm_offence_details_offence_cjs_code'],
   fm_fp_offence_details_time_of_offence: {
     invalidTimeFormat: {
-      message: `Enter a valid time for the offence (HH:MM)`,
+      message: `Enter time of offence in the correct format, such as 02:00 or 14:00`,
       priority: 1,
     },
   },
   fm_fp_offence_details_place_of_offence: {
     required: {
-      message: `Enter Place of offence`,
+      message: `Enter where the offence took place`,
       priority: 1,
     },
     maxlength: {
-      message: `The Place of offence must be 30 characters or fewer`,
+      message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `The Place of offence must only contain alphabetical text`,
+      message: `Place of offence must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
   fm_fp_offence_details_amount_imposed: {
     required: {
-      message: `Enter Amount imposed`,
+      message: `Enter amount imposed`,
       priority: 1,
     },
     invalidAmountValue: {
-      message: `The Amount imposed must be a valid monetary value`,
+      message: `Enter valid amount`,
       priority: 2,
     },
     invalidAmount: {
-      message: `The Amount imposed is too large`,
+      message: `Amount too long. Enter an amount that is less than 18 numbers before the decimal and 2 or less after`,
       priority: 3,
     },
   },
   fm_fp_offence_details_vehicle_registration_number: {
     required: {
-      message: `Enter the Vehicle registration number`,
+      message: `Enter Registration number`,
       priority: 1,
     },
     maxlength: {
-      message: `The Vehicle registration number must be 7 characters or fewer`,
+      message: `Registration number must be 7 characters or fewer `,
       priority: 1,
     },
     alphabeticalTextPattern: {
-      message: `The Vehicle registration number must only contain alphabetical text`,
+      message: `Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
   },
   fm_fp_offence_details_driving_licence_number: {
     required: {
-      message: `Enter the Driving licence number`,
+      message: `Enter Driving licence number`,
       priority: 1,
     },
     invalidDrivingLicenceNumber: {
-      message: `The Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
+      message: `Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
       priority: 1,
     },
   },
   fm_fp_offence_details_nto_nth: {
     maxlength: {
-      message: `The Notice to owner or hirer number must be 10 characters or fewer`,
+      message: `Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer `,
       priority: 1,
     },
     alphabeticalTextPattern: {
-      message: `The Notice to owner or hirer number must only contain alphabetical text`,
+      message: `Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
   },
   fm_fp_offence_details_date_nto_issued: {
-    required: {
-      message: `Enter the date the Notice to owner or hirer was issued`,
+    invalidDateFormat: {
+      message: `Enter notice to owner date in the format DD/MM/YYYY`,
       priority: 1,
     },
     invalidDate: {
-      message: `Enter a valid date for when the Notice to owner or hirer was issued`,
+      message: `Enter a valid notice to owner date`,
       priority: 2,
     },
     invalidFutureDate: {
-      message: `The date the Notice to owner or hirer was issued must not be in the future`,
+      message: `Date notice to owner issued must be in the past`,
       priority: 3,
     },
   },

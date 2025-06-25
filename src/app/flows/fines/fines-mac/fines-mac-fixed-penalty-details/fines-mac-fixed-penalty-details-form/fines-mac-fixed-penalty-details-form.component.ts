@@ -16,7 +16,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-m
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { EMPTY, Observable, of, takeUntil} from 'rxjs';
+import { EMPTY, Observable, of, takeUntil } from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -144,10 +144,20 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       // Court Details
       fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null, [Validators.required]),
+      fm_fp_court_details_issuing_authority_id: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(41),
+        alphabeticalTextValidator(),
+      ]),
       // Comments and Notes
-      fm_fp_account_comments_notes_comments: new FormControl(null, [alphabeticalTextValidator()]),
-      fm_fp_account_comments_notes_notes: new FormControl(null, [alphabeticalTextValidator()]),
+      fm_fp_account_comments_notes_comments: new FormControl(null, [
+        Validators.maxLength(30),
+        alphabeticalTextValidator(),
+      ]),
+      fm_fp_account_comments_notes_notes: new FormControl(null, [
+        Validators.maxLength(1000),
+        alphabeticalTextValidator(),
+      ]),
       fm_fp_account_comments_notes_system_notes: new FormControl(null),
       // Language Preferences
       fm_fp_language_preferences_document_language: new FormControl(null),
@@ -170,9 +180,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         Validators.maxLength(8),
         alphabeticalTextValidator(),
       ]),
-      fm_fp_offence_details_time_of_offence: new FormControl(null, [
-        timeFormatValidator(),
-      ]),
+      fm_fp_offence_details_time_of_offence: new FormControl(null, [timeFormatValidator()]),
       fm_fp_offence_details_place_of_offence: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -183,12 +191,13 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_offence_details_vehicle_registration_number: new FormControl(null, [
         Validators.required,
         Validators.maxLength(7),
+        alphabeticalTextValidator(),
       ]),
       fm_fp_offence_details_driving_licence_number: new FormControl(null, [
         Validators.required,
         drivingLicenceNumberValidator(),
       ]),
-      fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10)]),
+      fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10), alphabeticalTextValidator()]),
       fm_fp_offence_details_date_nto_issued: new FormControl(null, [
         Validators.maxLength(10),
         optionalValidDateValidator(),
@@ -258,17 +267,26 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.rePopulateForm(formData);
     this.form.controls['fm_fp_offence_details_offence_type'].updateValueAndValidity();
     this.dateOfBirthListener();
+    this.offenceTypeListener();
+    this.setupOffenceCodeListener();
+  }
+
+  private setupOffenceCodeListener(): void {
     this.offenceDetailsService.initOffenceCodeListener(
       this.form,
       'fm_fp_offence_details_offence_cjs_code',
       'fm_fp_offence_details_offence_id',
       this.ngUnsubscribe,
       this.changeDetector,
-      (result) => { this.offenceCode$ = of(result); },
-      (confirmed) => { this.selectedOffenceConfirmation = confirmed; }
+      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      (result) => {
+        this.offenceCode$ = of(result);
+      },
+      (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
     );
-    this.offenceTypeListener();
-    }
+  }
 
   private replaceKeys<T extends object>(formData: T) {
     const result: Record<string, string> = {};

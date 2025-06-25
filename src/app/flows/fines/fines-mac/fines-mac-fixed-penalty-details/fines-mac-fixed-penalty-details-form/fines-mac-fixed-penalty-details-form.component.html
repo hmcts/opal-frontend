@@ -165,8 +165,6 @@
       ></div>
     </opal-lib-govuk-radio>
 
-    <p>Type: {{ form.get('fm_fp_offence_details_offence_type')?.value }}</p>
-
     <opal-lib-moj-date-picker
       labelText="Date of offence"
       labelClasses="govuk-label--s"
@@ -308,6 +306,7 @@
       [characterCountEnabled]="true"
       [maxCharacterLimit]="30"
       [rows]="1"
+      [errors]="formControlErrorMessages['fm_fp_account_comments_notes_comments']"
     ></opal-lib-govuk-text-area>
 
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
@@ -321,6 +320,7 @@
       [control]="form.controls['fm_fp_account_comments_notes_notes']"
       [characterCountEnabled]="true"
       [maxCharacterLimit]="1000"
+      [errors]="formControlErrorMessages['fm_fp_account_comments_notes_notes']"
     ></opal-lib-govuk-text-area>
   </fieldset>
 
@@ -332,7 +332,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.createAccount)"
       ></opal-lib-govuk-cancel-link>
     </div>
   </div>
@@ -355,44 +355,55 @@
 
 <ng-template #vehicleForm>
   <div opal-lib-govuk-radios-conditional conditionalId="radio">
-    <opal-lib-govuk-text-input
-      labelText="Registration number"
-      labelClasses="govuk-label--s"
-      inputId="fm_fp_offence_details_vehicle_registration_number"
-      inputName="fm_fp_offence_details_vehicle_registration_number"
-      inputClasses="govuk-input--width-10 govuk-!-margin-bottom-6"
-      [control]="form.controls['fm_fp_offence_details_vehicle_registration_number']"
-      [errors]="formControlErrorMessages['fm_fp_offence_details_vehicle_registration_number']"
-    ></opal-lib-govuk-text-input>
-    <opal-lib-govuk-text-input
-      labelText="Driving licence number"
-      labelClasses="govuk-label--s"
-      inputId="fm_fp_offence_details_driving_licence_number"
-      inputName="fm_fp_offence_details_driving_licence_number"
-      inputClasses="govuk-input--width-20 govuk-!-margin-bottom-6"
-      [control]="form.controls['fm_fp_offence_details_driving_licence_number']"
-      [errors]="formControlErrorMessages['fm_fp_offence_details_driving_licence_number']"
-    ></opal-lib-govuk-text-input>
-    <opal-lib-govuk-text-input
-      labelText="Notice to owner or hirer number (NTO/NTH)"
-      labelClasses="govuk-label--s"
-      inputId="fm_fp_offence_details_nto_nth"
-      inputName="fm_fp_offence_details_nto_nth"
-      inputClasses="govuk-input--width-10 govuk-!-margin-bottom-6"
-      [control]="form.controls['fm_fp_offence_details_nto_nth']"
-      [errors]="formControlErrorMessages['fm_fp_offence_details_nto_nth']"
-    ></opal-lib-govuk-text-input>
-    <opal-lib-moj-date-picker
-      labelText="Date notice to owner was issued"
-      labelClasses="govuk-label--s"
-      inputId="fm_fp_offence_details_date_nto_issued"
-      inputName="fm_fp_offence_details_date_nto_issued"
-      inputClasses="govuk-input--width-10"
-      hintText="For example, 31/01/2023"
-      [maxDate]="today"
-      (dateChange)="setInputValue($event, 'fm_fp_offence_details_date_nto_issued')"
-      [control]="form.controls['fm_fp_offence_details_date_nto_issued']"
-      [errors]="formControlErrorMessages['fm_fp_offence_details_date_nto_issued']"
-    ></opal-lib-moj-date-picker>
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Registration number"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_vehicle_registration_number"
+        inputName="fm_fp_offence_details_vehicle_registration_number"
+        inputClasses="govuk-input--width-10"
+        [control]="form.controls['fm_fp_offence_details_vehicle_registration_number']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_vehicle_registration_number']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Driving licence number"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_driving_licence_number"
+        inputName="fm_fp_offence_details_driving_licence_number"
+        inputClasses="govuk-input--width-20"
+        [control]="form.controls['fm_fp_offence_details_driving_licence_number']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_driving_licence_number']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Notice to owner or hirer number (NTO/NTH)"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_nto_nth"
+        inputName="fm_fp_offence_details_nto_nth"
+        inputClasses="govuk-input--width-10"
+        [control]="form.controls['fm_fp_offence_details_nto_nth']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_nto_nth']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-moj-date-picker
+        labelText="Date notice to owner was issued"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_date_nto_issued"
+        inputName="fm_fp_offence_details_date_nto_issued"
+        inputClasses="govuk-input--width-10"
+        hintText="For example, 31/01/2023"
+        [maxDate]="today"
+        (dateChange)="setInputValue($event, 'fm_fp_offence_details_date_nto_issued')"
+        [control]="form.controls['fm_fp_offence_details_date_nto_issued']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_date_nto_issued']"
+      ></opal-lib-moj-date-picker>
+    </div>
   </div>
 </ng-template>

@@ -201,8 +201,13 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       'fm_offence_details_offence_id',
       this.ngUnsubscribe,
       this.changeDetector,
-      (result) => { this.offenceCode$ = of(result); },
-      (confirmed) => { this.selectedOffenceConfirmation = confirmed; }
+      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      (result) => {
+        this.offenceCode$ = of(result);
+      },
+      (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
     );
   }
 

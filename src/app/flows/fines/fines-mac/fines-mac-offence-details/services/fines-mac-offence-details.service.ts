@@ -3,15 +3,14 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacOffenceDetailsService {
-   public opalFinesService = inject(OpalFines);
-   public utilsService = inject(UtilsService);
+  public utilsService = inject(UtilsService);
   /**
    * Reorders the imposition keys to maintain correct numbering.
    *
@@ -132,8 +131,9 @@ export class FinesMacOffenceDetailsService {
     idControlName: string,
     destroy$: Subject<void>,
     changeDetector: ChangeDetectorRef,
+    getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>,
     onResult: (result: any) => void,
-    onConfirmChange?: (confirmed: boolean) => void
+    onConfirmChange?: (confirmed: boolean) => void,
   ): void {
     const codeControl = form.controls[codeControlName];
     const idControl = form.controls[idControlName];
@@ -142,7 +142,7 @@ export class FinesMacOffenceDetailsService {
       idControl.setValue(null);
 
       if (code?.length >= 7 && code?.length <= 8) {
-        const result$ = this.opalFinesService.getOffenceByCjsCode(code).pipe(
+        const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
             codeControl.setErrors(response.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
             idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
@@ -151,7 +151,7 @@ export class FinesMacOffenceDetailsService {
               onResult(response);
             }
           }),
-          takeUntil(destroy$)
+          takeUntil(destroy$),
         );
 
         result$.subscribe();
@@ -173,7 +173,7 @@ export class FinesMacOffenceDetailsService {
           code = this.utilsService.upperCaseAllLetters(code);
           codeControl.setValue(code, { emitEvent: false });
         }),
-        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime,),
+        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
         takeUntil(destroy$),
       )
       .subscribe((code: string) => {
