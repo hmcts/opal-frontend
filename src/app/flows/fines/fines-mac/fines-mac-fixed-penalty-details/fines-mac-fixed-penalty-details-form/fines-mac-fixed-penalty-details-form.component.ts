@@ -276,7 +276,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       'fm_fp_offence_details_offence_cjs_code',
       'fm_fp_offence_details_offence_id',
       this.ngUnsubscribe,
-      this.changeDetector,
       this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
       (result) => {
         this.offenceCode$ = of(result);
@@ -291,7 +290,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     const result: Record<string, string> = {};
 
     for (const [key, value] of Object.entries(formData)) {
-      const newKey = (key as string).replace(currentPrefix, replacementPrefix);
+      const newKey = key.replace(currentPrefix, replacementPrefix);
       result[newKey] = value;
     }
 

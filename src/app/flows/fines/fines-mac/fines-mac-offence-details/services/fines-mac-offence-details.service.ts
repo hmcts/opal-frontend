@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil, tap } from 'rxjs';
@@ -130,7 +130,6 @@ export class FinesMacOffenceDetailsService {
     codeControlName: string,
     idControlName: string,
     destroy$: Subject<void>,
-    changeDetector: ChangeDetectorRef,
     getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onResult: (result: any) => void,
@@ -157,9 +156,8 @@ export class FinesMacOffenceDetailsService {
 
         result$.subscribe();
         if (onConfirmChange) onConfirmChange(true);
-        changeDetector.detectChanges();
-      } else {
-        if (onConfirmChange) onConfirmChange(false);
+      } else if (onConfirmChange) {
+        onConfirmChange(false);
       }
     };
 

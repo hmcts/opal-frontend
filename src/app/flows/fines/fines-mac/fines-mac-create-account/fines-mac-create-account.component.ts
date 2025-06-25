@@ -86,13 +86,10 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     this.finesMacStore.setAccountDetails(form, businessUnit, languagePreferenceForm);
 
     // Navigate to next screen, based on the account type
-    switch (form.formData.fm_create_account_account_type) {
-      case 'fixedPenalty':
-        this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails);
-        break;
-      default:
-        this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
-        break;
+    if (form.formData.fm_create_account_account_type === 'fixedPenalty') {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails);
+    } else {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }
   }
 

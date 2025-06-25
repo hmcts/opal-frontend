@@ -4,7 +4,6 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of, Subject } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { ChangeDetectorRef } from '@angular/core';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { provideHttpClient } from '@angular/common/http';
@@ -104,7 +103,6 @@ describe('FinesMacOffenceDetailsService', () => {
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
-    let changeDetector: jasmine.SpyObj<ChangeDetectorRef>;
     let onResultSpy: jasmine.Spy;
     let onConfirmChangeSpy: jasmine.Spy;
     let getOffenceByCjsCode: (code: string) => Observable<IOpalFinesOffencesRefData>;
@@ -122,7 +120,6 @@ describe('FinesMacOffenceDetailsService', () => {
       });
 
       destroy$ = new Subject<void>();
-      changeDetector = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
       onResultSpy = jasmine.createSpy('onResult');
       onConfirmChangeSpy = jasmine.createSpy('onConfirmChange');
     });
@@ -140,7 +137,6 @@ describe('FinesMacOffenceDetailsService', () => {
         'code',
         'id',
         destroy$,
-        changeDetector,
         getOffenceByCjsCode,
         onResultSpy,
         onConfirmChangeSpy,
@@ -151,7 +147,6 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(form.get('id')?.value).toBe(314441);
       expect(onResultSpy).toHaveBeenCalledWith(offenceMockResponse);
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
-      expect(changeDetector.detectChanges).toHaveBeenCalled();
     }));
 
     it('should listen for value changes, uppercase input, and trigger populateHint', fakeAsync(() => {
@@ -162,7 +157,6 @@ describe('FinesMacOffenceDetailsService', () => {
         'code',
         'id',
         destroy$,
-        changeDetector,
         getOffenceByCjsCode,
         onResultSpy,
         onConfirmChangeSpy,
@@ -178,7 +172,6 @@ describe('FinesMacOffenceDetailsService', () => {
       expect(form.get('id')?.value).toBe(314441);
       expect(onResultSpy).toHaveBeenCalled();
       expect(onConfirmChangeSpy).toHaveBeenCalledWith(true);
-      expect(changeDetector.detectChanges).toHaveBeenCalled();
     }));
 
     it('should mark code as invalid when response count is 0', fakeAsync(() => {
@@ -190,7 +183,6 @@ describe('FinesMacOffenceDetailsService', () => {
         'code',
         'id',
         destroy$,
-        changeDetector,
         getOffenceByCjsCode,
         onResultSpy,
         onConfirmChangeSpy,
@@ -210,7 +202,6 @@ describe('FinesMacOffenceDetailsService', () => {
         'code',
         'id',
         destroy$,
-        changeDetector,
         getOffenceByCjsCode,
         onResultSpy,
         onConfirmChangeSpy,
