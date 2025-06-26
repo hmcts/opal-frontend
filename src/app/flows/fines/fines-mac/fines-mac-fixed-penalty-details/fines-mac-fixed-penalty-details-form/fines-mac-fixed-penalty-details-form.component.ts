@@ -225,11 +225,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     // Subscribe to changes in the offence type control
     offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
       if (offenceType === 'vehicle') {
-        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators(Validators.required);
-        this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators(Validators.required);
+        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators([Validators.required, Validators.maxLength(7), alphabeticalTextValidator()]);
+        this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators([Validators.required, drivingLicenceNumberValidator()]);
       } else {
-        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].removeValidators(Validators.required);
-        this.form.controls['fm_fp_offence_details_driving_licence_number'].removeValidators(Validators.required);
+        this.form.controls['fm_fp_offence_details_vehicle_registration_number'].clearValidators();
+        this.form.controls['fm_fp_offence_details_driving_licence_number'].clearValidators();
       }
       this.form.controls['fm_fp_offence_details_vehicle_registration_number'].updateValueAndValidity();
       this.form.controls['fm_fp_offence_details_driving_licence_number'].updateValueAndValidity();
