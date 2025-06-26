@@ -1,5 +1,6 @@
-@if (accountType === 'fixedPenalty') {
+@if (accountType === accountTypesKeys.fixedPenalty) {
   <h1 class="govuk-heading-l">Check fixed penalty account details</h1>
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 } @else {
   <div class="govuk-grid-column-full">
     <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>

@@ -32,6 +32,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-form.mock';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
@@ -93,7 +94,7 @@ describe('FinesMacStore', () => {
     const accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_FORM);
     accountDetails.formData = {
       ...accountDetails.formData,
-      fm_create_account_account_type: 'fine',
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES_KEYS.fine,
       fm_create_account_business_unit_id: businessUnit.business_unit_id,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
     };

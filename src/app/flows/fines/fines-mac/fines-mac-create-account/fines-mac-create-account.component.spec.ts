@@ -15,6 +15,7 @@ import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from './mocks/fines-mac-create-acc
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
@@ -77,7 +78,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should handle form submission and navigate to an alternative page when account type is fixed penalty', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    formSubmit.formData.fm_create_account_account_type = 'fixedPenalty';
+    formSubmit.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
 
     component.handleAccountDetailsSubmit(formSubmit);
 
