@@ -53,10 +53,11 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
-import { IAgeObject } from '../../interfaces/fines-mac-dates-interface';
+import { IAgeObject } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
 import { timeFormatValidator } from '@hmcts/opal-frontend-common/validators/time-format';
 import { drivingLicenceNumberValidator } from '@hmcts/opal-frontend-common/validators/driving-licence-number';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -96,23 +97,32 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly dateService = inject(DateService);
   protected readonly opalFinesService = inject(OpalFines);
   protected readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
+  protected readonly transformationService = inject(TransformationService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
+  public readonly languageOptions: { key: string; value: string }[] = Object.entries(
+    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
+  ).map(([key, value]) => ({ key, value }));
+  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
+
   public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
   public selectedOffenceConfirmation!: boolean;
   public selectedOffenceSuccessful!: boolean;
   public selectedOffenceTitle!: string;
+  public today: string = this.dateService.getPreviousDate({ days: 0 });
+  public yesterday = this.dateService.getPreviousDate({ days: 1 });
+  public age: IAgeObject | null = null;
 
   override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
-  public today: string = this.dateService.getPreviousDate({ days: 0 });
-  public yesterday = this.dateService.getPreviousDate({ days: 1 });
-  public age: IAgeObject | null = null;
-
+  /*
+   * Sets up the form for fixed penalty details, including personal details, court details, comments and notes,
+   * language preferences, and offence details.
+   */
   private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
       // Personal Details
@@ -243,10 +253,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     });
   }
 
-  public readonly languageOptions: { key: string; value: string }[] = Object.entries(
-    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
-  ).map(([key, value]) => ({ key, value }));
-
   /**
    * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data.
    */
@@ -254,11 +260,31 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     const currentPrefix = 'fm_';
     const replacementPrefix = 'fm_fp_';
     const formData = {
-      ...this.replaceKeys(this.finesMacStore.personalDetails().formData, currentPrefix, replacementPrefix),
-      ...this.replaceKeys(this.finesMacStore.courtDetails().formData, currentPrefix, replacementPrefix),
-      ...this.replaceKeys(this.finesMacStore.accountCommentsNotes().formData, currentPrefix, replacementPrefix),
-      ...this.replaceKeys(this.finesMacStore.languagePreferences().formData, currentPrefix, replacementPrefix),
-      ...this.replaceKeys(this.finesMacStore.fixedPenaltyDetails().formData, currentPrefix, replacementPrefix),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.personalDetails().formData,
+        currentPrefix,
+        replacementPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.courtDetails().formData,
+        currentPrefix,
+        replacementPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.accountCommentsNotes().formData,
+        currentPrefix,
+        replacementPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.languagePreferences().formData,
+        currentPrefix,
+        replacementPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.fixedPenaltyDetails().formData,
+        currentPrefix,
+        replacementPrefix,
+      ),
     };
     this.setupFixedPenaltyDetailsForm();
 
@@ -270,6 +296,13 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.setupOffenceCodeListener();
   }
 
+  /**
+   * Sets up the offence code listener to handle changes in the offence code field.
+   * It initializes the offence code listener from the offence details service, which fetches
+   * offence details based on the CJS code entered by the user.
+   * It updates the offenceCode$ observable with the fetched offence details and handles
+   * the confirmation of the selected offence.
+   */
   private setupOffenceCodeListener(): void {
     this.offenceDetailsService.initOffenceCodeListener(
       this.form,
@@ -284,17 +317,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         this.selectedOffenceConfirmation = confirmed;
       },
     );
-  }
-
-  private replaceKeys<T extends object>(formData: T, currentPrefix: string, replacementPrefix: string) {
-    const result: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(formData)) {
-      const newKey = key.replace(currentPrefix, replacementPrefix);
-      result[newKey] = value;
-    }
-
-    return result;
   }
 
   public override ngOnInit(): void {

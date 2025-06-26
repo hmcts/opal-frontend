@@ -13,12 +13,14 @@ import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-f
 import { FormControl, Validators } from '@angular/forms';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacFixedPenaltyDetailsFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  let mockTransformationService: jasmine.SpyObj<TransformationService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>; // Replace with actual service type if available
   let finesMacStore: FinesMacStoreType;
 
@@ -30,6 +32,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       'getAgeObject',
     ]);
     mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getOffenceByCjsCode']);
+    mockTransformationService = jasmine.createSpyObj(TransformationService, ['replaceKeys']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacFixedPenaltyDetailsFormComponent],
@@ -45,6 +48,10 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
         {
           provide: OpalFines,
           useValue: mockOpalFinesService,
+        },
+        {
+          provide: TransformationService,
+          useValue: mockTransformationService,
         },
         {
           provide: FinesMacStore,
@@ -135,8 +142,6 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
   it('should perform the initial setup for the fixed penalty details form', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'replaceKeys');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupFixedPenaltyDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
@@ -151,7 +156,7 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     component['initialFixedPenaltyDetailsSetup']();
 
-    expect(component['replaceKeys']).toHaveBeenCalledTimes(5);
+    expect(component['transformationService']['replaceKeys']).toHaveBeenCalled();
     expect(component['setupFixedPenaltyDetailsForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalled();

@@ -72,7 +72,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
   });
 
   it('should handlefixedPenaltyDetailsSubmit and navigate to account details', () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'routerNavigate');
     const finesMacStoreSpies = [
       spyOn(finesMacStore, 'setPersonalDetails'),
@@ -211,6 +211,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
   });
 
   it('should set courts and enforcement data onInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createAutoCompleteItemsCourts').and.callThrough();
 
     component['ngOnInit']();

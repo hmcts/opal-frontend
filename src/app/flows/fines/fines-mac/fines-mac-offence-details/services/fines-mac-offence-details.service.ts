@@ -125,7 +125,7 @@ export class FinesMacOffenceDetailsService {
    * @param onResult - Optional callback function to handle the result of the code lookup.
    * @param onConfirmChange - Optional callback function to confirm if the code change was successful.
    */
-  initOffenceCodeListener(
+  public initOffenceCodeListener(
     form: FormGroup,
     codeControlName: string,
     idControlName: string,

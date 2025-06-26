@@ -59,6 +59,11 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     this.stateUnsavedChanges = unsavedChanges;
   }
 
+  /**
+   * Patches all relevant form data into the personal details Form from the fixed penalty details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The personal details form data ready for storage.
+   */
   private createPersonalDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacPersonalDetailsForm {
     const _form: IFinesMacPersonalDetailsForm = FINES_MAC_PERSONAL_DETAILS_FORM;
 
@@ -74,6 +79,11 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form;
   }
 
+  /**
+   * Patches all relevant form data into the court details form from the fixed penalty details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The court details form data ready for storage.
+   */
   private createCourtDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacCourtDetailsForm {
     const _form: IFinesMacCourtDetailsForm = FINES_MAC_COURT_DETAILS_FORM;
 
@@ -82,6 +92,11 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form;
   }
 
+  /**
+   * Patches all relevant form data into the comments and notes form from the fixed penalty details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The comments and notes form data ready for storage.
+   */
   private createCommentsAndNotesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacAccountCommentsNotesForm {
@@ -95,6 +110,11 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form;
   }
 
+  /**
+   * Patches all relevant form data into the language preferences form from the fixed penalty details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The language preferences form data ready for storage.
+   */
   private createLanguagePreferencesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacLanguagePreferencesForm {
@@ -108,6 +128,11 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return _form;
   }
 
+  /**
+   * Patches all relevant form data into the fixed penalty form from the fixed penalty details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The fixed penalty form data ready for storage.
+   */
   private createFixedPenaltyDetailsFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacFixedPenaltyDetailsStoreForm {
@@ -150,7 +175,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the local justice area reference data.
+   * @param response - The response object containing the issuing authorities reference data.
    * @returns An array of autocomplete items.
    */
   private createAutoCompleteItemsAuthorities(
