@@ -13,6 +13,7 @@ import { IFinesMacCompanyDetailsState } from '../../../../fines-mac-company-deta
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from '../mocks/fines-mac-payload-account-defendant-individual-complete.mock';
 import { IFinesMacPersonalDetailsState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 
 describe('finesMacPayloadMapAccountDefendant', () => {
   let mappedFinesMacState: IFinesMacState | null;
@@ -40,7 +41,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
     }
 
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
-    payload.defendant_type = 'parentOrGuardianToPay';
+    payload.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK;
 
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);
@@ -58,7 +59,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
     }
 
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
-    payload.defendant_type = 'company';
+    payload.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK;
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);
 

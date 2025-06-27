@@ -16,6 +16,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-ref-data.mock';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacFixedPenaltyDetailsComponent', () => {
   let component: FinesMacFixedPenaltyDetailsComponent;
@@ -62,7 +63,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     fixture.detectChanges();
   });

@@ -39,6 +39,7 @@ import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -96,6 +97,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
   public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
+  public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 

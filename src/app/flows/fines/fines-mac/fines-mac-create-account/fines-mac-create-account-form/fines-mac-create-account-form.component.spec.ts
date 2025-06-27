@@ -10,6 +10,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -154,7 +155,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   it('should set defendant type based on account type - fixed penalty', () => {
     const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
     const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
-    const fieldValue = 'adultOrYouthOnly';
+    const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component.form.get('fm_create_account_account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
@@ -167,7 +168,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   it('should set defendant type based on account type - fine', () => {
     const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
     const fieldName = 'fm_create_account_fine_defendant_type';
-    const fieldValue = 'adultOrYouthOnly';
+    const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component.form.get('fm_create_account_account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);

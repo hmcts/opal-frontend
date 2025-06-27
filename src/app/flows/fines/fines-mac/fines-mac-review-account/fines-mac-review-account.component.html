@@ -13,7 +13,7 @@
       <app-fines-mac-review-account-history
         [accountStatus]="reviewAccountStatus"
         [defendantName]="
-          finesMacStore.getDefendantType() === 'company'
+          finesMacStore.getDefendantType() === defendantTypesKeys.company
             ? finesMacStore.getCompanyDetailsName()
             : finesMacStore.getPersonalDetailsName()
         "
@@ -37,9 +37,14 @@
       (emitChangeCourtDetails)="navigateBack()"
     ></app-fines-mac-review-account-court-details>
 
-    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
+    @if (
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
+    ) {
       <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-    } @else if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'parentOrGuardianToPay') {
+    } @else if (
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
+      defendantTypesKeys.parentOrGuardianToPay
+    ) {
       <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
     } @else {
       <app-fines-mac-review-account-company-details
@@ -58,11 +63,14 @@
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-contact-details>
 
-    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'parentOrGuardianToPay') {
+    @if (
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
+      defendantTypesKeys.parentOrGuardianToPay
+    ) {
       <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
     }
 
-    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== 'company') {
+    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company) {
       <app-fines-mac-review-account-employer-details
         [employerDetails]="finesMacStore.employerDetails().formData"
         [isReadOnly]="isReadOnly"
@@ -134,7 +142,7 @@
   <app-fines-mac-review-account-personal-details
     [personalDetails]="finesMacStore.personalDetails().formData"
     [showVehicleDetails]="
-      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
     "
     [isReadOnly]="isReadOnly"
     (emitChangePersonalDetails)="navigateBack()"

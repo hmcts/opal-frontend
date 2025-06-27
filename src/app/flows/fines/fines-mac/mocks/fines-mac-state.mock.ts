@@ -1,5 +1,6 @@
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants/fines-mac-business-unit-state';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-form';
 import { FINES_MAC_ACCOUNT_DETAILS_FORM } from '../fines-mac-account-details/constants/fines-mac-account-details-form';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants/fines-mac-account-details-state';
@@ -21,7 +22,7 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
-      fm_create_account_defendant_type: 'adultOrYouthOnly',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES_KEYS.fine,
       fm_create_account_business_unit_id: FINES_MAC_BUSINESS_UNIT_STATE.business_unit_id,
     },
