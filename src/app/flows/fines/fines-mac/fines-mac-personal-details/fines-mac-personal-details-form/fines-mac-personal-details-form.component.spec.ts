@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
@@ -40,7 +41,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
     component = fixture.componentInstance;
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
@@ -221,7 +222,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'dateOfBirthListener');
     mockDateService.getPreviousDate.and.returnValue('19/08/2024');
 
-    component.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
     component['initialPersonalDetailsSetup']();
 
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
