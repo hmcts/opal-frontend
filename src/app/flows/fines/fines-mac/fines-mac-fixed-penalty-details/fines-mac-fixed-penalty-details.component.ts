@@ -18,6 +18,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-prefe
 import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -33,6 +34,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] = [];
   private courts!: IOpalFinesCourtRefData;
   private prosecutors!: IOpalFinesProsecutorRefData;
+  private localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
 
   /**
    * Handles the submission of personal details form.
@@ -179,22 +181,29 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @returns An array of autocomplete items.
    */
   private createAutoCompleteItemsAuthorities(
-    response: IOpalFinesProsecutorRefData,
+    prosecutors: IOpalFinesProsecutorRefData,
+    localJusticeAreas: IOpalFinesLocalJusticeAreaRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    const prosecutors = response.refData;
-
-    return prosecutors.map((item) => {
+    const _prosecutors = prosecutors.refData.map((item) => {
       return {
-        value: item.authority_id,
+        value: item.prosecutor_id,
         name: this.opalFinesService.getProsecutorPrettyName(item),
       };
     });
+    const _localJusticeAreas = localJusticeAreas.refData.map((item) => {
+      return {
+        value: item.local_justice_area_id,
+        name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
+      };
+    });
+    return [..._prosecutors, ..._localJusticeAreas];
   }
 
   public ngOnInit(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
     this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
-    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors);
+    this.localJusticeAreas = this['activatedRoute'].snapshot.data['localJusticeAreas'];
+    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors, this.localJusticeAreas);
   }
 }

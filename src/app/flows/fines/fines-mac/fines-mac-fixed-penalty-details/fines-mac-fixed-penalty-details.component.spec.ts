@@ -17,6 +17,8 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 
 describe('FinesMacFixedPenaltyDetailsComponent', () => {
   let component: FinesMacFixedPenaltyDetailsComponent;
@@ -28,9 +30,12 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
   beforeEach(async () => {
     mockOpalFinesService = {
       getProsecutorPrettyName: jasmine
-        .createSpy('getIssuingAuthorityPrettyName')
+        .createSpy('getProsecutorPrettyName')
         .and.returnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+      getLocalJusticeAreaPrettyName: jasmine
+        .createSpy('getCourtPrettyName')
+        .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
       getOffenceByCjsCode: jasmine.createSpy('getOffenceByCjsCode').and.returnValue(OPAL_FINES_OFFENCES_REF_DATA_MOCK),
     };
     formSubmit = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK);
@@ -50,6 +55,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
               data: {
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
                 prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
               },
             },
           },
@@ -211,6 +217,16 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     expect(autocompleteItems.length).toBe(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
   });
 
+  it('should create autocomplete issuina authority items', () => {
+    const autocompleteItems = component['createAutoCompleteItemsAuthorities'](
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+      OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+    );
+    expect(autocompleteItems.length).toBe(
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+    );
+  });
+
   it('should set courts and enforcement data onInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createAutoCompleteItemsCourts').and.callThrough();
@@ -220,5 +236,22 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     expect(component['courts']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK);
     expect(component['createAutoCompleteItemsCourts']).toHaveBeenCalledWith(OPAL_FINES_COURT_REF_DATA_MOCK);
     expect(component['enforcementCourtData'].length).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
+  });
+
+  it('should set issuing authories data onInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createAutoCompleteItemsAuthorities').and.callThrough();
+
+    component['ngOnInit']();
+
+    expect(component['prosecutors']).toEqual(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
+    expect(component['localJusticeAreas']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
+    expect(component['createAutoCompleteItemsAuthorities']).toHaveBeenCalledWith(
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+      OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+    );
+    expect(component['issuingAuthoritiesData'].length).toEqual(
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+    );
   });
 });

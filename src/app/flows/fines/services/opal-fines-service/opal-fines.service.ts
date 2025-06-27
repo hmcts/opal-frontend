@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { catchError, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -120,12 +120,12 @@ export class OpalFines {
   }
 
   /**
-   * Returns the pretty name of a issuing authority.
-   * @param issuingAuthority - The issuing authority object.
-   * @returns The pretty name of the issuing authority.
+   * Returns the pretty name of a prosecutor.
+   * @param prosecutor - The prosecutor object.
+   * @returns The pretty name of the prosecutor.
    */
-  public getProsecutorPrettyName(authority: IOpalFinesProsecutor): string {
-    return `${authority.name} (${authority.authority_code})`;
+  public getProsecutorPrettyName(prosecutor: IOpalFinesProsecutor): string {
+    return `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
   }
 
   /**
@@ -387,14 +387,18 @@ export class OpalFines {
    * @returns An Observable that emits the prosecutor data for the specified business unit.
    */
   public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
-    // if (!this.prosecutorDataCache$[business_unit]) {
-    //   this.prosecutorDataCache$[business_unit] = this.http
-    //     .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
-    //     .pipe(shareReplay(1));
-    // }
+    if (!this.prosecutorDataCache$[business_unit]) {
+      this.prosecutorDataCache$[business_unit] = this.http
+        .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
+        .pipe(
+          shareReplay(1),
+          catchError(() => {
+            // Return mock data on failure
+            return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
+          }),
+        );
+    }
 
-    // return this.prosecutorDataCache$[business_unit];
-    console.log('returning mock of issuing authorities for business unit:', business_unit);
-    return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK); // For testing purposes, return the mocked data
+    return this.prosecutorDataCache$[business_unit];
   }
 }
