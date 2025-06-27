@@ -25,7 +25,6 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   private businessUnitsRefData!: IOpalFinesBusinessUnitRefData;
   private readonly configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
   public data: IAlphagovAccessibleAutocompleteItem[] = [];
-  public accountTypeKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
 
   /**
    * Sets the business unit for the account details.
@@ -88,7 +87,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     this.finesMacStore.setAccountDetails(form, businessUnit, languagePreferenceForm);
 
     // Navigate to next screen, based on the account type
-    if (form.formData.fm_create_account_account_type === this.accountTypeKeys.fixedPenalty) {
+    if (form.formData.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
       this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails);
     } else {
       this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
