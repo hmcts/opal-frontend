@@ -1,6 +1,6 @@
-import { IOpalFinesIssuingAuthorityRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-issuing-authority-ref-data.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
-export const OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK: IOpalFinesIssuingAuthorityRefData = {
+export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = {
   count: 4,
   refData: [
     {

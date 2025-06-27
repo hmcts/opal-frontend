@@ -17,7 +17,7 @@ import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferen
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fixed-penalty-details-store-form.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
-import { IOpalFinesIssuingAuthorityRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-issuing-authority-ref-data.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -32,7 +32,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
   public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] = [];
   private courts!: IOpalFinesCourtRefData;
-  private issuingAuthorities!: IOpalFinesIssuingAuthorityRefData;
+  private prosecutors!: IOpalFinesProsecutorRefData;
 
   /**
    * Handles the submission of personal details form.
@@ -179,14 +179,14 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @returns An array of autocomplete items.
    */
   private createAutoCompleteItemsAuthorities(
-    response: IOpalFinesIssuingAuthorityRefData,
+    response: IOpalFinesProsecutorRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    const issuingAuthorities = response.refData;
+    const prosecutors = response.refData;
 
-    return issuingAuthorities.map((item) => {
+    return prosecutors.map((item) => {
       return {
         value: item.authority_id,
-        name: this.opalFinesService.getIssuingAuthorityPrettyName(item),
+        name: this.opalFinesService.getProsecutorPrettyName(item),
       };
     });
   }
@@ -194,7 +194,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   public ngOnInit(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
-    this.issuingAuthorities = this['activatedRoute'].snapshot.data['issuingAuthorities'];
-    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.issuingAuthorities);
+    this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
+    this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors);
   }
 }

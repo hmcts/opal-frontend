@@ -12,9 +12,9 @@ import {
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import {
-  IOpalFinesIssuingAuthority,
-  IOpalFinesIssuingAuthorityRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-issuing-authority-ref-data.interface';
+  IOpalFinesProsecutor,
+  IOpalFinesProsecutorRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
@@ -36,7 +36,7 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
-import { OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK } from './mocks/opal-fines-issuing-authority-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +50,7 @@ export class OpalFines {
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
-  private issuingAuthorityDataCache$: { [key: string]: Observable<IOpalFinesIssuingAuthorityRefData> } = {};
+  private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -124,7 +124,7 @@ export class OpalFines {
    * @param issuingAuthority - The issuing authority object.
    * @returns The pretty name of the issuing authority.
    */
-  public getIssuingAuthorityPrettyName(authority: IOpalFinesIssuingAuthority): string {
+  public getProsecutorPrettyName(authority: IOpalFinesProsecutor): string {
     return `${authority.name} (${authority.authority_code})`;
   }
 
@@ -381,20 +381,20 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the issuing authority data for a specific business unit.
-   * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
-   * @param business_unit - The business unit for which to retrieve the court data.
-   * @returns An Observable that emits the issuing authority data for the specified business unit.
+   * Retrieves the prosecutor data for a specific business unit.
+   * If the prosecutor data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param business_unit - The business unit for which to retrieve the prosecutor data.
+   * @returns An Observable that emits the prosecutor data for the specified business unit.
    */
-  public getIssuingAuthorities(business_unit: number): Observable<IOpalFinesIssuingAuthorityRefData> {
-    // if (!this.issuingAuthorityDataCache$[business_unit]) {
-    //   this.issuingAuthorityDataCache$[business_unit] = this.http
-    //     .get<IOpalFinesIssuingAuthorityRefData>(OPAL_FINES_PATHS.issuingAuthorityRefData, { params: { business_unit } })
+  public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
+    // if (!this.prosecutorDataCache$[business_unit]) {
+    //   this.prosecutorDataCache$[business_unit] = this.http
+    //     .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
     //     .pipe(shareReplay(1));
     // }
 
-    // return this.issuingAuthorityDataCache$[business_unit];
+    // return this.prosecutorDataCache$[business_unit];
     console.log('returning mock of issuing authorities for business unit:', business_unit);
-    return of(OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK); // For testing purposes, return the mocked data
+    return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK); // For testing purposes, return the mocked data
   }
 }

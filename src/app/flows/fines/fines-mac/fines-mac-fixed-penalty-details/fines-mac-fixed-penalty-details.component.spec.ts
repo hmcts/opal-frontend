@@ -8,14 +8,14 @@ import { IFinesMacFixedPenaltyDetailsForm } from './interfaces/fines-mac-fixed-p
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_MOCK } from './mocks/fines-mac-fixed-penalty-details-form.mock';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_ISSUING_AUTHORITY_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-pretty-name.mock';
+import { OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-pretty-name.mock';
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacFixedPenaltyDetailsComponent', () => {
@@ -27,9 +27,9 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getIssuingAuthorityPrettyName: jasmine
+      getProsecutorPrettyName: jasmine
         .createSpy('getIssuingAuthorityPrettyName')
-        .and.returnValue(OPAL_FINES_ISSUING_AUTHORITY_PRETTY_NAME_MOCK),
+        .and.returnValue(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
       getOffenceByCjsCode: jasmine.createSpy('getOffenceByCjsCode').and.returnValue(OPAL_FINES_OFFENCES_REF_DATA_MOCK),
     };
@@ -49,7 +49,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
             snapshot: {
               data: {
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
-                issuingAuthorities: OPAL_FINES_ISSUING_AUTHORITY_REF_DATA_MOCK,
+                prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
               },
             },
           },

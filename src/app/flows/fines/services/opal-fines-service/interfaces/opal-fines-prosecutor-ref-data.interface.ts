@@ -1,4 +1,4 @@
-export interface IOpalFinesIssuingAuthority {
+export interface IOpalFinesProsecutor {
   authority_id: number;
   authority_code: number;
   name: string;
@@ -7,7 +7,7 @@ export interface IOpalFinesIssuingAuthority {
   business_unit_id: number;
 }
 
-export interface IOpalFinesIssuingAuthorityRefData {
+export interface IOpalFinesProsecutorRefData {
   count: number;
-  refData: IOpalFinesIssuingAuthority[];
+  refData: IOpalFinesProsecutor[];
 }
