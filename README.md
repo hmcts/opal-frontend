@@ -22,7 +22,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) v20.9.0 or later
+- [Node.js](https://nodejs.org/) v20.9.0 or later.
 
 - [yarn](https://yarnpkg.com/) v3
 
