@@ -75,7 +75,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     majorCreditors: {},
   };
   private readonly finesSaService = inject(FinesSaService);
-  private formRepopulated = false;
 
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
@@ -148,6 +147,34 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Clears all controls in all tab-specific search criteria form groups.
+   */
+  private clearSearchForm(): void {
+    ['individual', 'companies', 'minor_creditor', 'major_creditor'].forEach((key) =>
+      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
+    );
+  }
+
+  /**
+   * Switches the current tab by updating the error map and applying tab-specific controls.
+   * Also repopulates the form state once after initial navigation.
+   * @param tab The tab name or fragment string.
+   */
+  private switchTab(tab: string | Event): void {
+    this.fieldErrors = {
+      ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
+      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTabs],
+    } as IFinesSaSearchAccountFieldErrors;
+
+    this.clearSearchForm();
+
+    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] ?? {});
+
+    this.rePopulateForm(this.finesSaStore.searchAccount());
+    this.finesSaStore.resetSearchAccount();
+  }
+
+  /**
    * Returns the FormGroup associated with the currently active tab.
    */
   public get searchCriteriaForm(): FormGroup {
@@ -166,33 +193,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Switches the current tab by updating the error map and applying tab-specific controls.
-   * Also repopulates the form state once after initial navigation.
-   * @param tab The tab name or fragment string.
-   */
-  public switchTab(tab: string | Event): void {
-    this.fieldErrors = {
-      ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTabs],
-    } as IFinesSaSearchAccountFieldErrors;
-
-    this.clearSearchForm();
-
-    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] ?? {});
-
-    if (!this.formRepopulated) {
-      // Ensures that repopulating the form only happens after Angular has finished rendering the tab panel and form controls.
-      // This is necessary because the controls for the newly selected tab are not present in the DOM or form model until after the current microtask completes.
-      // Using queueMicrotask allows Angular's view update cycle to complete before attempting to patch values into the form, preventing errors or missing controls.
-      queueMicrotask(() => {
-        this.rePopulateForm(this.finesSaStore.searchAccount());
-        this.finesSaStore.resetSearchAccount();
-        this.formRepopulated = true;
-      });
-    }
-  }
-
-  /**
    * Navigates to the Filter by Business Units page, saving current form data and preserving tab state.
    */
   public goToFilterBusinessUnits(): void {
@@ -200,13 +200,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), false, undefined, {
       fragment: this.finesSaStore.activeTab(),
     });
-  }
-
-  /**
-   * Clears all controls in the currently active tab's search criteria form group.
-   */
-  private clearSearchForm(): void {
-    this.searchCriteriaForm.reset({}, { emitEvent: false });
   }
 
   /**

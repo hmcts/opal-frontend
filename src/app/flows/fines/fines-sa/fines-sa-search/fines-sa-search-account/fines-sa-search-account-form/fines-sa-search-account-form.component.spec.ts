@@ -6,7 +6,7 @@ import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-controls.constant';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
@@ -43,7 +43,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
   it('should switch to individual tab and set controls', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls').and.callThrough();
-    component.switchTab('individuals');
+    component['switchTab']('individuals');
     expect(component['fieldErrors']).toBeDefined();
     expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS);
   });
@@ -61,17 +61,24 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['problem'], { relativeTo: component['activatedRoute'].parent });
   });
 
-  it('should clear form controls for current tab', () => {
-    component.switchTab('individuals');
-    const searchGroup = component.searchCriteriaForm;
-    Object.keys(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS).forEach((key) => {
-      searchGroup.get(key)?.setValue('something');
+  it('should clear all tab-specific form groups', () => {
+    const tabKeys = [
+      'fsa_search_account_individual_search_criteria',
+      'fsa_search_account_companies_search_criteria',
+      'fsa_search_account_minor_creditor_search_criteria',
+      'fsa_search_account_major_creditor_search_criteria',
+    ];
+
+    tabKeys.forEach((key) => {
+      const group = component.form.get(key) as FormGroup;
+      group.addControl('dummy', new FormControl('someValue'));
     });
 
     component['clearSearchForm']();
 
-    Object.keys(searchGroup.controls).forEach((key) => {
-      expect(searchGroup.get(key)?.value).toBeNull();
+    tabKeys.forEach((key) => {
+      const group = component.form.get(key) as FormGroup;
+      expect(group.get('dummy')?.value).toBeNull();
     });
   });
 
@@ -129,28 +136,28 @@ describe('FinesSaSearchAccountFormComponent', () => {
   it('should call setControls with empty controls for companies tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
-    component.switchTab('companies');
+    component['switchTab']('companies');
     expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
   it('should call setControls with empty controls for minorCreditors tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
-    component.switchTab('minorCreditors');
+    component['switchTab']('minorCreditors');
     expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
   it('should call setControls with empty controls for majorCreditors tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
-    component.switchTab('majorCreditors');
+    component['switchTab']('majorCreditors');
     expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
   it('should call setControls with empty controls for unknown tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
-    component.switchTab('unknown');
+    component['switchTab']('unknown');
     expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
