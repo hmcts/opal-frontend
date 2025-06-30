@@ -21,7 +21,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj('Router', ['getCurrentNavigation']);
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['searchOffences']);
-    mockDateService = jasmine.createSpyObj('DateService', ['getDateNow', 'getFromFormatToFormat']);
+    mockDateService = jasmine.createSpyObj('DateService', ['getDateNow', 'toFormat']);
     mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop', 'filterNullOrUndefined']);
 
     TestBed.configureTestingModule({
@@ -50,7 +50,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toUTC: () => ({ toISO: () => '2025-05-07' }),
+      toFormat: () => '2025-05-07 00:00:00',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
@@ -87,7 +87,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toUTC: () => ({ toISO: () => '2025-05-07' }),
+      toFormat: () => '2025-05-07 00:00:00',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
@@ -135,7 +135,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toUTC: () => ({ toISO: () => '2025-05-07' }),
+      toFormat: () => '2025-05-07 00:00:00',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 

@@ -24,17 +24,11 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
     return of(emptyResult);
   }
 
-  // Get today's date in ISO format using the shared DateService
-  const todayIsoDate = dateService.getDateNow().toUTC().toISO()!; //1982-05-25T00:00:00.000Z
-  const dateFormat = dateService.getFromFormatToFormat(
-    todayIsoDate,
-    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-    'yyyy-MM-dd HH:mm:ss',
-  );
+  const todayFormatted = dateService.getDateNow().toFormat('yyyy-MM-dd HH:mm:ss');
 
   // Build the initial request payload from the provided search form data
   const body = {
-    activeDate: state.payload['inactive'] === true ? null : dateFormat,
+    activeDate: state.payload['inactive'] === true ? null : todayFormatted,
     cjsCode: state.payload['code'],
     title: state.payload['short_title'],
     actSection: state.payload['act_section'],
