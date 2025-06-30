@@ -32,7 +32,7 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
   @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Output() public setDateOfBirth = new EventEmitter<string>();
 
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS_PREFIX;
   protected readonly dateService = inject(DateService);
   public yesterday!: string;

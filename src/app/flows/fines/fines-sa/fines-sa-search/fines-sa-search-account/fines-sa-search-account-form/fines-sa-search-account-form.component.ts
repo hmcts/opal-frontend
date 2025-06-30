@@ -86,7 +86,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     this.form = new FormGroup({
       fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
       fsa_search_account_number: new FormControl<string | null>(null, [
-        patternValidator(/^[0-9]{8}([A-Z])?$/, 'invalidFormat'),
+        patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
         patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
         Validators.maxLength(9),
       ]),
@@ -109,7 +109,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    */
   private setupFragmentListener(): void {
     (this['activatedRoute'] as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-      const resolvedFragment = fragment || 'individuals';
+      const resolvedFragment = fragment ?? 'individuals';
 
       if (!fragment) {
         this['router'].navigate([], {
@@ -178,7 +178,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
     this.clearSearchForm();
 
-    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] || {});
+    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] ?? {});
 
     if (!this.formRepopulated) {
       // Ensures that repopulating the form only happens after Angular has finished rendering the tab panel and form controls.
