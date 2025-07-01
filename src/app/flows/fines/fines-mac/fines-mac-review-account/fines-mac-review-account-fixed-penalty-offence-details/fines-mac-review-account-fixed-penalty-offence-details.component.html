@@ -1,0 +1,176 @@
+<opal-lib-govuk-summary-card-list cardTitle="Offence Details" summaryCardListId="fp-offence-details">
+  @if (!isReadOnly) {
+    <ng-container actions>
+      <li app-fines-mac-review-account-change-link (emitChange)="changeOffenceDetails()"></li>
+    </ng-container>
+  }
+  <ng-container content>
+    <opal-lib-govuk-summary-list summaryListId="fpOffenceDetails">
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="noticeNumber"
+      >
+        <ng-container name>Notice Number</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_notice_number) {
+            {{ offenceDetails.fm_offence_details_notice_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="offenceType"
+      >
+        <ng-container name>Offence Type</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_offence_type) {
+            {{ offenceType(offenceDetails.fm_offence_details_offence_type)  }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="registrationNumber"
+      >
+        <ng-container name>Registration number</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_vehicle_registration_number) {
+            {{ offenceDetails.fm_offence_details_vehicle_registration_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="drivingLicenceNumber"
+      >
+        <ng-container name>Driving licence number</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_driving_licence_number) {
+            {{ offenceDetails.fm_offence_details_driving_licence_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="noticeNumber"
+      >
+        <ng-container name>Notice to hirer or owner number (NTH/NTH)</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_nto_nth) {
+            {{ offenceDetails.fm_offence_details_nto_nth }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="noticeDate"
+      >
+        <ng-container name>Date notice to owner was issued</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_date_nto_issued) {
+            {{ dateFormat(offenceDetails.fm_offence_details_date_nto_issued) }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="dateOfOffence"
+      >
+        <ng-container name>Date of offence</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_date_of_offence) {
+            {{ dateFormat(offenceDetails.fm_offence_details_date_of_offence) }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="offenceCode"
+      >
+        <ng-container name>Offence code</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_offence_cjs_code) {
+            {{ offence }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="timeOfOffence"
+      >
+        <ng-container name>Time of offence</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_time_of_offence) {
+            {{ offenceDetails.fm_offence_details_time_of_offence }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="placeOfOffence"
+      >
+        <ng-container name>Place of offence</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_place_of_offence) {
+            {{ offenceDetails.fm_offence_details_place_of_offence }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fpOffenceDetails"
+        summaryListRowId="amountImposed"
+      >
+        <ng-container name>Amount imposed</ng-container>
+        <ng-container value>
+          @if (offenceDetails.fm_offence_details_amount_imposed) {
+            {{ toMonetaryString(offenceDetails.fm_offence_details_amount_imposed) }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+    </opal-lib-govuk-summary-list>
+  </ng-container>
+</opal-lib-govuk-summary-card-list>

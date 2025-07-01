@@ -1,84 +1,90 @@
-@if (accountType === accountTypesKeys.fixedPenalty) {
-  <h1 class="govuk-heading-l">Check fixed penalty account details</h1>
+<div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
-} @else {
-  <div class="govuk-grid-column-full">
-    <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
-    @if (reviewAccountStatus === 'Failed') {
-      <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
-    }
-    @if (!isReadOnly) {
+  @if (reviewAccountStatus === 'Failed') {
+    <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
+  }
+  @if (!isReadOnly) {
+    @if (accountType === accountTypesKeys.fixedPenalty) {
+      <h1 class="govuk-heading-l">Check fixed penalty account details</h1>
+    } @else {
       <h1 class="govuk-heading-l">Check account details</h1>
-    } @else {
-      <app-fines-mac-review-account-history
-        [accountStatus]="reviewAccountStatus"
-        [defendantName]="
-          finesMacStore.getDefendantType() === defendantTypesKeys.company
-            ? finesMacStore.getCompanyDetailsName()
-            : finesMacStore.getPersonalDetailsName()
-        "
-        [timelineData]="timelineData"
-        [isRejected]="reviewAccountStatus === 'Rejected'"
-      ></app-fines-mac-review-account-history>
     }
+  } @else {
+    <app-fines-mac-review-account-history
+      [accountStatus]="reviewAccountStatus"
+      [defendantName]="
+        finesMacStore.getDefendantType() === defendantTypesKeys.company
+          ? finesMacStore.getCompanyDetailsName()
+          : finesMacStore.getPersonalDetailsName()
+      "
+      [timelineData]="timelineData"
+      [isRejected]="reviewAccountStatus === 'Rejected'"
+    ></app-fines-mac-review-account-history>
+  }
 
-    <app-fines-mac-review-account-account-details
-      [accountDetails]="finesMacStore.accountDetails().formData"
-      [businessUnit]="finesMacStore.businessUnit()"
-      [languagePreferences]="finesMacStore.languagePreferences().formData"
-    >
-    </app-fines-mac-review-account-account-details>
+  <app-fines-mac-review-account-account-details
+    [accountDetails]="finesMacStore.accountDetails().formData"
+    [businessUnit]="finesMacStore.businessUnit()"
+    [languagePreferences]="finesMacStore.languagePreferences().formData"
+  >
+  </app-fines-mac-review-account-account-details>
 
-    <app-fines-mac-review-account-court-details
-      [courtDetails]="finesMacStore.courtDetails().formData"
-      [enforcementCourtsData]="courts"
-      [localJusticeAreasData]="localJusticeAreas"
+  <app-fines-mac-review-account-court-details
+    [accountType]="accountType"
+    [courtDetails]="finesMacStore.courtDetails().formData"
+    [fixedPenaltyDetails]="finesMacStore.fixedPenaltyDetails().formData"
+    [enforcementCourtsData]="courts"
+    [prosecutorsData]="prosecutors"
+    [localJusticeAreasData]="localJusticeAreas"
+    [isReadOnly]="isReadOnly"
+    (emitChangeCourtDetails)="navigateBack()"
+  ></app-fines-mac-review-account-court-details>
+
+  @if (
+    finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
+  ) {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  } @else if (
+    finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
+    defendantTypesKeys.parentOrGuardianToPay
+  ) {
+    <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
+  } @else {
+    <app-fines-mac-review-account-company-details
+      [companyDetails]="finesMacStore.companyDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeCourtDetails)="navigateBack()"
-    ></app-fines-mac-review-account-court-details>
+      (emitChangeCompanyDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
+    >
+    </app-fines-mac-review-account-company-details>
+  }
 
-    @if (
-      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
-    ) {
-      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-    } @else if (
-      finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
-      defendantTypesKeys.parentOrGuardianToPay
-    ) {
-      <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
-    } @else {
-      <app-fines-mac-review-account-company-details
-        [companyDetails]="finesMacStore.companyDetails().formData"
-        [isReadOnly]="isReadOnly"
-        (emitChangeCompanyDetails)="navigateBack()"
-        [isReadOnly]="isReadOnly"
-      >
-      </app-fines-mac-review-account-company-details>
-    }
-
+  @if (accountType !== accountTypesKeys.fixedPenalty) {
     <app-fines-mac-review-account-contact-details
       [contactDetails]="finesMacStore.contactDetails().formData"
       [isReadOnly]="isReadOnly"
       (emitChangeContactDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-contact-details>
+  }
 
-    @if (
-      finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
-      defendantTypesKeys.parentOrGuardianToPay
-    ) {
-      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-    }
+  @if (
+    finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
+    defendantTypesKeys.parentOrGuardianToPay
+  ) {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  }
 
-    @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company) {
-      <app-fines-mac-review-account-employer-details
-        [employerDetails]="finesMacStore.employerDetails().formData"
-        [isReadOnly]="isReadOnly"
-        (emitChangeEmployerDetails)="navigateBack()"
-        [isReadOnly]="isReadOnly"
-      ></app-fines-mac-review-account-employer-details>
-    }
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company && accountType !== accountTypesKeys.fixedPenalty) {
+    <app-fines-mac-review-account-employer-details
+      [employerDetails]="finesMacStore.employerDetails().formData"
+      [isReadOnly]="isReadOnly"
+      (emitChangeEmployerDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
+    ></app-fines-mac-review-account-employer-details>
+  }
 
+  @if (accountType !== accountTypesKeys.fixedPenalty) {
     <app-fines-mac-review-account-offence-details
       (emitChangeOffenceDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
@@ -94,40 +100,47 @@
       (emitChangePaymentTerms)="navigateBack()"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-payment-terms>
-
-    <app-fines-mac-review-account-account-comments-and-notes
-      [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
+  } @else {
+    <app-fines-mac-review-account-fixed-penalty-offence-details
+      [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
       [isReadOnly]="isReadOnly"
-      (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
+      (emitChangeOffenceDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
-    ></app-fines-mac-review-account-account-comments-and-notes>
+    ></app-fines-mac-review-account-fixed-penalty-offence-details>
+  }
 
-    @if (!isReadOnly) {
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <opal-lib-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
-            >Submit for review</opal-lib-govuk-button
-          >
-        </div>
-      </div>
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <a
-            class="govuk-link govuk-error-colour"
-            (click)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
-            (keyup.enter)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
-            tabindex="0"
-            >Delete account</a
-          >
-        </div>
-      </div>
-    }
+  <app-fines-mac-review-account-account-comments-and-notes
+    [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
+    [isReadOnly]="isReadOnly"
+    (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
+  ></app-fines-mac-review-account-account-comments-and-notes>
 
-    @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
-      <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
-    }
-  </div>
-}
+  @if (!isReadOnly) {
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <opal-lib-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
+          >Submit for review</opal-lib-govuk-button
+        >
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <a
+          class="govuk-link govuk-error-colour"
+          (click)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
+          (keyup.enter)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
+          tabindex="0"
+          >Delete account</a
+        >
+      </div>
+    </div>
+  }
+
+  @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
+    <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
+  }
+</div>
 
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
@@ -140,6 +153,7 @@
 
 <ng-template #personalDetails>
   <app-fines-mac-review-account-personal-details
+    [accountType]="accountType"
     [personalDetails]="finesMacStore.personalDetails().formData"
     [showVehicleDetails]="
       finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
