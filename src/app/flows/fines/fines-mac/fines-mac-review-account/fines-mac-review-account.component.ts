@@ -353,7 +353,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * This method triggers the submission process by calling the `submitPayload` method.
    */
   public submitForReview(): void {
-    this.submitPayload();
+    if (this.accountType !== this.accountTypesKeys.fixedPenalty) {
+      this.submitPayload();
+    }
   }
 
   /**
@@ -370,10 +372,24 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     } else if (fragment) {
       this.router.navigate([route], { fragment });
     } else {
-      if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
-        this.finesMacStore.setDeleteFromCheckAccount(true);
-      }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+    }
+  }
+
+  /** * Handles the deletion of an account.
+   * If the account ID is greater than 0, it sets the delete flag in the finesMacStore
+   * and navigates to the delete account confirmation route with the account ID.
+   * If the account ID is not greater than 0, it navigates to the delete account confirmation route without an ID.
+   * @param event - The event that triggered the deletion.
+   * @param nonRelative - Optional flag to indicate whether the route is non-relative.
+   * If true, the route will be treated as an absolute path.
+   */
+  public handleDeleteAccount(event: Event, nonRelative = false): void {
+    if (this.accountId > 0) { 
+      this.finesMacStore.setDeleteFromCheckAccount(true);
+      this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`, nonRelative, event);
+    } else {
+      this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
     }
   }
 

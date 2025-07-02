@@ -128,8 +128,8 @@
       <div class="govuk-grid-column-full">
         <a
           class="govuk-link govuk-error-colour"
-          (click)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
-          (keyup.enter)="handleRoute(`${finesMacRoutes.children.deleteAccountConfirmation}/${accountId}`, false, $event)"
+          (click)="handleDeleteAccount($event)"
+          (keyup.enter)="handleDeleteAccount($event)"
           tabindex="0"
           >Delete account</a
         >
