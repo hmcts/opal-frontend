@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesSaSearchAccountFormIndividualsComponent } from './fines-sa-search-account-form-individuals.component';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './constants/fines-sa-search-account-form-individual-controls.constant';
 
 describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
@@ -16,21 +17,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     fixture = TestBed.createComponent(FinesSaSearchAccountFormIndividualsComponent);
     component = fixture.componentInstance;
 
-    // MUST match what the template expects
-    const form = new FormGroup({
-      fsa_search_account_individual_first_names: new FormControl(''),
-      fsa_search_account_individual_last_name: new FormControl(''),
-      fsa_search_account_individual_date_of_birth: new FormControl(''),
-      fsa_search_account_individual_last_name_exact_match: new FormControl(false),
-      fsa_search_account_individual_first_names_exact_match: new FormControl(false),
-      fsa_search_account_individual_include_aliases: new FormControl(false),
-      fsa_search_account_individual_national_insurance_number: new FormControl(''),
-      fsa_search_account_individual_address_line_1: new FormControl(''),
-      fsa_search_account_individual_post_code: new FormControl(''),
-    });
-
-    component.form = form;
+    component.form = new FormGroup(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS);
     component.formControlErrorMessages = {};
+
     fixture.detectChanges();
   });
 

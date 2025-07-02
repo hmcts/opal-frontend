@@ -7,6 +7,7 @@ import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-controls.constant';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-controls.constant';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
@@ -46,6 +47,14 @@ describe('FinesSaSearchAccountFormComponent', () => {
     component['switchTab']('individuals');
     expect(component['fieldErrors']).toBeDefined();
     expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS);
+  });
+
+  it('should switch to company tab and set controls', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setControlsSpy = spyOn<any>(component, 'setControls').and.callThrough();
+    component['switchTab']('companies');
+    expect(component['fieldErrors']).toBeDefined();
+    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS);
   });
 
   it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {
@@ -131,13 +140,6 @@ describe('FinesSaSearchAccountFormComponent', () => {
     spyOn(component.finesSaStore, 'activeTab').and.returnValue('unknown' as any);
     expect(component.searchCriteriaForm).toEqual(jasmine.any(FormGroup));
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
-  });
-
-  it('should call setControls with empty controls for companies tab', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setControlsSpy = spyOn<any>(component, 'setControls');
-    component['switchTab']('companies');
-    expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
   it('should call setControls with empty controls for minorCreditors tab', () => {

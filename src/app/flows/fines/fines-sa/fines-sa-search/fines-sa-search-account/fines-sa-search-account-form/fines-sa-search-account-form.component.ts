@@ -32,6 +32,8 @@ import { FinesSaSearchAccountTabs } from '../types/fines-sa-search-account-tabs.
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-controls.constant';
 import { FinesSaService } from '../../../services/fines-sa.service';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-controls.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account-form',
@@ -55,6 +57,7 @@ import { FinesSaService } from '../../../services/fines-sa.service';
     FinesSaSearchAccountFormMajorCreditorsComponent,
   ],
   templateUrl: './fines-sa-search-account-form.component.html',
+  styleUrls: ['./fines-sa-search-account-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
@@ -64,13 +67,13 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS,
-    companies: {},
+    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS,
     minorCreditors: {},
     majorCreditors: {},
   };
   private readonly tabControlsMap = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS,
-    companies: {},
+    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS,
     minorCreditors: {},
     majorCreditors: {},
   };

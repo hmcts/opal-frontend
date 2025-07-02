@@ -24,7 +24,6 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS_PREFIX } from './const
   selector: 'app-fines-sa-search-account-form-individuals',
   imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent, MojDatePickerComponent],
   templateUrl: './fines-sa-search-account-form-individuals.component.html',
-  styleUrls: ['./fines-sa-search-account-form-individuals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnDestroy {
