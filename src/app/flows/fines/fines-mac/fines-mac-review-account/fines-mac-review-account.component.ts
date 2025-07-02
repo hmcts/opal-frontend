@@ -62,7 +62,7 @@ import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/
     FinesMacReviewAccountHistoryComponent,
     FinesMacReviewAccountDecisionComponent,
     FinesMacReviewAccountFailedBannerComponent,
-    FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent
+    FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -385,9 +385,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * If true, the route will be treated as an absolute path.
    */
   public handleDeleteAccount(event: Event, nonRelative = false): void {
-    if (this.accountId > 0) { 
+    if (this.accountId > 0) {
       this.finesMacStore.setDeleteFromCheckAccount(true);
-      this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`, nonRelative, event);
+      this.handleRoute(
+        `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`,
+        nonRelative,
+        event,
+      );
     } else {
       this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
     }

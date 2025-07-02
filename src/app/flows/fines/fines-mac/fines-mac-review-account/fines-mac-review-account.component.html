@@ -75,7 +75,10 @@
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
   }
 
-  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company && accountType !== accountTypesKeys.fixedPenalty) {
+  @if (
+    finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company &&
+    accountType !== accountTypesKeys.fixedPenalty
+  ) {
     <app-fines-mac-review-account-employer-details
       [employerDetails]="finesMacStore.employerDetails().formData"
       [isReadOnly]="isReadOnly"

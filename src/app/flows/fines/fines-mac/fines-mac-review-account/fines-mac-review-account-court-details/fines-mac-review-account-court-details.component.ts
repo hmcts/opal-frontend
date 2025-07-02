@@ -17,7 +17,10 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
-import { IOpalFinesProsecutor, IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import {
+  IOpalFinesProsecutor,
+  IOpalFinesProsecutorRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -75,8 +78,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getSendingCourt(idLocationInStore: string | null): string | null {
     const lja = this.localJusticeAreasData.refData.find(
-      (lja: IOpalFinesLocalJusticeArea) =>
-        lja.local_justice_area_id === +idLocationInStore!,
+      (lja: IOpalFinesLocalJusticeArea) => lja.local_justice_area_id === +idLocationInStore!,
     )!;
 
     if (!lja) {
@@ -95,8 +97,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getProsecutor(): string | null {
     const prosecutor = this.prosecutorsData.refData.find(
-      (p: IOpalFinesProsecutor) =>
-        p.prosecutor_id === +this.fixedPenaltyDetails.fm_court_details_issuing_authority_id!,
+      (p: IOpalFinesProsecutor) => p.prosecutor_id === +this.fixedPenaltyDetails.fm_court_details_issuing_authority_id!,
     )!;
 
     if (!prosecutor) {
@@ -114,17 +115,25 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   private getCourtDetailsData(): void {
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys.fixedPenalty) {
-      this.issuingAuthority = this.getProsecutor() ?? this.getSendingCourt(this.fixedPenaltyDetails.fm_court_details_issuing_authority_id);
+      this.issuingAuthority =
+        this.getProsecutor() ?? this.getSendingCourt(this.fixedPenaltyDetails.fm_court_details_issuing_authority_id);
     } else {
       this.sendingCourt = this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
     }
   }
 
+  /**
+   * Sets the card title based on the account type.
+   * If the account type is a fixed penalty, it sets the title to 'Issuing authority and court details',
+   * otherwise it sets it to 'Court details'.
+   *
+   * @private
+   */
   private setCardTitle(): void {
     if (this.accountType === this.accountTypesKeys.fixedPenalty) {
-      this.cardTitle = 'Issuing Authority and Court Details';
+      this.cardTitle = 'Issuing authority and court details';
     } else {
-      this.cardTitle = 'Court Details'; 
+      this.cardTitle = 'Court details';
     }
   }
 

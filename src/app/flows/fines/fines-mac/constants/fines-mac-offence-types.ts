@@ -2,5 +2,5 @@ import { IFinesMacOffenceTypes } from '../interfaces/fines-mac-offence-types.int
 
 export const FINES_MAC_OFFENCE_TYPES: IFinesMacOffenceTypes = {
   vehicle: 'Vehicle',
-  "non-vehicle": 'Non-vehicle',
+  'non-vehicle': 'Non-vehicle',
 };

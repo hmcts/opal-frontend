@@ -67,7 +67,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @returns The personal details form data ready for storage.
    */
   private createPersonalDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacPersonalDetailsForm {
-    let _form: IFinesMacPersonalDetailsForm = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM);
+    const _form: IFinesMacPersonalDetailsForm = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM);
 
     _form.formData.fm_personal_details_title = form.formData.fm_fp_personal_details_title;
     _form.formData.fm_personal_details_forenames = form.formData.fm_fp_personal_details_forenames;
@@ -106,8 +106,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
     _form.formData.fm_account_comments_notes_comments = form.formData.fm_fp_account_comments_notes_comments;
     _form.formData.fm_account_comments_notes_notes = form.formData.fm_fp_account_comments_notes_notes;
-    _form.formData.fm_account_comments_notes_system_notes =
-      form.formData.fm_fp_account_comments_notes_system_notes;
+    _form.formData.fm_account_comments_notes_system_notes = form.formData.fm_fp_account_comments_notes_system_notes;
 
     return _form;
   }
@@ -124,8 +123,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
     _form.formData.fm_language_preferences_document_language =
       form.formData.fm_fp_language_preferences_document_language;
-    _form.formData.fm_language_preferences_hearing_language =
-      form.formData.fm_fp_language_preferences_hearing_language;
+    _form.formData.fm_language_preferences_hearing_language = form.formData.fm_fp_language_preferences_hearing_language;
 
     return _form;
   }

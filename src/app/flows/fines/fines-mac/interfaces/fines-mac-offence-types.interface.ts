@@ -1,4 +1,4 @@
 export interface IFinesMacOffenceTypes {
-  vehicle: string,
-  "non-vehicle": string,
-};
+  vehicle: string;
+  'non-vehicle': string;
+}

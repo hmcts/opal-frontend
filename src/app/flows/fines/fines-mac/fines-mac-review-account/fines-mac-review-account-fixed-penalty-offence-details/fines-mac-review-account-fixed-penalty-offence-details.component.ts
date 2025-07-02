@@ -46,49 +46,38 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
    * @returns {string} - The formatted date string in 'dd MMMM yyyy' format.
    */
   public dateFormat(date: string): string {
-    return this.dateService.getFromFormatToFormat(date, 'dd/MM/yyyy', 'dd MMMM yyyy')
+    return this.dateService.getFromFormatToFormat(date, 'dd/MM/yyyy', 'dd MMMM yyyy');
   }
 
   /**
    * Returns the offence type based on the provided key.
-   * If the key does not match any known offence type, it returns the key itself.
    *
    * @param {string} offenceType - The key of the offence type.
    * @returns {string} - The formatted offence type or the original key if not found.
    */
-  public offenceType(offenceType: string ): string {
-    return this.offenceTypes[offenceType as keyof typeof this.offenceTypes] || offenceType;
+  public offenceType(offenceType: string): string {
+    return this.offenceTypes[offenceType as keyof typeof this.offenceTypes];
   }
 
   /**
    * Retrieves the offence details based on the provided offence code.
    * It uses the OpalFines service to fetch the offence details and updates the `offence` property.
    *
-   * @param {string | null} offenceCode - The CJS code of the offence.
+   * @param {string} offenceCode - The CJS code of the offence.
    */
-  public getOffence(offenceCode: string | null): void {
-    if (offenceCode) {
-      this.opalFinesService.getOffenceByCjsCode(offenceCode).subscribe(
-        (offence: IOpalFinesOffencesRefData ) => {
-          this.offence = `${offence.refData[0].offence_title} (${offenceCode})`;
-        }
-      );
-    } else {
-      this.offence = `Offence not found (${offenceCode})`;
-    }
+  public getOffence(offenceCode: string): void {
+    this.opalFinesService.getOffenceByCjsCode(offenceCode).subscribe((offence: IOpalFinesOffencesRefData) => {
+      this.offence = `${offence.refData[0].offence_title} (${offenceCode})`;
+    });
   }
 
   /**
-  * Converts the amount imposed to a monetary string format.
+   * Converts the amount imposed to a monetary string format.
    *
-   * @param {string | null} amount - The amount that needs to be converting.
+   * @param {string} amount - The amount that needs to be converting.
    */
-  public toMonetaryString(amount: string | null): string | null {
-    if (amount) {
-      return this.utilsService.convertToMonetaryString(amount);
-    } else {
-      return amount;
-    }
+  public toMonetaryString(amount: string): string {
+    return this.utilsService.convertToMonetaryString(amount);
   }
 
   /**
@@ -100,7 +89,6 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
   }
 
   public ngOnInit(): void {
-    this.getOffence(this.offenceDetails.fm_offence_details_offence_cjs_code);
+    this.getOffence(this.offenceDetails.fm_offence_details_offence_cjs_code!);
   }
-
 }
