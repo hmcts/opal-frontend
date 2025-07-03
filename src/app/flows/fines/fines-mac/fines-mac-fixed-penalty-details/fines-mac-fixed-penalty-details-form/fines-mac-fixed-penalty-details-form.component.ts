@@ -306,7 +306,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].updateValueAndValidity();
-    this.updateOffenceControlValidators(this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value);
+    this.updateOffenceControlValidators(
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value,
+    );
     this.dateOfBirthListener();
     this.offenceTypeListener();
     this.setupOffenceCodeListener();
