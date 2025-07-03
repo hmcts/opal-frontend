@@ -35,31 +35,8 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private courts!: IOpalFinesCourtRefData;
   private prosecutors!: IOpalFinesProsecutorRefData;
   private localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
-
-  /**
-   * Handles the submission of personal details form.
-   *
-   * @param form - The personal details form data.
-   * @returns void
-   */
-  public handleFixedPenaltyDetailsSubmit(form: IFinesMacFixedPenaltyDetailsForm): void {
-    this.finesMacStore.setPersonalDetails(this.createPersonalDetailsFormForStore(form));
-    this.finesMacStore.setCourtDetails(this.createCourtDetailsFormForStore(form));
-    this.finesMacStore.setAccountCommentsNotes(this.createCommentsAndNotesFormForStore(form));
-    this.finesMacStore.setLanguagePreferences(this.createLanguagePreferencesFormForStore(form));
-    this.finesMacStore.setFixedPenaltyDetails(this.createFixedPenaltyDetailsFormForStore(form));
-    this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
-  }
-
-  /**
-   * Handles unsaved changes coming from the child component
-   *
-   * @param unsavedChanges boolean value from child component
-   */
-  public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesMacStore.setUnsavedChanges(unsavedChanges);
-    this.stateUnsavedChanges = unsavedChanges;
-  }
+  private readonly finesPrefix = 'fm_';
+  private readonly fixedPenaltyPrefix = 'fm_fp_';
 
   /**
    * Patches all relevant form data into the personal details Form from the fixed penalty details Form.
@@ -67,16 +44,24 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @returns The personal details form data ready for storage.
    */
   private createPersonalDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacPersonalDetailsForm {
-    const _form: IFinesMacPersonalDetailsForm = FINES_MAC_PERSONAL_DETAILS_FORM;
+    const _form: IFinesMacPersonalDetailsForm = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM);
 
-    _form.formData['fm_personal_details_title'] = form.formData['fm_fp_personal_details_title'];
-    _form.formData['fm_personal_details_forenames'] = form.formData['fm_fp_personal_details_forenames'];
-    _form.formData['fm_personal_details_surname'] = form.formData['fm_fp_personal_details_surname'];
-    _form.formData['fm_personal_details_dob'] = form.formData['fm_fp_personal_details_dob'];
-    _form.formData['fm_personal_details_address_line_1'] = form.formData['fm_fp_personal_details_address_line_1'];
-    _form.formData['fm_personal_details_address_line_2'] = form.formData['fm_fp_personal_details_address_line_2'];
-    _form.formData['fm_personal_details_address_line_3'] = form.formData['fm_fp_personal_details_address_line_3'];
-    _form.formData['fm_personal_details_post_code'] = form.formData['fm_fp_personal_details_post_code'];
+    _form.formData[`${this.finesPrefix}personal_details_title`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_title`];
+    _form.formData[`${this.finesPrefix}personal_details_forenames`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_forenames`];
+    _form.formData[`${this.finesPrefix}personal_details_surname`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_surname`];
+    _form.formData[`${this.finesPrefix}personal_details_dob`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_dob`];
+    _form.formData[`${this.finesPrefix}personal_details_address_line_1`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_address_line_1`];
+    _form.formData[`${this.finesPrefix}personal_details_address_line_2`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_address_line_2`];
+    _form.formData[`${this.finesPrefix}personal_details_address_line_3`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_address_line_3`];
+    _form.formData[`${this.finesPrefix}personal_details_post_code`] =
+      form.formData[`${this.fixedPenaltyPrefix}personal_details_post_code`];
 
     return _form;
   }
@@ -87,9 +72,10 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
    * @returns The court details form data ready for storage.
    */
   private createCourtDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacCourtDetailsForm {
-    const _form: IFinesMacCourtDetailsForm = FINES_MAC_COURT_DETAILS_FORM;
+    const _form: IFinesMacCourtDetailsForm = structuredClone(FINES_MAC_COURT_DETAILS_FORM);
 
-    _form.formData['fm_court_details_imposing_court_id'] = form.formData['fm_fp_court_details_imposing_court_id'];
+    _form.formData[`${this.finesPrefix}court_details_imposing_court_id`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_imposing_court_id`];
 
     return _form;
   }
@@ -102,12 +88,14 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createCommentsAndNotesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacAccountCommentsNotesForm {
-    const _form: IFinesMacAccountCommentsNotesForm = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM;
+    const _form: IFinesMacAccountCommentsNotesForm = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM);
 
-    _form.formData['fm_account_comments_notes_comments'] = form.formData['fm_fp_account_comments_notes_comments'];
-    _form.formData['fm_account_comments_notes_notes'] = form.formData['fm_fp_account_comments_notes_notes'];
-    _form.formData['fm_account_comments_notes_system_notes'] =
-      form.formData['fm_fp_account_comments_notes_system_notes'];
+    _form.formData[`${this.finesPrefix}account_comments_notes_comments`] =
+      form.formData[`${this.fixedPenaltyPrefix}account_comments_notes_comments`];
+    _form.formData[`${this.finesPrefix}account_comments_notes_notes`] =
+      form.formData[`${this.fixedPenaltyPrefix}account_comments_notes_notes`];
+    _form.formData[`${this.finesPrefix}account_comments_notes_system_notes`] =
+      form.formData[`${this.fixedPenaltyPrefix}account_comments_notes_system_notes`];
 
     return _form;
   }
@@ -120,12 +108,12 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createLanguagePreferencesFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacLanguagePreferencesForm {
-    const _form: IFinesMacLanguagePreferencesForm = FINES_MAC_LANGUAGE_PREFERENCES_FORM;
+    const _form: IFinesMacLanguagePreferencesForm = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_FORM);
 
-    _form.formData['fm_language_preferences_document_language'] =
-      form.formData['fm_fp_language_preferences_document_language'];
-    _form.formData['fm_language_preferences_hearing_language'] =
-      form.formData['fm_fp_language_preferences_hearing_language'];
+    _form.formData[`${this.finesPrefix}language_preferences_document_language`] =
+      form.formData[`${this.fixedPenaltyPrefix}language_preferences_document_language`];
+    _form.formData[`${this.finesPrefix}language_preferences_hearing_language`] =
+      form.formData[`${this.fixedPenaltyPrefix}language_preferences_hearing_language`];
 
     return _form;
   }
@@ -138,23 +126,34 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   private createFixedPenaltyDetailsFormForStore(
     form: IFinesMacFixedPenaltyDetailsForm,
   ): IFinesMacFixedPenaltyDetailsStoreForm {
-    const _form: IFinesMacFixedPenaltyDetailsStoreForm = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM;
+    const _form: IFinesMacFixedPenaltyDetailsStoreForm = structuredClone(FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM);
 
-    _form.formData['fm_offence_details_notice_number'] = form.formData['fm_fp_offence_details_notice_number'];
-    _form.formData['fm_offence_details_offence_type'] = form.formData['fm_fp_offence_details_offence_type'];
-    _form.formData['fm_offence_details_date_of_offence'] = form.formData['fm_fp_offence_details_date_of_offence'];
-    _form.formData['fm_offence_details_offence_id'] = form.formData['fm_fp_offence_details_offence_id'];
-    _form.formData['fm_offence_details_offence_cjs_code'] = form.formData['fm_fp_offence_details_offence_cjs_code'];
-    _form.formData['fm_offence_details_time_of_offence'] = form.formData['fm_fp_offence_details_time_of_offence'];
-    _form.formData['fm_offence_details_place_of_offence'] = form.formData['fm_fp_offence_details_place_of_offence'];
-    _form.formData['fm_offence_details_amount_imposed'] = form.formData['fm_fp_offence_details_amount_imposed'];
-    _form.formData['fm_offence_details_vehicle_registration_number'] =
-      form.formData['fm_fp_offence_details_vehicle_registration_number'];
-    _form.formData['fm_offence_details_driving_licence_number'] =
-      form.formData['fm_fp_offence_details_driving_licence_number'];
-    _form.formData['fm_offence_details_nto_nth'] = form.formData['fm_fp_offence_details_nto_nth'];
-    _form.formData['fm_offence_details_date_nto_issued'] = form.formData['fm_fp_offence_details_date_nto_issued'];
-    _form.formData['fm_court_details_issuing_authority_id'] = form.formData['fm_fp_court_details_issuing_authority_id'];
+    _form.formData[`${this.finesPrefix}offence_details_notice_number`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_notice_number`];
+    _form.formData[`${this.finesPrefix}offence_details_offence_type`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_offence_type`];
+    _form.formData[`${this.finesPrefix}offence_details_date_of_offence`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_date_of_offence`];
+    _form.formData[`${this.finesPrefix}offence_details_offence_id`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_offence_id`];
+    _form.formData[`${this.finesPrefix}offence_details_offence_cjs_code`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`];
+    _form.formData[`${this.finesPrefix}offence_details_time_of_offence`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_time_of_offence`];
+    _form.formData[`${this.finesPrefix}offence_details_place_of_offence`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_place_of_offence`];
+    _form.formData[`${this.finesPrefix}offence_details_amount_imposed`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_amount_imposed`];
+    _form.formData[`${this.finesPrefix}offence_details_vehicle_registration_number`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`];
+    _form.formData[`${this.finesPrefix}offence_details_driving_licence_number`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`];
+    _form.formData[`${this.finesPrefix}offence_details_nto_nth`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_nto_nth`];
+    _form.formData[`${this.finesPrefix}offence_details_date_nto_issued`] =
+      form.formData[`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`];
+    _form.formData[`${this.finesPrefix}court_details_issuing_authority_id`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_issuing_authority_id`];
 
     return _form;
   }
@@ -199,11 +198,44 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     return [..._prosecutors, ..._localJusticeAreas];
   }
 
-  public ngOnInit(): void {
+  /**
+   * Created auto complete lists for relevant form fields.
+   * @returns { void}
+   */
+  private createAutoCompleteData(): void {
     this.courts = this['activatedRoute'].snapshot.data['courts'];
     this.enforcementCourtData = this.createAutoCompleteItemsCourts(this.courts);
     this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
     this.localJusticeAreas = this['activatedRoute'].snapshot.data['localJusticeAreas'];
     this.issuingAuthoritiesData = this.createAutoCompleteItemsAuthorities(this.prosecutors, this.localJusticeAreas);
+  }
+
+  /**
+   * Handles the submission of personal details form.
+   *
+   * @param form - The personal details form data.
+   * @returns void
+   */
+  public handleFixedPenaltyDetailsSubmit(form: IFinesMacFixedPenaltyDetailsForm): void {
+    this.finesMacStore.setPersonalDetails(this.createPersonalDetailsFormForStore(form));
+    this.finesMacStore.setCourtDetails(this.createCourtDetailsFormForStore(form));
+    this.finesMacStore.setAccountCommentsNotes(this.createCommentsAndNotesFormForStore(form));
+    this.finesMacStore.setLanguagePreferences(this.createLanguagePreferencesFormForStore(form));
+    this.finesMacStore.setFixedPenaltyDetails(this.createFixedPenaltyDetailsFormForStore(form));
+    this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
+  }
+
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
+    this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnInit(): void {
+    this.createAutoCompleteData();
   }
 }
