@@ -25,12 +25,12 @@ import { IFinesSaSearchAccountFieldErrors } from '../interfaces/fines-sa-search-
 import { FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-sa-search-account-field-errors.constant';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTabs } from '../types/fines-sa-search-account-tabs.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
 import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-controls.constant';
@@ -66,13 +66,13 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   public readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
-    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS,
+    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS,
     minorCreditors: {},
     majorCreditors: {},
   };
   private readonly tabControlsMap = {
-    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS,
+    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS,
     minorCreditors: {},
     majorCreditors: {},
