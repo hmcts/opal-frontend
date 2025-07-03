@@ -226,25 +226,31 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     // Subscribe to changes in the offence type control
     offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
-      if (offenceType === 'vehicle') {
-        this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].addValidators([
-          Validators.required,
-          Validators.maxLength(7),
-          alphabeticalTextValidator(),
-        ]);
-        this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].addValidators([
-          Validators.required,
-          drivingLicenceNumberValidator(),
-        ]);
-      } else {
-        this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].clearValidators();
-        this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].clearValidators();
-      }
-      this.form.controls[
-        `${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`
-      ].updateValueAndValidity();
-      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].updateValueAndValidity();
+      this.updateOffenceControlValidators(offenceType);
     });
+  }
+
+  /**
+   * Updates the validators for the vehicle registration number and driving licence number fields depending on the offence type.
+   * @param offenceType - The type of offence (e.g., 'vehicle' or other).
+   */
+  private updateOffenceControlValidators(offenceType: string): void {
+    if (offenceType === 'vehicle') {
+      this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators([
+        Validators.required,
+        Validators.maxLength(7),
+        alphabeticalTextValidator(),
+      ]);
+      this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators([
+        Validators.required,
+        drivingLicenceNumberValidator(),
+      ]);
+    } else {
+      this.form.controls['fm_fp_offence_details_vehicle_registration_number'].clearValidators();
+      this.form.controls['fm_fp_offence_details_driving_licence_number'].clearValidators();
+    }
+    this.form.controls['fm_fp_offence_details_vehicle_registration_number'].updateValueAndValidity();
+    this.form.controls['fm_fp_offence_details_driving_licence_number'].updateValueAndValidity();
   }
 
   /**
@@ -300,6 +306,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].updateValueAndValidity();
+    this.updateOffenceControlValidators(this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value);
     this.dateOfBirthListener();
     this.offenceTypeListener();
     this.setupOffenceCodeListener();
