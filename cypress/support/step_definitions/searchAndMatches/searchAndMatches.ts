@@ -15,11 +15,11 @@ Then('I see the {string} checkbox is unchecked', (checkboxName: string) => {
 });
 
 When('I select the last name exact match checkbox', () => {
-  cy.get('#fsa_search_account_individual_last_name_exact_match').check({force: true});
+  cy.get('#fsa_search_account_individual_last_name_exact_match').check({ force: true });
 });
 
 When('I select the first names exact match checkbox', () => {
-  cy.get('#fsa_search_account_individual_first_names_exact_match').check({force: true});
+  cy.get('#fsa_search_account_individual_first_names_exact_match').check({ force: true });
 });
 
 Then('I verify the last name exact match checkbox is checked', () => {
@@ -37,4 +37,3 @@ Then('I verify the first names exact match checkbox is checked', () => {
 Then('I verify the first names exact match checkbox is not checked', () => {
   cy.get('#fsa_search_account_individual_first_names_exact_match').should('not.be.checked');
 });
-
