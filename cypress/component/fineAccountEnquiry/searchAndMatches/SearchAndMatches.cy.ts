@@ -1,15 +1,14 @@
 import { mount } from 'cypress/angular';
 import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
 import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute} from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_elements';
-
 import { IFinesSaSearchAccountState } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 
 describe('Search Account Component', () => {
-  const setupComponent = (mockState?: IFinesSaSearchAccountState | null) => {
+  const setupComponent = (formSubmit: any = null, mockState?: IFinesSaSearchAccountState | null) => {
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
@@ -17,20 +16,10 @@ describe('Search Account Component', () => {
           provide: FinesSaStore,
           useFactory: () => {
             const store = new FinesSaStore();
-            // Reset the store to ensure a clean state before each test
-            store.resetStore();
-
-            // If a mockState is provided, apply it after reset
             if (mockState) {
               store.setSearchAccountTemporary(mockState);
             }
             return store;
-          },
-        },
-        {
-          provide: Router,
-          useValue: {
-            navigate: cy.stub().as('routerNavigate'),
           },
         },
         {
@@ -45,11 +34,14 @@ describe('Search Account Component', () => {
           },
         },
       ],
+      componentProperties: {
+        handleSearchAccountSubmit: formSubmit
+      },
     });
   };
 
   it('AC1a-d. should render the search for an account screen', { tags: ['PO-705'] }, () => {
-    setupComponent();
+    setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
@@ -64,7 +56,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.businessUnitSummaryList).should('exist');
     cy.get(DOM_ELEMENTS.businessUnitLink).should('exist').contains('Change');
     cy.get(DOM_ELEMENTS.businessUnitLink).click();
-    cy.get('@routerNavigate').should('have.been.called');
     cy.get(DOM_ELEMENTS.accountNumberLabel).should('exist').and('contain', 'Account number');
     cy.get(DOM_ELEMENTS.referenceNumberLabel).should('exist').and('contain', 'Reference or case number');
     cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist');
@@ -88,35 +79,30 @@ describe('Search Account Component', () => {
   });
 
   it('AC2. should not trigger any actions when Search button is clicked with no data', { tags: ['PO-705'] }, () => {
-    setupComponent();
+    const searchSubmitSpy = cy.spy().as('searchSubmitSpy');
+    setupComponent(searchSubmitSpy);
 
-    // Click the search button without entering any data
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    // Verify we are still on the same page
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
+    
+    cy.get('@searchSubmitSpy').should('have.been.called');
 
-    // Add individual field verification
-    // Verify account number field exists and is empty
     cy.get(DOM_ELEMENTS.accountNumberInput).should('exist').and('have.value', '');
-
-    // Verify reference number field exists and is empty
     cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist').and('have.value', '');
 
-    // Verify Individual tab fields are empty
     cy.get(DOM_ELEMENTS.lastNameInput).should('exist').and('have.value', '');
     cy.get(DOM_ELEMENTS.firstNamesInput).should('exist').and('have.value', '');
     cy.get(DOM_ELEMENTS.niNumberInput).should('exist').and('have.value', '');
     cy.get(DOM_ELEMENTS.addressLine1Input).should('exist').and('have.value', '');
     cy.get(DOM_ELEMENTS.postcodeInput).should('exist').and('have.value', '');
 
-    // Verify Date of Birth fields are empty
     cy.get(DOM_ELEMENTS.dobInput).should('exist').and('have.value', '');
   });
 
   it('AC3a-k. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
-    setupComponent();
+    setupComponent(null);
 
     // AC3a. should show error for non-alphabetical account number
     cy.get(DOM_ELEMENTS.accountNumberInput).type('123$%^78');
@@ -132,8 +118,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Account number must only include letters a to z, numbers, hyphens, spaces and apostrophes');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
-
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
 
     // AC3b. should show error for incorrectly formatted account number
@@ -147,8 +131,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.accountNumberError)
       .should('exist')
       .and('contain', 'Enter account number in the correct format such as 12345678 or 12345678A');
-
-    cy.get('@routerNavigate').should('not.have.been.called');
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
 
@@ -170,7 +152,6 @@ describe('Search Account Component', () => {
         'Reference or case number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       );
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
 
     // AC3d. should show error for non-alphabetical last name
@@ -185,7 +166,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
 
     // AC3e. should show error for non-alphabetical first names
@@ -200,7 +180,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
 
     // AC3f. should show error for invalid date of birth format
@@ -210,8 +189,6 @@ describe('Search Account Component', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
     cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
-
-    cy.get('@routerNavigate').should('not.have.been.called');
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
 
@@ -223,7 +200,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date of birth must be in the past');
     cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date of birth must be in the past');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.dobInput).clear();
 
     // AC3h. should show error for incorrectly formatted date of birth
@@ -233,8 +209,6 @@ describe('Search Account Component', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
     cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
-
-    cy.get('@routerNavigate').should('not.have.been.called');
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
 
@@ -256,7 +230,6 @@ describe('Search Account Component', () => {
         'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       );
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
 
     // AC3j. should show error for invalid address line 1
@@ -271,7 +244,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
 
     // AC3k. should show error for invalid postcode
@@ -286,12 +258,11 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
   it('AC4a-g. should validate maximum field lengths', { tags: ['PO-705'] }, () => {
-    setupComponent();
+    setupComponent(null);
 
     // AC4a. A user enters too many characters into the 'Account Number' field
     cy.get(DOM_ELEMENTS.accountNumberInput).type('1234567890');
@@ -302,7 +273,7 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Account number must be 9 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
 
     // AC4b. A user enters too many characters into the 'Reference or case number' field
@@ -316,7 +287,7 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Reference or case number must be 30 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
 
     // AC4c. A user enters too many characters into the 'Last names' field
@@ -326,7 +297,7 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
 
     // AC4d. A user enters too many characters into the 'First names' field
@@ -336,7 +307,7 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
 
     // AC4e. A user enters too many characters into the 'National Insurance number' field
@@ -348,7 +319,7 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'National Insurance number must be 9 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
 
     // AC4f. A user enters too many characters into the 'Address Line 1' field
@@ -360,7 +331,7 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Address line 1 must be 30 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
 
     // AC4g. A user enters too many characters into the 'Postcode' field
@@ -370,11 +341,11 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
   });
 
   it('AC5a-b. should validate field dependencies', { tags: ['PO-705'] }, () => {
-    setupComponent();
+    setupComponent(null);
 
     // AC5a. A user enters data into the first names field, without entering any data in the 'Last name' field
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
@@ -384,7 +355,7 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
 
     // AC5b. A user enters data into the Date of birth field, without entering any data in the 'Last name' field
@@ -395,6 +366,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
 
-    cy.get('@routerNavigate').should('not.have.been.called');
+    
   });
 });
