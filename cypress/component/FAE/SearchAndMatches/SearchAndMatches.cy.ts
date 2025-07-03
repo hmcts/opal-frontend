@@ -17,6 +17,10 @@ describe('Search Account Component', () => {
           provide: FinesSaStore,
           useFactory: () => {
             const store = new FinesSaStore();
+            // Reset the store to ensure a clean state before each test
+            store.resetStore();
+
+            // If a mockState is provided, apply it after reset
             if (mockState) {
               store.setSearchAccountTemporary(mockState);
             }
@@ -111,7 +115,7 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.dobInput).should('exist').and('have.value', '');
   });
 
-  it.only('AC3a-k. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
+  it('AC3a-k. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
     setupComponent();
 
     // AC3a. should show error for non-alphabetical account number
