@@ -8,7 +8,7 @@ import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 import { getGuardWithDummyUrl } from '@hmcts/opal-frontend-common/guards/helpers';
 import { runFinesSaEmptyFlowGuardWithContext } from '../helpers/run-fines-sa-empty-flow-guard-with-context';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_STATE_MOCK } from '../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individual-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from '../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -66,7 +66,7 @@ describe('finesSaFlowStateGuard', () => {
   it('should return true if search criteria is populated', fakeAsync(async () => {
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_STATE_MOCK,
+      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     });
     service.hasAnySearchCriteriaPopulated.and.returnValue(true);
 

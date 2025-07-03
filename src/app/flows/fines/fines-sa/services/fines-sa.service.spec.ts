@@ -30,7 +30,7 @@ describe('FinesSaService', () => {
   it('should return true when individual search criteria has data', () => {
     const state = {
       ...getBaseState(),
-      fsa_search_account_individual_search_criteria: { fsa_search_account_individual_last_name: 'Smith' },
+      fsa_search_account_individual_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' },
     } as IFinesSaSearchAccountState;
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeTrue();
   });
@@ -39,7 +39,7 @@ describe('FinesSaService', () => {
     const state = {
       ...getBaseState(),
       fsa_search_account_individual_search_criteria: {
-        fsa_search_account_individual_first_names_exact_match: true,
+        fsa_search_account_individuals_first_names_exact_match: true,
       },
     } as IFinesSaSearchAccountState;
 

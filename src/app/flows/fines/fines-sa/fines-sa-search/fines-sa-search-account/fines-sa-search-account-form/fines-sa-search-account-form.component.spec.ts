@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { FinesSaSearchAccountFormComponent } from './fines-sa-search-account-form.component';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { FinesSaService } from '../../../services/fines-sa.service';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individual-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
 
@@ -45,7 +45,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     const setControlsSpy = spyOn<any>(component, 'setControls').and.callThrough();
     component['switchTab']('individuals');
     expect(component['fieldErrors']).toBeDefined();
-    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS);
+    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS);
   });
 
   it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {

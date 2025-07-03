@@ -1,12 +1,12 @@
-import { IFinesSaSearchAccountFormIndividualsFieldErrors } from '../interfaces/fines-sa-search-account-form-individual-field-errors.interface';
+import { IFinesSaSearchAccountFormIndividualsFieldErrors } from '../interfaces/fines-sa-search-account-form-individuals-field-errors.interface';
 
-export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearchAccountFormIndividualsFieldErrors = {
-  fsa_search_account_individual_last_name: {
+export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSearchAccountFormIndividualsFieldErrors = {
+  fsa_search_account_individuals_last_name: {
     required: {
       message: 'Enter last name',
       priority: 1,
     },
-    invalidCharacterPattern: {
+    invalidNamePattern: {
       message: 'Last name must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 2,
     },
@@ -15,9 +15,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearc
       priority: 3,
     },
   },
-  fsa_search_account_individual_last_name_exact_match: {},
-  fsa_search_account_individual_first_names: {
-    invalidCharacterPattern: {
+  fsa_search_account_individuals_last_name_exact_match: {},
+  fsa_search_account_individuals_first_names: {
+    invalidNamePattern: {
       message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 1,
     },
@@ -26,9 +26,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearc
       priority: 2,
     },
   },
-  fsa_search_account_individual_first_names_exact_match: {},
-  fsa_search_account_individual_include_aliases: {},
-  fsa_search_account_individual_date_of_birth: {
+  fsa_search_account_individuals_first_names_exact_match: {},
+  fsa_search_account_individuals_include_aliases: {},
+  fsa_search_account_individuals_date_of_birth: {
     invalidDateFormat: {
       message: 'Date must be in the format DD/MM/YYYY',
       priority: 1,
@@ -42,7 +42,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearc
       priority: 3,
     },
   },
-  fsa_search_account_individual_national_insurance_number: {
+  fsa_search_account_individuals_national_insurance_number: {
     invalidCharacterPattern: {
       message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
@@ -52,7 +52,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearc
       priority: 2,
     },
   },
-  fsa_search_account_individual_address_line_1: {
+  fsa_search_account_individuals_address_line_1: {
     invalidCharacterPattern: {
       message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
@@ -62,7 +62,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_FIELD_ERRORS: IFinesSaSearc
       priority: 2,
     },
   },
-  fsa_search_account_individual_post_code: {
+  fsa_search_account_individuals_post_code: {
     invalidCharacterPattern: {
       message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,

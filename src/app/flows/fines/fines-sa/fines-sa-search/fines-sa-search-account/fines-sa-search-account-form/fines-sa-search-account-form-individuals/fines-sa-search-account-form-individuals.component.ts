@@ -18,7 +18,7 @@ import {
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { Subject, takeUntil } from 'rxjs';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-individual-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-individuals-controls.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
@@ -33,7 +33,7 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
   @Output() public setDateOfBirth = new EventEmitter<string>();
 
   private readonly ngUnsubscribe = new Subject<void>();
-  private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUAL_CONTROLS_PREFIX;
+  private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX;
   protected readonly dateService = inject(DateService);
   public yesterday!: string;
 
@@ -64,8 +64,12 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
 
     const shouldRequireLastName = (firstNamesHasValue || dobHasValue) && !lastNameHasValue;
 
-    lastNameControl?.setValidators(shouldRequireLastName ? Validators.required : null);
-    lastNameControl?.updateValueAndValidity({ emitEvent: false });
+    if (shouldRequireLastName) {
+      lastNameControl.addValidators(Validators.required);
+    } else {
+      lastNameControl.removeValidators(Validators.required);
+    }
+    lastNameControl.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
