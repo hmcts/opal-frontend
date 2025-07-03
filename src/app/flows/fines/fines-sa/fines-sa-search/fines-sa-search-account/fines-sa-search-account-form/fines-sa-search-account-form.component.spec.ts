@@ -7,7 +7,7 @@ import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-company-controls.constant';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
@@ -54,7 +54,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     const setControlsSpy = spyOn<any>(component, 'setControls').and.callThrough();
     component['switchTab']('companies');
     expect(component['fieldErrors']).toBeDefined();
-    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_CONTROLS);
+    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS);
   });
 
   it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {

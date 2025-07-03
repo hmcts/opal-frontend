@@ -174,9 +174,11 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist')
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
       .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.lastNameError).should('exist')
+    cy.get(DOM_ELEMENTS.lastNameError)
+      .should('exist')
       .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
 
     cy.get('@routerNavigate').should('not.have.been.called');
@@ -187,9 +189,11 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist')
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
       .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.firstNamesError).should('exist')
+    cy.get(DOM_ELEMENTS.firstNamesError)
+      .should('exist')
       .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
 
     cy.get('@routerNavigate').should('not.have.been.called');
@@ -298,8 +302,9 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
 
     // AC4b. A user enters too many characters into the 'Reference or case number' field
-    cy.get(DOM_ELEMENTS.referenceNumberInput)
-      .type('This reference number is way too long and exceeds thirty characters');
+    cy.get(DOM_ELEMENTS.referenceNumberInput).type(
+      'This reference number is way too long and exceeds thirty characters',
+    );
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -311,27 +316,21 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
 
     // AC4c. A user enters too many characters into the 'Last names' field
-    cy.get(DOM_ELEMENTS.lastNameInput)
-      .type('ThisLastNameIsTooLongAndExceedsThirtyCharacters');
+    cy.get(DOM_ELEMENTS.lastNameInput).type('ThisLastNameIsTooLongAndExceedsThirtyCharacters');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameError)
-      .should('exist')
-      .and('contain', 'Last name must be 30 characters or fewer');
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
 
     cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
 
     // AC4d. A user enters too many characters into the 'First names' field
-    cy.get(DOM_ELEMENTS.firstNamesInput)
-      .type('ThisFirstNameIsTooLongAndExceedsTwentyChars'); 
+    cy.get(DOM_ELEMENTS.firstNamesInput).type('ThisFirstNameIsTooLongAndExceedsTwentyChars');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.firstNamesError)
-      .should('exist')
-      .and('contain', 'First names must be 20 characters or fewer');
+    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
 
     cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
@@ -349,8 +348,7 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
 
     // AC4f. A user enters too many characters into the 'Address Line 1' field
-    cy.get(DOM_ELEMENTS.addressLine1Input)
-      .type('This address line is too long and exceeds thirty characters'); 
+    cy.get(DOM_ELEMENTS.addressLine1Input).type('This address line is too long and exceeds thirty characters');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -366,39 +364,33 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.postcodeError)
-      .should('exist')
-      .and('contain', 'Postcode must be 8 characters or fewer');
+    cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
 
     cy.get('@routerNavigate').should('not.have.been.called');
   });
 
   it('AC5a-b. should validate field dependencies', { tags: ['PO-705'] }, () => {
     setupComponent();
-    
+
     // AC5a. A user enters data into the first names field, without entering any data in the 'Last name' field
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.firstNamesInput).type('John');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    
+
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameError)
-      .should('exist')
-      .and('contain', 'Enter last name');
-    
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+
     cy.get('@routerNavigate').should('not.have.been.called');
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
-    
+
     // AC5b. A user enters data into the Date of birth field, without entering any data in the 'Last name' field
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    
+
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameError)
-      .should('exist')
-      .and('contain', 'Enter last name');
-    
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+
     cy.get('@routerNavigate').should('not.have.been.called');
   });
 });

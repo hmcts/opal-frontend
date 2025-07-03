@@ -1,9 +1,9 @@
-import { IFinesSaSearchAccountFormCompanyFieldErrors } from '../interfaces/fines-sa-search-account-form-company-field-errors.interface';
+import { IFinesSaSearchAccountFormCompaniesFieldErrors } from '../interfaces/fines-sa-search-account-form-companies-field-errors.interface';
 
-export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS: IFinesSaSearchAccountFormCompanyFieldErrors = {
-  fsa_search_account_company_company_name: {
-    invalidCharacterPattern: {
-      message: 'Company name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearchAccountFormCompaniesFieldErrors = {
+  fsa_search_account_companies_company_name: {
+    invalidNamePattern: {
+      message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 1,
     },
     maxlength: {
@@ -11,9 +11,9 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS: IFinesSaSearchAc
       priority: 2,
     },
   },
-  fsa_search_account_company_company_name_exact_match: {},
-  fsa_search_account_company_include_aliases: {},
-  fsa_search_account_company_address_line_1: {
+  fsa_search_account_companies_company_name_exact_match: {},
+  fsa_search_account_companies_include_aliases: {},
+  fsa_search_account_companies_address_line_1: {
     invalidCharacterPattern: {
       message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
@@ -23,7 +23,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANY_FIELD_ERRORS: IFinesSaSearchAc
       priority: 2,
     },
   },
-  fsa_search_account_company_post_code: {
+  fsa_search_account_companies_post_code: {
     invalidCharacterPattern: {
       message: 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
