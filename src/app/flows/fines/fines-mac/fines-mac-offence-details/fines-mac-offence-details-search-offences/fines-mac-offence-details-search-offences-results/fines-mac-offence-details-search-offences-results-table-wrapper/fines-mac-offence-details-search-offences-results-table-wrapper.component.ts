@@ -58,7 +58,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   }
 
   private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss`;
+  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss'Z'`;
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   public readonly COPY_CODE_TO_CLIPBOARD = COPY_CODE_TO_CLIPBOARD;
 

@@ -50,7 +50,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toFormat: () => '2025-05-07 00:00:00',
+      toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
@@ -87,7 +87,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toFormat: () => '2025-05-07 00:00:00',
+      toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
@@ -135,7 +135,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     } as any);
 
     mockDateService.getDateNow.and.returnValue({
-      toFormat: () => '2025-05-07 00:00:00',
+      toUTC: () => ({ toISO: () => '2025-05-07' }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
