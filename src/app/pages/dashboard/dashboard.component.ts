@@ -6,11 +6,20 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { DashboardPermissions } from './enums/dashboard-permissions.enum';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../flows/fines/fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
+import {
+  CustomSummaryMetricBarComponent,
+  CustomSummaryMetricBarItemComponent,
+  CustomSummaryMetricBarItemLabelComponent,
+  CustomSummaryMetricBarItemValueComponent,
+} from '@hmcts/opal-frontend-common/components/custom/custom-summary-metric-bar';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterModule],
+  imports: [
+    RouterModule,
+  ],
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
