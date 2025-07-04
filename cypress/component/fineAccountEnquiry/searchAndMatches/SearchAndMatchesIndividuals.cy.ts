@@ -82,7 +82,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
     cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
   });
-  
+
   it('AC3a. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '123$%^78';
