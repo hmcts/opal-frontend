@@ -21,7 +21,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj('Router', ['getCurrentNavigation']);
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['searchOffences']);
-    mockDateService = jasmine.createSpyObj('DateService', ['getDateNow']);
+    mockDateService = jasmine.createSpyObj('DateService', ['getDateNow', 'toFormat']);
     mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop', 'filterNullOrUndefined']);
 
     TestBed.configureTestingModule({
