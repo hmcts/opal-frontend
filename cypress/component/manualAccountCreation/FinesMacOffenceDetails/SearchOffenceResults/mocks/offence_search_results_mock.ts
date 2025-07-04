@@ -17,7 +17,7 @@ export const TEST_CASES_MOCK: IOpalFinesSearchOffencesData = {
       offence_title_cy: 'Test Active Offence in Welsh',
       offence_oas: 'Criminal Justice Act 2003 s.123',
       offence_oas_cy: 'Criminal Justice Act 2003 s.123 in Welsh',
-      date_used_from: '2020-01-01T00:00:00',
+      date_used_from: '2020-01-01T00:00:00Z',
       date_used_to: null, // Active offence
     },
     {
@@ -27,8 +27,8 @@ export const TEST_CASES_MOCK: IOpalFinesSearchOffencesData = {
       offence_title_cy: 'Test Expired Offence in Welsh',
       offence_oas: 'Criminal Justice Act 2003 s.456',
       offence_oas_cy: 'Criminal Justice Act 2003 s.456 in Welsh',
-      date_used_from: '2020-01-01T00:00:00',
-      date_used_to: '2024-12-31T00:00:00', // Expired offence
+      date_used_from: '2020-01-01T00:00:00Z',
+      date_used_to: '2024-12-31T00:00:00Z', // Expired offence
     },
   ],
 };
@@ -45,7 +45,7 @@ export const FULL_SEARCH_RESULTS_MOCK: IOpalFinesSearchOffencesData = {
       offence_title_cy: `Offence Title ${index + 1} in Welsh`,
       offence_oas: `Section ${Math.floor(index / 10) + 1}.${(index % 10) + 1}`,
       offence_oas_cy: `Section ${Math.floor(index / 10) + 1}.${(index % 10) + 1} in Welsh`,
-      date_used_from: '2024-01-01T00:00:00',
-      date_used_to: index % 5 === 0 ? null : '2025-12-31T00:00:00',
+      date_used_from: '2024-01-01T00:00:00Z',
+      date_used_to: index % 5 === 0 ? null : '2025-12-31T00:00:00Z',
     })),
 };
