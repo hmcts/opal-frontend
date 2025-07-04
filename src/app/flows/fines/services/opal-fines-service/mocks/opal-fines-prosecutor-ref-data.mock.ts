@@ -2,7 +2,7 @@ import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/
 
 export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = {
   count: 4,
-  refData: [
+  ref_data: [
     {
       prosecutor_id: 1865,
       prosecutor_name: 'Central ticket office',

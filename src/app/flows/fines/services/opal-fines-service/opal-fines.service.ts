@@ -362,7 +362,7 @@ export class OpalFines {
    * @returns An observable that emits the offences reference data, conforming to the `IOpalFinesSearchOffencesData` interface.
    */
   public searchOffences(body: IOpalFinesSearchOffencesParams): Observable<IOpalFinesSearchOffencesData> {
-    body.maxResults = 100; // Set the maximum number of results to 100
+    body.max_results = 100; // Set the maximum number of results to 100
     return this.http.post<IOpalFinesSearchOffencesData>(`${OPAL_FINES_PATHS.searchOffences}`, body);
   }
 
@@ -390,13 +390,7 @@ export class OpalFines {
     if (!this.prosecutorDataCache$[business_unit]) {
       this.prosecutorDataCache$[business_unit] = this.http
         .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
-        .pipe(
-          shareReplay(1),
-          catchError(() => {
-            // Return mock data on failure
-            return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
-          }),
-        );
+        .pipe(shareReplay(1));
     }
 
     return this.prosecutorDataCache$[business_unit];

@@ -223,7 +223,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
     expect(autocompleteItems.length).toBe(
-      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
 
@@ -251,7 +251,23 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
     expect(component['issuingAuthoritiesData'].length).toEqual(
-      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+    );
+  });
+
+  it('should call createAutoCompleteData on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createAutoCompleteData').and.callThrough();
+
+    component['ngOnInit']();
+
+    expect(component['createAutoCompleteData']).toHaveBeenCalled();
+    expect(component['courts']).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK);
+    expect(component.enforcementCourtData.length).toEqual(OPAL_FINES_COURT_REF_DATA_MOCK.refData.length);
+    expect(component['prosecutors']).toEqual(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
+    expect(component['localJusticeAreas']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
+    expect(component.issuingAuthoritiesData.length).toEqual(
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
 });

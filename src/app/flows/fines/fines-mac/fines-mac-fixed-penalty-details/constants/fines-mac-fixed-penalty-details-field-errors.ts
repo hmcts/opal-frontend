@@ -59,7 +59,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_offence_details_offence_type: {},
   fm_fp_offence_details_date_of_offence: {
     required: {
-      message: `Enter date of offence `,
+      message: `Enter date of offence`,
       priority: 1,
     },
     invalidDateFormat: {
@@ -68,11 +68,11 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
     invalidDate: {
       message: `Enter a valid offence date`,
-      priority: 2,
+      priority: 3,
     },
     invalidFutureDate: {
       message: `Date of offence must be in the past`,
-      priority: 3,
+      priority: 4,
     },
   },
   fm_fp_offence_details_offence_id: {},
@@ -118,12 +118,12 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 1,
     },
     maxlength: {
-      message: `Registration number must be 7 characters or fewer `,
-      priority: 1,
+      message: `Registration number must be 7 characters or fewer`,
+      priority: 2,
     },
     alphabeticalTextPattern: {
       message: `Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
-      priority: 2,
+      priority: 3,
     },
   },
   fm_fp_offence_details_driving_licence_number: {
@@ -133,12 +133,12 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
     invalidDrivingLicenceNumber: {
       message: `Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
-      priority: 1,
+      priority: 2,
     },
   },
   fm_fp_offence_details_nto_nth: {
     maxlength: {
-      message: `Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer `,
+      message: `Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer`,
       priority: 1,
     },
     alphabeticalTextPattern: {

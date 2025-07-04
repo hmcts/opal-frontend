@@ -100,6 +100,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly transformationService = inject(TransformationService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  protected readonly finesPrefix = 'fm_';
+  protected readonly fixedPenaltyPrefix = 'fm_fp_';
 
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
@@ -220,7 +222,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Listens for changes in the offence type and updates the required fields within the vehicle section.
    */
   private offenceTypeListener(): void {
-    const offenceTypeControl = this.form.controls['fm_fp_offence_details_offence_type'];
+    const offenceTypeControl = this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`];
+
     // Subscribe to changes in the offence type control
     offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
       this.updateOffenceControlValidators(offenceType);
@@ -231,7 +234,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Updates the validators for the vehicle registration number and driving licence number fields depending on the offence type.
    * @param offenceType - The type of offence (e.g., 'vehicle' or other).
    */
-  updateOffenceControlValidators(offenceType: string): void {
+  private updateOffenceControlValidators(offenceType: string): void {
     if (offenceType === 'vehicle') {
       this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators([
         Validators.required,
@@ -254,7 +257,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
   private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['fm_fp_personal_details_dob'];
+    const dobControl = this.form.controls[`${this.fixedPenaltyPrefix}personal_details_dob`];
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -271,41 +274,41 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data.
    */
   private initialFixedPenaltyDetailsSetup(): void {
-    const currentPrefix = 'fm_';
-    const replacementPrefix = 'fm_fp_';
     const formData = {
       ...this.transformationService.replaceKeys(
         this.finesMacStore.personalDetails().formData,
-        currentPrefix,
-        replacementPrefix,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
       ),
       ...this.transformationService.replaceKeys(
         this.finesMacStore.courtDetails().formData,
-        currentPrefix,
-        replacementPrefix,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
       ),
       ...this.transformationService.replaceKeys(
         this.finesMacStore.accountCommentsNotes().formData,
-        currentPrefix,
-        replacementPrefix,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
       ),
       ...this.transformationService.replaceKeys(
         this.finesMacStore.languagePreferences().formData,
-        currentPrefix,
-        replacementPrefix,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
       ),
       ...this.transformationService.replaceKeys(
         this.finesMacStore.fixedPenaltyDetails().formData,
-        currentPrefix,
-        replacementPrefix,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
       ),
     };
     this.setupFixedPenaltyDetailsForm();
 
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.form.controls['fm_fp_offence_details_offence_type'].updateValueAndValidity();
-    this.updateOffenceControlValidators(this.form.controls['fm_fp_offence_details_offence_type'].value);
+    this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].updateValueAndValidity();
+    this.updateOffenceControlValidators(
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value,
+    );
     this.dateOfBirthListener();
     this.offenceTypeListener();
     this.setupOffenceCodeListener();
@@ -321,8 +324,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   private setupOffenceCodeListener(): void {
     this.offenceDetailsService.initOffenceCodeListener(
       this.form,
-      'fm_fp_offence_details_offence_cjs_code',
-      'fm_fp_offence_details_offence_id',
+      `${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`,
+      `${this.fixedPenaltyPrefix}offence_details_offence_id`,
       this.ngUnsubscribe,
       this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
       (result) => {
