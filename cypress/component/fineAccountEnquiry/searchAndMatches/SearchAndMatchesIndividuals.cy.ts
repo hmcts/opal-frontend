@@ -124,7 +124,7 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
-  
+
   it('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '1234567';
@@ -299,7 +299,6 @@ describe('Search Account Component - Individuals', () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
 
-    
     cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567890');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -311,10 +310,13 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4b. should validate reference or case number maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_reference_case_number = 'This reference number is way too long and exceeds thirty characters';
+    individualSearchMock.fsa_search_account_reference_case_number =
+      'This reference number is way too long and exceeds thirty characters';
 
-
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'This reference number is way too long and exceeds thirty characters');
+    cy.get(DOM_ELEMENTS.referenceNumberInput).should(
+      'have.value',
+      'This reference number is way too long and exceeds thirty characters',
+    );
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -325,8 +327,8 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4c. should validate last name maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name = 'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
-
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+      'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
 
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -336,7 +338,8 @@ describe('Search Account Component - Individuals', () => {
   });
 
   it('AC4d. should validate first names maximum field length', { tags: ['PO-705'] }, () => {
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names = 'ThisFirstNameIsTooLongAndExceedsTwentyChars';
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+      'ThisFirstNameIsTooLongAndExceedsTwentyChars';
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'ThisFirstNameIsTooLongAndExceedsTwentyChars');
@@ -348,7 +351,8 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number = 'AB123456CD';
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+      'AB123456CD';
 
     cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -361,10 +365,13 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 = 'This address line is too long and exceeds thirty characters';
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+      'This address line is too long and exceeds thirty characters';
 
-
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', 'This address line is too long and exceeds thirty characters');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should(
+      'have.value',
+      'This address line is too long and exceeds thirty characters',
+    );
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -375,8 +382,8 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4g. should validate Postcode maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code = 'AB12 3CDEF'; // 9 characters (exceeds 8)
-
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+      'AB12 3CDEF'; // 9 characters (exceeds 8)
 
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'AB12 3CDEF');
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -387,7 +394,7 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC5a should validate first name field dependency', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    
+
     cy.get(DOM_ELEMENTS.firstNamesInput).type('John', { delay: 0 });
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -396,9 +403,9 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
 
-it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
+  it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    
+
     cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020', { delay: 0 });
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -406,5 +413,4 @@ it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
-
 });
