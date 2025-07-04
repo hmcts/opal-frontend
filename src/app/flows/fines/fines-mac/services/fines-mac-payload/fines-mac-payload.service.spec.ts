@@ -16,6 +16,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-state';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -103,6 +105,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
     finesMacState.deleteAccountConfirmation.formData = FINES_MAC_STATE.deleteAccountConfirmation.formData;
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
@@ -194,6 +197,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
     finesMacState.deleteAccountConfirmation.formData = { ...FINES_MAC_STATE.deleteAccountConfirmation.formData };
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
@@ -291,7 +295,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'adultOrYouthOnly',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
         defendant: {
           forenames: 'John',
           surname: 'Doe',
@@ -310,7 +314,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'parentOrGuardianToPay',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
         defendant: {
           forenames: 'Jane',
           surname: 'Smith',
@@ -329,7 +333,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'company',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
         defendant: {
           forenames: 'N/A',
           surname: 'N/A',
@@ -348,7 +352,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'adultOrYouthOnly',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
         defendant: {
           forenames: undefined,
           surname: null,
@@ -367,7 +371,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'company',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
         defendant: {
           forenames: 'N/A',
           surname: 'N/A',

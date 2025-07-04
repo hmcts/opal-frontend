@@ -9,6 +9,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants/fines-mac-contact-details-state';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacContactDetailsComponent', () => {
   let component: FinesMacContactDetailsComponent;
@@ -37,7 +38,7 @@ describe('FinesMacContactDetailsComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     fixture.detectChanges();
   });

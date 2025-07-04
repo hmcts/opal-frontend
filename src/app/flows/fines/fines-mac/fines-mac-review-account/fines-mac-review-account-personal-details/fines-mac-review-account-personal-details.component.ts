@@ -11,6 +11,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
@@ -28,6 +29,7 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   @Input({ required: true }) public personalDetails!: IFinesMacPersonalDetailsState;
   @Input({ required: false }) public showVehicleDetails: boolean = true;
   @Input({ required: false }) public isReadOnly = false;
+  @Input({ required: false }) public accountType!: string;
   @Output() public emitChangePersonalDetails = new EventEmitter<void>();
 
   private readonly dateService = inject(DateService);
@@ -37,6 +39,7 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   public aliases!: string[];
   public dob!: string | null;
   public address!: string[];
+  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
 
   /**
    * Retrieves and formats alias data from the personal details.

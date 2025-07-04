@@ -160,6 +160,28 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
 
+  it('should update the impositions array with their respective index positions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.removeIndexFromFormArrayData = (val: any[]) => val;
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+
+    const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [structuredClone(existingForm)];
+    finesMacState.offenceDetails[0] = {
+      ...structuredClone(finesMacState.offenceDetails[0]),
+      childFormData: null,
+    };
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    component['updateOffenceDetailsIndex'](form);
+
+    expect(finesMacStore.offenceDetails().length).toBe(1);
+    expect(finesMacStore.offenceDetails()[0].formData).toEqual(form.formData);
+    expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
+  });
+
   it('should add offence details form to the state when form does not exist', () => {
     const form = {
       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),

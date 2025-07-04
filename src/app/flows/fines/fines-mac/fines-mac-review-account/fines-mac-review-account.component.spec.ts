@@ -26,6 +26,7 @@ import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/se
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -372,6 +373,15 @@ describe('FinesMacReviewAccountComponent', () => {
       ]);
     });
 
+    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
+      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty);
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
     it('should submit payload on submitForReview', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
@@ -409,6 +419,32 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
+    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is 0', () => {
+      spyOn(component, 'handleRoute').and.stub();
+      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
+      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      component.accountId = 0; // Set accountId to 0 to simulate the condition
+
+      component.handleDeleteAccount(mockEvent);
+
+      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is > 0', () => {
+      spyOn(component, 'handleRoute').and.stub();
+      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      const route = component['finesMacRoutes'].children.deleteAccountConfirmation + `/${component.accountId}`;
+      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      component.accountId = 1; // Set accountId to 1 to simulate the condition
+
+      component.handleDeleteAccount(mockEvent);
+
+      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
+    });
+
     it('should navigate on handleRoute to delete account', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -417,7 +453,6 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
         relativeTo: component['activatedRoute'].parent,
       });
-      expect(finesMacStore.deleteFromCheckAccount()).toBeTrue();
     });
 
     it('should scroll to top and return null on handleRequestError', () => {

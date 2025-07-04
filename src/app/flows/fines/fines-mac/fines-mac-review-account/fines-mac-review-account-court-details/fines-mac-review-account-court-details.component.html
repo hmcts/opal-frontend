@@ -1,4 +1,4 @@
-<opal-lib-govuk-summary-card-list cardTitle="Court details" summaryCardListId="court-details">
+<opal-lib-govuk-summary-card-list [cardTitle]="cardTitle" summaryCardListId="court-details">
   @if (!isReadOnly) {
     <ng-container actions>
       <li app-fines-mac-review-account-change-link (emitChange)="changeCourtDetails()"></li>
@@ -6,24 +6,36 @@
   }
   <ng-container content>
     <opal-lib-govuk-summary-list summaryListId="courtDetails">
-      <div
-        opal-lib-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="courtDetails"
-        summaryListRowId="originatorName"
-      >
-        <ng-container name>Sending area or Local Justice Area (LJA)</ng-container>
-        <ng-container value>{{ sendingCourt }}</ng-container>
-      </div>
-      <div
-        opal-lib-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="courtDetails"
-        summaryListRowId="pcr"
-      >
-        <ng-container name>Prosecutor Case Reference (PCR)</ng-container>
-        <ng-container value>{{ courtDetails.fm_court_details_prosecutor_case_reference }}</ng-container>
-      </div>
+      @if (accountType === accountTypesKeys.fixedPenalty) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="courtDetails"
+          summaryListRowId="issuingAuthority"
+        >
+          <ng-container name>Issuing Authority</ng-container>
+          <ng-container value>{{ issuingAuthority }}</ng-container>
+        </div>
+      } @else {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="courtDetails"
+          summaryListRowId="originatorName"
+        >
+          <ng-container name>Sending area or Local Justice Area (LJA)</ng-container>
+          <ng-container value>{{ sendingCourt }}</ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="courtDetails"
+          summaryListRowId="pcr"
+        >
+          <ng-container name>Prosecutor Case Reference (PCR)</ng-container>
+          <ng-container value>{{ courtDetails.fm_court_details_prosecutor_case_reference }}</ng-container>
+        </div>
+      }
       <div
         opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
