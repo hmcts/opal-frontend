@@ -8,6 +8,8 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-se
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
+import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-search-account-form-minor-creditors/fines-sa-search-account-form-minor-creditors.component';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
@@ -55,6 +57,14 @@ describe('FinesSaSearchAccountFormComponent', () => {
     component['switchTab']('companies');
     expect(component['fieldErrors']).toBeDefined();
     expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS);
+  });
+
+  it('should switch to minor creditors tab and set controls', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setControlsSpy = spyOn<any>(component, 'setControls').and.callThrough();
+    component['switchTab']('minorCreditors');
+    expect(component['fieldErrors']).toBeDefined();
+    expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS);
   });
 
   it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {
@@ -142,18 +152,22 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(Object.keys(component.searchCriteriaForm.controls)).toEqual([]);
   });
 
-  it('should call setControls with empty controls for minorCreditors tab', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setControlsSpy = spyOn<any>(component, 'setControls');
-    component['switchTab']('minorCreditors');
-    expect(setControlsSpy).toHaveBeenCalledWith({});
-  });
-
   it('should call setControls with empty controls for majorCreditors tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
     component['switchTab']('majorCreditors');
     expect(setControlsSpy).toHaveBeenCalledWith({});
+  });
+
+  it('should call applyMinorCreditorValidation when active tab is minorCreditors', () => {
+    component.finesSaStore.setActiveTab('minorCreditors');
+    component.minorCreditorsComponent = jasmine.createSpyObj('FinesSaSearchAccountFormMinorCreditorsComponent', [
+      'applyMinorCreditorValidation',
+    ]) as FinesSaSearchAccountFormMinorCreditorsComponent;
+
+    component['validateTabSpecificFields']();
+
+    expect(component.minorCreditorsComponent.applyMinorCreditorValidation).toHaveBeenCalled();
   });
 
   it('should call setControls with empty controls for unknown tab', () => {
