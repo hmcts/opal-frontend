@@ -7937,8 +7937,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^14.0.0":
-  version: 14.5.0
-  resolution: "cypress@npm:14.5.0"
+  version: 14.5.1
+  resolution: "cypress@npm:14.5.1"
   dependencies:
     "@cypress/request": "npm:^3.0.8"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -7986,7 +7986,7 @@ __metadata:
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10/e7191106eb12a7427030e6902a654fe67f8ca6d4122829d3f1de71838fc1b8c9f8a1c729e8012c792c3227f897c1303c98b00fc60e2ab2577e788102848648ca
+  checksum: 10/5318b5e5b7b0e0326fd1b904048fbe54db5baca6cce59f336f0a3413925584dd2bf1620f874ff267ad87952bfe1811dc7ecda708f4f4f18a1550ec5920a6a34d
   languageName: node
   linkType: hard
 
