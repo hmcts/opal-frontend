@@ -35,7 +35,7 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -70,14 +70,15 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       value,
     }),
   );
+  public readonly accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
   public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[FINES_MAC_ACCOUNT_TYPES_KEYS.fine],
   ).map(([key, value]) => ({ key, value }));
   public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty],
   ).map(([key, value]) => ({ key, value }));
   public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[FINES_MAC_ACCOUNT_TYPES_KEYS.conditionalCaution],
   ).map(([key, value]) => ({ key, value }));
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
@@ -118,7 +119,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       this.removeControl(field);
     });
 
-    if (fieldName && accountType !== 'conditionalCaution') {
+    if (fieldName && accountType !== FINES_MAC_ACCOUNT_TYPES_KEYS.conditionalCaution) {
       this.createControl(fieldName, validators);
     }
   }

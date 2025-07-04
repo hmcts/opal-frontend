@@ -8,6 +8,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { of } from 'rxjs';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
@@ -63,7 +64,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   it('should emit form submit event with form value - nestedFlow false', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);
@@ -82,7 +83,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     const adultOrYouthOnly = structuredClone(FINES_MAC_STATE);
     adultOrYouthOnly.accountDetails.formData = {
       ...adultOrYouthOnly.accountDetails.formData,
-      fm_create_account_defendant_type: 'adultOrYouthOnly',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
     };
     finesMacStore.setFinesMacStore(adultOrYouthOnly);
     component['checkMandatorySections']();
@@ -91,7 +92,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
       ...parentOrGuardianToPay.accountDetails.formData,
-      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();
@@ -100,7 +101,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     const company = structuredClone(parentOrGuardianToPay);
     company.accountDetails.formData = {
       ...company.accountDetails.formData,
-      fm_create_account_defendant_type: 'company',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     };
     finesMacStore.setFinesMacStore(company);
     component['checkMandatorySections']();
