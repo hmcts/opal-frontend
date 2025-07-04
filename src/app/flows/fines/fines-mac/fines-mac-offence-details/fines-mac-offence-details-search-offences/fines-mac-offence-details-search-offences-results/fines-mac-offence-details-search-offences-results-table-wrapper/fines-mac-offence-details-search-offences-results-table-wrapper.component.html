@@ -1,8 +1,8 @@
 <opal-lib-moj-sortable-table>
-  @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  @if (displayTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
     <ng-container caption
       >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
-      {{ abstractTableDataSignal().length }} offences</ng-container
+      {{ displayTableDataSignal().length }} offences</ng-container
     >
   }
   <ng-container head>
@@ -89,7 +89,7 @@
   </ng-container>
 </opal-lib-moj-sortable-table>
 <app-fines-shared-sortable-table-footer
-  [abstractTableData]="abstractTableDataSignal()"
+  [tableData]="displayTableDataSignal()"
   [currentPage]="currentPageSignal()"
   [itemsPerPage]="itemsPerPageSignal()"
   (changePage)="onPageChange($event)"

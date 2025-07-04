@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Signal, signal, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, signal, Output, computed } from '@angular/core';
 import {
   MojSortableTableHeaderComponent,
   MojSortableTableRowDataComponent,
@@ -30,13 +30,15 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
-  public override abstractTableDataSignal = signal<IFinesDraftTableWrapperTableData[]>([]);
-  public override paginatedTableDataComputed!: Signal<IFinesDraftTableWrapperTableData[]>;
+  public override paginatedTableDataComputed = computed(() => {
+    const data = this.sortedTableDataSignal() as IFinesDraftTableWrapperTableData[];
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
+  });
+
   public override itemsPerPageSignal = signal(25);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
-    this.abstractTableDataSignal.set(tableData);
+    this.setTableData(tableData);
   }
-
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
   }

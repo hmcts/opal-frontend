@@ -12,16 +12,22 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 })
 export class FinesSharedSortableTableFooterComponent extends AbstractSortableTablePaginationComponent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @Input({ required: true }) set abstractTableData(abstractTableData: any[]) {
-    this.abstractTableDataSignal.set(abstractTableData);
+  @Input({ required: true }) set tableData(data: any[]) {
+    this.setTableData(data);
+
+    // Clamp current page if it's beyond the max after filtering
+    const totalPages = Math.ceil(data.length / this.itemsPerPageSignal());
+    if (this.currentPageSignal() > totalPages) {
+      this.currentPageSignal.set(1);
+    }
   }
 
-  @Input({ required: true }) set itemsPerPage(itemsPerPage: number) {
-    this.itemsPerPageSignal.set(itemsPerPage);
+  @Input({ required: true }) set itemsPerPage(limit: number) {
+    this.itemsPerPageSignal.set(limit);
   }
 
-  @Input({ required: true }) set currentPage(currentPage: number) {
-    this.currentPageSignal.set(currentPage);
+  @Input({ required: true }) set currentPage(page: number) {
+    this.currentPageSignal.set(page);
   }
 
   @Output() changePage = new EventEmitter<number>();

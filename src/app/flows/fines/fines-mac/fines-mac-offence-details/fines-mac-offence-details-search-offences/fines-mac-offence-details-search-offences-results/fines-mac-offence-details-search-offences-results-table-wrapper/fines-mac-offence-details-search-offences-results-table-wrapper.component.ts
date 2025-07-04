@@ -38,7 +38,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   implements OnDestroy
 {
   protected readonly utilsService = inject(UtilsService);
-  public override abstractTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
+  public override displayTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
     [],
   );
   public override paginatedTableDataComputed!: Signal<
@@ -48,7 +48,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   @Input({ required: true }) set tableData(
     tableData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[],
   ) {
-    this.abstractTableDataSignal.set(tableData);
+    this.displayTableDataSignal.set(tableData);
   }
 
   @Input({ required: true }) set existingSortState(
