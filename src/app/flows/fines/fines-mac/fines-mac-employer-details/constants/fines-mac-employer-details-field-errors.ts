@@ -33,17 +33,17 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
   },
   fm_employer_details_employer_telephone_number: {
     maxlength: {
-      message: 'Enter employer telephone number in the correct format',
+      message: 'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
       priority: 1,
     },
     phoneNumberPattern: {
-      message: 'Enter employer telephone number in the correct format',
+      message: 'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
       priority: 2,
     },
   },
   fm_employer_details_employer_address_line_1: {
     required: {
-      message: 'Enter employer address line 1, typically the building and street',
+      message: 'Enter address line 1, typically the building and street',
       priority: 1,
     },
     maxlength: {

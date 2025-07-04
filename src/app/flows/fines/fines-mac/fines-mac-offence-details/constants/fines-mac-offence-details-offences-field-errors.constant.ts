@@ -11,7 +11,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 2,
     },
     invalidDate: {
-      message: 'Enter a valid date of sentence',
+      message: 'Enter a valid date',
       priority: 3,
     },
     invalidFutureDate: {

@@ -9,13 +9,13 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
   },
   fm_offence_details_minor_creditor_title: {
     required: {
-      message: `Select minor creditor's title`,
+      message: `Select title`,
       priority: 1,
     },
   },
   fm_offence_details_minor_creditor_forenames: {
     required: {
-      message: `Enter minor creditor's first name`,
+      message: `Enter first name(s)`,
       priority: 1,
     },
     maxlength: {
@@ -29,7 +29,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
   },
   fm_offence_details_minor_creditor_surname: {
     required: {
-      message: `Enter minor creditor's last name`,
+      message: `Enter last name`,
       priority: 1,
     },
     maxlength: {

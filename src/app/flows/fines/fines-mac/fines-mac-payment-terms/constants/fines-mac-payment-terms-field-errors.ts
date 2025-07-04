@@ -127,11 +127,11 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 1,
     },
     maxlength: {
-      message: `Reason must be less than 28 characters`,
+      message: `Reason must be 28 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
+      message: `Reason must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
@@ -157,11 +157,11 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
   },
   fm_payment_terms_prison_and_prison_number: {
     maxlength: {
-      message: `Prison and prison number must be less than 28 characters`,
+      message: `Prison and prison number must be 28 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
+      message: `Prison and prison number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
