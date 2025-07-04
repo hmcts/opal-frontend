@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -64,6 +64,9 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-s
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  @ViewChild(FinesSaSearchAccountFormMinorCreditorsComponent)
+  minorCreditorsComponent?: FinesSaSearchAccountFormMinorCreditorsComponent;
 
   public readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
@@ -180,6 +183,17 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Validates fields that are specific to the currently active tab.
+   * For the "minorCreditors" tab, this ensures that at least one minor creditor search field is populated
+   * depending on the selected creditor type (individual or company), and sets the error on a representative control.
+   */
+  private validateTabSpecificFields(): void {
+    if (this.finesSaStore.activeTab() === 'minorCreditors') {
+      this.minorCreditorsComponent?.applyMinorCreditorValidation();
+    }
+  }
+
+  /**
    * Returns the FormGroup associated with the currently active tab.
    */
   public get searchCriteriaForm(): FormGroup {
@@ -228,6 +242,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       });
       return;
     }
+
+    this.validateTabSpecificFields();
 
     super.handleFormSubmit(event);
   }

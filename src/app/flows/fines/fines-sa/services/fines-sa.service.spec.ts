@@ -1,6 +1,7 @@
 import { FinesSaService } from './fines-sa.service';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
+import { AbstractControl } from '@angular/forms';
 
 describe('FinesSaService', () => {
   let service: FinesSaService;
@@ -10,6 +11,9 @@ describe('FinesSaService', () => {
   });
 
   const getBaseState = (): IFinesSaSearchAccountState => FINES_SA_SEARCH_ACCOUNT_STATE;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const createControl = (value: any) => ({ value }) as AbstractControl;
 
   it('should return false when all search criteria are null', () => {
     const state = getBaseState();
@@ -44,5 +48,25 @@ describe('FinesSaService', () => {
     } as IFinesSaSearchAccountState;
 
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeTrue();
+  });
+
+  it('should return true if at least one control has a non-empty trimmed string', () => {
+    const controls = [createControl(''), createControl('   '), createControl('test')];
+    expect(service.isAnyTextFieldPopulated(controls)).toBeTrue();
+  });
+
+  it('should return false if all controls are empty or whitespace strings', () => {
+    const controls = [createControl(''), createControl('  '), createControl('   ')];
+    expect(service.isAnyTextFieldPopulated(controls)).toBeFalse();
+  });
+
+  it('should return true if at least one control has a truthy non-string value', () => {
+    const controls = [createControl(null), createControl(false), createControl(123)];
+    expect(service.isAnyTextFieldPopulated(controls)).toBeTrue();
+  });
+
+  it('should return false if all controls are null or falsy', () => {
+    const controls = [createControl(null), createControl(undefined), createControl(false), createControl(0)];
+    expect(service.isAnyTextFieldPopulated(controls)).toBeFalse();
   });
 });

@@ -61,7 +61,28 @@
               ></div>
             </opal-lib-govuk-checkboxes>
           </div>
-          <ng-container *ngTemplateOutlet="addressBlock"></ng-container>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Address line 1"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_individual_address_line_1"
+              inputName="fsa_search_account_minor_creditors_individual_address_line_1"
+              inputClasses="govuk-!-width-three-quarters"
+              [control]="form.controls['fsa_search_account_minor_creditors_individual_address_line_1']"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_individual_address_line_1']"
+            ></opal-lib-govuk-text-input>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Postcode"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_individual_post_code"
+              inputName="fsa_search_account_minor_creditors_individual_post_code"
+              inputClasses="govuk-input--width-10"
+              [control]="form.controls['fsa_search_account_minor_creditors_individual_post_code']"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_individual_post_code']"
+            ></opal-lib-govuk-text-input>
+          </div>
         </div>
       }
     } @else if (minorCreditorType.key === 'company') {
@@ -90,34 +111,30 @@
               ></div>
             </opal-lib-govuk-checkboxes>
           </div>
-          <ng-container *ngTemplateOutlet="addressBlock"></ng-container>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Address line 1"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_company_address_line_1"
+              inputName="fsa_search_account_minor_creditors_company_address_line_1"
+              inputClasses="govuk-!-width-three-quarters"
+              [control]="form.controls['fsa_search_account_minor_creditors_company_address_line_1']"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_address_line_1']"
+            ></opal-lib-govuk-text-input>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Postcode"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_company_post_code"
+              inputName="fsa_search_account_minor_creditors_company_post_code"
+              inputClasses="govuk-input--width-10"
+              [control]="form.controls['fsa_search_account_minor_creditors_company_post_code']"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_post_code']"
+            ></opal-lib-govuk-text-input>
+          </div>
         </div>
       }
     }
   }
 </opal-lib-govuk-radio>
-
-<ng-template #addressBlock>
-  <div class="govuk-form-group">
-    <opal-lib-govuk-text-input
-      labelText="Address line 1"
-      labelClasses="govuk-label--s"
-      inputId="fsa_search_account_minor_creditors_address_line_1"
-      inputName="fsa_search_account_minor_creditors_address_line_1"
-      inputClasses="govuk-!-width-three-quarters"
-      [control]="form.controls['fsa_search_account_minor_creditors_address_line_1']"
-      [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_address_line_1']"
-    ></opal-lib-govuk-text-input>
-  </div>
-  <div class="govuk-form-group">
-    <opal-lib-govuk-text-input
-      labelText="Postcode"
-      labelClasses="govuk-label--s"
-      inputId="fsa_search_account_minor_creditors_post_code"
-      inputName="fsa_search_account_minor_creditors_post_code"
-      inputClasses="govuk-input--width-10"
-      [control]="form.controls['fsa_search_account_minor_creditors_post_code']"
-      [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_post_code']"
-    ></opal-lib-govuk-text-input>
-  </div>
-</ng-template>
