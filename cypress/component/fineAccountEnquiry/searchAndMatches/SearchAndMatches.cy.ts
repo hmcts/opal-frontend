@@ -1,7 +1,7 @@
 import { mount } from 'cypress/angular';
 import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
 import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_elements';
@@ -35,7 +35,7 @@ describe('Search Account Component', () => {
         },
       ],
       componentProperties: {
-        handleSearchAccountSubmit: formSubmit
+        handleSearchAccountSubmit: formSubmit,
       },
     });
   };
@@ -86,7 +86,7 @@ describe('Search Account Component', () => {
 
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-    
+
     cy.get('@searchSubmitSpy').should('have.been.called');
 
     cy.get(DOM_ELEMENTS.accountNumberInput).should('exist').and('have.value', '');
@@ -273,7 +273,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Account number must be 9 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
 
     // AC4b. A user enters too many characters into the 'Reference or case number' field
@@ -287,7 +286,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Reference or case number must be 30 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
 
     // AC4c. A user enters too many characters into the 'Last names' field
@@ -297,7 +295,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
 
     // AC4d. A user enters too many characters into the 'First names' field
@@ -307,7 +304,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
 
     // AC4e. A user enters too many characters into the 'National Insurance number' field
@@ -319,7 +315,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'National Insurance number must be 9 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
 
     // AC4f. A user enters too many characters into the 'Address Line 1' field
@@ -331,7 +326,6 @@ describe('Search Account Component', () => {
       .should('exist')
       .and('contain', 'Address line 1 must be 30 characters or fewer');
 
-    
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
 
     // AC4g. A user enters too many characters into the 'Postcode' field
@@ -340,8 +334,6 @@ describe('Search Account Component', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
-
-    
   });
 
   it('AC5a-b. should validate field dependencies', { tags: ['PO-705'] }, () => {
@@ -355,7 +347,6 @@ describe('Search Account Component', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
 
-    
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
 
     // AC5b. A user enters data into the Date of birth field, without entering any data in the 'Last name' field
@@ -365,7 +356,5 @@ describe('Search Account Component', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-
-    
   });
 });
