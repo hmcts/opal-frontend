@@ -544,7 +544,7 @@ describe('OpalFines', () => {
   });
 
   it('should get prosecutorPrettyName', () => {
-    const prosecutor = OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData[0];
+    const prosecutor = OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0];
     const expectedPrettyName = `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
 
     const result = service.getProsecutorPrettyName(prosecutor);

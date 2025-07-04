@@ -183,7 +183,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     prosecutors: IOpalFinesProsecutorRefData,
     localJusticeAreas: IOpalFinesLocalJusticeAreaRefData,
   ): IAlphagovAccessibleAutocompleteItem[] {
-    const _prosecutors = prosecutors.refData.map((item) => {
+    const _prosecutors = prosecutors.ref_data.map((item) => {
       return {
         value: item.prosecutor_id,
         name: this.opalFinesService.getProsecutorPrettyName(item),

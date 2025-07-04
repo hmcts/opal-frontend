@@ -390,13 +390,7 @@ export class OpalFines {
     if (!this.prosecutorDataCache$[business_unit]) {
       this.prosecutorDataCache$[business_unit] = this.http
         .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
-        .pipe(
-          shareReplay(1),
-          catchError(() => {
-            // Return mock data on failure
-            return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
-          }),
-        );
+        .pipe(shareReplay(1));
     }
 
     return this.prosecutorDataCache$[business_unit];

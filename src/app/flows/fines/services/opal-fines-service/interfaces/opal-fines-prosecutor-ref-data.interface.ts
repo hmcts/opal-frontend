@@ -13,5 +13,5 @@ export interface IOpalFinesProsecutor {
 
 export interface IOpalFinesProsecutorRefData {
   count: number;
-  refData: IOpalFinesProsecutor[];
+  ref_data: IOpalFinesProsecutor[];
 }

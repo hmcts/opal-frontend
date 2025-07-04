@@ -223,7 +223,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
     expect(autocompleteItems.length).toBe(
-      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
 
@@ -251,7 +251,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
       OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
     );
     expect(component['issuingAuthoritiesData'].length).toEqual(
-      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
 
@@ -267,7 +267,7 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     expect(component['prosecutors']).toEqual(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
     expect(component['localJusticeAreas']).toEqual(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
     expect(component.issuingAuthoritiesData.length).toEqual(
-      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.refData.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
+      OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.length + OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData.length,
     );
   });
 });
