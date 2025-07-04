@@ -13,7 +13,7 @@
         (sortChange)="onSortChange($event)"
         [dataIndex]="0"
       >
-        Account
+        Account Number
       </th>
     }
     <th
@@ -43,6 +43,16 @@
         [dataIndex]="2"
       >
         {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
+      </th>
+    } @else if (activeTab === 'approved') {
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="CreatedDate"
+        [sortDirection]="sortStateSignal()['ChangedDate']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="3"
+      >
+        Approved
       </th>
     } @else {
       <th
@@ -100,13 +110,17 @@
           </td>
         }
         <td opal-lib-moj-sortable-table-row-data id="defendant">
-          <a
-            class="govuk-link govuk-link--no-visited-state"
-            (click)="onDefendantClick(+row['Defendant id'])"
-            (keydown.enter)="onDefendantClick(+row['Defendant id'])"
-            tabindex="0"
-            >{{ row['Defendant'] }}</a
-          >
+          @if (activeTab === 'approved') {
+            {{ row['Defendant'] }}
+          } @else {
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              (click)="onDefendantClick(+row['Defendant id'])"
+              (keydown.enter)="onDefendantClick(+row['Defendant id'])"
+              tabindex="0"
+              >{{ row['Defendant'] }}</a
+            >
+          }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="dob">
           {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
