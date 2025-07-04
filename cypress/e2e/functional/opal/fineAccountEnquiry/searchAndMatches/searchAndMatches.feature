@@ -6,7 +6,17 @@ Feature: Account Search and Matches
         When I navigate to Search For An Account
 
     @PO-705
-    Scenario: AC7. Tab switching clears data on the Individuals tab
+    Scenario: Tab switching clears data on selecting new tab
+        #PO-705 - AC2 should not trigger any actions when Search button is clicked with no data
+        When I click on the 'Search' button
+        Then I see "" in the "Last name" field
+        And I see "" in the "First names" field
+        And I see "" in the Date of birth field
+        And I see "" in the "National Insurance number" field
+        And I see "" in the "Address line 1" field
+        And I see "" in the "Postcode" field
+
+        #PO-705 - AC7. Tab switching clears data on the Individuals tab
         When I enter "Smith" into the "Last name" field
         And I select the last name exact match checkbox
         And I enter "John" into the "First names" field
@@ -40,8 +50,8 @@ Feature: Account Search and Matches
         And I validate the "Active accounts only" checkbox is checked
 
     @PO-705
-    Scenario: AC6. Error navigation when searching with multiple section data
-        # AC6. Error when all 3 sections contain data (Account number, Reference number, Individual field)
+    Scenario: Error navigation when searching with multiple section data
+        #PO-705 - AC6. Error when all 3 sections contain data (Account number, Reference number, Individual field)
         When I enter "12345678" into the "Account number" field
         And I enter "REF-123" into the "Reference or case number" field
         And I enter "Smith" into the "Last name" field
@@ -54,7 +64,7 @@ Feature: Account Search and Matches
         And I see "reference or case number" text on the page
         And I see "selected tab" text on the page
 
-        # AC6ia. Back button returns to search screen with data intact
+        #PO-705 - AC6ia. Back button returns to search screen with data intact
         When I click on the "Go back" link
 
         Then I see "Search for an account" on the page header
@@ -65,7 +75,7 @@ Feature: Account Search and Matches
         When I click on the "Companies" link
         And I click on the "Individuals" link
 
-        # AC6a. Error when 2 out of 3 sections contain data - Case 1: Account number + Reference
+        #PO-705 - AC6a. Error when 2 out of 3 sections contain data - Case 1: Account number + Reference
         When I enter "12345678" into the "Account number" field
         And I enter "REF-123" into the "Reference or case number" field
 
@@ -77,7 +87,7 @@ Feature: Account Search and Matches
         And I click on the "Companies" link
         And I click on the "Individuals" link
 
-        # AC6a. Error when 2 out of 3 sections contain data - Case 2: Account number + Individual
+        #PO-705 - AC6a. Error when 2 out of 3 sections contain data - Case 2: Account number + Individual
         When I enter "12345678" into the "Account number" field
         And I enter "Smith" into the "Last name" field
 
@@ -89,7 +99,7 @@ Feature: Account Search and Matches
         And I click on the "Companies" link
         And I click on the "Individuals" link
 
-        # AC6a. Error when 2 out of 3 sections contain data - Case 3: Reference + Individual
+        #PO-705 - AC6a. Error when 2 out of 3 sections contain data - Case 3: Reference + Individual
         When I enter "REF-123" into the "Reference or case number" field
         And I enter "Smith" into the "Last name" field
 
@@ -105,7 +115,8 @@ Feature: Account Search and Matches
         And I see "Smith" in the "Last name" field
 
     @PO-705
-    Scenario: AC8. Route guard prevents accidental navigation away from search screen with data
+    Scenario: Route guard prevents accidental navigation away from search screen with data
+        #PO-705 - AC8. Route guard prevents accidental navigation away from search screen with data
         When I enter "12345678" into the "Account number" field
         And I enter "Smith" into the "Last name" field
 

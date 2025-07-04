@@ -4,8 +4,9 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
-import { DOM_ELEMENTS } from './constants/search_and_matches_elements';
-import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_mapped_mock';
+import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
+import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
+import { delay } from 'cypress/types/bluebird';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -105,12 +106,10 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobInput).should('exist').and('have.value', '');
   });
 
-  it.only('AC3a. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
+  it('AC3a. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '123$%^78';
 
-    // AC3a. should show error for non-alphabetical account number
-    //cy.get(DOM_ELEMENTS.accountNumberInput).type('123$%^78', { delay: 0 });
     cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '123$%^78');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -125,11 +124,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
-  it.only('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705'] }, () => {
+  
+  it('AC3b. should show error for incorrectly formatted account number', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '1234567';
-    // AC3b. should show error for incorrectly formatted account number
-    //cy.get(DOM_ELEMENTS.accountNumberInput).type('1234567', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -142,11 +141,10 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
-  it.only('AC3c. should show error for non-alphabetical reference or case number', { tags: ['PO-705'] }, () => {
+  it('AC3c. should show error for non-alphabetical reference or case number', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_reference_case_number = 'REF@#$456';
-    // AC3c. should show error for non-alphabetical reference or case number
-    //cy.get(DOM_ELEMENTS.referenceNumberInput).type('REF@#$456', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'REF@#$456');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -165,12 +163,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
   });
-  it.only('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705'] }, () => {
+  it('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
       'Smith123';
-    // AC3d. should show error for non-alphabetical last name
-    //cy.get(DOM_ELEMENTS.lastNameInput).type('Smith123', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -183,12 +180,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
-  it.only('AC3e. should show error for non-alphabetical first names', { tags: ['PO-705'] }, () => {
+  it('AC3e. should show error for non-alphabetical first names', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
       'John123';
-    // AC3e. should show error for non-alphabetical first names
-    //cy.get(DOM_ELEMENTS.firstNamesInput).type('John123', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -201,12 +197,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
-  it.only('AC3f. should show error for invalid date of birth format', { tags: ['PO-705'] }, () => {
+  it('AC3f. should show error for invalid date of birth format', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/AB/2020';
-    // AC3f. should show error for invalid date of birth format
-    //cy.get(DOM_ELEMENTS.dobInput).type('15/AB/2020', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/AB/2020');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -215,13 +210,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
-  it.only('AC3g. should show error for future date of birth', { tags: ['PO-705'] }, () => {
+  it('AC3g. should show error for future date of birth', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/05/2030';
 
-    // AC3g. should show error for future date of birth
-    //cy.get(DOM_ELEMENTS.dobInput).type('15/05/2030', { delay: 0 });
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/05/2030');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -230,12 +223,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
-  it.only('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705'] }, () => {
+  it('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '5/1/1980';
-    // AC3h. should show error for incorrectly formatted date of birth
-    //cy.get(DOM_ELEMENTS.dobInput).type('5/1/1980', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '5/1/1980');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -245,13 +237,11 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
 
-  it.only('AC3i. should show error for invalid NI number', { tags: ['PO-705'] }, () => {
+  it('AC3i. should show error for invalid NI number', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
       'AB123$%^C';
 
-    // AC3i. should show error for invalid NI number
-    //cy.get(DOM_ELEMENTS.niNumberInput).type('AB123$%^C', { delay: 0 });
     cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123$%^C');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -270,12 +260,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
   });
-  it.only('AC3j. should show error for invalid address line 1', { tags: ['PO-705'] }, () => {
+  it('AC3j. should show error for invalid address line 1', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
       '123 Test St. ®©™';
-    // AC3j. should show error for invalid address line 1
-    //cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Test St. ®©™', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 Test St. ®©™');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -288,12 +277,11 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
-  it.only('AC3k. should show error for invalid postcode', { tags: ['PO-705'] }, () => {
+  it('AC3k. should show error for invalid postcode', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
       'SW1A @#!';
-    // AC3k. should show error for invalid postcode
-    //cy.get(DOM_ELEMENTS.postcodeInput).type('SW1A @#!', { delay: 0 });
+
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SW1A @#!');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -307,103 +295,116 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it('AC4a-g. should validate maximum field lengths', { tags: ['PO-705'] }, () => {
+  it('AC4a. should validate account number maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
+    individualSearchMock.fsa_search_account_number = '1234567890'; // 10 characters (exceeds 9)
 
-    // AC4a. A user enters too many characters into the 'Account Number' field
-    cy.get(DOM_ELEMENTS.accountNumberInput).type('1234567890', { delay: 0 }); // 10 characters (exceeds 9)
+    
+    cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '1234567890');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.accountNumberError)
       .should('exist')
       .and('contain', 'Account number must be 9 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.accountNumberInput).clear();
+  it('AC4b. should validate reference or case number maximum field length', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    individualSearchMock.fsa_search_account_reference_case_number = 'This reference number is way too long and exceeds thirty characters';
 
-    // AC4b. A user enters too many characters into the 'Reference or case number' field
-    cy.get(DOM_ELEMENTS.referenceNumberInput).type(
-      'This reference number is way too long and exceeds thirty characters',
-      { delay: 0 },
-    );
+
+    cy.get(DOM_ELEMENTS.referenceNumberInput).should('have.value', 'This reference number is way too long and exceeds thirty characters');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.referenceNumberError)
       .should('exist')
       .and('contain', 'Reference or case number must be 30 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
+  it('AC4c. should validate last name maximum field length', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name = 'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
 
-    // AC4c. A user enters too many characters into the 'Last names' field
-    cy.get(DOM_ELEMENTS.lastNameInput).type('ThisLastNameIsTooLongAndExceedsThirtyCharacters', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must be 30 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.lastNameInput).clear();
+  it('AC4d. should validate first names maximum field length', { tags: ['PO-705'] }, () => {
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names = 'ThisFirstNameIsTooLongAndExceedsTwentyChars';
+    setupComponent(null);
 
-    // AC4d. A user enters too many characters into the 'First names' field
-    cy.get(DOM_ELEMENTS.firstNamesInput).type('ThisFirstNameIsTooLongAndExceedsTwentyChars', { delay: 0 });
+    cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'ThisFirstNameIsTooLongAndExceedsTwentyChars');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must be 20 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.firstNamesInput).clear();
+  it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number = 'AB123456CD';
 
-    // AC4e. A user enters too many characters into the 'National Insurance number' field
-    cy.get(DOM_ELEMENTS.niNumberInput).type('AB123456CD', { delay: 0 });
+    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.niNumberError)
       .should('exist')
       .and('contain', 'National Insurance number must be 9 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.niNumberInput).clear();
+  it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 = 'This address line is too long and exceeds thirty characters';
 
-    // AC4f. A user enters too many characters into the 'Address Line 1' field
-    cy.get(DOM_ELEMENTS.addressLine1Input).type('This address line is too long and exceeds thirty characters', {
-      delay: 0,
-    });
+
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', 'This address line is too long and exceeds thirty characters');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.addressLine1Error)
       .should('exist')
       .and('contain', 'Address line 1 must be 30 characters or fewer');
+  });
 
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear();
+  it('AC4g. should validate Postcode maximum field length', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code = 'AB12 3CDEF'; // 9 characters (exceeds 8)
 
-    // AC4g. A user enters too many characters into the 'Postcode' field
-    cy.get(DOM_ELEMENTS.postcodeInput).type('AB12 3CDEF', { delay: 0 }); // 9 characters (exceeds 8)
+
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'AB12 3CDEF');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must be 8 characters or fewer');
   });
 
-  it('AC5a-b. should validate field dependencies', { tags: ['PO-705'] }, () => {
+  it('AC5a should validate first name field dependency', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-
-    // AC5a. A user enters data into the first names field, without entering any data in the 'Last name' field
-    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
+    
     cy.get(DOM_ELEMENTS.firstNamesInput).type('John', { delay: 0 });
-    cy.get(DOM_ELEMENTS.searchButton).click();
-
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
-
-    cy.get(DOM_ELEMENTS.firstNamesInput).clear();
-
-    // AC5b. A user enters data into the Date of birth field, without entering any data in the 'Last name' field
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
-    cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020', { delay: 0 });
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
+
+it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
+    setupComponent(null);
+    
+    cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020', { delay: 0 });
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+  });
+
 });
