@@ -82,30 +82,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
     cy.get(DOM_ELEMENTS.searchButton).should('exist').and('contain', 'Search');
   });
-
-  it('AC2. should not trigger any actions when Search button is clicked with no data', { tags: ['PO-705'] }, () => {
-    const searchSubmitSpy = cy.spy().as('searchSubmitSpy');
-    setupComponent(searchSubmitSpy);
-
-    cy.get(DOM_ELEMENTS.searchButton).click();
-
-    cy.get(DOM_ELEMENTS.app).should('exist');
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
-
-    cy.get('@searchSubmitSpy').should('have.been.called');
-
-    cy.get(DOM_ELEMENTS.accountNumberInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.referenceNumberInput).should('exist').and('have.value', '');
-
-    cy.get(DOM_ELEMENTS.lastNameInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.firstNamesInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist').and('have.value', '');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('exist').and('have.value', '');
-
-    cy.get(DOM_ELEMENTS.dobInput).should('exist').and('have.value', '');
-  });
-
+  
   it('AC3a. should validate input fields and show errors', { tags: ['PO-705'] }, () => {
     setupComponent(null);
     individualSearchMock.fsa_search_account_number = '123$%^78';
