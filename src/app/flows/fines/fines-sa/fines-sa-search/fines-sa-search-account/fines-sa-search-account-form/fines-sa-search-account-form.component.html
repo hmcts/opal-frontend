@@ -1,0 +1,124 @@
+<h1 class="govuk-heading-l">Search for an account</h1>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)">
+  <opal-lib-govuk-summary-list summaryListId="accountDetails">
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row"
+      summaryListId="accountDetails"
+      summaryListRowId="languagePreferences"
+      [actionEnabled]="true"
+      (actionClick)="goToFilterBusinessUnits()"
+    >
+      <ng-container name>Filter by business unit</ng-container>
+      <ng-container value> </ng-container>
+      <ng-container action>Change</ng-container>
+    </div>
+  </opal-lib-govuk-summary-list>
+  <opal-lib-govuk-text-input
+    labelText="Account number"
+    labelClasses="govuk-label--s"
+    hintText="For example, 12345678 or 12345678A"
+    inputId="fsa_search_account_number"
+    inputName="fsa_search_account_number"
+    inputClasses="govuk-input--width-10"
+    [control]="form.controls['fsa_search_account_number']"
+    [errors]="formControlErrorMessages['fsa_search_account_number']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Reference or case number"
+    labelClasses="govuk-label--s"
+    inputId="fsa_search_account_reference_case_number"
+    inputName="fsa_search_account_reference_case_number"
+    inputClasses="govuk-input--width-10"
+    [control]="form.controls['fsa_search_account_reference_case_number']"
+    [errors]="formControlErrorMessages['fsa_search_account_reference_case_number']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-tabs tabId="defendantTabs">
+    <ng-container tab-list-items>
+      <li
+        opal-lib-govuk-tabs-list-item
+        tabItemFragment="individuals"
+        [activeTabItemFragment]="finesSaStore.activeTab()"
+        tabItemId="tab-individuals"
+      >
+        <ng-content [linkText]>Individuals</ng-content>
+      </li>
+      <li
+        opal-lib-govuk-tabs-list-item
+        tabItemFragment="companies"
+        [activeTabItemFragment]="finesSaStore.activeTab()"
+        tabItemId="tab-companies"
+      >
+        <ng-content [linkText]>Companies</ng-content>
+      </li>
+      <li
+        opal-lib-govuk-tabs-list-item
+        tabItemFragment="minorCreditors"
+        [activeTabItemFragment]="finesSaStore.activeTab()"
+        tabItemId="tab-minor-creditors"
+      >
+        <ng-content [linkText]>Minor creditors</ng-content>
+      </li>
+      <li
+        opal-lib-govuk-tabs-list-item
+        tabItemFragment="majorCreditors"
+        [activeTabItemFragment]="finesSaStore.activeTab()"
+        tabItemId="tab-major-creditors"
+      >
+        <ng-content [linkText]>Major creditors</ng-content>
+      </li>
+    </ng-container>
+    <ng-container tab-panels>
+      @switch (finesSaStore.activeTab()) {
+        @case ('individuals') {
+          <opal-lib-govuk-tabs-panel id="individuals">
+            <app-fines-sa-search-account-form-individuals
+              [form]="searchCriteriaForm"
+              [formControlErrorMessages]="formControlErrorMessages"
+            ></app-fines-sa-search-account-form-individuals>
+          </opal-lib-govuk-tabs-panel>
+        }
+        @case ('companies') {
+          <opal-lib-govuk-tabs-panel id="companies">
+            <app-fines-sa-search-account-form-companies
+              [form]="searchCriteriaForm"
+            ></app-fines-sa-search-account-form-companies>
+          </opal-lib-govuk-tabs-panel>
+        }
+        @case ('minorCreditors') {
+          <opal-lib-govuk-tabs-panel id="minor-creditors">
+            <app-fines-sa-search-account-form-minor-creditors
+              [form]="searchCriteriaForm"
+            ></app-fines-sa-search-account-form-minor-creditors>
+          </opal-lib-govuk-tabs-panel>
+        }
+        @case ('majorCreditors') {
+          <opal-lib-govuk-tabs-panel id="major-creditors">
+            <app-fines-sa-search-account-form-major-creditors
+              [form]="searchCriteriaForm"
+            ></app-fines-sa-search-account-form-major-creditors>
+          </opal-lib-govuk-tabs-panel>
+        }
+      }
+    </ng-container>
+  </opal-lib-govuk-tabs>
+  <opal-lib-govuk-checkboxes fieldSetId="activeAccountsOnly" checkboxClasses="" legendText="">
+    <div
+      opal-lib-govuk-checkboxes-item
+      labelText="Active accounts only"
+      inputId="fsa_search_account_active_accounts_only"
+      inputName="fsa_search_account_active_accounts_only"
+      class="govuk-checkboxes--small"
+      [control]="form.controls['fsa_search_account_active_accounts_only']"
+    ></div>
+  </opal-lib-govuk-checkboxes>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit">Search</opal-lib-govuk-button>
+    </div>
+  </div>
+</form>
