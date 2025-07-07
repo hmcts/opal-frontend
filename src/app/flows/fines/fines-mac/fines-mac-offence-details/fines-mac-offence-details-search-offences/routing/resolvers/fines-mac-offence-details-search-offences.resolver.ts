@@ -24,15 +24,14 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
     return of(emptyResult);
   }
 
-  // Get today's date in ISO format using the shared DateService
   const todayIsoDate = dateService.getDateNow().toUTC().toISO()!;
 
   // Build the initial request payload from the provided search form data
   const body = {
-    activeDate: state.payload['inactive'] === true ? null : todayIsoDate,
-    cjsCode: state.payload['code'],
+    active_date: state.payload['inactive'] === true ? null : todayIsoDate,
+    cjs_code: state.payload['code'],
     title: state.payload['short_title'],
-    actSection: state.payload['act_section'],
+    act_and_section: state.payload['act_section'],
   };
 
   // Filter out any undefined or null fields from the request payload

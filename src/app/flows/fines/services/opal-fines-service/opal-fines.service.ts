@@ -348,7 +348,7 @@ export class OpalFines {
    * @returns An observable that emits the offences reference data, conforming to the `IOpalFinesSearchOffencesData` interface.
    */
   public searchOffences(body: IOpalFinesSearchOffencesParams): Observable<IOpalFinesSearchOffencesData> {
-    body.maxResults = 100; // Set the maximum number of results to 100
+    body.max_results = 100; // Set the maximum number of results to 100
     return this.http.post<IOpalFinesSearchOffencesData>(`${OPAL_FINES_PATHS.searchOffences}`, body);
   }
 

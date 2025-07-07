@@ -59,5 +59,21 @@
         >
       </li>
     }
+    <li>
+      <a
+        class="govuk-link"
+        [routerLink]="
+          '/' +
+          finesRoutingPaths.root +
+          '/' +
+          finesRoutingPaths.children.sa.root +
+          '/' +
+          finesRoutingPaths.children.sa.children['search']
+        "
+        fragment="individuals"
+        id="finesSaSearchAccountLink"
+        >Search for an account</a
+      >
+    </li>
   </ul>
 </div>
