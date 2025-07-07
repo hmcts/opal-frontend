@@ -21,6 +21,7 @@ import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../mocks/state/fin
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
 import { finesMacPayloadBuildAccountDefendant } from './fines-mac-payload-build-account-defendant.utils';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-account-details-state.mock';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 
 describe('finesMacPayloadBuildAccountDefendant', () => {
   let contactDetailsState: IFinesMacContactDetailsState | null;
@@ -65,7 +66,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
@@ -102,7 +103,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
@@ -136,7 +137,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = 'company';
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
     companyDetailsState.fm_company_details_add_alias = false;
     companyDetailsState.fm_company_details_aliases = [];
@@ -168,7 +169,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = 'company';
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
     const result = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,

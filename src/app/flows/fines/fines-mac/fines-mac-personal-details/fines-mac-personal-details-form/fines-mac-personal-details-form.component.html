@@ -179,7 +179,7 @@
       [opalLibCapitaliseAllCharacters]="form.controls['fm_personal_details_post_code']"
     ></opal-lib-govuk-text-input>
   </fieldset>
-  @if (defendantType === 'adultOrYouthOnly') {
+  @if (defendantType === defendantTypesKeys.adultOrYouthOnly) {
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>

@@ -38,6 +38,8 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-c
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -93,6 +95,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
+  public accountType = this.finesMacStore.getAccountType();
+  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
+  public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -314,6 +319,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
+    if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
+      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      return;
+    }
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);

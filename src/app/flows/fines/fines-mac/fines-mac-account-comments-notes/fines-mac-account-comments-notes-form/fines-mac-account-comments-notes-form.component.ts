@@ -18,6 +18,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { CommonModule } from '@angular/common';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
@@ -62,13 +63,13 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   private checkMandatorySections(): void {
     this.mandatorySectionsCompleted = false;
     switch (this.finesMacStore.getDefendantType()) {
-      case 'adultOrYouthOnly':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly:
         this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
         break;
-      case 'parentOrGuardianToPay':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
         this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
         break;
-      case 'company':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.company:
         this.mandatorySectionsCompleted = this.finesMacStore.companySectionsCompleted();
         break;
       default:

@@ -1,0 +1,409 @@
+<h1 class="govuk-heading-l">Fixed Penalty details</h1>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Issuing Authority and Court Details</legend>
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.controls['fm_fp_court_details_issuing_authority_id']"
+      labelText="Issuing Authority"
+      labelClasses="govuk-fieldset__legend--s"
+      inputId="fm_fp_court_details_issuing_authority_id"
+      inputName="fm_fp_court_details_issuing_authority_id"
+      label=""
+      hintText="Police force, Central Ticket Office (CTO) or other"
+      [autoCompleteItems]="issuingAuthorityAutoCompleteItems"
+      [errors]="formControlErrorMessages['fm_fp_court_details_issuing_authority_id']"
+    ></opal-lib-alphagov-accessible-autocomplete>
+    <opal-lib-alphagov-accessible-autocomplete
+      [control]="form.controls['fm_fp_court_details_imposing_court_id']"
+      labelText="Enforcement court"
+      labelClasses="govuk-fieldset__legend--s"
+      inputId="fm_fp_court_details_imposing_court_id"
+      inputName="fm_fp_court_details_imposing_court_id"
+      label=""
+      hintText="Search using enforcement court or code"
+      [autoCompleteItems]="enforcingCourtAutoCompleteItems"
+      [errors]="formControlErrorMessages['fm_fp_court_details_imposing_court_id']"
+    ></opal-lib-alphagov-accessible-autocomplete>
+  </fieldset>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Personal Details</legend>
+    <opal-lib-govuk-select
+      labelText="Title"
+      labelClasses="govuk-label--s"
+      selectId="fm_fp_personal_details_title"
+      selectName="fm_fp_personal_details_title"
+      [options]="titleOptions"
+      [control]="form.controls['fm_fp_personal_details_title']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_title']"
+    ></opal-lib-govuk-select>
+    <opal-lib-govuk-text-input
+      labelText="First names"
+      inputId="fm_fp_personal_details_forenames"
+      inputName="fm_fp_personal_details_forenames"
+      inputClasses="govuk-input--width-20"
+      labelClasses="govuk-label--s"
+      hintText="Include their middle names"
+      [control]="form.controls['fm_fp_personal_details_forenames']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_forenames']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Last name"
+      inputId="fm_fp_personal_details_surname"
+      inputName="fm_fp_personal_details_surname"
+      inputClasses="govuk-input--width-20"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['fm_fp_personal_details_surname']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_surname']"
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_personal_details_surname']"
+    ></opal-lib-govuk-text-input>
+
+    <opal-lib-moj-date-picker
+      labelText="Date of birth"
+      labelClasses="govuk-label--s"
+      inputId="fm_fp_personal_details_dob"
+      inputName="fm_fp_personal_details_dob"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, 31/01/2023"
+      [control]="form.controls['fm_fp_personal_details_dob']"
+      [maxDate]="yesterday"
+      (dateChange)="setInputValue($event, 'fm_fp_personal_details_dob')"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_dob']"
+    ></opal-lib-moj-date-picker>
+    @if (age) {
+      <opal-lib-moj-ticket-panel
+        componentClasses="govuk-!-width-one-third"
+        sectionClasses="moj-ticket-panel__content--blue"
+        [alert]="true"
+      >
+        <strong>Age: {{ age.value }}</strong>
+        <p>{{ age.group }}</p>
+      </opal-lib-moj-ticket-panel>
+    }
+  </fieldset>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    <opal-lib-govuk-text-input
+      labelText="Address line 1"
+      inputId="fm_fp_personal_details_address_line_1"
+      inputName="fm_fp_personal_details_address_line_1"
+      [control]="form.controls['fm_fp_personal_details_address_line_1']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_address_line_1']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 2"
+      inputId="fm_fp_personal_details_address_line_2"
+      inputName="fm_fp_personal_details_address_line_2"
+      [control]="form.controls['fm_fp_personal_details_address_line_2']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_address_line_2']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 3"
+      inputId="fm_fp_personal_details_address_line_3"
+      inputName="fm_fp_personal_details_address_line_3"
+      inputClasses="govuk-input--width-20"
+      [control]="form.controls['fm_fp_personal_details_address_line_3']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_address_line_3']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Postcode"
+      inputId="fm_fp_personal_details_post_code"
+      inputName="fm_fp_personal_details_post_code"
+      inputClasses="govuk-input--width-10"
+      [control]="form.controls['fm_fp_personal_details_post_code']"
+      [errors]="formControlErrorMessages['fm_fp_personal_details_post_code']"
+      [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_personal_details_post_code']"
+    ></opal-lib-govuk-text-input>
+  </fieldset>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence Details</legend>
+    <opal-lib-govuk-text-input
+      labelText="Notice number"
+      inputId="fm_fp_offence_details_notice_number"
+      inputName="fm_fp_offence_details_notice_number"
+      inputClasses="govuk-input--width-20"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['fm_fp_offence_details_notice_number']"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_notice_number']"
+    ></opal-lib-govuk-text-input>
+
+    <opal-lib-govuk-radio
+      fieldSetId="fm_fp_offence_details_offence_type"
+      legendText="Offence type"
+      legendClasses="govuk-fieldset__legend--s"
+    >
+      <div
+        opal-lib-govuk-radios-item
+        labelText="Vehicle"
+        inputId="fm_fp_offence_details_offence_type"
+        inputName="fm_fp_offence_details_offence_type"
+        inputValue="vehicle"
+        [control]="form.controls['fm_fp_offence_details_offence_type']"
+      ></div>
+      @if (form.get('fm_fp_offence_details_offence_type')?.value === 'vehicle') {
+        <ng-container *ngTemplateOutlet="vehicleForm"></ng-container>
+      }
+      <div
+        opal-lib-govuk-radios-item
+        labelText="Non-Vehicle"
+        inputId="fm_fp_offence_details_offence_type"
+        inputName="fm_fp_offence_details_offence_type"
+        inputValue="non-vehicle"
+        [control]="form.controls['fm_fp_offence_details_offence_type']"
+      ></div>
+    </opal-lib-govuk-radio>
+
+    <opal-lib-moj-date-picker
+      labelText="Date of offence"
+      labelClasses="govuk-label--s"
+      inputId="fm_fp_offence_details_date_of_offence"
+      inputName="fm_fp_offence_details_date_of_offence"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, 31/01/2023"
+      [maxDate]="today"
+      (dateChange)="setInputValue($event, 'fm_fp_offence_details_date_of_offence')"
+      [control]="form.controls['fm_fp_offence_details_date_of_offence']"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_date_of_offence']"
+    ></opal-lib-moj-date-picker>
+
+    <opal-lib-govuk-text-input
+      labelText="Offence code"
+      labelClasses="govuk-fieldset__legend--s"
+      inputId="fm_fp_offence_details_offence_cjs_code"
+      inputName="fm_fp_offence_details_offence_cjs_code"
+      inputClasses="govuk-input--width-10"
+      [hintHtml]="true"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_offence_cjs_code']"
+      [control]="form.controls['fm_fp_offence_details_offence_cjs_code']"
+    >
+      For example, HY35014. If you don't know the offence code, you can
+      <a
+        class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+        [href]="searchOffenceUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        search the offence list
+      </a></opal-lib-govuk-text-input
+    >
+
+    @if (offenceCode$ | async; as offenceCode) {
+      @if (selectedOffenceConfirmation) {
+        @if (offenceCode.count === 1) {
+          <ng-container
+            *ngTemplateOutlet="
+              offenceCodeHint;
+              context: { found: true, offenceTitle: offenceCode.refData[0].offence_title }
+            "
+          ></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: false }"></ng-container>
+        }
+      }
+    }
+
+    <opal-lib-govuk-text-input
+      labelText="Time of offence"
+      inputId="fm_fp_offence_details_time_of_offence"
+      inputName="fm_fp_offence_details_time_of_offence"
+      inputClasses="govuk-input--width-5"
+      labelClasses="govuk-label--s"
+      hintText="For example, 02:30 or 14:30 and midnight is 00:00"
+      [control]="form.controls['fm_fp_offence_details_time_of_offence']"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_time_of_offence']"
+    ></opal-lib-govuk-text-input>
+
+    <opal-lib-govuk-text-area
+      labelText="Place of offence"
+      inputId="fm_fp_offence_details_place_of_offence"
+      inputName="fm_fp_offence_details_place_of_offence"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['fm_fp_offence_details_place_of_offence']"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_place_of_offence']"
+      [characterCountEnabled]="true"
+      [maxCharacterLimit]="30"
+      [rows]="1"
+    ></opal-lib-govuk-text-area>
+
+    <opal-lib-govuk-text-input-prefix-suffix
+      labelText="Amount imposed"
+      labelClasses="govuk-fieldset__legend--s"
+      inputId="fm_fp_offence_details_amount_imposed"
+      inputName="fm_fp_offence_details_amount_imposed"
+      inputClasses="govuk-input--width-10"
+      prefixText="£"
+      [forceTwoDecimalPoints]="true"
+      [control]="form.controls['fm_fp_offence_details_amount_imposed']"
+      [errors]="formControlErrorMessages['fm_fp_offence_details_amount_imposed']"
+    ></opal-lib-govuk-text-input-prefix-suffix>
+  </fieldset>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+  @if (finesMacStore.businessUnit().welsh_language) {
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language Preferences</legend>
+
+      <opal-lib-govuk-radio
+        fieldSetId="fm_language_preferences_document_language"
+        legendText="Documents"
+        legendClasses="govuk-fieldset__legend--s"
+      >
+        @for (languageOption of languageOptions; track languageOption.key) {
+          <div
+            opal-lib-govuk-radios-item
+            [labelText]="languageOption.value"
+            [inputId]="languageOption.key + 'DocumentRadioOption'"
+            inputName="fm_fp_language_preferences_document_language"
+            [inputValue]="languageOption.key"
+            [control]="form.get('fm_fp_language_preferences_document_language')"
+          ></div>
+        }
+      </opal-lib-govuk-radio>
+
+      <opal-lib-govuk-radio
+        fieldSetId="fm_language_preferences_hearing_language"
+        legendText="Court hearings"
+        legendClasses="govuk-fieldset__legend--s"
+      >
+        @for (languageOption of languageOptions; track languageOption.key) {
+          <div
+            opal-lib-govuk-radios-item
+            [labelText]="languageOption.value"
+            [inputId]="languageOption.key + 'CourtHearingRadioOption'"
+            inputName="fm_fp_language_preferences_hearing_language"
+            [inputValue]="languageOption.key"
+            [control]="form.get('fm_fp_language_preferences_hearing_language')"
+          ></div>
+        }
+      </opal-lib-govuk-radio>
+    </fieldset>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  }
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Comments and Notes</legend>
+    <opal-lib-govuk-text-area
+      labelText="Add comment"
+      labelClasses="govuk-label--s"
+      hintText="For example, a warning, which will appear on the account summary"
+      inputId="fm_fp_account_comments_notes_comments"
+      inputName="fm_fp_account_comments_notes_comments"
+      [control]="form.controls['fm_fp_account_comments_notes_comments']"
+      [characterCountEnabled]="true"
+      [maxCharacterLimit]="30"
+      [rows]="1"
+      [errors]="formControlErrorMessages['fm_fp_account_comments_notes_comments']"
+    ></opal-lib-govuk-text-area>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+    <opal-lib-govuk-text-area
+      labelText="Add account notes"
+      labelClasses="govuk-label--s"
+      hintText="You can view notes in account history after the account is published"
+      inputId="fm_fp_account_comments_notes_notes"
+      inputName="fm_fp_account_comments_notes_notes"
+      [control]="form.controls['fm_fp_account_comments_notes_notes']"
+      [characterCountEnabled]="true"
+      [maxCharacterLimit]="1000"
+      [errors]="formControlErrorMessages['fm_fp_account_comments_notes_notes']"
+    ></opal-lib-govuk-text-area>
+  </fieldset>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="submitForm" type="submit"> Review Account </opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.createAccount)"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>
+
+<ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
+  <opal-lib-moj-ticket-panel
+    [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
+    [alert]="true"
+  >
+    @let offenceFound = found ? 'Offence found' : 'Offence not found';
+    <strong>{{ offenceFound }}</strong>
+    @if (found) {
+      <p>{{ offenceTitle }}</p>
+    } @else {
+      <p>Enter a valid offence code</p>
+    }
+  </opal-lib-moj-ticket-panel>
+</ng-template>
+
+<ng-template #vehicleForm>
+  <div opal-lib-govuk-radios-conditional conditionalId="radio">
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Registration number"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_vehicle_registration_number"
+        inputName="fm_fp_offence_details_vehicle_registration_number"
+        inputClasses="govuk-input--width-10"
+        [control]="form.controls['fm_fp_offence_details_vehicle_registration_number']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_vehicle_registration_number']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Driving licence number"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_driving_licence_number"
+        inputName="fm_fp_offence_details_driving_licence_number"
+        inputClasses="govuk-input--width-20"
+        [control]="form.controls['fm_fp_offence_details_driving_licence_number']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_driving_licence_number']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-govuk-text-input
+        labelText="Notice to owner or hirer number (NTO/NTH)"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_nto_nth"
+        inputName="fm_fp_offence_details_nto_nth"
+        inputClasses="govuk-input--width-10"
+        [control]="form.controls['fm_fp_offence_details_nto_nth']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_nto_nth']"
+      ></opal-lib-govuk-text-input>
+    </div>
+
+    <div class="govuk-!-margin-bottom-6">
+      <opal-lib-moj-date-picker
+        labelText="Date notice to owner was issued"
+        labelClasses="govuk-label--s"
+        inputId="fm_fp_offence_details_date_nto_issued"
+        inputName="fm_fp_offence_details_date_nto_issued"
+        inputClasses="govuk-input--width-10"
+        hintText="For example, 31/01/2023"
+        [maxDate]="today"
+        (dateChange)="setInputValue($event, 'fm_fp_offence_details_date_nto_issued')"
+        [control]="form.controls['fm_fp_offence_details_date_nto_issued']"
+        [errors]="formControlErrorMessages['fm_fp_offence_details_date_nto_issued']"
+      ></opal-lib-moj-date-picker>
+    </div>
+  </div>
+</ng-template>
