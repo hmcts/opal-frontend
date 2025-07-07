@@ -1,7 +1,7 @@
 <opal-lib-moj-sortable-table>
-  @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
     <ng-container caption>
-      Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
+      Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }} accounts
     </ng-container>
   }
   <ng-container head>
@@ -140,7 +140,7 @@
   </ng-container>
 </opal-lib-moj-sortable-table>
 <app-fines-shared-sortable-table-footer
-  [abstractTableData]="abstractTableDataSignal()"
+  [tableData]="filteredTableDataSignal()"
   [currentPage]="currentPageSignal()"
   [itemsPerPage]="itemsPerPageSignal()"
   (changePage)="onPageChange($event)"
