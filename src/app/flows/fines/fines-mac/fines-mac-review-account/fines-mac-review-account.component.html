@@ -51,6 +51,7 @@
     <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
   } @else {
     <app-fines-mac-review-account-company-details
+      [accountType]="accountType"
       [companyDetails]="finesMacStore.companyDetails().formData"
       [isReadOnly]="isReadOnly"
       (emitChangeCompanyDetails)="navigateBack()"
@@ -87,7 +88,14 @@
     ></app-fines-mac-review-account-employer-details>
   }
 
-  @if (accountType !== accountTypesKeys.fixedPenalty) {
+  @if (accountType === accountTypesKeys.fixedPenalty) {
+    <app-fines-mac-review-account-fixed-penalty-offence-details
+      [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
+      [isReadOnly]="isReadOnly"
+      (emitChangeOffenceDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
+    ></app-fines-mac-review-account-fixed-penalty-offence-details>
+  } @else {
     <app-fines-mac-review-account-offence-details
       (emitChangeOffenceDetails)="navigateBack()"
       [isReadOnly]="isReadOnly"
@@ -103,13 +111,6 @@
       (emitChangePaymentTerms)="navigateBack()"
       [isReadOnly]="isReadOnly"
     ></app-fines-mac-review-account-payment-terms>
-  } @else {
-    <app-fines-mac-review-account-fixed-penalty-offence-details
-      [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
-      [isReadOnly]="isReadOnly"
-      (emitChangeOffenceDetails)="navigateBack()"
-      [isReadOnly]="isReadOnly"
-    ></app-fines-mac-review-account-fixed-penalty-offence-details>
   }
 
   <app-fines-mac-review-account-account-comments-and-notes

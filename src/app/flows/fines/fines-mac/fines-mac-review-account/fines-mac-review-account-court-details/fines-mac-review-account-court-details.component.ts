@@ -96,7 +96,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    * @returns {string | null}
    */
   private getProsecutor(): string | null {
-    const prosecutor = this.prosecutorsData.refData.find(
+    const prosecutor = this.prosecutorsData.ref_data.find(
       (p: IOpalFinesProsecutor) => p.prosecutor_id === +this.fixedPenaltyDetails.fm_court_details_issuing_authority_id!,
     )!;
 
