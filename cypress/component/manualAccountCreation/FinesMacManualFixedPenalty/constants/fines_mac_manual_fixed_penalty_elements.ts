@@ -4,6 +4,8 @@ export const DOM_ELEMENTS = {
   
   issuingAuthorityInput: 'input[id="fm_fp_court_details_issuing_authority_id-autocomplete"]',
   enforcementCourtInput: 'input[id="fm_fp_court_details_imposing_court_id-autocomplete"]',
+  issuingAuthorityDropDown: '[id^="fm_fp_court_details_issuing_authority_id-autocomplete__option"]',
+  enforcementCourtDropDown: '[id^="fm_fp_court_details_imposing_court_id-autocomplete__option"]',
   
   titleSelect: 'select[id="fm_fp_personal_details_title"]',
   firstNameInput: 'input[id="fm_fp_personal_details_forenames"]',
@@ -18,8 +20,8 @@ export const DOM_ELEMENTS = {
   postcodeInput: 'input[id="fm_fp_personal_details_post_code"]',
   
   noticeNumberInput: 'input[id="fm_fp_offence_details_notice_number"]',
-  vehicleRadioButton: 'input[id="fm_fp_offence_details_offence_type-vehicle"]',
-  nonVehicleRadioButton: 'input[id="fm_fp_offence_details_offence_type-nonVehicle"]',
+  vehicleRadioButton: '[labeltext="Vehicle"] > #fm_fp_offence_details_offence_type',
+  nonVehicleRadioButton: '[labeltext="Non-Vehicle"] > #fm_fp_offence_details_offence_type',
   vehicleRegistrationInput: 'input[id="fm_fp_offence_details_vehicle_registration_number"]',
   drivingLicenceInput: 'input[id="fm_fp_offence_details_driving_licence_number"]',
   ntoNthInput: 'input[id="fm_fp_offence_details_nto_nth"]',
@@ -28,15 +30,18 @@ export const DOM_ELEMENTS = {
   offenceCodeInput: 'input[id="fm_fp_offence_details_offence_cjs_code"]',
   timeOfOffenceInput: 'input[id="fm_fp_offence_details_time_of_offence"]', 
   placeOfOffenceInput: 'textarea[id="fm_fp_offence_details_place_of_offence"]',
+  placeOfOffenceInputHint: '#fm_fp_offence_details_place_of_offence-hint',
   amountImposedInput: 'input[id="fm_fp_offence_details_amount_imposed"]',
-  offenceStatus: '.offence-status',
-  offenceStatusMessage: '.offence-status-message',
+  offenceStatus: '.moj-ticket-panel__content',
+  offenceStatusMessage: 'strong',
   
   commentsInput: 'textarea[id="fm_fp_account_comments_notes_comments"]',
+  commentsInputHint: '[labeltext="Add comment"] > .govuk-form-group > :nth-child(4)',
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
+  accountNoteInputHint: '[labeltext="Add account notes"] > .govuk-form-group > :nth-child(4)',
   
-  documentLanguageSelect: 'select[id="fm_fp_language_preferences_document_language"]',
-  hearingLanguageSelect: 'select[id="fm_fp_language_preferences_hearing_language"]',
+  documentLanguageSelect: '#fm_language_preferences_document_language',
+  hearingLanguageSelect: '#fm_language_preferences_hearing_language',
   
   cancelLink: 'a.govuk-link.button-link',
   submitButton: 'button[type="submit"]',
