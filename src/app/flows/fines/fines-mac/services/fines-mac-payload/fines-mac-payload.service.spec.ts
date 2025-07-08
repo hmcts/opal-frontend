@@ -377,4 +377,64 @@ describe('FinesMacPayloadService', () => {
     };
     expect(service.getDefendantName(payload)).toBe('undefined');
   });
+
+  it('should convert dd/MM/yyyy to yyyy-MM-dd using toRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).toRfc3339Date('01/07/2025');
+    expect(result).toBe('2025-07-01');
+  });
+
+  it('should return null for null input to toRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).toRfc3339Date(null);
+    expect(result).toBeNull();
+  });
+
+  it('should return null for invalid date to toRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).toRfc3339Date('invalid');
+    expect(result).toBeNull();
+  });
+
+  it('should convert yyyy-MM-dd to dd/MM/yyyy using fromRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).fromRfc3339Date('2025-07-01');
+    expect(result).toBe('01/07/2025');
+  });
+
+  it('should return null for null input to fromRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).fromRfc3339Date(null);
+    expect(result).toBeNull();
+  });
+
+  it('should return null for invalid date to fromRfc3339Date', () => {
+    if (!service) {
+      fail('Service not initialised');
+      return;
+    }
+
+    const result = (service as any).fromRfc3339Date('invalid');
+    expect(result).toBeNull();
+  });
 });

@@ -48,6 +48,9 @@ describe('finesMacPayloadMapAccountOffences', () => {
     const result = finesMacPayloadMapAccountOffences(initialState, payload, null);
     const offencesMockState: IFinesMacOffenceDetailsForm[] = [];
     offencesMockState.push(structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE));
+    offencesMockState.map((offence) => {
+      offence.formData.fm_offence_details_date_of_sentence = '2024-09-01';
+    });
 
     expect(result.offenceDetails[0].formData).toEqual(offencesMockState[0].formData);
   });

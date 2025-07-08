@@ -2,7 +2,7 @@ import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR: IFinesMacPayloadAccountOffences[] = [
   {
-    date_of_sentence: '01/09/2024',
+    date_of_sentence: '2024-09-01',
     imposing_court_id: 'Magistrates Court Database (204)',
     offence_id: 294885,
     impositions: [
