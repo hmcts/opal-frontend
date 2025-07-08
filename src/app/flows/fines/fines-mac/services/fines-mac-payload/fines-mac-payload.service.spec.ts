@@ -384,6 +384,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).toRfc3339Date('01/07/2025');
     expect(result).toBe('2025-07-01');
   });
@@ -394,6 +395,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).toRfc3339Date(null);
     expect(result).toBeNull();
   });
@@ -404,6 +406,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).toRfc3339Date('invalid');
     expect(result).toBeNull();
   });
@@ -414,6 +417,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).fromRfc3339Date('2025-07-01');
     expect(result).toBe('01/07/2025');
   });
@@ -424,6 +428,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).fromRfc3339Date(null);
     expect(result).toBeNull();
   });
@@ -434,6 +439,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (service as any).fromRfc3339Date('invalid');
     expect(result).toBeNull();
   });
