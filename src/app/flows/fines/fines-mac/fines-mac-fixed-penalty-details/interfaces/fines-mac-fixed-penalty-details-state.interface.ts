@@ -26,4 +26,9 @@ export interface IFinesMacFixedPenaltyDetailsState {
   fm_fp_offence_details_driving_licence_number: string | null;
   fm_fp_offence_details_nto_nth: string | null;
   fm_fp_offence_details_date_nto_issued: string | null;
+  fm_fp_company_details_company_name: string | null;
+  fm_fp_company_details_address_line_1: string | null;
+  fm_fp_company_details_address_line_2: string | null;
+  fm_fp_company_details_address_line_3: string | null;
+  fm_fp_company_details_postcode: string | null;
 }

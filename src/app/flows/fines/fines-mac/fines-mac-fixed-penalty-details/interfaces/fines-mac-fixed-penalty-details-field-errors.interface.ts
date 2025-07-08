@@ -31,4 +31,9 @@ export interface IFinesMacFixedPenaltyDetailsFieldErrors extends IAbstractFormBa
   fm_fp_offence_details_driving_licence_number: IAbstractFormBaseFieldError;
   fm_fp_offence_details_nto_nth: IAbstractFormBaseFieldError;
   fm_fp_offence_details_date_nto_issued: IAbstractFormBaseFieldError;
+  fm_fp_company_details_company_name: IAbstractFormBaseFieldError;
+  fm_fp_company_details_address_line_1: IAbstractFormBaseFieldError;
+  fm_fp_company_details_address_line_2: IAbstractFormBaseFieldError;
+  fm_fp_company_details_address_line_3: IAbstractFormBaseFieldError;
+  fm_fp_company_details_postcode: IAbstractFormBaseFieldError;
 }
