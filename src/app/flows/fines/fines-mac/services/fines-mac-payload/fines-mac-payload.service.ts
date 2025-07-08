@@ -342,7 +342,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
-    finesMacState.offenceDetails.map(
+    finesMacState.offenceDetails.forEach(
       (offence) =>
         (offence.formData.fm_offence_details_date_of_sentence = this.fromRfc3339Date(
           offence.formData.fm_offence_details_date_of_sentence,
