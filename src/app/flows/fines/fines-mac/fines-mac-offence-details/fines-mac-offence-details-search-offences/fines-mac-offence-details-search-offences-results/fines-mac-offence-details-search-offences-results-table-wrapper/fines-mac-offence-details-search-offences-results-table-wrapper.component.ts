@@ -38,7 +38,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   implements OnDestroy
 {
   protected readonly utilsService = inject(UtilsService);
-  public override abstractTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
+  public override displayTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
     [],
   );
   public override paginatedTableDataComputed!: Signal<
@@ -48,7 +48,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   @Input({ required: true }) set tableData(
     tableData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[],
   ) {
-    this.abstractTableDataSignal.set(tableData);
+    this.displayTableDataSignal.set(tableData);
   }
 
   @Input({ required: true }) set existingSortState(
@@ -58,7 +58,7 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   }
 
   private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss`;
+  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss'Z'`;
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   public readonly COPY_CODE_TO_CLIPBOARD = COPY_CODE_TO_CLIPBOARD;
 

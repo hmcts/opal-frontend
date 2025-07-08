@@ -3,11 +3,11 @@
   [sortDirection]="sortedColumnDirectionSignal()"
 />
 
-@if (abstractTableDataSignal().length > paginatedTableDataComputed().length) {
+@if (displayTableDataSignal().length > paginatedTableDataComputed().length) {
   <opal-lib-govuk-pagination
     [currentPage]="currentPageSignal()"
     [limit]="itemsPerPageSignal()"
-    [total]="abstractTableDataSignal().length"
+    [total]="displayTableDataSignal().length"
     (changePage)="onPageChange($event)"
   />
 }
