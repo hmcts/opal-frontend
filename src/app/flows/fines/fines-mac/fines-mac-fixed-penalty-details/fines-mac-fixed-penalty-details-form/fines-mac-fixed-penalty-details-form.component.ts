@@ -182,6 +182,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       fm_fp_offence_details_offence_type: new FormControl('vehicle'),
       fm_fp_offence_details_date_of_offence: new FormControl(null, [
+        Validators.required,
         Validators.maxLength(10),
         optionalValidDateValidator(),
         futureDateValidator(),
