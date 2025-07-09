@@ -194,6 +194,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_offence_details_offence_cjs_code: new FormControl(null, [
         Validators.required,
         Validators.maxLength(8),
+        Validators.minLength(7),
         alphabeticalTextValidator(),
       ]),
       fm_fp_offence_details_time_of_offence: new FormControl(null, [timeFormatValidator()]),

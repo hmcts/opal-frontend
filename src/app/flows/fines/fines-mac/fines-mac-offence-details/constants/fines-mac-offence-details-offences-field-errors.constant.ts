@@ -32,10 +32,14 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
     maxlength: {
       message: 'Offence code must be 8 characters or fewer',
       priority: 3,
+    },    
+    minlength: {
+      message: 'Offence code must be 7 characters or more',
+      priority: 4,
     },
     invalidOffenceCode: {
       message: 'Offence not found',
-      priority: 4,
+      priority: 5,
     },
   },
 };
