@@ -157,11 +157,11 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_offence_details_date_nto_issued: {
-    invalidDateFormat: {
+    maxlength: {
       message: `Enter notice to owner date in the format DD/MM/YYYY`,
       priority: 1,
     },
-    maxLength: {
+    invalidDateFormat: {
       message: `Enter notice to owner date in the format DD/MM/YYYY`,
       priority: 2,
     },
