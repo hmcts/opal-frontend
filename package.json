@@ -88,6 +88,7 @@
     "fast-sort": "^3.4.1",
     "govuk-frontend": "^5.0.0",
     "helmet": "^8.0.0",
+    "home-office-kit": "^1.2.0",
     "http-proxy-middleware": "^3.0.0",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "luxon": "^3.4.3",

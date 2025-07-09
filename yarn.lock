@@ -10531,6 +10531,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"home-office-kit@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "home-office-kit@npm:1.2.0"
+  checksum: 10/767956f5e5a47ee792ae4ba19646df6b515dc3d9053f8de5a1c31b4125e4591f88592589b9c798d45be7f714833a1cdd78d8f3a1127926e5b4e7981d1115d6d0
+  languageName: node
+  linkType: hard
+
 "hosted-git-info@npm:^7.0.0":
   version: 7.0.2
   resolution: "hosted-git-info@npm:7.0.2"
@@ -13582,6 +13589,7 @@ __metadata:
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^5.0.0"
     helmet: "npm:^8.0.0"
+    home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
     jasmine-core: "npm:~5.8.0"
     junit-report-merger: "npm:^7.0.0"
