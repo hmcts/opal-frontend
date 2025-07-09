@@ -59,6 +59,7 @@ import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/futu
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -134,7 +135,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
-      fm_offence_details_offence_cjs_code: new FormControl(null, [Validators.required]),
+      fm_offence_details_offence_cjs_code: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(8),
+        alphabeticalTextValidator(),
+      ]),
       fm_offence_details_offence_id: new FormControl(null),
       fm_offence_details_impositions: new FormArray([]),
     });

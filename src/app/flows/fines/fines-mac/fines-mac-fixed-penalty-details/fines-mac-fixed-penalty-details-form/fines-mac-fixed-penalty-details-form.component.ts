@@ -153,7 +153,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_fp_personal_details_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        alphabeticalTextValidator(),
+      ]),
       // Court Details
       fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
       fm_fp_court_details_issuing_authority_id: new FormControl(null, [
