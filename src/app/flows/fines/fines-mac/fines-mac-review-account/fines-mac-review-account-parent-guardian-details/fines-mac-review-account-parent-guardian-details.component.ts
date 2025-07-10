@@ -25,13 +25,12 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   styles: ``,
 })
 export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnInit {
-  @Input({ required: true }) public parentGuardianDetails!: IFinesMacParentGuardianDetailsState;
-  @Input({ required: false }) public isReadOnly = false;
-  @Output() public emitChangeParentGuardianDetails = new EventEmitter<void>();
-
   private readonly dateService = inject(DateService);
   private readonly utilsService = inject(UtilsService);
 
+  @Input({ required: true }) public parentGuardianDetails!: IFinesMacParentGuardianDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
+  @Output() public emitChangeParentGuardianDetails = new EventEmitter<void>();
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public aliases!: string[];
   public dob!: string | null;

@@ -31,9 +31,9 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
   extends AbstractFormBaseComponent
   implements OnInit, OnDestroy
 {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsSearchOffencesForm>();
-
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsSearchOffencesForm>();
 
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS;
 
