@@ -3453,15 +3453,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.21":
-  version: 0.0.21
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.21"
+"@hmcts/opal-frontend-common@npm:^0.0.22":
+  version: 0.0.22
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.22"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/ec14ce48f1784a0881bc16e130cae228fc42a3ce946ff8cb616895e17815aab53e8c517a264e0f531492b736147f16ecf1b55acbd2e13c633b6f7b4daf09c8ea
+  checksum: 10/4400c3e1d035a314c83c1ab0263dee660120222fcc4ed5132480462dc51a7f458934eab63ced06d74b136610a07a6bdd5e48587e8e4151ac491545f4445b8562
   languageName: node
   linkType: hard
 
@@ -10531,6 +10531,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"home-office-kit@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "home-office-kit@npm:1.2.0"
+  checksum: 10/767956f5e5a47ee792ae4ba19646df6b515dc3d9053f8de5a1c31b4125e4591f88592589b9c798d45be7f714833a1cdd78d8f3a1127926e5b4e7981d1115d6d0
+  languageName: node
+  linkType: hard
+
 "hosted-git-info@npm:^7.0.0":
   version: 7.0.2
   resolution: "hosted-git-info@npm:7.0.2"
@@ -12411,9 +12418,9 @@ __metadata:
   linkType: hard
 
 "luxon@npm:^3.4.3, luxon@npm:^3.5.0":
-  version: 3.6.1
-  resolution: "luxon@npm:3.6.1"
-  checksum: 10/35aad425607708c87af110a52c949190bc35b987770079ec8007ef2365cd29639413db3360d2883777aa01cb3ca5bdb37f42ee3e8e5a0dd277fe22e90cc8a786
+  version: 3.7.1
+  resolution: "luxon@npm:3.7.1"
+  checksum: 10/3582460c0e2d4a88f6f0c11df30cac70c7e09a3d595b66b1d04543759a38afe6e5be28c601c4d81ee73d2e8602c65f825e2c8a8542392cc564624f2bf7d6301f
   languageName: node
   linkType: hard
 
@@ -13545,7 +13552,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.21"
+    "@hmcts/opal-frontend-common": "npm:^0.0.22"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.8"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
@@ -13582,6 +13589,7 @@ __metadata:
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^5.0.0"
     helmet: "npm:^8.0.0"
+    home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
     jasmine-core: "npm:~5.8.0"
     junit-report-merger: "npm:^7.0.0"
