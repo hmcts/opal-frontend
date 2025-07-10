@@ -42,7 +42,7 @@ export const DOM_ELEMENTS = {
   postcodeInput: '#fsa_search_account_companies_post_code',
   postcodeError: '#fsa_search_account_companies_post_code-error-message',
 
-  // Active accounts only checkbox   
+  // Active accounts only checkbox
   activeAccountsOnlyCheckbox: '#fsa_search_account_active_accounts_only',
 
   // Generic error message
