@@ -137,6 +137,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       ]),
       fm_offence_details_offence_cjs_code: new FormControl(null, [
         Validators.required,
+        Validators.minLength(7),
         Validators.maxLength(8),
         alphabeticalTextValidator(),
       ]),
