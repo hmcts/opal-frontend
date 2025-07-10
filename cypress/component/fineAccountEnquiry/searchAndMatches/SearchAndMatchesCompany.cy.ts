@@ -45,11 +45,9 @@ describe('Search Account Component - Company', () => {
     companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
   });
 
-  it.only('AC1a-b. should render the search for an account screen and companies tab', { tags: ['PO-712'] }, () => {
+  it('AC1a-b. should render the search for an account screen and companies tab', { tags: ['PO-712'] }, () => {
     setupComponent(null);
-    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_company_company_name='test';
-
-
+    
     cy.get(DOM_ELEMENTS.companiesTab).click();
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search for an account');
@@ -78,32 +76,28 @@ describe('Search Account Component - Company', () => {
 
   it('AC3a. should show error for non-alphabetical company name', { tags: ['PO-712'] }, () => {
     setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name = 'Company123'; 
     
-cy.get(DOM_ELEMENTS.companyNameInput).type('Company123');
 cy.get(DOM_ELEMENTS.searchButton).click();
-
 cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only include letters a to z');
 cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only include letters a to z');
-
 cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
   it('AC3b. should show error for non-alphabetical address line 1', { tags: ['PO-712'] }, () => {
     setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 = 'Address123?';
 
-cy.get(DOM_ELEMENTS.addressLine1Input).type('Address123?');
 cy.get(DOM_ELEMENTS.searchButton).click();
-
 cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes');
 cy.get(DOM_ELEMENTS.addressLine1Error).should('contain', 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes');
-
 cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
 
   it('AC3c. should show error for non-alphabetical post code', { tags: ['PO-712'] }, () => {
     setupComponent(null);
-    
-cy.get(DOM_ELEMENTS.postcodeInput).type('POSTCODE?');
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code ='POSTCODE?';
+
 cy.get(DOM_ELEMENTS.searchButton).click();
 
 cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes');
@@ -114,37 +108,41 @@ cy.get(DOM_ELEMENTS.postcodeInput).clear();
 
   it('AC4a. should validate company name maximum field length', { tags: ['PO-712'] }, () => {
     setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name ='abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
 
-cy.get(DOM_ELEMENTS.companyNameInput).type('abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs');
 cy.get(DOM_ELEMENTS.searchButton).click();
-
 cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must be 50 characters or fewer');
 cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must be 50 characters or fewer');
-
 cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
   it('AC4b. should validate address line 1 maximum field length', { tags: ['PO-712'] }, () => {
     setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 ='Address1234Address1234Address12345';
 
-cy.get(DOM_ELEMENTS.addressLine1Input).type('Address1234Address1234Address12345');
 cy.get(DOM_ELEMENTS.searchButton).click();
-
 cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must be 30 characters or fewer');
 cy.get(DOM_ELEMENTS.addressLine1Error).should('contain', 'Address line 1 must be 30 characters or fewer');
-
 cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
 
-  it('AC4c. hould validate post code maximum field length', { tags: ['PO-712'] }, () => {
+  it('AC4c. should validate post code maximum field length', { tags: ['PO-712'] }, () => {
     setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
     
-cy.get(DOM_ELEMENTS.postcodeInput).type('POSTCODE?');
 cy.get(DOM_ELEMENTS.searchButton).click();
+cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
+cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
+cy.get(DOM_ELEMENTS.postcodeInput).clear();
+  });
 
-cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes');
-cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes');
-
+  it('AC5a. should validate post code maximum field length', { tags: ['PO-712'] }, () => {
+    setupComponent(null);
+    companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = 'POSTCODES';
+    
+cy.get(DOM_ELEMENTS.searchButton).click();
+cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
+cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
 cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 });
