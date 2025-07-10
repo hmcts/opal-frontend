@@ -5,9 +5,9 @@ Feature: Account Search and Matches
     Then I am on the dashboard
     When I navigate to Search For An Account
 
-  @PO-705
-  Scenario: Tab switching clears data on selecting new tab
-    #PO-705 - AC2 should not trigger any actions when Search button is clicked with no data
+  @PO-705 @PO-712
+  Scenario: Switching to a new tab clears all fields on the 'search for an account' page
+    #PO-705 - AC2 should not trigger any actions when Search button is clicked with no data field populated
     When I click the "Search" button
     Then I see "" in the "Last name" field
     And I see "" in the "First names" field
@@ -16,8 +16,19 @@ Feature: Account Search and Matches
     And I see "" in the "Address line 1" field
     And I see "" in the "Postcode" field
 
+    #PO-712 - AC2 should not trigger any actions when Search button is clicked with no data field populated
+    When I click on the "Companies" link
+    And I click the "Search" button
+    When I click on the "Companies" link
+    Then I see "" in the "Company name" field
+    And I see "" in the "Reference or case number" field
+    And I see "" in the "Account number" field
+    And I see "" in the "Address line 1" field
+    And I see "" in the "Postcode" field
+
     #PO-705 - AC7. Tab switching clears data on the Individuals tab
-    When I enter "Smith" into the "Last name" field
+    When I click on the "Individuals" link
+    And I enter "Smith" into the "Last name" field
     And I select the last name exact match checkbox
     And I enter "John" into the "First names" field
     And I select the first names exact match checkbox
@@ -46,11 +57,32 @@ Feature: Account Search and Matches
     And I verify the last name exact match checkbox is not checked
     And I verify the first names exact match checkbox is not checked
     And I validate the "Include aliases" checkbox is not checked
-
     And I validate the "Active accounts only" checkbox is checked
 
-  @PO-705
-  Scenario: Error navigation when searching with multiple section data
+    #PO-712 - AC6. Tab switching clears data on the company tab
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+    And I select the company name exact match checkbox
+    And I select the include alias checkbox
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    Then I see "CompanyOne" in the "Company name" field
+    And I see "123 Test Street" in the "Address line 1" field
+    And I see "SW1A 1AA" in the "Postcode" field
+
+    When I click on the "Individuals" link
+    And I click on the "Companies" link
+
+    Then I see "" in the "Company name" field
+    And I see "" in the "Address line 1" field
+    And I see "" in the "Postcode" field
+    And I verify the company name exact match checkbox is not checked
+    And I verify the include alias checkbox is not checked
+    And I validate the "Active accounts only" checkbox is checked
+
+  @PO-705 @PO-712
+  Scenario: Validate error displayed when searching with multiple data sections populated
     #PO-705 - AC6. Error when all 3 sections contain data (Account number, Reference number, Individual field)
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
@@ -114,46 +146,6 @@ Feature: Account Search and Matches
     And I see "REF-123" in the "Reference or case number" field
     And I see "Smith" in the "Last name" field
 
-  @PO-705
-  Scenario: Route guard prevents accidental navigation away from search screen with data
-    #PO-705 - AC8. Route guard prevents accidental navigation away from search screen with data
-    When I enter "12345678" into the "Account number" field
-    And I enter "Smith" into the "Last name" field
-
-    Then I see "12345678" in the "Account number" field
-    And I see "Smith" in the "Last name" field
-
-    When I click the browser back button, a window pops up and I click Ok
-
-    Then I am on the dashboard
-
-    When I navigate to Search For An Account
-
-    When I enter "REF-123" into the "Reference or case number" field
-    And I enter "John" into the "First names" field
-
-    Then I see "REF-123" in the "Reference or case number" field
-    And I see "John" in the "First names" field
-    When I click the browser back button, a window pops up and I click Cancel
-
-    Then I see "Search for an account" on the page header
-    And I see "REF-123" in the "Reference or case number" field
-    And I see "John" in the "First names" field
-
-  @PO-712
-  Scenario: No action when all search fields have no data - Company Tab
-    #PO-712 - AC2 should not trigger any actions when Search button is clicked with no data
-    When I click on the "Companies" link
-    And I click the "Search" button
-    When I click on the "Companies" link
-    Then I see "" in the "Company name" field
-    And I see "" in the "Reference or case number" field
-    And I see "" in the "Account number" field
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Postcode" field
-
-  @PO-712
-  Scenario: Error navigation when searching with multiple section data - Company Tab
     #PO-712 - AC5i. Error when all 3 sections contain data (Account number, Reference number, Company field)
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
@@ -209,26 +201,28 @@ Feature: Account Search and Matches
     And I see "REF-123" in the "Reference or case number" field
     And I see "CompanyOne" in the "Company name" field
 
-  @PO-712
-  Scenario: Tab switching clears data on selecting new tab - Company Tab
-    #PO-712 - AC6. Tab switching clears data on the company tab
-    When I click on the "Companies" link
-    And I enter "CompanyOne" into the "Company name" field
-    And I select the company name exact match checkbox
-    And I select the include alias checkbox
-    And I enter "123 Test Street" into the "Address line 1" field
-    And I enter "SW1A 1AA" into the "Postcode" field
+  @PO-705
+  Scenario: Route guard prevents accidental navigation away from search screen with data
+    #PO-705 - AC8. Route guard prevents accidental navigation away from search screen with data
+    When I enter "12345678" into the "Account number" field
+    And I enter "Smith" into the "Last name" field
 
-    Then I see "CompanyOne" in the "Company name" field
-    And I see "123 Test Street" in the "Address line 1" field
-    And I see "SW1A 1AA" in the "Postcode" field
+    Then I see "12345678" in the "Account number" field
+    And I see "Smith" in the "Last name" field
 
-    When I click on the "Individuals" link
-    And I click on the "Companies" link
+    When I click the browser back button, a window pops up and I click Ok
 
-    Then I see "" in the "Company name" field
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Postcode" field
-    And I verify the company name exact match checkbox is not checked
-    And I verify the include alias checkbox is not checked
-    And I validate the "Active accounts only" checkbox is checked
+    Then I am on the dashboard
+
+    When I navigate to Search For An Account
+
+    When I enter "REF-123" into the "Reference or case number" field
+    And I enter "John" into the "First names" field
+
+    Then I see "REF-123" in the "Reference or case number" field
+    And I see "John" in the "First names" field
+    When I click the browser back button, a window pops up and I click Cancel
+
+    Then I see "Search for an account" on the page header
+    And I see "REF-123" in the "Reference or case number" field
+    And I see "John" in the "First names" field
