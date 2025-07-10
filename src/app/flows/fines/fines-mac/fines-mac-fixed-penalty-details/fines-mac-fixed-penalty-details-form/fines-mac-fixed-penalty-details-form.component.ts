@@ -182,6 +182,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_place_of_offence`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_amount_imposed`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_nto_nth`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
 

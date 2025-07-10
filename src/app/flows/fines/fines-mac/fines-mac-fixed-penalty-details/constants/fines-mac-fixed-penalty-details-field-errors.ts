@@ -12,7 +12,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_personal_details_address_line_1: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_address_line_1,
   fm_fp_personal_details_address_line_2: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_address_line_2,
   fm_fp_personal_details_address_line_3: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_address_line_3,
-  fm_fp_personal_details_post_code: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_post_code,
+  fm_fp_personal_details_post_code: {
+    ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_post_code,
+    alphabeticalTextPattern: {
+      priority: 2,
+      message: `Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+    },
+  },
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
   fm_fp_court_details_issuing_authority_id: {
     required: {
@@ -63,17 +69,21 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter date of offence`,
       priority: 1,
     },
-    invalidDateFormat: {
+    maxlength: {
       message: `Offence date must be in the format DD/MM/YYYY`,
       priority: 2,
     },
+    invalidDateFormat: {
+      message: `Offence date must be in the format DD/MM/YYYY`,
+      priority: 3,
+    },
     invalidDate: {
       message: `Enter a valid offence date`,
-      priority: 3,
+      priority: 4,
     },
     invalidFutureDate: {
       message: `Date of offence must be in the past`,
-      priority: 4,
+      priority: 5,
     },
   },
   fm_fp_offence_details_offence_id: {},
@@ -148,17 +158,21 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_offence_details_date_nto_issued: {
-    invalidDateFormat: {
+    maxlength: {
       message: `Enter notice to owner date in the format DD/MM/YYYY`,
       priority: 1,
     },
+    invalidDateFormat: {
+      message: `Enter notice to owner date in the format DD/MM/YYYY`,
+      priority: 2,
+    },
     invalidDate: {
       message: `Enter a valid notice to owner date`,
-      priority: 2,
+      priority: 3,
     },
     invalidFutureDate: {
       message: `Date notice to owner issued must be in the past`,
-      priority: 3,
+      priority: 4,
     },
   },
   fm_fp_company_details_company_name: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_company_name,
