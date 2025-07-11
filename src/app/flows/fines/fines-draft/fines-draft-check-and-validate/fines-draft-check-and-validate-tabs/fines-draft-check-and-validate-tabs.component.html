@@ -1,3 +1,110 @@
 <div class="govuk-grid-column-full">
+  @if (finesDraftStore.bannerMessage().length > 0) {
+    <div opal-lib-moj-alert [ariaLabel]="finesDraftStore.bannerMessage()" type="success">
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content
+        ><opal-lib-moj-alert-content-text>{{ finesDraftStore.bannerMessage() }} </opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </div>
+  }
   <h1 class="govuk-heading-l">Review accounts</h1>
+  <opal-lib-moj-sub-navigation subNavId="checker-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="checker-to-review-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="to-review"
+      subNavItemText="To review"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="checker-rejected-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="rejected"
+      subNavItemText="Rejected"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="checker-deleted-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="deleted"
+      subNavItemText="Deleted"
+    ></li>
+    @if (failedCount$ | async; as failedCount) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="checker-failed-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="failed"
+        subNavItemText="Failed"
+      >
+        @if (failedCount !== '0') {
+          <opal-lib-moj-badge badge badgeId="checker-failed-tab-failed-count">
+            {{ failedCount }}
+          </opal-lib-moj-badge>
+        }
+      </li>
+    }
+  </opal-lib-moj-sub-navigation>
+  @switch (activeTab) {
+    @case ('to-review') {
+      <h2 class="govuk-heading-m">To review</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('rejected') {
+      <h2 class="govuk-heading-m">Rejected</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('deleted') {
+      <h2 class="govuk-heading-m">Deleted</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('failed') {
+      <h2 class="govuk-heading-m">Failed</h2>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+  }
+
+  <ng-template #tableWrapper>
+    @if (tabData$ | async; as draftAccounts) {
+      @if (draftAccounts.length) {
+        <app-fines-draft-table-wrapper
+          [tableData]="draftAccounts"
+          [existingSortState]="tableSort"
+          [isApprovedTab]="false"
+          [isChecker]="true"
+          (linkClicked)="onDefendantClick($event)"
+          (accountClicked)="onAccountClick($event)"
+          [activeTab]="activeTab"
+        ></app-fines-draft-table-wrapper>
+      } @else {
+        @switch (activeTab) {
+          @case ('to-review') {
+            <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
+          }
+          @case ('rejected') {
+            <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
+          }
+          @case ('deleted') {
+            <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
+          }
+          @case ('failed') {
+            <ng-container *ngTemplateOutlet="failedNoData"></ng-container>
+          }
+        }
+      }
+    }
+  </ng-template>
+  <ng-template #reviewNoData>
+    <p>There are no accounts to review.</p>
+  </ng-template>
+  <ng-template #rejectedNoData>
+    <p>There are no rejected accounts.</p>
+  </ng-template>
+  <ng-template #deletedNoData>
+    <p>No accounts have been deleted in the past 7 days.</p>
+  </ng-template>
+  <ng-template #failedNoData>
+    <p>There are no failed accounts</p>
+  </ng-template>
 </div>

@@ -28,6 +28,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -169,6 +171,7 @@ export class FinesMacPayloadService {
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
       timeline_data: timeLineData,
+      version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
 
     // Transform the payload, format the dates to the correct format
@@ -207,6 +210,40 @@ export class FinesMacPayloadService {
       sessionUserState,
       false,
     );
+  }
+
+  /**
+   * Builds a patch payload for updating a fines account draft.
+   *
+   * @param draftAccountPayload - The original account payload to be patched.
+   * @param newTimelineDataObject - The new timeline data object to append to the timeline.
+   * @param sessionUserState - The current session user's state, used for validation information.
+   * @returns The constructed patch payload for the fines account draft.
+   */
+  public buildPatchAccountPayload(
+    draftAccountPayload: IFinesMacAddAccountPayload,
+    status: string,
+    reasonText: string | null,
+    sessionUserState: ISessionUserState,
+  ): IOpalFinesDraftAccountPatchPayload {
+    return {
+      account_status: status,
+      business_unit_id: draftAccountPayload.business_unit_id!,
+      reason_text: reasonText,
+      timeline_data: finesMacPayloadBuildAccountTimelineData(
+        sessionUserState['name'],
+        status,
+        this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
+        reasonText,
+        draftAccountPayload.timeline_data,
+      ),
+      validated_by:
+        status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
+          ? null
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id!, sessionUserState)!,
+      validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
+      version: draftAccountPayload.version!,
+    };
   }
 
   /**
@@ -281,5 +318,26 @@ export class FinesMacPayloadService {
     }
 
     return finesMacState;
+  }
+
+  /**
+   * Returns the defendant's name based on the defendant type in the provided payload.
+   *
+   * - If the defendant type is 'adultOrYouthOnly' or 'parentOrGuardianToPay', the name is constructed
+   *   from the defendant's forenames and surname.
+   * - Otherwise, the company name is returned.
+   *
+   * @param payload - The payload containing account and defendant information.
+   * @returns The defendant's full name or company name as a string.
+   */
+  public getDefendantName(payload: IFinesMacAddAccountPayload): string {
+    if (
+      payload.account.defendant_type === 'adultOrYouthOnly' ||
+      payload.account.defendant_type === 'parentOrGuardianToPay'
+    ) {
+      return `${payload.account.defendant.forenames} ${payload.account.defendant.surname}`;
+    } else {
+      return `${payload.account.defendant.company_name}`;
+    }
   }
 }

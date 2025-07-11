@@ -20,6 +20,7 @@ export const DOM_ELEMENTS = {
   //buttons
   addImpositionButton: 'button[id = "addImposition"]',
   submitButton: 'button[type = "submit"]',
+  addAnotherOffenceButton: 'button[type = "submit"]:contains("Add another offence")',
 
   //ticket panel
   ticketPanel: 'opal-lib-moj-ticket-panel',
@@ -36,8 +37,8 @@ export const DOM_ELEMENTS = {
 
   //link
   offenceLink: 'a.govuk-link.govuk-task-list_link.govuk-link--no-visited-state',
-  minorCreditorLink: 'a.govuk-link.govuk-link--no-visited-state',
-  removeImpositionLink: 'a.govuk-link.govuk-link--no-visited-state',
+  minorCreditorLink: 'a:contains("Add minor creditor details")',
+  removeImpositionLink: 'a:contains("Remove imposition")',
 };
 
 export const impostitionSelectors = (number: number) => ({

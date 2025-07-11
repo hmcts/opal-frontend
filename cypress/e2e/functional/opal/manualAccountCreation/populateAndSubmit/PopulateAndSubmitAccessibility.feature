@@ -26,7 +26,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
 
     When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
     And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "bridport" into the "Enforcement court" search box
+    And I enter "West London VPFPO" into the "Enforcement court" search box
 
     Then I click the "Return to account details" button
 
@@ -63,8 +63,8 @@ Feature: Accessibility Tests for Populate and Submit Screens
     And I enter "100" into the "Amount paid" field for imposition 1
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
-    And I enter "Transport for London" into the "Search using name or code" search box
-    And I see "Transport for London (TFL2)" in the "Search using name or code" field for imposition 1
+    And I enter "Temporary Creditor" into the "Search using name or code" search box
+    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 1
 
     When I click the "Review offence" button
     Then I see "Offences and impositions" on the page header

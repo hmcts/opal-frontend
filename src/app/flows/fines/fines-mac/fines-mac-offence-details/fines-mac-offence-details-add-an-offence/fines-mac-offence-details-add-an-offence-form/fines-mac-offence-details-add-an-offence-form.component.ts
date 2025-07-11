@@ -28,7 +28,12 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../consta
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
-import { MojBannerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-banner';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertTextComponent,
+  MojAlertIconComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -53,6 +58,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -71,7 +77,10 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
     GovukCancelLinkComponent,
     GovukRadiosConditionalComponent,
     GovukTextInputComponent,
-    MojBannerComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertTextComponent,
+    MojAlertIconComponent,
     FinesMacOffenceDetailsMinorCreditorInformationComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
@@ -106,6 +115,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
   public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
+
+  public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
@@ -459,11 +470,22 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Navigates to the search offences page and updates the offence details draft.
+   * Validates minor creditor selections in the impositions form array.
+   * If a creditor is required, set to 'minor', and no corresponding minor creditor exists,
+   * an error is applied to the creditor control at that row.
+   *
+   * @returns {void}
    */
-  public goToSearchOffences(): void {
-    this.updateOffenceDetailsDraft(this.form.value);
-    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
+  private checkImpositionMinorCreditors(): void {
+    const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
+    formArray.controls.forEach((control, rowIndex) => {
+      const needsCreditor = control.get(`fm_offence_details_needs_creditor_${rowIndex}`)?.value;
+      const creditorControl = control.get(`fm_offence_details_creditor_${rowIndex}`);
+      const selectedCreditor = creditorControl?.value;
+      if (needsCreditor && selectedCreditor === 'minor' && !this.minorCreditors?.[rowIndex]) {
+        creditorControl?.setErrors({ minorCreditorMissing: true });
+      }
+    });
   }
 
   /**
@@ -585,6 +607,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
       return acc;
     }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden);
+  }
+
+  /**
+   * Handles the form submission for adding an offence.
+   * This method first validates minor creditor selections and then
+   * invokes the base class submission logic.
+   *
+   * @param event - The submit event triggered by the form submission.
+   */
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.checkImpositionMinorCreditors();
+    super.handleFormSubmit(event);
   }
 
   /**

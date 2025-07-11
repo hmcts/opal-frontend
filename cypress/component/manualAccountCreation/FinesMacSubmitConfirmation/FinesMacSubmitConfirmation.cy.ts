@@ -14,6 +14,7 @@ describe('FinesMacSubmitConfirmation', () => {
       mockFinesService.finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
     });
   });

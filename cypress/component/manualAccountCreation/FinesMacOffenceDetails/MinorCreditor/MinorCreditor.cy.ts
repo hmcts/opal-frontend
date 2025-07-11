@@ -206,11 +206,11 @@ describe('FinesMacMinorCreditor', () => {
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.submitButton).click();
-      for (const [, value] of Object.entries(REQUIRED_FIELDS)) {
-        if (value != 'Enter company name' && value != "Enter minor creditor's last name") {
-          cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-        }
-      }
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.creditorTypeRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNameRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankSortCodeRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNumberRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountRefRequired);
     },
   );
 
@@ -351,6 +351,86 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-345', '@PO-1450'] },
+    () => {
+      setupComponent(null, 'company');
+
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 });
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'REF123ABC');
+
+      cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
+
+  it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
+    formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
+    formData[0].formData.fm_offence_details_minor_creditor_bank_sort_code = '123456';
+    formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('abgc123', { delay: 0 });
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).blur();
+
+    formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+    cy.get(DOM_ELEMENTS.surnameInput).type('surname', { delay: 0 });
+    cy.get(DOM_ELEMENTS.surnameInput).blur();
+
+    cy.get(DOM_ELEMENTS.postCodeInput).type('ne137fg', { delay: 0 });
+    cy.get(DOM_ELEMENTS.postCodeInput).blur();
+
+    cy.get(DOM_ELEMENTS.bankPaymentRefInput).should('have.value', 'ABGC123');
+    cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
+    cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+  });
+
+  it(
+    '(AC.1) should convert Payment Reference, Minor Creditor surname, and Minor Creditor postcode to uppercase on user input',
+    { tags: ['@PO-242', '@PO-1448'] },
+    () => {
+      setupComponent(null, 'AdultOrYouthOnly');
+
+      cy.get(DOM_ELEMENTS.bankPaymentRefInput).type('ref123abc', { delay: 0 }).should('have.value', 'REF123ABC');
+
+      cy.get(DOM_ELEMENTS.creditorTypeIndividual).click();
+      cy.get(DOM_ELEMENTS.surnameInput).type('smith', { delay: 0 }).should('have.value', 'SMITH');
+      cy.get(DOM_ELEMENTS.postCodeInput).type('ab12 3cd', { delay: 0 }).should('have.value', 'AB12 3CD');
+    },
+  );
+
+  it(
+    '(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual',
+    { tags: ['@PO-1075'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      setupComponent(mockFormSubmit);
+
+      formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
+      formData[0].formData.fm_offence_details_minor_creditor_title = '';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '';
+      cy.get(DOM_ELEMENTS.payByBacsCheckbox).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualTitleRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualFirstNameRequired);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
+
+      cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
+      cy.get(DOM_ELEMENTS.forenamesInput).type('John', { delay: 0 });
+      cy.get(DOM_ELEMENTS.surnameInput).type('Doe', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get('@formSubmitSpy').should('have.been.calledOnce');

@@ -4,5 +4,7 @@ export interface IFinesRoutingPaths extends IParentRoutingPaths {
   children: {
     mac: IChildRoutingPaths;
     draft: IChildRoutingPaths;
+    acc: IChildRoutingPaths;
+    sa: IChildRoutingPaths;
   };
 }

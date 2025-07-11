@@ -19,6 +19,7 @@ import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCre
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
+import { REVIEW_HISTORY } from './constants/fines_draft_cav_tableConstants';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -30,6 +31,7 @@ describe('FinesMacReviewAccountComponent', () => {
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
     amend: boolean = true,
+    checker: boolean = false,
   ) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
@@ -38,18 +40,6 @@ describe('FinesMacReviewAccountComponent', () => {
         UtilsService,
         FinesMacPayloadService,
         Router,
-
-        {
-          provide: FinesMacPayloadService,
-          useValue: {
-            buildAddAccountPayload: () => {
-              return finesAccountPayload;
-            },
-            buildReplaceAccountPayload: () => {
-              return finesAccountPayload;
-            },
-          },
-        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -76,6 +66,7 @@ describe('FinesMacReviewAccountComponent', () => {
             let store = new FinesDraftStore();
             store.setFinesDraftState(finesDraftStateMock);
             store.setAmend(amend);
+            store.setChecker(checker);
             return store;
           },
         },
@@ -83,11 +74,18 @@ describe('FinesMacReviewAccountComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: {
+                get: (key: string) => (key === 'draftAccountId' ? '42' : null),
+              },
               data: {
                 reviewAccountFetchMap: {
-                  FinesMacStore: finesMacState,
+                  finesMacStore: finesMacState,
                   finesMacDraft: activatedRouteMock,
                 },
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
               parent: {
                 snapshot: {
@@ -102,22 +100,6 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   };
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
-      statusCode: 200,
-      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-    }).as('getLocalJusticeAreas');
-    cy.intercept('GET', '**/opal-fines-service/courts**', {
-      statusCode: 200,
-      body: OPAL_FINES_COURT_REF_DATA_MOCK,
-    }).as('getCourts');
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    }).as('getResults');
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    }).as('getMajorCreditors');
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -163,10 +145,8 @@ describe('FinesMacReviewAccountComponent', () => {
     '(AC.1a)should render court details and offence details for all defendant types',
     { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545', '@PO-657'] },
     () => {
-      cy.wait('@getOffenceByCjsCode');
-      cy.wait('@getCourts');
       setupComponent();
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = null;
+      cy.wait('@getOffenceByCjsCode');
 
       cy.get(DOM_ELEMENTS.originatorName).should('exist');
       cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');
@@ -386,7 +366,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dashed line if Data is empty for non required details',
+    '(AC.3,AC.7) should show dashed line if Data is empty for non required details',
     { tags: ['@PO-560', '@PO-272', '@PO-657'] },
     () => {
       setupComponent();
@@ -413,6 +393,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -441,7 +422,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dash lines for non required fields in the details',
+    '(AC.3,AC.7) should show dash lines for non required fields in the details',
     { tags: ['@PO-560', '@PO-272', '@PO-657'] },
     () => {
       setupComponent();
@@ -647,6 +628,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -674,7 +656,7 @@ describe('FinesMacReviewAccountComponent', () => {
   );
 
   it(
-    '(AC.3) should show dash lines for non required fields in the details AYPG',
+    '(AC.3,AC.7) should show dash lines for non required fields in the details AYPG',
     { tags: ['@PO-662', '@PO-344', '@PO-657'] },
     () => {
       setupComponent();
@@ -793,7 +775,7 @@ describe('FinesMacReviewAccountComponent', () => {
     },
   );
   it(
-    '(AC.3) should show dashed line if Data is empty for non required details Company',
+    '(AC.3,AC.7) should show dashed line if Data is empty for non required details Company',
     { tags: ['@PO-663', '@PO-345', '@PO-657'] },
     () => {
       setupComponent();
@@ -809,6 +791,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
 
       cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
@@ -858,7 +841,7 @@ describe('FinesMacReviewAccountComponent', () => {
       reason_text: null,
     });
 
-    setupComponent(finesAccountPayload, finesAccountPayload);
+    setupComponent(finesAccountPayload, finesAccountPayload, true);
 
     cy.get(DOM_ELEMENTS.timeLine).should('exist');
     const timelineEntries = [
@@ -1205,6 +1188,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesMacState.accountCommentsNotes.formData = {
         fm_account_comments_notes_comments: '',
         fm_account_comments_notes_notes: '',
+        fm_account_comments_notes_system_notes: '',
       };
       cy.wrap(defendantTypes).each((type: string) => {
         cy.then(() => {
@@ -1223,6 +1207,49 @@ describe('FinesMacReviewAccountComponent', () => {
           cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
         });
       });
+    },
+  );
+  it('AC.2 The Review Account screen will be created as per the design artefact', { tags: ['@PO-594'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+
+    cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Mr John DOE');
+    cy.get(DOM_ELEMENTS.accountStatus).should('exist').and('contain', 'In review');
+  });
+
+  it('AC.8, Decision table will be shown as per the design artefact', { tags: ['@PO-594'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+    cy.get(DOM_ELEMENTS.approveRadioButton).should('exist');
+    cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+    cy.get(DOM_ELEMENTS.rejectionText).should('exist');
+    cy.get(DOM_ELEMENTS.continue).should('exist');
+    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+  });
+  it('AC.8a user does not select any radio button and selects the Continue button', { tags: ['@PO-594'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+    cy.get(DOM_ELEMENTS.continue).should('exist').click();
+    cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+    cy.get('p').should('contain', 'Select whether approved or rejected');
+  });
+  it(
+    'AC.8b,AC.8c,AC.8ci user does not select any radio button and selects the Continue button',
+    { tags: ['@PO-594'] },
+    () => {
+      setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+      cy.get(DOM_ELEMENTS.rejectRadioButton).should('exist').click();
+      cy.get(DOM_ELEMENTS.continue).should('exist').click();
+      cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+      cy.get('p').should('contain', 'Enter reason for rejection');
+
+      //when user enters non acceptable characters into rejection text box
+      cy.get(DOM_ELEMENTS.textArea).should('exist').type('*');
+      cy.get(DOM_ELEMENTS.continue).should('exist').click();
+      cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+      cy.get('p').should(
+        'contain',
+        'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      );
     },
   );
 });

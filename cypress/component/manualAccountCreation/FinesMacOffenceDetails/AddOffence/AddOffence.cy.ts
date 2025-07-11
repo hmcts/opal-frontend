@@ -15,7 +15,12 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 import { impositionResultCodelist } from './constants/fines_mac_offence_details_results_codes';
-import { IMPOSITION_MOCK_1, IMPOSITION_MOCK_2, IMPOSITION_MOCK_3 } from './mocks/add-offence-imposition-mock';
+import {
+  IMPOSITION_MOCK_1,
+  IMPOSITION_MOCK_2,
+  IMPOSITION_MOCK_3,
+  IMPOSITION_MOCK_4,
+} from './mocks/add-offence-imposition-mock';
 
 describe('FinesMacAddOffenceComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -23,14 +28,6 @@ describe('FinesMacAddOffenceComponent', () => {
   const date = new Date();
 
   beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/results**', {
-      statusCode: 200,
-      body: OPAL_FINES_RESULTS_REF_DATA_MOCK,
-    });
-    cy.intercept('GET', '**/opal-fines-service/major-creditors**', {
-      statusCode: 200,
-      body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
-    });
     cy.intercept(
       {
         method: 'GET',
@@ -46,7 +43,7 @@ describe('FinesMacAddOffenceComponent', () => {
           refData: matchedOffences,
         });
       },
-    );
+    ).as('getOffenceCode');
   });
 
   let currentoffenceDetails = 0;
@@ -91,9 +88,10 @@ describe('FinesMacAddOffenceComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
           },
@@ -144,7 +142,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
       cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
 
-      cy.get(DOM_ELEMENTS.removeImpositionLink).eq(2).should('not.exist');
+      cy.get(DOM_ELEMENTS.removeImpositionLink).should('not.exist');
     },
   );
 
@@ -210,14 +208,18 @@ describe('FinesMacAddOffenceComponent', () => {
 
       impositionResultCodelist.forEach((resultCode) => {
         if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
-          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeInput).click();
+          cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
           cy.get(imposition_1.resultCodeLabel).click();
           cy.get(imposition_1.majorCreditor).should('exist');
           cy.get(imposition_1.minorCreditor).should('exist');
           cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
           cy.get(imposition_1.minorCreditorLabel).should('contain', 'Minor creditor');
         } else {
-          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeInput).click();
+          cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
+          cy.get(imposition_1.resultCodeInput).clear().type(`${resultCode}`, { delay: 0, force: true });
           cy.get(imposition_1.resultCodeLabel).click();
 
           cy.get(imposition_1.majorCreditor).should('not.exist');
@@ -452,12 +454,16 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.3bi) should show ticket panel for valid offence code',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      setupComponent(null);
-
+      finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
 
+      setupComponent(null);
+
+      cy.wait('@getOffenceCode');
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123456', { delay: 0 });
+
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-      cy.get(DOM_ELEMENTS.successPanel).should('exist');
+      cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('exist');
     },
   );
 
@@ -518,6 +524,81 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
+
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y only',
+    { tags: ['@PO-1060'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      const SELECTOR = impostitionSelectors(0);
+
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.resultCodeInput).click();
+      cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
+      cy.get(SELECTOR.minorCreditor).click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
+      cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
+    },
+  );
+
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
+    { tags: ['@PO-1060'] },
+    () => {
+      setupComponent(null, 'parentOrGuardianToPay');
+      const SELECTOR = impostitionSelectors(0);
+
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.resultCodeInput).click();
+      cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
+      cy.get(SELECTOR.minorCreditor).click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
+      cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
+    },
+  );
+
+  it(
+    '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, company',
+    { tags: ['@PO-1060'] },
+    () => {
+      setupComponent(null, 'company');
+      const SELECTOR = impostitionSelectors(0);
+
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.resultCodeInput).click();
+      cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
+      cy.get(SELECTOR.minorCreditor).click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
+      cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
     },
   );
 });

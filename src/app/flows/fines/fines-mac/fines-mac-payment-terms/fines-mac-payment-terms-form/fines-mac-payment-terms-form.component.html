@@ -56,10 +56,7 @@
                 <opal-lib-govuk-checkboxes-item
                   inputId="fm_payment_terms_collection_order_made_today"
                   inputName="fm_payment_terms_collection_order_made_today"
-                  inputId="fm_payment_terms_collection_order_made_today"
-                  inputName="fm_payment_terms_collection_order_made_today"
                   labelText="Make collection order today"
-                  [control]="form.controls['fm_payment_terms_collection_order_made_today']"
                   [control]="form.controls['fm_payment_terms_collection_order_made_today']"
                 ></opal-lib-govuk-checkboxes-item>
               </div>
@@ -131,12 +128,8 @@
                   labelClasses="govuk-label--s"
                   inputId="fm_payment_terms_lump_sum_amount"
                   inputName="fm_payment_terms_lump_sum_amount"
-                  inputId="fm_payment_terms_lump_sum_amount"
-                  inputName="fm_payment_terms_lump_sum_amount"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls['fm_payment_terms_lump_sum_amount']"
-                  [errors]="formControlErrorMessages['fm_payment_terms_lump_sum_amount']"
                   [control]="form.controls['fm_payment_terms_lump_sum_amount']"
                   [errors]="formControlErrorMessages['fm_payment_terms_lump_sum_amount']"
                   [forceTwoDecimalPoints]="true"
@@ -154,9 +147,6 @@
     <div
       opal-lib-govuk-checkboxes-item
       labelText="Request payment card"
-      inputId="fm_payment_terms_payment_card_request"
-      inputName="fm_payment_terms_payment_card_request"
-      [control]="form.controls['fm_payment_terms_payment_card_request']"
       inputId="fm_payment_terms_payment_card_request"
       inputName="fm_payment_terms_payment_card_request"
       [control]="form.controls['fm_payment_terms_payment_card_request']"
@@ -184,14 +174,9 @@
               labelClasses="govuk-label--s"
               inputId="fm_payment_terms_suspended_committal_date"
               inputName="fm_payment_terms_suspended_committal_date"
-              inputId="fm_payment_terms_suspended_committal_date"
-              inputName="fm_payment_terms_suspended_committal_date"
               inputClasses="govuk-input--width-10"
               hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
               [maxDate]="yesterday"
-              [control]="form.controls['fm_payment_terms_suspended_committal_date']"
-              [errors]="formControlErrorMessages['fm_payment_terms_suspended_committal_date']"
-              (dateChange)="setInputValue($event, 'fm_payment_terms_suspended_committal_date')"
               [control]="form.controls['fm_payment_terms_suspended_committal_date']"
               [errors]="formControlErrorMessages['fm_payment_terms_suspended_committal_date']"
               (dateChange)="setInputValue($event, 'fm_payment_terms_suspended_committal_date')"
@@ -203,19 +188,14 @@
               labelClasses="govuk-label--s"
               inputId="fm_payment_terms_default_days_in_jail"
               inputName="fm_payment_terms_default_days_in_jail"
-              inputId="fm_payment_terms_default_days_in_jail"
-              inputName="fm_payment_terms_default_days_in_jail"
               inputClasses="govuk-input--width-5"
               suffixText="days"
-              [control]="form.controls['fm_payment_terms_default_days_in_jail']"
-              [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
               [control]="form.controls['fm_payment_terms_default_days_in_jail']"
               [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
             ></opal-lib-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
-              [date]="form.controls['fm_payment_terms_suspended_committal_date'].value"
               [date]="form.controls['fm_payment_terms_suspended_committal_date'].value"
             ></app-fines-mac-default-days>
           </div>
@@ -363,12 +343,8 @@
       labelClasses="govuk-label--s"
       inputId="fm_payment_terms_instalment_amount"
       inputName="fm_payment_terms_instalment_amount"
-      inputId="fm_payment_terms_instalment_amount"
-      inputName="fm_payment_terms_instalment_amount"
       inputClasses="govuk-input--width-5"
       prefixText="£"
-      [control]="form.controls['fm_payment_terms_instalment_amount']"
-      [errors]="formControlErrorMessages['fm_payment_terms_instalment_amount']"
       [control]="form.controls['fm_payment_terms_instalment_amount']"
       [errors]="formControlErrorMessages['fm_payment_terms_instalment_amount']"
       [forceTwoDecimalPoints]="true"
@@ -378,10 +354,8 @@
   <div class="govuk-form-group">
     <opal-lib-govuk-radio
       fieldSetId="fm_payment_terms_instalment_period"
-      fieldSetId="fm_payment_terms_instalment_period"
       legendText="Frequency"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['fm_payment_terms_instalment_period']"
       [errors]="formControlErrorMessages['fm_payment_terms_instalment_period']"
     >
       @for (frequency of frequencyOptions; track frequency.key) {
@@ -390,9 +364,7 @@
           [labelText]="frequency.value"
           [inputId]="frequency.key"
           inputName="fm_payment_terms_instalment_period"
-          inputName="fm_payment_terms_instalment_period"
           [inputValue]="frequency.key"
-          [control]="form.controls['fm_payment_terms_instalment_period']"
           [control]="form.controls['fm_payment_terms_instalment_period']"
         ></div>
       }

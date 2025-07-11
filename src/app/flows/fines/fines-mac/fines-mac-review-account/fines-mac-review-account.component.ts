@@ -3,11 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
-import {
-  IOpalFinesCourt,
-  IOpalFinesCourtRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { catchError, forkJoin, Observable, of, Subject, takeUntil, tap } from 'rxjs';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
@@ -16,10 +13,7 @@ import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-revie
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
-import {
-  IOpalFinesLocalJusticeArea,
-  IOpalFinesLocalJusticeAreaRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
@@ -31,12 +25,19 @@ import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FinesMacReviewAccountDecisionComponent } from './fines-mac-review-account-decision/fines-mac-review-account-decision.component';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
+import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
+import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -55,6 +56,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
     FinesMacReviewAccountParentGuardianDetailsComponent,
     FinesMacReviewAccountCompanyDetailsComponent,
     FinesMacReviewAccountHistoryComponent,
+    FinesMacReviewAccountDecisionComponent,
+    FinesMacReviewAccountFailedBannerComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,49 +66,35 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
+  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly userState = this.globalStore.userState();
+
+  protected readonly utilsService = inject(UtilsService);
+  protected readonly dateService = inject(DateService);
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesDraftStore = inject(FinesDraftStore);
-  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  protected readonly utilsService = inject(UtilsService);
-  private readonly userState = this.globalStore.userState();
-  protected readonly dateService = inject(DateService);
-
-  protected enforcementCourtsData!: IOpalFinesCourt[];
-  protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
-
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
-  protected readonly finesDraftCheckAndManageRoutes = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
+
+  protected readonly createAndManageTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`;
+  protected readonly viewAllAccountsTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`;
+  protected readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
+  public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
+  public courts!: IOpalFinesCourtRefData;
+  public results!: IOpalFinesResultsRefData;
+  public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
+  public timelineData!: IFinesMacAccountTimelineData[];
 
-  private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
-    .getCourts(this.finesMacStore.getBusinessUnitId())
-    .pipe(
-      tap((response: IOpalFinesCourtRefData) => {
-        this.enforcementCourtsData = response.refData;
-      }),
-      takeUntil(this.ngUnsubscribe),
-    );
-
-  private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
-    .getLocalJusticeAreas()
-    .pipe(
-      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
-        this.localJusticeAreasData = response.refData;
-      }),
-      takeUntil(this.ngUnsubscribe),
-    );
-
-  protected groupLjaAndCourtData$ = forkJoin({
-    enforcementCourtsData: this.enforcementCourtsData$,
-    localJusticeAreasData: this.localJusticeAreasData$,
-  });
+  public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
@@ -143,6 +132,17 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     // Get payload into Fines Mac State
     this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
     this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
+    this.finesDraftStore.resetBannerMessage();
+
+    if (this.finesDraftStore.timeline_data()) {
+      this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();
+    }
+
+    // Get reference data into variables
+    this.localJusticeAreas = fetchMap.localJusticeAreas;
+    this.courts = fetchMap.courts;
+    this.results = fetchMap.results;
+    this.majorCreditors = fetchMap.majorCreditors;
 
     // Grab the status from the payload
     this.setReviewAccountStatus();
@@ -205,22 +205,23 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Processes the response from a PUT request and updates the state accordingly.
+   * Handles the response from a PUT request to add or update a fines MAC account.
    *
-   * @param response - The response payload from the PUT request containing account details.
-   * @param response.account_snapshot - Snapshot of the account details.
-   * @param response.account_snapshot.defendant_name - The name of the defendant associated with the account.
+   * This method performs the following actions:
+   * - Retrieves the defendant's name from the response payload.
+   * - Sets a banner message indicating the submission, using the defendant's name.
+   * - Resets any unsaved state changes in the fines MAC store.
+   * - Navigates to the "Create and Manage" tabs route, preserving the current fragment.
    *
-   * Updates the fines draft banner message with the defendant's name, sets the state changes and unsaved changes flags to false,
-   * and handles routing to the inputter route.
+   * @param response - The payload returned from the PUT request, containing account and defendant information.
    */
   private processPutResponse(response: IFinesMacAddAccountPayload): void {
-    const accountName = response.account_snapshot?.defendant_name;
-    this.finesDraftStore.setBannerMessage(`You have submitted ${accountName}'s account for review`);
+    const defendantName = this.finesMacPayloadService.getDefendantName(response);
+    this.finesDraftStore.setBannerMessageByType('submitted', defendantName);
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
     this.handleRoute(
-      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
       false,
       undefined,
       this.finesDraftStore.fragment(),
@@ -316,12 +317,19 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
-        false,
-        undefined,
-        this.finesDraftStore.fragment(),
-      );
+      const path = this.finesDraftStore.checker()
+        ? this.checkAndValidateTabs
+        : this.finesDraftStore.viewAllAccounts()
+          ? this.viewAllAccountsTabs
+          : this.createAndManageTabs;
+
+      // return true when going back to view-all-accounts
+      // and false when going back to tabbed fragment
+      if (this.finesDraftStore.viewAllAccounts()) {
+        this.handleRoute(path, true);
+      } else {
+        this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
+      }
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);
     }
@@ -367,6 +375,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.localJusticeAreas = this.activatedRoute.snapshot.data['localJusticeAreas'];
+    this.courts = this.activatedRoute.snapshot.data['courts'];
+    this.results = this.activatedRoute.snapshot.data['results'];
+    this.majorCreditors = this.activatedRoute.snapshot.data['majorCreditors'];
+
     this.reviewAccountFetchedMappedPayload();
   }
 }

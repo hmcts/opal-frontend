@@ -3,10 +3,18 @@ export const DOM_ELEMENTS = {
   heading: 'h1.govuk-heading-l',
   backLink: 'a.govuk-back-link',
 
+  //Alerts
+  errorBanner: 'app-fines-mac-review-account-failed-banner',
+
+  //Summary cards
+  summaryCard: 'opal-lib-govuk-summary-card-list',
+
   //Account details
   businessUnitData: 'div[id = "accountDetailsBusinessUnit"]',
   accountTypeData: 'div[id = "accountDetailsAccountType"]',
   defendantTypeData: 'div[id = "accountDetailsDefendantType"]',
+  langPrefDocLanguage: '[id="accountDetailsDocumentLanguage"]',
+  langPrefCourtHeatingLanguage: '[id="accountDetailsCourtHearingLanguage"]',
 
   //court details
   originatorName: 'div[id = "courtDetailsOriginatorName"]',
@@ -52,6 +60,7 @@ export const DOM_ELEMENTS = {
   amountImposed: 'td[id ="amountImposed"]',
   amountPaid: 'td[id ="amountPaid"]',
   balanceRemaining: 'td[id ="balanceRemaining"]',
+  minorCreditorPaymentMethodValue: 'dd[id="minorCreditorDataTablePaymentMethodValue"]',
 
   totalHeading: 'th[id="totalsHeading"]',
   totalAmountImposed: 'th[id="totalAmountImposed"]',
@@ -95,9 +104,20 @@ export const DOM_ELEMENTS = {
   //review status
   reviewComponent: 'app-fines-mac-review-account-history',
   status: 'strong[id = "status"]',
-  reviewHistory: 'h3.govuk-heading-m',
+  reviewHistory: 'h2.govuk-heading-m',
   timeLine: 'div.moj-timeline__item',
   timeLineTitle: 'h2.moj-timeline__title',
   timelineAuthor: 'p.moj-timeline__byline',
   timelineDate: 'p.moj-timeline__date',
+  timelineDescription: '.moj-timeline__description',
+
+  accountStatus: 'strong[id="status"]',
+  timeLineStatus: 'h2.moj-timeline__title',
+
+  //Decision section
+  approveRadioButton: 'input[id="approve"]',
+  rejectRadioButton: 'input[id="reject"]',
+  rejectionText: 'h1.govuk-label-wrapper',
+  continue: 'button[id = "submitForm"]',
+  textArea: 'textarea[id="fm_review_account_decision_reason"]',
 };

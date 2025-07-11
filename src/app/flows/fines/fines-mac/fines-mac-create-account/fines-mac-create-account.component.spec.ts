@@ -25,9 +25,6 @@ describe('FinesMacCreateAccountComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getBusinessUnits: jasmine
-        .createSpy('getBusinessUnits')
-        .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
       getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
@@ -43,6 +40,11 @@ describe('FinesMacCreateAccountComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('manual-account-creation'),
+            snapshot: {
+              data: {
+                businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+              },
+            },
           },
         },
       ],
@@ -59,10 +61,6 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have state and populate data$', () => {
-    expect(component.data$).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate', () => {
@@ -138,13 +136,6 @@ describe('FinesMacCreateAccountComponent', () => {
     const autoCompleteItems = component['createAutoCompleteItems'](response);
 
     expect(autoCompleteItems).toEqual(expectedAutoCompleteItems);
-  });
-
-  it('should transform business unit reference data results into select options', () => {
-    component.data$.subscribe((result) => {
-      expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
-      expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalled();
-    });
   });
 
   it('should initialise but capture business unit id', () => {

@@ -10,6 +10,8 @@ export interface IOpalFinesDraftAccountsSummary {
   account_snapshot: IOpalFinesAccountSnapshot;
   account_type: string;
   account_status: string;
+  account_status_date: string;
+  account_number: string;
 }
 
 interface IOpalFinesAccountSnapshot {

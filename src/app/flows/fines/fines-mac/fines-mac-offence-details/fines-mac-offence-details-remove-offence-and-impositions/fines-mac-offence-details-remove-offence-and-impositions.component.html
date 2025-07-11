@@ -1,29 +1,27 @@
-@if (referenceData$ | async) {
-  <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l">Are you sure you want to remove this offence and all its impositions?</h1>
-    <app-fines-mac-offence-details-review-offence
-      [offence]="offence"
-      [impositionRefData]="impositionRefData"
-      [majorCreditorRefData]="majorCreditorRefData"
-    ></app-fines-mac-offence-details-review-offence>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <opal-lib-govuk-button
-          buttonId="confirmDeletion"
-          buttonClasses="govuk-button--warning"
-          (buttonClickEvent)="confirmOffenceRemoval()"
-        >
-          Yes - remove offence and all impositions
-        </opal-lib-govuk-button>
-      </div>
-    </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <opal-lib-govuk-cancel-link
-          (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.reviewOffences)"
-          cancelLinkText="No - cancel"
-        ></opal-lib-govuk-cancel-link>
-      </div>
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Are you sure you want to remove this offence and all its impositions?</h1>
+  <app-fines-mac-offence-details-review-offence
+    [offence]="offence"
+    [impositionRefData]="results"
+    [majorCreditorRefData]="majorCreditors"
+  ></app-fines-mac-offence-details-review-offence>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-button
+        buttonId="confirmDeletion"
+        buttonClasses="govuk-button--warning"
+        (buttonClickEvent)="confirmOffenceRemoval()"
+      >
+        Yes - remove offence and all impositions
+      </opal-lib-govuk-button>
     </div>
   </div>
-}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.reviewOffences)"
+        cancelLinkText="No - cancel"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</div>

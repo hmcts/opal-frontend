@@ -32,8 +32,9 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from '../fines-mac-review-account/fines-mac-review-account-history/fines-mac-review-account-history.component';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
-import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
+import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
+import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -76,11 +77,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public pageNavigation!: boolean;
   public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
+  public timelineData!: IFinesMacAccountTimelineData[];
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
-  protected readonly finesDraftCheckAndManageRoutes = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
 
   public accountDetailsStatus!: string;
 
@@ -129,6 +131,20 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
     // Grab the status from the payload
     this.setAccountDetailsStatus();
+  }
+
+  /**
+   * Fetches the timeline data from the fines draft store, clones it to avoid mutating the original data,
+   * reverses the order, and assigns it to the `timelineData` property.
+   *
+   * If no timeline data is available in the store, the method does nothing.
+   *
+   * @private
+   */
+  private fetchTimelineData(): void {
+    if (this.finesDraftStore.timeline_data()) {
+      this.timelineData = structuredClone(this.finesDraftStore.timeline_data()).reverse();
+    }
   }
 
   /**
@@ -210,6 +226,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private initialAccountDetailsSetup(): void {
     this.accountDetailsFetchedMappedPayload();
+    this.fetchTimelineData();
     this.setAccountDetailsStatus();
     this.setDefendantType();
     this.setAccountType();
@@ -239,7 +256,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public navigateBack(): void {
     if (this.finesDraftStore.amend()) {
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
         false,
         undefined,
         this.finesDraftStore.fragment(),

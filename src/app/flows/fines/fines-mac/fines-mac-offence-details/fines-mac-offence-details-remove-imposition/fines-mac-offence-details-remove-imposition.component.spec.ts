@@ -27,11 +27,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
       getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-      getMajorCreditors: jasmine
-        .createSpy('getMajorCreditors')
-        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
       getMajorCreditorPrettyName: jasmine
         .createSpy('getMajorCreditorPrettyName')
         .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
@@ -51,6 +47,12 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             parent: of('offence-details'),
+            snapshot: {
+              data: {
+                results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+              },
+            },
           },
         },
       ],
@@ -58,8 +60,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
-
-    component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
@@ -71,10 +71,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have state and populate resultCodeData$', () => {
-    expect(component['resultCodeData$']).not.toBeUndefined();
   });
 
   it('should update monetary string correctly', () => {

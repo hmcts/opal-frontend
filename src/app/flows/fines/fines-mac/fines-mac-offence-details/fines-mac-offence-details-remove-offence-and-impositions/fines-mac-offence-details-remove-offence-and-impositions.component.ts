@@ -6,9 +6,6 @@ import { FinesMacOffenceDetailsReviewOffenceComponent } from '../fines-mac-offen
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
-import { forkJoin, Observable, tap } from 'rxjs';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
@@ -24,27 +21,13 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
-  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  private readonly impositionRefData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
-    .getResults(this.resultCodeArray)
-    .pipe(tap((response: IOpalFinesResultsRefData) => (this.impositionRefData = response)));
-  private readonly majorCreditorRefData$: Observable<IOpalFinesMajorCreditorRefData> = this.opalFinesService
-    .getMajorCreditors(this.finesMacStore.getBusinessUnitId())
-    .pipe(tap((response: IOpalFinesMajorCreditorRefData) => (this.majorCreditorRefData = response)));
-  public readonly referenceData$ = forkJoin({
-    impositionRefData: this.impositionRefData$,
-    majorCreditorRefData: this.majorCreditorRefData$,
-  });
-
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-
   public offence!: IFinesMacOffenceDetailsForm;
-  public impositionRefData!: IOpalFinesResultsRefData;
-  public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
+  public results!: IOpalFinesResultsRefData;
+  public majorCreditors!: IOpalFinesMajorCreditorRefData;
 
   /**
    * Retrieves the offence and its associated impositions from the fines service
@@ -90,6 +73,8 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
   }
 
   public ngOnInit(): void {
+    this.results = this['activatedRoute'].snapshot.data['results'];
+    this.majorCreditors = this['activatedRoute'].snapshot.data['majorCreditors'];
     this.getOffenceAndImpositions();
   }
 }

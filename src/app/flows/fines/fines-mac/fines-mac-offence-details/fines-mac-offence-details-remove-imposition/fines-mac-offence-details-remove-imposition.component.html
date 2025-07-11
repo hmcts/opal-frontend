@@ -1,61 +1,56 @@
-@if (groupResultCodeAndMajorCreditorData$ | async; as data) {
-  @if (data.majorCreditorData && data.resultCodeData) {
-    {{ getImpositionToBeRemoved() }}
-    <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
-      <opal-lib-govuk-table>
-        <ng-container head>
-          <th opal-lib-govuk-table-heading>Imposition</th>
-          <th opal-lib-govuk-table-heading>Creditor</th>
-          <th opal-lib-govuk-table-heading>Amount imposed</th>
-          <th opal-lib-govuk-table-heading>Amount paid</th>
-          <th opal-lib-govuk-table-heading>Balance remaining</th>
-        </ng-container>
-        <ng-container body>
-          <tr opal-lib-govuk-table-body-row>
-            <td opal-lib-govuk-table-body-row-data id="imposition">
-              {{ imposition }}
-            </td>
-            <td opal-lib-govuk-table-body-row-data id="creditor">
-              @if (creditor === 'major') {
-                {{ majorCreditor }}
-              } @else if (creditor === 'minor') {
-                {{ minorCreditor }}
-              } @else {
-                {{ defaultCreditor }}
-              }
-            </td>
-            <td opal-lib-govuk-table-body-row-data id="amountImposed">
-              {{ amountImposedString }}
-            </td>
-            <td opal-lib-govuk-table-body-row-data id="amountPaid">
-              {{ amountPaidString }}
-            </td>
-            <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
-              {{ balanceString }}
-            </td>
-          </tr>
-        </ng-container>
-      </opal-lib-govuk-table>
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <opal-lib-govuk-button
-            buttonId="confirmDeletion"
-            buttonClasses="govuk-button--warning"
-            (buttonClickEvent)="confirmRemoval()"
-          >
-            Yes - remove imposition
-          </opal-lib-govuk-button>
-        </div>
-      </div>
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <opal-lib-govuk-cancel-link
-            (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
-            cancelLinkText="No - cancel"
-          ></opal-lib-govuk-cancel-link>
-        </div>
-      </div>
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
+  <opal-lib-govuk-table>
+    <ng-container head>
+      <th opal-lib-govuk-table-heading>Imposition</th>
+      <th opal-lib-govuk-table-heading>Creditor</th>
+      <th opal-lib-govuk-table-heading>Amount imposed</th>
+      <th opal-lib-govuk-table-heading>Amount paid</th>
+      <th opal-lib-govuk-table-heading>Balance remaining</th>
+    </ng-container>
+    <ng-container body>
+      <tr opal-lib-govuk-table-body-row>
+        <td opal-lib-govuk-table-body-row-data id="imposition">
+          {{ imposition }}
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="creditor">
+          @if (creditor === 'major') {
+            {{ majorCreditor }}
+          } @else if (creditor === 'minor') {
+            {{ minorCreditor }}
+          } @else {
+            {{ defaultCreditor }}
+          }
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="amountImposed">
+          {{ amountImposedString }}
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="amountPaid">
+          {{ amountPaidString }}
+        </td>
+        <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
+          {{ balanceString }}
+        </td>
+      </tr>
+    </ng-container>
+  </opal-lib-govuk-table>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-button
+        buttonId="confirmDeletion"
+        buttonClasses="govuk-button--warning"
+        (buttonClickEvent)="confirmRemoval()"
+      >
+        Yes - remove imposition
+      </opal-lib-govuk-button>
     </div>
-  }
-}
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+        cancelLinkText="No - cancel"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</div>

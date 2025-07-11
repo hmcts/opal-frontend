@@ -11,6 +11,8 @@ import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_deta
 import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
+import { data } from 'cypress/types/jquery';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -35,9 +37,10 @@ describe('FinesMacCourtDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                courts: OPAL_FINES_COURT_REF_DATA_MOCK,
               },
             },
           },
@@ -49,17 +52,6 @@ describe('FinesMacCourtDetailsComponent', () => {
       },
     });
   };
-  //Mock OpalFines service http calls
-  beforeEach(() => {
-    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
-      statusCode: 200,
-      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-    });
-    cy.intercept('GET', '**/opal-fines-service/courts**', {
-      statusCode: 200,
-      body: OPAL_FINES_COURT_REF_DATA_MOCK,
-    });
-  });
   //Clean up after each test
   afterEach(() => {
     finesMacState.courtDetails.formData = {
@@ -76,7 +68,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get('button[type="submit"]').should('contain', 'Add personal details');
   });
-  it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527'] }, () => {
+  it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527', '@PO-1449'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
     cy.get('app-fines-mac-court-details-form').should('exist');
 
@@ -125,12 +117,12 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.ljaInput).focus().clear().type('court', { delay: 0 });
     cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('not.contain', 'Asylum & Immigration Tribunal (9985)');
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (1450)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (1080)");
-    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (1920)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
     cy.get(DOM_ELEMENTS.ljaAutocomplete)
       .find('li')
-      .should('contain', "Birmingham and Solihull Magistrates' Court (2922)");
+      .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
   });
   it('(AC.3) should dynamically filter Enforcement court field', { tags: ['@PO-272', '@PO-389'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
@@ -318,5 +310,37 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
+  });
+
+  it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-345', '@PO-1450'] }, () => {
+    setupComponent(null, 'company');
+
+    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234a', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234A');
+  });
+
+  it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
+    cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
+    cy.get(DOM_ELEMENTS.pcrInput).type('testpcr', { delay: 0 });
+    cy.get(DOM_ELEMENTS.pcrInput).blur();
+    cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
+    cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'TESTPCR');
+
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
+  });
+
+  it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-272', '@PO-1448'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+
+    cy.get(DOM_ELEMENTS.pcrInput).focus().type('abcd1234', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
   });
 });

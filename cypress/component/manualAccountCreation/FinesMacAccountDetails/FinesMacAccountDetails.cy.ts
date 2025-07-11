@@ -150,10 +150,11 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
-    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524'] },
+    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524', '@PO-640'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      finesMacState.businessUnit.welsh_language = false;
 
       // Verify all elements are rendered
       cy.get(DOM_ELEMENTS.dataPage).should('exist');
@@ -169,6 +170,8 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
       cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
       cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+
+      cy.get(DOM_ELEMENTS.languagePreferences).should('not.exist');
 
       cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
@@ -435,4 +438,17 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
     },
   );
+
+  it('(AC.4d) should show Document and Language Preferences if BU is Welsh speaking', { tags: ['@PO-640'] }, () => {
+    FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
+    FINES_COMP_CHECK_ACCOUNT_MOCK.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
+
+    FINES_COMP_CHECK_ACCOUNT_MOCK.businessUnit.welsh_language = true;
+
+    setupComponent(null, '', FINES_COMP_CHECK_ACCOUNT_MOCK, true);
+
+    // Verify Welsh language preferences are displayed
+    cy.get(DOM_ELEMENTS.languagePreferences).should('exist');
+    cy.get(DOM_ELEMENTS.languagePreferences).should('contain', 'Welsh and English');
+  });
 });

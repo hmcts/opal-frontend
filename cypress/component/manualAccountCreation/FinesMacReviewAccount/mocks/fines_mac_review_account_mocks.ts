@@ -116,6 +116,7 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
     formData: {
       fm_account_comments_notes_comments: 'test comments',
       fm_account_comments_notes_notes: 'test notes',
+      fm_account_comments_notes_system_notes: '',
     },
   },
 
@@ -175,8 +176,14 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       fm_language_preferences_hearing_language: 'english',
     },
   },
-  businessUnit: { ...FINES_MAC_BUSINESS_UNIT_STATE, business_unit_id: 61 },
+  businessUnit: { ...FINES_MAC_BUSINESS_UNIT_STATE, business_unit_id: 61, business_unit_name: 'Test Business Unit' },
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  deleteAccountConfirmation: {
+    formData: {
+      fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
 };

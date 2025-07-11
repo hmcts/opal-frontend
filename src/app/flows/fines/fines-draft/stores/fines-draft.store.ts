@@ -5,6 +5,8 @@ import { IFinesMacPayloadAccountSnapshot } from '../../fines-mac/services/fines-
 import { FINES_DRAFT_STATE } from '../constants/fines-draft-state.constant';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { computed } from '@angular/core';
+import { FINES_DRAFT_BANNER_MESSAGES } from './constants/fines-draft-store-banner-messages.constant';
+import { FinesDraftBannerType } from './types/fines-draft-banner.type';
 
 export const FinesDraftStore = signalStore(
   { providedIn: 'root' },
@@ -16,12 +18,15 @@ export const FinesDraftStore = signalStore(
     account_type: '' as string | null,
     account_status: '' as string | null,
     timeline_data: [{}] as IFinesMacAccountTimelineData[],
+    version: 0 as number | null,
     draft_account_id: 0 as number | null,
     created_at: '' as string | null,
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,
     account_status_date: '' as string | null,
     fragment: '',
     amend: false,
+    viewAllAccounts: false,
+    checker: false,
     bannerMessage: '',
   })),
   withHooks((store) => {
@@ -34,6 +39,16 @@ export const FinesDraftStore = signalStore(
   withComputed((store) => ({
     getAccountStatus: computed(() => {
       return store.account_status() ?? '';
+    }),
+    getDefendantName: computed(() => {
+      if (
+        store.account().defendant_type === 'adultOrYouthOnly' ||
+        store.account().defendant_type === 'parentOrGuardianToPay'
+      ) {
+        return `${store.account().defendant.forenames} ${store.account().defendant.surname}`;
+      } else {
+        return `${store.account().defendant.company_name}`;
+      }
     }),
   })),
   withMethods((store) => ({
@@ -83,6 +98,7 @@ export const FinesDraftStore = signalStore(
         account_type: finesDraftState.account_type,
         account_status: finesDraftState.account_status,
         timeline_data: finesDraftState.timeline_data,
+        version: finesDraftState.version,
       });
     },
     getFinesDraftState: () => {
@@ -98,6 +114,7 @@ export const FinesDraftStore = signalStore(
         account_type: store.account_type(),
         account_status: store.account_status(),
         timeline_data: store.timeline_data(),
+        version: store.version(),
       };
       return finesDraftStore;
     },
@@ -119,8 +136,28 @@ export const FinesDraftStore = signalStore(
     setFragmentAndAmend(fragment: string, state: boolean) {
       patchState(store, { fragment, amend: state });
     },
+    setFragmentAndChecker(fragment: string, checker: boolean) {
+      patchState(store, { fragment, checker });
+    },
+    setViewAllAccounts: (viewAllAccounts: boolean) => {
+      patchState(store, { viewAllAccounts });
+    },
+    setChecker: (checker: boolean) => {
+      patchState(store, { checker });
+    },
+    resetChecker() {
+      patchState(store, { checker: false });
+    },
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });
+    },
+    resetFragmentAndChecker() {
+      patchState(store, { fragment: '', checker: false });
+    },
+    setBannerMessageByType: (bannerType: FinesDraftBannerType, name?: string) => {
+      const messageFn = FINES_DRAFT_BANNER_MESSAGES[bannerType];
+      if (!messageFn) return;
+      patchState(store, { bannerMessage: messageFn(name) });
     },
     setBannerMessage: (bannerMessage: string) => {
       patchState(store, { bannerMessage });

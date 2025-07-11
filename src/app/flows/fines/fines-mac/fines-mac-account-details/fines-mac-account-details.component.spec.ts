@@ -21,6 +21,10 @@ import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -124,7 +128,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     expect(routerSpy).toHaveBeenCalledWith(
       [
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
       ],
       {
         fragment: finesDraftStore.fragment(),
@@ -206,6 +210,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'accountDetailsFetchedMappedPayload');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'fetchTimelineData');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountDetailsStatus');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
@@ -221,6 +227,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['initialAccountDetailsSetup']();
 
     expect(component['accountDetailsFetchedMappedPayload']).toHaveBeenCalled();
+    expect(component['fetchTimelineData']).toHaveBeenCalled();
     expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
@@ -345,6 +352,10 @@ describe('FinesMacAccountDetailsComponent', () => {
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), account_status: 'Rejected' },
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
@@ -368,6 +379,10 @@ describe('FinesMacAccountDetailsComponent', () => {
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+      courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+      localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+      majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+      results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
@@ -381,6 +396,32 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
     expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
     expect(component['setAccountDetailsStatus']).not.toHaveBeenCalled();
+  });
+
+  it('should test fetchTimelineData when timeline_data is null', () => {
+    finesDraftStore.setFinesDraftState(structuredClone(FINES_DRAFT_STATE));
+    component['fetchTimelineData']();
+    expect(component.timelineData).toEqual([]);
+  });
+
+  it('should test fetchTimelineData when timeline_data is populated', () => {
+    const timelineData = [
+      {
+        status: 'Submitted',
+        username: 'opal-test',
+        reason_text: null,
+        status_date: '2025-05-28',
+      },
+      {
+        status: 'Rejected',
+        username: 'opal-test-10',
+        reason_text: 'Please add defendant contact details',
+        status_date: '2025-05-28',
+      },
+    ];
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), timeline_data: timelineData });
+    component['fetchTimelineData']();
+    expect(component.timelineData).toEqual(timelineData.reverse());
   });
 
   it('should test setAccountDetailsStatus when draft state is null', () => {

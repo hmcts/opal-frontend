@@ -1,21 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-
 import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
-
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
@@ -33,7 +29,11 @@ import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-a
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
+import { OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK } from './mocks/opal-fines-search-offences-params.mock';
+import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offences.mock';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -97,7 +97,7 @@ describe('OpalFines', () => {
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
@@ -112,7 +112,7 @@ describe('OpalFines', () => {
   it('should return cached response for the same ref data search', () => {
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?business_unit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
       expect(response).toEqual(mockCourts);
@@ -322,9 +322,8 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
   });
 
-  it('should send a GET request to draft accounts API with correct query parameters', () => {
+  it('should send a GET request to draft accounts API with correct query parameters and use cache on repeated call', () => {
     const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
-
     const expectedResponse = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
 
     service.getDraftAccounts(filters).subscribe((response) => {
@@ -332,9 +331,7 @@ describe('OpalFines', () => {
     });
 
     const req = httpMock.expectOne((request) => {
-      // Validate the URL and query parameters
       const url = request.urlWithParams;
-
       return (
         url.includes(OPAL_FINES_PATHS.draftAccounts) &&
         url.includes(`business_unit=${filters.businessUnitIds![0]}`) &&
@@ -355,6 +352,37 @@ describe('OpalFines', () => {
     expect(req.request.params.getAll('not_submitted_by')).toEqual(['user3', 'user4']);
 
     req.flush(expectedResponse);
+
+    // Second call should hit the cache and not trigger a new request
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
+  });
+
+  it('should clear the draft accounts cache', () => {
+    const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
+
+    // Prime the cache
+    service.getDraftAccounts(filters).subscribe();
+    const req = httpMock.expectOne((req) => req.url.startsWith(OPAL_FINES_PATHS.draftAccounts));
+    req.flush(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+
+    // Confirm cache is used
+    service.getDraftAccounts(filters).subscribe();
+    httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
+
+    // Clear the cache
+    service.clearDraftAccountsCache();
+
+    // After clearing, a new request should be made and return correct data
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    });
+    const newReq = httpMock.expectOne((req) => req.url.startsWith(OPAL_FINES_PATHS.draftAccounts));
+    expect(newReq.request.method).toBe('GET');
+    newReq.flush(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
 
   it('should GET the draft account by id', () => {
@@ -412,5 +440,90 @@ describe('OpalFines', () => {
     expect(req.request.body).toEqual(body);
 
     req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+  });
+
+  it('should send a PATCH request to update the draft account', () => {
+    const draftAccountId = 1;
+    const body = OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
+
+    service.patchDraftAccountPayload(draftAccountId, body).subscribe((response) => {
+      expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+  });
+
+  it('should send a POST request to search offences API with correct body', () => {
+    const filters = OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK;
+    const expectedResponse = OPAL_FINES_SEARCH_OFFENCES_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchOffences}`;
+
+    service.searchOffences(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
+  });
+
+  it('should handle errors when search offences API fails', () => {
+    const filters = OPAL_FINES_SEARCH_OFFENCES_PARAMS_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchOffences}`;
+    const errorMessage = 'Failed to search offences';
+
+    service.searchOffences(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should generate a consistent cache key for undefined or empty filter params', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const key1 = (service as any).generateDraftAccountsCacheKey({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const key2 = (service as any).generateDraftAccountsCacheKey({
+      businessUnitIds: [],
+      statuses: [],
+      submittedBy: [],
+      notSubmittedBy: [],
+    });
+
+    expect(key1).toBe(key2);
+    expect(typeof key1).toBe('string');
+    expect(() => JSON.parse(key1)).not.toThrow();
+  });
+
+  it('should send a PATCH request to update the draft account payload', () => {
+    const accountId = 456;
+    const body = OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK;
+    const expectedResponse = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${accountId}`;
+
+    service.patchDraftAccountPayload(accountId, body).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(expectedResponse);
   });
 });

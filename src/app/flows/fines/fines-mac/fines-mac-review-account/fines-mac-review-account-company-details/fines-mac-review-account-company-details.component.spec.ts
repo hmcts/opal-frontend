@@ -40,7 +40,7 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
     component['getAliasesData']();
 
     expect(component.aliases).toEqual([
-      'Boring Co.',
+      'BORING CO LTD.',
       'Alpha Solutions Ltd',
       'Beta Innovations Corp',
       'Gamma Enterprises Inc',

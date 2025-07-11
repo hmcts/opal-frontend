@@ -166,4 +166,73 @@ describe('FinesDraftStore', () => {
     store.resetBannerMessage();
     expect(store.bannerMessage()).toEqual('');
   });
+
+  it('should set view all accounts', () => {
+    store.setViewAllAccounts(true);
+    expect(store.viewAllAccounts()).toEqual(true);
+  });
+
+  it('should reset view all accounts', () => {
+    store.setViewAllAccounts(false);
+    expect(store.viewAllAccounts()).toEqual(false);
+  });
+
+  it('should set fragment and checker', () => {
+    store.setFragmentAndChecker('rejected', true);
+    expect(store.checker()).toEqual(true);
+    expect(store.fragment()).toEqual('rejected');
+  });
+
+  it('should set checker', () => {
+    store.setChecker(true);
+    expect(store.checker()).toEqual(true);
+  });
+
+  it('should reset checker', () => {
+    store.setFragmentAndChecker('rejected', true);
+    store.resetChecker();
+    expect(store.checker()).toEqual(false);
+  });
+
+  it('should set banner message by type - submitted', () => {
+    store.setBannerMessageByType('submitted', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have submitted Test Name's account for review.");
+  });
+
+  it('should set banner message by type - deleted', () => {
+    store.setBannerMessageByType('deleted', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have deleted Test Name's account.");
+  });
+
+  it('should set banner message by type - rejected', () => {
+    store.setBannerMessageByType('rejected', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have rejected Test Name's account.");
+  });
+
+  it('should set banner message by type - approved', () => {
+    store.setBannerMessageByType('approved', 'Test Name');
+    expect(store.bannerMessage()).toEqual("You have approved Test Name's account.");
+  });
+
+  it('should not set banner message if type does not exist', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    store.setBannerMessageByType('nonexistent' as any, 'Test Name');
+    expect(store.bannerMessage()).toEqual('');
+  });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Alice Williams');
+  });
+
+  it('should get defendant name from account', () => {
+    const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
+    account.defendant_type = 'company';
+    account.defendant.company_name = 'Tech Innovations Ltd.';
+    store.setAccount(account);
+    const defendantName = store.getDefendantName();
+    expect(defendantName).toEqual('Tech Innovations Ltd.');
+  });
 });

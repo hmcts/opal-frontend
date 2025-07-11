@@ -29,8 +29,11 @@
             '/' +
             finesRoutingPaths.children.draft.root +
             '/' +
-            finesRoutingPaths.children.draft.children['checkAndValidate']
+            finesRoutingPaths.children.draft.children['checkAndValidate'] +
+            '/' +
+            finesDraftCheckAndValidateRoutingPaths.children.tabs
           "
+          fragment="to-review"
           id="finesCavCheckerLink"
           >Check and Validate Draft Accounts</a
         >
@@ -48,7 +51,7 @@
             '/' +
             finesRoutingPaths.children.draft.children['createAndManage'] +
             '/' +
-            finesDraftCheckAndManageRoutingPaths.children.tabs
+            finesDraftCreateAndManageRoutingPaths.children.tabs
           "
           fragment="review"
           id="finesCavInputterLink"
@@ -56,5 +59,21 @@
         >
       </li>
     }
+    <li>
+      <a
+        class="govuk-link"
+        [routerLink]="
+          '/' +
+          finesRoutingPaths.root +
+          '/' +
+          finesRoutingPaths.children.sa.root +
+          '/' +
+          finesRoutingPaths.children.sa.children['search']
+        "
+        fragment="individuals"
+        id="finesSaSearchAccountLink"
+        >Search for an account</a
+      >
+    </li>
   </ul>
 </div>

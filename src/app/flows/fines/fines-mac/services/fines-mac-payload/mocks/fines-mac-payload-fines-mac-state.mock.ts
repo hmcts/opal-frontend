@@ -9,6 +9,7 @@ import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../utils/mocks/state/fi
 import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
 import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/state/fines-mac-payload-payment-terms-state.mock';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
+import { FINES_MAC_PAYLOAD_DELETE_ACCOUNT_CONFIRMATION_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-delete-account-confirmation-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   accountDetails: {
@@ -57,6 +58,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
     formData: {
       fm_account_comments_notes_comments: 'Follow-up required for next meeting',
       fm_account_comments_notes_notes: 'Client prefers email communication over phone calls',
+      fm_account_comments_notes_system_notes: null,
     },
     nestedFlow: false,
   },
@@ -78,6 +80,12 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
     },
     nestedFlow: false,
   },
+  deleteAccountConfirmation: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_DELETE_ACCOUNT_CONFIRMATION_STATE_MOCK,
+    },
+    nestedFlow: false,
+  },
   businessUnit: {
     business_unit_code: '',
     business_unit_type: '',
@@ -85,7 +93,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
     opal_domain: null,
     business_unit_id: 0,
     business_unit_name: '',
-    configurationItems: [],
+    configuration_items: [],
     welsh_language: false,
   },
   unsavedChanges: false,

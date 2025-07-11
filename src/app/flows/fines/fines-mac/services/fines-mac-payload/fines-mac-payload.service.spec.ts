@@ -15,6 +15,7 @@ import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opa
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -103,6 +104,7 @@ describe('FinesMacPayloadService', () => {
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
+    finesMacState.deleteAccountConfirmation.formData = FINES_MAC_STATE.deleteAccountConfirmation.formData;
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
 
     expect(result).toEqual(finesMacState);
@@ -192,6 +194,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.deleteAccountConfirmation.formData = { ...FINES_MAC_STATE.deleteAccountConfirmation.formData };
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
     finesMacState.businessUnit = {
@@ -201,7 +204,7 @@ describe('FinesMacPayloadService', () => {
       opal_domain: businessUnitRefData.opalDomain,
       business_unit_id: businessUnitRefData.businessUnitId,
       business_unit_name: businessUnitRefData.businessUnitName,
-      configurationItems: businessUnitRefData.configurationItems.map((item) => ({
+      configuration_items: businessUnitRefData.configurationItems.map((item) => ({
         item_name: item.itemName,
         item_value: item.itemValue,
         item_values: item.itemValues,
@@ -210,5 +213,168 @@ describe('FinesMacPayloadService', () => {
     };
 
     expect(result).toEqual(finesMacState);
+  });
+
+  it('should build a patch payload with provided status and reason', () => {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const status = 'Rejected';
+    const reasonText = 'Some reason';
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+
+    // We need to call the real util to get the expected timeline_data
+    const timeline_data = finesMacPayloadBuildAccountTimelineData(
+      sessionUserState['name'],
+      status,
+      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
+      reasonText,
+      finesMacPayloadAddAccount.timeline_data,
+    );
+
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+
+    expect(result).toEqual({
+      account_status: status,
+      business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
+      reason_text: reasonText,
+      timeline_data,
+      validated_by: null,
+      validated_by_name: null,
+      version: finesMacPayloadAddAccount.version!,
+    });
+  });
+
+  it('should build a patch payload with null reasonText', () => {
+    if (!service || !finesMacPayloadAddAccount || !sessionUserState || !dateService) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
+    const reasonText = null;
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+
+    const timeline_data = finesMacPayloadBuildAccountTimelineData(
+      sessionUserState['name'],
+      status,
+      dateService.toFormat(DateTime.fromISO('2023-07-03T12:30:00Z'), 'yyyy-MM-dd'),
+      reasonText,
+      finesMacPayloadAddAccount.timeline_data,
+    );
+
+    const result = service.buildPatchAccountPayload(finesMacPayloadAddAccount, status, reasonText, sessionUserState);
+
+    expect(result).toEqual({
+      account_status: status,
+      business_unit_id: finesMacPayloadAddAccount.business_unit_id!,
+      reason_text: reasonText,
+      timeline_data,
+      validated_by: service['getBusinessUnitBusinessUserId'](
+        finesMacPayloadAddAccount.business_unit_id!,
+        sessionUserState,
+      )!,
+      validated_by_name: sessionUserState['name'],
+      version: finesMacPayloadAddAccount.version!,
+    });
+  });
+
+  it('should return forenames and surname when defendant_type is "adultOrYouthOnly"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'adultOrYouthOnly',
+        defendant: {
+          forenames: 'John',
+          surname: 'Doe',
+          company_name: 'Acme Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('John Doe');
+  });
+
+  it('should return forenames and surname when defendant_type is "parentOrGuardianToPay"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'parentOrGuardianToPay',
+        defendant: {
+          forenames: 'Jane',
+          surname: 'Smith',
+          company_name: 'Widgets Inc',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('Jane Smith');
+  });
+
+  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "parentOrGuardianToPay"', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'company',
+        defendant: {
+          forenames: 'N/A',
+          surname: 'N/A',
+          company_name: 'MegaCorp Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('MegaCorp Ltd');
+  });
+
+  it('should handle missing forenames or surname gracefully', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'adultOrYouthOnly',
+        defendant: {
+          forenames: undefined,
+          surname: null,
+          company_name: 'Fallback Ltd',
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('undefined null');
+  });
+
+  it('should handle missing company_name gracefully', () => {
+    if (!service) {
+      fail('Service is not properly initialised');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      account: {
+        defendant_type: 'company',
+        defendant: {
+          forenames: 'N/A',
+          surname: 'N/A',
+          company_name: undefined,
+        },
+      },
+    };
+    expect(service.getDefendantName(payload)).toBe('undefined');
   });
 });

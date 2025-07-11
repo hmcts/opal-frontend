@@ -1,8 +1,20 @@
 @if (finesMacOffenceDetailsStore.minorCreditorAdded()) {
-  <opal-lib-moj-banner type="success" text="Minor creditor added"></opal-lib-moj-banner>
+  <opal-lib-moj-alert type="success" ariaLabel="Minor creditor added">
+    <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+    <opal-lib-moj-alert-content content>
+      <opal-lib-moj-alert-content-text> Minor creditor added successfully. </opal-lib-moj-alert-content-text>
+    </opal-lib-moj-alert-content>
+  </opal-lib-moj-alert>
 }
 @if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
-  <opal-lib-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></opal-lib-moj-banner>
+  <opal-lib-moj-alert type="success" ariaLabel="Offence code message">
+    <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+    <opal-lib-moj-alert-content content>
+      <opal-lib-moj-alert-content-text>{{
+        finesMacOffenceDetailsStore.offenceCodeMessage()
+      }}</opal-lib-moj-alert-content-text>
+    </opal-lib-moj-alert-content>
+  </opal-lib-moj-alert>
 }
 <h1 class="govuk-heading-l">Add an offence</h1>
 <opal-lib-govuk-error-summary
@@ -37,9 +49,9 @@
       For example, HY35014. If you don't know the offence code, you can
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="goToSearchOffences()"
-        (keyup.enter)="goToSearchOffences()"
-        tabindex="0"
+        [href]="searchOffenceUrl"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         search the offence list
       </a></opal-lib-govuk-text-input
