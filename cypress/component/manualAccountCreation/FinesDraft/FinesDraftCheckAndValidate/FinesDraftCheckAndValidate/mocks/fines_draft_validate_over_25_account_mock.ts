@@ -5,6 +5,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
   summaries: [
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2023-01-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -23,6 +24,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2023-01-02T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
@@ -41,6 +43,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 103,
+      account_number: '203',
       created_at: '2023-01-03T12:15:00Z',
       submitted_by: 'user3',
       business_unit_id: 45,
@@ -59,6 +62,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 104,
+      account_number: '204',
       created_at: '2023-01-04T13:45:00Z',
       submitted_by: 'user4',
       business_unit_id: 23,
@@ -77,6 +81,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 105,
+      account_number: '205',
       created_at: '2023-01-05T14:10:00Z',
       submitted_by: 'user5',
       business_unit_id: 89,
@@ -95,6 +100,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 106,
+      account_number: '206',
       created_at: '2023-01-06T15:30:00Z',
       submitted_by: 'user6',
       business_unit_id: 56,
@@ -113,6 +119,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 107,
+      account_number: '207',
       created_at: '2023-01-07T16:00:00Z',
       submitted_by: 'user7',
       business_unit_id: 34,
@@ -131,6 +138,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 108,
+      account_number: '208',
       created_at: '2023-01-08T17:20:00Z',
       submitted_by: 'user8',
       business_unit_id: 78,
@@ -149,6 +157,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 109,
+      account_number: '209',
       created_at: '2023-01-09T18:40:00Z',
       submitted_by: 'user9',
       business_unit_id: 90,
@@ -167,6 +176,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 110,
+      account_number: '210',
       created_at: '2023-01-10T19:55:00Z',
       submitted_by: 'user10',
       business_unit_id: 12,
@@ -185,6 +195,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2023-01-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -203,6 +214,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2023-01-02T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
@@ -221,6 +233,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 103,
+      account_number: '203',
       created_at: '2023-01-03T12:15:00Z',
       submitted_by: 'user3',
       business_unit_id: 45,
@@ -239,6 +252,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 104,
+      account_number: '204',
       created_at: '2023-01-04T13:45:00Z',
       submitted_by: 'user4',
       business_unit_id: 23,
@@ -257,6 +271,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 105,
+      account_number: '205',
       created_at: '2023-01-05T14:10:00Z',
       submitted_by: 'user5',
       business_unit_id: 89,
@@ -275,6 +290,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 106,
+      account_number: '206',
       created_at: '2023-01-06T15:30:00Z',
       submitted_by: 'user6',
       business_unit_id: 56,
@@ -293,6 +309,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 107,
+      account_number: '207',
       created_at: '2023-01-07T16:00:00Z',
       submitted_by: 'user7',
       business_unit_id: 34,
@@ -311,6 +328,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 108,
+      account_number: '208',
       created_at: '2023-01-08T17:20:00Z',
       submitted_by: 'user8',
       business_unit_id: 78,
@@ -329,6 +347,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 109,
+      account_number: '209',
       created_at: '2023-01-09T18:40:00Z',
       submitted_by: 'user9',
       business_unit_id: 90,
@@ -347,6 +366,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 110,
+      account_number: '210',
       created_at: '2023-01-10T19:55:00Z',
       submitted_by: 'user10',
       business_unit_id: 12,
@@ -365,6 +385,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2023-01-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -383,6 +404,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2023-01-02T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
@@ -401,6 +423,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 103,
+      account_number: '203',
       created_at: '2023-01-03T12:15:00Z',
       submitted_by: 'user3',
       business_unit_id: 45,
@@ -419,6 +442,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 104,
+      account_number: '204',
       created_at: '2023-01-04T13:45:00Z',
       submitted_by: 'user4',
       business_unit_id: 23,
@@ -437,6 +461,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 105,
+      account_number: '205',
       created_at: '2023-01-05T14:10:00Z',
       submitted_by: 'user5',
       business_unit_id: 89,
@@ -455,6 +480,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 106,
+      account_number: '206',
       created_at: '2023-01-06T15:30:00Z',
       submitted_by: 'user6',
       business_unit_id: 56,
@@ -473,6 +499,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 107,
+      account_number: '207',
       created_at: '2023-01-07T16:00:00Z',
       submitted_by: 'user7',
       business_unit_id: 34,
@@ -491,6 +518,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 108,
+      account_number: '208',
       created_at: '2023-01-08T17:20:00Z',
       submitted_by: 'user8',
       business_unit_id: 78,
@@ -509,6 +537,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 109,
+      account_number: '209',
       created_at: '2023-01-09T18:40:00Z',
       submitted_by: 'user9',
       business_unit_id: 90,
@@ -527,6 +556,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 110,
+      account_number: '210',
       created_at: '2023-01-10T19:55:00Z',
       submitted_by: 'user10',
       business_unit_id: 12,
@@ -545,6 +575,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2023-01-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -563,6 +594,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2023-01-02T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
@@ -581,6 +613,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 103,
+      account_number: '203',
       created_at: '2023-01-03T12:15:00Z',
       submitted_by: 'user3',
       business_unit_id: 45,
@@ -599,6 +632,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 104,
+      account_number: '204',
       created_at: '2023-01-04T13:45:00Z',
       submitted_by: 'user4',
       business_unit_id: 23,
@@ -617,6 +651,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 105,
+      account_number: '205',
       created_at: '2023-01-05T14:10:00Z',
       submitted_by: 'user5',
       business_unit_id: 89,
@@ -635,6 +670,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 106,
+      account_number: '206',
       created_at: '2023-01-06T15:30:00Z',
       submitted_by: 'user6',
       business_unit_id: 56,
@@ -653,6 +689,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 107,
+      account_number: '207',
       created_at: '2023-01-07T16:00:00Z',
       submitted_by: 'user7',
       business_unit_id: 34,
@@ -671,6 +708,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 108,
+      account_number: '208',
       created_at: '2023-01-08T17:20:00Z',
       submitted_by: 'user8',
       business_unit_id: 78,
@@ -689,6 +727,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 109,
+      account_number: '209',
       created_at: '2023-01-09T18:40:00Z',
       submitted_by: 'user9',
       business_unit_id: 90,
@@ -707,6 +746,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 110,
+      account_number: '210',
       created_at: '2023-01-10T19:55:00Z',
       submitted_by: 'user10',
       business_unit_id: 12,
@@ -725,6 +765,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2023-01-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -743,6 +784,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2023-01-02T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,
@@ -761,6 +803,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 103,
+      account_number: '203',
       created_at: '2023-01-03T12:15:00Z',
       submitted_by: 'user3',
       business_unit_id: 45,
@@ -779,6 +822,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 104,
+      account_number: '204',
       created_at: '2023-01-04T13:45:00Z',
       submitted_by: 'user4',
       business_unit_id: 23,
@@ -797,6 +841,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 105,
+      account_number: '205',
       created_at: '2023-01-05T14:10:00Z',
       submitted_by: 'user5',
       business_unit_id: 89,
@@ -815,6 +860,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 106,
+      account_number: '206',
       created_at: '2023-01-06T15:30:00Z',
       submitted_by: 'user6',
       business_unit_id: 56,
@@ -833,6 +879,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 107,
+      account_number: '207',
       created_at: '2023-01-07T16:00:00Z',
       submitted_by: 'user7',
       business_unit_id: 34,
@@ -851,6 +898,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 108,
+      account_number: '208',
       created_at: '2023-01-08T17:20:00Z',
       submitted_by: 'user8',
       business_unit_id: 78,
@@ -869,6 +917,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 109,
+      account_number: '209',
       created_at: '2023-01-09T18:40:00Z',
       submitted_by: 'user9',
       business_unit_id: 90,
@@ -887,6 +936,7 @@ export const OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAcc
     },
     {
       draft_account_id: 110,
+      account_number: '210',
       created_at: '2023-01-10T19:55:00Z',
       submitted_by: 'user10',
       business_unit_id: 12,
