@@ -1,3 +1,4 @@
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacAccountDetailsState } from '../../../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { IFinesMacCompanyDetailsState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
@@ -116,7 +117,7 @@ export const finesMacPayloadBuildAccountDefendant = (
   // This is so we have all fields present in the payload, even if they are null
 
   switch (defendantType) {
-    case 'parentOrGuardianToPay':
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
       return applyBasePayloadsToParentGuardianDefendant(
         finesMacPayloadBuildAccountDefendantParentGuardian(
           personalDetailsState,
@@ -126,7 +127,7 @@ export const finesMacPayloadBuildAccountDefendant = (
           languageDetailsState,
         ),
       );
-    case 'company':
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.company:
       return applyBasePayloadsToIndividualOrCompanyDefendant(
         finesMacPayloadBuildAccountDefendantCompany(companyDetailsState, contactDetailsState, languageDetailsState),
       );

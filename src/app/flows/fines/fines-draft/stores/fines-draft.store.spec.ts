@@ -6,6 +6,7 @@ import { IFinesMacAccountTimelineData } from '../../fines-mac/services/fines-mac
 import { IFinesMacPayloadAccountSnapshot } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-account-snapshot.interface';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FINES_DRAFT_STATE } from '../constants/fines-draft-state.constant';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../fines-mac/constants/fines-mac-defendant-types-keys';
 
 describe('FinesDraftStore', () => {
   let store: FinesDraftStoreType;
@@ -229,7 +230,7 @@ describe('FinesDraftStore', () => {
 
   it('should get defendant name from account', () => {
     const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
-    account.defendant_type = 'company';
+    account.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     account.defendant.company_name = 'Tech Innovations Ltd.';
     store.setAccount(account);
     const defendantName = store.getDefendantName();

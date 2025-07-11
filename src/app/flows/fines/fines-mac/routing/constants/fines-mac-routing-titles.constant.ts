@@ -19,5 +19,6 @@ export const FINES_MAC_ROUTING_TITLES: IFinesMacRoutingPaths = {
     reviewAccount: 'Review account',
     searchOffences: 'Search offences',
     submitConfirmation: 'Submit confirmation',
+    fixedPenaltyDetails: 'Fixed penalty details',
   },
 };

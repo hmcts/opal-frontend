@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacContactDetailsFormComponent', () => {
   let component: FinesMacContactDetailsFormComponent;
@@ -62,7 +63,7 @@ describe('FinesMacContactDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formSubmit.formData);

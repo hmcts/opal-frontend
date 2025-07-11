@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacEmployerDetailsFormComponent', () => {
   let component: FinesMacEmployerDetailsFormComponent;
@@ -35,7 +36,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     fixture.detectChanges();
   });

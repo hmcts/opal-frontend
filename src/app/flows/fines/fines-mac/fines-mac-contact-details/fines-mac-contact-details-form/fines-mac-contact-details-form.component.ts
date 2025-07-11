@@ -23,6 +23,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -44,6 +45,7 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
   private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  public readonly defendantTypeKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   override fieldErrors: IFinesMacContactDetailsFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
 

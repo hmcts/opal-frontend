@@ -1,4 +1,5 @@
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 
 export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   fm_offence_details_date_of_sentence: {
@@ -24,9 +25,21 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       message: 'Enter an offence code',
       priority: 1,
     },
+    alphabeticalTextPattern: {
+      message: 'Offence code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
+    },
+    maxlength: {
+      message: 'Offence code must be 7 or 8 characters',
+      priority: 3,
+    },    
+    minlength: {
+      message: 'Offence code must be 7 or 8 characters',
+      priority: 4,
+    },
     invalidOffenceCode: {
       message: 'Offence not found',
-      priority: 2,
+      priority: 5,
     },
   },
 };

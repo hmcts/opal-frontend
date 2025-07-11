@@ -9,6 +9,7 @@ import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service
 import { FinesDraftResolverOptions } from './interfaces/fines-draft-resolver-options.interface';
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from './constants/fines-draft-resolver-empty-response.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IDateRange } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
 
 export function finesDraftTabResolver(options: FinesDraftResolverOptions): ResolveFn<IOpalFinesDraftAccountsResponse> {
   return (route: ActivatedRouteSnapshot) => {
@@ -43,7 +44,7 @@ export function finesDraftTabResolver(options: FinesDraftResolverOptions): Resol
 
     // If the tab has a historic window, set and add the date range to params
     if (tab?.historicWindowInDays) {
-      const { from, to } = dateService.getDateRange(tab.historicWindowInDays, 0);
+      const { from, to }: IDateRange = dateService.getDateRange(tab.historicWindowInDays, 0);
       params.accountStatusDateFrom = [from];
       params.accountStatusDateTo = [to];
     }
