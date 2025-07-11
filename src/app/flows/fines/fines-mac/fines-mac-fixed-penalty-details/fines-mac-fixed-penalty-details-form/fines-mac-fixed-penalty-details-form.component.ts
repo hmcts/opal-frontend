@@ -186,7 +186,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_offence_details_offence_type: new FormControl('vehicle'),
       fm_fp_offence_details_date_of_offence: new FormControl(null, [
         Validators.required,
-        Validators.maxLength(10),
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
@@ -216,7 +215,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10), alphabeticalTextValidator()]),
       fm_fp_offence_details_date_nto_issued: new FormControl(null, [
-        Validators.maxLength(10),
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
