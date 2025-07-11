@@ -6,6 +6,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAcco
   summaries: [
     {
       draft_account_id: 101,
+      account_number: '201',
       created_at: '2025-06-01T10:00:00Z',
       submitted_by: 'user1',
       business_unit_id: 77,
@@ -24,6 +25,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_DELETE_ACCOUNTS_MOCK: IOpalFinesDraftAcco
     },
     {
       draft_account_id: 102,
+      account_number: '202',
       created_at: '2025-06-07T11:30:00Z',
       submitted_by: 'user2',
       business_unit_id: 17,

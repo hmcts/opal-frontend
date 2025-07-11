@@ -62,4 +62,10 @@ export const FINES_COMPANY_DETAILS_MOCK: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  deleteAccountConfirmation: {
+    formData: {
+      fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
 };
