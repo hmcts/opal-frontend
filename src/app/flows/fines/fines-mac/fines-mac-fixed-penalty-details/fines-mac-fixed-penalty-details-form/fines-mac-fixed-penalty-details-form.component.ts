@@ -153,7 +153,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_fp_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_fp_personal_details_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        alphabeticalTextValidator(),
+      ]),
       // Court Details
       fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
       fm_fp_court_details_issuing_authority_id: new FormControl(null, [
@@ -182,6 +185,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       fm_fp_offence_details_offence_type: new FormControl('vehicle'),
       fm_fp_offence_details_date_of_offence: new FormControl(null, [
+        Validators.required,
         Validators.maxLength(10),
         optionalValidDateValidator(),
         futureDateValidator(),
@@ -190,6 +194,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_offence_details_offence_cjs_code: new FormControl(null, [
         Validators.required,
         Validators.maxLength(8),
+        Validators.minLength(7),
         alphabeticalTextValidator(),
       ]),
       fm_fp_offence_details_time_of_offence: new FormControl(null, [timeFormatValidator()]),
