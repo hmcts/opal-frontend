@@ -3425,9 +3425,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.8":
+"@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
   version: 0.0.8
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.8"
+  resolution: "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=120565&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3449,19 +3449,19 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/a02a34c34ff02259a54ac4d35b018436f41db0d1afbe0f6140b84b8125681a8cc0967a60f61085aecc796b399cb3517e15833fbbd15c301b0439fbbff908a50b
+  checksum: 10/7a51c5c8debb64c2561442999f53fd04482f58d8a4ebce27836b8c29315be4d73fd2754ba281b98aba433935aa3fa2d96f984b8482ae4218b45b31bc1f708419
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.21":
-  version: 0.0.21
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.21"
+"@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.22
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=bea739&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/ec14ce48f1784a0881bc16e130cae228fc42a3ce946ff8cb616895e17815aab53e8c517a264e0f531492b736147f16ecf1b55acbd2e13c633b6f7b4daf09c8ea
+  checksum: 10/d73d79518cb8c2ef8808d198d803fcca515988d2a0e7a6441840194e63052c1b1922eebd56868824744f3076b8ef074560b15dd502f230db788778fad841b9dd
   languageName: node
   linkType: hard
 
@@ -13545,8 +13545,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.21"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.8"
+    "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common"
+    "@hmcts/opal-frontend-common-node": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"

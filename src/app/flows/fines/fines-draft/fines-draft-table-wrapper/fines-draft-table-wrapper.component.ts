@@ -12,6 +12,9 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
+import { CustomVerticalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-vertical-scroll-pane';
+import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
+import { CustomScrollablePanesComponent } from '@hmcts/opal-frontend-common/components/custom/custom-scrollable-panes';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -25,6 +28,9 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
     DaysAgoPipe,
     DateFormatPipe,
     FinesSharedSortableTableFooterComponent,
+    CustomVerticalScrollPaneComponent,
+    CustomHorizontalScrollPaneComponent,
+    CustomScrollablePanesComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
