@@ -13,9 +13,10 @@ import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/
   templateUrl: './fines-mac-review-account-history.component.html',
 })
 export class FinesMacReviewAccountHistoryComponent {
+  protected readonly dateService = inject(DateService);
+
   @Input({ required: true }) public timelineData!: IFinesMacAccountTimelineData[];
   @Input({ required: true }) public defendantName!: string;
   @Input({ required: true }) public accountStatus!: string;
   @Input({ required: false }) public isRejected: boolean = false;
-  protected readonly dateService = inject(DateService);
 }

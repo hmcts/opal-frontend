@@ -80,29 +80,26 @@ import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
-
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
+  protected readonly dateService = inject(DateService);
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
+
+  @Input() public defendantType!: string;
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
     [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
   };
-
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
-
-  protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,

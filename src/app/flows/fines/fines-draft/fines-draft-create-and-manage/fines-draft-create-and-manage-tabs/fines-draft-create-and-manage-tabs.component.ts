@@ -54,8 +54,6 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly destroy$ = new Subject<void>();
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesDraftStore = inject(FinesDraftStore);
-  public readonly finesDraftService = inject(FinesDraftService);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
   private readonly businessUnitIds = this.userState.business_unit_user.map(
@@ -64,14 +62,15 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly businessUnitUserIds = this.userState.business_unit_user.map(
     (business_unit_user) => business_unit_user.business_unit_user_id,
   );
+  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
 
   protected readonly finesDraftCreateAndManageRoutingPaths = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftStore = inject(FinesDraftStore);
 
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public rejectedCount$!: Observable<string>;
-
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
-  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
+  public readonly finesDraftService = inject(FinesDraftService);
   public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
   public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 

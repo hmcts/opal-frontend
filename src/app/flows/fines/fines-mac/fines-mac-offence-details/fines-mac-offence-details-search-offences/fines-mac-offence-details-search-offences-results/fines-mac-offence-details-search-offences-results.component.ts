@@ -26,12 +26,12 @@ import {
 export class FinesMacOffenceDetailsSearchOffencesResultsComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
-  public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
+
   protected readonly searchOffencesData: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[] =
     this.mapSearchOffencesToTableData();
 
+  public readonly tableSort = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_SORT_DEFAULT;
   /**
    * Maps search offences data retrieved from the activated route's snapshot
    * to a format suitable for table display.

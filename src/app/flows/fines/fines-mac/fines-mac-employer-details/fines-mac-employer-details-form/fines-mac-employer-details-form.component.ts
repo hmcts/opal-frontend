@@ -41,13 +41,13 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
 
   /**

@@ -23,12 +23,11 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
+  private readonly utilsService = inject(UtilsService);
+
   @Input({ required: true }) public companyDetails!: IFinesMacCompanyDetailsState;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
-
-  private readonly utilsService = inject(UtilsService);
-
   public aliases!: string[];
   public address!: string[];
 

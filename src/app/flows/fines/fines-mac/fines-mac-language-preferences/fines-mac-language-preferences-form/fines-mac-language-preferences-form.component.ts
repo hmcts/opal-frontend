@@ -26,10 +26,9 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacLanguagePreferencesForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacLanguagePreferencesForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(

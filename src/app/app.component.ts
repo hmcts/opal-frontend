@@ -38,11 +38,7 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public readonly globalStore = inject(GlobalStore);
   private readonly document = inject(DOCUMENT);
-  public readonly sessionService = inject(SessionService);
-  public dateService = inject(DateService);
-  public minutesRemaining$!: Observable<number>;
   private readonly platformId = inject(PLATFORM_ID);
   private readonly ngZone = inject(NgZone);
   private timerSub!: Subscription;
@@ -50,14 +46,17 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly appInsightsService = inject(AppInsightsService);
   private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly router = inject(Router);
-
-  // Defined in seconds
   private readonly POLL_INTERVAL = 60;
-  public thresholdInMinutes!: number;
-  public showExpiredWarning = false;
 
   protected readonly headerLinks = HEADER_LINKS;
   protected readonly footerLinks = FOOTER_LINKS;
+
+  public dateService = inject(DateService);
+  public minutesRemaining$!: Observable<number>;
+  public thresholdInMinutes!: number;
+  public showExpiredWarning = false;
+  public readonly sessionService = inject(SessionService);
+  public readonly globalStore = inject(GlobalStore);
 
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize

@@ -21,8 +21,10 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
-  protected localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   private courts!: IOpalFinesCourtRefData;
+
+  protected localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
+
   public sendingCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
   public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
   public defendantType = this.finesMacStore.getDefendantType();

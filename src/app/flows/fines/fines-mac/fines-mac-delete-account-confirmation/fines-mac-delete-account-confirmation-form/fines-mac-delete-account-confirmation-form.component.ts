@@ -40,13 +40,13 @@ export class FinesMacDeleteAccountConfirmationFormComponent
   extends AbstractFormBaseComponent
   implements OnInit, OnDestroy
 {
-  @Input({ required: true }) public referrer!: string;
-  @Input({ required: false }) public accountId!: number | null;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacDeleteAccountConfirmationForm>();
-
-  public readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
+  @Input({ required: true }) public referrer!: string;
+  @Input({ required: false }) public accountId!: number | null;
+  public readonly finesMacStore = inject(FinesMacStore);
   override fieldErrors: IFinesMacDeleteAccountConfirmationFieldErrors =
     FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS;
 
@@ -72,6 +72,17 @@ export class FinesMacDeleteAccountConfirmationFormComponent
     this.setupDeleteAccountConfirmationForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+  }
+
+  /**
+   * Checks whether the form is dirty and the reason field is not empty, and the form is not submitted
+   *
+   * @returns boolean
+   */
+  protected override hasUnsavedChanges(): boolean {
+    return (
+      this.form.dirty && this.form.controls['fm_delete_account_confirmation_reason'].value !== '' && !this.formSubmitted
+    );
   }
 
   public override ngOnInit(): void {
@@ -102,16 +113,5 @@ export class FinesMacDeleteAccountConfirmationFormComponent
     } else {
       this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
     }
-  }
-
-  /**
-   * Checks whether the form is dirty and the reason field is not empty, and the form is not submitted
-   *
-   * @returns boolean
-   */
-  protected override hasUnsavedChanges(): boolean {
-    return (
-      this.form.dirty && this.form.controls['fm_delete_account_confirmation_reason'].value !== '' && !this.formSubmitted
-    );
   }
 }

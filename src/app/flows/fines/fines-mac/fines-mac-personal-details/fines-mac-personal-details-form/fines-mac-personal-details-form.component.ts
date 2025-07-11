@@ -64,21 +64,19 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   };
-
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
-
   public age!: number;
   public ageLabel!: string;
 

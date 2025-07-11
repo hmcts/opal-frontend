@@ -22,7 +22,6 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBaseComponent implements OnDestroy {
-  @Input({ required: true }) public accountId!: number;
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
@@ -36,6 +35,7 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
   private readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
   private readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
+  @Input({ required: true }) public accountId!: number;
   /**
    * Submits the decision made on a fines MAC review account form.
    *

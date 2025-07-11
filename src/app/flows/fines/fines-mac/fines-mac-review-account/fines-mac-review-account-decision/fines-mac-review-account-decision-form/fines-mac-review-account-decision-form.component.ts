@@ -34,12 +34,11 @@ import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fin
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBaseComponent implements OnInit {
-  @Input({ required: true }) public accountId!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacReviewAccountDecisionForm>();
 
+  @Input({ required: true }) public accountId!: number;
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-
   override fieldErrors: IFinesMacReviewAccountDecisionFieldErrors = FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS;
 
   /**

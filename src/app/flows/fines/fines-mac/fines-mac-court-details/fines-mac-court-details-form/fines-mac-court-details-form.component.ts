@@ -42,16 +42,16 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patte
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+  private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
   @Input() public defendantType!: string;
   @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
-
-  private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 
   /**
