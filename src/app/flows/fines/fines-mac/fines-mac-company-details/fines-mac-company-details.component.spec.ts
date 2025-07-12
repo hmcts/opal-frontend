@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacCompanyDetailsComponent', () => {
   let component: FinesMacCompanyDetailsComponent;
@@ -36,7 +37,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'company';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
     fixture.detectChanges();
   });

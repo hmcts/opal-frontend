@@ -15,7 +15,7 @@ import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-co
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
+import { Observable, EMPTY, distinctUntilChanged, takeUntil, of } from 'rxjs';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors.constant';
@@ -44,7 +44,6 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offenc
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
-import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
@@ -59,6 +58,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
+import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -99,6 +99,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
+  protected readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
@@ -175,7 +176,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.setInitialErrorMessages();
     this.getMinorCreditors();
     this.rePopulateForm(formData);
-    this.offenceCodeListener();
+    this.setupOffenceCodeListener();
 
     if (!hasOffenceDetailsDraft && impositionsLength === 0) {
       this.addControlsToFormArray(0, impositionsKey);
@@ -188,62 +189,24 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Populates the offence hint based on the provided CJS code.
-   * @param cjsCode - The CJS code used to retrieve the offence details.
+   * Sets up the offence code listener for the fines-mac-offence-details-add-an-offence component.
+   * This method initializes the offence code listener and updates the offenceCode$ observable
+   * with the result from the service.
    */
-  private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_cjs_code'];
-    const offenceIdControl = this.form.controls['fm_offence_details_offence_id'];
-    offenceIdControl.setValue(null);
-
-    if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
-      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
-        tap((offence) => {
-          offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
-          offenceIdControl.setValue(offence.count !== 1 ? null : offence.refData[0].offence_id, { emitEvent: false });
-        }),
-        map((response) => response),
-        takeUntil(this.ngUnsubscribe),
-      );
-
-      this.selectedOffenceConfirmation = true;
-
-      this.changeDetector.detectChanges();
-    } else {
-      this.selectedOffenceConfirmation = false;
-    }
-  }
-
-  /**
-   * Listens for changes in the offence code control and performs actions based on the input.
-   * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
-   * @private
-   * @returns {void}
-   */
-  private offenceCodeListener(): void {
-    this.selectedOffenceConfirmation = false;
-
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_cjs_code'];
-
-    // Populate the offence hint if the offence code is already set
-    if (offenceCodeControl.value) {
-      this.populateOffenceHint(offenceCodeControl.value);
-    }
-
-    // Listen for changes in the offence code control
-    offenceCodeControl.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        tap((cjs_code: string) => {
-          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
-          offenceCodeControl.setValue(cjs_code, { emitEvent: false });
-        }),
-        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe((cjs_code: string) => {
-        this.populateOffenceHint(cjs_code);
-      });
+  private setupOffenceCodeListener(): void {
+    this.offenceDetailsService.initOffenceCodeListener(
+      this.form,
+      'fm_offence_details_offence_cjs_code',
+      'fm_offence_details_offence_id',
+      this.ngUnsubscribe,
+      this.opalFinesService.getOffenceByCjsCode.bind(this.opalFinesService),
+      (result) => {
+        this.offenceCode$ = of(result);
+      },
+      (confirmed) => {
+        this.selectedOffenceConfirmation = confirmed;
+      },
+    );
   }
 
   /**
