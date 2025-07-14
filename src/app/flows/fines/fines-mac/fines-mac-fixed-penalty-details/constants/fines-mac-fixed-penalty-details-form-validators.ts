@@ -38,7 +38,6 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_offence_details_offence_type: null,
   fm_fp_offence_details_date_of_offence: [
     Validators.required,
-    Validators.maxLength(10),
     optionalValidDateValidator(),
     futureDateValidator(),
   ],
@@ -55,7 +54,6 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_offence_details_driving_licence_number: [Validators.required, drivingLicenceNumberValidator()],
   fm_fp_offence_details_nto_nth: [Validators.maxLength(10), alphabeticalTextValidator()],
   fm_fp_offence_details_date_nto_issued: [
-    Validators.maxLength(10),
     optionalValidDateValidator(),
     futureDateValidator(),
   ],
