@@ -63,4 +63,10 @@ export const FINES_PAYMENT_TERMS_MOCK: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  deleteAccountConfirmation: {
+    formData: {
+      fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
 };
