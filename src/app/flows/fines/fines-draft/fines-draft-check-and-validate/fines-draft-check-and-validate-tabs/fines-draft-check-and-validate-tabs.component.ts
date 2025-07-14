@@ -54,9 +54,6 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
-  protected readonly finesDraftStore = inject(FinesDraftStore);
-  public readonly finesDraftService = inject(FinesDraftService);
-
   private readonly userState = this.globalStore.userState();
   private readonly businessUnitIds = this.userState.business_unit_user.map(
     (business_unit_user) => business_unit_user.business_unit_id,
@@ -65,8 +62,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     (business_unit_user) => business_unit_user.business_unit_user_id,
   );
 
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
 
+  public readonly finesDraftService = inject(FinesDraftService);
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public failedCount$!: Observable<string>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
