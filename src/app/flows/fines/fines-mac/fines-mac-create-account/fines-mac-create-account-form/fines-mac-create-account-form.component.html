@@ -9,7 +9,7 @@
     <p>The account will be created in {{ autoCompleteItems[0].name }}</p>
   } @else {
     <opal-lib-alphagov-accessible-autocomplete
-      [control]="form.controls['fm_create_account_business_unit_id']"
+      [control]="form.get('fm_create_account_business_unit_id')"
       labelText="Business unit"
       labelClasses="govuk-fieldset__legend--m"
       inputId="fm_create_account_business_unit_id"

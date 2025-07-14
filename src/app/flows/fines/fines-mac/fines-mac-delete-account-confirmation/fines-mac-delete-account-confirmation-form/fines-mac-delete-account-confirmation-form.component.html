@@ -6,7 +6,7 @@
       labelClasses="govuk-label--s"
       inputId="fm_delete_account_confirmation_reason"
       inputName="fm_delete_account_confirmation_reason"
-      [control]="form.controls['fm_delete_account_confirmation_reason']"
+      [control]="form.get('fm_delete_account_confirmation_reason')"
       [characterCountEnabled]="true"
       [maxCharacterLimit]="250"
       [rows]="4"
