@@ -61,9 +61,6 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-sear
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
-  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
-
-  public readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
@@ -79,6 +76,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   };
   private readonly finesSaService = inject(FinesSaService);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  public readonly finesSaStore = inject(FinesSaStore);
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
   /**

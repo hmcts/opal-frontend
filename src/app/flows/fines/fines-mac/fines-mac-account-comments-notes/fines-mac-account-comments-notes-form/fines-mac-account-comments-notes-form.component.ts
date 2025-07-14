@@ -34,12 +34,13 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
+  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
+  @Input() public defendantType!: string;
   public mandatorySectionsCompleted!: boolean;
 
   /**

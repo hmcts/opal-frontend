@@ -29,37 +29,21 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
   private readonly utilsService = inject(UtilsService);
-  protected readonly finesMacStore = inject(FinesMacStore);
-  protected readonly finesDraftStore = inject(FinesDraftStore);
-  protected readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
-
   private readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   private readonly reviewAccountRoute = this.finesMacRoutes.children.reviewAccount;
   private readonly accountDetailsRoute = this.finesMacRoutes.children.accountDetails;
-  public accountId: number | null = Number(this.route.snapshot.paramMap.get('draftAccountId'));
-  public referrer = this.setReferrer();
-
   private readonly finesRoutes = FINES_ROUTING_PATHS;
   private readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
   private readonly finesDraftCheckAndValidateRoutes = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
   private readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
-  public ngOnDestroy(): void {
-    this.finesMacStore.setDeleteFromCheckAccount(false);
-  }
+  protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
+  protected readonly opalFinesService = inject(OpalFines);
 
-  /**
-   * Handles the submission of the delete account confirmation form.
-   *
-   * @param form - The form data for the account comments and notes.
-   * @returns void
-   */
-  public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
-    this.finesMacStore.setDeleteAccountConfirmation(form);
-    const payload = this.createPatchPayload(form);
-    this.handlePatchRequest(payload);
-  }
+  public accountId: number | null = Number(this.route.snapshot.paramMap.get('draftAccountId'));
+  public referrer = this.setReferrer();
 
   /**
    * Creates the payload for the PATCH request to delete an account.
@@ -131,6 +115,16 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       fragment: this.finesDraftStore.fragment(),
     });
   }
+  /**
+   * Sets the referrer for the delete account confirmation page.
+   *
+   * @returns {string} The referrer path to navigate back to the review account page.
+   */
+  private setReferrer(): string {
+    if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
+
+    return this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
+  }
 
   /**
    * Handles the request error by scrolling to the top of the page.
@@ -153,13 +147,24 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
   }
 
   /**
-   * Sets the referrer for the delete account confirmation page.
+   * Handles the submission of the delete account confirmation form.
    *
-   * @returns {string} The referrer path to navigate back to the review account page.
+   * @param form - The form data for the account comments and notes.
+   * @returns void
    */
-  private setReferrer(): string {
-    if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
+  public handleDeleteAccountConfirmationSubmit(form: IFinesMacDeleteAccountConfirmationForm): void {
+    this.finesMacStore.setDeleteAccountConfirmation(form);
+    const payload = this.createPatchPayload(form);
+    this.handlePatchRequest(payload);
+  }
 
-    return this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * Resets the delete account check flag in the fines MAC store to ensure the correct cleanup
+   * of the account deletion flow.
+   */
+  public ngOnDestroy(): void {
+    this.finesMacStore.setDeleteFromCheckAccount(false);
   }
 }

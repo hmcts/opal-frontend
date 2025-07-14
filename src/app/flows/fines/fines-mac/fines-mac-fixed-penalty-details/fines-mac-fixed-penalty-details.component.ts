@@ -29,14 +29,14 @@ import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-se
 export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
-  public defendantType = this.finesMacStore.getDefendantType();
-  public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
-  public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] = [];
   private courts!: IOpalFinesCourtRefData;
   private prosecutors!: IOpalFinesProsecutorRefData;
   private localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   private readonly finesPrefix = 'fm_';
   private readonly fixedPenaltyPrefix = 'fm_fp_';
+  public defendantType = this.finesMacStore.getDefendantType();
+  public enforcementCourtData: IAlphagovAccessibleAutocompleteItem[] = [];
+  public issuingAuthoritiesData: IAlphagovAccessibleAutocompleteItem[] = [];
 
   /**
    * Patches all relevant form data into the personal details Form from the fixed penalty details Form.

@@ -210,6 +210,47 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
+  private hasNonEmptyValue(value: unknown): boolean {
+    // If it's an array, check if it has any elements
+    // This is for the aliases
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== null;
+  }
+
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
+  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Check if any of the values are not empty
+    Object.entries(formData).forEach(([, value]) => {
+      const hasValue = this.hasNonEmptyValue(value);
+      // If we have a value and the status is not provided, set it to provided
+      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+        newStatus = FINES_MAC_STATUS.PROVIDED;
+      }
+    });
+
+    return newStatus;
+  }
+
+  /**
    * Builds the payload for adding an account in the fines MAC (Management and Control) system.
    *
    * @param finesMacState - The current state of the fines MAC.
@@ -275,47 +316,6 @@ export class FinesMacPayloadService {
       validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
       version: draftAccountPayload.version!,
     };
-  }
-
-  /**
-   * Checks if the given value is non-empty.
-   *
-   * This method determines if the provided value is non-empty by:
-   * - Checking if the value is an array and has any elements.
-   * - Checking if the value is not null.
-   *
-   * @param value - The value to check.
-   * @returns `true` if the value is non-empty, `false` otherwise.
-   */
-  private hasNonEmptyValue(value: unknown): boolean {
-    // If it's an array, check if it has any elements
-    // This is for the aliases
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== null;
-  }
-
-  /**
-   * Determines the status of the fines MAC state form based on the provided form data.
-   *
-   * @template T - The type of the form data object.
-   * @param {T} formData - The form data object to evaluate.
-   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
-   */
-  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-
-    // Check if any of the values are not empty
-    Object.entries(formData).forEach(([, value]) => {
-      const hasValue = this.hasNonEmptyValue(value);
-      // If we have a value and the status is not provided, set it to provided
-      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-        newStatus = FINES_MAC_STATUS.PROVIDED;
-      }
-    });
-
-    return newStatus;
   }
 
   /**

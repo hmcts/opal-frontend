@@ -16,6 +16,8 @@ import { ActivatedRoute } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   @Input({ required: true }) offence!: IFinesMacOffenceDetailsForm;
   @Input({ required: true }) impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
@@ -23,8 +25,6 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: false }) showDetails: boolean = true;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-
-  private readonly activatedRoute = inject(ActivatedRoute);
 
   /**
    * Emits an action event with the specified action name and offence ID.
