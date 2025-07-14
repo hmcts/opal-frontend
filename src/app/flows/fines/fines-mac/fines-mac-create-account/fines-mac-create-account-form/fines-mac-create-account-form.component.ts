@@ -55,15 +55,16 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
-  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly accountTypeSubject = new Subject<void>();
+  private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
+    FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly routingPath = PAGES_ROUTING_PATHS;
 
+  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
       key,
@@ -79,9 +80,6 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
-  private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
-    FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
-
   override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
 
   /**

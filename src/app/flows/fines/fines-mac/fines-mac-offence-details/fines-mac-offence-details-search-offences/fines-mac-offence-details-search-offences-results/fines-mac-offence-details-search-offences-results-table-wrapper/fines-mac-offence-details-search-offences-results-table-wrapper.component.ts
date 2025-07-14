@@ -37,7 +37,12 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   extends AbstractSortableTablePaginationComponent
   implements OnDestroy
 {
+  private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   protected readonly utilsService = inject(UtilsService);
+  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss'Z'`;
+  protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
+
   public override displayTableDataSignal = signal<IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableData[]>(
     [],
   );
@@ -50,16 +55,11 @@ export class FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent
   ) {
     this.displayTableDataSignal.set(tableData);
   }
-
   @Input({ required: true }) set existingSortState(
     existingSortState: IFinesMacOffenceDetailsSearchOffencesResultsTableWrapperTableSort | null,
   ) {
     this.abstractExistingSortState = existingSortState;
   }
-
-  private copyCodeTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  protected readonly DATE_INPUT_FORMAT = `yyyy-MM-dd'T'HH:mm:ss'Z'`;
-  protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
   public readonly COPY_CODE_TO_CLIPBOARD = COPY_CODE_TO_CLIPBOARD;
 
   /**
