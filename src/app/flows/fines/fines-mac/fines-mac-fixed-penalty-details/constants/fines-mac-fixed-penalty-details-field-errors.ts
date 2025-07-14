@@ -68,21 +68,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter date of offence`,
       priority: 1,
     },
-    maxlength: {
+    invalidDateFormat: {
       message: `Offence date must be in the format DD/MM/YYYY`,
       priority: 2,
     },
-    invalidDateFormat: {
-      message: `Offence date must be in the format DD/MM/YYYY`,
-      priority: 3,
-    },
     invalidDate: {
       message: `Enter a valid offence date`,
-      priority: 4,
+      priority: 3,
     },
     invalidFutureDate: {
       message: `Date of offence must be in the past`,
-      priority: 5,
+      priority: 4,
     },
   },
   fm_fp_offence_details_offence_id: {},
@@ -157,21 +153,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_offence_details_date_nto_issued: {
-    maxlength: {
+    invalidDateFormat: {
       message: `Enter notice to owner date in the format DD/MM/YYYY`,
       priority: 1,
     },
-    invalidDateFormat: {
-      message: `Enter notice to owner date in the format DD/MM/YYYY`,
-      priority: 2,
-    },
     invalidDate: {
       message: `Enter a valid notice to owner date`,
-      priority: 3,
+      priority: 2,
     },
     invalidFutureDate: {
       message: `Date notice to owner issued must be in the past`,
-      priority: 4,
+      priority: 3,
     },
   },
 };
