@@ -14,14 +14,13 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implements OnInit {
-  @Input({ required: true }) public offences!: IFinesMacOffenceDetailsReviewSummaryForm[];
-
   private readonly utilsService = inject(UtilsService);
-
-  public totals!: IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals;
   private totalAmountImposed: number = 0;
   private totalAmountPaid: number = 0;
   private totalBalanceRemaining: number = 0;
+
+  @Input({ required: true }) public offences!: IFinesMacOffenceDetailsReviewSummaryForm[];
+  public totals!: IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals;
 
   /**
    * Calculates the total amounts for the offences.
