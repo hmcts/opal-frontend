@@ -4,22 +4,24 @@
     <li>
       <span>{{ globalStore.userState().user_name }}</span>
     </li>
-    <li>
-      <a
-        class="govuk-link"
-        [routerLink]="
-          '/' +
-          finesRoutingPaths.root +
-          '/' +
-          finesRoutingPaths.children.mac.root +
-          '/' +
-          finesRoutingPaths.children.mac.children['createAccount']
-        "
-        id="finesMacLink"
-        >Manual Account Creation</a
-      >
-    </li>
-    @if (permissionIds.includes(permissionsMap.checkAndValidateDraftAccounts)) {
+    @if (permissionIds.includes(dashboardPermissions['create-and-manage-draft-accounts'])) {
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.mac.root +
+            '/' +
+            finesRoutingPaths.children.mac.children['createAccount']
+          "
+          id="finesMacLink"
+          >Manual Account Creation</a
+        >
+      </li>
+    }
+    @if (permissionIds.includes(dashboardPermissions['check-and-validate-draft-accounts'])) {
       <li>
         <a
           class="govuk-link"
@@ -39,7 +41,7 @@
         >
       </li>
     }
-    @if (permissionIds.includes(permissionsMap.createAndManageDraftAccounts)) {
+    @if (permissionIds.includes(dashboardPermissions['create-and-manage-draft-accounts'])) {
       <li>
         <a
           class="govuk-link"
@@ -59,21 +61,23 @@
         >
       </li>
     }
-    <li>
-      <a
-        class="govuk-link"
-        [routerLink]="
-          '/' +
-          finesRoutingPaths.root +
-          '/' +
-          finesRoutingPaths.children.sa.root +
-          '/' +
-          finesRoutingPaths.children.sa.children['search']
-        "
-        fragment="individuals"
-        id="finesSaSearchAccountLink"
-        >Search for an account</a
-      >
-    </li>
+    @if (permissionIds.includes(dashboardPermissions['account-enquiry'])) {
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.sa.root +
+            '/' +
+            finesRoutingPaths.children.sa.children['search']
+          "
+          fragment="individuals"
+          id="finesSaSearchLink"
+          >Search for an account</a
+        >
+      </li>
+    }
   </ul>
 </div>
