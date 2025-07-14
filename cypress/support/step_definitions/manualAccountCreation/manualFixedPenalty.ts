@@ -1,4 +1,4 @@
-import { Then } from "@badeball/cypress-cucumber-preprocessor";
+import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I enter {string} into the Issuing Authority search box', (issuingAuthority: string) => {
   cy.get('#fm_fp_court_details_issuing_authority_id-autocomplete').type(issuingAuthority);
