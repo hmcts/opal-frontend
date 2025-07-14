@@ -1,1 +1,50 @@
 <h1 class="govuk-heading-l">Companies</h1>
+<div class="no-margin-bottom">
+  <opal-lib-govuk-text-input
+    labelText="Company name"
+    labelClasses="govuk-label--s"
+    inputId="fsa_search_account_companies_company_name"
+    inputName="fsa_search_account_companies_company_name"
+    inputClasses="govuk-input--width-20"
+    [control]="form.controls['fsa_search_account_companies_company_name']"
+    [errors]="formControlErrorMessages['fsa_search_account_companies_company_name']"
+  ></opal-lib-govuk-text-input>
+</div>
+<opal-lib-govuk-checkboxes fieldSetId="companyNameExactMatch" checkboxClasses="" legendText="">
+  <div
+    opal-lib-govuk-checkboxes-item
+    labelText="Search exact match"
+    inputId="fsa_search_account_companies_company_name_exact_match"
+    inputName="fsa_search_account_companies_company_name_exact_match"
+    class="govuk-checkboxes--small"
+    [control]="form.get('fsa_search_account_companies_company_name_exact_match')"
+  ></div>
+</opal-lib-govuk-checkboxes>
+<opal-lib-govuk-checkboxes fieldSetId="includeAliases" checkboxClasses="" legendText="">
+  <div
+    opal-lib-govuk-checkboxes-item
+    labelText="Include aliases"
+    inputId="fsa_search_account_companies_include_aliases"
+    inputName="fsa_search_account_companies_include_aliases"
+    class="govuk-checkboxes--small"
+    [control]="form.get('fsa_search_account_companies_include_aliases')"
+  ></div>
+</opal-lib-govuk-checkboxes>
+<opal-lib-govuk-text-input
+  labelText="Address line 1"
+  labelClasses="govuk-label--s"
+  inputId="fsa_search_account_companies_address_line_1"
+  inputName="fsa_search_account_companies_address_line_1"
+  inputClasses="govuk-!-width-three-quarters"
+  [control]="form.controls['fsa_search_account_companies_address_line_1']"
+  [errors]="formControlErrorMessages['fsa_search_account_companies_address_line_1']"
+></opal-lib-govuk-text-input>
+<opal-lib-govuk-text-input
+  labelText="Postcode"
+  labelClasses="govuk-label--s"
+  inputId="fsa_search_account_companies_post_code"
+  inputName="fsa_search_account_companies_post_code"
+  inputClasses="govuk-input--width-10"
+  [control]="form.controls['fsa_search_account_companies_post_code']"
+  [errors]="formControlErrorMessages['fsa_search_account_companies_post_code']"
+></opal-lib-govuk-text-input>
