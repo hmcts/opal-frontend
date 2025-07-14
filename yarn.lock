@@ -3425,9 +3425,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.8":
-  version: 0.0.8
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.8"
+"@hmcts/opal-frontend-common-node@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.9"
   dependencies:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3436,8 +3436,8 @@ __metadata:
     applicationinsights: "npm:~2.9.6"
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
-    config: "npm:^3.3.9"
-    connect-redis: "npm:^8.0.0"
+    config: "npm:^4.0.0"
+    connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
     express: "npm:^5.0.0"
@@ -3449,19 +3449,19 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/a02a34c34ff02259a54ac4d35b018436f41db0d1afbe0f6140b84b8125681a8cc0967a60f61085aecc796b399cb3517e15833fbbd15c301b0439fbbff908a50b
+  checksum: 10/90cc17766069feac1277e52a3f51909c0764ab2db46b520f5c2b0365e8eee665dca4aac066a4ef2d798c0edbb572b9f9fe157c51957d9f960752e6bf356145c7
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.22":
-  version: 0.0.22
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.22"
+"@hmcts/opal-frontend-common@npm:^0.0.23":
+  version: 0.0.23
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.23"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/4400c3e1d035a314c83c1ab0263dee660120222fcc4ed5132480462dc51a7f458934eab63ced06d74b136610a07a6bdd5e48587e8e4151ac491545f4445b8562
+  checksum: 10/51d1a7b0f07a939fcbedf687a094cdf29ac90dc77b2b45408a82d7cf5dd7640b29168262e9fb8089851559b391cf008fed812e83f1691346e7fa20b2d7c4446f
   languageName: node
   linkType: hard
 
@@ -7523,15 +7523,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:^3.3.9":
-  version: 3.3.12
-  resolution: "config@npm:3.3.12"
-  dependencies:
-    json5: "npm:^2.2.3"
-  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
-  languageName: node
-  linkType: hard
-
 "config@npm:^4.0.0":
   version: 4.0.0
   resolution: "config@npm:4.0.0"
@@ -7552,15 +7543,6 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
-  languageName: node
-  linkType: hard
-
-"connect-redis@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "connect-redis@npm:8.1.0"
-  peerDependencies:
-    express-session: ">=1"
-  checksum: 10/c51bc8beeb801b34d92e6fe7ade87f15d8317f78bdaf82260e49b5e0455dc5b81e2355601b799547a7b51b67d6d56158af9c126586ca7b456006c58581b73405
   languageName: node
   linkType: hard
 
@@ -13552,8 +13534,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.22"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.8"
+    "@hmcts/opal-frontend-common": "npm:^0.0.23"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.9"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
