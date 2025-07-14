@@ -240,6 +240,14 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Determines whether the component can be deactivated.
+   * @returns A CanDeactivateTypes object representing the navigation status.
+   */
+  protected canDeactivate(): CanDeactivateTypes {
+    return this.pageNavigation;
+  }
+
+  /**
    * Navigates back to the previous page
    * Page navigation set to false to trigger the canDeactivate guard
    */
@@ -255,14 +263,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
       this.pageNavigation = false;
       this.handleRoute(this.fineMacRoutes.children.createAccount);
     }
-  }
-
-  /**
-   * Determines whether the component can be deactivated.
-   * @returns A CanDeactivateTypes object representing the navigation status.
-   */
-  public canDeactivate(): CanDeactivateTypes {
-    return this.pageNavigation;
   }
 
   /**
