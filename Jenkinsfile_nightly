@@ -114,8 +114,15 @@ withNightlyPipeline(type, product, component) {
     setupTestSpecifications()
   }
 
-  afterAlways('DependencyCheckNightly') {
-    if (params.Component) {
+afterAlways('DependencyCheckNightly') {
+  echo "Component:" + params.Component
+  echo "Smoke:" + params.Smoke
+  echo "Functional:" + params.Functional
+  echo "Legacy:" + params.Legacy
+  echo "RunEdge:" + params.RunEdge
+  echo "RunFirefox:" + params.RunFirefox
+
+      if (params.Component) {
       stage('Component Tests') {
         try{
           yarnBuilder.yarn('test:opalComponent')
