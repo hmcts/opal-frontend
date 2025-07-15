@@ -75,4 +75,10 @@ export const FINES_REVIEW_SUMMARY_OFFENCE_MOCK: IFinesMacState = {
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  deleteAccountConfirmation: {
+    formData: {
+      fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
 };

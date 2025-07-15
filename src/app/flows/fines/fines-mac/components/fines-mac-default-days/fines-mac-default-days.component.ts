@@ -22,16 +22,17 @@ import { Subject, takeUntil } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {
-  @Input({ required: true }) date!: string;
   private readonly dateService = inject(DateService);
   private readonly ngUnsubscribe = new Subject<void>();
+
+  @Input({ required: true }) date!: string;
+
   public daysInDefaultCalculatorForm = new FormGroup({
     years: new FormControl<number | null>(null),
     months: new FormControl<number | null>(null),
     weeks: new FormControl<number | null>(null),
     days: new FormControl<number | null>(null),
   });
-
   public daysInDefaultCalculated!: number;
 
   /**

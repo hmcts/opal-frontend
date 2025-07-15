@@ -12,15 +12,14 @@ import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fine
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewOffenceHeadingComponent implements OnInit {
+  private readonly opalFinesService = inject(OpalFines);
+
   @Input({ required: true }) public offenceId!: number;
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public showDetails: boolean = true;
   @Input({ required: false }) public isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
-
-  private readonly opalFinesService = inject(OpalFines);
-
   public offenceRefData$: Observable<IOpalFinesOffencesRefData> = EMPTY;
 
   /**

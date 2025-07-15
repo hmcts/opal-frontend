@@ -75,6 +75,32 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Converts a date string in 'dd/MM/yyyy' format to an RFC 3339 date string ('YYYY-MM-DD').
+   *
+   * @param date - The date string in 'dd/MM/yyyy' format or null.
+   * @returns The date string in RFC 3339 format ('YYYY-MM-DD') if valid, otherwise null.
+   */
+  private toRfc3339Date(date: string | null): string | null {
+    if (!date) return null;
+    const dateTime = this.dateService.getFromFormat(date, 'dd/MM/yyyy');
+    return dateTime.isValid ? dateTime.toISODate() : null;
+  }
+
+  /**   * Converts a date string in RFC 3339 format ('yyyy-MM-dd') back to 'dd/MM/yyyy' format.
+   *
+   * @param date - The RFC 3339 date string to convert, or null.
+   * @returns The date string in 'dd/MM/yyyy' format, or null if the input is null or invalid.
+   */
+  private fromRfc3339Date(date: string | null): string | null {
+    if (!date) {
+      return null;
+    }
+
+    const dateTime = this.dateService.getFromFormat(date, 'yyyy-MM-dd');
+    return dateTime.isValid ? dateTime.toFormat('dd/MM/yyyy') : null;
+  }
+
+  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -113,7 +139,11 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
+    const offences = finesMacPayloadBuildAccountOffences(
+      offenceDetailsForms,
+      courtDetailsState,
+      this.toRfc3339Date.bind(this),
+    );
 
     // Return our payload object
     return {
@@ -176,6 +206,47 @@ export class FinesMacPayloadService {
 
     // Transform the payload, format the dates to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
+  private hasNonEmptyValue(value: unknown): boolean {
+    // If it's an array, check if it has any elements
+    // This is for the aliases
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== null;
+  }
+
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
+  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Check if any of the values are not empty
+    Object.entries(formData).forEach(([, value]) => {
+      const hasValue = this.hasNonEmptyValue(value);
+      // If we have a value and the status is not provided, set it to provided
+      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+        newStatus = FINES_MAC_STATUS.PROVIDED;
+      }
+    });
+
+    return newStatus;
   }
 
   /**
@@ -247,47 +318,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Checks if the given value is non-empty.
-   *
-   * This method determines if the provided value is non-empty by:
-   * - Checking if the value is an array and has any elements.
-   * - Checking if the value is not null.
-   *
-   * @param value - The value to check.
-   * @returns `true` if the value is non-empty, `false` otherwise.
-   */
-  private hasNonEmptyValue(value: unknown): boolean {
-    // If it's an array, check if it has any elements
-    // This is for the aliases
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== null;
-  }
-
-  /**
-   * Determines the status of the fines MAC state form based on the provided form data.
-   *
-   * @template T - The type of the form data object.
-   * @param {T} formData - The form data object to evaluate.
-   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
-   */
-  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-
-    // Check if any of the values are not empty
-    Object.entries(formData).forEach(([, value]) => {
-      const hasValue = this.hasNonEmptyValue(value);
-      // If we have a value and the status is not provided, set it to provided
-      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-        newStatus = FINES_MAC_STATUS.PROVIDED;
-      }
-    });
-
-    return newStatus;
-  }
-
-  /**
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
@@ -312,6 +342,12 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+    finesMacState.offenceDetails.forEach(
+      (offence) =>
+        (offence.formData.fm_offence_details_date_of_sentence = this.fromRfc3339Date(
+          offence.formData.fm_offence_details_date_of_sentence,
+        )),
+    );
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
