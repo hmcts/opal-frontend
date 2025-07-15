@@ -50,16 +50,14 @@ export class FinesMacParentGuardianDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly dateService = inject(DateService);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
+  protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
-
   public yesterday!: string;
-
   public age!: number;
   public ageLabel!: string;
 

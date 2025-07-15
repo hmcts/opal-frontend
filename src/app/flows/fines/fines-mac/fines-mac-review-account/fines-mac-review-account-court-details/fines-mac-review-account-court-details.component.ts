@@ -34,6 +34,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
+  private readonly opalFinesService = inject(OpalFines);
+
   @Input({ required: true }) public courtDetails!: IFinesMacCourtDetailsState;
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
   @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeAreaRefData;
@@ -42,8 +44,6 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: false }) public isReadOnly = false;
   @Input({ required: true }) public accountType!: string;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
-
-  private readonly opalFinesService = inject(OpalFines);
   public enforcementCourt!: string;
   public sendingCourt!: string | null;
   public prosecutor!: string | null;

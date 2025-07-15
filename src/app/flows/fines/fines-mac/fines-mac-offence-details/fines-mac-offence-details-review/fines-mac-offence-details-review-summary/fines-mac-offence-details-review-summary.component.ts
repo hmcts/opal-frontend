@@ -43,20 +43,19 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-def
   styleUrl: './fines-mac-offence-details-review-summary.component.scss',
 })
 export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly finesMacStore = inject(FinesMacStore);
+
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
   @Input({ required: false }) public isReadOnly = false;
-
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-
   public readonly finesMacStatus = FINES_MAC_STATUS;
-  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-
   public offencesHidden!: IFinesMacOffenceDetailsReviewSummaryDetailsHidden;
 
   /**

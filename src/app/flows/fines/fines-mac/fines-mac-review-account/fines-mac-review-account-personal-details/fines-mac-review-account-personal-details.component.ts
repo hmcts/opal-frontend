@@ -26,15 +26,14 @@ import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
+  private readonly dateService = inject(DateService);
+  private readonly utilsService = inject(UtilsService);
+
   @Input({ required: true }) public personalDetails!: IFinesMacPersonalDetailsState;
   @Input({ required: false }) public showVehicleDetails: boolean = true;
   @Input({ required: false }) public isReadOnly = false;
   @Input({ required: false }) public accountType!: string;
   @Output() public emitChangePersonalDetails = new EventEmitter<void>();
-
-  private readonly dateService = inject(DateService);
-  private readonly utilsService = inject(UtilsService);
-
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public aliases!: string[];
   public dob!: string | null;

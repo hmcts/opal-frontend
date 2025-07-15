@@ -25,12 +25,11 @@ import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-
 })
 export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   @Input({ required: true }) public accountType!: string;
+  private readonly utilsService = inject(UtilsService);
+
   @Input({ required: true }) public companyDetails!: IFinesMacCompanyDetailsState;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
-
-  private readonly utilsService = inject(UtilsService);
-
   public aliases!: string[];
   public address!: string[];
   public readonly accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
