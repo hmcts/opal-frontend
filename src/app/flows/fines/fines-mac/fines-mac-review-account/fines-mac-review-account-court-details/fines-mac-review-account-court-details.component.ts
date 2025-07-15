@@ -40,7 +40,6 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
   @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public prosecutorsData!: IOpalFinesProsecutorRefData;
-  @Input({ required: false }) public fixedPenaltyDetails!: IFinesMacFixedPenaltyDetailsStoreState;
   @Input({ required: false }) public isReadOnly = false;
   @Input({ required: true }) public accountType!: string;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
@@ -97,7 +96,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getProsecutor(): string | null {
     const prosecutor = this.prosecutorsData.ref_data.find(
-      (p: IOpalFinesProsecutor) => p.prosecutor_id === +this.fixedPenaltyDetails.fm_court_details_issuing_authority_id!,
+      (p: IOpalFinesProsecutor) => p.prosecutor_id === +this.courtDetails.fm_court_details_originator_id!,
     )!;
 
     if (!prosecutor) {
@@ -116,7 +115,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
     this.getEnforcementCourt();
     if (this.accountType === this.accountTypesKeys.fixedPenalty) {
       this.issuingAuthority =
-        this.getProsecutor() ?? this.getSendingCourt(this.fixedPenaltyDetails.fm_court_details_issuing_authority_id);
+        this.getProsecutor() ?? this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
     } else {
       this.sendingCourt = this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
     }

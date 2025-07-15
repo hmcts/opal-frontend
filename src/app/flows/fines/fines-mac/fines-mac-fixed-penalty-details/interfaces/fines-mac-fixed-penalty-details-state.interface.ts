@@ -8,7 +8,8 @@ export interface IFinesMacFixedPenaltyDetailsState {
   fm_fp_personal_details_address_line_3: string | null;
   fm_fp_personal_details_post_code: string | null;
   fm_fp_court_details_imposing_court_id: string | null;
-  fm_fp_court_details_issuing_authority_id: string | null;
+  fm_fp_court_details_originator_id: string | null;
+  fm_fp_court_details_originator_name: string | null;
   fm_fp_account_comments_notes_comments: string | null;
   fm_fp_account_comments_notes_notes: string | null;
   fm_fp_account_comments_notes_system_notes: string | null;
@@ -21,7 +22,7 @@ export interface IFinesMacFixedPenaltyDetailsState {
   fm_fp_offence_details_offence_cjs_code: string | null;
   fm_fp_offence_details_time_of_offence: string | null;
   fm_fp_offence_details_place_of_offence: string | null;
-  fm_fp_offence_details_amount_imposed: string | null;
+  fm_fp_offence_details_amount_imposed: number | null;
   fm_fp_offence_details_vehicle_registration_number: string | null;
   fm_fp_offence_details_driving_licence_number: string | null;
   fm_fp_offence_details_nto_nth: string | null;

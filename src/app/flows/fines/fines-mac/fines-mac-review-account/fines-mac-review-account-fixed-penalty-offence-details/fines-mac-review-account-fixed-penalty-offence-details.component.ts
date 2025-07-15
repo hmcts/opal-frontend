@@ -76,7 +76,7 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
    *
    * @param {string} amount - The amount that needs to be converting.
    */
-  public toMonetaryString(amount: string): string {
+  public toMonetaryString(amount: string | number): string {
     return this.utilsService.convertToMonetaryString(amount);
   }
 

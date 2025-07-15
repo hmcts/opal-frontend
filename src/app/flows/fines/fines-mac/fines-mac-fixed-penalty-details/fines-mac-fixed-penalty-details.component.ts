@@ -76,6 +76,10 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
     _form.formData[`${this.finesPrefix}court_details_imposing_court_id`] =
       form.formData[`${this.fixedPenaltyPrefix}court_details_imposing_court_id`];
+    _form.formData[`${this.finesPrefix}court_details_originator_id`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    _form.formData[`${this.finesPrefix}court_details_originator_name`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_originator_name`];
 
     return _form;
   }
@@ -152,8 +156,6 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
       form.formData[`${this.fixedPenaltyPrefix}offence_details_nto_nth`];
     _form.formData[`${this.finesPrefix}offence_details_date_nto_issued`] =
       form.formData[`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`];
-    _form.formData[`${this.finesPrefix}court_details_issuing_authority_id`] =
-      form.formData[`${this.fixedPenaltyPrefix}court_details_issuing_authority_id`];
 
     return _form;
   }

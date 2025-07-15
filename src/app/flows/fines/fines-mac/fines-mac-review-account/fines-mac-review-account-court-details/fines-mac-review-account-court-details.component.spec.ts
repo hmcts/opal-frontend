@@ -96,14 +96,14 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it('should get prosecutors prettyname from getProsecutor if id found', () => {
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
-    component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '1865';
+    component.fixedPenaltyDetails.fm_court_details_originator_id = '1865';
 
     expect(component['getProsecutor']()).toBe('Police force (101)');
   });
 
   it('should get null from getProsecutor if id not found', () => {
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
-    component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = 'xxx';
+    component.fixedPenaltyDetails.fm_court_details_originator_id = 'xxx';
 
     expect(component['getProsecutor']()).toBe(null);
   });
@@ -116,7 +116,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
-    component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '1865';
+    component.fixedPenaltyDetails.fm_court_details_originator_id = '1865';
     component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
 
     component['getCourtDetailsData']();
@@ -134,7 +134,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
-    component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '9985';
+    component.fixedPenaltyDetails.fm_court_details_originator_id = '9985';
     component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
 
     component['getCourtDetailsData']();
@@ -152,7 +152,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
-    component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '9985';
+    component.fixedPenaltyDetails.fm_court_details_originator_id = '9985';
     component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
 
     component['getCourtDetailsData']();

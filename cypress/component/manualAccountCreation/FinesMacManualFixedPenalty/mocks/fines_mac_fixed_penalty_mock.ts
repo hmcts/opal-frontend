@@ -22,7 +22,7 @@ export const FINES_FIXED_PENALTY_MOCK = {
       fm_offence_details_offence_cjs_code: '',
       fm_offence_details_time_of_offence: '',
       fm_offence_details_place_of_offence: '',
-      fm_offence_details_amount_imposed: '',
+      fm_offence_details_amount_imposed: 0,
       fm_offence_details_vehicle_registration_number: '',
       fm_offence_details_driving_licence_number: '',
       fm_offence_details_nto_nth: '',

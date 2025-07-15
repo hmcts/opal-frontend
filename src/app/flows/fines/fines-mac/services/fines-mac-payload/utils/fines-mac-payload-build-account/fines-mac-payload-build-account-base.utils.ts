@@ -1,3 +1,4 @@
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../../../constants/fines-mac-account-types-keys';
 import { IFinesMacAccountDetailsState } from '../../../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-state.interface';
@@ -55,7 +56,10 @@ export const finesMacPayloadBuildAccountBase = (
   paymentTermsState: IFinesMacPaymentTermsState,
   offenceDetailsState: IFinesMacOffenceDetailsState[],
 ): IFinesMacPayloadAccountAccountInitial => {
-  const earliestDateOfSentence = sortOffenceDetailsByDate(offenceDetailsState)[0].fm_offence_details_date_of_sentence;
+  let earliestDateOfSentence = null;
+  if (accountDetailsState.fm_create_account_account_type !== FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
+    earliestDateOfSentence = sortOffenceDetailsByDate(offenceDetailsState)[0].fm_offence_details_date_of_sentence;
+  }
 
   const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
     accountDetailsState;
@@ -87,6 +91,6 @@ export const finesMacPayloadBuildAccountBase = (
     collection_order_date: collection_order_date ?? null,
     suspended_committal_date: suspended_committal_date ?? null,
     payment_card_request: payment_card_request ?? null,
-    account_sentence_date: earliestDateOfSentence,
+    account_sentence_date: earliestDateOfSentence ?? null,
   };
 };

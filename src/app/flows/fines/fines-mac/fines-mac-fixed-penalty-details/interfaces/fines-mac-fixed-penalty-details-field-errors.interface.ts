@@ -13,7 +13,8 @@ export interface IFinesMacFixedPenaltyDetailsFieldErrors extends IAbstractFormBa
   fm_fp_personal_details_address_line_3: IAbstractFormBaseFieldError;
   fm_fp_personal_details_post_code: IAbstractFormBaseFieldError;
   fm_fp_court_details_imposing_court_id: IAbstractFormBaseFieldError;
-  fm_fp_court_details_issuing_authority_id: IAbstractFormBaseFieldError;
+  fm_fp_court_details_originator_id: IAbstractFormBaseFieldError;
+  fm_fp_court_details_originator_name: IAbstractFormBaseFieldError;
   fm_fp_account_comments_notes_comments: IAbstractFormBaseFieldError;
   fm_fp_account_comments_notes_notes: IAbstractFormBaseFieldError;
   fm_fp_account_comments_notes_system_notes: IAbstractFormBaseFieldError;

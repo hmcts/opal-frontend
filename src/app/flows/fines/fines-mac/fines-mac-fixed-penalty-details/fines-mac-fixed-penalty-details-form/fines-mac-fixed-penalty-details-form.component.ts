@@ -159,11 +159,12 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       // Court Details
       fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null, [
+      fm_fp_court_details_originator_id: new FormControl(null, [
         Validators.required,
         Validators.maxLength(41),
         alphabeticalTextValidator(),
       ]),
+      fm_fp_court_details_originator_name: new FormControl(null),
       // Comments and Notes
       fm_fp_account_comments_notes_comments: new FormControl(null, [
         Validators.maxLength(30),
@@ -308,6 +309,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+
     this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].updateValueAndValidity();
     this.updateOffenceControlValidators(
       this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value,
@@ -340,6 +342,41 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     );
   }
 
+  /**
+   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * It finds the corresponding prosecutor from the prosecutorsData array
+   * and returns the pretty name for that prosecutor or null if not found.
+   *
+   * @private
+   * @returns {string | null}
+   */
+  private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
+    console.log(this.issuingAuthorityAutoCompleteItems)
+    const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
+      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId);
+    if (!prosecutor) {
+      return null;
+    }
+    return prosecutor
+  }
+
+  /**
+   * Sets the court_details_originator_name form control to the prosecutor name if it exists.
+   * @param event 
+   */
+  private setProsecutorName(): void {    
+    const prosecutor = this.getProsecutorFromId(this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString());
+    if (prosecutor) {
+      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    }
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setProsecutorName();
+    super.handleFormSubmit(event);
+  }
+  
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
