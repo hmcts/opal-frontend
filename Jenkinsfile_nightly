@@ -16,7 +16,6 @@ properties([
       choices: ['PRE-PROD', 'DEV'],
       description: 'Determines the URL to use for legacy tests.'
     ),
-
   ])
 ])
 
