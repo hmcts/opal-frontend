@@ -130,7 +130,7 @@ afterAlways('DependencyCheckNightly') {
           echo "Component tests failed: ${e}"
         }
         finally {
-          archiveArtifacts artifacts: 'functional-output/prod/component-test-output-*.xml', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
           archiveArtifacts artifacts: 'functional-output/screenshots/component/**', allowEmptyArchive: true
         }
       }
@@ -164,7 +164,7 @@ afterAlways('DependencyCheckNightly') {
         } catch (Exception e) {
           echo "Functional tests failed: ${e}"
         } finally {
-          archiveArtifacts artifacts: 'functional-output/prod/cucumber/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/prod/**', allowEmptyArchive: true
           archiveArtifacts artifacts: 'functional-output/screenshots/functional/**', allowEmptyArchive: true
 
         publishHTML target: [
