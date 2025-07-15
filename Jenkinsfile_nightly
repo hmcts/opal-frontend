@@ -3,7 +3,21 @@
 properties([
 // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
     pipelineTriggers([cron('H 07 * * 1-5')]),
-    copyArtifactPermission('*')
+    copyArtifactPermission('*'),
+    parameters([
+    booleanParam(name: 'Component', defaultValue: true, description: 'Run component tests'),
+    booleanParam(name: 'Smoke', defaultValue: true, description: 'Run smoke tests'),
+    booleanParam(name: 'Functional', defaultValue: true, description: 'Run functional tests'),
+    booleanParam(name: 'Legacy', defaultValue: false, description: 'Run legacy tests'),
+    booleanParam(name: 'RunEdge', defaultValue: false, description: 'Run Edge tests'),
+    booleanParam(name: 'RunFirefox', defaultValue: false, description: 'Run Firefox tests'),
+    choice(
+      name: 'LEGACY_URL',
+      choices: ['PRE-PROD', 'DEV'],
+      description: 'Determines the URL to use for legacy tests.'
+    ),
+
+  ])
 ])
 
 @Library("Infrastructure")
@@ -93,7 +107,6 @@ def setupTestSpecifications() {
 
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
-  enableFullFunctionalTest(600)
   env.TEST_URL = "https://opal-frontend.staging.platform.hmcts.net/"
 
 
@@ -102,7 +115,129 @@ withNightlyPipeline(type, product, component) {
     setupTestSpecifications()
   }
 
-  afterSuccess('fullFunctionalTest') {
+  afterAlways('DependencyCheckNightly') {
+    if (params.Component) {
+      stage('Component Tests') {
+        try{
+          yarnBuilder.yarn('test:opalComponent')
+        } catch (Exception e) {
+          echo "Component tests failed: ${e}"
+        }
+        finally {
+          archiveArtifacts artifacts: 'functional-output/prod/component-test-output-*.xml', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/screenshots/component/**', allowEmptyArchive: true
+        }
+      }
+    }
+    if (params.Smoke) {
+      stage('Smoke Tests') {
+        try{
+          yarnBuilder.yarn('test:smoke')
+        } catch (Exception e) {
+          echo "Smoke tests failed: ${e}"
+        }
+        finally {
+          archiveArtifacts artifacts: 'smoke-output/prod/cucumber/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'smoke-output/screenshots/smoke/**', allowEmptyArchive: true
+
+        publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "smoke-output/prod/cucumber/",
+        reportFiles          : "smoke-report.html",
+        reportName           : "Cucumber Smoke Test Report"
+    ]
+        }
+      }
+    }
+    if (params.Functional) {
+      stage('Functional Tests') {
+        try{
+          yarnBuilder.yarn('test:functional')
+        } catch (Exception e) {
+          echo "Functional tests failed: ${e}"
+        } finally {
+          archiveArtifacts artifacts: 'functional-output/prod/cucumber/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/screenshots/functional/**', allowEmptyArchive: true
+
+        publishHTML target: [
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "functional-output/prod/cucumber/",
+        reportFiles          : "functional-report.html",
+        reportName           : "Cucumber Functional Test Report"
+    ]
+        }
+      }
+    }
+    if (params.Legacy) {
+      stage('Legacy Tests') {
+        try{
+          yarnBuilder.yarn('yarn test:functionalLegacy ; yarn test:functionalLegacy:combine:reports ; yarn test:functionalLegacy:cucumber:combineParallelReport')
+        } catch (Exception e) {
+          echo "Legacy tests failed: ${e}"
+        } finally {
+          archiveArtifacts artifacts: 'functional-output/prod/legacy/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/screenshots/legacy/**', allowEmptyArchive: true
+
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/prod/legacy/",
+            reportFiles          : "legacy-report.html",
+            reportName           : "Legacy Functional Test Report"
+          ]
+        }
+      }
+    }
+    if (params.RunEdge) {
+      stage('Edge Tests') {
+        try{
+          yarnBuilder.yarn('test:Edge')
+        } catch (Exception e) {
+          echo "Edge tests failed: ${e}"
+        } finally {
+          archiveArtifacts artifacts: 'functional-output/prod/edge/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/screenshots/edge/**', allowEmptyArchive: true
+
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/prod/edge/cucumber/",
+            reportFiles          : "edge-report.html",
+            reportName           : "Edge Functional Test Report"
+          ]
+        }
+      }
+    }
+    if (params.RunFirefox) {
+      stage('Firefox Tests') {
+        try{
+          yarnBuilder.yarn('test:Firefox')
+        } catch (Exception e) {
+          echo "Firefox tests failed: ${e}"
+        } finally {
+          archiveArtifacts artifacts: 'functional-output/prod/firefox/**', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'functional-output/screenshots/firefox/**', allowEmptyArchive: true
+
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/prod/firefox/",
+            reportFiles          : "opal-mode-test-output-[hash].xml",
+            reportName           : "Firefox Functional Test Report"
+          ]
+        }
+      }
+  }
+  }
+
+  afterSuccess('Functional Tests') {
     script {
       def sourceJobName = env.JOB_NAME
       sh' mkdir -p cypress/parallel/weights/pipeline'
@@ -115,23 +250,5 @@ withNightlyPipeline(type, product, component) {
       archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
     }
-  }
-  afterAlways('fullFunctionalTest') {
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "functional-output/prod/cucumber/",
-        reportFiles          : "functional-report.html",
-        reportName           : "Cucumber Functional Test Report"
-    ]
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "smoke-output/prod/cucumber/",
-        reportFiles          : "smoke-report.html",
-        reportName           : "Cucumber Smoke Test Report"
-    ]
   }
 }
