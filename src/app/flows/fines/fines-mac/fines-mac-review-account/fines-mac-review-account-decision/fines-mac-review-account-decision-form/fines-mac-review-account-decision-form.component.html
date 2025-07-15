@@ -12,7 +12,7 @@
         [inputId]="decisionOption.key"
         [inputName]="'fm_review_account_decision'"
         [inputValue]="decisionOption.key"
-        [control]="form.controls['fm_review_account_decision']"
+        [control]="form.get('fm_review_account_decision')!"
       ></div>
       @if (form.get('fm_review_account_decision')!.value === 'reject' && decisionOption.key === 'reject') {
         <div opal-lib-govuk-radios-conditional conditionalId="fm_review_account_decision">
@@ -23,7 +23,7 @@
               inputId="fm_review_account_decision_reason"
               inputName="fm_review_account_decision_reason"
               inputClasses="govuk-!-width-two-thirds"
-              [control]="form.controls['fm_review_account_decision_reason']"
+              [control]="form.get('fm_review_account_decision_reason')"
               [errors]="formControlErrorMessages['fm_review_account_decision_reason']"
               [rows]="4"
               [maxCharacterLimit]="250"

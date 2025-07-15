@@ -13,7 +13,7 @@
                 inputId="years"
                 inputName="years"
                 inputClasses="govuk-input--width-2"
-                [control]="daysInDefaultCalculatorForm.controls['years']"
+                [control]="daysInDefaultCalculatorForm.get('years')"
               ></opal-lib-govuk-text-input>
             </div>
             <div class="govuk-grid-column-one-quarter">
@@ -22,7 +22,7 @@
                 inputId="months"
                 inputName="months"
                 inputClasses="govuk-input--width-2"
-                [control]="daysInDefaultCalculatorForm.controls['months']"
+                [control]="daysInDefaultCalculatorForm.get('months')"
               ></opal-lib-govuk-text-input>
             </div>
             <div class="govuk-grid-column-one-quarter">
@@ -31,7 +31,7 @@
                 inputId="weeks"
                 inputName="weeks"
                 inputClasses="govuk-input--width-2"
-                [control]="daysInDefaultCalculatorForm.controls['weeks']"
+                [control]="daysInDefaultCalculatorForm.get('weeks')"
               ></opal-lib-govuk-text-input>
             </div>
             <div class="govuk-grid-column-one-quarter">
@@ -40,7 +40,7 @@
                 inputId="days"
                 inputName="days"
                 inputClasses="govuk-input--width-2"
-                [control]="daysInDefaultCalculatorForm.controls['days']"
+                [control]="daysInDefaultCalculatorForm.get('days')"
               ></opal-lib-govuk-text-input>
             </div>
           </div>
