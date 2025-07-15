@@ -174,7 +174,21 @@ afterAlways('DependencyCheckNightly') {
         reportDir            : "functional-output/prod/cucumber/",
         reportFiles          : "functional-report.html",
         reportName           : "Cucumber Functional Test Report"
-    ]
+      ]
+
+        script {
+          def sourceJobName = env.JOB_NAME
+          sh' mkdir -p cypress/parallel/weights/pipeline'
+          sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+          sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+
+          sh"echo 'Archiving weight files in ${sourceJobName}'"
+          archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
+          archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+        }
+
         }
       }
     }
@@ -241,20 +255,5 @@ afterAlways('DependencyCheckNightly') {
         }
       }
   }
-  }
-
-  afterSuccess('Functional Tests') {
-    script {
-      def sourceJobName = env.JOB_NAME
-      sh' mkdir -p cypress/parallel/weights/pipeline'
-      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
-
-      sh"echo 'Archiving weight files in ${sourceJobName}'"
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
-      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
-    }
   }
 }
