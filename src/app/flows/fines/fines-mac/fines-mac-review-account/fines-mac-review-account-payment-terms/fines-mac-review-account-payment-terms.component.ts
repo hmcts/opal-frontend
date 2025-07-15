@@ -22,6 +22,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ISessionUserStateRole } from '@hmcts/opal-frontend-common//services/session-service/interfaces';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -56,6 +57,8 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
     [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
   };
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+
   public paymentTerms!: string;
   public payByDate!: string;
   public daysInDefaultDate!: string;

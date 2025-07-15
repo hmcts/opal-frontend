@@ -11,6 +11,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/c
 import { FINES_MAC_BUSINESS_UNIT_STATE } from './fines-mac-business-unit-state';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_EMPTY } from '../fines-mac-offence-details/constants/fines-mac-offence-details-form-empty.constant';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from '../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
 
 export const FINES_MAC_STATE: IFinesMacState = {
@@ -23,6 +24,7 @@ export const FINES_MAC_STATE: IFinesMacState = {
   courtDetails: FINES_MAC_COURT_DETAILS_FORM,
   accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM,
   offenceDetails: FINES_MAC_OFFENCE_DETAILS_FORM_EMPTY,
+  fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM,
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,

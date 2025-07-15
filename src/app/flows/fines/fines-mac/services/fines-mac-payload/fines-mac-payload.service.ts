@@ -30,6 +30,7 @@ import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformat
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Injectable({
   providedIn: 'root',
@@ -368,8 +369,8 @@ export class FinesMacPayloadService {
    */
   public getDefendantName(payload: IFinesMacAddAccountPayload): string {
     if (
-      payload.account.defendant_type === 'adultOrYouthOnly' ||
-      payload.account.defendant_type === 'parentOrGuardianToPay'
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly ||
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay
     ) {
       return `${payload.account.defendant.forenames} ${payload.account.defendant.surname}`;
     } else {
