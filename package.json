@@ -12,7 +12,7 @@
     "test:dev:smoke": "TEST_URL=https://localhost:4000/ cypress run --browser chrome --spec 'cypress/e2e/smoke/*-spec.cy.ts' --reporter-options 'mochaFile=smoke-output/dev/test-output-[hash].xml' && yarn test:dev:smoke:combine:reports",
     "test:smoke": "yarn test:smokeOpalParallel ; yarn test:smoke:combine:reports ; yarn test:smoke:cucumber:combineParallelReport",
     "test:smokeOpalParallel": "CYPRESS_messagesEnabled=true TEST_STAGE=smoke cypress-parallel -s test:smokeOpal -d 'cypress/e2e/smoke/opal/**/*.feature' -m false -t 2 -w 'cypress/parallel/weights/smoke-parallel-weights.json' -r mocha-junit-reporter -o 'mochaFile=smoke-output/prod/opal-mode-test-output-[hash].xml'",
-    "test:smokeOpal": "TEST_MODE=OPAL cypress BROWSER_TO_RUN=chrome run  --browser chrome --spec 'cypress/e2e/smoke/opal/*.feature' --config screenshotsFolder='smoke-output/screenshots/opal' --reporter-options 'mochaFile=smoke-output/prod/opal-mode-test-output-[hash].xml'",
+    "test:smokeOpal": "TEST_MODE=OPAL BROWSER_TO_RUN=chrome cypress run  --browser chrome --spec 'cypress/e2e/smoke/opal/*.feature' --config screenshotsFolder='smoke-output/screenshots/opal' --reporter-options 'mochaFile=smoke-output/prod/opal-mode-test-output-[hash].xml'",
     "test:smokeLegacy": "TEST_MODE=LEGACY cypress run --browser chrome --spec 'cypress/e2e/smoke/legacy/*.feature' --config screenshotsFolder='smoke-output/screenshots/legacy' --reporter-options 'mochaFile=smoke-output/prod/legacy-mode-test-output-[hash].xml'",
     "test:dev:smoke:combine:reports": "jrm smoke-output/dev/test-result.xml \"smoke-output/dev/*.xml\"",
     "test:smoke:combine:reports": "jrm smoke-output/prod/test-result.xml \"smoke-output/prod/*.xml\"",
