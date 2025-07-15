@@ -27,12 +27,12 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements OnInit {
-  @Input({ required: true }) public offenceDetails!: IFinesMacFixedPenaltyDetailsStoreState;
-  @Input({ required: false }) public isReadOnly = false;
-  @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
   private readonly dateService = new DateService();
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
+  @Input({ required: true }) public offenceDetails!: IFinesMacFixedPenaltyDetailsStoreState;
+  @Input({ required: false }) public isReadOnly = false;
+  @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
 
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public readonly offenceTypes = FINES_MAC_OFFENCE_TYPES;
