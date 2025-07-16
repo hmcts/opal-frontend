@@ -3,15 +3,15 @@ import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/dat
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from 'src/app/flows/fines/constants/fines-patterns.constant';
 
 const characterValidator = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'invalidCharacterPattern',
 );
-const nameValidator = patternValidator(LETTERS_SPACES_HYPHENS_APOSTROPHES_PATTERN, 'invalidNamePattern');
+const nameValidator = patternValidator(LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN, 'invalidNamePattern');
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX = 'fsa_search_account_individuals_';
 export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS: Record<string, FormControl> = {

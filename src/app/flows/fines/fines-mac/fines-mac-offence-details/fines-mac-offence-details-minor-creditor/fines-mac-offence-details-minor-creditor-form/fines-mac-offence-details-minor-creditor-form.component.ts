@@ -27,10 +27,14 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import {
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  LETTERS_WITH_SPACES_PATTERN,
+} from '../../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -138,8 +142,16 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
     title.setValidators([Validators.required]);
-    forenames.setValidators([Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]);
-    surname.setValidators([Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]);
+    forenames.setValidators([
+      Validators.required,
+      Validators.maxLength(20),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+    ]);
+    surname.setValidators([
+      Validators.required,
+      Validators.maxLength(30),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+    ]);
   }
 
   /**
@@ -147,7 +159,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private setCompanyValidators(): void {
     const { fm_offence_details_minor_creditor_company_name: companyName } = this.form.controls;
-    companyName.setValidators([Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]);
+    companyName.setValidators([
+      Validators.required,
+      Validators.maxLength(50),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+    ]);
   }
 
   /**
@@ -161,10 +177,18 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
-    nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
+    nameOnAccount.setValidators([
+      Validators.required,
+      Validators.maxLength(18),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+    ]);
     sortCode.setValidators([Validators.required, Validators.maxLength(6), numericalTextValidator()]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), numericalTextValidator()]);
-    paymentReference.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
+    paymentReference.setValidators([
+      Validators.required,
+      Validators.maxLength(18),
+      patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
+    ]);
   }
 
   /**

@@ -33,7 +33,6 @@ import {
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
@@ -43,6 +42,8 @@ import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { LETTERS_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
@@ -89,12 +90,12 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        alphabeticalTextValidator(),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN),
       ]),
       fm_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        alphabeticalTextValidator(),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN),
       ]),
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),

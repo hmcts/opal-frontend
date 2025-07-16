@@ -6,7 +6,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       message: 'Offence Code must be 8 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
@@ -20,7 +20,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       message: 'Short Title must be 120 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
@@ -34,7 +34,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       message: 'Act & Section must be 4000 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },

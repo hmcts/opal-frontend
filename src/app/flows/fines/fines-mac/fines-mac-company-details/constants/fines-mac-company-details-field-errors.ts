@@ -10,7 +10,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text`,
       priority: 3,
     },
@@ -24,7 +24,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 1`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text for alias 1`,
       priority: 3,
     },
@@ -38,7 +38,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 2`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text for alias 2`,
       priority: 3,
     },
@@ -52,7 +52,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 3`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text for alias 3`,
       priority: 3,
     },
@@ -66,7 +66,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 4`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text for alias 4`,
       priority: 3,
     },
@@ -80,7 +80,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 5`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The company name must only contain alphabetical text for alias 5`,
       priority: 3,
     },
