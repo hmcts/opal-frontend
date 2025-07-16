@@ -1,204 +1,162 @@
-<!-- <opal-lib-custom-vertical-scroll-pane maxHeight="500px">
-  <opal-lib-moj-sortable-table>
-    @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
-      <ng-container caption>
-        Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }} accounts
-      </ng-container>
-    }
-    <ng-container head>
-      @if (activeTab === 'approved') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="Account"
-          [sortDirection]="sortStateSignal()['Account']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="0"
-        >
-          Account Number
-        </th>
-      }
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Defendant"
-        [sortDirection]="sortStateSignal()['Defendant']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 1 : 0"
-      >
-        Defendant
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Date of birth"
-        [sortDirection]="sortStateSignal()['Date of birth']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 2 : 1"
-      >
-        Date of birth
-      </th>
-      @if (activeTab === 'deleted' || activeTab === 'failed') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="ChangedDate"
-          [sortDirection]="sortStateSignal()['ChangedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="2"
-        >
-          {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
-        </th>
-      } @else if (activeTab === 'approved') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="CreatedDate"
-          [sortDirection]="sortStateSignal()['ChangedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="3"
-        >
-          Approved
-        </th>
-      } @else {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="CreatedDate"
-          [sortDirection]="sortStateSignal()['CreatedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="2"
-        >
-          Created
-        </th>
-      }
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Account type"
-        [sortDirection]="sortStateSignal()['Account type']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 4 : 3"
-      >
-        Account type
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-       <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th> 
-      @if (isChecker && activeTab !== 'deleted') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="Submitted by"
-          [sortDirection]="sortStateSignal()['Submitted by']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="isApprovedTab ? 6 : 5"
-        >
-          Submitted by
-        </th>
-      }
-    </ng-container>
-    <ng-container row>
-      @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
-        <tr opal-lib-moj-sortable-table-row>
+<!-- Vertical Scroll -->
+<!-- <opal-lib-custom-scrollable-panes>
+  <opal-lib-custom-vertical-scroll-pane-outer-pane height="100vh">
+    <opal-lib-custom-vertical-scroll-pane-inner-pane maxHeight="calc(100vh - 3rem)">
+      <opal-lib-moj-sortable-table>
+        @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+          <ng-container caption>
+            Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
+            {{ filteredTableDataSignal().length }} accounts
+          </ng-container>
+        }
+        <ng-container head>
           @if (activeTab === 'approved') {
-            <td opal-lib-moj-sortable-table-row-data id="account">
-              <a
-                class="govuk-link govuk-link--no-visited-state"
-                (click)="onAccountClick(row.Account)"
-                (keydown.enter)="onAccountClick(row.Account)"
-                tabindex="0"
-                >{{ row['Account'] }}</a
-              >
-            </td>
+            <th
+              opal-lib-moj-sortable-table-header
+              columnKey="Account"
+              [sortDirection]="sortStateSignal()['Account']"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="0"
+            >
+              Account Number
+            </th>
           }
-          <td opal-lib-moj-sortable-table-row-data id="defendant">
-            @if (activeTab === 'approved') {
-              {{ row['Defendant'] }}
-            } @else {
-              <a
-                class="govuk-link govuk-link--no-visited-state"
-                (click)="onDefendantClick(+row['Defendant id'])"
-                (keydown.enter)="onDefendantClick(+row['Defendant id'])"
-                tabindex="0"
-                >{{ row['Defendant'] }}</a
-              >
-            }
-          </td>
-          <td opal-lib-moj-sortable-table-row-data id="dob">
-            {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
-          </td>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Defendant"
+            [sortDirection]="sortStateSignal()['Defendant']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="activeTab === 'approved' ? 1 : 0"
+          >
+            Defendant
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Date of birth"
+            [sortDirection]="sortStateSignal()['Date of birth']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="activeTab === 'approved' ? 2 : 1"
+          >
+            Date of birth
+          </th>
           @if (activeTab === 'deleted' || activeTab === 'failed') {
-            <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
+            <th
+              opal-lib-moj-sortable-table-header
+              columnKey="ChangedDate"
+              [sortDirection]="sortStateSignal()['ChangedDate']"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="2"
+            >
+              {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
+            </th>
+          } @else if (activeTab === 'approved') {
+            <th
+              opal-lib-moj-sortable-table-header
+              columnKey="CreatedDate"
+              [sortDirection]="sortStateSignal()['ChangedDate']"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="3"
+            >
+              Approved
+            </th>
           } @else {
-            <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
+            <th
+              opal-lib-moj-sortable-table-header
+              columnKey="CreatedDate"
+              [sortDirection]="sortStateSignal()['CreatedDate']"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="2"
+            >
+              Created
+            </th>
           }
-          <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-           <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Account type"
+            [sortDirection]="sortStateSignal()['Account type']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="activeTab === 'approved' ? 4 : 3"
+          >
+            Account type
+          </th>
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Business unit"
+            [sortDirection]="sortStateSignal()['Business unit']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="activeTab === 'approved' ? 5 : 4"
+          >
+            Business unit
+          </th>
           @if (isChecker && activeTab !== 'deleted') {
-            <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
+            <th
+              opal-lib-moj-sortable-table-header
+              columnKey="Submitted by"
+              [sortDirection]="sortStateSignal()['Submitted by']"
+              (sortChange)="onSortChange($event)"
+              [dataIndex]="isApprovedTab ? 6 : 5"
+            >
+              Submitted by
+            </th>
           }
-        </tr>
-      }
-    </ng-container>
-  </opal-lib-moj-sortable-table> </opal-lib-custom-vertical-scroll-pane
-><app-fines-shared-sortable-table-footer
-  [tableData]="filteredTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/> -->
-<!-- <h1>Horizontal Scroll</h1>
-<opal-lib-custom-horizontal-scroll-pane> -->
-<!-- <opal-lib-moj-sortable-table>
+        </ng-container>
+        <ng-container row>
+          @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
+            <tr opal-lib-moj-sortable-table-row>
+              @if (activeTab === 'approved') {
+                <td opal-lib-moj-sortable-table-row-data id="account">
+                  <a
+                    class="govuk-link govuk-link--no-visited-state"
+                    (click)="onAccountClick(row.Account)"
+                    (keydown.enter)="onAccountClick(row.Account)"
+                    tabindex="0"
+                    >{{ row['Account'] }}</a
+                  >
+                </td>
+              }
+              <td opal-lib-moj-sortable-table-row-data id="defendant">
+                @if (activeTab === 'approved') {
+                  {{ row['Defendant'] }}
+                } @else {
+                  <a
+                    class="govuk-link govuk-link--no-visited-state"
+                    (click)="onDefendantClick(+row['Defendant id'])"
+                    (keydown.enter)="onDefendantClick(+row['Defendant id'])"
+                    tabindex="0"
+                    >{{ row['Defendant'] }}</a
+                  >
+                }
+              </td>
+              <td opal-lib-moj-sortable-table-row-data id="dob">
+                {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+              </td>
+              @if (activeTab === 'deleted' || activeTab === 'failed') {
+                <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
+              } @else {
+                <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
+              }
+              <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
+              <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+              @if (isChecker && activeTab !== 'deleted') {
+                <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
+              }
+            </tr>
+          }
+        </ng-container>
+      </opal-lib-moj-sortable-table>
+    </opal-lib-custom-vertical-scroll-pane-inner-pane>
+    <app-fines-shared-sortable-table-footer
+      [tableData]="filteredTableDataSignal()"
+      [currentPage]="currentPageSignal()"
+      [itemsPerPage]="itemsPerPageSignal()"
+      (changePage)="onPageChange($event)"
+    />
+  </opal-lib-custom-vertical-scroll-pane-outer-pane>
+</opal-lib-custom-scrollable-panes> -->
+
+<!-- Horizontal Scroll -->
+<!-- <opal-lib-custom-horizontal-scroll-pane>
+<opal-lib-moj-sortable-table>
   @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
     <ng-container caption>
       Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }} accounts
@@ -438,211 +396,215 @@
       </tr>
     }
   </ng-container>
-</opal-lib-moj-sortable-table> -->
-<!-- </opal-lib-custom-horizontal-scroll-pane> -->
+</opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
 <app-fines-shared-sortable-table-footer
   [tableData]="filteredTableDataSignal()"
   [currentPage]="currentPageSignal()"
   [itemsPerPage]="itemsPerPageSignal()"
   (changePage)="onPageChange($event)"
-/>
-<h1>Scrollable Panes</h1>
-<opal-lib-custom-scrollable-panes maxHeight="500px">
-  <opal-lib-moj-sortable-table>
-    @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
-      <ng-container caption>
-        Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }} accounts
+/> -->
+
+<!-- Vertical & Horizontal Scroll -->
+<opal-lib-custom-scrollable-panes height="100vh">
+  <opal-lib-custom-scrollable-panes-inner-pane maxHeight="calc(100vh - 3rem)">
+    <opal-lib-moj-sortable-table>
+      @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+        <ng-container caption>
+          Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
+          {{ filteredTableDataSignal().length }} accounts
+        </ng-container>
+      }
+      <ng-container head>
+        @if (activeTab === 'approved') {
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Account"
+            [sortDirection]="sortStateSignal()['Account']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="0"
+          >
+            Account Number
+          </th>
+        }
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Defendant"
+          [sortDirection]="sortStateSignal()['Defendant']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 1 : 0"
+        >
+          Defendant
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Date of birth"
+          [sortDirection]="sortStateSignal()['Date of birth']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 2 : 1"
+        >
+          Date of birth
+        </th>
+        @if (activeTab === 'deleted' || activeTab === 'failed') {
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="ChangedDate"
+            [sortDirection]="sortStateSignal()['ChangedDate']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="2"
+          >
+            {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
+          </th>
+        } @else if (activeTab === 'approved') {
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="CreatedDate"
+            [sortDirection]="sortStateSignal()['ChangedDate']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="3"
+          >
+            Approved
+          </th>
+        } @else {
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="CreatedDate"
+            [sortDirection]="sortStateSignal()['CreatedDate']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="2"
+          >
+            Created
+          </th>
+        }
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Account type"
+          [sortDirection]="sortStateSignal()['Account type']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 4 : 3"
+        >
+          Account type
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Business unit"
+          [sortDirection]="sortStateSignal()['Business unit']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="activeTab === 'approved' ? 5 : 4"
+        >
+          Business unit
+        </th>
+        @if (isChecker && activeTab !== 'deleted') {
+          <th
+            opal-lib-moj-sortable-table-header
+            columnKey="Submitted by"
+            [sortDirection]="sortStateSignal()['Submitted by']"
+            (sortChange)="onSortChange($event)"
+            [dataIndex]="isApprovedTab ? 6 : 5"
+          >
+            Submitted by
+          </th>
+        }
       </ng-container>
-    }
-    <ng-container head>
-      @if (activeTab === 'approved') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="Account"
-          [sortDirection]="sortStateSignal()['Account']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="0"
-        >
-          Account Number
-        </th>
-      }
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Defendant"
-        [sortDirection]="sortStateSignal()['Defendant']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 1 : 0"
-      >
-        Defendant
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Date of birth"
-        [sortDirection]="sortStateSignal()['Date of birth']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 2 : 1"
-      >
-        Date of birth
-      </th>
-      @if (activeTab === 'deleted' || activeTab === 'failed') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="ChangedDate"
-          [sortDirection]="sortStateSignal()['ChangedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="2"
-        >
-          {{ activeTab === 'deleted' ? 'Deleted' : 'Date failed' }}
-        </th>
-      } @else if (activeTab === 'approved') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="CreatedDate"
-          [sortDirection]="sortStateSignal()['ChangedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="3"
-        >
-          Approved
-        </th>
-      } @else {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="CreatedDate"
-          [sortDirection]="sortStateSignal()['CreatedDate']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="2"
-        >
-          Created
-        </th>
-      }
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Account type"
-        [sortDirection]="sortStateSignal()['Account type']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 4 : 3"
-      >
-        Account type
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      <th
-        opal-lib-moj-sortable-table-header
-        columnKey="Business unit"
-        [sortDirection]="sortStateSignal()['Business unit']"
-        (sortChange)="onSortChange($event)"
-        [dataIndex]="activeTab === 'approved' ? 5 : 4"
-      >
-        Business unit
-      </th>
-      @if (isChecker && activeTab !== 'deleted') {
-        <th
-          opal-lib-moj-sortable-table-header
-          columnKey="Submitted by"
-          [sortDirection]="sortStateSignal()['Submitted by']"
-          (sortChange)="onSortChange($event)"
-          [dataIndex]="isApprovedTab ? 6 : 5"
-        >
-          Submitted by
-        </th>
-      }
-    </ng-container>
-    <ng-container row>
-      @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
-        <tr opal-lib-moj-sortable-table-row>
-          @if (activeTab === 'approved') {
-            <td opal-lib-moj-sortable-table-row-data id="account">
-              <a
-                class="govuk-link govuk-link--no-visited-state"
-                (click)="onAccountClick(row.Account)"
-                (keydown.enter)="onAccountClick(row.Account)"
-                tabindex="0"
-                >{{ row['Account'] }}</a
-              >
-            </td>
-          }
-          <td opal-lib-moj-sortable-table-row-data id="defendant">
+      <ng-container row>
+        @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
+          <tr opal-lib-moj-sortable-table-row>
             @if (activeTab === 'approved') {
-              {{ row['Defendant'] }}
-            } @else {
-              <a
-                class="govuk-link govuk-link--no-visited-state"
-                (click)="onDefendantClick(+row['Defendant id'])"
-                (keydown.enter)="onDefendantClick(+row['Defendant id'])"
-                tabindex="0"
-                >{{ row['Defendant'] }}</a
-              >
+              <td opal-lib-moj-sortable-table-row-data id="account">
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  (click)="onAccountClick(row.Account)"
+                  (keydown.enter)="onAccountClick(row.Account)"
+                  tabindex="0"
+                  >{{ row['Account'] }}</a
+                >
+              </td>
             }
-          </td>
-          <td opal-lib-moj-sortable-table-row-data id="dob">
-            {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
-          </td>
-          @if (activeTab === 'deleted' || activeTab === 'failed') {
-            <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
-          } @else {
-            <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
-          }
-          <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
-          @if (isChecker && activeTab !== 'deleted') {
-            <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
-          }
-        </tr>
-      }
-    </ng-container>
-  </opal-lib-moj-sortable-table>
+            <td opal-lib-moj-sortable-table-row-data id="defendant">
+              @if (activeTab === 'approved') {
+                {{ row['Defendant'] }}
+              } @else {
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  (click)="onDefendantClick(+row['Defendant id'])"
+                  (keydown.enter)="onDefendantClick(+row['Defendant id'])"
+                  tabindex="0"
+                  >{{ row['Defendant'] }}</a
+                >
+              }
+            </td>
+            <td opal-lib-moj-sortable-table-row-data id="dob">
+              {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+            </td>
+            @if (activeTab === 'deleted' || activeTab === 'failed') {
+              <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>
+            } @else {
+              <td opal-lib-moj-sortable-table-row-data id="createdDate">{{ row['Created'] | daysAgo }}</td>
+            }
+            <td opal-lib-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            <td opal-lib-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
+            @if (isChecker && activeTab !== 'deleted') {
+              <td opal-lib-moj-sortable-table-row-data id="submittedBy">{{ row['Submitted by'] }}</td>
+            }
+          </tr>
+        }
+      </ng-container>
+    </opal-lib-moj-sortable-table>
+  </opal-lib-custom-scrollable-panes-inner-pane>
+  <app-fines-shared-sortable-table-footer
+    [tableData]="filteredTableDataSignal()"
+    [currentPage]="currentPageSignal()"
+    [itemsPerPage]="itemsPerPageSignal()"
+    (changePage)="onPageChange($event)"
+  />
 </opal-lib-custom-scrollable-panes>
-<app-fines-shared-sortable-table-footer
-  [tableData]="filteredTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/>

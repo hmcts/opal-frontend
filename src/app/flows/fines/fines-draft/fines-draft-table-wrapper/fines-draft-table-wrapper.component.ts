@@ -12,9 +12,12 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
-import { CustomVerticalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-vertical-scroll-pane';
-import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
+// import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { CustomScrollablePanesComponent } from '@hmcts/opal-frontend-common/components/custom/custom-scrollable-panes';
+import { CustomScrollablePanesInnerPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-scrollable-panes/custom-scrollable-panes-inner-pane';
+import { CustomVerticalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-vertical-scroll-pane';
+import { CustomVerticalScrollPaneInnerPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-vertical-scroll-pane/custom-vertical-scroll-pane-inner-pane';
+import { CustomVerticalScrollPaneOuterPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-vertical-scroll-pane/custom-vertical-scroll-pane-outer-pane';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -29,8 +32,11 @@ import { CustomScrollablePanesComponent } from '@hmcts/opal-frontend-common/comp
     DateFormatPipe,
     FinesSharedSortableTableFooterComponent,
     CustomVerticalScrollPaneComponent,
-    CustomHorizontalScrollPaneComponent,
+    CustomVerticalScrollPaneOuterPaneComponent,
+    CustomVerticalScrollPaneInnerPaneComponent,
+    // CustomHorizontalScrollPaneComponent,
     CustomScrollablePanesComponent,
+    CustomScrollablePanesInnerPaneComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
