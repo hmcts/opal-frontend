@@ -10,7 +10,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The parent or guardian's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The parent or guardian's first name(s) must only contain alphabetical text`,
       priority: 2,
     },
@@ -24,7 +24,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The parent or guardian's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The parent or guardian's last name must only contain alphabetical text`,
       priority: 2,
     },
@@ -38,7 +38,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The first name(s) must be 20 characters or fewer for alias 1`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The first name(s) must only contain alphabetical text for alias 1`,
       priority: 3,
     },
@@ -52,7 +52,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The last name must be 30 characters or fewer for alias 1`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The last name must only contain alphabetical text for alias 1`,
       priority: 3,
     },
@@ -66,7 +66,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The first name(s) must be 20 characters or fewer for alias 2`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The first name(s) must only contain alphabetical text for alias 2`,
       priority: 3,
     },
@@ -80,7 +80,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The last name must be 30 characters or fewer for alias 2`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The last name must only contain alphabetical text for alias 2`,
       priority: 3,
     },
@@ -94,7 +94,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The first name(s) must be 20 characters or fewer for alias 3`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The first name(s) must only contain alphabetical text for alias 3`,
       priority: 3,
     },
@@ -108,7 +108,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The last name must be 30 characters or fewer for alias 3`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The last name must only contain alphabetical text for alias 3`,
       priority: 3,
     },
@@ -122,7 +122,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The first name(s) must be 20 characters or fewer for alias 4`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The first name(s) must only contain alphabetical text for alias 4`,
       priority: 3,
     },
@@ -136,7 +136,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The last name must be 30 characters or fewer for alias 4`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The last name must only contain alphabetical text for alias 4`,
       priority: 3,
     },
@@ -150,7 +150,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The first name(s) must be 20 characters or fewer for alias 5`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The first name(s) must only contain alphabetical text for alias 5`,
       priority: 3,
     },
@@ -164,7 +164,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `The last name must be 30 characters or fewer for alias 5`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    patternInvalid: {
       message: `The last name must only contain alphabetical text for alias 5`,
       priority: 3,
     },

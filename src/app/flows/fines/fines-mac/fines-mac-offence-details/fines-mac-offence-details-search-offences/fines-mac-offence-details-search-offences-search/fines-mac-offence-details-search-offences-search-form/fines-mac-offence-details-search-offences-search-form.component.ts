@@ -10,8 +10,9 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS } from '../../constants/fines-mac-offence-details-search-offences-errors.constant';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -56,17 +57,17 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
     this.form = new FormGroup({
       fm_offence_details_search_offences_code: new FormControl(null, [
         Validators.maxLength(8),
-        alphabeticalTextValidator(),
+        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
         specialCharactersValidator(),
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [
         Validators.maxLength(120),
-        alphabeticalTextValidator(),
+        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
         specialCharactersValidator(),
       ]),
       fm_offence_details_search_offences_act_section: new FormControl(null, [
         Validators.maxLength(4000),
-        alphabeticalTextValidator(),
+        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
         specialCharactersValidator(),
       ]),
       fm_offence_details_search_offences_inactive: new FormControl(false),

@@ -26,10 +26,11 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { LETTERS_WITH_SPACES_DOT_PATTERN } from '../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -67,7 +68,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        alphabeticalTextValidator(),
+        patternValidator(LETTERS_WITH_SPACES_DOT_PATTERN),
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
