@@ -32,7 +32,7 @@
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="today"
-      [control]="form.controls['fm_offence_details_date_of_sentence']"
+      [control]="form.get('fm_offence_details_date_of_sentence')!"
       [errors]="formControlErrorMessages['fm_offence_details_date_of_sentence']"
       (dateChange)="setInputValue($event, 'fm_offence_details_date_of_sentence')"
     ></opal-lib-moj-date-picker>
@@ -44,7 +44,7 @@
       inputClasses="govuk-input--width-10"
       [hintHtml]="true"
       [errors]="formControlErrorMessages['fm_offence_details_offence_cjs_code']"
-      [control]="form.controls['fm_offence_details_offence_cjs_code']"
+      [control]="form.get('fm_offence_details_offence_cjs_code')"
     >
       For example, HY35014. If you don't know the offence code, you can
       <a

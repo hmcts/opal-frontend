@@ -6,7 +6,7 @@
     hintText="For example, a warning, which will appear on the account summary"
     inputId="fm_account_comments_notes_comments"
     inputName="fm_account_comments_notes_comments"
-    [control]="form.controls['fm_account_comments_notes_comments']"
+    [control]="form.get('fm_account_comments_notes_comments')"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="30"
     [rows]="1"
@@ -18,7 +18,7 @@
     hintText="You can view notes in account history after the account is published"
     inputId="fm_account_comments_notes_notes"
     inputName="fm_account_comments_notes_notes"
-    [control]="form.controls['fm_account_comments_notes_notes']"
+    [control]="form.get('fm_account_comments_notes_notes')"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="1000"
   ></opal-lib-govuk-text-area>
