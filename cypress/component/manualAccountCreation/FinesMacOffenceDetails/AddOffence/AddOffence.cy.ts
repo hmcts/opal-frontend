@@ -434,7 +434,7 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it.only(
+  it(
     '(AC.3bii) should show invalid ticket panel for invalid offence code',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
