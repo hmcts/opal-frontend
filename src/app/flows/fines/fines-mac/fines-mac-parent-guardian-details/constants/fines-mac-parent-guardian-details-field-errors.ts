@@ -49,11 +49,11 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 1,
     },
     maxlength: {
-      message: `alias 1 last name must be 30 characters or fewer`,
+      message: `Alias 1 last name must be 30 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `alias 1 last name must only contain letters`,
+      message: `Alias 1 last name must only contain letters`,
       priority: 3,
     },
   },
@@ -123,7 +123,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `Alias 4first name(s) must only contain letters`,
+      message: `Alias 4 first name(s) must only contain letters`,
       priority: 3,
     },
   },

@@ -45,7 +45,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
   },
   fm_company_details_alias_company_name_2: {
     required: {
-      message: `Enter alias 3company name`,
+      message: `Enter alias 3 company name`,
       priority: 1,
     },
     maxlength: {
