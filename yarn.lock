@@ -4096,12 +4096,12 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^5.0.0":
-  version: 5.1.4
-  resolution: "@ministryofjustice/frontend@npm:5.1.4"
+  version: 5.1.5
+  resolution: "@ministryofjustice/frontend@npm:5.1.5"
   peerDependencies:
     govuk-frontend: ^5.8.0
     moment: 2.30.1
-  checksum: 10/0252542db8bbaaeb7436fc532aa2be3d4e6e81118ce9812d4c38b1e21970c9dbf3d8f849960752f8182537fe19b05b836112f54310e0661eaf2fed6112fc2b99
+  checksum: 10/8bf6327dbd18db94e91c72200b20fd1a1d766125a2f38789d4ee5650d81c9b392e804ef591ce77db2a8d4c03156a6ea3d064b27585ad3de3df33149012ed5263
   languageName: node
   linkType: hard
 
