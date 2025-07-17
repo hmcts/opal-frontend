@@ -103,7 +103,7 @@
           <ng-container value>{{ startDate }}</ng-container>
         </div>
       }
-      @if (defendantType !== 'company') {
+      @if (defendantType !== defendantTypesKeys.company) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
