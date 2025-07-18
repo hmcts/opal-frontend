@@ -22,12 +22,12 @@
     ></app-fines-mac-review-account-history>
   }
 
-  <app-fines-mac-review-account-account-details
-    [accountDetails]="finesMacStore.accountDetails().formData"
-    [businessUnit]="finesMacStore.businessUnit()"
-    [languagePreferences]="finesMacStore.languagePreferences().formData"
-  >
-  </app-fines-mac-review-account-account-details>
+    <app-fines-mac-review-account-account-details
+      [accountDetails]="finesMacStore.accountDetails().formData"
+      [businessUnit]="finesMacStore.businessUnit()"
+      [languagePreferences]="finesMacStore.languagePreferences().formData"
+    >
+    </app-fines-mac-review-account-account-details>
 
   <app-fines-mac-review-account-court-details
     [accountType]="accountType"
@@ -113,12 +113,12 @@
     ></app-fines-mac-review-account-payment-terms>
   }
 
-  <app-fines-mac-review-account-account-comments-and-notes
-    [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
-    [isReadOnly]="isReadOnly"
-    (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
-    [isReadOnly]="isReadOnly"
-  ></app-fines-mac-review-account-account-comments-and-notes>
+    <app-fines-mac-review-account-account-comments-and-notes
+      [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
+      [isReadOnly]="isReadOnly"
+      (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
+    ></app-fines-mac-review-account-account-comments-and-notes>
 
   @if (!isReadOnly) {
     <div class="govuk-grid-row">
@@ -141,10 +141,11 @@
     </div>
   }
 
-  @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
-    <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
-  }
-</div>
+    @if (finesDraftStore.checker() && reviewAccountStatus === 'In review') {
+      <app-fines-mac-review-account-decision [accountId]="accountId"></app-fines-mac-review-account-decision>
+    }
+  </div>
+}
 
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
@@ -160,6 +161,7 @@
     [accountType]="accountType"
     [personalDetails]="finesMacStore.personalDetails().formData"
     [showVehicleDetails]="
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
       finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
     "
     [isReadOnly]="isReadOnly"
