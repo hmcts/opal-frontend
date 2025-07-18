@@ -98,7 +98,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public issuingAuthorityAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
-
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,

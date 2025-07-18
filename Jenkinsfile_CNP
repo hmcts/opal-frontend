@@ -178,9 +178,8 @@ withPipeline(type, product, component) {
       } else {
         echo "Skipping opal component tests due to label: ${skipLabel}"
       }
-
-      archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
     }
+    archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }
 
   afterSuccess('functionalTest:dev') {
