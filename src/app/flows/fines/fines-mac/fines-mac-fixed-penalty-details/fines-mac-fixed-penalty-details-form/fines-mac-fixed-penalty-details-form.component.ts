@@ -352,19 +352,22 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    */
   private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
     const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
-      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId);
+      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId,
+    );
     if (!prosecutor) {
       return null;
     }
-    return prosecutor
+    return prosecutor;
   }
 
   /**
    * Sets the court_details_originator_name form control to the prosecutor name if it exists.
-   * @param event 
+   * @param event
    */
-  private setProsecutorName(): void {    
-    const prosecutor = this.getProsecutorFromId(this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString());
+  private setProsecutorName(): void {
+    const prosecutor = this.getProsecutorFromId(
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString(),
+    );
     if (prosecutor) {
       const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
@@ -375,7 +378,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.setProsecutorName();
     super.handleFormSubmit(event);
   }
-  
+
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();

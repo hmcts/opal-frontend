@@ -1,5 +1,5 @@
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../../../constants/fines-mac-account-types-keys';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
-import { IFinesMacFixedPenaltyDetailsState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-state.interface';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
@@ -122,9 +122,10 @@ export const finesMacPayloadBuildAccountOffences = (
   courtDetailsState: IFinesMacCourtDetailsState,
   toRfc3339Date: (date: string | null) => string | null,
   fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
+  accountType?: string | null,
 ): IFinesMacPayloadAccountOffences[] => {
   // If fixed penalty details are provided, use them to build and return a single offence payload
-  if (fixedPenaltyDetails && fixedPenaltyDetails['fm_offence_details_offence_id'] !== null) {
+  if (fixedPenaltyDetails && accountType && accountType === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
     return [
       {
         date_of_sentence: null,
@@ -137,10 +138,10 @@ export const finesMacPayloadBuildAccountOffences = (
             amount_paid: null,
             major_creditor_id: null,
             minor_creditor: null,
-          }
-        ]
+          },
+        ],
       },
-    ]
+    ];
   }
   // If no fixed penalty details are provided, build the offences payload from the offence details state
   return offenceDetailsState.map((offence) => {

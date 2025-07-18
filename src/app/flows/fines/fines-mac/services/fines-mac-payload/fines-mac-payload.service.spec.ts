@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { FinesMacPayloadService } from './fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from './mocks/fines-mac-payload-fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
 import { DateTime } from 'luxon';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
@@ -18,6 +19,7 @@ import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/se
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-state';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -25,6 +27,7 @@ describe('FinesMacPayloadService', () => {
   let finesMacState: IFinesMacState | null;
   let sessionUserState: ISessionUserState | null;
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
+  let finesMacPayloadAddAccountFixedPenaltyMock: IFinesMacAddAccountPayload;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -34,6 +37,7 @@ describe('FinesMacPayloadService', () => {
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     sessionUserState = structuredClone(SESSION_USER_STATE_MOCK);
     finesMacPayloadAddAccount = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    finesMacPayloadAddAccountFixedPenaltyMock = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK);
   });
 
   afterAll(() => {
@@ -74,6 +78,19 @@ describe('FinesMacPayloadService', () => {
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(finesMacPayloadAddAccount);
+  });
+
+  it('should create an add account payload for fixed penalty', () => {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+
+    expect(result).toEqual(finesMacPayloadAddAccountFixedPenaltyMock);
   });
 
   it('should create a replace account payload', () => {

@@ -7,16 +7,20 @@ import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-detai
 import { finesMacPayloadBuildAccountOffences } from './fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
+import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
+import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
   let offencesMockState: IFinesMacOffenceDetailsForm[] | null;
   let offencesMockStateMinorCreditor: IFinesMacOffenceDetailsForm[] | null;
+  let fixedPenaltyMockState: IFinesMacFixedPenaltyDetailsStoreState | null;
   let courtDetailsState: IFinesMacCourtDetailsState | null;
 
   beforeEach(() => {
     offencesMockState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE]);
     courtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
     offencesMockStateMinorCreditor = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
+    fixedPenaltyMockState = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
   });
 
   afterAll(() => {
@@ -261,6 +265,38 @@ describe('finesMacPayloadBuildAccountOffences', () => {
               bank_account_name: null,
               bank_account_ref: null,
             },
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should build payload with fixed penalty details', () => {
+    if (!offencesMockState || !courtDetailsState || !fixedPenaltyMockState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const results = finesMacPayloadBuildAccountOffences(
+      offencesMockState,
+      courtDetailsState,
+      () => '2024-09-01',
+      fixedPenaltyMockState,
+      'fixedPenalty',
+    );
+
+    expect(results).toEqual([
+      {
+        date_of_sentence: null,
+        imposing_court_id: 'Magistrates Court Database (204)',
+        offence_id: 12345,
+        impositions: [
+          {
+            result_id: null,
+            amount_imposed: 100,
+            amount_paid: null,
+            major_creditor_id: null,
+            minor_creditor: null,
           },
         ],
       },

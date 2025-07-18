@@ -1,8 +1,6 @@
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 
 export const FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE_MOCK: IFinesMacFixedPenaltyDetailsStoreState = {
-  fm_court_details_originator_id: null,
-  fm_court_details_originator_name: null,
   fm_offence_details_notice_number: null,
   fm_offence_details_offence_type: 'vehicle',
   fm_offence_details_date_of_offence: null,
