@@ -1,4 +1,4 @@
-import { Validator, ValidatorFn } from '@angular/forms';
+import { ValidatorFn } from '@angular/forms';
 
 export interface IFinesMacFixedPenaltyDetailsFormValidators {
   fm_fp_personal_details_title: Array<ValidatorFn> | null;

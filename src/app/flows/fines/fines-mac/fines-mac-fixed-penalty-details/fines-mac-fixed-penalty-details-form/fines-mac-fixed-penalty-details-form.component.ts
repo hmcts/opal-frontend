@@ -227,7 +227,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     const offenceTypeControl = this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`];
 
     // Subscribe to changes in the offence type control
-    offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
+    offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       this.updateOffenceControlValidators();
     });
   }
