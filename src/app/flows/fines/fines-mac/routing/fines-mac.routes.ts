@@ -247,6 +247,7 @@ export const routing: Routes = [
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
       localJusticeAreas: fetchSendingCourtsResolver,
+      prosecutors: fetchProsecutorsResolver,
       results: fetchResultsResolver,
       majorCreditors: fetchMajorCreditorsResolver,
     },

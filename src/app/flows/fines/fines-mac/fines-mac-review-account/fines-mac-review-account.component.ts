@@ -16,6 +16,7 @@ import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
+import { FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent } from './fines-mac-review-account-fixed-penalty-offence-details/fines-mac-review-account-fixed-penalty-offence-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
@@ -40,6 +41,7 @@ import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/inte
 import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -60,6 +62,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
     FinesMacReviewAccountHistoryComponent,
     FinesMacReviewAccountDecisionComponent,
     FinesMacReviewAccountFailedBannerComponent,
+    FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,6 +96,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public courts!: IOpalFinesCourtRefData;
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
+  public prosecutors!: IOpalFinesProsecutorRefData;
   public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
@@ -349,7 +353,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * This method triggers the submission process by calling the `submitPayload` method.
    */
   public submitForReview(): void {
-    this.submitPayload();
+    if (this.accountType !== this.accountTypesKeys.fixedPenalty) {
+      this.submitPayload();
+    }
   }
 
   /**
@@ -366,10 +372,28 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     } else if (fragment) {
       this.router.navigate([route], { fragment });
     } else {
-      if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
-        this.finesMacStore.setDeleteFromCheckAccount(true);
-      }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+    }
+  }
+
+  /** * Handles the deletion of an account.
+   * If the account ID is greater than 0, it sets the delete flag in the finesMacStore
+   * and navigates to the delete account confirmation route with the account ID.
+   * If the account ID is not greater than 0, it navigates to the delete account confirmation route without an ID.
+   * @param event - The event that triggered the deletion.
+   * @param nonRelative - Optional flag to indicate whether the route is non-relative.
+   * If true, the route will be treated as an absolute path.
+   */
+  public handleDeleteAccount(event: Event, nonRelative = false): void {
+    if (this.accountId > 0) {
+      this.finesMacStore.setDeleteFromCheckAccount(true);
+      this.handleRoute(
+        `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`,
+        nonRelative,
+        event,
+      );
+    } else {
+      this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
     }
   }
 
@@ -388,6 +412,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.courts = this.activatedRoute.snapshot.data['courts'];
     this.results = this.activatedRoute.snapshot.data['results'];
     this.majorCreditors = this.activatedRoute.snapshot.data['majorCreditors'];
+    this.prosecutors = this.activatedRoute.snapshot.data['prosecutors'];
 
     this.reviewAccountFetchedMappedPayload();
   }
