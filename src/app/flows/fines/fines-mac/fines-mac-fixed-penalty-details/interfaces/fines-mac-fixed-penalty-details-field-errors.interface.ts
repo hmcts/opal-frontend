@@ -2,38 +2,8 @@ import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
 } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { IFinesMacFixedPenaltyDetailsState } from './fines-mac-fixed-penalty-details-state.interface';
 
-export interface IFinesMacFixedPenaltyDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
-  fm_fp_personal_details_title: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_forenames: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_surname: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_dob: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_address_line_1: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_address_line_2: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_address_line_3: IAbstractFormBaseFieldError;
-  fm_fp_personal_details_post_code: IAbstractFormBaseFieldError;
-  fm_fp_court_details_imposing_court_id: IAbstractFormBaseFieldError;
-  fm_fp_court_details_issuing_authority_id: IAbstractFormBaseFieldError;
-  fm_fp_account_comments_notes_comments: IAbstractFormBaseFieldError;
-  fm_fp_account_comments_notes_notes: IAbstractFormBaseFieldError;
-  fm_fp_account_comments_notes_system_notes: IAbstractFormBaseFieldError;
-  fm_fp_language_preferences_document_language: IAbstractFormBaseFieldError;
-  fm_fp_language_preferences_hearing_language: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_notice_number: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_offence_type: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_date_of_offence: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_offence_id: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_offence_cjs_code: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_time_of_offence: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_place_of_offence: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_amount_imposed: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_vehicle_registration_number: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_driving_licence_number: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_nto_nth: IAbstractFormBaseFieldError;
-  fm_fp_offence_details_date_nto_issued: IAbstractFormBaseFieldError;
-  fm_fp_company_details_company_name: IAbstractFormBaseFieldError;
-  fm_fp_company_details_address_line_1: IAbstractFormBaseFieldError;
-  fm_fp_company_details_address_line_2: IAbstractFormBaseFieldError;
-  fm_fp_company_details_address_line_3: IAbstractFormBaseFieldError;
-  fm_fp_company_details_postcode: IAbstractFormBaseFieldError;
-}
+export type IFinesMacFixedPenaltyDetailsFieldErrors = IAbstractFormBaseFieldErrors & {
+  [K in keyof IFinesMacFixedPenaltyDetailsState]: IAbstractFormBaseFieldError;
+};
