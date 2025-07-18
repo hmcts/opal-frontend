@@ -1,3 +1,4 @@
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 
@@ -19,9 +20,9 @@ export const finesMacPayloadMapAccountDefendant = (
 ): IFinesMacState => {
   const { defendant_type: defendantType, defendant } = payload;
   switch (defendantType) {
-    case 'parentOrGuardianToPay':
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
       return finesMacPayloadMapAccountDefendantParentGuardianPayload(mappedFinesMacState, defendant);
-    case 'company':
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.company:
       return finesMacPayloadMapAccountDefendantCompanyPayload(mappedFinesMacState, defendant);
     default:
       return finesMacPayloadMapAccountDefendantIndividualPayload(mappedFinesMacState, defendant);

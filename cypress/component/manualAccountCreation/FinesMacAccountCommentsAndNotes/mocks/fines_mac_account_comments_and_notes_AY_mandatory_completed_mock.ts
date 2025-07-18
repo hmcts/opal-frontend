@@ -93,4 +93,10 @@ export const FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK: IFinesMacState
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,
+  deleteAccountConfirmation: {
+    formData: {
+      fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
 };

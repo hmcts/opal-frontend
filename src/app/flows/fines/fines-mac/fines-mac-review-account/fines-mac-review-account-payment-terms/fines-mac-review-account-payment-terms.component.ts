@@ -22,6 +22,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ISessionUserStateRole } from '@hmcts/opal-frontend-common//services/session-service/interfaces';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -37,26 +38,26 @@ import { ISessionUserStateRole } from '@hmcts/opal-frontend-common//services/ses
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
+  private readonly globalStore = inject(GlobalStore);
+  private readonly dateService = inject(DateService);
+  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private userStateRoles: ISessionUserStateRole[] = [];
+  private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
+
+  protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  protected readonly enforcementActions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
+
   @Input({ required: true }) public paymentTermsState!: IFinesMacPaymentTermsState;
   @Input({ required: true }) public businessUnit!: IOpalFinesBusinessUnit;
   @Input({ required: true }) public defendantType!: string;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
-
-  private readonly globalStore = inject(GlobalStore);
-  private readonly dateService = inject(DateService);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private userStateRoles: ISessionUserStateRole[] = [];
-
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
     [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
   };
-
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
-  protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
-  protected readonly enforcementActions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
-  private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   public paymentTerms!: string;
   public payByDate!: string;

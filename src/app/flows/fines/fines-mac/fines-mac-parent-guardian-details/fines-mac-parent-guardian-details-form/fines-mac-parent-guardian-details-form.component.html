@@ -11,7 +11,7 @@
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
     hintText="Include their middle names"
-    [control]="form.controls['fm_parent_guardian_details_forenames']"
+    [control]="form.get('fm_parent_guardian_details_forenames')"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_forenames']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -20,9 +20,9 @@
     inputName="fm_parent_guardian_details_surname"
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_parent_guardian_details_surname']"
+    [control]="form.get('fm_parent_guardian_details_surname')"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_surname']"
-    [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_surname']"
+    [opalLibCapitaliseAllCharacters]="form.get('fm_parent_guardian_details_surname')!"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -110,7 +110,7 @@
     inputName="fm_parent_guardian_details_dob"
     inputClasses="govuk-input--width-10"
     hintText="For example, 31/01/2023"
-    [control]="form.controls['fm_parent_guardian_details_dob']"
+    [control]="form.get('fm_parent_guardian_details_dob')!"
     [maxDate]="yesterday"
     (dateChange)="setInputValue($event, 'fm_parent_guardian_details_dob')"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_dob']"
@@ -131,9 +131,9 @@
     inputName="fm_parent_guardian_details_national_insurance_number"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_parent_guardian_details_national_insurance_number']"
+    [control]="form.get('fm_parent_guardian_details_national_insurance_number')"
     [errors]="formControlErrorMessages['fm_parent_guardian_details_national_insurance_number']"
-    [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_national_insurance_number']"
+    [opalLibCapitaliseAllCharacters]="form.get('fm_parent_guardian_details_national_insurance_number')!"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
@@ -142,14 +142,14 @@
       labelText="Address line 1"
       inputId="fm_parent_guardian_details_address_line_1"
       inputName="fm_parent_guardian_details_address_line_1"
-      [control]="form.controls['fm_parent_guardian_details_address_line_1']"
+      [control]="form.get('fm_parent_guardian_details_address_line_1')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_1']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_parent_guardian_details_address_line_2"
       inputName="fm_parent_guardian_details_address_line_2"
-      [control]="form.controls['fm_parent_guardian_details_address_line_2']"
+      [control]="form.get('fm_parent_guardian_details_address_line_2')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_2']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -157,7 +157,7 @@
       inputId="fm_parent_guardian_details_address_line_3"
       inputName="fm_parent_guardian_details_address_line_3"
       inputClasses="govuk-input--width-20"
-      [control]="form.controls['fm_parent_guardian_details_address_line_3']"
+      [control]="form.get('fm_parent_guardian_details_address_line_3')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_address_line_3']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -165,9 +165,9 @@
       inputId="fm_parent_guardian_details_post_code"
       inputName="fm_parent_guardian_details_post_code"
       inputClasses="govuk-input--width-10"
-      [control]="form.controls['fm_parent_guardian_details_post_code']"
+      [control]="form.get('fm_parent_guardian_details_post_code')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_post_code']"
-      [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_post_code']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_parent_guardian_details_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
@@ -180,7 +180,7 @@
       inputName="fm_parent_guardian_details_vehicle_make"
       inputClasses="govuk-input--width-20"
       labelClasses="govuk-label--s"
-      [control]="form.controls['fm_parent_guardian_details_vehicle_make']"
+      [control]="form.get('fm_parent_guardian_details_vehicle_make')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_vehicle_make']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -189,9 +189,9 @@
       inputName="fm_parent_guardian_details_vehicle_registration_mark"
       inputClasses="govuk-input--width-10"
       labelClasses="govuk-label--s"
-      [control]="form.controls['fm_parent_guardian_details_vehicle_registration_mark']"
+      [control]="form.get('fm_parent_guardian_details_vehicle_registration_mark')"
       [errors]="formControlErrorMessages['fm_parent_guardian_details_vehicle_registration_mark']"
-      [opalLibCapitaliseAllCharacters]="form.controls['fm_parent_guardian_details_vehicle_registration_mark']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_parent_guardian_details_vehicle_registration_mark')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
