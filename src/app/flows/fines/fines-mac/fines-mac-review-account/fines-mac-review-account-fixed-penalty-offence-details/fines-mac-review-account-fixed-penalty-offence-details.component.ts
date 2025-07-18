@@ -9,7 +9,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { FINES_MAC_OFFENCE_TYPES } from '../../constants/fines-mac-offence-types';
+import { FINES_MAC_FIXED_PENALTY_OFFENCE_TYPES } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-types';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -35,7 +35,7 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
   @Output() public emitChangeOffenceDetails = new EventEmitter<void>();
 
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
-  public readonly offenceTypes = FINES_MAC_OFFENCE_TYPES;
+  public readonly offenceTypes = FINES_MAC_FIXED_PENALTY_OFFENCE_TYPES;
   public offence!: string;
 
   /**

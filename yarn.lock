@@ -4096,12 +4096,12 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^5.0.0":
-  version: 5.1.4
-  resolution: "@ministryofjustice/frontend@npm:5.1.4"
+  version: 5.1.5
+  resolution: "@ministryofjustice/frontend@npm:5.1.5"
   peerDependencies:
     govuk-frontend: ^5.8.0
     moment: 2.30.1
-  checksum: 10/0252542db8bbaaeb7436fc532aa2be3d4e6e81118ce9812d4c38b1e21970c9dbf3d8f849960752f8182537fe19b05b836112f54310e0661eaf2fed6112fc2b99
+  checksum: 10/8bf6327dbd18db94e91c72200b20fd1a1d766125a2f38789d4ee5650d81c9b392e804ef591ce77db2a8d4c03156a6ea3d064b27585ad3de3df33149012ed5263
   languageName: node
   linkType: hard
 
@@ -5206,6 +5206,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/estree@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@types/estree@npm:1.0.8"
+  checksum: 10/25a4c16a6752538ffde2826c2cc0c6491d90e69cd6187bef4a006dd2c3c45469f049e643d7e516c515f21484dc3d48fd5c870be158a5beb72f5baf3dc43e4099
+  languageName: node
+  linkType: hard
+
 "@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.33":
   version: 4.19.5
   resolution: "@types/express-serve-static-core@npm:4.19.5"
@@ -5933,6 +5940,15 @@ __metadata:
   peerDependencies:
     acorn: ^8
   checksum: 10/8bfbfbb6e2467b9b47abb4d095df717ab64fce2525da65eabee073e85e7975fb3a176b6c8bba17c99a7d8ede283a10a590272304eb54a93c4aa1af9790d47a8b
+  languageName: node
+  linkType: hard
+
+"acorn-import-phases@npm:^1.0.3":
+  version: 1.0.4
+  resolution: "acorn-import-phases@npm:1.0.4"
+  peerDependencies:
+    acorn: ^8.14.0
+  checksum: 10/471050ac7d9b61909c837b426de9eeef2958997f6277ad7dea88d5894fd9b3245d8ed4a225c2ca44f814dbb20688009db7a80e525e8196fc9e98c5285b66161d
   languageName: node
   linkType: hard
 
@@ -7534,11 +7550,11 @@ __metadata:
   linkType: hard
 
 "config@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "config@npm:4.0.0"
+  version: 4.0.1
+  resolution: "config@npm:4.0.1"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/a430adc25a8f6d448edf10dba331710db2e327b4b5d62dedb7ceb9a6800d0ca593373169912ad405e8acb96efb641db84db24ff59e0cdc3e16a162996f22be3c
+  checksum: 10/ff3779d92cfe29c6ec0c5b37382bef8d5a301058884c4a5c5954f61abf058820b5c60403c4525e5040b1027bb108df379e27c7e6ec566c67e0baec32599f2703
   languageName: node
   linkType: hard
 
@@ -7929,8 +7945,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^14.0.0":
-  version: 14.5.1
-  resolution: "cypress@npm:14.5.1"
+  version: 14.5.2
+  resolution: "cypress@npm:14.5.2"
   dependencies:
     "@cypress/request": "npm:^3.0.8"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -7978,7 +7994,7 @@ __metadata:
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10/5318b5e5b7b0e0326fd1b904048fbe54db5baca6cce59f336f0a3413925584dd2bf1620f874ff267ad87952bfe1811dc7ecda708f4f4f18a1550ec5920a6a34d
+  checksum: 10/54db51763875633c37c209bc98add7e5c62d9a4cb4a425ae1f0e7bfd782312eafba233e507c9be639a98a385ad96ce60328f7747e50a56ed3565e5527df67162
   languageName: node
   linkType: hard
 
@@ -8730,6 +8746,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"enhanced-resolve@npm:^5.17.2":
+  version: 5.18.2
+  resolution: "enhanced-resolve@npm:5.18.2"
+  dependencies:
+    graceful-fs: "npm:^4.2.4"
+    tapable: "npm:^2.2.0"
+  checksum: 10/d1b517c908b69d1afbf87b476bbe7dd8d1daf11070127b9ec4f8553f0c6020d30f79103c938776645d569e954e4e04c326f408d2ea3820ade71e72798fb7d36f
+  languageName: node
+  linkType: hard
+
 "enquirer@npm:^2.3.6":
   version: 2.4.1
   resolution: "enquirer@npm:2.4.1"
@@ -9434,18 +9460,18 @@ __metadata:
   linkType: hard
 
 "express-session@npm:^1.17.3":
-  version: 1.18.1
-  resolution: "express-session@npm:1.18.1"
+  version: 1.18.2
+  resolution: "express-session@npm:1.18.2"
   dependencies:
     cookie: "npm:0.7.2"
     cookie-signature: "npm:1.0.7"
     debug: "npm:2.6.9"
     depd: "npm:~2.0.0"
-    on-headers: "npm:~1.0.2"
+    on-headers: "npm:~1.1.0"
     parseurl: "npm:~1.3.3"
     safe-buffer: "npm:5.2.1"
     uid-safe: "npm:~2.1.5"
-  checksum: 10/fec407d20e2b7c110e92c992f4a094b9603bf3e1d1040cf5a2f70fe64e23560f7f2d41e0e6dc8864dd146bbf0c07d9d5aa6848f80c403cbeac4cee4303192a53
+  checksum: 10/1a89a4d3e579e1d2a729dc604c254c3e942b24a279681371c2d8042b1080f9e6de4ca787a091ec1a9178c9f2cc5c19bcb9f3929632d44db8972263e26c2cc4b8
   languageName: node
   linkType: hard
 
@@ -13489,6 +13515,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"on-headers@npm:~1.1.0":
+  version: 1.1.0
+  resolution: "on-headers@npm:1.1.0"
+  checksum: 10/98aa64629f986fb8cc4517dd8bede73c980e31208cba97f4442c330959f60ced3dc6214b83420491f5111fc7c4f4343abe2ea62c85f505cf041d67850f238776
+  languageName: node
+  linkType: hard
+
 "once@npm:^1.3.0, once@npm:^1.3.1, once@npm:^1.4.0":
   version: 1.4.0
   resolution: "once@npm:1.4.0"
@@ -17219,6 +17252,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webpack-sources@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "webpack-sources@npm:3.3.3"
+  checksum: 10/ec5d72607e8068467370abccbfff855c596c098baedbe9d198a557ccf198e8546a322836a6f74241492576adba06100286592993a62b63196832cdb53c8bae91
+  languageName: node
+  linkType: hard
+
 "webpack-subresource-integrity@npm:5.1.0":
   version: 5.1.0
   resolution: "webpack-subresource-integrity@npm:5.1.0"
@@ -17271,19 +17311,20 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.93.0":
-  version: 5.99.9
-  resolution: "webpack@npm:5.99.9"
+  version: 5.100.2
+  resolution: "webpack@npm:5.100.2"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
-    "@types/estree": "npm:^1.0.6"
+    "@types/estree": "npm:^1.0.8"
     "@types/json-schema": "npm:^7.0.15"
     "@webassemblyjs/ast": "npm:^1.14.1"
     "@webassemblyjs/wasm-edit": "npm:^1.14.1"
     "@webassemblyjs/wasm-parser": "npm:^1.14.1"
-    acorn: "npm:^8.14.0"
+    acorn: "npm:^8.15.0"
+    acorn-import-phases: "npm:^1.0.3"
     browserslist: "npm:^4.24.0"
     chrome-trace-event: "npm:^1.0.2"
-    enhanced-resolve: "npm:^5.17.1"
+    enhanced-resolve: "npm:^5.17.2"
     es-module-lexer: "npm:^1.2.1"
     eslint-scope: "npm:5.1.1"
     events: "npm:^3.2.0"
@@ -17297,13 +17338,13 @@ __metadata:
     tapable: "npm:^2.1.1"
     terser-webpack-plugin: "npm:^5.3.11"
     watchpack: "npm:^2.4.1"
-    webpack-sources: "npm:^3.2.3"
+    webpack-sources: "npm:^3.3.3"
   peerDependenciesMeta:
     webpack-cli:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/cf4a217239bcaa892f93702639ac837a16510edb7a1326955fb042d499d297cbdb16f20a81f3be6ec041b22ab47c599c757e505fdee1dd89b7f7a1ce4337fbf3
+  checksum: 10/e643fd67de9086ff6c726f39e893b299470eb25d35cfc3736e6cc8cfe95d77a46334d44cb7f9c6cb9e7acf5e03e48541e95f9f88612559de926e2fe30c2d78cf
   languageName: node
   linkType: hard
 
