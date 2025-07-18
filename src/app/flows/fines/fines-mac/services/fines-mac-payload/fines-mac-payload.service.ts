@@ -32,8 +32,6 @@ import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-s
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
-import { IFinesMacFixedPenaltyDetailsStoreForm } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-form.interface';
-import { IFinesMacFixedPenaltyDetailsStoreState } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -144,6 +142,7 @@ export class FinesMacPayloadService {
     );
     const fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(
       fixedPenaltyDetails,
+      this.toRfc3339Date.bind(this)
     );
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
@@ -159,7 +158,7 @@ export class FinesMacPayloadService {
       ...initialPayload,
       defendant: defendant,
       offences: offences,
-      fp_ticket_detail: null,
+      fp_ticket_detail: fp_ticket_detail,
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };

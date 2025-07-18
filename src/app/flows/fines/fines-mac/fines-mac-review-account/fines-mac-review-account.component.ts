@@ -201,6 +201,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * The request is automatically unsubscribed when the component is destroyed.
    */
   private handlePostRequest(payload: IFinesMacAddAccountPayload): void {
+    console.log({ payload: payload });
     this.opalFinesService
       .postDraftAddAccountPayload(payload)
       .pipe(

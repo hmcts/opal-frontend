@@ -351,7 +351,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * @returns {string | null}
    */
   private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
-    console.log(this.issuingAuthorityAutoCompleteItems)
     const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
       (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId);
     if (!prosecutor) {
