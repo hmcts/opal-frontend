@@ -38,22 +38,22 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements OnInit {
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private totalAmountImposed: number = 0;
+  private totalAmountPaid: number = 0;
+  private totalBalanceRemaining: number = 0;
+
+  protected readonly defaultValues = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
+
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
   @Input({ required: true }) public offenceIndex!: number;
   @Input({ required: false }) public isReadOnly!: boolean;
-
-  private readonly opalFinesService = inject(OpalFines);
-  private readonly finesMacStore = inject(FinesMacStore);
   public readonly utilsService = inject(UtilsService);
-
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
   public impositionsTotalsData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData;
-  private totalAmountImposed: number = 0;
-  private totalAmountPaid: number = 0;
-  private totalBalanceRemaining: number = 0;
-  protected readonly defaultValues = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
 
   /**
    * Sorts the impositions array based on the allocation order and result title.

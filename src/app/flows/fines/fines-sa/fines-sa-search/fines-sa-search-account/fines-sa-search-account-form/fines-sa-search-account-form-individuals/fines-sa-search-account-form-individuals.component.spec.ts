@@ -19,6 +19,7 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
 
     component.form = new FormGroup(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS);
     component.formControlErrorMessages = {};
+
     fixture.detectChanges();
   });
 

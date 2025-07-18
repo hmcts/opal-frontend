@@ -266,10 +266,10 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call canDeactivate ', () => {
     component['pageNavigation'] = true;
-    expect(component.canDeactivate()).toBeTruthy();
+    expect(component['canDeactivate']()).toBeTruthy();
 
     component['pageNavigation'] = false;
-    expect(component.canDeactivate()).toBeFalsy();
+    expect(component['canDeactivate']()).toBeFalsy();
   });
 
   it('should return true if personalDetails is true', () => {

@@ -67,7 +67,7 @@ When('I update the last created draft account with status {string}', (status: st
         const business_unit_id = account.business_unit_id;
         const version = account.version;
         const validated_by = account.submitted_by || 'opal-test';
-        const now = new Date().toISOString();
+        const now = new Date().toISOString().split('T')[0];
         const updateBody = {
           business_unit_id,
           account_status: status,

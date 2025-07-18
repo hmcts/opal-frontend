@@ -59,17 +59,21 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
+  private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
+
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
+  protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
+  protected readonly languageOptions = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+  protected readonly finesRoutes = FINES_ROUTING_PATHS;
+  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
+  protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
 
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
-  private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
-
-  protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
-  private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
-  protected readonly languageOptions = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public defendantType!: string;
   public accountType!: string;
   public documentLanguage!: string;
@@ -79,22 +83,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
   public timelineData!: IFinesMacAccountTimelineData[];
-  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
-
-  protected readonly finesRoutes = FINES_ROUTING_PATHS;
-  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
-  protected readonly finesDraftCreateAndManageRoutes = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
-
   public accountDetailsStatus!: string;
-
-  /**
-   * Determines whether the component can be deactivated.
-   * @returns A CanDeactivateTypes object representing the navigation status.
-   */
-  canDeactivate(): CanDeactivateTypes {
-    return this.pageNavigation;
-  }
+  public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   /**
    * Sets the account details status from the fines service state.
@@ -249,6 +239,14 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
       this.finesMacStore.personalDetailsStatus() === FINES_MAC_STATUS.PROVIDED ||
       this.paymentTermsBypassDefendantTypes.includes(this.defendantType)
     );
+  }
+
+  /**
+   * Determines whether the component can be deactivated.
+   * @returns A CanDeactivateTypes object representing the navigation status.
+   */
+  protected canDeactivate(): CanDeactivateTypes {
+    return this.pageNavigation;
   }
 
   /**

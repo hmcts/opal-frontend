@@ -30,12 +30,9 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
-  public override paginatedTableDataComputed = computed(() => {
-    const data = this.sortedTableDataSignal() as IFinesDraftTableWrapperTableData[];
-    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
-  });
+  protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
+  protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
-  public override itemsPerPageSignal = signal(25);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
     this.setTableData(tableData);
   }
@@ -48,8 +45,11 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Output() public linkClicked = new EventEmitter<number>();
   @Output() public accountClicked = new EventEmitter<string>();
 
-  protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
-  protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
+  public override paginatedTableDataComputed = computed(() => {
+    const data = this.sortedTableDataSignal() as IFinesDraftTableWrapperTableData[];
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
+  });
+  public override itemsPerPageSignal = signal(25);
 
   /**
    * Handles the click event on a defendant.

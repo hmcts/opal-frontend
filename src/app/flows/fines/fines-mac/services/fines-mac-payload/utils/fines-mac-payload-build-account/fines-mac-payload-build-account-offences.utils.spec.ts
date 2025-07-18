@@ -31,7 +31,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       return;
     }
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => '2024-09-01');
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
 
@@ -41,7 +41,11 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       return;
     }
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockStateMinorCreditor, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(
+      offencesMockStateMinorCreditor,
+      courtDetailsState,
+      () => '2024-09-01',
+    );
 
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
@@ -73,7 +77,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_prosecutor_case_reference: null,
       fm_court_details_imposing_court_id: null,
     };
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
     expect(results).toEqual([
       {
         date_of_sentence: null,
@@ -143,7 +147,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_prosecutor_case_reference: null,
       fm_court_details_imposing_court_id: null,
     };
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
 
     expect(results).toEqual([
       {
@@ -223,7 +227,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_imposing_court_id: null,
     };
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
 
     expect(results).toEqual([
       {

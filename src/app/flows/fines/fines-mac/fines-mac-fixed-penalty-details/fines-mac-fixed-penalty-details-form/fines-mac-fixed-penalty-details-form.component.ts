@@ -81,10 +81,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   extends AbstractFormAliasBaseComponent
   implements OnInit, OnDestroy
 {
-  @Input() public defendantType!: string;
-  @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public issuingAuthorityAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-
+  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   @Output() protected override formSubmit = new EventEmitter<IFinesMacFixedPenaltyDetailsForm>();
   protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
@@ -96,6 +93,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly finesPrefix = 'fm_';
   protected readonly fixedPenaltyPrefix = 'fm_fp_';
   protected readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+
+  @Input() public defendantType!: string;
+  @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public issuingAuthorityAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+
 
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(

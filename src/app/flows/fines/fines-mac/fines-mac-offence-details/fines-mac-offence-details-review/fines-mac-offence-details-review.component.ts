@@ -17,16 +17,43 @@ import { ActivatedRoute } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy {
-  @Input({ required: false }) public isReadOnly = false;
-  @Input({ required: false }) public results!: IOpalFinesResultsRefData;
-  @Input({ required: false }) public majorCreditors!: IOpalFinesMajorCreditorRefData;
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly dateService = inject(DateService);
+
+  @Input({ required: false }) public isReadOnly = false;
+  @Input({ required: false }) public results!: IOpalFinesResultsRefData;
+  @Input({ required: false }) public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
 
+  /**
+   * Sorts the offence impositions in ascending order based on the offence date.
+   *
+   * This method retrieves the offence date from each offence's form data using
+   * the specified format ('dd/MM/yyyy') with the date service. It then converts
+   * these dates to their millisecond representations and sorts the array accordingly.
+   *
+   * @remarks
+   * The method assumes that the offence's form data contains a valid date of
+   * sentence string at the property 'fm_offence_details_date_of_sentence'.
+   *
+   * @example
+   * Before sorting:
+   * [
+   *   { formData: { fm_offence_details_date_of_sentence: '15/03/2021' } },
+   *   { formData: { fm_offence_details_date_of_sentence: '10/02/2022' } }
+   * ]
+   *
+   * After sorting:
+   * [
+   *   { formData: { fm_offence_details_date_of_sentence: '15/03/2021' } },
+   *   { formData: { fm_offence_details_date_of_sentence: '10/02/2022' } }
+   * ]
+   *
+   * @private
+   */
   private sortOffencesByDate(): void {
     this.offencesImpositions.sort((a, b) => {
       const dateOfOffenceA = this.dateService.getFromFormat(
@@ -54,6 +81,15 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     this.finesMacOffenceDetailsStore.setEmptyOffences(this.offencesImpositions.length === 0);
   }
 
+  /**
+   * Lifecycle hook that is called once the component has been initialized.
+   *
+   * This method retrieves initialization data from the activated route snapshot:
+   * - If available, assigns the 'results' property from the route data to the component's results property.
+   * - If available, assigns the 'majorCreditors' property from the route data to the component's majorCreditors property.
+   *
+   * After setting the properties, it calls getOffencesImpositions() to process offense impositions.
+   */
   public ngOnInit(): void {
     if (this.activatedRoute.snapshot.data['results']) {
       this.results = this.activatedRoute.snapshot.data['results'];
@@ -64,6 +100,17 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     this.getOffencesImpositions();
   }
 
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   *
+   * This method performs the following cleanup actions:
+   * - Clears the offence code by setting it to an empty string.
+   * - Resets the minor creditor flag to false.
+   * - Flags that no offence has been removed.
+   * - Resets any existing offence details draft to an empty list.
+   *
+   * These actions ensure that the offence details store is cleared and ready for reuse when the component is reactivated.
+   */
   public ngOnDestroy(): void {
     this.finesMacOffenceDetailsStore.setAddedOffenceCode('');
     this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);

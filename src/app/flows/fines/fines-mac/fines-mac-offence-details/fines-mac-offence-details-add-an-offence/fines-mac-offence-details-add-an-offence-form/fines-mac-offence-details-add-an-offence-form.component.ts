@@ -58,8 +58,8 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -91,35 +91,30 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   extends AbstractFormArrayBaseComponent
   implements OnInit, OnDestroy
 {
+  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly opalFinesService = inject(OpalFines);
+  private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
+  protected readonly dateService = inject(DateService);
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  protected readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public offenceIndex!: number;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
-
-  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
-  private readonly opalFinesService = inject(OpalFines);
-  protected readonly dateService = inject(DateService);
-  protected readonly offenceDetailsService = inject(FinesMacOffenceDetailsService);
-  private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-
   public selectedOffenceConfirmation!: boolean;
   public selectedOffenceSuccessful!: boolean;
   public selectedOffenceTitle!: string;
   public today!: string;
-
   public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
-
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
-
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
   public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
-
   public readonly searchOffenceUrl = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.root}/${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.root}`;
-
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
