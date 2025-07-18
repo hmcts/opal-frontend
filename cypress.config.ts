@@ -85,6 +85,7 @@ async function setupNodeEvents(on, config) {
       `${process.env.TEST_STAGE}-output/prod/legacy/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
     return config;
   }
+  return config;
 }
 
 export default defineConfig({
