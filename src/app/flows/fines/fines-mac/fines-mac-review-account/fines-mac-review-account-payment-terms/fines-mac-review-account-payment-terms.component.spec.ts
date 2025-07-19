@@ -161,12 +161,12 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasPermissionAccess');
+    spyOn<any>(component, 'hasBusinessUnitPermissionAccess');
     globalStore.setUserState({} as ISessionUserState);
 
     component['setupPermissions']();
 
-    expect(component['hasPermissionAccess']).not.toHaveBeenCalled();
+    expect(component['hasBusinessUnitPermissionAccess']).not.toHaveBeenCalled();
     expect(component['userStateRoles']).toEqual([]);
   });
 });
