@@ -5,7 +5,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,
   LETTERS_SPACES_HYPHENS_APOSTROPHES_PATTERN,
-} from 'src/app/flows/fines/constants/fines-patterns.constant';
+} from '../../../../../../constants/fines-patterns.constant';
 
 const characterValidator = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,

@@ -1,3 +1,3 @@
 export interface IFinesDraftCreateAndManageRoutingPermissions {
-  'create-and-manage': number;
+  'create-and-manage-draft-accounts': number;
 }

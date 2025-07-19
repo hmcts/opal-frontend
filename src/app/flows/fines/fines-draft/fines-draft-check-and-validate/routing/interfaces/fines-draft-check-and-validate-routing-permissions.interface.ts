@@ -1,3 +1,3 @@
 export interface IFinesDraftCheckAndValidateRoutingPermissions {
-  'check-and-validate': number;
+  'check-and-validate-draft-accounts': number;
 }
