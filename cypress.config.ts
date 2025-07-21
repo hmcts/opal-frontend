@@ -72,8 +72,19 @@ async function setupNodeEvents(on, config) {
     }),
   );
   setupBrowserLaunch(on);
-  config.env['messagesOutput'] =
-    `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+  if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN === 'chrome') {
+    config.env['messagesOutput'] =
+      `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+    return config;
+  } else if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN !== 'chrome') {
+    config.env['messagesOutput'] =
+      `${process.env.TEST_STAGE}-output/prod/${process.env.BROWSER_TO_RUN}/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+    return config;
+  } else if (process.env.TEST_MODE === 'LEGACY') {
+    config.env['messagesOutput'] =
+      `${process.env.TEST_STAGE}-output/prod/legacy/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+    return config;
+  }
   return config;
 }
 

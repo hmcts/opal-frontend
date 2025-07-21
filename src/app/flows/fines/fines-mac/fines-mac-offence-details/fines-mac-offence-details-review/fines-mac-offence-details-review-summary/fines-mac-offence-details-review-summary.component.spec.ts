@@ -17,6 +17,7 @@ import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
@@ -169,7 +170,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
       formData: {
         ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
-        fm_create_account_defendant_type: 'adultOrYouthOnly',
+        fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
       },
     };
     finesMacState.personalDetails = {
@@ -188,7 +189,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
       formData: {
         ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
-        fm_create_account_defendant_type: 'parentOrGuardianToPay',
+        fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
       },
       nestedFlow: false,
     };

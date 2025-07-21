@@ -54,6 +54,7 @@ import {
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -82,7 +83,7 @@ import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date
 export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
@@ -100,6 +101,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
+
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
@@ -134,7 +137,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPermissions(): void {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
+      this.permissions[this.permissionsMap.collectionOrder] = this.hasBusinessUnitPermissionAccess(
         this.permissionsMap.collectionOrder,
         this.finesMacStore.getBusinessUnitId(),
         this.userStateRoles,

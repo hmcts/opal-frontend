@@ -22,6 +22,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -92,7 +93,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @returns {boolean} Returns true if the defendant type is 'adultOrYouthOnly', otherwise returns false.
    */
   private isAdultOrYouthOnly(): boolean {
-    return this.finesMacStore.getDefendantType() === 'adultOrYouthOnly';
+    return this.finesMacStore.getDefendantType() === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
   }
 
   /**

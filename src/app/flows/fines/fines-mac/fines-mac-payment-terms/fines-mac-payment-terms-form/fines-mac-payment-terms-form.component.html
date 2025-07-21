@@ -17,7 +17,7 @@
         inputId="fm_payment_terms_collection_order_made_true"
         inputName="fm_payment_terms_collection_order_made"
         [inputValue]="true"
-        [control]="form.controls['fm_payment_terms_collection_order_made']"
+        [control]="form.get('fm_payment_terms_collection_order_made')"
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === true) {
@@ -31,7 +31,7 @@
                 inputClasses="govuk-input--width-10"
                 hintText="For example, 31/01/2023"
                 [maxDate]="today"
-                [control]="form.controls['fm_payment_terms_collection_order_date']"
+                [control]="form.get('fm_payment_terms_collection_order_date')!"
                 [errors]="formControlErrorMessages['fm_payment_terms_collection_order_date']"
                 (dateChange)="setInputValue($event, 'fm_payment_terms_collection_order_date')"
               ></opal-lib-moj-date-picker>
@@ -46,7 +46,7 @@
         inputId="fm_payment_terms_collection_order_made_false"
         inputName="fm_payment_terms_collection_order_made"
         [inputValue]="false"
-        [control]="form.controls['fm_payment_terms_collection_order_made']"
+        [control]="form.get('fm_payment_terms_collection_order_made')"
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
@@ -57,7 +57,7 @@
                   inputId="fm_payment_terms_collection_order_made_today"
                   inputName="fm_payment_terms_collection_order_made_today"
                   labelText="Make collection order today"
-                  [control]="form.controls['fm_payment_terms_collection_order_made_today']"
+                  [control]="form.get('fm_payment_terms_collection_order_made_today')"
                 ></opal-lib-govuk-checkboxes-item>
               </div>
             </div>
@@ -79,7 +79,7 @@
         [inputId]="paymentTerm.key"
         [inputName]="'fm_payment_terms_payment_terms'"
         [inputValue]="paymentTerm.key"
-        [control]="form.controls['fm_payment_terms_payment_terms']"
+        [control]="form.get('fm_payment_terms_payment_terms')"
       ></div>
 
       @switch (paymentTerm.key) {
@@ -94,7 +94,7 @@
                   inputName="fm_payment_terms_pay_by_date"
                   inputClasses="govuk-input--width-10"
                   hintText="For example, 31/01/2023"
-                  [control]="form.controls['fm_payment_terms_pay_by_date']"
+                  [control]="form.get('fm_payment_terms_pay_by_date')!"
                   [errors]="formControlErrorMessages['fm_payment_terms_pay_by_date']"
                   (dateChange)="setInputValue($event, 'fm_payment_terms_pay_by_date')"
                 ></opal-lib-moj-date-picker>
@@ -130,7 +130,7 @@
                   inputName="fm_payment_terms_lump_sum_amount"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls['fm_payment_terms_lump_sum_amount']"
+                  [control]="form.get('fm_payment_terms_lump_sum_amount')"
                   [errors]="formControlErrorMessages['fm_payment_terms_lump_sum_amount']"
                   [forceTwoDecimalPoints]="true"
                 >
@@ -143,13 +143,13 @@
       }
     }
   </opal-lib-govuk-radio>
-  @if (defendantType !== 'company') {
+  @if (defendantType !== defendantTypesKeys.company) {
     <div
       opal-lib-govuk-checkboxes-item
       labelText="Request payment card"
       inputId="fm_payment_terms_payment_card_request"
       inputName="fm_payment_terms_payment_card_request"
-      [control]="form.controls['fm_payment_terms_payment_card_request']"
+      [control]="form.get('fm_payment_terms_payment_card_request')"
     ></div>
   }
   @if (accessDefaultDates) {
@@ -163,7 +163,7 @@
         labelText="There are days in default"
         inputId="fm_payment_terms_has_days_in_default"
         inputName="fm_payment_terms_has_days_in_default"
-        [control]="form.controls['fm_payment_terms_has_days_in_default']"
+        [control]="form.get('fm_payment_terms_has_days_in_default')"
       ></div>
 
       @if (form.get('fm_payment_terms_has_days_in_default')?.value) {
@@ -177,7 +177,7 @@
               inputClasses="govuk-input--width-10"
               hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
               [maxDate]="yesterday"
-              [control]="form.controls['fm_payment_terms_suspended_committal_date']"
+              [control]="form.get('fm_payment_terms_suspended_committal_date')!"
               [errors]="formControlErrorMessages['fm_payment_terms_suspended_committal_date']"
               (dateChange)="setInputValue($event, 'fm_payment_terms_suspended_committal_date')"
             ></opal-lib-moj-date-picker>
@@ -190,13 +190,13 @@
               inputName="fm_payment_terms_default_days_in_jail"
               inputClasses="govuk-input--width-5"
               suffixText="days"
-              [control]="form.controls['fm_payment_terms_default_days_in_jail']"
+              [control]="form.get('fm_payment_terms_default_days_in_jail')"
               [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
             ></opal-lib-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
-              [date]="form.controls['fm_payment_terms_suspended_committal_date'].value"
+              [date]="form.get('fm_payment_terms_suspended_committal_date')?.value"
             ></app-fines-mac-default-days>
           </div>
         </div>
@@ -208,13 +208,13 @@
     legendText="Enforcement action"
     legendClasses="govuk-fieldset__legend--s"
   >
-    @if (defendantType === 'company') {
+    @if (defendantType === defendantTypesKeys.company) {
       <div
         opal-lib-govuk-checkboxes-item
         labelText="Hold enforcement on account (NOENF)"
         inputId="fm_payment_terms_hold_enforcement_on_account"
         inputName="fm_payment_terms_hold_enforcement_on_account"
-        [control]="form.controls['fm_payment_terms_hold_enforcement_on_account']"
+        [control]="form.get('fm_payment_terms_hold_enforcement_on_account')"
       ></div>
       <div *ngIf="form.get('fm_payment_terms_hold_enforcement_on_account')?.value">
         <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
@@ -224,7 +224,7 @@
             inputId="fm_payment_terms_reason_account_is_on_noenf"
             inputName="fm_payment_terms_reason_account_is_on_noenf"
             inputClasses="govuk-!-width-two-thirds"
-            [control]="form.controls['fm_payment_terms_reason_account_is_on_noenf']"
+            [control]="form.get('fm_payment_terms_reason_account_is_on_noenf')"
             [errors]="formControlErrorMessages['fm_payment_terms_reason_account_is_on_noenf']"
             [rows]="1"
             [maxCharacterLimit]="28"
@@ -238,7 +238,7 @@
         labelText="Add enforcement action"
         inputId="fm_payment_terms_add_enforcement_action"
         inputName="fm_payment_terms_add_enforcement_action"
-        [control]="form.controls['fm_payment_terms_add_enforcement_action']"
+        [control]="form.get('fm_payment_terms_add_enforcement_action')"
       ></div>
       @if (form.get('fm_payment_terms_add_enforcement_action')!.value !== null) {
         @if (form.get('fm_payment_terms_add_enforcement_action')?.value === true) {
@@ -255,7 +255,7 @@
                   [inputId]="enforcementAction.key"
                   [inputName]="'fm_payment_terms_enforcement_action'"
                   [inputValue]="enforcementAction.key"
-                  [control]="form.controls['fm_payment_terms_enforcement_action']"
+                  [control]="form.get('fm_payment_terms_enforcement_action')"
                 ></div>
                 @if (enforcementAction.key === 'PRIS') {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
@@ -268,7 +268,7 @@
                           inputName="fm_payment_terms_earliest_release_date"
                           inputClasses="govuk-input--width-10"
                           [minDate]="today"
-                          [control]="form.controls['fm_payment_terms_earliest_release_date']"
+                          [control]="form.get('fm_payment_terms_earliest_release_date')!"
                           [errors]="formControlErrorMessages['fm_payment_terms_earliest_release_date']"
                           (dateChange)="setInputValue($event, 'fm_payment_terms_earliest_release_date')"
                         ></opal-lib-moj-date-picker>
@@ -281,7 +281,7 @@
                           inputId="fm_payment_terms_prison_and_prison_number"
                           inputName="fm_payment_terms_prison_and_prison_number"
                           inputClasses="govuk-!-width-two-thirds"
-                          [control]="form.controls['fm_payment_terms_prison_and_prison_number']"
+                          [control]="form.get('fm_payment_terms_prison_and_prison_number')"
                           [errors]="formControlErrorMessages['fm_payment_terms_prison_and_prison_number']"
                           [rows]="1"
                           [maxCharacterLimit]="28"
@@ -299,7 +299,7 @@
                         inputId="fm_payment_terms_reason_account_is_on_noenf"
                         inputName="fm_payment_terms_reason_account_is_on_noenf"
                         inputClasses="govuk-!-width-two-thirds"
-                        [control]="form.controls['fm_payment_terms_reason_account_is_on_noenf']"
+                        [control]="form.get('fm_payment_terms_reason_account_is_on_noenf')"
                         [errors]="formControlErrorMessages['fm_payment_terms_reason_account_is_on_noenf']"
                         [rows]="1"
                         [maxCharacterLimit]="28"
@@ -345,7 +345,7 @@
       inputName="fm_payment_terms_instalment_amount"
       inputClasses="govuk-input--width-5"
       prefixText="£"
-      [control]="form.controls['fm_payment_terms_instalment_amount']"
+      [control]="form.get('fm_payment_terms_instalment_amount')"
       [errors]="formControlErrorMessages['fm_payment_terms_instalment_amount']"
       [forceTwoDecimalPoints]="true"
     >
@@ -365,7 +365,7 @@
           [inputId]="frequency.key"
           inputName="fm_payment_terms_instalment_period"
           [inputValue]="frequency.key"
-          [control]="form.controls['fm_payment_terms_instalment_period']"
+          [control]="form.get('fm_payment_terms_instalment_period')"
         ></div>
       }
     </opal-lib-govuk-radio>
@@ -378,7 +378,7 @@
       inputName="fm_payment_terms_start_date"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
-      [control]="form.controls['fm_payment_terms_start_date']"
+      [control]="form.get('fm_payment_terms_start_date')!"
       [errors]="formControlErrorMessages['fm_payment_terms_start_date']"
       (dateChange)="setInputValue($event, 'fm_payment_terms_start_date')"
     ></opal-lib-moj-date-picker>

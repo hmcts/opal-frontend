@@ -15,6 +15,7 @@ import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resol
 import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../../fines-draft/routing/constants/fines-draft-routing-permissions.constant';
+import { fetchProsecutorsResolver } from './resolvers/fetch-prosecutors-resolver/fetch-prosecutors.resolver';
 
 const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
 
@@ -267,7 +268,13 @@ export const routing: Routes = [
       title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation,
       routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
     },
-    resolve: { title: TitleResolver },
+    resolve: {
+      title: TitleResolver,
+      courts: fetchEnforcementCourtsResolver,
+      localJusticeAreas: fetchSendingCourtsResolver,
+      results: fetchResultsResolver,
+      majorCreditors: fetchMajorCreditorsResolver,
+    },
   },
   {
     path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:draftAccountId`,
@@ -300,6 +307,25 @@ export const routing: Routes = [
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
       routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
+    },
+  },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails,
+    loadComponent: () =>
+      import('../fines-mac-fixed-penalty-details/fines-mac-fixed-penalty-details.component').then(
+        (c) => c.FinesMacFixedPenaltyDetailsComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    canDeactivate: [canDeactivateGuard],
+    resolve: {
+      title: TitleResolver,
+      courts: fetchEnforcementCourtsResolver,
+      prosecutors: fetchProsecutorsResolver,
+      localJusticeAreas: fetchSendingCourtsResolver,
+    },
+    data: {
+      title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
+      routePermissionId: [draftRootPermissionIds['create-and-manage']],
     },
   },
 ];

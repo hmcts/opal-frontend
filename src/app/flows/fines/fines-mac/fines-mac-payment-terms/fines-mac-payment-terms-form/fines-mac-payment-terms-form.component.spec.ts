@@ -16,6 +16,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -56,7 +57,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
@@ -200,7 +201,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add controls when has days in default is true', () => {
-    component.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     component['initialPaymentTermsSetup']();
 
@@ -214,7 +215,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove controls when has days in default is false', () => {
-    component.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     component['initialPaymentTermsSetup']();
 
@@ -286,7 +287,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
     finesMacStore.setPersonalDetails({
       ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK),
@@ -314,7 +315,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       },
     });
     mockDateService.calculateAge.and.returnValue(10);
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     component['determineAccess']();
 
@@ -324,7 +325,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
-    component.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     component['determineAccess']();
 
@@ -333,7 +334,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
-    component.defendantType = 'company';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
 
     component['determineAccess']();
 
@@ -342,7 +343,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should create enforcement fields for company defendant type', () => {
-    component.defendantType = 'company';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -357,7 +358,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should create enforcement fields for non-company defendant type', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -372,7 +373,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add control when hold enforcement on account is true', () => {
-    component.defendantType = 'company';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(true);
@@ -383,7 +384,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove control when hold enforcement on account is false', () => {
-    component.defendantType = 'company';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(false);
@@ -394,7 +395,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should reset and create collection order date when has collection order value is "yes"', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
@@ -420,7 +421,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     );
     finesMacStore.setOffenceDetails([structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)]);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
@@ -434,7 +435,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove collection order date and create make collection order today and collection order date when has collection order value is not "yes"', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
@@ -452,7 +453,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set collection order date when make collection order today is true', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
     component.today = '31/08/2024';
     component['addCollectionOrderFormControls']();
@@ -469,7 +470,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set collection order date when make collection order today is false', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component.accessCollectionOrder = true;
     component.today = '31/08/2024';
     component['addCollectionOrderFormControls']();
@@ -487,16 +488,16 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
+    spyOn<any>(component, 'hasBusinessUnitPermissionAccess').and.returnValue(true);
 
     component['setupPermissions']();
 
-    expect(component['hasPermissionAccess']).toHaveBeenCalled();
+    expect(component['hasBusinessUnitPermissionAccess']).toHaveBeenCalled();
     expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
     component['addEnforcementActionListener']();
@@ -516,7 +517,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should update form controls based on selected enforcement action', () => {
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
     component['addEnforcementActionListener']();

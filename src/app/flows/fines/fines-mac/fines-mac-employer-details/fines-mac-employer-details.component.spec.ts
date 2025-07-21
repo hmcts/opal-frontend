@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let component: FinesMacEmployerDetailsComponent;
@@ -36,7 +37,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     fixture.detectChanges();
   });
@@ -73,7 +74,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
     formSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(formSubmit);

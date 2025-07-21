@@ -10,6 +10,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
   let component: FinesMacAccountCommentsNotesComponent;
@@ -38,7 +39,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     fixture.detectChanges();
   });
