@@ -9,7 +9,7 @@ export const ACCOUNT_SESSION_USER_STATE_MOCK: ISessionUserState = {
       business_unit_id: 61,
       permissions: [
         {
-          permission_id: 54,
+          permission_id: 3,
           permission_name: 'Account Enquiry',
         },
         {
@@ -17,7 +17,7 @@ export const ACCOUNT_SESSION_USER_STATE_MOCK: ISessionUserState = {
           permission_name: 'Collection Order',
         },
         {
-          permission_id: 41,
+          permission_id: 2,
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
