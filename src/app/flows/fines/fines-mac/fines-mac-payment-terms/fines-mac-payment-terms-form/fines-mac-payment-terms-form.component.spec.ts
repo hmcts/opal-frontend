@@ -493,7 +493,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['setupPermissions']();
 
     expect(component['hasBusinessUnitPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
+    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {
