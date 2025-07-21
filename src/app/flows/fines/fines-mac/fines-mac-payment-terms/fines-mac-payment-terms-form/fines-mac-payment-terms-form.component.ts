@@ -54,6 +54,7 @@ import {
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -100,6 +101,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
+
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
