@@ -40,7 +40,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
   private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
 
@@ -81,7 +81,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
+      this.permissions[this.permissionsMap.collectionOrder] = this.hasBusinessUnitPermissionAccess(
         this.permissionsMap.collectionOrder,
         businessUnitId,
         this.userStateRoles,
