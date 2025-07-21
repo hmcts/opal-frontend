@@ -3462,15 +3462,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.23":
-  version: 0.0.23
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.23"
+"@hmcts/opal-frontend-common@npm:^0.0.24":
+  version: 0.0.24
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.24"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/51d1a7b0f07a939fcbedf687a094cdf29ac90dc77b2b45408a82d7cf5dd7640b29168262e9fb8089851559b391cf008fed812e83f1691346e7fa20b2d7c4446f
+  checksum: 10/b00213aea93fbf1cf31367444666b3877f9030a7157b040a9ee6e1d4c08a6baf6bdf3077f1105abf178c5992d13d0d2cc8ec4347c7dfbdfd927702bfc06cb9e0
   languageName: node
   linkType: hard
 
@@ -5344,20 +5344,20 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0":
-  version: 24.0.14
-  resolution: "@types/node@npm:24.0.14"
+  version: 24.0.15
+  resolution: "@types/node@npm:24.0.15"
   dependencies:
     undici-types: "npm:~7.8.0"
-  checksum: 10/60e546f905734ab37f02f5c30eeb98e350c97837c96e2191972fba0638aa0d414489fad989245a9f106b0a0405410e56fab769fdcfb6504341fc2286d9e1f496
+  checksum: 10/0c55b7f4b0cd4f47e43e587e54545c4f188521678328411033595a6f49f81ed54ec3729ce5025936c51250e31504a32a7f20b520ed9dd71f3ab1530f809975e9
   languageName: node
   linkType: hard
 
 "@types/node@npm:^22.0.0":
-  version: 22.16.4
-  resolution: "@types/node@npm:22.16.4"
+  version: 22.16.5
+  resolution: "@types/node@npm:22.16.5"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/6d2c133bf1ac498b78f15f8a13b2d5a5853e62606feaec1c9d2c93088f038d4ef94dc869a9a1155554e77643e2f4630afb3697daca5471843e08684ee9a1cc8a
+  checksum: 10/ba45b5c9113cbc5edb12960fcfe7e80db2c998af5c1931264240695b27d756570d92462150b95781bd67a03aa82111cc970ab0f4504eb99213edff8bf425354e
   languageName: node
   linkType: hard
 
@@ -10418,9 +10418,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.11.0
-  resolution: "govuk-frontend@npm:5.11.0"
-  checksum: 10/4d978e64847f2e05e6e6e9c530c3113a5591daeb46a9c77a3e6be2bcd4afcf62ddc85094a2f358a49d7cf8eb3dfe1a1793b42e701f96d366515d9053653cac8e
+  version: 5.11.1
+  resolution: "govuk-frontend@npm:5.11.1"
+  checksum: 10/fc4916785a8bd87315eb2682ed581aca1a65aade9e3e7a4a2d979cd01fb7fdf8811357ba6677966a86f01411b3bfd5db006e38f58b01418da45e52f76a8f2040
   languageName: node
   linkType: hard
 
@@ -13577,7 +13577,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.23"
+    "@hmcts/opal-frontend-common": "npm:^0.0.24"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.9"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
