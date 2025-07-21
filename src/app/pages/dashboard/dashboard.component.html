@@ -4,23 +4,21 @@
     <li>
       <span>{{ globalStore.userState().user_name }}</span>
     </li>
-    @if (permissionIds.includes(dashboardPermissions['create-and-manage-draft-accounts'])) {
-      <li>
-        <a
-          class="govuk-link"
-          [routerLink]="
-            '/' +
-            finesRoutingPaths.root +
-            '/' +
-            finesRoutingPaths.children.mac.root +
-            '/' +
-            finesRoutingPaths.children.mac.children['createAccount']
-          "
-          id="finesMacLink"
-          >Manual Account Creation</a
-        >
-      </li>
-    }
+    <li>
+      <a
+        class="govuk-link"
+        [routerLink]="
+          '/' +
+          finesRoutingPaths.root +
+          '/' +
+          finesRoutingPaths.children.mac.root +
+          '/' +
+          finesRoutingPaths.children.mac.children['createAccount']
+        "
+        id="finesMacLink"
+        >Manual Account Creation</a
+      >
+    </li>
     @if (permissionIds.includes(dashboardPermissions['check-and-validate-draft-accounts'])) {
       <li>
         <a
@@ -61,7 +59,7 @@
         >
       </li>
     }
-    @if (permissionIds.includes(dashboardPermissions['account-enquiry'])) {
+    @if (permissionIds.includes(dashboardPermissions['search-and-view-accounts'])) {
       <li>
         <a
           class="govuk-link"
