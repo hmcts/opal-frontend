@@ -325,7 +325,7 @@ export const routing: Routes = [
     },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
     },
   },
 ];
