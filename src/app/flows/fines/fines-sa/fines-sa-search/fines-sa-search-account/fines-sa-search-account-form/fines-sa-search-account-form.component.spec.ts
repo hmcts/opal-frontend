@@ -84,7 +84,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     const tabKeys = [
       'fsa_search_account_individual_search_criteria',
       'fsa_search_account_companies_search_criteria',
-      'fsa_search_account_minor_creditor_search_criteria',
+      'fsa_search_account_minor_creditors_search_criteria',
       'fsa_search_account_major_creditor_search_criteria',
     ];
 
@@ -134,7 +134,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
   it('should return minorCreditors FormGroup when activeTab is minorCreditors', () => {
     component.finesSaStore.setActiveTab('minorCreditors');
     expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_minor_creditor_search_criteria') as FormGroup,
+      component.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup,
     );
   });
 

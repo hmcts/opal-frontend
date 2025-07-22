@@ -63,12 +63,6 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
-  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
-
-  @ViewChild(FinesSaSearchAccountFormMinorCreditorsComponent)
-  minorCreditorsComponent?: FinesSaSearchAccountFormMinorCreditorsComponent;
-
-  public readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
@@ -89,6 +83,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   public readonly finesSaStore = inject(FinesSaStore);
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
+  @ViewChild(FinesSaSearchAccountFormMinorCreditorsComponent)
+  minorCreditorsComponent?: FinesSaSearchAccountFormMinorCreditorsComponent;
+
   /**
    * Sets up the base structure of the form, including all static and tab-specific search criteria controls.
    */
@@ -106,7 +103,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       ]),
       fsa_search_account_individual_search_criteria: new FormGroup({}),
       fsa_search_account_companies_search_criteria: new FormGroup({}),
-      fsa_search_account_minor_creditor_search_criteria: new FormGroup({}),
+      fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
       fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
       fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
     });
@@ -161,7 +158,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Clears all controls in all tab-specific search criteria form groups.
    */
   private clearSearchForm(): void {
-    ['individual', 'companies', 'minor_creditor', 'major_creditor'].forEach((key) =>
+    ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
   }
@@ -206,7 +203,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       case 'companies':
         return this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
       case 'minorCreditors':
-        return this.form.get('fsa_search_account_minor_creditor_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
       case 'majorCreditors':
         return this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
       default:

@@ -25,7 +25,7 @@ describe('FinesSaService', () => {
       ...getBaseState(),
       fsa_search_account_individual_search_criteria: {},
       fsa_search_account_companies_search_criteria: {},
-      fsa_search_account_minor_creditor_search_criteria: {},
+      fsa_search_account_minor_creditors_search_criteria: {},
       fsa_search_account_major_creditor_search_criteria: {},
     } as IFinesSaSearchAccountState;
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeFalse();

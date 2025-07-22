@@ -31,13 +31,13 @@ import { FinesSaService } from '../../../../services/fines-sa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, OnDestroy {
-  @Input({ required: true }) public form!: FormGroup;
-  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
-
   private finesSaService = inject(FinesSaService);
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX;
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
+
+  @Input({ required: true }) public form!: FormGroup;
+  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public readonly minorCreditorTypes: IGovUkRadioOptions[] = Object.entries(this.finesMinorCreditorTypes).map(
     ([key, value]) => ({
       key,
