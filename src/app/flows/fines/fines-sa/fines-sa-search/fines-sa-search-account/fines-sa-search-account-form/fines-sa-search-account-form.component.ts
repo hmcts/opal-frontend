@@ -98,7 +98,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       ]),
       fsa_search_account_individual_search_criteria: new FormGroup({}),
       fsa_search_account_companies_search_criteria: new FormGroup({}),
-      fsa_search_account_minor_creditor_search_criteria: new FormGroup({}),
+      fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
       fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
       fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
     });
@@ -153,7 +153,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Clears all controls in all tab-specific search criteria form groups.
    */
   private clearSearchForm(): void {
-    ['individual', 'companies', 'minor_creditor', 'major_creditor'].forEach((key) =>
+    ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
   }
@@ -187,7 +187,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       case 'companies':
         return this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
       case 'minorCreditors':
-        return this.form.get('fsa_search_account_minor_creditor_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
       case 'majorCreditors':
         return this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
       default:
