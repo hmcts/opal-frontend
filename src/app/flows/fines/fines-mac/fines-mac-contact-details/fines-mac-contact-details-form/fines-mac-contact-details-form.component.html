@@ -1,5 +1,7 @@
 @let heading =
-  defendantType === 'parentOrGuardianToPay' ? 'Parent or guardian contact details' : 'Defendant contact details';
+  defendantType === defendantTypeKeys.parentOrGuardianToPay
+    ? 'Parent or guardian contact details'
+    : 'Defendant contact details';
 <h1 class="govuk-heading-l">{{ heading }}</h1>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
@@ -11,7 +13,7 @@
     inputId="fm_contact_details_email_address_1"
     inputName="fm_contact_details_email_address_1"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_contact_details_email_address_1']"
+    [control]="form.get('fm_contact_details_email_address_1')"
     [errors]="formControlErrorMessages['fm_contact_details_email_address_1']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -19,7 +21,7 @@
     inputId="fm_contact_details_email_address_2"
     inputName="fm_contact_details_email_address_2"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_contact_details_email_address_2']"
+    [control]="form.get('fm_contact_details_email_address_2')"
     [errors]="formControlErrorMessages['fm_contact_details_email_address_2']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -27,7 +29,7 @@
     inputId="fm_contact_details_telephone_number_mobile"
     inputName="fm_contact_details_telephone_number_mobile"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_contact_details_telephone_number_mobile']"
+    [control]="form.get('fm_contact_details_telephone_number_mobile')"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_mobile']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -35,7 +37,7 @@
     inputId="fm_contact_details_telephone_number_home"
     inputName="fm_contact_details_telephone_number_home"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_contact_details_telephone_number_home']"
+    [control]="form.get('fm_contact_details_telephone_number_home')"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_home']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -43,7 +45,7 @@
     inputId="fm_contact_details_telephone_number_business"
     inputName="fm_contact_details_telephone_number_business"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_contact_details_telephone_number_business']"
+    [control]="form.get('fm_contact_details_telephone_number_business')"
     [errors]="formControlErrorMessages['fm_contact_details_telephone_number_business']"
   ></opal-lib-govuk-text-input>
   <div class="govuk-grid-row">

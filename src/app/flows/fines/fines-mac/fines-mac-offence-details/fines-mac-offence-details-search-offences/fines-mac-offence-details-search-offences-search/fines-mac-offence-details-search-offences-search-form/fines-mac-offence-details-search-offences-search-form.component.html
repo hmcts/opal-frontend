@@ -9,7 +9,7 @@
     labelClasses="govuk-fieldset__legend--s"
     inputId="fm_offence_details_search_offences_code"
     inputName="fm_offence_details_search_offences_code"
-    [control]="form.controls['fm_offence_details_search_offences_code']"
+    [control]="form.get('fm_offence_details_search_offences_code')"
     [errors]="formControlErrorMessages['fm_offence_details_search_offences_code']"
     inputClasses="govuk-input--width-10"
   ></opal-lib-govuk-text-input>
@@ -18,7 +18,7 @@
     labelClasses="govuk-fieldset__legend--s"
     inputId="fm_offence_details_search_offences_short_title"
     inputName="fm_offence_details_search_offences_short_title"
-    [control]="form.controls['fm_offence_details_search_offences_short_title']"
+    [control]="form.get('fm_offence_details_search_offences_short_title')"
     [errors]="formControlErrorMessages['fm_offence_details_search_offences_short_title']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-area
@@ -26,7 +26,7 @@
     labelClasses="govuk-label--s"
     inputId="fm_offence_details_search_offences_act_section"
     inputName="fm_offence_details_search_offences_act_section"
-    [control]="form.controls['fm_offence_details_search_offences_act_section']"
+    [control]="form.get('fm_offence_details_search_offences_act_section')"
     [errors]="formControlErrorMessages['fm_offence_details_search_offences_act_section']"
     [rows]="4"
     [maxCharacterLimit]="4001"
@@ -36,7 +36,7 @@
     inputId="fm_offence_details_search_offences_inactive"
     inputName="fm_offence_details_search_offences_inactive"
     class="govuk-checkboxes--small"
-    [control]="form.controls['fm_offence_details_search_offences_inactive']"
+    [control]="form.get('fm_offence_details_search_offences_inactive')"
   >
   </opal-lib-govuk-checkboxes-item>
   <div class="govuk-grid-row govuk-!-margin-top-4">

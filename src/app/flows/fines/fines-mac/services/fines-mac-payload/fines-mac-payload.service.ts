@@ -30,6 +30,7 @@ import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformat
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Injectable({
   providedIn: 'root',
@@ -209,6 +210,47 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
+  private hasNonEmptyValue(value: unknown): boolean {
+    // If it's an array, check if it has any elements
+    // This is for the aliases
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== null;
+  }
+
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
+  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Check if any of the values are not empty
+    Object.entries(formData).forEach(([, value]) => {
+      const hasValue = this.hasNonEmptyValue(value);
+      // If we have a value and the status is not provided, set it to provided
+      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+        newStatus = FINES_MAC_STATUS.PROVIDED;
+      }
+    });
+
+    return newStatus;
+  }
+
+  /**
    * Builds the payload for adding an account in the fines MAC (Management and Control) system.
    *
    * @param finesMacState - The current state of the fines MAC.
@@ -277,47 +319,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Checks if the given value is non-empty.
-   *
-   * This method determines if the provided value is non-empty by:
-   * - Checking if the value is an array and has any elements.
-   * - Checking if the value is not null.
-   *
-   * @param value - The value to check.
-   * @returns `true` if the value is non-empty, `false` otherwise.
-   */
-  private hasNonEmptyValue(value: unknown): boolean {
-    // If it's an array, check if it has any elements
-    // This is for the aliases
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== null;
-  }
-
-  /**
-   * Determines the status of the fines MAC state form based on the provided form data.
-   *
-   * @template T - The type of the form data object.
-   * @param {T} formData - The form data object to evaluate.
-   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
-   */
-  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-
-    // Check if any of the values are not empty
-    Object.entries(formData).forEach(([, value]) => {
-      const hasValue = this.hasNonEmptyValue(value);
-      // If we have a value and the status is not provided, set it to provided
-      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-        newStatus = FINES_MAC_STATUS.PROVIDED;
-      }
-    });
-
-    return newStatus;
-  }
-
-  /**
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
@@ -368,8 +369,8 @@ export class FinesMacPayloadService {
    */
   public getDefendantName(payload: IFinesMacAddAccountPayload): string {
     if (
-      payload.account.defendant_type === 'adultOrYouthOnly' ||
-      payload.account.defendant_type === 'parentOrGuardianToPay'
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly ||
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay
     ) {
       return `${payload.account.defendant.forenames} ${payload.account.defendant.surname}`;
     } else {

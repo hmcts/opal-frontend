@@ -84,6 +84,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   };
   private readonly finesSaService = inject(FinesSaService);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  public readonly finesSaStore = inject(FinesSaStore);
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
   /**

@@ -55,9 +55,11 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFormBaseComponent implements OnInit {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsMinorCreditorForm>();
-
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsMinorCreditorForm>();
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+
   public readonly creditorTypesOptions = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE;
   public readonly creditorTypes: IGovUkRadioOptions[] = Object.entries(this.creditorTypesOptions).map(
     ([key, value]) => ({
@@ -66,9 +68,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     }),
   );
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-
-  override fieldErrors: IAbstractFormBaseFieldErrors = {
+  public override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS,
   };
 

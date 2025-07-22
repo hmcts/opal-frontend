@@ -199,6 +199,26 @@ yarn  prettier:fix
 
 ```
 
+There is a custom lint rule for member ordering to ensure members in the code are ordered in the following format:
+
+```json
+[
+  "private-static-field",
+  "protected-static-field",
+  "public-static-field",
+  "private-instance-field",
+  "protected-instance-field",
+  "public-instance-field",
+  "constructor",
+  "private-static-method",
+  "protected-static-method",
+  "public-static-method",
+  "private-instance-method",
+  "protected-instance-method",
+  "public-instance-method"
+]
+```
+
 ## Running unit tests
 
 Run `yarn test` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html).

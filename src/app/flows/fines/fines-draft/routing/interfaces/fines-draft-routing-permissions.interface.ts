@@ -1,4 +1,4 @@
 export interface IFinesDraftRoutingPermissions {
-  'check-and-validate': number;
-  'create-and-manage': number;
+  'check-and-validate-draft-accounts': number;
+  'create-and-manage-draft-accounts': number;
 }

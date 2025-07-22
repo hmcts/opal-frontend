@@ -27,7 +27,7 @@ export const routing: Routes = [
     children: createAndManageRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['create-and-manage']],
+      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_ROUTING_TITLES.children.createAndManage,
     },
     resolve: { title: TitleResolver },
@@ -41,7 +41,7 @@ export const routing: Routes = [
     children: checkAndValidateRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['check-and-validate']],
+      routePermissionId: [draftRootPermissionIds['check-and-validate-draft-accounts']],
       title: FINES_DRAFT_ROUTING_TITLES.children.checkAndValidate,
     },
     resolve: { title: TitleResolver },
