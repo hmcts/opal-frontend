@@ -83,7 +83,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
@@ -96,7 +96,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   @Input() public defendantType!: string;
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
+    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]: false,
   };
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
@@ -137,8 +137,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPermissions(): void {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
-        this.permissionsMap.collectionOrder,
+      this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
+        this.permissionsMap['collection-order'],
         this.finesMacStore.getBusinessUnitId(),
         this.userStateRoles,
       );
