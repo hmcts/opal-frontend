@@ -488,12 +488,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
+    spyOn<any>(component, 'hasBusinessUnitPermissionAccess').and.returnValue(true);
 
     component['setupPermissions']();
 
-    expect(component['hasPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
+    expect(component['hasBusinessUnitPermissionAccess']).toHaveBeenCalled();
+    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {
