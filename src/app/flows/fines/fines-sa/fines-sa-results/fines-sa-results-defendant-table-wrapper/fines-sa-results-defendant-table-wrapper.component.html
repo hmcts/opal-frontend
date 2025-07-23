@@ -139,7 +139,7 @@
           }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="aliases">
-          @if (row['Aliases'] === null) {
+          @if (row['Aliases'] === null || row['Aliases'].length === 0) {
             <ng-container *ngTemplateOutlet="noData"></ng-container>
           } @else {
             {{ row['Aliases'] }}
@@ -198,7 +198,7 @@
           @if (row['Enf'] === null) {
             <ng-container *ngTemplateOutlet="noData"></ng-container>
           } @else {
-            {{ row['Enf'] }}
+            {{ row['Enf'] | uppercase }}
           }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="balance">
