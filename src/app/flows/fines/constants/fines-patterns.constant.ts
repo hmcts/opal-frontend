@@ -5,3 +5,4 @@ export const LETTERS_WITH_SPACES_DOT_PATTERN = /^[a-zA-Z\s.]+$/;
 export const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN = /^[a-zA-Z\s'-.]+$/;
 export const SPECIAL_CHARACTERS_PATTERN = /^[^*]*$/;
 export const NUMERIC_PATTERN = /^\d*$/;
+export const DRIVING_LICENCE_NUMBER_PATTERN = /^[A-Za-z]{5}\d{6}[A-Za-z]{2}[A-Za-z0-9]{3}$/;

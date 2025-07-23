@@ -9,7 +9,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, PatternValidator, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
@@ -56,8 +56,9 @@ import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { IAgeObject } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
 import { timeFormatValidator } from '@hmcts/opal-frontend-common/validators/time-format';
-import { drivingLicenceNumberValidator } from '@hmcts/opal-frontend-common/validators/driving-licence-number';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { DRIVING_LICENCE_NUMBER_PATTERN } from '../../../constants/fines-patterns.constant';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -211,7 +212,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]),
       fm_fp_offence_details_driving_licence_number: new FormControl(null, [
         Validators.required,
-        drivingLicenceNumberValidator(),
+        patternValidator(DRIVING_LICENCE_NUMBER_PATTERN, 'invalidDrivingLicenceNumber'),
       ]),
       fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10), alphabeticalTextValidator()]),
       fm_fp_offence_details_date_nto_issued: new FormControl(null, [
@@ -246,7 +247,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       ]);
       this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators([
         Validators.required,
-        drivingLicenceNumberValidator(),
+        patternValidator(DRIVING_LICENCE_NUMBER_PATTERN, 'invalidDrivingLicenceNumber'),
       ]);
     } else {
       this.form.controls['fm_fp_offence_details_vehicle_registration_number'].clearValidators();
