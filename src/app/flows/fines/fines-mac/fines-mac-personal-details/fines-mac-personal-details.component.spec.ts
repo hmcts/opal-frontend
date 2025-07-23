@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let component: FinesMacPersonalDetailsComponent;
@@ -33,7 +34,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacPersonalDetailsComponent);
     component = fixture.componentInstance;
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);

@@ -11,7 +11,10 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-
+import {
+  IOpalFinesProsecutor,
+  IOpalFinesProsecutorRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
@@ -46,6 +49,7 @@ export class OpalFines {
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
+  private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -112,6 +116,15 @@ export class OpalFines {
    */
   public getCourtPrettyName(court: IOpalFinesCourt): string {
     return `${court.name} (${court.court_code})`;
+  }
+
+  /**
+   * Returns the pretty name of a prosecutor.
+   * @param prosecutor - The prosecutor object.
+   * @returns The pretty name of the prosecutor.
+   */
+  public getProsecutorPrettyName(prosecutor: IOpalFinesProsecutor): string {
+    return `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
   }
 
   /**
@@ -364,5 +377,21 @@ export class OpalFines {
     payload: IOpalFinesDraftAccountPatchPayload,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, payload);
+  }
+
+  /**
+   * Retrieves the prosecutor data for a specific business unit.
+   * If the prosecutor data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param business_unit - The business unit for which to retrieve the prosecutor data.
+   * @returns An Observable that emits the prosecutor data for the specified business unit.
+   */
+  public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
+    if (!this.prosecutorDataCache$[business_unit]) {
+      this.prosecutorDataCache$[business_unit] = this.http
+        .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.prosecutorDataCache$[business_unit];
   }
 }

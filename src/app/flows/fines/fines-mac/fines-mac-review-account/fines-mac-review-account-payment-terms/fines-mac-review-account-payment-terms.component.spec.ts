@@ -8,6 +8,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
@@ -28,7 +29,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     component.paymentTermsState = structuredClone(FINES_MAC_PAYMENT_TERMS_STATE_MOCK);
     component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
@@ -160,12 +161,12 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'hasPermissionAccess');
+    spyOn<any>(component, 'hasBusinessUnitPermissionAccess');
     globalStore.setUserState({} as ISessionUserState);
 
     component['setupPermissions']();
 
-    expect(component['hasPermissionAccess']).not.toHaveBeenCalled();
+    expect(component['hasBusinessUnitPermissionAccess']).not.toHaveBeenCalled();
     expect(component['userStateRoles']).toEqual([]);
   });
 });
