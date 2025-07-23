@@ -44,6 +44,8 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { LETTERS_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
@@ -80,6 +82,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   public yesterday!: string;
   public age!: number;
   public ageLabel!: string;
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   /**
    * Sets up the personal details form.
@@ -184,7 +187,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       [...Array(formData.fm_personal_details_aliases.length).keys()],
       'fm_personal_details_aliases',
     );
-    if (key === 'adultOrYouthOnly') {
+    if (key === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly) {
       this.addVehicleDetailsControls();
     }
     this.setInitialErrorMessages();

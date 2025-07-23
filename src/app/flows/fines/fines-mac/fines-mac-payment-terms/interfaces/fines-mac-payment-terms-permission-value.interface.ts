@@ -1,3 +1,3 @@
 export interface IFinesMacPaymentTermsPermissionsValues {
-  collectionOrder: number;
+  'collection-order': number;
 }

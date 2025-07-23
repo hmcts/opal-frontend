@@ -10,11 +10,11 @@ export const NO_PERMS_DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
       business_unit_id: 17,
       permissions: [
         {
-          permission_id: 54,
+          permission_id: 3,
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 41,
+          permission_id: 2,
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],

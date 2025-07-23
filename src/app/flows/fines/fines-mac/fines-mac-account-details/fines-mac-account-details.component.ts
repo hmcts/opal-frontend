@@ -35,6 +35,7 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -83,6 +84,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public readonly finesMacStatus = FINES_MAC_STATUS;
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountDetailsStatus!: string;
+  public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   /**
    * Sets the account details status from the fines service state.
@@ -195,13 +197,13 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private checkMandatorySections(): void {
     this.mandatorySectionsCompleted = false;
     switch (this.finesMacStore.getDefendantType()) {
-      case 'adultOrYouthOnly':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly:
         this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
         break;
-      case 'parentOrGuardianToPay':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
         this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
         break;
-      case 'company':
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.company:
         this.mandatorySectionsCompleted = this.finesMacStore.companySectionsCompleted();
         break;
       default:

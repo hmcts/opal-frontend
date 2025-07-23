@@ -9,9 +9,9 @@
     inputId="fm_company_details_company_name"
     inputName="fm_company_details_company_name"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_company_details_company_name']"
+    [control]="form.get('fm_company_details_company_name')"
     [errors]="formControlErrorMessages['fm_company_details_company_name']"
-    [opalLibCapitaliseAllCharacters]="form.controls['fm_company_details_company_name']"
+    [opalLibCapitaliseAllCharacters]="form.get('fm_company_details_company_name')!"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -86,14 +86,14 @@
       labelText="Address line 1"
       inputId="fm_company_details_address_line_1"
       inputName="fm_company_details_address_line_1"
-      [control]="form.controls['fm_company_details_address_line_1']"
+      [control]="form.get('fm_company_details_address_line_1')"
       [errors]="formControlErrorMessages['fm_company_details_address_line_1']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_company_details_address_line_2"
       inputName="fm_company_details_address_line_2"
-      [control]="form.controls['fm_company_details_address_line_2']"
+      [control]="form.get('fm_company_details_address_line_2')"
       [errors]="formControlErrorMessages['fm_company_details_address_line_2']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -101,7 +101,7 @@
       inputId="fm_company_details_address_line_3"
       inputName="fm_company_details_address_line_3"
       inputClasses="govuk-input--width-20"
-      [control]="form.controls['fm_company_details_address_line_3']"
+      [control]="form.get('fm_company_details_address_line_3')"
       [errors]="formControlErrorMessages['fm_company_details_address_line_3']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -109,9 +109,9 @@
       inputId="fm_company_details_postcode"
       inputName="fm_company_details_postcode"
       inputClasses="govuk-input--width-10"
-      [control]="form.controls['fm_company_details_postcode']"
+      [control]="form.get('fm_company_details_postcode')"
       [errors]="formControlErrorMessages['fm_company_details_postcode']"
-      [opalLibCapitaliseAllCharacters]="form.controls['fm_company_details_postcode']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_company_details_postcode')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
 
