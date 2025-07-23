@@ -94,7 +94,7 @@
     "@ngrx/signals": "^19.0.0",
     "accessible-autocomplete": "^3.0.0",
     "applicationinsights": "~2.9.6",
-    "axios": "^1.11.0",
+    "axios": "^1.6.2",
     "body-parser": "^2.0.0",
     "config": "^4.0.0",
     "connect-redis": "^9.0.0",
