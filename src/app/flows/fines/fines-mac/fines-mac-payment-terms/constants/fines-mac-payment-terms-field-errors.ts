@@ -85,7 +85,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     invalidDate: {
-      message: `Enter a calendar date`,
+      message: `Enter a valid date`,
       priority: 3,
     },
   },
