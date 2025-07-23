@@ -4,3 +4,4 @@ export const LETTERS_WITH_SPACES_PATTERN = /^[a-zA-Z ]*$/;
 export const LETTERS_WITH_SPACES_DOT_PATTERN = /^[a-zA-Z\s.]+$/;
 export const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN = /^[a-zA-Z\s'-.]+$/;
 export const SPECIAL_CHARACTERS_PATTERN = /^[^*]*$/;
+export const NUMERIC_PATTERN = /^\d*$/;

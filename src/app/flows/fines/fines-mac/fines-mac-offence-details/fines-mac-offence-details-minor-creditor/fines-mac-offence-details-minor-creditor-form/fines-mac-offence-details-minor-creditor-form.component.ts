@@ -27,13 +27,13 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
+  NUMERIC_PATTERN,
 } from '../../../../constants/fines-patterns.constant';
 
 @Component({
@@ -182,8 +182,16 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       Validators.maxLength(18),
       patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
     ]);
-    sortCode.setValidators([Validators.required, Validators.maxLength(6), numericalTextValidator()]);
-    accountNumber.setValidators([Validators.required, Validators.maxLength(8), numericalTextValidator()]);
+    sortCode.setValidators([
+      Validators.required,
+      Validators.maxLength(6),
+      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
+    ]);
+    accountNumber.setValidators([
+      Validators.required,
+      Validators.maxLength(8),
+      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
+    ]);
     paymentReference.setValidators([
       Validators.required,
       Validators.maxLength(18),
