@@ -406,16 +406,10 @@ export class OpalFines {
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
   ): Observable<IOpalFinesDefendantAccountResponse> {
-    // Log the search parameters so they are being used in the request
-    // To be removed when the real API is implemented
-    console.log(searchParams);
-    // 30 ACCOUNTS MOCKED RESPONSE
-    return of(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
-
-    // 101 ACCOUNTS MOCKED RESPONSE
-    //return of(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK_101);
-
-    // EMPTY RESPONSE
-    //return of({ count: 0, defendant_accounts: [] });
+    const mock = structuredClone(
+      OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
+    ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    mock._debug_searchParams = searchParams;
+    return of(mock);
   }
 }

@@ -107,7 +107,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    */
   private setupFragmentListener(): void {
     if (this.resultView === 'referenceCaseNumber' || this.resultView === 'accountNumber') {
-      (this.activatedRoute as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
+      this.activatedRoute.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
         let defaultedFragment: FinesSaSearchAccountTabs = 'individuals';
         if (this.individualsData.length === 0) {
           if (this.companiesData.length === 0) {
