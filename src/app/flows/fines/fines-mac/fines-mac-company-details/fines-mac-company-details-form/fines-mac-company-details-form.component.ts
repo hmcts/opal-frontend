@@ -27,10 +27,12 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_DOT_PATTERN } from '../../../constants/fines-patterns.constant';
+import {
+  LETTERS_WITH_SPACES_DOT_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
+} from '../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -75,15 +77,15 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_company_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_company_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_company_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

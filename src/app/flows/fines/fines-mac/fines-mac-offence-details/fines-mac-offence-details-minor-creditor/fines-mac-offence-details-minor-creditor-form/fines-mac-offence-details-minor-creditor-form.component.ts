@@ -28,12 +28,12 @@ import {
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
 } from '../../../../constants/fines-patterns.constant';
 
 @Component({
@@ -88,15 +88,15 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_company_name: new FormControl(null),
       fm_offence_details_minor_creditor_address_line_1: new FormControl(null, [
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_offence_details_minor_creditor_address_line_2: new FormControl(null, [
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_offence_details_minor_creditor_address_line_3: new FormControl(null, [
         Validators.maxLength(16),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
       fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),

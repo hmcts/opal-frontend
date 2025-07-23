@@ -4,7 +4,6 @@ import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-revi
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-decision-options.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
@@ -17,7 +16,10 @@ import { CommonModule } from '@angular/common';
 import { IFinesMacReviewAccountDecisionFieldErrors } from '../interfaces/fines-mac-review-account-decision-field-errors.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fines-mac-review-account-decision-field-errors.constant';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '../../../../constants/fines-patterns.constant';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
+} from '../../../../constants/fines-patterns.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-decision-form',
@@ -48,7 +50,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
    * The form contains two controls:
    * - `fm_review_account_decision`: A required field for the account decision.
    * - `fm_review_account_rejection_reason`: An optional field for the rejection reason,
-   *   validated by `specialCharactersValidator` and `patternValidator`.
+   *   validated by `patternValidator`.
    *
    * This method assigns the constructed `FormGroup` to the `form` property.
    *
@@ -58,7 +60,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl(null, [
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
         patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN),
       ]),
     });

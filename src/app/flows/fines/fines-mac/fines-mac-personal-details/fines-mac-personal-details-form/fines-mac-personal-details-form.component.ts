@@ -37,13 +37,12 @@ import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/dat
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
+import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '../../../constants/fines-patterns.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
@@ -107,15 +106,15 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_personal_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_personal_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
