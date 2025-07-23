@@ -67,7 +67,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test pattern invalid validator on forenames
     forenamesControl.setValue('/$£');
-    expect(forenamesControl.errors?.['patternInvalid']).toBeTruthy();
+    expect(forenamesControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
 
     // Test required validator on surname
     surnameControl.setValue('');
@@ -79,7 +79,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test pattern invalid validator on surname
     surnameControl.setValue('/$£');
-    expect(surnameControl.errors?.['patternInvalid']).toBeTruthy();
+    expect(surnameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
   });
 
   it('should set validators for company name control', () => {
@@ -97,9 +97,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     companyNameControl.setValue('A very long company name exceeding fifty characters');
     expect(companyNameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on company name
+    // Test alphabetical text pattern validator on company name
     companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['patternInvalid']).toBeTruthy();
+    expect(companyNameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
   });
 
   it('should set validators for payment detail controls', () => {
@@ -117,7 +117,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('Invalid@Name'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['patternInvalid']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
@@ -147,7 +147,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(paymentReferenceControl.errors?.['maxlength']).toBeTruthy();
 
     paymentReferenceControl.setValue('Invalid@Reference'); // Invalid characters
-    expect(paymentReferenceControl.errors?.['patternInvalid']).toBeTruthy();
+    expect(paymentReferenceControl.errors?.['alphanumericTextPattern']).toBeTruthy();
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();

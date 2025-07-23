@@ -145,12 +145,12 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     forenames.setValidators([
       Validators.required,
       Validators.maxLength(20),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
     ]);
     surname.setValidators([
       Validators.required,
       Validators.maxLength(30),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
     ]);
   }
 
@@ -162,7 +162,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     companyName.setValidators([
       Validators.required,
       Validators.maxLength(50),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
     ]);
   }
 
@@ -180,14 +180,14 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     nameOnAccount.setValidators([
       Validators.required,
       Validators.maxLength(18),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN),
+      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
     ]);
     sortCode.setValidators([Validators.required, Validators.maxLength(6), numericalTextValidator()]);
     accountNumber.setValidators([Validators.required, Validators.maxLength(8), numericalTextValidator()]);
     paymentReference.setValidators([
       Validators.required,
       Validators.maxLength(18),
-      patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
+      patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
     ]);
   }
 

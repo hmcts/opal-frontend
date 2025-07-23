@@ -61,7 +61,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl(null, [
         patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
-        patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN),
+        patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
       ]),
     });
   }

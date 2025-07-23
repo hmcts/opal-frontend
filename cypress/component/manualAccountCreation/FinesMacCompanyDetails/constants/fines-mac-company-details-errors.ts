@@ -22,12 +22,12 @@ export const MAX_LENGTH_VALIDATION = {
 };
 
 export const ALPHABETICAL_TEXT_PATTERN_VALIDATION = {
-  patternInvalid: 'The company name must only contain alphabetical text',
-  patternInvalidAlias1: 'The company name must only contain alphabetical text for alias 1',
-  patternInvalidAlias2: 'The company name must only contain alphabetical text for alias 2',
-  patternInvalidAlias3: 'The company name must only contain alphabetical text for alias 3',
-  patternInvalidAlias4: 'The company name must only contain alphabetical text for alias 4',
-  patternInvalidAlias5: 'The company name must only contain alphabetical text for alias 5',
+  alphabeticalTextPattern: 'The company name must only contain alphabetical text',
+  alphabeticalTextPatternAlias1: 'The company name must only contain alphabetical text for alias 1',
+  alphabeticalTextPatternAlias2: 'The company name must only contain alphabetical text for alias 2',
+  alphabeticalTextPatternAlias3: 'The company name must only contain alphabetical text for alias 3',
+  alphabeticalTextPatternAlias4: 'The company name must only contain alphabetical text for alias 4',
+  alphabeticalTextPatternAlias5: 'The company name must only contain alphabetical text for alias 5',
 };
 
 export const SPECIAL_CHARACTERS_PATTERN_VALIDATION = {

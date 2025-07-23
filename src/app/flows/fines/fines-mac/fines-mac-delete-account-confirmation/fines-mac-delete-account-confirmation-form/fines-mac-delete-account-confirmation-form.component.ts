@@ -59,7 +59,7 @@ export class FinesMacDeleteAccountConfirmationFormComponent
       fm_delete_account_confirmation_reason: new FormControl<string | null>(null, [
         Validators.required,
         optionalMaxLengthValidator(250),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
+        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
       ]),
     });
   }

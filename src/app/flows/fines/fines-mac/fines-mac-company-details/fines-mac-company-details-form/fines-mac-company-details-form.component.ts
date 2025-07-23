@@ -70,7 +70,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        patternValidator(LETTERS_WITH_SPACES_DOT_PATTERN),
+        patternValidator(LETTERS_WITH_SPACES_DOT_PATTERN, 'alphabeticalTextPattern'),
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),

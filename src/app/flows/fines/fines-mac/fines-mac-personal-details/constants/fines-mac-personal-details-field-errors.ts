@@ -16,7 +16,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The defendant's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The defendant's first name(s) must only contain alphabetical text`,
       priority: 2,
     },
@@ -30,7 +30,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The defendant's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The defendant's last name must only contain alphabetical text`,
       priority: 2,
     },
@@ -44,7 +44,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The first name(s) must be 20 characters or fewer for alias 1`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The first name(s) must only contain alphabetical text for alias 1`,
       priority: 3,
     },
@@ -58,7 +58,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The last name must be 30 characters or fewer for alias 1`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The last name must only contain alphabetical text for alias 1`,
       priority: 3,
     },
@@ -72,7 +72,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The first name(s) must be 20 characters or fewer for alias 2`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The first name(s) must only contain alphabetical text for alias 2`,
       priority: 3,
     },
@@ -86,7 +86,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The last name must be 30 characters or fewer for alias 2`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The last name must only contain alphabetical text for alias 2`,
       priority: 3,
     },
@@ -100,7 +100,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The first name(s) must be 20 characters or fewer for alias 3`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The first name(s) must only contain alphabetical text for alias 3`,
       priority: 3,
     },
@@ -114,7 +114,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The last name must be 30 characters or fewer for alias 3`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The last name must only contain alphabetical text for alias 3`,
       priority: 3,
     },
@@ -128,7 +128,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The first name(s) must be 20 characters or fewer for alias 4`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The first name(s) must only contain alphabetical text for alias 4`,
       priority: 3,
     },
@@ -142,7 +142,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The last name must be 30 characters or fewer for alias 4`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The last name must only contain alphabetical text for alias 4`,
       priority: 3,
     },
@@ -156,7 +156,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The first name(s) must be 20 characters or fewer for alias 5`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The first name(s) must only contain alphabetical text for alias 5`,
       priority: 3,
     },
@@ -170,7 +170,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `The last name must be 30 characters or fewer for alias 5`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The last name must only contain alphabetical text for alias 5`,
       priority: 3,
     },

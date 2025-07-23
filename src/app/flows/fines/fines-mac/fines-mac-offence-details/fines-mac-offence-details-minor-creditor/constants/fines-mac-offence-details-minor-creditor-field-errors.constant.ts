@@ -22,7 +22,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `The minor creditor's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The minor creditor's first name(s) must only contain alphabetical text`,
       priority: 3,
     },
@@ -36,7 +36,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `The minor creditor's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The minor creditor's last name must only contain alphabetical text`,
       priority: 3,
     },
@@ -50,7 +50,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `The company name must be 50 characters or fewer`,
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: `The company name must only contain alphabetical text`,
       priority: 3,
     },
@@ -100,7 +100,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Name on the account must be 18 characters or fewer',
       priority: 2,
     },
-    patternInvalid: {
+    alphabeticalTextPattern: {
       message: 'Name on account must only contain letters',
       priority: 3,
     },
@@ -142,7 +142,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Payment reference must be 18 characters or fewer',
       priority: 2,
     },
-    patternInvalid: {
+    alphanumericTextPattern: {
       message: 'Payment reference must only contain letters',
       priority: 3,
     },

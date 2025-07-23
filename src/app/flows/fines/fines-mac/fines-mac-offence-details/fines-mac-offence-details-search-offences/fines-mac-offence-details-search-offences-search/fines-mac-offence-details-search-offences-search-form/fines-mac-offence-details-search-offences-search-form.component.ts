@@ -59,7 +59,7 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
     this.form = new FormGroup({
       fm_offence_details_search_offences_code: new FormControl(null, [
         Validators.maxLength(8),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
+        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
         patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [

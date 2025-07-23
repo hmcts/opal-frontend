@@ -92,12 +92,12 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
       ]),
       fm_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
       ]),
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),

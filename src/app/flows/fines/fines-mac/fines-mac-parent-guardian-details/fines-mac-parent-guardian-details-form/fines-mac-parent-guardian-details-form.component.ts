@@ -69,12 +69,12 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
       ]),
       fm_parent_guardian_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN),
+        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
       ]),
       fm_parent_guardian_details_aliases: new FormArray([]),
       fm_parent_guardian_details_add_alias: new FormControl(null),
