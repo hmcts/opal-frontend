@@ -27,7 +27,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         And I enter "Aram Court (123)" into the Enforcement court search box
 
         # Fill in fixed penalty details
-        And I enter "FPN12345678" into the "Notice number" field
+        And I enter "FPN1234" into the "Notice number" field
         And I enter "01/01/2023" into the "Date of offence" date field
         And I enter "HY35014" into the "Offence code" field
         And I enter "14:30" into the "Time of offence" field
