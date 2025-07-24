@@ -15,7 +15,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-import { CommonModule } from '@angular/common';
+
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { IFinesMacDeleteAccountConfirmationForm } from '../interfaces/fines-mac-delete-account-confirmation-form.interface';
 import { IFinesMacDeleteAccountConfirmationFieldErrors } from '../interfaces/fines-mac-delete-account-confirmation-field-errors.interface';
@@ -25,14 +25,7 @@ import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validator
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation-form',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    GovukTextAreaComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, GovukButtonComponent, GovukCancelLinkComponent, GovukTextAreaComponent],
   templateUrl: './fines-mac-delete-account-confirmation-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

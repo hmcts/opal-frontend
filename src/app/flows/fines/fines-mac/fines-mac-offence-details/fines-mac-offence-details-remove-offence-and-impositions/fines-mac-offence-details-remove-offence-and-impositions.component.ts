@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
@@ -14,7 +13,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-offence-and-impositions',
-  imports: [CommonModule, GovukButtonComponent, GovukCancelLinkComponent, FinesMacOffenceDetailsReviewOffenceComponent],
+  imports: [GovukButtonComponent, GovukCancelLinkComponent, FinesMacOffenceDetailsReviewOffenceComponent],
   templateUrl: './fines-mac-offence-details-remove-offence-and-impositions.component.html',
 })
 export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent

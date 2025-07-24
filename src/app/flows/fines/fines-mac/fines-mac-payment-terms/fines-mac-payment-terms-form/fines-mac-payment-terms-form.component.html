@@ -216,22 +216,24 @@
         inputName="fm_payment_terms_hold_enforcement_on_account"
         [control]="form.get('fm_payment_terms_hold_enforcement_on_account')"
       ></div>
-      <div *ngIf="form.get('fm_payment_terms_hold_enforcement_on_account')?.value">
-        <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
-          <opal-lib-govuk-text-area
-            labelText="Reason account is on NOENF"
-            labelClasses="govuk-label--s"
-            inputId="fm_payment_terms_reason_account_is_on_noenf"
-            inputName="fm_payment_terms_reason_account_is_on_noenf"
-            inputClasses="govuk-!-width-two-thirds"
-            [control]="form.get('fm_payment_terms_reason_account_is_on_noenf')"
-            [errors]="formControlErrorMessages['fm_payment_terms_reason_account_is_on_noenf']"
-            [rows]="1"
-            [maxCharacterLimit]="28"
-            [characterCountEnabled]="true"
-          ></opal-lib-govuk-text-area>
+      @if (form.get('fm_payment_terms_hold_enforcement_on_account')?.value) {
+        <div>
+          <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
+            <opal-lib-govuk-text-area
+              labelText="Reason account is on NOENF"
+              labelClasses="govuk-label--s"
+              inputId="fm_payment_terms_reason_account_is_on_noenf"
+              inputName="fm_payment_terms_reason_account_is_on_noenf"
+              inputClasses="govuk-!-width-two-thirds"
+              [control]="form.get('fm_payment_terms_reason_account_is_on_noenf')"
+              [errors]="formControlErrorMessages['fm_payment_terms_reason_account_is_on_noenf']"
+              [rows]="1"
+              [maxCharacterLimit]="28"
+              [characterCountEnabled]="true"
+            ></opal-lib-govuk-text-area>
+          </div>
         </div>
-      </div>
+      }
     } @else {
       <div
         opal-lib-govuk-checkboxes-item

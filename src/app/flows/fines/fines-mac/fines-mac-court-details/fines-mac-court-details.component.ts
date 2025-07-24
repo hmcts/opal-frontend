@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -14,7 +14,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-court-details',
-  imports: [CommonModule, RouterModule, FinesMacCourtDetailsFormComponent],
+  imports: [RouterModule, FinesMacCourtDetailsFormComponent],
   templateUrl: './fines-mac-court-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
