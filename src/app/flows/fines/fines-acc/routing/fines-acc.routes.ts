@@ -25,7 +25,7 @@ export const routing: Routes = [
           import('../fines-acc-details/fines-acc-details.component').then((c) => c.FinesAccDetailsComponent),
         canActivate: [authGuard, routePermissionsGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-enquiry']],
+          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.details,
         },
         resolve: { title: TitleResolver },
