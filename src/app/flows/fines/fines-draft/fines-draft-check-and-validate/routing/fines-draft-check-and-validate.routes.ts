@@ -3,17 +3,12 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-r
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { IFinesDraftCheckAndValidateRoutingPermissions } from './interfaces/fines-draft-check-and-validate-routing-permissions.interface';
-import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PERMISSIONS } from './constants/fines-draft-check-and-validate-routing-permissions.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from './constants/fines-draft-check-and-validate-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_TITLES } from './constants/fines-draft-check-and-validate-routing-titles.constant';
 import { finesDraftTabResolver } from '../../routing/resolvers/fines-draft-tab.resolver';
+import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../../routing/constants/fines-draft-routing-permissions.constant';
 
-const draftCreateAndValidateRootPath = FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate;
-const draftCreateAndValidatePermissionId =
-  FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PERMISSIONS[
-    draftCreateAndValidateRootPath as keyof IFinesDraftCheckAndValidateRoutingPermissions
-  ];
+const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -29,7 +24,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftCreateAndValidatePermissionId],
+      routePermissionId: [draftRootPermissionIds['check-and-validate-draft-accounts']],
       title: FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_TITLES.children.tabs,
     },
     resolve: {

@@ -54,7 +54,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
+    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]: false,
   };
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
@@ -81,8 +81,8 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasBusinessUnitPermissionAccess(
-        this.permissionsMap.collectionOrder,
+      this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
+        this.permissionsMap['collection-order'],
         businessUnitId,
         this.userStateRoles,
       );
