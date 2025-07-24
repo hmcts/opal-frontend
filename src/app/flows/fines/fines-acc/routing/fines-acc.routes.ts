@@ -2,12 +2,12 @@ import { Routes } from '@angular/router';
 import { FINES_ACC_ROUTING_PATHS } from './constants/fines-acc-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
-import { FINES_ACC_ROUTING_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_ACC_ROUTING_TITLES } from './constants/fines-acc-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
-const accRootPermissionIds = FINES_ACC_ROUTING_PERMISSIONS;
+const accRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {

@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from './constants/fines-draft-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
-import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_ROUTING_TITLES } from './constants/fines-draft-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { routing as createAndManageRouting } from '../fines-draft-create-and-manage/routing/fines-draft-create-and-manage.routes';
 import { routing as checkAndValidateRouting } from '../fines-draft-check-and-validate/routing/fines-draft-check-and-validate.routes';
 
-const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
+const draftRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
