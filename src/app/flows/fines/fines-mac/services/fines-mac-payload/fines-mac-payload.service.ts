@@ -124,6 +124,7 @@ export class FinesMacPayloadService {
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
+    const accountType = accountDetailsState['fm_create_account_account_type'];
 
     // Build the parts of our payload...
     const initialPayload = finesMacPayloadBuildAccountBase(
@@ -144,15 +145,16 @@ export class FinesMacPayloadService {
     let fp_ticket_detail = null;
     if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
       fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails, this.toRfc3339Date.bind(this));
+      
     }
-    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
     const offences = finesMacPayloadBuildAccountOffences(
       offenceDetailsForms,
       courtDetailsState,
       this.toRfc3339Date.bind(this),
       fixedPenaltyDetails,
-      accountDetailsState['fm_create_account_account_type'],
+      accountType,
     );
 
     // Return our payload object

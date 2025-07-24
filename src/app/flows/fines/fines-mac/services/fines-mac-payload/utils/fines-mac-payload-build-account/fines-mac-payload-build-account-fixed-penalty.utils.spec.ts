@@ -15,14 +15,14 @@ describe('finesMacPayloadBuildAccountBase', () => {
     const result = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails, toRfc3339Date);
 
     expect(result).toEqual({
-      ticket_number: fixedPenaltyDetails.fm_offence_details_notice_number,
-      offence_date: fixedPenaltyDetails.fm_offence_details_date_of_offence,
-      offence_time: fixedPenaltyDetails.fm_offence_details_time_of_offence,
-      offence_location: fixedPenaltyDetails.fm_offence_details_place_of_offence,
-      vehicle_registration: fixedPenaltyDetails.fm_offence_details_vehicle_registration_number,
-      licence_number: fixedPenaltyDetails.fm_offence_details_driving_licence_number,
-      notice_number: fixedPenaltyDetails.fm_offence_details_nto_nth,
-      issued_date: fixedPenaltyDetails.fm_offence_details_date_nto_issued,
+      notice_number: fixedPenaltyDetails.fm_offence_details_notice_number,
+      date_of_issue: fixedPenaltyDetails.fm_offence_details_date_nto_issued,
+      fp_registration_number: fixedPenaltyDetails.fm_offence_details_vehicle_registration_number,
+      notice_to_owner_hirer: fixedPenaltyDetails.fm_offence_details_nto_nth,
+      place_of_offence: fixedPenaltyDetails.fm_offence_details_place_of_offence,
+      time_of_issue: fixedPenaltyDetails.fm_offence_details_time_of_offence,
+      fp_driving_licence_number: fixedPenaltyDetails.fm_offence_details_driving_licence_number,
     });
   });
 });
+

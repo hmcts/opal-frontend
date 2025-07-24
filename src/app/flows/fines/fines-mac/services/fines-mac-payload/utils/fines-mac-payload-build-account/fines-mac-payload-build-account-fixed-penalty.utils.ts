@@ -12,29 +12,22 @@ export const finesMacPayloadBuildAccountFixedPenalty = (
   toRfc3339Date: (date: string | null) => string | null,
 ): IFinesMacPayloadAcountFixedPenaltyDetails => {
   const {
-    fm_offence_details_notice_number: ticket_number,
-    fm_offence_details_date_nto_issued: issued_date,
-    fm_offence_details_vehicle_registration_number: vehicle_registration,
-    fm_offence_details_nto_nth: notice_number,
-    fm_offence_details_place_of_offence: offence_location,
-    fm_offence_details_date_of_offence: offence_date,
-    fm_offence_details_time_of_offence: offence_time,
-    fm_offence_details_driving_licence_number: licence_number,
-    // fm_offence_details_offence_type: offence_type,
-    // fm_offence_details_offence_id: offence_id,
-    // fm_offence_details_offence_cjs_code: offence_cjs_code,
-    // fm_offence_details_amount_imposed: amount_imposed,
-    // fm_court_details_originator_id: originator_id,
+    fm_offence_details_notice_number: notice_number,
+    fm_offence_details_date_nto_issued: date_of_issue,
+    fm_offence_details_vehicle_registration_number: fp_registration_number,
+    fm_offence_details_nto_nth: notice_to_owner_hirer,
+    fm_offence_details_place_of_offence: place_of_offence,
+    fm_offence_details_time_of_offence: time_of_issue,
+    fm_offence_details_driving_licence_number: fp_driving_licence_number,
   } = fixedPenaltyDetails;
 
   return {
-    ticket_number,
-    issued_date: toRfc3339Date(issued_date),
-    vehicle_registration,
     notice_number,
-    offence_location,
-    offence_date: toRfc3339Date(offence_date),
-    offence_time,
-    licence_number,
+    date_of_issue: toRfc3339Date(date_of_issue),
+    time_of_issue: null, // Endpoint not accepting time, so set to null
+    fp_registration_number,
+    notice_to_owner_hirer,
+    place_of_offence,
+    fp_driving_licence_number,
   };
 };
