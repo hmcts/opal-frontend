@@ -20,14 +20,13 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  LETTERS_WITH_SPACES_DOT_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
+  EMAIL_ADDRESS_PATTERN
 } from '../../../constants/fines-patterns.constant';
 
 @Component({
@@ -64,7 +63,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
       fm_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
-        optionalEmailAddressValidator(),
+        patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern'),
       ]),
       fm_employer_details_employer_telephone_number: new FormControl(null, [
         optionalMaxLengthValidator(20),
