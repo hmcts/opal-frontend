@@ -3462,15 +3462,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.24":
-  version: 0.0.24
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.24"
+"@hmcts/opal-frontend-common@npm:^0.0.25":
+  version: 0.0.25
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.25"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0
     "@angular/core": ^18.2.0 || ^19.0.0
-  checksum: 10/b00213aea93fbf1cf31367444666b3877f9030a7157b040a9ee6e1d4c08a6baf6bdf3077f1105abf178c5992d13d0d2cc8ec4347c7dfbdfd927702bfc06cb9e0
+  checksum: 10/0f70838313c656725f8192469d4a814576a974d4d732af184b7384c55892160a14893de43fabcc7dd0d15361dd18814dd62c4a02b96683e3847c128ea0b96a91
   languageName: node
   linkType: hard
 
@@ -6474,13 +6474,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.6.2":
-  version: 1.10.0
-  resolution: "axios@npm:1.10.0"
+  version: 1.11.0
+  resolution: "axios@npm:1.11.0"
   dependencies:
     follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
+    form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/d43c80316a45611fd395743e15d16ea69a95f2b7f7095f2bb12cb78f9ca0a905194a02e52a3bf4e0db9f85fd1186d6c690410644c10ecd8bb0a468e57c2040e4
+  checksum: 10/232df4af7a4e4e07baa84621b9cc4b0c518a757b4eacc7f635c0eb3642cb98dff347326739f24b891b3b4481b7b838c79a3a0c4819c9fbc1fc40232431b9c5dc
   languageName: node
   linkType: hard
 
@@ -10005,7 +10005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0, form-data@npm:~4.0.0":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.4, form-data@npm:~4.0.0":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
   dependencies:
@@ -13591,7 +13591,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.24"
+    "@hmcts/opal-frontend-common": "npm:^0.0.25"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.9"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
