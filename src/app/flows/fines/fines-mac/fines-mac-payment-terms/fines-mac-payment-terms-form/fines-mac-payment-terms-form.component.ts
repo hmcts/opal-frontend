@@ -26,13 +26,13 @@ import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-t
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
-import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
+import { IFinesMacPaymentTermsPermissions } from '../../../../../interfaces/fines-permissions.interfaces';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
