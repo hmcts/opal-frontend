@@ -16,6 +16,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
@@ -193,5 +194,69 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     component.form.get('fm_fp_personal_details_dob')?.setValue('01-01-1979');
     component['dateOfBirthListener']();
     expect(component.form.get('fm_fp_personal_details_dob')?.value).toBe('01-01-1979');
+  });
+
+  it('should add validators to the specified form control', () => {
+    // Arrange
+    component['setupFixedPenaltyDetailsForm']();
+    const controlName =
+      'fm_fp_offence_details_notice_number' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+    const control = component.form.controls[controlName];
+
+    // Precondition: Remove validators to ensure the test is valid
+    control.clearValidators();
+    control.updateValueAndValidity();
+
+    expect(control.validator).toBeNull();
+
+    // Act
+    component['addValidatorsToControl'](controlName);
+
+    // Assert
+    expect(control.validator).toBeDefined();
+  });
+
+  it('should do nothing if control does not exist when trying to add validators', () => {
+    // Arrange
+    const controlName = 'non_existent_control' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+
+    // Act & Assert (should not throw)
+    expect(() => component['addValidatorsToControl'](controlName)).not.toThrow();
+  });
+
+  it('should set validators to the correct fields when defendant type is adult or youth only', () => {
+    // Arrange
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+    personalDetailsAddressLine1Control?.clearValidators();
+    personalDetailsAddressLine1Control?.updateValueAndValidity();
+    companyDetailsAddressLine1Control?.clearValidators();
+    companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+    // Act
+    component['setValidators']();
+
+    // Assert
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should set validators to the correct fields when defendant type is company', () => {
+    // Arrange
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+    personalDetailsAddressLine1Control?.clearValidators();
+    personalDetailsAddressLine1Control?.updateValueAndValidity();
+    companyDetailsAddressLine1Control?.clearValidators();
+    companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+    // Act
+    component['setValidators']();
+
+    // Assert
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
   });
 });
