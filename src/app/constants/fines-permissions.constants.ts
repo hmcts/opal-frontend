@@ -1,7 +1,6 @@
 import {
   IFinesDraftRoutingPermissions,
   IDashboardPermissions,
-  IFinesMacPaymentTermsPermissions,
   IFinesMacPaymentTermsPermissionsValues,
   IFinesRoutingPermissions,
 } from '../interfaces/fines-permissions.interfaces';
