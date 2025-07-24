@@ -50,7 +50,7 @@
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
-          @if (permissions[permissionsMap.collectionOrder] !== false) {
+          @if (permissions[permissionsMap['collection-order']] !== false) {
             <div opal-lib-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">
                 <opal-lib-govuk-checkboxes-item
