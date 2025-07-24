@@ -10,6 +10,7 @@ export const FinesSaStore = signalStore(
   withState(() => ({
     searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
     activeTab: 'individuals' as FinesSaSearchAccountTabs,
+    resultsActiveTab: 'individuals' as FinesSaSearchAccountTabs,
     stateChanges: false,
     unsavedChanges: false,
     searchAccountPopulated: false,
@@ -49,6 +50,11 @@ export const FinesSaStore = signalStore(
     setActiveTab: (activeTab: FinesSaSearchAccountTabs) => {
       patchState(store, {
         activeTab: activeTab,
+      });
+    },
+    setResultsActiveTab: (resultsActiveTab: FinesSaSearchAccountTabs) => {
+      patchState(store, {
+        resultsActiveTab: resultsActiveTab,
       });
     },
     setStateChanges: (stateChanges: boolean) => {

@@ -35,6 +35,7 @@ import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-p
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -550,5 +551,16 @@ describe('OpalFines', () => {
     const result = service.getProsecutorPrettyName(prosecutor);
 
     expect(result).toEqual(expectedPrettyName);
+  });
+
+  it('should return the mocked defendant accounts response with search params injected', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = { some: 'param' } as any;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
   });
 });

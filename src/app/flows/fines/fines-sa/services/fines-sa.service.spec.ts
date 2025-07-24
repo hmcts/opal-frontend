@@ -1,6 +1,9 @@
 import { FinesSaService } from './fines-sa.service';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/mocks/fines-sa-search-account-form-companies-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/mocks/fines-sa-search-account-form-minor-creditors-state.mock';
 
 describe('FinesSaService', () => {
   let service: FinesSaService;
@@ -21,7 +24,7 @@ describe('FinesSaService', () => {
       ...getBaseState(),
       fsa_search_account_individual_search_criteria: {},
       fsa_search_account_companies_search_criteria: {},
-      fsa_search_account_minor_creditor_search_criteria: {},
+      fsa_search_account_minor_creditors_search_criteria: {},
       fsa_search_account_major_creditor_search_criteria: {},
     } as IFinesSaSearchAccountState;
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeFalse();
@@ -44,5 +47,52 @@ describe('FinesSaService', () => {
     } as IFinesSaSearchAccountState;
 
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeTrue();
+  });
+
+  describe('getSearchResultView', () => {
+    it('should return "accountNumber" if fsa_search_account_number is present', () => {
+      const state = {
+        ...getBaseState(),
+        fsa_search_account_number: 'ACC123456',
+      };
+      expect(service.getSearchResultView(state)).toBe('accountNumber');
+    });
+
+    it('should return "referenceCaseNumber" if reference is present and account number is not', () => {
+      const state = {
+        ...getBaseState(),
+        fsa_search_account_reference_case_number: 'REF123456',
+      };
+      expect(service.getSearchResultView(state)).toBe('referenceCaseNumber');
+    });
+
+    it('should return "individuals" if individual criteria is populated', () => {
+      const state = {
+        ...getBaseState(),
+        fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      };
+      expect(service.getSearchResultView(state)).toBe('individuals');
+    });
+
+    it('should return "companies" if company criteria is populated and others are not', () => {
+      const state = {
+        ...getBaseState(),
+        fsa_search_account_companies_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
+      };
+      expect(service.getSearchResultView(state)).toBe('companies');
+    });
+
+    it('should return "minorCreditors" if minor creditor criteria is populated and others are not', () => {
+      const state = {
+        ...getBaseState(),
+        fsa_search_account_minor_creditors_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
+      };
+      expect(service.getSearchResultView(state)).toBe('minorCreditors');
+    });
+
+    it('should default to "accountNumber" if no criteria is populated', () => {
+      const state = getBaseState();
+      expect(service.getSearchResultView(state)).toBe('accountNumber');
+    });
   });
 });
