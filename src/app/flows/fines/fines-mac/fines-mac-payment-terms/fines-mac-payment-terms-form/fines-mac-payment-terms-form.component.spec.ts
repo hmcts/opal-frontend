@@ -11,7 +11,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { of } from 'rxjs';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
@@ -493,7 +493,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['setupPermissions']();
 
     expect(component['hasBusinessUnitPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]).toBeTruthy();
+    expect(component.permissions[FINES_PERMISSIONS['collection-order']]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {

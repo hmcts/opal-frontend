@@ -32,7 +32,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION }
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -94,9 +94,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
 
   @Input() public defendantType!: string;
-  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
+  public readonly permissionsMap = FINES_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]: false,
+    [FINES_PERMISSIONS['collection-order']]: false,
   };
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
