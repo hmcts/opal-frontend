@@ -36,3 +36,5 @@ opal-fines-service:
 
 postgresql:
   enabled: false
+  image:
+    tag: '17.5.0'
