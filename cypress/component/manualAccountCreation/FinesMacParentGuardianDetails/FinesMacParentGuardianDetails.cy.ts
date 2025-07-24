@@ -296,7 +296,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAlias + ' 1');
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
   });
 
   it('(AC.8) should show error for missing alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
@@ -307,8 +307,8 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAlias + ' 1');
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName + ' 1');
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
   });
 
   it('(AC.8) should show error for missing alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
@@ -319,8 +319,8 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       fm_parent_guardian_details_alias_forenames_0: 'John',
     });
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName + ' 1');
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAlias + ' 1');
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
   });
 
   it('(AC.8) should show error for missing additional alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
@@ -337,14 +337,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 1`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 2`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 3`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
   it('(AC.8) should show error for missing additional alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
@@ -361,14 +361,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     });
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 1`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 2`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasTwo}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAlias} 3`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasThree}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
   it(
