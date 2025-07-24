@@ -24,7 +24,7 @@ export const finesMacPayloadBuildAccountFixedPenalty = (
   return {
     notice_number,
     date_of_issue: toRfc3339Date(date_of_issue),
-    time_of_issue: null, // Endpoint not accepting time, so set to null
+    time_of_issue,
     fp_registration_number,
     notice_to_owner_hirer,
     place_of_offence,

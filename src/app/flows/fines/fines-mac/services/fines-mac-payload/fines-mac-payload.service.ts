@@ -52,6 +52,7 @@ export class FinesMacPayloadService {
     finesMacPayload: IFinesMacAddAccountPayload,
     transformItemsConfig: ITransformItem[],
   ): IFinesMacAddAccountPayload {
+    console.log('transforming payload')
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -104,6 +105,20 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Converts a time string in format ('hh:mm) to include offset in 'hh:mm:ssZ' format.
+   *
+   * @param time - The time string to convert, or null.
+   * @returns The time string in 'hh:mm:ssZ' format, or null if the input is null or invalid.
+   */
+  private addOffsetToTime(time: string | null): string | null {
+    if (!time) {
+      return null;
+    }
+
+    return time + ':00Z'; // Append seconds and 'Z' for UTC offset
+  }
+
+  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -132,6 +147,7 @@ export class FinesMacPayloadService {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetails,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -144,7 +160,10 @@ export class FinesMacPayloadService {
     );
     let fp_ticket_detail = null;
     if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
-      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails, this.toRfc3339Date.bind(this));
+      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(
+        fixedPenaltyDetails, 
+        this.toRfc3339Date.bind(this)
+      );
       
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
@@ -216,7 +235,7 @@ export class FinesMacPayloadService {
       version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
 
-    // Transform the payload, format the dates to the correct format
+    // Transform the payload, format the dates and times to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
