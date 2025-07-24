@@ -11,7 +11,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-
 import { IFinesMacPaymentTermsEnforcementActionsOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-enforcement-actions-options.interface';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { IFinesMacPaymentTermsFrequencyOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-frequency-options.interface';
-import { IFinesMacPaymentTermsPermissions } from '../../../../../interfaces/fines-permissions.interfaces';
+import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-permissions.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
