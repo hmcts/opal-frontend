@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -15,7 +14,7 @@ import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-typ
 
 @Component({
   selector: 'app-fines-mac-create-account',
-  imports: [CommonModule, RouterModule, FinesMacCreateAccountFormComponent],
+  imports: [RouterModule, FinesMacCreateAccountFormComponent],
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

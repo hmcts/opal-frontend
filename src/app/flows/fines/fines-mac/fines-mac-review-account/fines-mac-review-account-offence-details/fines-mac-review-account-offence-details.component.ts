@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FinesMacOffenceDetailsReviewComponent } from '../../fines-mac-offence-details/fines-mac-offence-details-review/fines-mac-offence-details-review.component';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
-import { CommonModule } from '@angular/common';
+
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
@@ -9,7 +9,6 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 @Component({
   selector: 'app-fines-mac-review-account-offence-details',
   imports: [
-    CommonModule,
     FinesMacOffenceDetailsReviewComponent,
     GovukSummaryCardListComponent,
     FinesMacReviewAccountChangeLinkComponent,

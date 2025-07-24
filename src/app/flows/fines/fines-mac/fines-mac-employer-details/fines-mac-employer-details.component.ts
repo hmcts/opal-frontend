@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -10,7 +9,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-employer-details',
-  imports: [CommonModule, RouterModule, FinesMacEmployerDetailsFormComponent],
+  imports: [RouterModule, FinesMacEmployerDetailsFormComponent],
   templateUrl: './fines-mac-employer-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

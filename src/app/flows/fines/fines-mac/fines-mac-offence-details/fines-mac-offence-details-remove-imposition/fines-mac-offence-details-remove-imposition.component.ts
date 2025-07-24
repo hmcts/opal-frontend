@@ -4,7 +4,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
-import { CommonModule } from '@angular/common';
+
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
@@ -22,7 +22,6 @@ import {
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
   imports: [
-    CommonModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukTableComponent,

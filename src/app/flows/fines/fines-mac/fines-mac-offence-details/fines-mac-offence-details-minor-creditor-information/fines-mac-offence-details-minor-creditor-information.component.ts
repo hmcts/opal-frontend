@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
 import {
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
@@ -16,7 +15,6 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
   imports: [
-    CommonModule,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukSummaryCardListComponent,

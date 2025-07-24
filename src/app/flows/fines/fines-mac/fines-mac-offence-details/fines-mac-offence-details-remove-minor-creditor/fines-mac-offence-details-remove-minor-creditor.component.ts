@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { AbstractFormArrayRemovalComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-array-removal-base';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
@@ -10,12 +9,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-minor-creditor',
-  imports: [
-    CommonModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    FinesMacOffenceDetailsMinorCreditorInformationComponent,
-  ],
+  imports: [GovukButtonComponent, GovukCancelLinkComponent, FinesMacOffenceDetailsMinorCreditorInformationComponent],
   templateUrl: './fines-mac-offence-details-remove-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

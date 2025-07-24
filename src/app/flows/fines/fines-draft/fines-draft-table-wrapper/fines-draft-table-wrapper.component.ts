@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, signal, Output, computed } from '@angular/core';
 import {
   MojSortableTableHeaderComponent,
@@ -17,7 +16,6 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
   selector: 'app-fines-draft-table-wrapper',
   standalone: true,
   imports: [
-    CommonModule,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,

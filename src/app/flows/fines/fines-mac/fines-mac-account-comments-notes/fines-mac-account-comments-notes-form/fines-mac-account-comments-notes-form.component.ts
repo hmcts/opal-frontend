@@ -16,20 +16,13 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-import { CommonModule } from '@angular/common';
+
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    GovukTextAreaComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, GovukButtonComponent, GovukCancelLinkComponent, GovukTextAreaComponent],
   templateUrl: './fines-mac-account-comments-notes-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
