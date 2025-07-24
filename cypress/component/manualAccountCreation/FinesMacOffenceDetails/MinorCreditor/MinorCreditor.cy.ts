@@ -166,7 +166,7 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (const [, value] of Object.entries(LENGTH_CHECK)) {
-        if (value != 'The company name must be 50 characters or fewer') {
+        if (value != 'Company name must be 50 characters or fewer') {
           cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
         }
       }
@@ -191,10 +191,7 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
-      if (
-        value != 'The company name must only contain alphabetical text' &&
-        value != "Enter minor creditor's last name"
-      ) {
+      if (value != 'Company name must only contain letters' && value != 'Enter last name') {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     }

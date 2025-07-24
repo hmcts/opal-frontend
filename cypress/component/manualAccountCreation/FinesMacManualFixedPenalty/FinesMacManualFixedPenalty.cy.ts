@@ -129,7 +129,7 @@ describe('FinesMacManualFixedPenalty', () => {
         "Enter defendant's first name(s)",
         "Enter defendant's last name",
         'Enter address line 1, typically the building and street',
-        'Enter an Enforcement court',
+        'Enter an enforcement court',
         'Enter the issuing authority',
         'Enter Notice number',
         'Enter an offence code',
@@ -248,18 +248,18 @@ describe('FinesMacManualFixedPenalty', () => {
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters more than 35 characters
     const longText = 'A'.repeat(36); // Exceeds 35 characters
     cy.get(DOM_ELEMENTS.enforcementCourtInput).type(longText);
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters non-alphanumeric characters (assuming there's validation for this)
     cy.get(DOM_ELEMENTS.enforcementCourtInput).clear().type('Invalid@Court#123');
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
   });
 
   it('(AC4) Validation will exist for the Title field', { tags: ['@PO-857'] }, () => {
@@ -290,18 +290,12 @@ describe('FinesMacManualFixedPenalty', () => {
     const longName = 'A'.repeat(21); // Exceeds 20 characters
     cy.get(DOM_ELEMENTS.firstNameInput).type(longName, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's first name(s) must be 20 characters or fewer",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must be 20 characters or fewer");
 
     // User enters non-alphabetical characters
     cy.get(DOM_ELEMENTS.firstNameInput).clear().type('John123@#$', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's first name(s) must only contain alphabetical text",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must only contain letters");
   });
 
   it('(AC6) Validation will exist for the Last name field', { tags: ['@PO-857'] }, () => {
@@ -316,15 +310,12 @@ describe('FinesMacManualFixedPenalty', () => {
     const longName = 'A'.repeat(31); // Exceeds 30 characters
     cy.get(DOM_ELEMENTS.lastNameInput).type(longName, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "The defendant's last name must be 30 characters or fewer");
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must be 30 characters or fewer");
 
     // User enters non-alphabetical characters
     cy.get(DOM_ELEMENTS.lastNameInput).clear().type('Smith123@#$', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's last name must only contain alphabetical text",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must only contain letters");
   });
 
   it('(AC7) Validation will exist for the Date of birth field', { tags: ['@PO-857'] }, () => {
@@ -371,12 +362,12 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
     cy.get(DOM_ELEMENTS.addressLine1Input).type(longAddress, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must be 30 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must be 30 characters or fewer');
 
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('123 High Street $%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must only contain letters or numbers');
   });
 
   it('(AC9) Validation will exist for the Address Line 2 field', { tags: ['@PO-857'] }, () => {
@@ -387,12 +378,12 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
     cy.get(DOM_ELEMENTS.addressLine2Input).type(longAddress, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must be 30 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must be 30 characters or fewer');
 
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Apartment 123 $%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must only contain letters or numbers');
   });
 
   it('(AC10) Validation will exist for the Address Line 3 field', { tags: ['@PO-857'] }, () => {
@@ -402,12 +393,12 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(17); // Exceeds 16 characters
     cy.get(DOM_ELEMENTS.addressLine3Input).type(longAddress, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must be 16 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must be 16 characters or fewer');
 
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('West $%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must only contain letters or numbers');
   });
 
   it('(AC11) Validation will exist for the Postcode field', { tags: ['@PO-857'] }, () => {
@@ -417,7 +408,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longPostcode = 'A'.repeat(9); // Exceeds 8 characters
     cy.get(DOM_ELEMENTS.postcodeInput).type(longPostcode, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The postcode must be 8 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Postcode must be 8 characters or fewer');
 
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.postcodeInput).clear().type('SW1A$%^&', { delay: 0 });
