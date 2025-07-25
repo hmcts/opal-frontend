@@ -48,6 +48,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         Then I see "Issuing authority and court details" text on the page
         And I see "Personal details" text on the page
         And I see "Offence Details" text on the page
+        And I see "Riding a bicycle on a footpath (HY35014)" in the Offence code field
 
         # PO-861 AC2c - Verify 'Change' buttons functionality
         # Test 'Change' for court details

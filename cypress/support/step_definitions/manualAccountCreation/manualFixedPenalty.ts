@@ -20,6 +20,11 @@ Then('I see {string} in the Amount imposed field', (value: string) => {
   cy.get('#fm_fp_offence_details_amount_imposed').should('have.value', value);
 });
 
+Then('I see {string} in the Offence code field', (offenceCode: string) => {
+  // Use a more flexible selector that will match across different component structures
+  cy.get('div[summaryListRowId="offenceCode"] dd').should('contain', offenceCode);
+});
+
 Then('I click the change link for the {string} section', (sectionName: string) => {
   // Find the summary card with the section title and click its change link
   cy.contains('h2.govuk-summary-card__title', sectionName)
