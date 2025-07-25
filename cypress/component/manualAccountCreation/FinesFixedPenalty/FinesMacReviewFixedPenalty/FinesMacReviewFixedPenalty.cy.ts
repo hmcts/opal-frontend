@@ -141,7 +141,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   };
 
   it(
-    '(AC2, AC2a) should display tables in correct order and correct content for adult/youth',
+    '(AC2, AC2a, AC5a) should display tables in correct order and correct content for adult/youth',
     { tags: ['@PO-861'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
@@ -205,7 +205,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     },
   );
 
-  it('(AC2bi) should display an em-dash for unpopulated fields (adult/youth only)', { tags: ['@PO-861'] }, () => {
+  it('(AC2bi, AC5a) should display an em-dash for unpopulated fields (adult/youth only)', { tags: ['@PO-861'] }, () => {
     setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
 
     // Clear out fixed penalty field which are optional
@@ -257,7 +257,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   });
 
   it(
-    '(AC2, AC2a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)',
+    '(AC2, AC2a, AC5a) should display Welsh language preferences Business Unit supports Welsh (AdultOrYouthOnly)',
     { tags: ['@PO-861'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'adultOrYouthOnly');
@@ -274,7 +274,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
 
   it(
-    '(AC2, AC2a) should display Welsh language preferences when Business Unit supports Welsh (Company)',
+    '(AC2, AC2a, AC5b) should display Welsh language preferences when Business Unit supports Welsh (Company)',
     { tags: ['@PO-861'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
@@ -291,7 +291,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
 
   it(
-    '(AC2, AC2a) should display tables in correct order and correct content for company defendant',
+    '(AC2, AC2a, AC5b) should display tables in correct order and correct content for company defendant',
     { tags: ['@PO-861'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
@@ -334,7 +334,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   );
 
   it(
-    '(AC2bi) should display an em-dash for unpopulated fields in company defendant view',
+    '(AC2bi, AC5b) should display an em-dash for unpopulated fields in company defendant view',
     { tags: ['@PO-861'] },
     () => {
       setupComponent(FINES_DRAFT_STATE, 'company');
