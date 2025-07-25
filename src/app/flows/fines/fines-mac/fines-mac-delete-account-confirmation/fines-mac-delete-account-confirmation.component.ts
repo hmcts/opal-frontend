@@ -16,6 +16,7 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/f
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
@@ -122,8 +123,11 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
    */
   private setReferrer(): string {
     if (this.finesDraftStore.checker()) return this.reviewAccountRoute;
+    const accountType = this.finesMacStore.accountDetails().formData.fm_create_account_account_type;
 
-    return this.finesMacStore.deleteFromCheckAccount() ? this.reviewAccountRoute : this.accountDetailsRoute;
+    return this.finesMacStore.deleteFromCheckAccount() || accountType === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty
+      ? this.reviewAccountRoute
+      : this.accountDetailsRoute;
   }
 
   /**
