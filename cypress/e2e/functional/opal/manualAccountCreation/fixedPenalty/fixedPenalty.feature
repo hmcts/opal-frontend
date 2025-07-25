@@ -243,3 +243,83 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         When I click on the "Delete account" link
         Then I see "Are you sure you want to delete this account?" on the page header
 
+    @PO-1144
+    Scenario: Delete account for fixed penalty draft account - A/Y only
+        When I select the "Adult or youth only" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        #Fill in all details and submit the form
+        When I select "Mr" from the "Title" dropdown
+        And I enter "John" into the "First names" field
+        And I enter "Smith" into the "Last name" field
+        And I enter "01/01/1980" into the "Date of birth" date field
+        And I enter "123 High Street" into the "Address line 1" field
+        And I enter "SW1A 1AA" into the "Postcode" field
+        And I enter "Lowestoft County Court (256)" into the Issuing Authority search box
+        And I enter "Aram Court (123)" into the Enforcement court search box
+        #Change Notice Number back to longer value after fix
+        And I enter "12345678" into the "Notice number" field
+        And I enter "01/01/2023" into the "Date of offence" date field
+        And I enter "HY35014" into the "Offence code" field
+        And I enter "14:30" into the "Time of offence" field
+        And I enter "Oxford Street, London" into the "Place of offence" text field
+        And I enter "150" into the Amount imposed field
+        And I select the "Vehicle" radio button
+        And I enter "AB12CDE" into the "Registration number" field
+        And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+        And I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC1, AC3, Attempt to delete the account, press No - cancel instead
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click on the "No - cancel" link
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC2, Delete the account, press Yes - delete
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click the "Yes - delete" button
+        Then I see "Business unit and defendant type" on the page header
+        And I see "Create account" text on the page
+        Then I see the value "West London" in the business unit search box
+
+    @PO-1144
+    Scenario: Delete account for fixed penalty draft account - Company
+        When I select the "Company" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        #Fill in all details and submit the form
+        When I enter "Lowestoft County Court (256)" into the Issuing Authority search box
+        And I enter "Aram Court (123)" into the Enforcement court search box
+        And I enter "Testcorp" into the "Company name" field
+        And I enter "123 Bell Street" into the "Address line 1" field
+        And I enter "SW1A 1AA" into the "Postcode" field
+        #Change Notice Number back to longer value after fix
+        And I enter "12345678" into the "Notice number" field
+        And I select the "Vehicle" radio button
+        And I enter "AB12CDE" into the "Registration number" field
+        And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+        And I enter "01/01/2023" into the "Date of offence" date field
+        And I enter "HY35014" into the "Offence code" field
+        And I enter "14:30" into the "Time of offence" field
+        And I enter "Oxford Street, London" into the "Place of offence" text field
+        And I enter "150" into the Amount imposed field
+        And I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC1, AC3, Attempt to delete the account, press No - cancel instead
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click on the "No - cancel" link
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC2, Delete the account, press Yes - delete
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click the "Yes - delete" button
+        Then I see "Business unit and defendant type" on the page header
+        And I see "Create account" text on the page
+        Then I see the value "West London" in the business unit search box
