@@ -137,9 +137,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_company_details_address_line_3: new FormControl(null),
       fm_fp_company_details_postcode: new FormControl(null),
       // Court Details
-      fm_fp_court_details_imposing_court_id: new FormControl(null),
       fm_fp_court_details_originator_id: new FormControl(null),
       fm_fp_court_details_originator_name: new FormControl(null),
+      fm_fp_court_details_imposing_court_id: new FormControl(null),
       // Comments and Notes
       fm_fp_account_comments_notes_comments: new FormControl(null),
       fm_fp_account_comments_notes_notes: new FormControl(null),
@@ -292,6 +292,38 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
+   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * It finds the corresponding prosecutor from the prosecutorsData array
+   * and returns the pretty name for that prosecutor or null if not found.
+   *
+   * @private
+   * @returns {string | null}
+   */
+  private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
+    const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
+      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId,
+    );
+    if (!prosecutor) {
+      return null;
+    }
+    return prosecutor;
+  }
+
+  /**
+   * Sets the court_details_originator_name form control to the prosecutor name if it exists.
+   * @param event
+   */
+  private setProsecutorName(): void {
+    const prosecutor = this.getProsecutorFromId(
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString(),
+    );
+    if (prosecutor) {
+      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    }
+  }
+
+  /**
    *
    * @returns An object containing the form data for fixed penalty details, including personal details, court details,
    * comments and notes, language preferences, and offence details.
@@ -354,5 +386,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setProsecutorName();
+    super.handleFormSubmit(event);
   }
 }
