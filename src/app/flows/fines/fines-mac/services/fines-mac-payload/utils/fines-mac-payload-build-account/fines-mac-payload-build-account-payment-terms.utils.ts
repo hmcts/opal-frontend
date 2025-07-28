@@ -2,7 +2,6 @@ import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 import { IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement-result-response.interface';
 import { IFinesMacPayloadAccountPaymentTerms } from '../interfaces/fines-mac-payload-account-payment-terms.interface';
-import { IFinesMacAccountTypes } from '../../../../interfaces/fines-mac-account-types.interface';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../../../constants/fines-mac-account-types-keys';
 
 /**

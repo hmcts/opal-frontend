@@ -35,7 +35,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       return;
     }
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => '2024-09-01');
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, (val) => val);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
 
@@ -280,21 +280,21 @@ describe('finesMacPayloadBuildAccountOffences', () => {
     const results = finesMacPayloadBuildAccountOffences(
       offencesMockState,
       courtDetailsState,
-      () => '2024-09-01',
+      (val) => val,
       fixedPenaltyMockState,
       'fixedPenalty',
     );
 
     expect(results).toEqual([
       {
-        date_of_sentence: null,
+        date_of_sentence: '12/12/2024',
         imposing_court_id: 'Magistrates Court Database (204)',
         offence_id: 12345,
         impositions: [
           {
-            result_id: null,
-            amount_imposed: 100,
-            amount_paid: null,
+            result_id: 'FO',
+            amount_imposed: 100.55,
+            amount_paid: 0,
             major_creditor_id: null,
             minor_creditor: null,
           },

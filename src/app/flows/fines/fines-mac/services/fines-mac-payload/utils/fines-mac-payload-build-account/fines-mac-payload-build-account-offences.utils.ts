@@ -128,7 +128,7 @@ export const finesMacPayloadBuildAccountOffences = (
   if (fixedPenaltyDetails && accountType && accountType === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
     return [
       {
-        date_of_sentence: toRfc3339Date(fixedPenaltyDetails.fm_offence_details_date_of_offence),
+        date_of_sentence: fixedPenaltyDetails.fm_offence_details_date_of_offence,
         imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id,
         offence_id: fixedPenaltyDetails.fm_offence_details_offence_id,
         impositions: [
@@ -137,7 +137,7 @@ export const finesMacPayloadBuildAccountOffences = (
             amount_imposed: Number(fixedPenaltyDetails.fm_offence_details_amount_imposed ?? 0),
             amount_paid: 0,
             major_creditor_id: null,
-            minor_creditor: null
+            minor_creditor: null,
           },
         ],
       },

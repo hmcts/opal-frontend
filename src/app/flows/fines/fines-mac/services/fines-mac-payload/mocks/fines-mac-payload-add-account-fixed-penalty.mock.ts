@@ -22,7 +22,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     collection_order_date: '2024-10-22',
     suspended_committal_date: '2024-10-12',
     payment_card_request: true,
-    account_sentence_date: null,
+    account_sentence_date: '2024-12-12',
     defendant: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK,
@@ -41,14 +41,14 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     },
     offences: [
       {
-        date_of_sentence: null,
+        date_of_sentence: '2024-12-12',
         imposing_court_id: 'Magistrates Court Database (204)',
         offence_id: 12345,
         impositions: [
           {
-            result_id: null,
-            amount_imposed: 100,
-            amount_paid: null,
+            result_id: 'FO',
+            amount_imposed: 100.55,
+            amount_paid: 0,
             major_creditor_id: null,
             minor_creditor: null,
           },
@@ -56,14 +56,13 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
       },
     ],
     fp_ticket_detail: {
-      ticket_number: '12345',
-      offence_date: '2024-12-12',
-      offence_time: '10:12',
-      offence_location: 'High Street, Aberystwyth',
-      vehicle_registration: 'AB12 CJP',
-      licence_number: 'AB123456CDE',
-      notice_number: 'NTO123456',
-      issued_date: '2024-12-12',
+      notice_number: '12345',
+      date_of_issue: '2024-12-12',
+      time_of_issue: '10:12:00Z',
+      place_of_offence: 'High Street, Aberystwyth',
+      fp_registration_number: 'AB12 CJP',
+      fp_driving_licence_number: 'AB123456CDE',
+      notice_to_owner_hirer: 'NTO123456',
     },
     payment_terms: {
       payment_terms_type_code: 'B',

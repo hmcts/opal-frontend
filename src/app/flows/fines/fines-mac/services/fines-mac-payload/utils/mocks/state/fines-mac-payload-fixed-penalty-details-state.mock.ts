@@ -8,7 +8,7 @@ export const FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK: IFinesMacFixedP
   fm_offence_details_offence_cjs_code: '12345',
   fm_offence_details_time_of_offence: '10:12',
   fm_offence_details_place_of_offence: 'High Street, Aberystwyth',
-  fm_offence_details_amount_imposed: 100.0,
+  fm_offence_details_amount_imposed: 100.55,
   fm_offence_details_vehicle_registration_number: 'AB12 CJP',
   fm_offence_details_driving_licence_number: 'AB123456CDE',
   fm_offence_details_nto_nth: 'NTO123456',

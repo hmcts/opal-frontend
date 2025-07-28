@@ -9,7 +9,6 @@ import { IFinesMacPayloadAcountFixedPenaltyDetails } from '../interfaces/fines-m
  */
 export const finesMacPayloadBuildAccountFixedPenalty = (
   fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsStoreState,
-  toRfc3339Date: (date: string | null) => string | null,
 ): IFinesMacPayloadAcountFixedPenaltyDetails => {
   const {
     fm_offence_details_notice_number: notice_number,
@@ -23,7 +22,7 @@ export const finesMacPayloadBuildAccountFixedPenalty = (
 
   return {
     notice_number,
-    date_of_issue: toRfc3339Date(date_of_issue),
+    date_of_issue,
     time_of_issue,
     fp_registration_number,
     notice_to_owner_hirer,

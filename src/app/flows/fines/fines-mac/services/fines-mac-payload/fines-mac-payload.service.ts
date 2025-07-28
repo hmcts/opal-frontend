@@ -33,6 +33,7 @@ import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-se
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +53,6 @@ export class FinesMacPayloadService {
     finesMacPayload: IFinesMacAddAccountPayload,
     transformItemsConfig: ITransformItem[],
   ): IFinesMacAddAccountPayload {
-    console.log('transforming payload')
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -105,20 +105,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Converts a time string in format ('hh:mm) to include offset in 'hh:mm:ssZ' format.
-   *
-   * @param time - The time string to convert, or null.
-   * @returns The time string in 'hh:mm:ssZ' format, or null if the input is null or invalid.
-   */
-  private addOffsetToTime(time: string | null): string | null {
-    if (!time) {
-      return null;
-    }
-
-    return time + ':00Z'; // Append seconds and 'Z' for UTC offset
-  }
-
-  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -160,11 +146,7 @@ export class FinesMacPayloadService {
     );
     let fp_ticket_detail = null;
     if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
-      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(
-        fixedPenaltyDetails, 
-        this.toRfc3339Date.bind(this)
-      );
-      
+      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails);
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
@@ -373,12 +355,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
-    finesMacState.offenceDetails.forEach(
-      (offence) =>
-        (offence.formData.fm_offence_details_date_of_sentence = this.fromRfc3339Date(
-          offence.formData.fm_offence_details_date_of_sentence,
-        )),
-    );
+    finesMacState = finesMacPayloadMapAccountFixedPenalty(finesMacState, transformedPayload, offencesRefData);
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);

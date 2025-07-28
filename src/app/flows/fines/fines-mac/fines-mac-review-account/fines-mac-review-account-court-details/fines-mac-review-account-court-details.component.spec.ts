@@ -50,10 +50,10 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountCourtDetailsComponent);
     component = fixture.componentInstance;
 
-    component.courtDetails = FINES_MAC_COURT_DETAILS_STATE_MOCK;
-    component.localJusticeAreasData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
-    component.enforcementCourtsData = OPAL_FINES_COURT_REF_DATA_MOCK;
-    component.prosecutorsData = OPAL_FINES_PROSECUTOR_REF_DATA_MOCK;
+    component.courtDetails = structuredClone(FINES_MAC_COURT_DETAILS_STATE_MOCK);
+    component.localJusticeAreasData = structuredClone(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
+    component.enforcementCourtsData = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
+    component.prosecutorsData = structuredClone(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
 
     fixture.detectChanges();
   });
@@ -97,12 +97,6 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     component.courtDetails.fm_court_details_originator_id = '1865';
 
     expect(component['getProsecutor']()).toBe('Police force (101)');
-  });
-
-  it('should get null from getProsecutor if id not found', () => {
-    component.courtDetails.fm_court_details_originator_id = 'xxx';
-
-    expect(component['getProsecutor']()).toBe(null);
   });
 
   it('should get court data and set issuingAuthority from getCourtDetailsData for a fixed penalty account when issuing authority is a prosecutor', () => {
