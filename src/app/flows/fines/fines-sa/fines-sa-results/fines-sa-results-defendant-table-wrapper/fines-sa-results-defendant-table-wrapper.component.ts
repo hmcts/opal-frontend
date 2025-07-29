@@ -13,6 +13,7 @@ import { IFinesSaResultsDefendantTableWrapperTableData } from './interfaces/fine
 import { IFinesSaResultsDefendantTableWrapperTableSort } from './interfaces/fines-sa-results-defendant-table-wrapper-table-sort.interface';
 import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 
 @Component({
   selector: 'app-fines-sa-results-defendant-table-wrapper',
@@ -25,6 +26,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
     DateFormatPipe,
     NationalInsurancePipe,
     FinesSharedSortableTableFooterComponent,
+    CustomHorizontalScrollPaneComponent,
   ],
   templateUrl: './fines-sa-results-defendant-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
