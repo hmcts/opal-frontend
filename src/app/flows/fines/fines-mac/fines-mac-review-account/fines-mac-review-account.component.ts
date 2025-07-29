@@ -326,11 +326,14 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      const path = this.finesDraftStore.checker()
-        ? this.checkAndValidateTabs
-        : this.finesDraftStore.viewAllAccounts()
-          ? this.viewAllAccountsTabs
-          : this.createAndManageTabs;
+      let path: string;
+      if (this.finesDraftStore.checker()) {
+        path = this.checkAndValidateTabs;
+      } else if (this.finesDraftStore.viewAllAccounts()) {
+        path = this.viewAllAccountsTabs;
+      } else {
+        path = this.createAndManageTabs;
+      }
 
       // return true when going back to view-all-accounts
       // and false when going back to tabbed fragment

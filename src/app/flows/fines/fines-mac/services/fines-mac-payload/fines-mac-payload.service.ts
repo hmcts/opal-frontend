@@ -282,7 +282,7 @@ export class FinesMacPayloadService {
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id!, sessionUserState)!,
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, sessionUserState)!,
       validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
       version: draftAccountPayload.version!,
     };
