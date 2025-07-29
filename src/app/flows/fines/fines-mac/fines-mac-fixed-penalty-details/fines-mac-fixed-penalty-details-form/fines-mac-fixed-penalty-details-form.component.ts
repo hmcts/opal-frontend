@@ -244,6 +244,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     } else {
       this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].clearValidators();
       this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].clearValidators();
+      // Clear vehicle related values if the offence type is not 'vehicle'
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_nto_nth`].setValue(null);
     }
     this.form.controls[
       `${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`

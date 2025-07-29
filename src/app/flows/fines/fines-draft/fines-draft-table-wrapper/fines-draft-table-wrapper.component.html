@@ -115,8 +115,8 @@
           } @else {
             <a
               class="govuk-link govuk-link--no-visited-state"
-              (click)="onDefendantClick(+row['Defendant id'])"
-              (keydown.enter)="onDefendantClick(+row['Defendant id'])"
+              (click)="onDefendantClick(row)"
+              (keydown.enter)="onDefendantClick(row)"
               tabindex="0"
               >{{ row['Defendant'] }}</a
             >

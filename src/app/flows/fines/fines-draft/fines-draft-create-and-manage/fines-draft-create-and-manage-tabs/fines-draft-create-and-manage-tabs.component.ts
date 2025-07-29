@@ -33,6 +33,7 @@ import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -161,16 +162,20 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * then triggers the defendant click logic in the fines draft service,
    * navigating to the appropriate path depending on whether the draft is being amended or reviewed.
    *
-   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   * @param row - The draft account row associated with the defendant.
    */
-  public onDefendantClick(draftAccountId: number): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    const { 
+      'Account type': accountType, 
+      'Defendant id': defendantId 
+    } = row;
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
-    this.finesDraftService.onDefendantClick(
-      draftAccountId,
-      this.finesDraftStore.amend()
-        ? this.finesDraftService.PATH_AMEND_ACCOUNT
-        : this.finesDraftService.PATH_REVIEW_ACCOUNT,
-    );
+
+    const route = this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES.fixedPenalty
+      ? this.finesDraftService.PATH_AMEND_ACCOUNT
+      : this.finesDraftService.PATH_REVIEW_ACCOUNT;
+
+    this.finesDraftService.onDefendantClick(defendantId, route);
   }
 
   /**

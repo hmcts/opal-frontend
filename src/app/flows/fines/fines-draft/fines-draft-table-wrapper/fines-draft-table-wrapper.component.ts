@@ -12,6 +12,7 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../fines-mac/constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -42,7 +43,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: false }) public activeTab: string = 'review';
   @Input({ required: false }) public isApprovedTab: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;
-  @Output() public linkClicked = new EventEmitter<number>();
+  @Output() public linkClicked = new EventEmitter<IFinesDraftTableWrapperTableData>();
   @Output() public accountClicked = new EventEmitter<string>();
 
   public override paginatedTableDataComputed = computed(() => {
@@ -53,13 +54,13 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
 
   /**
    * Handles the click event on a defendant.
-   * Emits the clicked defendant's ID.
+   * Emits the clicked row.
    *
-   * @param {number} id - The ID of the clicked defendant.
+   * @param {IFinesDraftTableWrapperTableData} row - The row that was clicked.
    * @returns {void}
    */
-  public onDefendantClick(id: number): void {
-    this.linkClicked.emit(id);
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    this.linkClicked.emit(row);
   }
 
   /**

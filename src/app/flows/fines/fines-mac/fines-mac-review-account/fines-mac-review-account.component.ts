@@ -100,8 +100,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
+  public accountStatus!: string;
   public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+  public showTimeline = false;
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
@@ -152,11 +154,22 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.courts = fetchMap.courts;
     this.results = fetchMap.results;
     this.majorCreditors = fetchMap.majorCreditors;
+    this.prosecutors = fetchMap.prosecutors;
 
     // Grab the status from the payload
     this.setReviewAccountStatus();
 
-    this.isReadOnly = true;
+    // Get account type and status from the store
+    this.accountType = this.finesMacStore.getAccountType();
+    this.accountStatus = this.finesDraftStore.getAccountStatus();
+
+    this.showTimeline = true;
+
+    if (!this.finesDraftStore.checker() && this.accountType === this.accountTypesKeys.fixedPenalty && this.accountStatus === 'Rejected') {
+      this.isReadOnly = false;
+    } else {
+      this.isReadOnly = true;
+    }
   }
 
   /**
@@ -303,6 +316,20 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Gets the back navigation path based on the current state.
+   *
+   * @private
+   * @returns {string} The back navigation path.
+   */
+  private getBackPath(): string {
+    return this.finesDraftStore.checker() 
+      ? this.checkAndValidateTabs 
+      : this.finesDraftStore.viewAllAccounts()
+          ? this.viewAllAccountsTabs
+          : this.createAndManageTabs;
+  }
+
+  /**
    * Submits the payload based on the draft amendment status.
    *
    * If the fines draft amendment is present, it submits the payload using a PUT request.
@@ -323,18 +350,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
-      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
-      return;
-    }
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
-      const path = this.finesDraftStore.checker()
-        ? this.checkAndValidateTabs
-        : this.finesDraftStore.viewAllAccounts()
-          ? this.viewAllAccountsTabs
-          : this.createAndManageTabs;
+      const path = this.getBackPath();
 
       // return true when going back to view-all-accounts
       // and false when going back to tabbed fragment
@@ -343,6 +362,28 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       } else {
         this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
       }
+    } else {
+      if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
+        if (this.accountStatus === 'Rejected') {
+          this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
+        } else {
+          this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+        } 
+      } else {
+        this.handleRoute(this.finesMacRoutes.children.accountDetails);
+      }
+
+    }
+  }
+
+  /**
+   * Redirects to the relevant page to change the account details.
+   * If the account type is fixed penalty, it navigates to the fixed penalty details page
+   * otherwise, it navigates back to the account details page.
+   */
+  public change(): void {
+    if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
+      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);
     }
