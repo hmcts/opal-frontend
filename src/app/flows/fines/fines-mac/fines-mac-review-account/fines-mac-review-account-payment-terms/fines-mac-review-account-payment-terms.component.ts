@@ -16,7 +16,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -52,9 +52,9 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   @Input({ required: true }) public defendantType!: string;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
-  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
+  public readonly permissionsMap = FINES_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS['collection-order']]: false,
+    [FINES_PERMISSIONS['collection-order']]: false,
   };
   public readonly defaultValues = FINES_DEFAULT_VALUES;
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
