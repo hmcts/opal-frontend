@@ -32,8 +32,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_language_preferences_hearing_language: null,
   fm_fp_offence_details_notice_number: [
     Validators.required,
-    Validators.maxLength(8),
-    Validators.minLength(7),
+    Validators.maxLength(16),
     alphabeticalTextValidator(),
   ],
   fm_fp_offence_details_offence_type: null,
