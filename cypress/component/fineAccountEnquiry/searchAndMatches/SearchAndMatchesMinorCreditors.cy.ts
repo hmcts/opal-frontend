@@ -177,7 +177,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
-  it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-712'] }, () => {
+  it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-715'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_address_line_1 = 'Address1234Address1234Address12345';
 
