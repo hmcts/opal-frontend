@@ -18,14 +18,6 @@ When('I select the {string} radio button', (radioLabel: string) => {
   cy.contains('label', radioLabel.trim()).click();
 });
 
-/*Then('I see the {string} radio button is selected', (radioName: string) => {
-  cy.get('input[type="radio"]').next().contains('label', radioName).prev().should('be.checked');
-});
-
-Then('I see the {string} radio button is unselected', (radioName: string) => {
-  cy.get('input[type="radio"]').next().contains('label', radioName).prev().should('be.checked');
-});*/
-
 Then('I see the {string} checkbox is checked', (checkboxName: string) => {
   cy.get('input[type="checkbox"]').next().contains('label', checkboxName).prev().should('be.checked');
 });
