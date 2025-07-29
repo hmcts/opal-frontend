@@ -3425,9 +3425,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@file:/Users/louisbriggs/Documents/GitHub/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.7
-  resolution: "@hmcts/opal-frontend-common-node@file:/Users/louisbriggs/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/louisbriggs/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=560fe1&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common-node@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.9"
   dependencies:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3436,10 +3436,10 @@ __metadata:
     applicationinsights: "npm:~2.9.6"
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
-    config: "npm:^3.3.9"
-    connect-redis: "npm:^8.0.0"
+    config: "npm:^4.0.0"
+    connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
-    csrf-csrf: "npm:^3.0.6"
+    csrf-csrf: "npm:^4.0.0"
     express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     helmet: "npm:^8.0.0"
@@ -3449,7 +3449,7 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/db2df4439373a34b63702b8290d7fb83187b5afe005b9f04a1a26402cea43438d10a1e232bc04ca8c6769a0f12be3749bb969cf760faa72bd2dfa15a9d4fd953
+  checksum: 10/90cc17766069feac1277e52a3f51909c0764ab2db46b520f5c2b0365e8eee665dca4aac066a4ef2d798c0edbb572b9f9fe157c51957d9f960752e6bf356145c7
   languageName: node
   linkType: hard
 
@@ -7540,15 +7540,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:^3.3.9":
-  version: 3.3.12
-  resolution: "config@npm:3.3.12"
-  dependencies:
-    json5: "npm:^2.2.3"
-  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
-  languageName: node
-  linkType: hard
-
 "config@npm:^4.0.0":
   version: 4.1.0
   resolution: "config@npm:4.1.0"
@@ -7569,15 +7560,6 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
-  languageName: node
-  linkType: hard
-
-"connect-redis@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "connect-redis@npm:8.1.0"
-  peerDependencies:
-    express-session: ">=1"
-  checksum: 10/c51bc8beeb801b34d92e6fe7ade87f15d8317f78bdaf82260e49b5e0455dc5b81e2355601b799547a7b51b67d6d56158af9c126586ca7b456006c58581b73405
   languageName: node
   linkType: hard
 
@@ -7829,15 +7811,6 @@ __metadata:
   version: 0.0.2
   resolution: "crypt@npm:0.0.2"
   checksum: 10/2c72768de3d28278c7c9ffd81a298b26f87ecdfe94415084f339e6632f089b43fe039f2c93f612bcb5ffe447238373d93b2e8c90894cba6cfb0ac7a74616f8b9
-  languageName: node
-  linkType: hard
-
-"csrf-csrf@npm:^3.0.6":
-  version: 3.2.2
-  resolution: "csrf-csrf@npm:3.2.2"
-  dependencies:
-    http-errors: "npm:^2.0.0"
-  checksum: 10/d21dc324d1c3c81e7693a638c631d689be6723d84bdf7b2fd77e6d88ec73330215beef719976792f122f0281fa10c7b4e9e8a67129cef86904e234c62fb40b9b
   languageName: node
   linkType: hard
 
