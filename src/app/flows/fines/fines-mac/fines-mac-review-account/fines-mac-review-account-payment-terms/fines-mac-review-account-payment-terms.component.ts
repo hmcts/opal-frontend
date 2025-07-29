@@ -16,7 +16,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -40,7 +40,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
   private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
 
@@ -52,9 +52,9 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   @Input({ required: true }) public defendantType!: string;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
-  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
+  public readonly permissionsMap = FINES_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
+    [FINES_PERMISSIONS['collection-order']]: false,
   };
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
@@ -81,8 +81,8 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
-        this.permissionsMap.collectionOrder,
+      this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
+        this.permissionsMap['collection-order'],
         businessUnitId,
         this.userStateRoles,
       );

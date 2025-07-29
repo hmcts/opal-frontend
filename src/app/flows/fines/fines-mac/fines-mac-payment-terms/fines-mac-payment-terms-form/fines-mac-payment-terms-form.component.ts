@@ -32,7 +32,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION }
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permission-values.constant';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -83,7 +83,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userStateRoles: ISessionUserStateRole[] = [];
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
@@ -94,9 +94,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
 
   @Input() public defendantType!: string;
-  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
+  public readonly permissionsMap = FINES_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
+    [FINES_PERMISSIONS['collection-order']]: false,
   };
   override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
@@ -137,8 +137,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPermissions(): void {
     this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     if (this.userStateRoles && this.userStateRoles.length > 0) {
-      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
-        this.permissionsMap.collectionOrder,
+      this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
+        this.permissionsMap['collection-order'],
         this.finesMacStore.getBusinessUnitId(),
         this.userStateRoles,
       );
