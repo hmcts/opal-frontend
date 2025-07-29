@@ -88,32 +88,43 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it('AC6a. should show error for non-alphabetical last name', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_last_name = 'Smith123';
-    
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_last_name =
+      'Smith123';
+
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.lastNameError)
+      .should('exist')
+      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
 
   it('AC6b. should show error for non-alphabetical first name', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_first_names = 'Name123';
-    
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_first_names =
+      'Name123';
+
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'Name123');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.firstNamesError)
+      .should('exist')
+      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
 
   it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_name = 'Company123';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_name =
+      'Company123';
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -126,27 +137,41 @@ describe('Search Account Component - Minor Creditors', () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual_address_line_1 =
       'Address123?';
-      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain','Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',);
-    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Error).should('contain','Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',);
+    cy.get(DOM_ELEMENTS.errorSummary).should(
+      'contain',
+      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    );
+    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Error).should(
+      'contain',
+      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    );
     cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).clear();
   });
 
   it('AC6e. should show error for non-alphabetical post code', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_post_code = 'POSTCODE?';
-    
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_post_code =
+      'POSTCODE?';
+
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain','Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',);
-    cy.get(DOM_ELEMENTS.postcodeError).should('contain','Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',);
+    cy.get(DOM_ELEMENTS.errorSummary).should(
+      'contain',
+      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    );
+    cy.get(DOM_ELEMENTS.postcodeError).should(
+      'contain',
+      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    );
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
   it('AC7a. should validate last name maximum field length', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_last_name =      'Abcdefghijklmnopqrstuvwxyzabcdefg';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_last_name =
+      'Abcdefghijklmnopqrstuvwxyzabcdefg';
 
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -157,7 +182,8 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it('AC7b. should validate first names maximum field length', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_first_names = 'AbcdefghijklmnopqrstA';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_first_names =
+      'AbcdefghijklmnopqrstA';
 
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -168,7 +194,8 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it('AC7c. should validate company name maximum field length', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_name = 'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_name =
+      'abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijs';
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -179,7 +206,8 @@ describe('Search Account Component - Minor Creditors', () => {
 
   it('AC7d. should validate address line 1 maximum field length', { tags: ['PO-715'] }, () => {
     setupComponent(null);
-    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_address_line_1 = 'Address1234Address1234Address12345';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_address_line_1 =
+      'Address1234Address1234Address12345';
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
@@ -192,7 +220,7 @@ describe('Search Account Component - Minor Creditors', () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_post_code =
       'POSTCODES';
-    
+
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');

@@ -26,7 +26,7 @@ export const DOM_ELEMENTS = {
   referenceNumberInput: '#fsa_search_account_reference_case_number',
   referenceNumberError: '#fsa_search_account_reference_case_number-error-message',
 
-  // Minor creditors tab fields 
+  // Minor creditors tab fields
 
   minorCreditorIndividualRadioButton: '#individual',
   minorCreditorCompanyRadioButton: '#company',

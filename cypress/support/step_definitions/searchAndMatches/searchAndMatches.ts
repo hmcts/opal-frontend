@@ -7,11 +7,19 @@ Then('I navigate to Search For An Account', () => {
 });
 
 Then('I see the {string} radio button is selected', (radioName: string) => {
-  cy.contains('label', radioName.trim()).invoke('attr', 'for').then((inputId) => { cy.get(`#${inputId}`).should('be.checked'); });
+  cy.contains('label', radioName.trim())
+    .invoke('attr', 'for')
+    .then((inputId) => {
+      cy.get(`#${inputId}`).should('be.checked');
+    });
 });
 
 Then('I see the {string} radio button is unselected', (radioName: string) => {
-    cy.contains('label', radioName.trim()).invoke('attr', 'for').then((inputId) => { cy.get(`#${inputId}`).should('not.be.checked'); });
+  cy.contains('label', radioName.trim())
+    .invoke('attr', 'for')
+    .then((inputId) => {
+      cy.get(`#${inputId}`).should('not.be.checked');
+    });
 });
 
 When('I select the {string} radio button', (radioLabel: string) => {
