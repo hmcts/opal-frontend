@@ -16,7 +16,7 @@ export const FINES_SA_SEARCH_ACCOUNT_STATE_MOCK: IFinesSaSearchAccountState = {
     fsa_search_account_individuals_post_code: 'AB1 2CD',
   },
   fsa_search_account_companies_search_criteria: null,
-  fsa_search_account_minor_creditor_search_criteria: null,
+  fsa_search_account_minor_creditors_search_criteria: null,
   fsa_search_account_major_creditor_search_criteria: null,
   fsa_search_account_active_accounts_only: true,
 };
