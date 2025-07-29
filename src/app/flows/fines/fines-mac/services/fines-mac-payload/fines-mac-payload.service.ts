@@ -76,32 +76,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Converts a date string in 'dd/MM/yyyy' format to an RFC 3339 date string ('YYYY-MM-DD').
-   *
-   * @param date - The date string in 'dd/MM/yyyy' format or null.
-   * @returns The date string in RFC 3339 format ('YYYY-MM-DD') if valid, otherwise null.
-   */
-  private toRfc3339Date(date: string | null): string | null {
-    if (!date) return null;
-    const dateTime = this.dateService.getFromFormat(date, 'dd/MM/yyyy');
-    return dateTime.isValid ? dateTime.toISODate() : null;
-  }
-
-  /**   * Converts a date string in RFC 3339 format ('yyyy-MM-dd') back to 'dd/MM/yyyy' format.
-   *
-   * @param date - The RFC 3339 date string to convert, or null.
-   * @returns The date string in 'dd/MM/yyyy' format, or null if the input is null or invalid.
-   */
-  private fromRfc3339Date(date: string | null): string | null {
-    if (!date) {
-      return null;
-    }
-
-    const dateTime = this.dateService.getFromFormat(date, 'yyyy-MM-dd');
-    return dateTime.isValid ? dateTime.toFormat('dd/MM/yyyy') : null;
-  }
-
-  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -140,11 +114,7 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(
-      offenceDetailsForms,
-      courtDetailsState,
-      this.toRfc3339Date.bind(this),
-    );
+    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
 
     // Return our payload object
     return {
@@ -343,12 +313,6 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
-    finesMacState.offenceDetails.forEach(
-      (offence) =>
-        (offence.formData.fm_offence_details_date_of_sentence = this.fromRfc3339Date(
-          offence.formData.fm_offence_details_date_of_sentence,
-        )),
-    );
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);

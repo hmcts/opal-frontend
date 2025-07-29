@@ -21,6 +21,7 @@ export const FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'suspended_committal_date', ...BUILD_PAYLOAD_FORMAT },
   { key: 'account_sentence_date', ...BUILD_PAYLOAD_FORMAT },
   { key: 'response', ...BUILD_PAYLOAD_FORMAT },
+  { key: 'date_of_sentence', ...BUILD_PAYLOAD_FORMAT },
 ];
 
 // Reverse transformation configuration
@@ -31,4 +32,5 @@ export const FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'suspended_committal_date', ...MAP_PAYLOAD_FORMAT },
   { key: 'account_sentence_date', ...MAP_PAYLOAD_FORMAT },
   { key: 'response', ...MAP_PAYLOAD_FORMAT },
+  { key: 'date_of_sentence', ...MAP_PAYLOAD_FORMAT },
 ];
