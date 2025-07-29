@@ -19,6 +19,8 @@ import { IFinesMacFixedPenaltyDetailsStoreForm } from './interfaces/fines-mac-fi
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from './constants/fines-mac-fixed-penalty-details-store-form';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
+import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants/fines-mac-company-details-form';
 
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details',
@@ -76,6 +78,10 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
 
     _form.formData[`${this.finesPrefix}court_details_imposing_court_id`] =
       form.formData[`${this.fixedPenaltyPrefix}court_details_imposing_court_id`];
+    _form.formData[`${this.finesPrefix}court_details_originator_id`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    _form.formData[`${this.finesPrefix}court_details_originator_name`] =
+      form.formData[`${this.fixedPenaltyPrefix}court_details_originator_name`];
 
     return _form;
   }
@@ -152,8 +158,27 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
       form.formData[`${this.fixedPenaltyPrefix}offence_details_nto_nth`];
     _form.formData[`${this.finesPrefix}offence_details_date_nto_issued`] =
       form.formData[`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`];
-    _form.formData[`${this.finesPrefix}court_details_issuing_authority_id`] =
-      form.formData[`${this.fixedPenaltyPrefix}court_details_issuing_authority_id`];
+
+    return _form;
+  }
+
+  /**
+   * Patches all relevant form data into the fixed penalty details Form from the company details Form.
+   * @param form: The fixed penalty details form data.
+   * @returns The fixed penalty details form data ready for storage.
+   */
+  private createCompanyDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacCompanyDetailsForm {
+    const _form: IFinesMacCompanyDetailsForm = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM);
+    _form.formData[`${this.finesPrefix}company_details_company_name`] =
+      form.formData[`${this.fixedPenaltyPrefix}company_details_company_name`];
+    _form.formData[`${this.finesPrefix}company_details_address_line_1`] =
+      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_1`];
+    _form.formData[`${this.finesPrefix}company_details_address_line_2`] =
+      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_2`];
+    _form.formData[`${this.finesPrefix}company_details_address_line_3`] =
+      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_3`];
+    _form.formData[`${this.finesPrefix}company_details_postcode`] =
+      form.formData[`${this.fixedPenaltyPrefix}company_details_postcode`];
 
     return _form;
   }
@@ -222,6 +247,7 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
     this.finesMacStore.setAccountCommentsNotes(this.createCommentsAndNotesFormForStore(form));
     this.finesMacStore.setLanguagePreferences(this.createLanguagePreferencesFormForStore(form));
     this.finesMacStore.setFixedPenaltyDetails(this.createFixedPenaltyDetailsFormForStore(form));
+    this.finesMacStore.setCompanyDetails(this.createCompanyDetailsFormForStore(form));
     this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
   }
 

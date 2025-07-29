@@ -9,7 +9,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
@@ -24,11 +24,6 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
-import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
-import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
-import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
@@ -51,13 +46,12 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../fines-mac-offence
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details/fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/future-date';
-import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { IAgeObject } from '@hmcts/opal-frontend-common/services/date-service/interfaces';
 import { FinesMacOffenceDetailsService } from '../../fines-mac-offence-details/services/fines-mac-offence-details.service';
-import { timeFormatValidator } from '@hmcts/opal-frontend-common/validators/time-format';
-import { drivingLicenceNumberValidator } from '@hmcts/opal-frontend-common/validators/driving-licence-number';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -98,6 +92,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
   protected readonly finesPrefix = 'fm_';
   protected readonly fixedPenaltyPrefix = 'fm_fp_';
+  protected readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   @Input() public defendantType!: string;
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
@@ -122,103 +117,107 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   };
 
   /*
-   * Sets up the form for fixed penalty details, including personal details, court details, comments and notes,
-   * language preferences, and offence details.
+   * Sets up the form for fixed penalty details, including all sections.
    */
   private setupFixedPenaltyDetailsForm(): void {
     this.form = new FormGroup({
       // Personal Details
-      fm_fp_personal_details_title: new FormControl(null, [Validators.required]),
-      fm_fp_personal_details_forenames: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(20),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_personal_details_surname: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      fm_fp_personal_details_address_line_1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
-      fm_fp_personal_details_address_line_2: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
-      ]),
-      fm_fp_personal_details_address_line_3: new FormControl(null, [
-        optionalMaxLengthValidator(16),
-        specialCharactersValidator(),
-      ]),
-      fm_fp_personal_details_post_code: new FormControl(null, [
-        optionalMaxLengthValidator(8),
-        alphabeticalTextValidator(),
-      ]),
+      fm_fp_personal_details_title: new FormControl(null),
+      fm_fp_personal_details_forenames: new FormControl(null),
+      fm_fp_personal_details_surname: new FormControl(null),
+      fm_fp_personal_details_dob: new FormControl(null),
+      fm_fp_personal_details_address_line_1: new FormControl(null),
+      fm_fp_personal_details_address_line_2: new FormControl(null),
+      fm_fp_personal_details_address_line_3: new FormControl(null),
+      fm_fp_personal_details_post_code: new FormControl(null),
+      // Company Details
+      fm_fp_company_details_company_name: new FormControl(null),
+      fm_fp_company_details_address_line_1: new FormControl(null),
+      fm_fp_company_details_address_line_2: new FormControl(null),
+      fm_fp_company_details_address_line_3: new FormControl(null),
+      fm_fp_company_details_postcode: new FormControl(null),
       // Court Details
-      fm_fp_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(41),
-        alphabeticalTextValidator(),
-      ]),
+      fm_fp_court_details_originator_id: new FormControl(null),
+      fm_fp_court_details_originator_name: new FormControl(null),
+      fm_fp_court_details_imposing_court_id: new FormControl(null),
       // Comments and Notes
-      fm_fp_account_comments_notes_comments: new FormControl(null, [
-        Validators.maxLength(30),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_account_comments_notes_notes: new FormControl(null, [
-        Validators.maxLength(1000),
-        alphabeticalTextValidator(),
-      ]),
+      fm_fp_account_comments_notes_comments: new FormControl(null),
+      fm_fp_account_comments_notes_notes: new FormControl(null),
       fm_fp_account_comments_notes_system_notes: new FormControl(null),
       // Language Preferences
       fm_fp_language_preferences_document_language: new FormControl(null),
       fm_fp_language_preferences_hearing_language: new FormControl(null),
       // Offence Details
-      fm_fp_offence_details_notice_number: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(16),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_offence_details_offence_type: new FormControl('vehicle'),
-      fm_fp_offence_details_date_of_offence: new FormControl(null, [
-        Validators.required,
-        optionalValidDateValidator(),
-        futureDateValidator(),
-      ]),
+      fm_fp_offence_details_notice_number: new FormControl(null),
+      fm_fp_offence_details_offence_type: new FormControl(null),
+      fm_fp_offence_details_date_of_offence: new FormControl(null),
       fm_fp_offence_details_offence_id: new FormControl(null),
-      fm_fp_offence_details_offence_cjs_code: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(8),
-        Validators.minLength(7),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_offence_details_time_of_offence: new FormControl(null, [timeFormatValidator()]),
-      fm_fp_offence_details_place_of_offence: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_offence_details_amount_imposed: new FormControl(null, [Validators.required, amountValidator(18, 2)]),
+      fm_fp_offence_details_offence_cjs_code: new FormControl(''),
+      fm_fp_offence_details_time_of_offence: new FormControl(null),
+      fm_fp_offence_details_place_of_offence: new FormControl(null),
+      fm_fp_offence_details_amount_imposed: new FormControl(null),
       // Offence Details Vehicle
-      fm_fp_offence_details_vehicle_registration_number: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(7),
-        alphabeticalTextValidator(),
-      ]),
-      fm_fp_offence_details_driving_licence_number: new FormControl(null, [
-        Validators.required,
-        drivingLicenceNumberValidator(),
-      ]),
-      fm_fp_offence_details_nto_nth: new FormControl(null, [Validators.maxLength(10), alphabeticalTextValidator()]),
-      fm_fp_offence_details_date_nto_issued: new FormControl(null, [
-        optionalValidDateValidator(),
-        futureDateValidator(),
-      ]),
+      fm_fp_offence_details_vehicle_registration_number: new FormControl(null),
+      fm_fp_offence_details_driving_licence_number: new FormControl(null),
+      fm_fp_offence_details_nto_nth: new FormControl(null),
+      fm_fp_offence_details_date_nto_issued: new FormControl(null),
     });
+  }
+
+  /**
+   * Sets the validators for the fixed penalty details form controls.
+   */
+  private setValidators(): void {
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_imposing_court_id`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_comments`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_notes`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_system_notes`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}language_preferences_document_language`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}language_preferences_hearing_language`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_notice_number`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_offence_type`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_date_of_offence`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_offence_id`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_offence_cjs_code`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_time_of_offence`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_place_of_offence`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_amount_imposed`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_nto_nth`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
+
+    if (this.defendantType === this.defendantTypesKeys.company) {
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_company_name`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_address_line_1`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_address_line_2`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_address_line_3`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_postcode`);
+    }
+
+    if (this.defendantType !== this.defendantTypesKeys.company) {
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_title`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_forenames`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_surname`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_dob`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_address_line_1`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_address_line_2`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_address_line_3`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}personal_details_post_code`);
+    }
+
+    this.updateOffenceControlValidators();
+  }
+
+  /**
+   * Adds validators to forn control.
+   */
+  private addValidatorsToControl(controlName: keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS): void {
+    const control = this.form.controls[controlName];
+    if (control && FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS[controlName]) {
+      control.setValidators(FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS[controlName]);
+      control.updateValueAndValidity();
+    }
   }
 
   /**
@@ -228,8 +227,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     const offenceTypeControl = this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`];
 
     // Subscribe to changes in the offence type control
-    offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((offenceType) => {
-      this.updateOffenceControlValidators(offenceType);
+    offenceTypeControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      this.updateOffenceControlValidators();
     });
   }
 
@@ -237,23 +236,19 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * Updates the validators for the vehicle registration number and driving licence number fields depending on the offence type.
    * @param offenceType - The type of offence (e.g., 'vehicle' or other).
    */
-  private updateOffenceControlValidators(offenceType: string): void {
+  private updateOffenceControlValidators(): void {
+    const offenceType = this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value;
     if (offenceType === 'vehicle') {
-      this.form.controls['fm_fp_offence_details_vehicle_registration_number'].addValidators([
-        Validators.required,
-        Validators.maxLength(7),
-        alphabeticalTextValidator(),
-      ]);
-      this.form.controls['fm_fp_offence_details_driving_licence_number'].addValidators([
-        Validators.required,
-        drivingLicenceNumberValidator(),
-      ]);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
+      this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
     } else {
-      this.form.controls['fm_fp_offence_details_vehicle_registration_number'].clearValidators();
-      this.form.controls['fm_fp_offence_details_driving_licence_number'].clearValidators();
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].clearValidators();
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].clearValidators();
     }
-    this.form.controls['fm_fp_offence_details_vehicle_registration_number'].updateValueAndValidity();
-    this.form.controls['fm_fp_offence_details_driving_licence_number'].updateValueAndValidity();
+    this.form.controls[
+      `${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`
+    ].updateValueAndValidity();
+    this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].updateValueAndValidity();
   }
 
   /**
@@ -271,50 +266,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
       this.age = this.dateService.getAgeObject(dateOfBirth);
     });
-  }
-
-  /**
-   * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data.
-   */
-  private initialFixedPenaltyDetailsSetup(): void {
-    const formData = {
-      ...this.transformationService.replaceKeys(
-        this.finesMacStore.personalDetails().formData,
-        this.finesPrefix,
-        this.fixedPenaltyPrefix,
-      ),
-      ...this.transformationService.replaceKeys(
-        this.finesMacStore.courtDetails().formData,
-        this.finesPrefix,
-        this.fixedPenaltyPrefix,
-      ),
-      ...this.transformationService.replaceKeys(
-        this.finesMacStore.accountCommentsNotes().formData,
-        this.finesPrefix,
-        this.fixedPenaltyPrefix,
-      ),
-      ...this.transformationService.replaceKeys(
-        this.finesMacStore.languagePreferences().formData,
-        this.finesPrefix,
-        this.fixedPenaltyPrefix,
-      ),
-      ...this.transformationService.replaceKeys(
-        this.finesMacStore.fixedPenaltyDetails().formData,
-        this.finesPrefix,
-        this.fixedPenaltyPrefix,
-      ),
-    };
-    this.setupFixedPenaltyDetailsForm();
-
-    this.setInitialErrorMessages();
-    this.rePopulateForm(formData);
-    this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].updateValueAndValidity();
-    this.updateOffenceControlValidators(
-      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_offence_type`].value,
-    );
-    this.dateOfBirthListener();
-    this.offenceTypeListener();
-    this.setupOffenceCodeListener();
   }
 
   /**
@@ -340,8 +291,105 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     );
   }
 
+  /**
+   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * It finds the corresponding prosecutor from the prosecutorsData array
+   * and returns the pretty name for that prosecutor or null if not found.
+   *
+   * @private
+   * @returns {string | null}
+   */
+  private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
+    const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
+      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId,
+    );
+    if (!prosecutor) {
+      return null;
+    }
+    return prosecutor;
+  }
+
+  /**
+   * Sets the court_details_originator_name form control to the prosecutor name if it exists.
+   * @param event
+   */
+  private setProsecutorName(): void {
+    const prosecutor = this.getProsecutorFromId(
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString(),
+    );
+    if (prosecutor) {
+      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    }
+  }
+
+  /**
+   *
+   * @returns An object containing the form data for fixed penalty details, including personal details, court details,
+   * comments and notes, language preferences, and offence details.
+   * If the defendant type is a company, it also includes company details instead of personal details.
+   * The form data is transformed to replace keys with the appropriate prefixes for fines and fixed penalty
+   * details, ensuring that the data structure is consistent with the expected format for storage.
+   */
+  private buildFormData(): IFinesMacFixedPenaltyDetailsState {
+    const formData: IFinesMacFixedPenaltyDetailsState = {
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.personalDetails().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.courtDetails().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.accountCommentsNotes().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.languagePreferences().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.fixedPenaltyDetails().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+      ...this.transformationService.replaceKeys(
+        this.finesMacStore.companyDetails().formData,
+        this.finesPrefix,
+        this.fixedPenaltyPrefix,
+      ),
+    } as IFinesMacFixedPenaltyDetailsState;
+
+    return formData;
+  }
+
+  /**
+   * Sets up the initial state of the fixed penalty details form, including re-populating it with existing data, adding validators and inititing listeners
+   */
+  private initialFixedPenaltyDetailsSetup(): void {
+    this.setupFixedPenaltyDetailsForm();
+    this.setInitialErrorMessages();
+    this.rePopulateForm(this.buildFormData());
+    this.setValidators();
+
+    // Set up listeners
+    if (this.defendantType !== this.defendantTypesKeys.company) this.dateOfBirthListener();
+    this.offenceTypeListener();
+    this.setupOffenceCodeListener();
+  }
+
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setProsecutorName();
+    super.handleFormSubmit(event);
   }
 }

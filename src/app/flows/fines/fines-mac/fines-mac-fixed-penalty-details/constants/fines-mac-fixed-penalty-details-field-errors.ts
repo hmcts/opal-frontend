@@ -1,3 +1,4 @@
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors';
@@ -19,12 +20,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
-  fm_fp_court_details_issuing_authority_id: {
+  fm_fp_court_details_originator_id: {
     required: {
       message: `Enter the issuing authority`,
       priority: 1,
     },
   },
+  fm_fp_court_details_originator_name: {},
   fm_fp_account_comments_notes_comments: {
     maxlength: {
       message: `Add comment must be 30 characters or fewer`,
@@ -166,4 +168,9 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 3,
     },
   },
+  fm_fp_company_details_company_name: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_company_name,
+  fm_fp_company_details_address_line_1: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_1,
+  fm_fp_company_details_address_line_2: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_2,
+  fm_fp_company_details_address_line_3: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_3,
+  fm_fp_company_details_postcode: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_postcode,
 };

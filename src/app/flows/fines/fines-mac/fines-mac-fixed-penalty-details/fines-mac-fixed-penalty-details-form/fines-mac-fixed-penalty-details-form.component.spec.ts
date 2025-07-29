@@ -16,6 +16,8 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
+import { OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-autocomplete-items.mock';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
@@ -193,5 +195,112 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     component.form.get('fm_fp_personal_details_dob')?.setValue('01-01-1979');
     component['dateOfBirthListener']();
     expect(component.form.get('fm_fp_personal_details_dob')?.value).toBe('01-01-1979');
+  });
+
+  it('should add validators to the specified form control', () => {
+    // Arrange
+    component['setupFixedPenaltyDetailsForm']();
+    const controlName =
+      'fm_fp_offence_details_notice_number' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+    const control = component.form.controls[controlName];
+
+    // Precondition: Remove validators to ensure the test is valid
+    control.clearValidators();
+    control.updateValueAndValidity();
+
+    expect(control.validator).toBeNull();
+
+    // Act
+    component['addValidatorsToControl'](controlName);
+
+    // Assert
+    expect(control.validator).toBeDefined();
+  });
+
+  it('should do nothing if control does not exist when trying to add validators', () => {
+    // Arrange
+    const controlName = 'non_existent_control' as keyof typeof FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS;
+
+    // Act & Assert (should not throw)
+    expect(() => component['addValidatorsToControl'](controlName)).not.toThrow();
+  });
+
+  it('should set validators to the correct fields when defendant type is adult or youth only', () => {
+    // Arrange
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+    personalDetailsAddressLine1Control?.clearValidators();
+    personalDetailsAddressLine1Control?.updateValueAndValidity();
+    companyDetailsAddressLine1Control?.clearValidators();
+    companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+    // Act
+    component['setValidators']();
+
+    // Assert
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should set validators to the correct fields when defendant type is company', () => {
+    // Arrange
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    const personalDetailsAddressLine1Control = component.form.get('fm_fp_personal_details_address_line_1');
+    const companyDetailsAddressLine1Control = component.form.get('fm_fp_company_details_address_line_1');
+    personalDetailsAddressLine1Control?.clearValidators();
+    personalDetailsAddressLine1Control?.updateValueAndValidity();
+    companyDetailsAddressLine1Control?.clearValidators();
+    companyDetailsAddressLine1Control?.updateValueAndValidity();
+
+    // Act
+    component['setValidators']();
+
+    // Assert
+    expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
+    expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
+  });
+
+  it('should set prosecutor name when handleFormSubmit is called', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setProsecutorName');
+    const event = new SubmitEvent('submit');
+    component.handleFormSubmit(event);
+    expect(component['setProsecutorName']).toHaveBeenCalled();
+  });
+
+  it('should get prosecutor from supplied ID', () => {
+    const prosecutorId = '4821';
+    const expectedProsecutor = {
+      value: '4821',
+      name: 'Crown Prosecution Service (CPS)',
+    };
+    component.issuingAuthorityAutoCompleteItems = [expectedProsecutor];
+
+    const result = component['getProsecutorFromId'](prosecutorId);
+    expect(result).toEqual(expectedProsecutor);
+  });
+
+  it('should return null if no prosecutor found for the given ID', () => {
+    const prosecutorId = '9999'; // Non-existent ID
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    const result = component['getProsecutorFromId'](prosecutorId);
+    expect(result).toBeNull();
+  });
+
+  it('should set the prosecutor name in the form control', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue({
+      value: '101',
+      name: 'Police force',
+    });
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
   });
 });
