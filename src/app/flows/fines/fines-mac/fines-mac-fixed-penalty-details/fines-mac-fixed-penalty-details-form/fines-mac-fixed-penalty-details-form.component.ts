@@ -319,13 +319,36 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * @param event
    */
   private setProsecutorName(): void {
-    const prosecutor = this.getProsecutorFromId(
-      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString(),
-    );
-    if (prosecutor) {
-      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
+    const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    const idValue = idControl?.value != null ? idControl.value.toString() : '';
+    const prosecutor = this.getProsecutorFromId(idValue);
+
+    if (prosecutor && typeof prosecutor.name === 'string') {
+      // Remove any parenthesis and content inside, and trim whitespace
+      const prosecutorName = this.stripFirstParenthesesBlock(prosecutor.name);
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    } else {
+      // Optionally clear the name if not found
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue('');
     }
+  }
+
+  /**
+   * Strips out the first parentheses block from the given text.
+   * This method looks for the first occurrence of parentheses in the text,
+   * removes the content within them, and returns the modified text.
+   * @param {string} text - The text from which to strip the first parentheses block.
+   * @returns {string} - The modified text with the first parentheses block removed.
+   */
+  private stripFirstParenthesesBlock(text: string): string {
+    const open = text.indexOf('(');
+    const close = text.indexOf(')', open);
+    if (open !== -1 && close !== -1 && close > open) {
+      const before = text.slice(0, open);
+      const after = text.slice(close + 1);
+      return (before + after).trim();
+    }
+    return text.trim();
   }
 
   /**
