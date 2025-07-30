@@ -31,12 +31,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_account_comments_notes_system_notes: null,
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
-  fm_fp_offence_details_notice_number: [
-    Validators.required,
-    Validators.maxLength(8),
-    Validators.minLength(7),
-    alphabeticalTextValidator(),
-  ],
+  fm_fp_offence_details_notice_number: [Validators.required, Validators.maxLength(16), alphabeticalTextValidator()],
   fm_fp_offence_details_offence_type: null,
   fm_fp_offence_details_date_of_offence: [Validators.required, optionalValidDateValidator(), futureDateValidator()],
   fm_fp_offence_details_offence_id: null,

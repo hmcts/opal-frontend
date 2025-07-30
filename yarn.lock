@@ -4330,18 +4330,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/signals@npm:^19.0.0":
-  version: 19.2.1
-  resolution: "@ngrx/signals@npm:19.2.1"
+"@ngrx/signals@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/signals@npm:20.0.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": ^19.0.0
+    "@angular/core": ^20.0.0
     rxjs: ^6.5.3 || ^7.4.0
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10/e13b7e17c32c8502c8cd8442ec583c6e9127915ccbc44f972822f19dfabdcfa9a08a6726b1e06f34c99bbf64c3a004f0ede2244b9c3f96b02e69ed3f3c84bff2
+  checksum: 10/3004685cd144b9ceea298d8c24a045d88009c02766bd14f5963dfd794f1bc8f409ea5ad2f3d07d99e6a457de66c135a48a5ee98aef9f908e5a543a1192e0612e
   languageName: node
   linkType: hard
 
@@ -5312,9 +5312,9 @@ __metadata:
   linkType: hard
 
 "@types/luxon@npm:^3.4.2":
-  version: 3.6.2
-  resolution: "@types/luxon@npm:3.6.2"
-  checksum: 10/73ca30059e0b1e352ce3a208837bc042e0bae9cf6e5b42f63de9ddfe15348a9e9bf9fcde3d4034038be24cb24adc579ae984cadff3bf70432e54fed1ad249d12
+  version: 3.7.0
+  resolution: "@types/luxon@npm:3.7.0"
+  checksum: 10/6924bdb5afd06abcef746bcb15aba0851add10bb253f2247a1ec19230348fa538825c99da16920530c50c6923521ba378429e0134c9ef718a481e449f03c23c9
   languageName: node
   linkType: hard
 
@@ -13587,7 +13587,7 @@ __metadata:
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
-    "@ngrx/signals": "npm:^19.0.0"
+    "@ngrx/signals": "npm:^20.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
@@ -17316,8 +17316,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.93.0":
-  version: 5.100.2
-  resolution: "webpack@npm:5.100.2"
+  version: 5.101.0
+  resolution: "webpack@npm:5.101.0"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -17349,7 +17349,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/e643fd67de9086ff6c726f39e893b299470eb25d35cfc3736e6cc8cfe95d77a46334d44cb7f9c6cb9e7acf5e03e48541e95f9f88612559de926e2fe30c2d78cf
+  checksum: 10/edeb24a88cbe96902c601bc1292cd344d27c89c5eceb187f4e9936c8a17356c62b23a5dc441c12b16e62bb6c40804bd10d691135c638398f921760f2dba6a761
   languageName: node
   linkType: hard
 

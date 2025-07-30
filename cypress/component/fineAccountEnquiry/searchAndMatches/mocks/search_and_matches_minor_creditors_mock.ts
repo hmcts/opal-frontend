@@ -1,6 +1,6 @@
 import { IFinesSaSearchAccountState } from '../../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 
-export const COMPANY_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
+export const MINOR_CREDITORS_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
   fsa_search_account_business_unit_ids: null,
   fsa_search_account_number: '',
   fsa_search_account_reference_case_number: '',
@@ -22,7 +22,19 @@ export const COMPANY_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
     fsa_search_account_companies_address_line_1: '',
     fsa_search_account_companies_post_code: '',
   },
-  fsa_search_account_minor_creditors_search_criteria: null,
+  fsa_search_account_minor_creditors_search_criteria: {
+    fsa_search_account_minor_creditors_minor_creditor_type: '',
+    fsa_search_account_minor_creditors_last_name: '',
+    fsa_search_account_minor_creditors_last_name_exact_match: false,
+    fsa_search_account_minor_creditors_first_names: '',
+    fsa_search_account_minor_creditors_first_names_exact_match: false,
+    fsa_search_account_minor_creditors_company_name: '',
+    fsa_search_account_minor_creditors_company_name_exact_match: false,
+    fsa_search_account_minor_creditors_individual_address_line_1: '',
+    fsa_search_account_minor_creditors_individual_post_code: '',
+    fsa_search_account_minor_creditors_company_address_line_1: '',
+    fsa_search_account_minor_creditors_company_post_code: '',
+  },
   fsa_search_account_major_creditor_search_criteria: null,
   fsa_search_account_active_accounts_only: true,
 };
