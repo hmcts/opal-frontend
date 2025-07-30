@@ -320,7 +320,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     if (prosecutor && typeof prosecutor.name === 'string') {
       // Remove any parenthesis and content inside, and trim whitespace
-      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/g, '').trim();
+      const prosecutorName = prosecutor.name.replace(/\s*\([^()]*\)/, '').trim();
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
     } else {
       // Optionally clear the name if not found
