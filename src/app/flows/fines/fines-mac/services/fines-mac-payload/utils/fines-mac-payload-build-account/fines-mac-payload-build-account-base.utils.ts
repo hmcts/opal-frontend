@@ -95,6 +95,6 @@ export const finesMacPayloadBuildAccountBase = (
     collection_order_date: collection_order_date ?? null,
     suspended_committal_date: suspended_committal_date ?? null,
     payment_card_request: payment_card_request ?? null,
-    account_sentence_date: earliestDateOfSentence ?? null,
+    account_sentence_date: earliestDateOfSentence,
   };
 };

@@ -134,7 +134,7 @@ export const finesMacPayloadBuildAccountOffences = (
         impositions: [
           {
             result_id: 'FO',
-            amount_imposed: Number(fixedPenaltyDetails.fm_offence_details_amount_imposed ?? 0),
+            amount_imposed: Number(fixedPenaltyDetails.fm_offence_details_amount_imposed),
             amount_paid: 0,
             major_creditor_id: null,
             minor_creditor: null,
