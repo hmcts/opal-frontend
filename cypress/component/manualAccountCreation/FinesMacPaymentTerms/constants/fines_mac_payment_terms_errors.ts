@@ -5,7 +5,7 @@ export const ERROR_MESSAGES = {
   startDateInFuture: 'Start date is more than 3 years in the future',
   paymentTerms: 'Select payment terms',
   payByDate: 'Enter a pay by date',
-  validDate: 'Enter a valid calendar date',
+  validDate: 'Enter a valid date',
   validDateFormat: 'Pay by date must be in the format DD/MM/YYYY',
   startDate: 'Enter start date',
   instalmentAmount: 'Enter instalment amount',
@@ -20,10 +20,8 @@ export const ERROR_MESSAGES = {
   futureDate: 'Date must not be in the future',
   futureDateMust: 'Date must be in the future',
   prisonDateFormat: 'Date must be in the format DD/MM/YYYY',
-  prisonTypeCheck:
-    'Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
-  noenfTypeCheck:
-    'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+  prisonTypeCheck: 'Prison and prison number must only contain letters or numbers',
+  noenfTypeCheck: 'Reason must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   noenfReason: 'Enter a reason',
   collectionError: 'Select whether there was a collection order',
   collectionDateError: 'Enter date collection order made',
@@ -47,7 +45,7 @@ export const LUMPSUM_ERRORS = {
 };
 
 export const ENFORCEMENT_ERRORS = {
-  validDate: 'Enter a valid calendar date',
+  validDate: 'Enter a valid date',
   prisonTypeCheck:
     'Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
 };
