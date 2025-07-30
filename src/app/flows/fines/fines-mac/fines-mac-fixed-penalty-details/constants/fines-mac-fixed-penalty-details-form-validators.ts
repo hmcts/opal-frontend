@@ -20,11 +20,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_personal_details_address_line_3: [optionalMaxLengthValidator(16), specialCharactersValidator()],
   fm_fp_personal_details_post_code: [optionalMaxLengthValidator(8), alphabeticalTextValidator()],
   fm_fp_court_details_imposing_court_id: [Validators.required],
-  fm_fp_court_details_originator_id: [
-    Validators.required,
-    Validators.maxLength(41),
-    alphabeticalTextValidator(),
-  ],
+  fm_fp_court_details_originator_id: [Validators.required, Validators.maxLength(41), alphabeticalTextValidator()],
   fm_fp_court_details_originator_name: null,
   fm_fp_account_comments_notes_comments: [Validators.maxLength(30), alphabeticalTextValidator()],
   fm_fp_account_comments_notes_notes: [Validators.maxLength(1000), alphabeticalTextValidator()],

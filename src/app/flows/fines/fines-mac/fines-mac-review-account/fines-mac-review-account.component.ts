@@ -165,7 +165,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
     this.showTimeline = true;
 
-    if (!this.finesDraftStore.checker() && this.accountType === this.accountTypesKeys.fixedPenalty && this.accountStatus === 'Rejected') {
+    if (
+      !this.finesDraftStore.checker() &&
+      this.accountType === this.accountTypesKeys.fixedPenalty &&
+      this.accountStatus === 'Rejected'
+    ) {
       this.isReadOnly = false;
     } else {
       this.isReadOnly = true;
@@ -322,11 +326,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {string} The back navigation path.
    */
   private getBackPath(): string {
-    return this.finesDraftStore.checker() 
-      ? this.checkAndValidateTabs 
+    return this.finesDraftStore.checker()
+      ? this.checkAndValidateTabs
       : this.finesDraftStore.viewAllAccounts()
-          ? this.viewAllAccountsTabs
-          : this.createAndManageTabs;
+        ? this.viewAllAccountsTabs
+        : this.createAndManageTabs;
   }
 
   /**
@@ -363,16 +367,15 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
         this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
       }
     } else {
-      if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
+      if (this.accountType === this.accountTypesKeys.fixedPenalty) {
         if (this.accountStatus === 'Rejected') {
           this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
         } else {
           this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
-        } 
+        }
       } else {
         this.handleRoute(this.finesMacRoutes.children.accountDetails);
       }
-
     }
   }
 
@@ -382,7 +385,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * otherwise, it navigates back to the account details page.
    */
   public change(): void {
-    if (this.finesMacStore.getAccountType() === this.accountTypesKeys.fixedPenalty) {
+    if (this.accountType === this.accountTypesKeys.fixedPenalty) {
       this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);

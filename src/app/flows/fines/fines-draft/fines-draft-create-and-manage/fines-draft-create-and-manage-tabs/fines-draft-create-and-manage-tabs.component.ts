@@ -165,15 +165,13 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * @param row - The draft account row associated with the defendant.
    */
   public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
-    const { 
-      'Account type': accountType, 
-      'Defendant id': defendantId 
-    } = row;
+    const { 'Account type': accountType, 'Defendant id': defendantId } = row;
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
 
-    const route = this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES.fixedPenalty
-      ? this.finesDraftService.PATH_AMEND_ACCOUNT
-      : this.finesDraftService.PATH_REVIEW_ACCOUNT;
+    const route =
+      this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES.fixedPenalty
+        ? this.finesDraftService.PATH_AMEND_ACCOUNT
+        : this.finesDraftService.PATH_REVIEW_ACCOUNT;
 
     this.finesDraftService.onDefendantClick(defendantId, route);
   }

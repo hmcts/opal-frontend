@@ -52,7 +52,15 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     );
 
     // Return all fetched data as an object
-    return { finesMacState, finesMacDraft: draftAccount, courts, majorCreditors, localJusticeAreas, results, prosecutors };
+    return {
+      finesMacState,
+      finesMacDraft: draftAccount,
+      courts,
+      majorCreditors,
+      localJusticeAreas,
+      results,
+      prosecutors,
+    };
   } catch (error) {
     // Log and rethrow the error
     globalStore.setError({
