@@ -184,27 +184,6 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
   }
 
   /**
-   * Patches all relevant form data into the fixed penalty details Form from the company details Form.
-   * @param form: The fixed penalty details form data.
-   * @returns The fixed penalty details form data ready for storage.
-   */
-  private createCompanyDetailsFormForStore(form: IFinesMacFixedPenaltyDetailsForm): IFinesMacCompanyDetailsForm {
-    const _form: IFinesMacCompanyDetailsForm = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM);
-    _form.formData[`${this.finesPrefix}company_details_company_name`] =
-      form.formData[`${this.fixedPenaltyPrefix}company_details_company_name`];
-    _form.formData[`${this.finesPrefix}company_details_address_line_1`] =
-      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_1`];
-    _form.formData[`${this.finesPrefix}company_details_address_line_2`] =
-      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_2`];
-    _form.formData[`${this.finesPrefix}company_details_address_line_3`] =
-      form.formData[`${this.fixedPenaltyPrefix}company_details_address_line_3`];
-    _form.formData[`${this.finesPrefix}company_details_postcode`] =
-      form.formData[`${this.fixedPenaltyPrefix}company_details_postcode`];
-
-    return _form;
-  }
-
-  /**
    * Creates an array of autocomplete items based on the response from the server.
    * @param response - The response object containing the local justice area reference data.
    * @returns An array of autocomplete items.
