@@ -303,4 +303,28 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
   });
+
+  it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+  });
+
+  it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+  });
 });

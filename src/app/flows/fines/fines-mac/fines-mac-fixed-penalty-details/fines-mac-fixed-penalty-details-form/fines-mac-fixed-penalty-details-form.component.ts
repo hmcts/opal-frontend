@@ -314,12 +314,17 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    * @param event
    */
   private setProsecutorName(): void {
-    const prosecutor = this.getProsecutorFromId(
-      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`].value.toString(),
-    );
-    if (prosecutor) {
-      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/, '').trim();
+    const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    const idValue = idControl?.value != null ? idControl.value.toString() : '';
+    const prosecutor = this.getProsecutorFromId(idValue);
+
+    if (prosecutor && typeof prosecutor.name === 'string') {
+      // Remove any parenthesis and content inside, and trim whitespace
+      const prosecutorName = prosecutor.name.replace(/\s*\([^)]*\)/g, '').trim();
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    } else {
+      // Optionally clear the name if not found
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue('');
     }
   }
 
