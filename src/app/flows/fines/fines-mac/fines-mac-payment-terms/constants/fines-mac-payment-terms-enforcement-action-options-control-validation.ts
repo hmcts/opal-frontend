@@ -18,7 +18,10 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',
-          validators: [Validators.maxLength(28), patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern')],
+          validators: [
+            Validators.maxLength(28),
+            patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
+          ],
         },
       ],
       fieldsToRemove: [
@@ -50,7 +53,10 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',
-          validators: [Validators.maxLength(28), patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern')],
+          validators: [
+            Validators.maxLength(28),
+            patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
+          ],
         },
       ],
     },
