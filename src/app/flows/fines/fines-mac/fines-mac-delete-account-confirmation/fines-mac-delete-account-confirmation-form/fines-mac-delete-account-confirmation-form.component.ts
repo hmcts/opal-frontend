@@ -108,7 +108,7 @@ export class FinesMacDeleteAccountConfirmationFormComponent
   }
 
   public override handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
-    if (this.accountId) {
+    if (this.accountId && this.accountId > 0) {
       route = `${route}/${this.accountId}`;
       super.handleRoute(route, nonRelative, event);
     } else {
