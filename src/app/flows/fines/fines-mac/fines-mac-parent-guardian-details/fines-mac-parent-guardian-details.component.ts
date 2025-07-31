@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesMacParentGuardianDetailsForm } from './interfaces/fines-mac-parent-guardian-details-form.interface';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
@@ -10,7 +10,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
-  imports: [CommonModule, RouterModule, FinesMacParentGuardianDetailsFormComponent],
+  imports: [RouterModule, FinesMacParentGuardianDetailsFormComponent],
   templateUrl: './fines-mac-parent-guardian-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
