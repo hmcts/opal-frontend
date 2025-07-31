@@ -7,7 +7,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         And I enter "West London" into the business unit search box
         And I select the "Fixed Penalty" radio button
 
-    @PO-857
+    @PO-857 @PO-861
     Scenario: Submit valid details for a fixed penalty draft account
         # PO-857 AC24 - Create a fixed penalty draft account for the Adult or youth only defendant type
         When I select the "Adult or youth only" radio button
@@ -27,7 +27,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         And I enter "Aram Court (123)" into the Enforcement court search box
 
         # Fill in fixed penalty details
-        And I enter "FPN12345678" into the "Notice number" field
+        And I enter "FPN1234" into the "Notice number" field
         And I enter "01/01/2023" into the "Date of offence" date field
         And I enter "HY35014" into the "Offence code" field
         And I enter "14:30" into the "Time of offence" field
@@ -39,9 +39,57 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         And I enter "AB12CDE" into the "Registration number" field
         And I enter "SMITH010123JS9AB" into the "Driving licence number" field
 
-        # Submit the form
+        When I click the "Review Account" button
+
+        # PO-861 AC1 - Check navigation to 'Check account details' screen
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Verify the presence of key sections
+        Then I see "Issuing authority and court details" text on the page
+        And I see "Personal details" text on the page
+        And I see "Offence Details" text on the page
+        And I see "Riding a bicycle on a footpath (HY35014)" in the Offence code field
+
+        # PO-861 AC2c - Verify 'Change' buttons functionality
+        # Test 'Change' for court details
+        When I click the change link for the "Issuing authority and court details" section
+        Then I see "Fixed Penalty details" on the page header
+
         When I click the "Review Account" button
         Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for personal details
+        When I click the change link for the "Personal details" section
+        Then I see "Fixed Penalty details" on the page header
+
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for offence details
+        When I click the change link for the "Offence Details" section
+        Then I see "Fixed Penalty details" on the page header
+
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for account comments and notes
+        When I click the change link for the "Account comments and notes" section
+        Then I see "Fixed Penalty details" on the page header
+
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # PO-861 AC4 - Back button navigation
+        When I click on the "Back" link
+        Then I see "Fixed Penalty details" on the page header
+
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # PO-861 AC3 - Delete Account button navigation
+        When I click on the "Delete account" link
+        Then I see "Are you sure you want to delete this account?" on the page header
+
 
     @PO-857
     Scenario: Cancel button behavior for the Fixed Penalty Details screen
@@ -122,3 +170,177 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         And I see "John" in the "First names" field
         And I see "150" in the Amount imposed field
 
+    @PO-861
+    Scenario: Submit valid details for a company defendant type fixed penalty draft account
+        # Create a fixed penalty draft account for company defendant type
+        When I select the "Company" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        # Fill in company details
+        When I enter "Example Corporation Ltd" into the "Company name" field
+        And I enter "123 Business Park" into the "Address line 1" field
+        And I enter "Commerce Way" into the "Address line 2" field
+        And I enter "EC1A 1BB" into the "Postcode" field
+
+        # Fill in court details
+        And I enter "Central London County Court (372)" into the Issuing Authority search box
+        And I enter "Johns Maintenance Court (249)" into the Enforcement court search box
+
+        # Fill in fixed penalty details
+        And I enter "HY35014" into the "Offence code" field
+        And I enter "10:15" into the "Time of offence" field
+        And I enter "London Borough of Westminster" into the "Place of offence" text field
+        And I enter "500" into the Amount imposed field
+        And I enter "CP12COR" into the "Registration number" field
+        And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+        And I enter "CORP2025" into the "Notice number" field
+        And I enter "05/07/2025" into the "Date of offence" date field
+
+        # Submit the form
+        When I click the "Review Account" button
+        # Verify navigation to 'Check account details' screen
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Verify the presence of key sections
+        Then I see "Issuing authority and court details" text on the page
+        And I see "Company details" text on the page
+        And I see "Offence Details" text on the page
+        And I see "Account comments and notes" text on the page
+
+        # PO-861 AC2c - Test 'Change' buttons functionality for all sections
+        # Test 'Change' for court details
+        When I click the change link for the "Issuing authority and court details" section
+        Then I see "Fixed Penalty details" on the page header
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for company details
+        When I click the change link for the "Company details" section
+        Then I see "Fixed Penalty details" on the page header
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for offence details
+        When I click the change link for the "Offence Details" section
+        Then I see "Fixed Penalty details" on the page header
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # Test 'Change' for account comments and notes
+        When I click the change link for the "Account comments and notes" section
+        Then I see "Fixed Penalty details" on the page header
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # PO-861 AC4 - Back button navigation
+        When I click on the "Back" link
+        Then I see "Fixed Penalty details" on the page header
+        When I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        # PO-861 AC3 - Delete Account button navigation
+        When I click on the "Delete account" link
+        Then I see "Are you sure you want to delete this account?" on the page header
+
+    @PO-1144
+    Scenario: Delete account for fixed penalty draft account - A/Y only
+        When I select the "Adult or youth only" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        #Fill in all details and submit the form
+        When I select "Mr" from the "Title" dropdown
+        And I enter "John" into the "First names" field
+        And I enter "Smith" into the "Last name" field
+        And I enter "01/01/1980" into the "Date of birth" date field
+        And I enter "123 High Street" into the "Address line 1" field
+        And I enter "SW1A 1AA" into the "Postcode" field
+        And I enter "Lowestoft County Court (256)" into the Issuing Authority search box
+        And I enter "Aram Court (123)" into the Enforcement court search box
+        #Change Notice Number back to longer value after fix
+        And I enter "12345678" into the "Notice number" field
+        And I enter "01/01/2023" into the "Date of offence" date field
+        And I enter "HY35014" into the "Offence code" field
+        And I enter "14:30" into the "Time of offence" field
+        And I enter "Oxford Street, London" into the "Place of offence" text field
+        And I enter "150" into the Amount imposed field
+        And I select the "Vehicle" radio button
+        And I enter "AB12CDE" into the "Registration number" field
+        And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+        And I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC1, AC3, Attempt to delete the account, press No - cancel instead
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click on the "No - cancel" link
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC2, Delete the account, press Yes - delete
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click the "Yes - delete" button
+        Then I see "Business unit and defendant type" on the page header
+        And I see "Create account" text on the page
+        Then I see the value "West London" in the business unit search box
+
+    @PO-1144
+    Scenario: Delete account for fixed penalty draft account - Company
+        When I select the "Company" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        #Fill in all details and submit the form
+        When I enter "Lowestoft County Court (256)" into the Issuing Authority search box
+        And I enter "Aram Court (123)" into the Enforcement court search box
+        And I enter "Testcorp" into the "Company name" field
+        And I enter "123 Bell Street" into the "Address line 1" field
+        And I enter "SW1A 1AA" into the "Postcode" field
+        #Change Notice Number back to longer value after fix
+        And I enter "12345678" into the "Notice number" field
+        And I select the "Vehicle" radio button
+        And I enter "AB12CDE" into the "Registration number" field
+        And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+        And I enter "01/01/2023" into the "Date of offence" date field
+        And I enter "HY35014" into the "Offence code" field
+        And I enter "14:30" into the "Time of offence" field
+        And I enter "Oxford Street, London" into the "Place of offence" text field
+        And I enter "150" into the Amount imposed field
+        And I click the "Review Account" button
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC1, AC3, Attempt to delete the account, press No - cancel instead
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click on the "No - cancel" link
+        Then I see "Check fixed penalty account details" on the page header
+
+        #AC2, Delete the account, press Yes - delete
+        When I click on the "Delete account" link
+        And I see "Are you sure you want to delete this account?" on the page header
+        And I click the "Yes - delete" button
+        Then I see "Business unit and defendant type" on the page header
+        And I see "Create account" text on the page
+        Then I see the value "West London" in the business unit search box
+
+    @PO-860
+    Scenario: Manual fixed penalty - Company Field Validation
+        When I select the "Company" radio button
+        And I click the "Continue" button
+        Then I see "Fixed Penalty details" on the page header
+
+        #AC1 - Company name field validation
+        When I click the "Review Account" button
+        Then I see the error message "Enter company name" at the top of the page
+        And I see the error message "Enter company name" above the "Company name" field
+
+        When I enter "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" into the "Company name" field
+        And I click the "Review Account" button
+        Then I see the error message "Company name must be 50 characters or fewer" at the top of the page
+        And I see the error message "Company name must be 50 characters or fewer" above the "Company name" field
+
+        When I enter "Testcorp!" into the "Company name" field
+        And I click the "Review Account" button
+        Then I see the error message "Company name must only contain letters" at the top of the page
+        And I see the error message "Company name must only contain letters" above the "Company name" field

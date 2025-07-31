@@ -28,4 +28,9 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_STATE: IFinesMacFixedPenaltyDetails
   fm_fp_offence_details_driving_licence_number: null,
   fm_fp_offence_details_nto_nth: null,
   fm_fp_offence_details_date_nto_issued: null,
+  fm_fp_company_details_address_line_1: null,
+  fm_fp_company_details_address_line_2: null,
+  fm_fp_company_details_address_line_3: null,
+  fm_fp_company_details_postcode: null,
+  fm_fp_company_details_company_name: null,
 };

@@ -22,7 +22,7 @@ export const COMPANY_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
     fsa_search_account_companies_address_line_1: '',
     fsa_search_account_companies_post_code: '',
   },
-  fsa_search_account_minor_creditor_search_criteria: null,
+  fsa_search_account_minor_creditors_search_criteria: null,
   fsa_search_account_major_creditor_search_criteria: null,
   fsa_search_account_active_accounts_only: true,
 };
