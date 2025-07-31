@@ -749,7 +749,7 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it.only(
+  it(
     '(AC1a) The Fixed Penalty Details screen for company will be created as per the Design Artefacts',
     { tags: ['@PO-860'] },
     () => {
@@ -794,21 +794,17 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.only(
-    '(AC1b, AC1c) Validation will exist for the Company Name field - no value provided',
-    { tags: ['@PO-860'] },
-    () => {
-      fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
-      setupComponent(null);
+  it('(AC1b, AC1c) Validation will exist for the Company Name field - no value provided', { tags: ['@PO-860'] }, () => {
+    fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    setupComponent(null);
 
-      // User does not provide a value
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter company name');
-    },
-  );
+    // User does not provide a value
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter company name');
+  });
 
-  it.only('(AC1b, AC1c) Validation will exist for the Company Name field - max length', { tags: ['@PO-860'] }, () => {
+  it('(AC1b, AC1c) Validation will exist for the Company Name field - max length', { tags: ['@PO-860'] }, () => {
     fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
     setupComponent(null);
 
@@ -819,7 +815,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
   });
 
-  it.only(
+  it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
     { tags: ['@PO-860'] },
     () => {
