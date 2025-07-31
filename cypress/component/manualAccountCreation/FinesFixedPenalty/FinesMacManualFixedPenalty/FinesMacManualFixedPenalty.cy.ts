@@ -810,7 +810,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
     // User enters more than 50 characters
     const longText = 'A'.repeat(51); // Exceeds 50 characters
-    cy.get(DOM_ELEMENTS.companyName).type(longText);
+    fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = longText;
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
   });
@@ -823,7 +823,7 @@ describe('FinesMacManualFixedPenalty', () => {
       setupComponent(null);
 
       // User enters non-alphanumeric characters
-      cy.get(DOM_ELEMENTS.companyName).clear().type('Company!123');
+      fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company!123';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must only contain letters');
     },
