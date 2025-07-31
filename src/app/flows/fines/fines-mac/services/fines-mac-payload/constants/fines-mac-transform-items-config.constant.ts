@@ -1,16 +1,23 @@
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { TRANSFORM_ITEM_DEFAULTS } from '@hmcts/opal-frontend-common/services/transformation-service/constants';
 
 // Shared properties
 const BUILD_PAYLOAD_FORMAT = {
+  ...TRANSFORM_ITEM_DEFAULTS,
   transformType: 'date',
-  dateInputFormat: 'dd/MM/yyyy',
-  dateOutputFormat: 'yyyy-MM-dd',
+  dateConfig: {
+    inputFormat: 'dd/MM/yyyy',
+    outputFormat: 'yyyy-MM-dd',
+  },
 };
 
 const MAP_PAYLOAD_FORMAT = {
+  ...TRANSFORM_ITEM_DEFAULTS,
   transformType: 'date',
-  dateInputFormat: 'yyyy-MM-dd',
-  dateOutputFormat: 'dd/MM/yyyy',
+  dateConfig: {
+    inputFormat: 'yyyy-MM-dd',
+    outputFormat: 'dd/MM/yyyy',
+  },
 };
 
 // Forward transformation configuration

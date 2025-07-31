@@ -9,7 +9,7 @@ import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
-import { CommonModule } from '@angular/common';
+
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -40,7 +40,6 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-s
 @Component({
   selector: 'app-fines-sa-search-account-form',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,

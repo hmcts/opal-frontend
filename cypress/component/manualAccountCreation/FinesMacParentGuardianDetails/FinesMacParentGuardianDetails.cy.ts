@@ -348,7 +348,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing additional alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null), 'parentOrGuardianToPay';
+    (setupComponent(null), 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
