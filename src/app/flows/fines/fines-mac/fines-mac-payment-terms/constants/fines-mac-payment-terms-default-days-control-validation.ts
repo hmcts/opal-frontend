@@ -1,8 +1,9 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
-import { numericalTextValidator } from '@hmcts/opal-frontend-common/validators/numerical-only';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { NUMERIC_PATTERN } from '../../../constants/fines-patterns.constant';
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {
@@ -11,6 +12,10 @@ export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstract
   },
   {
     controlName: 'fm_payment_terms_default_days_in_jail',
-    validators: [Validators.required, Validators.maxLength(5), numericalTextValidator()],
+    validators: [
+      Validators.required,
+      Validators.maxLength(5),
+      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
+    ],
   },
 ];

@@ -20,11 +20,12 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { SPECIAL_CHARACTERS_PATTERN, EMAIL_ADDRESS_PATTERN } from '../../../constants/fines-patterns.constant';
+
 @Component({
   selector: 'app-fines-mac-employer-details-form',
   imports: [
@@ -59,7 +60,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
       fm_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
-        optionalEmailAddressValidator(),
+        patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern'),
       ]),
       fm_employer_details_employer_telephone_number: new FormControl(null, [
         optionalMaxLengthValidator(20),
@@ -68,23 +69,23 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN),
       ]),
       fm_employer_details_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_employer_details_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_employer_details_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
       ]),
       fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

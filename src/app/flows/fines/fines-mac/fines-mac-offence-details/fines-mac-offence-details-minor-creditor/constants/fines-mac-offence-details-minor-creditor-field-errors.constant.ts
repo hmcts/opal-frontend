@@ -142,7 +142,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Payment reference must be 18 characters or fewer',
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: 'Payment reference must only contain letters',
       priority: 3,
     },

@@ -1,12 +1,13 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { twoDecimalPlacesValidator } from '@hmcts/opal-frontend-common/validators/two-decimal-places';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { TWO_DECIMAL_PLACES_PATTERN } from '../../../constants/fines-patterns.constant';
 
 export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {
     controlName: 'fm_payment_terms_instalment_amount',
-    validators: [Validators.required, twoDecimalPlacesValidator()],
+    validators: [Validators.required, patternValidator(TWO_DECIMAL_PLACES_PATTERN, 'invalidDecimal')],
   },
   {
     controlName: 'fm_payment_terms_instalment_period',
