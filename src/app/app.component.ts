@@ -1,6 +1,6 @@
-import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
 import { Observable, Subject, Subscription, filter, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import {
   MojHeaderComponent,
@@ -25,8 +25,8 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule,
+    RouterOutlet,
     MojHeaderComponent,
     MojHeaderNavigationItemComponent,
     MojAlertComponent,

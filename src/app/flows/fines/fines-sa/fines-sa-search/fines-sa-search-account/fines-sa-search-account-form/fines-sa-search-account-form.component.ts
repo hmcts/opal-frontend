@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -9,7 +9,7 @@ import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
-import { CommonModule } from '@angular/common';
+
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -34,11 +34,12 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-se
 import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account-form',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
@@ -65,13 +66,13 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
-    minorCreditors: {},
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
     majorCreditors: {},
   };
   private readonly tabControlsMap = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS,
-    minorCreditors: {},
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS,
     majorCreditors: {},
   };
   private readonly finesSaService = inject(FinesSaService);
@@ -80,6 +81,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
   public readonly finesSaStore = inject(FinesSaStore);
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
+
+  @ViewChild(FinesSaSearchAccountFormMinorCreditorsComponent)
+  minorCreditorsComponent?: FinesSaSearchAccountFormMinorCreditorsComponent;
 
   /**
    * Sets up the base structure of the form, including all static and tab-specific search criteria controls.
@@ -98,7 +102,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       ]),
       fsa_search_account_individual_search_criteria: new FormGroup({}),
       fsa_search_account_companies_search_criteria: new FormGroup({}),
-      fsa_search_account_minor_creditor_search_criteria: new FormGroup({}),
+      fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
       fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
       fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
     });
@@ -153,7 +157,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * Clears all controls in all tab-specific search criteria form groups.
    */
   private clearSearchForm(): void {
-    ['individual', 'companies', 'minor_creditor', 'major_creditor'].forEach((key) =>
+    ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
   }
@@ -178,6 +182,17 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Validates fields that are specific to the currently active tab.
+   * For the "minorCreditors" tab, this ensures that at least one minor creditor search field is populated
+   * depending on the selected creditor type (individual or company), and sets the error on a representative control.
+   */
+  private validateTabSpecificFields(): void {
+    if (this.finesSaStore.activeTab() === 'minorCreditors') {
+      this.minorCreditorsComponent?.applyMinorCreditorValidation();
+    }
+  }
+
+  /**
    * Returns the FormGroup associated with the currently active tab.
    */
   public get searchCriteriaForm(): FormGroup {
@@ -187,7 +202,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       case 'companies':
         return this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
       case 'minorCreditors':
-        return this.form.get('fsa_search_account_minor_creditor_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
       case 'majorCreditors':
         return this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
       default:
@@ -226,6 +241,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       });
       return;
     }
+
+    this.validateTabSpecificFields();
 
     super.handleFormSubmit(event);
   }

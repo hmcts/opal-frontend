@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, signal, Output, computed } from '@angular/core';
 import {
   MojSortableTableHeaderComponent,
@@ -18,7 +17,6 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
   selector: 'app-fines-draft-table-wrapper',
   standalone: true,
   imports: [
-    CommonModule,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,

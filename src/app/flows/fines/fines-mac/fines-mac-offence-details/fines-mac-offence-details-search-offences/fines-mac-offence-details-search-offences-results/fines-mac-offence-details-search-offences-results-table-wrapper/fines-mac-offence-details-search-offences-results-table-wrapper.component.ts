@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, signal, Signal } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import {
@@ -23,7 +22,6 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
   selector: 'app-fines-mac-offence-details-search-offences-results-table-wrapper',
   standalone: true,
   imports: [
-    CommonModule,
     MojSortableTableComponent,
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,

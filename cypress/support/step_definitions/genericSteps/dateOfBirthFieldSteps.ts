@@ -10,7 +10,7 @@ Then('I enter {string} into the Date of birth field', (dob: string) => {
 
 Then('I enter a date of birth {int} years ago', (yearsAgo: number) => {
   const dob = calculateDOB(yearsAgo);
-  cy.get('opal-lib-moj-date-picker[labeltext="Date of birth"]').find('input').clear().type(dob), { delay: 0 };
+  (cy.get('opal-lib-moj-date-picker[labeltext="Date of birth"]').find('input').clear().type(dob), { delay: 0 });
 });
 
 Then('I see {string} in the date of birth panel', (expectedText: string) => {

@@ -9,7 +9,7 @@ export const REQUIRED_VALIDATION = {
 };
 
 export const MAX_LENGTH_VALIDATION = {
-  maxlengthName: 'The company name must be 50 characters or fewer',
+  maxlengthName: 'Company name must be 50 characters or fewer',
   maxlengthAlias1: 'The company name must be 30 characters or fewer for alias 1',
   maxlengthAlias2: 'The company name must be 30 characters or fewer for alias 2',
   maxlengthAlias3: 'The company name must be 30 characters or fewer for alias 3',
