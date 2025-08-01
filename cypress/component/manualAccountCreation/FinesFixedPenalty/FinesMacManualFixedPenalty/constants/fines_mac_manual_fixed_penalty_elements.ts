@@ -6,6 +6,7 @@ export const DOM_ELEMENTS = {
   enforcementCourtInput: 'input[id="fm_fp_court_details_imposing_court_id-autocomplete"]',
   issuingAuthorityDropDown: '[id^="fm_fp_court_details_issuing_authority_id-autocomplete__option"]',
   enforcementCourtDropDown: '[id^="fm_fp_court_details_imposing_court_id-autocomplete__option"]',
+  companyName: '#fm_fp_company_details_company_name',
 
   titleSelect: 'select[id="fm_fp_personal_details_title"]',
   firstNameInput: 'input[id="fm_fp_personal_details_forenames"]',
@@ -18,6 +19,11 @@ export const DOM_ELEMENTS = {
   addressLine2Input: 'input[id="fm_fp_personal_details_address_line_2"]',
   addressLine3Input: 'input[id="fm_fp_personal_details_address_line_3"]',
   postcodeInput: 'input[id="fm_fp_personal_details_post_code"]',
+
+  companyAddressLine1Input: '#fm_fp_company_details_address_line_1',
+  companyAddressLine2Input: '#fm_fp_company_details_address_line_2',
+  companyAddressLine3Input: '#fm_fp_company_details_address_line_3',
+  companyPostcodeInput: '#fm_fp_company_details_postcode',
 
   noticeNumberInput: 'input[id="fm_fp_offence_details_notice_number"]',
   vehicleRadioButton: '[labeltext="Vehicle"] > #fm_fp_offence_details_offence_type',

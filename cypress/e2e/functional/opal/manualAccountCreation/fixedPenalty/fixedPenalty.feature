@@ -323,24 +323,3 @@ Feature: Manual fixed penalty account creation - Create Draft Account
         Then I see "Business unit and defendant type" on the page header
         And I see "Create account" text on the page
         Then I see the value "West London" in the business unit search box
-
-    @PO-860
-    Scenario: Manual fixed penalty - Company Field Validation
-        When I select the "Company" radio button
-        And I click the "Continue" button
-        Then I see "Fixed Penalty details" on the page header
-
-        #AC1 - Company name field validation
-        When I click the "Review Account" button
-        Then I see the error message "Enter company name" at the top of the page
-        And I see the error message "Enter company name" above the "Company name" field
-
-        When I enter "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" into the "Company name" field
-        And I click the "Review Account" button
-        Then I see the error message "Company name must be 50 characters or fewer" at the top of the page
-        And I see the error message "Company name must be 50 characters or fewer" above the "Company name" field
-
-        When I enter "Testcorp!" into the "Company name" field
-        And I click the "Review Account" button
-        Then I see the error message "Company name must only contain letters" at the top of the page
-        And I see the error message "Company name must only contain letters" above the "Company name" field
