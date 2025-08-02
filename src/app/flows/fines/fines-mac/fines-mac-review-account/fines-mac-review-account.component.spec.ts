@@ -27,6 +27,7 @@ import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -374,12 +375,27 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
-      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty);
+      component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
       const handleRouteSpy = spyOn(component, 'handleRoute');
 
       component.navigateBack();
 
       expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
+    it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute').and.stub();
+      component.accountStatus = 'Rejected';
+      component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+      component.isReadOnly = false;
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(
+        component['getBackPath'](),
+        false,
+        undefined,
+        component['finesDraftStore'].fragment(),
+      );
     });
 
     it('should submit payload on submitForReview', () => {
@@ -460,12 +476,30 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
       expect(result).toBeNull();
     });
+
+    it('should route to the account details page when change() is called from a fine account', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+      component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
+
+      component.change();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.accountDetails);
+    });
+
+    it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+      component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+
+      component.change();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
   });
 
   describe('when snapshot has localJusticeAreas, courts, results, major creditors and reviewAccountFetchMap', () => {
     let component: FinesMacReviewAccountComponent;
 
-    beforeEach(async () => {
+    it('should test reviewAccountFetchedMappedPayload', () => {
       const snapshotData: IFetchMapFinesMacPayload = {
         finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
         finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
@@ -473,14 +507,34 @@ describe('FinesMacReviewAccountComponent', () => {
         localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
         majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
         results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
       };
       const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
       component = setup.component;
-    });
-
-    it('should test reviewAccountFetchedMappedPayload', () => {
       component['reviewAccountFetchedMappedPayload']();
       expect(component.isReadOnly).toBeTrue();
+    });
+
+    it('should set correct flags when  reviewAccountFetchedMappedPayload is called for a fixed penalty account', () => {
+      const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+      const finesMacDraft = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+      finesMacDraft.account_status = 'Rejected';
+      const snapshotData: IFetchMapFinesMacPayload = {
+        finesMacState,
+        finesMacDraft,
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+        localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+      };
+      const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
+      component = setup.component;
+      component['finesDraftStore'].setChecker(false);
+
+      component['reviewAccountFetchedMappedPayload']();
+      expect(component.isReadOnly).toBeFalse();
     });
   });
 
