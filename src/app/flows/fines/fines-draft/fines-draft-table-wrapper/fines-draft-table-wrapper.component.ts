@@ -4,13 +4,14 @@ import {
   MojSortableTableRowDataComponent,
   MojSortableTableRowComponent,
   MojSortableTableComponent,
+  MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
-import { FinesSharedSortableTableFooterComponent } from '../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
+import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -20,9 +21,10 @@ import { FinesSharedSortableTableFooterComponent } from '../../components/fines-
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
+    MojSortableTableStatusComponent,
     DaysAgoPipe,
     DateFormatPipe,
-    FinesSharedSortableTableFooterComponent,
+    MojPaginationComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

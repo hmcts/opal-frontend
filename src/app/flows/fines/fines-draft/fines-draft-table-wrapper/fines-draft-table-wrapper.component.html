@@ -1,9 +1,4 @@
 <opal-lib-moj-sortable-table>
-  @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
-    <ng-container caption>
-      Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }} accounts
-    </ng-container>
-  }
   <ng-container head>
     @if (activeTab === 'approved') {
       <th
@@ -138,10 +133,19 @@
       </tr>
     }
   </ng-container>
+  <ng-container status>
+    <opal-lib-moj-sortable-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    />
+  </ng-container>
 </opal-lib-moj-sortable-table>
-<app-fines-shared-sortable-table-footer
-  [tableData]="filteredTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-draft-table-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
