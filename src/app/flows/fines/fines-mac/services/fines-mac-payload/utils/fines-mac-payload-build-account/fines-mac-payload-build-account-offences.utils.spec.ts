@@ -31,7 +31,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       return;
     }
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => '2024-09-01');
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
 
@@ -41,13 +41,11 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       return;
     }
 
-    const results = finesMacPayloadBuildAccountOffences(
-      offencesMockStateMinorCreditor,
-      courtDetailsState,
-      () => '2024-09-01',
-    );
+    const results = finesMacPayloadBuildAccountOffences(offencesMockStateMinorCreditor, courtDetailsState);
+    const expected = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    expected[0].date_of_sentence = '01/09/2024';
 
-    expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    expect(results).toEqual(expected);
   });
 
   it('should build payload with a null response object', () => {
@@ -77,7 +75,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_prosecutor_case_reference: null,
       fm_court_details_imposing_court_id: null,
     };
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
     expect(results).toEqual([
       {
         date_of_sentence: null,
@@ -147,7 +145,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_prosecutor_case_reference: null,
       fm_court_details_imposing_court_id: null,
     };
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
 
     expect(results).toEqual([
       {
@@ -227,7 +225,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
       fm_court_details_imposing_court_id: null,
     };
 
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState, () => null);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
 
     expect(results).toEqual([
       {

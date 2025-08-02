@@ -197,4 +197,24 @@ describe('finesMacPayloadMapAccountOffences', () => {
     expectedType = Object.keys(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE)[0];
     expect(creditorType).toBe(expectedType);
   });
+
+  it('should map no minor creditors when minor_creditor is null', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = [
+      {
+        offence_id: 'offence-001',
+        date_of_sentence: '2024-09-01',
+        impositions: [{ minor_creditor: null }],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    ];
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload, null);
+    expect(result.offenceDetails[0].childFormData).toEqual([]);
+  });
 });

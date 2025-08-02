@@ -157,12 +157,12 @@ const mapAccountOffencesMinorCreditors = (
 
   // Filter impositions with valid minor creditors and map them
   return impositions
-    .filter((imposition) => !!imposition.minor_creditor)
     .map(({ minor_creditor: minorCreditor }, index) =>
       minorCreditor ? mapAccountOffencesMinorCreditorState(minorCreditor, index) : null,
     )
     .filter((state): state is IFinesMacOffenceDetailsMinorCreditorState => state !== null);
 };
+
 /**
  * Maps an array of IFinesMacPayloadAccountOffencesImposition to an array of IFinesMacOffenceDetailsImpositionsState.
  *
