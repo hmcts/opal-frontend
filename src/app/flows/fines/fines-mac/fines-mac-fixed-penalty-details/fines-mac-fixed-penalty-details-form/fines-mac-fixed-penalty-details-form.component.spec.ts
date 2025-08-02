@@ -17,6 +17,7 @@ import { TransformationService } from '@hmcts/opal-frontend-common/services/tran
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-default-values.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
+import { OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-issuing-authority-autocomplete-items.mock';
 
 describe('FinesMacFixedPenaltyFormComponent', () => {
   let component: FinesMacFixedPenaltyDetailsFormComponent;
@@ -258,5 +259,86 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     // Assert
     expect(personalDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeFalse();
     expect(companyDetailsAddressLine1Control?.hasValidator(Validators.required)).toBeTrue();
+  });
+
+  it('should set prosecutor name when handleFormSubmit is called', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setProsecutorName');
+    const event = new SubmitEvent('submit');
+    component.handleFormSubmit(event);
+    expect(component['setProsecutorName']).toHaveBeenCalled();
+  });
+
+  it('should get prosecutor from supplied ID', () => {
+    const prosecutorId = '4821';
+    const expectedProsecutor = {
+      value: '4821',
+      name: 'Crown Prosecution Service (CPS)',
+    };
+    component.issuingAuthorityAutoCompleteItems = [expectedProsecutor];
+
+    const result = component['getProsecutorFromId'](prosecutorId);
+    expect(result).toEqual(expectedProsecutor);
+  });
+
+  it('should return null if no prosecutor found for the given ID', () => {
+    const prosecutorId = '9999'; // Non-existent ID
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    const result = component['getProsecutorFromId'](prosecutorId);
+    expect(result).toBeNull();
+  });
+
+  it('should set the prosecutor name in the form control', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue({
+      value: '101',
+      name: 'Police force',
+    });
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('Police force');
+  });
+
+  it('should clear the prosecutor name in the form control if the prosecutor is not found', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    component.form.controls['fm_fp_court_details_originator_id'].setValue('101');
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+  });
+
+  it('should clear the prosecutor name in the form control if the prosecutor id is not set', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getProsecutorFromId').and.returnValue(null);
+    component.form.controls['fm_fp_court_details_originator_id'].setValue(null);
+    component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Call the method to set the prosecutor name
+    component['setProsecutorName']();
+
+    expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+  });
+
+  describe('stripFirstParenthesesBlock', () => {
+    it('should remove the first parentheses block from the text', () => {
+      const text = 'Example text (with parentheses) to test.';
+      const result = component['stripFirstParenthesesBlock'](text);
+      expect(result).toBe('Example text  to test.');
+    });
+
+    it('should return the original text if no parentheses are found', () => {
+      const text = 'Example text without parentheses to test.';
+      const result = component['stripFirstParenthesesBlock'](text);
+      expect(result).toBe(text);
+    });
   });
 });

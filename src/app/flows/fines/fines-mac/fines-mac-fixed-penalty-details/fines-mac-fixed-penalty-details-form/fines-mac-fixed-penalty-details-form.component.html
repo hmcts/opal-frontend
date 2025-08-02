@@ -7,15 +7,15 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Issuing Authority and Court Details</legend>
     <opal-lib-alphagov-accessible-autocomplete
-      [control]="form.controls['fm_fp_court_details_issuing_authority_id']"
+      [control]="form.controls['fm_fp_court_details_originator_id']"
       labelText="Issuing Authority"
       labelClasses="govuk-fieldset__legend--s"
-      inputId="fm_fp_court_details_issuing_authority_id"
-      inputName="fm_fp_court_details_issuing_authority_id"
+      inputId="fm_fp_court_details_originator_id"
+      inputName="fm_fp_court_details_originator_id"
       label=""
       hintText="Police force, Central Ticket Office (CTO) or other"
       [autoCompleteItems]="issuingAuthorityAutoCompleteItems"
-      [errors]="formControlErrorMessages['fm_fp_court_details_issuing_authority_id']"
+      [errors]="formControlErrorMessages['fm_fp_court_details_originator_id']"
     ></opal-lib-alphagov-accessible-autocomplete>
     <opal-lib-alphagov-accessible-autocomplete
       [control]="form.controls['fm_fp_court_details_imposing_court_id']"

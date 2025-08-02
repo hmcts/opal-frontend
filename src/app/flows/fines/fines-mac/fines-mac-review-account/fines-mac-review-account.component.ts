@@ -353,9 +353,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * This method triggers the submission process by calling the `submitPayload` method.
    */
   public submitForReview(): void {
-    if (this.accountType !== this.accountTypesKeys.fixedPenalty) {
-      this.submitPayload();
-    }
+    this.submitPayload();
   }
 
   /**

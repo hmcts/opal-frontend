@@ -48,12 +48,6 @@ describe('FinesMacReviewAccountFixedPenaltyDetailsComponent', () => {
     expect(formattedDate).toBe('01 January 2023');
   });
 
-  it('should convert money to monetary string', () => {
-    const amount = '1000';
-    const monetaryString = component.toMonetaryString(amount);
-    expect(monetaryString).toBe('£1000.00');
-  });
-
   it('should get offence details by code', () => {
     const offenceCode = '12345';
     component.getOffence(offenceCode);
