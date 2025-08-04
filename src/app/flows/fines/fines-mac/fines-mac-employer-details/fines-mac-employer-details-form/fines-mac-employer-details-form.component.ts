@@ -27,7 +27,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   SPECIAL_CHARACTERS_PATTERN,
   EMAIL_ADDRESS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+} from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
 const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');

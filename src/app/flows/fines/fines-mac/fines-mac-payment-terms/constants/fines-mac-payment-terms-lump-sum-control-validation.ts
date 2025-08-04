@@ -2,7 +2,7 @@ import { FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION as FM_PAYME
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { TWO_DECIMAL_PLACES_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { TWO_DECIMAL_PLACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validator for two decimal places
 const TWO_DECIMAL_PLACES_PATTERN_VALIDATOR = patternValidator(TWO_DECIMAL_PLACES_PATTERN, 'invalidDecimal');

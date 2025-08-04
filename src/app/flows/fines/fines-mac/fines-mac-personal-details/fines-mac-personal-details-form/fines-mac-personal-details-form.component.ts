@@ -45,7 +45,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   LETTERS_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+} from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls

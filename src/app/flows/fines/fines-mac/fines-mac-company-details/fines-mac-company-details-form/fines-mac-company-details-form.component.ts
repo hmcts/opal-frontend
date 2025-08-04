@@ -29,10 +29,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import {
-  LETTERS_WITH_SPACES_DOT_PATTERN,
-  SPECIAL_CHARACTERS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { LETTERS_WITH_SPACES_DOT_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
 const SPECIAL_CHARACTER_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');

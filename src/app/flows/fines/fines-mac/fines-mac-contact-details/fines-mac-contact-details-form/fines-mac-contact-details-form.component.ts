@@ -23,7 +23,7 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 //regex pattern validators for the form controls

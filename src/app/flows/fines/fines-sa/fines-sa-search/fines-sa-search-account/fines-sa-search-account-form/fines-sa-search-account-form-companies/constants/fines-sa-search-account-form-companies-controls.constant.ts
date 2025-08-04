@@ -3,7 +3,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+} from '@hmcts/opal-frontend-common/constants';
 
 const characterValidator = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,

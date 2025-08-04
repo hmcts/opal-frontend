@@ -3,7 +3,7 @@ import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validator for numeric values
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');

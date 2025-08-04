@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { LETTERS_WITH_SPACES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validator for company names that allows letters, spaces, dots.
 const LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR = patternValidator(

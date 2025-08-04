@@ -24,7 +24,7 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 
 //regex pattern validators for the form controls

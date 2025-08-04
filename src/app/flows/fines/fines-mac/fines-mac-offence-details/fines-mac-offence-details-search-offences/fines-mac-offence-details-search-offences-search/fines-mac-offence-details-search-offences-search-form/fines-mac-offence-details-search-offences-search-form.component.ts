@@ -14,7 +14,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+} from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(

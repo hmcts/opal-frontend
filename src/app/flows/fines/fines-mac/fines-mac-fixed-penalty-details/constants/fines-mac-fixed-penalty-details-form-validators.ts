@@ -14,7 +14,7 @@ import {
   DRIVING_LICENCE_NUMBER_PATTERN,
   LETTERS_WITH_SPACES_DOT_PATTERN,
   TIME_FORMAT_PATTERN,
-} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+} from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
