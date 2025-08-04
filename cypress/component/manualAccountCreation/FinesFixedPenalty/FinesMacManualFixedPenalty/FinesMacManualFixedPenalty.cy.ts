@@ -87,6 +87,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.titleSelect).should('exist');
       cy.get(DOM_ELEMENTS.firstNameInput).should('exist');
       cy.get(DOM_ELEMENTS.lastNameInput).should('exist');
+      cy.get(DOM_ELEMENTS.dobInput).should('exist');
       cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
       cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
       cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
@@ -747,4 +748,84 @@ describe('FinesMacManualFixedPenalty', () => {
       'Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes',
     );
   });
+
+  it(
+    '(AC1a) The Fixed Penalty Details screen for company will be created as per the Design Artefacts',
+    { tags: ['@PO-860'] },
+    () => {
+      fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent(null);
+
+      // Check company details section
+      cy.get(DOM_ELEMENTS.companyName).should('exist');
+      cy.get(DOM_ELEMENTS.companyAddressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.companyAddressLine2Input).should('exist');
+      cy.get(DOM_ELEMENTS.companyAddressLine3Input).should('exist');
+      cy.get(DOM_ELEMENTS.companyPostcodeInput).should('exist');
+
+      // Check personal details do not exist
+      cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
+      cy.get(DOM_ELEMENTS.firstNameInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.lastNameInput).should('not.exist');
+      cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
+
+      // Check court details section
+      cy.get(DOM_ELEMENTS.issuingAuthorityInput).should('exist');
+      cy.get(DOM_ELEMENTS.enforcementCourtInput).should('exist');
+
+      // Check fixed penalty details section
+      cy.get(DOM_ELEMENTS.noticeNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfOffenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.offenceCodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.timeOfOffenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.placeOfOffenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposedInput).should('exist');
+
+      cy.get(DOM_ELEMENTS.vehicleRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.nonVehicleRadioButton).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleRadioButton).check(); // Vehicle is default
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
+      cy.get(DOM_ELEMENTS.drivingLicenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.ntoNthInput).should('exist');
+      cy.get(DOM_ELEMENTS.dateNtoIssuedInput).should('exist');
+
+      // Check form buttons
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+    },
+  );
+
+  it('(AC1b, AC1c) Validation will exist for the Company Name field - no value provided', { tags: ['@PO-860'] }, () => {
+    fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    setupComponent(null);
+
+    // User does not provide a value
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter company name');
+  });
+
+  it('(AC1b, AC1c) Validation will exist for the Company Name field - max length', { tags: ['@PO-860'] }, () => {
+    fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    setupComponent(null);
+
+    // User enters more than 50 characters
+    const longText = 'A'.repeat(51); // Exceeds 50 characters
+    fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = longText;
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
+  });
+
+  it(
+    '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
+    { tags: ['@PO-860'] },
+    () => {
+      fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      setupComponent(null);
+
+      // User enters non-alphanumeric characters
+      fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company!123';
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must only contain letters');
+    },
+  );
 });
