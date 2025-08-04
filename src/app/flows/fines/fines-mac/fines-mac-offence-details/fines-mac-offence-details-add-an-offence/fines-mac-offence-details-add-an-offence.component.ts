@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
@@ -17,7 +16,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
-  imports: [CommonModule, RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
+  imports: [RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

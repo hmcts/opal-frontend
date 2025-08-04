@@ -5,7 +5,7 @@ import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/compon
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE } from '../constants/fines-mac-offence-details-minor-creditor-creditor-type.constant';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../constants/fines-mac-title-dropdown-options.constant';
 import { takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../constants/fines-mac-offence-details-minor-creditor-field-errors.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
@@ -39,7 +39,6 @@ import {
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukRadioComponent,
