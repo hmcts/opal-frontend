@@ -73,48 +73,48 @@ describe('FinesSaService', () => {
     expect(service.isAnyTextFieldPopulated(controls)).toBeFalse();
   });
 
-    it('should return "accountNumber" if fsa_search_account_number is present', () => {
-      const state = {
-        ...getBaseState(),
-        fsa_search_account_number: 'ACC123456',
-      };
-      expect(service.getSearchResultView(state)).toBe('accountNumber');
-    });
+  it('should return "accountNumber" if fsa_search_account_number is present', () => {
+    const state = {
+      ...getBaseState(),
+      fsa_search_account_number: 'ACC123456',
+    };
+    expect(service.getSearchResultView(state)).toBe('accountNumber');
+  });
 
-    it('should return "referenceCaseNumber" if reference is present and account number is not', () => {
-      const state = {
-        ...getBaseState(),
-        fsa_search_account_reference_case_number: 'REF123456',
-      };
-      expect(service.getSearchResultView(state)).toBe('referenceCaseNumber');
-    });
+  it('should return "referenceCaseNumber" if reference is present and account number is not', () => {
+    const state = {
+      ...getBaseState(),
+      fsa_search_account_reference_case_number: 'REF123456',
+    };
+    expect(service.getSearchResultView(state)).toBe('referenceCaseNumber');
+  });
 
-    it('should return "individuals" if individual criteria is populated', () => {
-      const state = {
-        ...getBaseState(),
-        fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
-      };
-      expect(service.getSearchResultView(state)).toBe('individuals');
-    });
+  it('should return "individuals" if individual criteria is populated', () => {
+    const state = {
+      ...getBaseState(),
+      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    };
+    expect(service.getSearchResultView(state)).toBe('individuals');
+  });
 
-    it('should return "companies" if company criteria is populated and others are not', () => {
-      const state = {
-        ...getBaseState(),
-        fsa_search_account_companies_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
-      };
-      expect(service.getSearchResultView(state)).toBe('companies');
-    });
+  it('should return "companies" if company criteria is populated and others are not', () => {
+    const state = {
+      ...getBaseState(),
+      fsa_search_account_companies_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
+    };
+    expect(service.getSearchResultView(state)).toBe('companies');
+  });
 
-    it('should return "minorCreditors" if minor creditor criteria is populated and others are not', () => {
-      const state = {
-        ...getBaseState(),
-        fsa_search_account_minor_creditors_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
-      };
-      expect(service.getSearchResultView(state)).toBe('minorCreditors');
-    });
+  it('should return "minorCreditors" if minor creditor criteria is populated and others are not', () => {
+    const state = {
+      ...getBaseState(),
+      fsa_search_account_minor_creditors_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
+    };
+    expect(service.getSearchResultView(state)).toBe('minorCreditors');
+  });
 
-    it('should default to "accountNumber" if no criteria is populated', () => {
-      const state = getBaseState();
-      expect(service.getSearchResultView(state)).toBe('accountNumber');
-    });
+  it('should default to "accountNumber" if no criteria is populated', () => {
+    const state = getBaseState();
+    expect(service.getSearchResultView(state)).toBe('accountNumber');
+  });
 });

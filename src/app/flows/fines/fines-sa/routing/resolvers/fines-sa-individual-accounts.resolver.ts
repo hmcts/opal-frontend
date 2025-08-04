@@ -5,6 +5,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { of } from 'rxjs';
 import { FinesSaStore } from '../../stores/fines-sa.store';
 import { FinesSaService } from '../../services/fines-sa.service';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
  * Resolver that retrieves individual defendant accounts based on current search criteria in the Fines SA flow.
@@ -43,12 +44,14 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
 
   if (hasAccountNumber) {
     return opalFinesService.getDefendantAccounts({
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       search_type: searchType,
       account_number: state.fsa_search_account_number,
       ...common,
     });
   } else if (hasReference) {
     return opalFinesService.getDefendantAccounts({
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       search_type: searchType,
       pcr: state.fsa_search_account_reference_case_number,
       ...common,
@@ -56,6 +59,7 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
   } else {
     const individualCriteria = ind!;
     return opalFinesService.getDefendantAccounts({
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       search_type: searchType,
       surname: individualCriteria.fsa_search_account_individuals_last_name,
       exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match,
