@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
+import { AbstractControl } from '@angular/forms';
 import { IFinesSaSearchAccountFormIndividualsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/interfaces/fines-sa-search-account-form-individuals-state.interface';
 import { IFinesSaSearchAccountFormCompaniesState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/interfaces/fines-sa-search-account-form-companies-state.interface';
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
@@ -75,5 +76,18 @@ export class FinesSaService {
     } else {
       return 'accountNumber';
     }
+  }
+
+  /**
+   * Determines if any control in the provided array contains a non-empty, trimmed string value.
+   *
+   * @param controls - An array of AbstractControl or null.
+   * @returns True if at least one control has a non-blank, non-null value; otherwise, false.
+   */
+  public isAnyTextFieldPopulated(controls: (AbstractControl | null)[]): boolean {
+    return controls.some((ctrl) => {
+      const value = ctrl?.value;
+      return typeof value === 'string' ? !!value.trim() : !!value;
+    });
   }
 }

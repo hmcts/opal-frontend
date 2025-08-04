@@ -7,11 +7,11 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 50 characters or fewer`,
+      message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text`,
+      message: `Company name must only contain letters`,
       priority: 3,
     },
   },
@@ -123,6 +123,10 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
     maxlength: {
       message: `The postcode must be 8 characters or fewer`,
       priority: 1,
+    },
+    alphabeticalTextPattern: {
+      message: `The postcode must only contain alphabetical text`,
+      priority: 3,
     },
   },
 };
