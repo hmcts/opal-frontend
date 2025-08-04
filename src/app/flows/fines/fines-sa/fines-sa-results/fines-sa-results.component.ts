@@ -12,7 +12,7 @@ import { IFinesSaResultsDefendantTableWrapperTableData } from './fines-sa-result
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../fines-sa-search/routing/constants/fines-sa-search-routing-paths.constant';
 import { Subject, takeUntil } from 'rxjs';
-import { FinesSaSearchAccountTabs } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tabs.type';
+import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 import { FinesSaService } from '../services/fines-sa.service';
 import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -108,7 +108,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private setupFragmentListener(): void {
     if (this.resultView === 'referenceCaseNumber' || this.resultView === 'accountNumber') {
       this.activatedRoute.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-        let defaultedFragment: FinesSaSearchAccountTabs = 'individuals';
+        let defaultedFragment: FinesSaSearchAccountTab = 'individuals';
         if (this.individualsData.length === 0) {
           if (this.companiesData.length === 0) {
             defaultedFragment = 'minorCreditors';
@@ -126,7 +126,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
           });
         }
 
-        this.finesSaStore.setResultsActiveTab(resolvedFragment as FinesSaSearchAccountTabs);
+        this.finesSaStore.setResultsActiveTab(resolvedFragment as FinesSaSearchAccountTab);
       });
     }
   }

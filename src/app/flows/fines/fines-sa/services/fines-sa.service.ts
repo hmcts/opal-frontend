@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { AbstractControl } from '@angular/forms';
 import { IFinesSaSearchAccountFormIndividualsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/interfaces/fines-sa-search-account-form-individuals-state.interface';
 import { IFinesSaSearchAccountFormCompaniesState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/interfaces/fines-sa-search-account-form-companies-state.interface';
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
 import { FinesSaResultsTabsType } from '../fines-sa-results/types/fines-sa-results-tabs.type';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 
 @Injectable({
   providedIn: 'any',
 })
 export class FinesSaService {
-  private isSet(value: object | null | undefined): boolean {
-    return Object.values(value ?? {}).some((v) => (typeof v === 'boolean' ? v === true : v !== null && v !== ''));
-  }
+  private readonly utilsService = inject(UtilsService);
 
   /**
    * Determines whether any tab-specific search criteria group contains user input.
@@ -23,10 +22,10 @@ export class FinesSaService {
    */
   public hasAnySearchCriteriaPopulated(state: IFinesSaSearchAccountState): boolean {
     return (
-      this.isSet(state.fsa_search_account_individual_search_criteria) ||
-      this.isSet(state.fsa_search_account_companies_search_criteria) ||
-      this.isSet(state.fsa_search_account_minor_creditors_search_criteria) ||
-      this.isSet(state.fsa_search_account_major_creditor_search_criteria)
+      this.utilsService.hasSetProperty(state.fsa_search_account_individual_search_criteria) ||
+      this.utilsService.hasSetProperty(state.fsa_search_account_companies_search_criteria) ||
+      this.utilsService.hasSetProperty(state.fsa_search_account_minor_creditors_search_criteria) ||
+      this.utilsService.hasSetProperty(state.fsa_search_account_major_creditor_search_criteria)
     );
   }
 
@@ -45,7 +44,7 @@ export class FinesSaService {
       | IFinesSaSearchAccountFormMinorCreditorsState
       | null,
   ): boolean {
-    return this.isSet(tabData);
+    return this.utilsService.hasSetProperty(tabData);
   }
 
   /**

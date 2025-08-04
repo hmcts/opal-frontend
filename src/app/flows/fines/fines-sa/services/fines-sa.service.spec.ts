@@ -5,12 +5,22 @@ import { AbstractControl } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/mocks/fines-sa-search-account-form-companies-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/mocks/fines-sa-search-account-form-minor-creditors-state.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { TestBed } from '@angular/core/testing';
 
 describe('FinesSaService', () => {
   let service: FinesSaService;
+  let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(() => {
-    service = new FinesSaService();
+    mockUtilsService = jasmine.createSpyObj(UtilsService, ['hasSetProperty']);
+    mockUtilsService.hasSetProperty.and.returnValue(true);
+
+    TestBed.configureTestingModule({
+      providers: [{ provide: UtilsService, useValue: mockUtilsService }],
+    });
+
+    service = TestBed.inject(FinesSaService);
   });
 
   const getBaseState = (): IFinesSaSearchAccountState => FINES_SA_SEARCH_ACCOUNT_STATE;
@@ -19,11 +29,13 @@ describe('FinesSaService', () => {
   const createControl = (value: any) => ({ value }) as AbstractControl;
 
   it('should return false when all search criteria are null', () => {
+    mockUtilsService.hasSetProperty.and.returnValue(false);
     const state = getBaseState();
     expect(service.hasAnySearchCriteriaPopulated(state)).toBeFalse();
   });
 
   it('should return false when all search criteria are empty objects', () => {
+    mockUtilsService.hasSetProperty.and.returnValue(false);
     const state = {
       ...getBaseState(),
       fsa_search_account_individual_search_criteria: {},
@@ -90,30 +102,46 @@ describe('FinesSaService', () => {
   });
 
   it('should return "individuals" if individual criteria is populated', () => {
+    mockUtilsService.hasSetProperty.and.callFake(
+      (input) => input === FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    );
+
     const state = {
       ...getBaseState(),
       fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     };
+
     expect(service.getSearchResultView(state)).toBe('individuals');
   });
 
   it('should return "companies" if company criteria is populated and others are not', () => {
+    mockUtilsService.hasSetProperty.and.callFake(
+      (input) => input === FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
+    );
+
     const state = {
       ...getBaseState(),
       fsa_search_account_companies_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
     };
+
     expect(service.getSearchResultView(state)).toBe('companies');
   });
 
   it('should return "minorCreditors" if minor creditor criteria is populated and others are not', () => {
+    mockUtilsService.hasSetProperty.and.callFake(
+      (input) => input === FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
+    );
+
     const state = {
       ...getBaseState(),
       fsa_search_account_minor_creditors_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
     };
+
     expect(service.getSearchResultView(state)).toBe('minorCreditors');
   });
 
   it('should default to "accountNumber" if no criteria is populated', () => {
+    mockUtilsService.hasSetProperty.and.returnValue(false);
     const state = getBaseState();
     expect(service.getSearchResultView(state)).toBe('accountNumber');
   });
