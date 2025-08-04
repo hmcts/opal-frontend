@@ -24,10 +24,7 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import {
-  SPECIAL_CHARACTERS_PATTERN,
-  EMAIL_ADDRESS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
+import { SPECIAL_CHARACTERS_PATTERN, EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
 const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');

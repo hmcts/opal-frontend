@@ -25,10 +25,7 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import {
-  LETTERS_WITH_SPACES_PATTERN,
-  SPECIAL_CHARACTERS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
+import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');

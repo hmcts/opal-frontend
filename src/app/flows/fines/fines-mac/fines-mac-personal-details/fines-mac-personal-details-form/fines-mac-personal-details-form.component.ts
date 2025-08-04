@@ -42,10 +42,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import {
-  LETTERS_WITH_SPACES_PATTERN,
-  SPECIAL_CHARACTERS_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
+import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls
