@@ -6,7 +6,17 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-} from '../../../constants/fines-patterns.constant';
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
+);
 
 export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation =
   {
@@ -18,10 +28,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',
-          validators: [
-            Validators.maxLength(28),
-            patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
-          ],
+          validators: [Validators.maxLength(28), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
         },
       ],
       fieldsToRemove: [
@@ -30,7 +37,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
           validators: [
             Validators.required,
             Validators.maxLength(28),
-            patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
+            ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
           ],
         },
       ],
@@ -42,7 +49,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
           validators: [
             Validators.required,
             Validators.maxLength(28),
-            patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
+            ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
           ],
         },
       ],
@@ -53,10 +60,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
         },
         {
           controlName: 'fm_payment_terms_prison_and_prison_number',
-          validators: [
-            Validators.maxLength(28),
-            patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
-          ],
+          validators: [Validators.maxLength(28), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
         },
       ],
     },

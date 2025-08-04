@@ -42,8 +42,15 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '../../../constants/fines-patterns.constant';
+import {
+  LETTERS_WITH_SPACES_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+
+// regex pattern validators for the form controls
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -92,12 +99,12 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),
@@ -106,15 +113,15 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

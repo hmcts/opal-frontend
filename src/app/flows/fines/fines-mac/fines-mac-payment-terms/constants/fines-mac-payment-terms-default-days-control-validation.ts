@@ -3,7 +3,10 @@ import { IAbstractFormArrayControlValidation } from '@hmcts/opal-frontend-common
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { NUMERIC_PATTERN } from '../../../constants/fines-patterns.constant';
+import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+// regex pattern validator for numeric values
+const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {
@@ -12,10 +15,6 @@ export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstract
   },
   {
     controlName: 'fm_payment_terms_default_days_in_jail',
-    validators: [
-      Validators.required,
-      Validators.maxLength(5),
-      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
-    ],
+    validators: [Validators.required, Validators.maxLength(5), NUMERIC_PATTERN_VALIDATOR],
   },
 ];

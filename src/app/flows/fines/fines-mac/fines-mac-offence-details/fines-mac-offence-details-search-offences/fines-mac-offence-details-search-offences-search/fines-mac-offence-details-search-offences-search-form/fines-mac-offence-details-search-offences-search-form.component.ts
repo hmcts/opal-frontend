@@ -14,7 +14,14 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
-} from '../../../../../constants/fines-patterns.constant';
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -59,18 +66,18 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
     this.form = new FormGroup({
       fm_offence_details_search_offences_code: new FormControl(null, [
         Validators.maxLength(8),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [
         Validators.maxLength(120),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_act_section: new FormControl(null, [
         Validators.maxLength(4000),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_inactive: new FormControl(false),
     });

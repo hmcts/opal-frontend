@@ -19,7 +19,14 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
-} from '../../../../constants/fines-patterns.constant';
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
+);
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 
 @Component({
   selector: 'app-fines-mac-review-account-decision-form',
@@ -59,8 +66,8 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl(null, [
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
-        patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
     });
   }

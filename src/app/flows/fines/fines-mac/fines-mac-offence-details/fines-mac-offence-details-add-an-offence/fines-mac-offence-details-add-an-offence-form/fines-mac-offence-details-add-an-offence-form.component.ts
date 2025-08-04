@@ -60,7 +60,14 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../../../fines/constants/fines-patterns.constant';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+//regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
   imports: [
@@ -134,7 +141,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         Validators.required,
         Validators.minLength(7),
         Validators.maxLength(8),
-        patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_offence_id: new FormControl(null),
       fm_offence_details_impositions: new FormArray([]),

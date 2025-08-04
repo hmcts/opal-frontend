@@ -34,7 +34,16 @@ import {
   LETTERS_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
   NUMERIC_PATTERN,
-} from '../../../../constants/fines-patterns.constant';
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+//regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
+const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -87,15 +96,15 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_company_name: new FormControl(null),
       fm_offence_details_minor_creditor_address_line_1: new FormControl(null, [
         Validators.maxLength(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_minor_creditor_address_line_2: new FormControl(null, [
         Validators.maxLength(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_minor_creditor_address_line_3: new FormControl(null, [
         Validators.maxLength(16),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
       fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),
@@ -141,16 +150,8 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
     title.setValidators([Validators.required]);
-    forenames.setValidators([
-      Validators.required,
-      Validators.maxLength(20),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
-    ]);
-    surname.setValidators([
-      Validators.required,
-      Validators.maxLength(30),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
-    ]);
+    forenames.setValidators([Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    surname.setValidators([Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
   }
 
   /**
@@ -158,11 +159,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private setCompanyValidators(): void {
     const { fm_offence_details_minor_creditor_company_name: companyName } = this.form.controls;
-    companyName.setValidators([
-      Validators.required,
-      Validators.maxLength(50),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
-    ]);
+    companyName.setValidators([Validators.required, Validators.maxLength(50), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
   }
 
   /**
@@ -176,25 +173,13 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
-    nameOnAccount.setValidators([
-      Validators.required,
-      Validators.maxLength(18),
-      patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern'),
-    ]);
-    sortCode.setValidators([
-      Validators.required,
-      Validators.maxLength(6),
-      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
-    ]);
-    accountNumber.setValidators([
-      Validators.required,
-      Validators.maxLength(8),
-      patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
-    ]);
+    nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    sortCode.setValidators([Validators.required, Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR]);
+    accountNumber.setValidators([Validators.required, Validators.maxLength(8), NUMERIC_PATTERN_VALIDATOR]);
     paymentReference.setValidators([
       Validators.required,
       Validators.maxLength(18),
-      patternValidator(ALPHANUMERIC_WITH_SPACES_PATTERN, 'alphanumericTextPattern'),
+      ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
     ]);
   }
 

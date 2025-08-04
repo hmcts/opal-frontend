@@ -32,7 +32,14 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   LETTERS_WITH_SPACES_DOT_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
-} from '../../../constants/fines-patterns.constant';
+} from '@hmcts/opal-frontend-common/constants/regex-patterns';
+
+//regex pattern validators for the form controls
+const SPECIAL_CHARACTER_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
+const LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR = patternValidator(
+  LETTERS_WITH_SPACES_DOT_PATTERN,
+  'alphabeticalTextPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -70,22 +77,22 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        patternValidator(LETTERS_WITH_SPACES_DOT_PATTERN, 'alphabeticalTextPattern'),
+        LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
       fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern'),
+        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
       ]),
       fm_company_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
