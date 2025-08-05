@@ -90,7 +90,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly viewAllAccountsTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.viewAllRejected}`;
   protected readonly checkAndValidateTabs = `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.checkAndValidate}/${this.finesDraftCheckAndValidateRoutes.children.tabs}`;
 
-  public isReadOnly!: boolean;
+  public isReadOnly = false;
   public reviewAccountStatus!: string;
   public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   public courts!: IOpalFinesCourtRefData;
@@ -165,13 +165,14 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
     this.showTimeline = true;
 
+    // Set to read-only mode if the account does not have the specific state and type
     if (
-      !this.finesDraftStore.checker() &&
-      this.accountType === this.accountTypesKeys.fixedPenalty &&
-      this.accountStatus === 'Rejected'
+      !(
+        !this.finesDraftStore.checker() &&
+        this.accountType === this.accountTypesKeys.fixedPenalty &&
+        this.accountStatus === 'Rejected'
+      )
     ) {
-      this.isReadOnly = false;
-    } else {
       this.isReadOnly = true;
     }
   }
