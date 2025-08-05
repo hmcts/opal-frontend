@@ -50,6 +50,8 @@ opal-fines-service:
       APPLICATIONINSIGHTS_ROLE_NAME: "opal-frontend-pr-${CHANGE_ID}-fines-service"
     postgresql:
       enabled: true
+      image:
+        tag: '17.5.0'
 
 redis:
   enabled: true

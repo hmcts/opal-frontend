@@ -19,7 +19,7 @@ dependencies:
     repository: 'oci://registry-1.docker.io/bitnamicharts'
     condition: postgresql.enabled
   - name: opal-fines-service
-    version: 0.0.33
+    version: 0.0.40
     repository: 'oci://sdshmctspublic.azurecr.io/helm'
     condition: opal-fines-service.enabled
 
