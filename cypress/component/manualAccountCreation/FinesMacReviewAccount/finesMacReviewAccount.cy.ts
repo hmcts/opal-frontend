@@ -100,7 +100,7 @@ describe('FinesMacReviewAccountComponent', () => {
       componentProperties: {},
     });
   };
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,

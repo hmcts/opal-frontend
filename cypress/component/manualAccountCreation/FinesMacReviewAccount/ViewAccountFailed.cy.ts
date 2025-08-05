@@ -78,7 +78,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
       ],
     });
   };
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
   });
 

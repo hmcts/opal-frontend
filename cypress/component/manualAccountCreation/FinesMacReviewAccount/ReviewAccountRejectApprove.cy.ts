@@ -102,7 +102,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       componentProperties: {},
     });
   };
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
   });
   beforeEach(() => {

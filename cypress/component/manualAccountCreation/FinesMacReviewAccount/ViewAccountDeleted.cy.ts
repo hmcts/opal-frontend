@@ -79,7 +79,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
       ],
     });
   };
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
   });
 

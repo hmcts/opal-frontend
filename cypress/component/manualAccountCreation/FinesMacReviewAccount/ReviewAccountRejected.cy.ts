@@ -93,7 +93,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
     });
   };
 
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
   });
 
