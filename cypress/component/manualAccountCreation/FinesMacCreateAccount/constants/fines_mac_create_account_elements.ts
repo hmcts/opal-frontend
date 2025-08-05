@@ -10,8 +10,8 @@ export const DOM_ELEMENTS = {
   businessUnitAutoComplete: 'ul[id = "fm_create_account_business_unit_id-autocomplete__listbox"]',
   //account type
   accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
-  fineInput: 'input[id = "fine"]',
-  fineLabel: 'label[for = "fine"]',
+  fineInput: 'input[id = "Fine"]',
+  fineLabel: 'label[for = "Fine"]',
   fixedPenaltyInput: 'input[id = "Fixed Penalty"]',
   fixedPenaltyLabel: 'label[for = "Fixed Penalty"]',
   conditionalCautionInput: 'input[id = "Conditional Caution"]',
