@@ -51,7 +51,7 @@ describe('FinesMacManualFixedPenalty', () => {
       },
     });
   };
-  before(() => {
+  beforeEach(() => {
     interceptOffences();
   });
 
