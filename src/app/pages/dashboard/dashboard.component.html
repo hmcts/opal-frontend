@@ -76,6 +76,26 @@
           >Search for an account</a
         >
       </li>
+      <li>
+        <a
+          class="govuk-link"
+          [routerLink]="
+            '/' +
+            finesRoutingPaths.root +
+            '/' +
+            finesRoutingPaths.children.acc.root +
+            '/' +
+            'defendant' +
+            '/' +            
+            '12345' +
+            '/' +
+            finesRoutingPaths.children.acc.children['details']
+          "
+          fragment="at-a-glance"
+          id="finesAccLink"
+          >View Defendant Account Details</a
+        >
+      </li>
     }
   </ul>
 </div>

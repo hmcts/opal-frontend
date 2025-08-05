@@ -16,13 +16,13 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':accountId',
+    path: 'defendant/:accountId',
     children: [
       {
         path: FINES_ACC_ROUTING_PATHS.children.details,
 
         loadComponent: () =>
-          import('../fines-acc-details/fines-acc-details.component').then((c) => c.FinesAccDetailsComponent),
+          import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then((c) => c.FinesAccDefendantDetailsComponent),
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
