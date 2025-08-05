@@ -15,12 +15,12 @@ import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/se
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   let fixedPenaltyMock: IFinesMacState;
@@ -30,8 +30,9 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     adultOrYouthOnly: FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK,
     company: FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK,
   };
+  before(() => {
+    interceptOffences();
 
-  beforeEach(() => {
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -41,28 +42,13 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
 
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
-
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     }).as('getDraftAccounts');
+  });
 
+  beforeEach(() => {
     // Default to adult/youth mock
     cy.then(() => {
       fixedPenaltyMock = structuredClone(FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK);
@@ -169,7 +155,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult');
 
       // Section 2 - Issuing Authority and Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
       // The card title should reflect this is for issuing authority too
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
@@ -305,7 +291,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Court Details
-      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Police force (123)');
+      cy.get(DOM_ELEMENTS.issuingAuthority).should('exist').and('contain', 'Asylum & Immigration Tribunal (9985)');
       cy.get(DOM_ELEMENTS.enforcementCourt).should('exist').and('contain', 'Historic Debt Database (101)');
 
       // Section 3 - Company Details
