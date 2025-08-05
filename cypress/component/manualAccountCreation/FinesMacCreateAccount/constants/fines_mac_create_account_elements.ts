@@ -12,10 +12,10 @@ export const DOM_ELEMENTS = {
   accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   fineInput: 'input[id = "fine"]',
   fineLabel: 'label[for = "fine"]',
-  fixedPenaltyInput: 'input[id = "fixedPenalty"]',
-  fixedPenaltyLabel: 'label[for = "fixedPenalty"]',
-  conditionalCautionInput: 'input[id = "conditionalCaution"]',
-  conditionalCautionLabel: 'label[for = "conditionalCaution"]',
+  fixedPenaltyInput: 'input[id = "Fixed Penalty"]',
+  fixedPenaltyLabel: 'label[for = "Fixed Penalty"]',
+  conditionalCautionInput: 'input[id = "Conditional Caution"]',
+  conditionalCautionLabel: 'label[for = "Conditional Caution"]',
 
   //fine
   defendantTypeTitle: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
@@ -35,7 +35,7 @@ export const DOM_ELEMENTS = {
   FPCompanyLabel: 'label[for = "company"]',
 
   //conditional caution
-  ConditionalCautionHint: 'div[id = "conditionalCaution-item-hint"]',
+  ConditionalCautionHint: 'div[id = "Conditional Caution-item-hint"]',
 
   continueButton: 'button[id = "submitForm"]',
   cancelLink: 'a.govuk-link.button-link',

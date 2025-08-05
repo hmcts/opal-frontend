@@ -131,9 +131,9 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     const fieldValue = this.form.get(fieldName)?.value;
 
     const defendantTypeMap: IFinesMacAccountTypes = {
-      fine: fieldValue,
-      fixedPenalty: fieldValue,
-      conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
+      Fine: fieldValue,
+      'Fixed Penalty': fieldValue,
+      'Conditional Caution': this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
     this.form

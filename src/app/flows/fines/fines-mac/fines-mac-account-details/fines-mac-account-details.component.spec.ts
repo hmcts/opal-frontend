@@ -27,6 +27,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -167,7 +168,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['setAccountType']();
 
     expect(component.defendantType).toEqual('Adult or youth only');
-    expect(component.accountType).toEqual('Conditional Caution');
+    expect(component.accountType).toEqual(FINES_MAC_ACCOUNT_TYPES['Conditional Caution']);
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {

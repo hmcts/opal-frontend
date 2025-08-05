@@ -1,3 +1,4 @@
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../constants/fines-mac-account-types';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
@@ -12,7 +13,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
-    account_type: 'conditionalCaution',
+    account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Crown Prosecution Service',
     originator_id: '4821',
@@ -95,7 +96,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
       },
     ],
   },
-  account_type: 'conditionalCaution',
+  account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
   account_status: 'Submitted',
   timeline_data: [
     {
