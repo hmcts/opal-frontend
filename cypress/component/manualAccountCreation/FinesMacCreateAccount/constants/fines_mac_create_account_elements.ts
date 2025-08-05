@@ -12,10 +12,10 @@ export const DOM_ELEMENTS = {
   accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   fineInput: 'input[id = "Fine"]',
   fineLabel: 'label[for = "Fine"]',
-  fixedPenaltyInput: 'input[id = "Fixed Penalty"]',
-  fixedPenaltyLabel: 'label[for = "Fixed Penalty"]',
-  conditionalCautionInput: 'input[id = "Conditional Caution"]',
-  conditionalCautionLabel: 'label[for = "Conditional Caution"]',
+  fixedPenaltyInput: 'input[id = "FixedPenalty"]',
+  fixedPenaltyLabel: 'label[for = "FixedPenalty"]',
+  conditionalCautionInput: 'input[id = "ConditionalCaution"]',
+  conditionalCautionLabel: 'label[for = "ConditionalCaution"]',
 
   //fine
   defendantTypeTitle: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
