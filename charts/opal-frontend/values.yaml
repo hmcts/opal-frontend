@@ -33,10 +33,6 @@ redis:
 
 opal-fines-service:
   enabled: false
-  postgresql:
-    enabled: false
-    image:
-      tag: '17.5.0'
 
 postgresql:
   enabled: false
