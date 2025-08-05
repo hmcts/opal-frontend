@@ -25,7 +25,6 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
@@ -160,7 +159,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
-      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES_KEYS.conditionalCaution,
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
     };
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -278,7 +277,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
-      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES_KEYS.fine,
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
       fm_create_account_business_unit_id: 1,
     };
     finesMacState.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);

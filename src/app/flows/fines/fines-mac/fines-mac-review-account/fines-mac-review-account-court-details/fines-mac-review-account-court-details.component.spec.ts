@@ -14,7 +14,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-state';
 import { OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-pretty-name.mock';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   let component: FinesMacReviewAccountCourtDetailsComponent;
@@ -117,7 +117,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
     component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '1865';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
 
@@ -135,7 +135,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
     component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '9985';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
 
@@ -153,7 +153,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.fixedPenaltyDetails = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
     component.fixedPenaltyDetails.fm_court_details_issuing_authority_id = '9985';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
+    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
 
     component['getCourtDetailsData']();
 
@@ -163,11 +163,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should set card title based on account type', () => {
-    component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
     component['setCardTitle']();
     expect(component.cardTitle).toBe('Issuing authority and court details');
 
-    component.accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
+    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
     component['setCardTitle']();
     expect(component.cardTitle).toBe('Court details');
   });
