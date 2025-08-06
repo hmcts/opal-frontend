@@ -20,6 +20,6 @@ export const DOM_ELEMENTS = {
   previousPageButton: '.moj-pagination__item--prev',
   nextPageButton: '.moj-pagination__item--next',
   //Added as Page Number is now dynamic
-  paginationPageNumber: (pageNum) => `.moj-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
   rejectedAccounts: 'a.govuk-link',
 };

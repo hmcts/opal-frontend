@@ -29,7 +29,7 @@ export const DOM_ELEMENTS = {
   paginationList: '.moj-pagination__list',
   paginationListItem: '.moj-pagination__item',
   paginationCurrentPage: '.moj-pagination__item--active',
-  paginationPageNumber: (pageNum) => `.moj-pagination__item:contains("${pageNum}")`,
+  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
 
   // Messages
   noResultsMessage: '.govuk-grid-column-full-width > p:nth-of-type(1)',
