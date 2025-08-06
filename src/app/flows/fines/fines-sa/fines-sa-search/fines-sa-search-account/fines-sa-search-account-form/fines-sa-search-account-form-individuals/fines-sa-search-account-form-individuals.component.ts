@@ -92,6 +92,7 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
     //First name Validation
     const requireFirstName = firstNamesExactMatchHasValue && !firstNamesHasValue;
 
+    // Updating last name control validators
     if (shouldRequireLastName) {
       lastNameControl.addValidators(Validators.required);
     } else {
@@ -99,6 +100,7 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
     }
     lastNameControl.updateValueAndValidity({ emitEvent: false });
 
+    //Updating first names control Validators
     if (requireFirstName) {
       firstNamesControl.addValidators(Validators.required);
     } else {
