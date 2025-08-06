@@ -1,0 +1,18 @@
+<div class="govuk-grid-column-three-quarters">
+  <opal-lib-custom-account-information>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>Account type:</h3>
+      <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
+    </opal-lib-custom-account-information-item>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
+      <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+    </opal-lib-custom-account-information-item>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
+      <p opal-lib-custom-account-information-item-value>
+        {{ businessUnit.businessUnitName }} ({{ businessUnit.businessUnitCode }})
+      </p>
+    </opal-lib-custom-account-information-item>
+  </opal-lib-custom-account-information>
+</div>

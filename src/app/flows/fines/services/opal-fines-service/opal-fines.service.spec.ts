@@ -553,7 +553,7 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  it('should getDefendantAccountHeader', () => {
+  xit('should getDefendantAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;

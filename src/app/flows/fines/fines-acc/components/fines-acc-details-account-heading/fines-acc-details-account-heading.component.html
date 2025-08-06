@@ -1,0 +1,37 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <opal-lib-govuk-heading-with-caption
+        [captionText]="accountData.account_number"
+        headingText="{{ accountData.title }} {{ accountData.firstnames }} {{ accountData.surname | uppercase }}"
+      ></opal-lib-govuk-heading-with-caption>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      <button
+        opalLibGovukButton
+        buttonId="addAccountNote"
+        buttonClasses="govuk-button--secondary"
+        (click)="addAccountNote.emit()"
+      >
+        Add account note
+      </button>
+      <!-- <opal-lib-moj-button-menu menuButtonTitle="More options:">
+            <opal-lib-moj-button-menu-item itemText="Option 1"></opal-lib-moj-button-menu-item>
+            <opal-lib-moj-button-menu-item itemText="Option 2"></opal-lib-moj-button-menu-item>
+            <opal-lib-moj-button-menu-item itemText="Option 3"></opal-lib-moj-button-menu-item>
+        </opal-lib-moj-button-menu> -->
+    </ng-container>
+  </opal-lib-custom-page-header>
+</div>
+
+@if (accountData.debtor_type === 'Parent/Guardian' || accountData.isYouth) {
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
+    @if (accountData.debtor_type === 'Parent/Guardian') {
+      <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--turquoise'" tagId="status"
+        >Parent or Guardian to pay</opal-lib-govuk-tag
+      >
+    } @else if (accountData.isYouth) {
+      <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--orange'" tagId="status">Youth Account</opal-lib-govuk-tag>
+    }
+  </div>
+}
