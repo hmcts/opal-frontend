@@ -69,6 +69,8 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   it('should not require last name if both first name and dob are empty', () => {
     component.form.get('fsa_search_account_individuals_first_names')?.setValue('');
     component.form.get('fsa_search_account_individuals_date_of_birth')?.setValue('');
+    component.form.get('fsa_search_account_individuals_last_name_exact_match')?.setValue(false);
+    component.form.get('fsa_search_account_individuals_include_aliases')?.setValue(false);
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
