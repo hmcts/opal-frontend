@@ -7,7 +7,7 @@ export const DOM_ELEMENTS = {
 
   statusHeading: 'h2.govuk-heading-m',
   tableHeadings: 'th.govuk-table__header',
-  tableCaption: 'caption.govuk-table__caption',
+  tableCaption: '.moj-pagination__results',
   table: 'table.govuk-table',
 
   tableRow: 'table.govuk-table>tbody>tr',
@@ -20,7 +20,8 @@ export const DOM_ELEMENTS = {
   submittedBy: 'td[id = "submittedBy"]',
   deleted: 'td[id = "changedDate"]',
 
-  paginationLinks: 'a.govuk-link.govuk-pagination__link',
+  paginationLinks: '.moj-pagination__list',
+  paginationPageNumber: (pageNum) => `.moj-pagination__item:contains("${pageNum}")`,
 
   accountStatus: 'strong[id="status"]',
   reviewHistory: 'h3.govuk-heading-m govuk-!-margin-top-4',

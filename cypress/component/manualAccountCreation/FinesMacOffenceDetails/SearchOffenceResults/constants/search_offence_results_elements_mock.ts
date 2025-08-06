@@ -22,17 +22,14 @@ export const DOM_ELEMENTS = {
   backLink: 'opal-lib-govuk-back-link',
 
   // Pagination
-  paginationElement: 'nav[role="navigation"][aria-label="results"]',
-  paginationText: '.govuk-table__caption, .moj-pagination__results',
-  previousPageButton: '.govuk-pagination__prev a[rel="prev"]',
-  nextPageButton: '.govuk-pagination__next a[rel="next"]',
-  paginationList: '.govuk-pagination__list',
-  paginationListItem: '.govuk-pagination__item',
-  paginationCurrentPage: '.govuk-pagination__item--current',
-  paginationPage1: '.govuk-pagination__item:nth-child(1)',
-  paginationPage2: '.govuk-pagination__item:nth-child(2)',
-  paginationPage3: '.govuk-pagination__item:nth-child(3)',
-  paginationPage4: '.govuk-pagination__item:nth-child(4)',
+  paginationElement: 'opal-lib-moj-pagination',
+  paginationText: '.moj-pagination__results',
+  previousPageButton: '.moj-pagination__item--prev',
+  nextPageButton: '.moj-pagination__item--next',
+  paginationList: '.moj-pagination__list',
+  paginationListItem: '.moj-pagination__item',
+  paginationCurrentPage: '.moj-pagination__item--active',
+  paginationPageNumber: (pageNum) => `.moj-pagination__item:contains("${pageNum}")`,
 
   // Messages
   noResultsMessage: '.govuk-grid-column-full-width > p:nth-of-type(1)',

@@ -128,7 +128,7 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
 
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
   });
 
   it('Handles pagination buttons correctly (AC6a), (AC6b, AC6c)', { tags: ['@PO-545', '@PO-987'] }, () => {
@@ -141,51 +141,59 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
     cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
 
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 - 75 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 results');
 
     cy.get(DOM_ELEMENTS.nextPageButton).should('exist').click();
 
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 - 100 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 results');
 
     cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
 
     //Handle page number buttons
     cy.get(DOM_ELEMENTS.paginationList).should('exist');
-    cy.get(DOM_ELEMENTS.paginationListItem).should('have.length', 4);
-    cy.get(DOM_ELEMENTS.paginationPage1).should('exist').click();
+    cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
+    
+    // Click on page 1 by content, not position
+    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
-    cy.get(DOM_ELEMENTS.paginationPage2).should('exist').click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
+    
+    // Click on page 2 by content, not position
+    cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
-    cy.get(DOM_ELEMENTS.paginationPage3).should('exist').click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
+    
+    // Click on page 3 by content, not position
+    cy.get(DOM_ELEMENTS.paginationPageNumber(3)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 - 75 of 100 offences');
-    cy.get(DOM_ELEMENTS.paginationPage4).should('exist').click();
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 results');
+    
+    // Click on page 4 by content, not position
+    cy.get(DOM_ELEMENTS.paginationPageNumber(4)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 - 100 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 76 to 100 of 100 results');
   });
 
   it('Handles column sorting and resets to page 1 for all columns (AC6a)', { tags: ['@PO-545', '@PO-987'] }, () => {
     setupComponent(FULL_SEARCH_RESULTS_MOCK);
 
     // Navigate to page 2 to verify sorting resets pagination
-    cy.get(DOM_ELEMENTS.paginationElement).contains('1');
+    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     // Test Code column sorting
     cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS075');
@@ -196,46 +204,46 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
 
     cy.get(DOM_ELEMENTS.codeCell).eq(0).should('contain', 'CJS001');
     cy.get(DOM_ELEMENTS.codeCell).eq(1).should('contain', 'CJS002');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
 
     // Test Short Title column sorting
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     cy.get(DOM_ELEMENTS.shortTitleHeader).should('exist');
     cy.get(DOM_ELEMENTS.shortTitleHeader).click();
 
     cy.get(DOM_ELEMENTS.shortTitleCell).eq(0).should('contain', 'Offence Title 1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
 
     // Test Act and Section column sorting
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     cy.get(DOM_ELEMENTS.actAndSectionHeader).should('exist');
     cy.get(DOM_ELEMENTS.actAndSectionHeader).click();
 
     cy.get(DOM_ELEMENTS.actAndSectionCell).eq(0).should('contain', 'Section 1.1');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
 
     // Test Used From column sorting
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     cy.get(DOM_ELEMENTS.usedFromHeader).should('exist');
     cy.get(DOM_ELEMENTS.usedFromHeader).click();
 
     cy.get(DOM_ELEMENTS.usedFromCell).eq(0).should('contain', '01 Jan 2024');
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
 
     // Test Used To column sorting
     cy.get(DOM_ELEMENTS.nextPageButton).click();
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 - 50 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
 
     cy.get(DOM_ELEMENTS.usedToHeader).should('exist');
     cy.get(DOM_ELEMENTS.usedToHeader).click();
 
-    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 - 25 of 100 offences');
+    cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
     cy.get(DOM_ELEMENTS.usedToCell).eq(0).should('contain', '31 Dec 2025');
   });
 });
