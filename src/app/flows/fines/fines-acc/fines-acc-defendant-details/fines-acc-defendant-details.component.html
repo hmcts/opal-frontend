@@ -1,6 +1,6 @@
 <app-fines-acc-details-account-heading
   [accountData]="accountData"
-  (addAccountNote)="addAccountNote()"
+  (addAccountNote)="navigateToAddAccountNotePage()"
 ></app-fines-acc-details-account-heading>
 
 <app-fines-acc-details-account-info
@@ -34,9 +34,13 @@
 
 @switch (activeTab) {
   @case ('at-a-glance') {
-    <app-fines-acc-defendant-details-at-a-glance-tab></app-fines-acc-defendant-details-at-a-glance-tab>
+    <app-fines-acc-defendant-details-at-a-glance-tab
+      [tabData]="tabData$ | async"
+    ></app-fines-acc-defendant-details-at-a-glance-tab>
   }
   @case ('defendant') {
-    <p>Defendant tab content goes here</p>
+    <div class="govuk-grid-column-full">
+      <p>{{ tabData$ | async | json }}</p>
+    </div>
   }
 }
