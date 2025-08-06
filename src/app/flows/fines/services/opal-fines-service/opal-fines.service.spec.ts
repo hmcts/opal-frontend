@@ -36,6 +36,11 @@ import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
+} from './mocks/opal-fines-defendant-account-search-params.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -553,13 +558,24 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  it('should return the mocked defendant accounts response with search params injected', () => {
+  it('should return the mocked defendant accounts response with search params injected - individual', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = { some: 'param' } as any;
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     service.getDefendantAccounts(searchParams).subscribe((response: any) => {
       expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - company', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
       expect(response._debug_searchParams).toEqual(searchParams);
     });
   });

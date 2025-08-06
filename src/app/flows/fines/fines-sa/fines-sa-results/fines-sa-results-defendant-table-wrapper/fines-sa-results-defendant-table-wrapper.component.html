@@ -1,9 +1,10 @@
+@let defendantType = isCompany ? 'companies' : 'individuals';
 <opal-lib-custom-horizontal-scroll-pane>
   <opal-lib-moj-sortable-table>
     @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
       <ng-container caption>
-        Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
-        {{ filteredTableDataSignal().length }} individual defendants
+        Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ filteredTableDataSignal().length }}
+        {{ defendantType }} defendants
       </ng-container>
     }
     <ng-container head>
@@ -30,7 +31,7 @@
         columnKey="Aliases"
         [sortDirection]="sortStateSignal()['Aliases']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="2"
       >
         Aliases
       </th>
@@ -40,7 +41,7 @@
           columnKey="Date of birth"
           [sortDirection]="sortStateSignal()['Date of birth']"
           (sortChange)="onSortChange($event)"
-          [dataIndex]="1"
+          [dataIndex]="3"
         >
           Date of birth
         </th>
@@ -50,7 +51,7 @@
         columnKey="Address line 1"
         [sortDirection]="sortStateSignal()['Address line 1']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 3 : 4"
       >
         Address line 1
       </th>
@@ -59,7 +60,7 @@
         columnKey="Postcode"
         [sortDirection]="sortStateSignal()['Postcode']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 4 : 5"
       >
         Postcode
       </th>
@@ -69,7 +70,7 @@
           columnKey="NI number"
           [sortDirection]="sortStateSignal()['NI number']"
           (sortChange)="onSortChange($event)"
-          [dataIndex]="1"
+          [dataIndex]="6"
         >
           NI number
         </th>
@@ -78,7 +79,7 @@
           columnKey="Parent or guardian"
           [sortDirection]="sortStateSignal()['Parent or guardian']"
           (sortChange)="onSortChange($event)"
-          [dataIndex]="1"
+          [dataIndex]="7"
         >
           Parent or guardian
         </th>
@@ -88,7 +89,7 @@
         columnKey="Business unit"
         [sortDirection]="sortStateSignal()['Business unit']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 5 : 8"
       >
         Business unit
       </th>
@@ -97,7 +98,7 @@
         columnKey="Ref"
         [sortDirection]="sortStateSignal()['Ref']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 6 : 9"
       >
         Ref
       </th>
@@ -106,7 +107,7 @@
         columnKey="Enf"
         [sortDirection]="sortStateSignal()['Enf']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 7 : 10"
       >
         ENF
       </th>
@@ -115,7 +116,7 @@
         columnKey="Balance"
         [sortDirection]="sortStateSignal()['Balance']"
         (sortChange)="onSortChange($event)"
-        [dataIndex]="1"
+        [dataIndex]="isCompany ? 8 : 11"
       >
         Balance
       </th>

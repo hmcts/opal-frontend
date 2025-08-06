@@ -94,6 +94,41 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Retrieves company account data from the activated route's snapshot and transforms it
+   * into a format suitable for display in the fines results table.
+   *
+   * - If no data is found, sets `companiesData` to an empty array.
+   * - Otherwise, maps each defendant account to a table data object, extracting and formatting
+   *   relevant fields such as account number, organisation name, aliases (joined by newlines),
+   *   address, postcode, business unit, prosecutor case reference, last enforcement action, and balance.
+   *
+   * @private
+   * @returns {void}
+   */
+  private getCompaniesData() {
+    const data = this.activatedRoute.snapshot.data['companyAccounts'] as IOpalFinesDefendantAccountResponse;
+    if (!data) {
+      this.companiesData = [];
+      return;
+    }
+    this.companiesData = data.defendant_accounts.map((defendantAccount) => {
+      return {
+        Account: defendantAccount.account_number,
+        Name: defendantAccount.organisation_name,
+        Aliases: defendantAccount.aliases
+          ? defendantAccount.aliases.map((alias) => alias.organisation_name).join('\n')
+          : null,
+        'Address line 1': defendantAccount.address_line_1,
+        Postcode: defendantAccount.postcode,
+        'Business unit': defendantAccount.business_unit_name,
+        Ref: defendantAccount.prosecutor_case_reference,
+        Enf: defendantAccount.last_enforcement_action,
+        Balance: defendantAccount.account_balance,
+      };
+    }) as IFinesSaResultsDefendantTableWrapperTableData[];
+  }
+
+  /**
    * Sets up a listener for changes to the URL fragment and updates the active tab in the fines search results accordingly.
    *
    * - Listens to the fragment observable from the activated route.
@@ -172,6 +207,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.getResultView();
     this.getIndividualsData();
+    this.getCompaniesData();
     this.setupFragmentListener();
   }
 
