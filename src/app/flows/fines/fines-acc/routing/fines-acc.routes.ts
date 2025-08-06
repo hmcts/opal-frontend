@@ -22,11 +22,39 @@ export const routing: Routes = [
         path: FINES_ACC_ROUTING_PATHS.children.details,
 
         loadComponent: () =>
-          import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then((c) => c.FinesAccDefendantDetailsComponent),
+          import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then(
+            (c) => c.FinesAccDefendantDetailsComponent,
+          ),
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.details,
+        },
+        resolve: { title: TitleResolver },
+      },
+      {
+        path: `${FINES_ACC_ROUTING_PATHS.children.note}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
+        canActivate: [authGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+          title: FINES_ACC_ROUTING_TITLES.children.note,
+        },
+        resolve: { title: TitleResolver },
+      },
+      {
+        path: `${FINES_ACC_ROUTING_PATHS.children.comments}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
+            (c) => c.FinesAccCommentsAddComponent,
+          ),
+        canActivate: [authGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+          title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
       },

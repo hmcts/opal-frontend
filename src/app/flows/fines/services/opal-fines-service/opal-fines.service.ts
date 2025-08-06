@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,6 +36,8 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-account-header.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -393,5 +395,19 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
+   *
+   * @param accountId - The unique identifier of the defendant account.
+   * @returns An Observable that emits the defendant account header data.
+   */
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesDefendantAccountHeader> {
+    // return this.http.get<IOpalFinesDefendantAccountHeader>(
+    //   `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`
+    // );
+    return of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
   }
 }
