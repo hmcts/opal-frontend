@@ -279,25 +279,30 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Select a title');
   });
 
-  it('(AC5) Validation will exist for the First names field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC5) Validation will exist for the First names field - required field', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Enter defendant's first name(s)");
+  });
 
+  it('(AC5) Validation will exist for the First names field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 20 characters
     const longName = 'A'.repeat(21); // Exceeds 20 characters
-    cy.get(DOM_ELEMENTS.firstNameInput).type(longName, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = longName;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       "The defendant's first name(s) must be 20 characters or fewer",
     );
+  });
 
+  it('(AC5) Validation will exist for the First names field - alphanumeric check', { tags: ['@PO-857'] }, () => {
     // User enters non-alphabetical characters
-    cy.get(DOM_ELEMENTS.firstNameInput).clear().type('John123@#$', { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = 'John123@#$';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -305,22 +310,27 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC6) Validation will exist for the Last name field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC6) Validation will exist for the Last name field - required field', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Enter defendant's last name");
+  });
 
+  it('(AC6) Validation will exist for the Last name field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 30 characters
     const longName = 'A'.repeat(31); // Exceeds 30 characters
-    cy.get(DOM_ELEMENTS.lastNameInput).type(longName, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = longName;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "The defendant's last name must be 30 characters or fewer");
+  });
 
+  it('(AC6) Validation will exist for the Last name field - alphanumeric check', { tags: ['@PO-857'] }, () => {
     // User enters non-alphabetical characters
-    cy.get(DOM_ELEMENTS.lastNameInput).clear().type('Smith123@#$', { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = 'Smith123@#$';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -328,100 +338,120 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC7) Validation will exist for the Date of birth field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC7) Validation will exist for the Date of birth field - future date', { tags: ['@PO-857'] }, () => {
     const futureDateStr = calculateWeeksInFuture(1);
 
-    cy.get(DOM_ELEMENTS.dobInput).type(futureDateStr, { force: true, delay: 0 });
-
+    // Future date validation
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = futureDateStr;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth in the past');
+  });
 
-    //letters, incorrect days or months, or special characters
-    cy.get(DOM_ELEMENTS.dobInput).clear().type('abc/de/fghi', { force: true, delay: 0 });
-
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
-
-    cy.get(DOM_ELEMENTS.dobInput).clear().type('32/13/2000', { force: true, delay: 0 });
-
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth');
-
-    cy.get(DOM_ELEMENTS.dobInput).clear().type('01@01#2000', { force: true, delay: 0 });
-
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
-
-    cy.get(DOM_ELEMENTS.dobInput).clear().type('01012000', { force: true, delay: 0 });
-
+  it('(AC7) Validation will exist for the Date of birth field - incorrect format', { tags: ['@PO-857'] }, () => {
+    // Letters, incorrect days or months validation
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = 'abc/de/fghi';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
   });
 
-  it('(AC8) Validation will exist for the Address Line 1 field', { tags: ['@PO-857'] }, () => {
+  it('(AC7) Validation will exist for the Date of birth field - invalid date', { tags: ['@PO-857'] }, () => {
+    // Invalid date validation
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '32/13/2000';
     setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth');
+  });
 
+  it('(AC7) Validation will exist for the Date of birth field - special characters', { tags: ['@PO-857'] }, () => {
+    // Special characters validation
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01@01#2000';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
+  });
+
+  it('(AC7e) Validation will exist for the Date of birth field - no separators', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01012000';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
+  });
+
+  it('(AC8) Validation will exist for the Address Line 1 field - empty value', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter address line 1, typically the building and street');
 
-    // User enters more than 30 characters
+  });
+
+  it('(AC8) Validation will exist for the Address Line 1 field - max length', { tags: ['@PO-857'] }, () => {
+      // User enters more than 30 characters
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
-    cy.get(DOM_ELEMENTS.addressLine1Input).type(longAddress, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = longAddress;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must be 30 characters or fewer');
 
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('123 High Street $%^&*', { delay: 0 });
+  });
+
+  it('(AC8) Validation will exist for the Address Line 1 field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Street $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must not contain special characters');
   });
 
-  it('(AC9) Validation will exist for the Address Line 2 field', { tags: ['@PO-857'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit);
-
+  it('(AC9) Validation will exist for the Address Line 2 field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 30 characters
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
-    cy.get(DOM_ELEMENTS.addressLine2Input).type(longAddress, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = longAddress;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must be 30 characters or fewer');
+  });
 
+  it('(AC9) Validation will exist for the Address Line 2 field - special characters', { tags: ['@PO-857'] }, () => {
     // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Apartment 123 $%^&*', { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartment 123 $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must not contain special characters');
   });
 
-  it('(AC10) Validation will exist for the Address Line 3 field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC10) Validation will exist for the Address Line 3 field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 16 characters
     const longAddress = 'A'.repeat(17); // Exceeds 16 characters
-    cy.get(DOM_ELEMENTS.addressLine3Input).type(longAddress, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = longAddress;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must be 16 characters or fewer');
+  });
 
+  it('(AC10) Validation will exist for the Address Line 3 field - special characters', { tags: ['@PO-857'] }, () => {
     // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('West $%^&*', { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'West $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must not contain special characters');
   });
 
-  it('(AC11) Validation will exist for the Postcode field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC11) Validation will exist for the Postcode field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 8 characters
     const longPostcode = 'A'.repeat(9); // Exceeds 8 characters
-    cy.get(DOM_ELEMENTS.postcodeInput).type(longPostcode, { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = longPostcode;
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The postcode must be 8 characters or fewer');
+  });
 
+  it('(AC11) Validation will exist for the Postcode field - special characters', { tags: ['@PO-857'] }, () => {
     // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.postcodeInput).clear().type('SW1A$%^&', { delay: 0 });
+    fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = 'SW1A$%^&';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -429,22 +459,27 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC12) Validation will exist for the Notice number field', { tags: ['@PO-857'] }, () => {
+  it('(AC12) Validation will exist for the Notice number field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Notice number');
+  });
 
+  it('(AC12) Validation will exist for the Notice number field - max length', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'A'.repeat(17); // Exceeds 16 characters
+    setupComponent();
     // User enters more than 16 characters
-    const longNoticeNumber = 'A'.repeat(17); // Exceeds 16 characters
-    cy.get(DOM_ELEMENTS.noticeNumberInput).type(longNoticeNumber, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Notice number must be 16 characters or fewer');
+  });
 
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.noticeNumberInput).clear().type('FPN12 $%^&*', { delay: 0 });
+  it('(AC12) Validation will exist for the Notice number field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'FPN12 $%^&*';
+    setupComponent();
+
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -452,7 +487,7 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC13) Validation will exist for the Registration number field', { tags: ['@PO-857'] }, () => {
+  it('(AC13) Validation will exist for the Registration number field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // Select Vehicle radio button to make the field required
@@ -462,15 +497,23 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Registration number');
+  });
 
-    // User enters more than 7 characters
+  it('(AC13) Validation will exist for the Registration number field - max length', { tags: ['@PO-857'] }, () => {
     const longRegNumber = 'A'.repeat(8); // Exceeds 7 characters
-    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).type(longRegNumber, { delay: 0 });
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = longRegNumber;
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Registration number must be 7 characters or fewer');
+  });
 
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).clear().type('ABC1%^&', { delay: 0 });
+  it('(AC13) Validation will exist for the Registration number field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_vehicle_registration_number = 'ABC1%^&';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -478,7 +521,7 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC14) Validation will exist for the Driving licence number field', { tags: ['@PO-857'] }, () => {
+  it('(AC14) Validation will exist for the Driving licence number field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // Select Vehicle radio button to make the field required
@@ -488,26 +531,14 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Driving licence number');
+  });
 
+  it('(AC14) Validation will exist for the Driving licence number field - invalid format', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = 'INVALID'
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    
     // User does not enter a valid driving license
-    cy.get(DOM_ELEMENTS.drivingLicenceInput).type('INVALID', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
-    );
-
-    // User enters more than 16 characters
-    const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
-    cy.get(DOM_ELEMENTS.drivingLicenceInput).clear().type(longDrivingLicense, { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
-    );
-
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.drivingLicenceInput).clear().type('SMITH123$%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -515,104 +546,153 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it(
-    '(AC15) Validation will exist for the Notice to owner or hirer number (NTO/NTH) field',
-    { tags: ['@PO-857'] },
-    () => {
-      setupComponent();
-
-      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      // User enters more than 10 characters
-      const longNtoNumber = 'A'.repeat(11); // Exceeds 10 characters
-      cy.get(DOM_ELEMENTS.ntoNthInput).type(longNtoNumber, { delay: 0 });
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer',
-      );
-
-      // User enters non-alphanumeric characters
-      cy.get(DOM_ELEMENTS.ntoNthInput).clear().type('NTO$%^&*', { delay: 0 });
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
-    },
-  );
-
-  it('(AC16) Validation will exist for the Date notice to owner was issued field', { tags: ['@PO-857'] }, () => {
+  it('(AC14) Validation will exist for the Driving licence number field - max length', { tags: ['@PO-857'] }, () => {
+    const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense
     setupComponent();
-
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    
+    // User enters more than 16 characters
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
+    );
+  });
 
-    // User enters a future date
-    const futureDateStr = calculateWeeksInFuture(1);
-    cy.get(DOM_ELEMENTS.dateNtoIssuedInput).type(futureDateStr, { delay: 0 });
+  it('(AC14) Validation will exist for the Driving licence number field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = 'SMITH123$%^&*'
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    
+    // User enters non-alphanumeric characters
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
+    );
+  });
+
+  it('(AC15) Validation for NTO/NTH field - max length', { tags: ['@PO-857'] }, () => {
+  fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'A'.repeat(11); // Exceeds 10 characters
+  setupComponent();
+  cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+  cy.get(DOM_ELEMENTS.submitButton).click();
+  cy.get(DOM_ELEMENTS.errorSummaryList).should(
+    'contain',
+    'Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer',
+    );
+  });
+
+  it('(AC15) Validation for NTO/NTH field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'NTO$%^&*';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    );
+  });
+
+  it('(AC16) Validation will exist for the Date notice to owner was issued field - future date', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = calculateWeeksInFuture(1);
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Date notice to owner issued must be in the past');
+  });
 
-    // User enters incorrect date format (incorrect days/months)
-    cy.get(DOM_ELEMENTS.dateNtoIssuedInput).clear().type('40/30/2023', { delay: 0 });
+  it('(AC16) Validation will exist for the Date notice to owner was issued field - invalid date', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '40/30/2023';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid notice to owner date');
+  });
 
-    // User enters letters, incorrect formats, or special characters
-    cy.get(DOM_ELEMENTS.dateNtoIssuedInput).clear().type('abc/de/fghi', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter notice to owner date in the format DD/MM/YYYY');
-
-    cy.get(DOM_ELEMENTS.dateNtoIssuedInput).clear().type('01@01#2023', { delay: 0 });
+  it('(AC16) Validation will exist for the Date notice to owner was issued field - incorrect format', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = 'abc/de/fghi';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter notice to owner date in the format DD/MM/YYYY');
   });
 
-  it('(AC17) Validation will exist for the Date of offence field', { tags: ['@PO-857'] }, () => {
+  it('(AC16) Validation will exist for the Date notice to owner was issued field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '01@01#2023';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter notice to owner date in the format DD/MM/YYYY');
+  });
+
+  it('(AC17) Validation will exist for the Date of offence field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of offence');
+  });
 
-    // User enters a future date
-    const futureDateStr = calculateWeeksInFuture(1);
-    cy.get(DOM_ELEMENTS.dateOfOffenceInput).type(futureDateStr, { force: true, delay: 0 });
+  it('(AC17) Validation will exist for the Date of offence field - future date', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = calculateWeeksInFuture(1);
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Date of offence must be in the past');
+  });
 
-    // User enters letters, incorrect days or months, or special characters
-    cy.get(DOM_ELEMENTS.dateOfOffenceInput).clear({ force: true }).type('ab/cd/efgh', { force: true, delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
-
-    cy.get(DOM_ELEMENTS.dateOfOffenceInput).clear({ force: true }).type('32/13/2023', { force: true, delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid offence date');
-
-    cy.get(DOM_ELEMENTS.dateOfOffenceInput).clear({ force: true }).type('01@01#2023', { force: true, delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
-
-    cy.get(DOM_ELEMENTS.dateOfOffenceInput).clear({ force: true }).type('01012023', { force: true, delay: 0 });
+  it('(AC17) Validation will exist for the Date of offence field - format', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = 'ab/cd/efgh';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
   });
 
-  it('(AC18) Validation will exist for the Offence code field', { tags: ['@PO-857'] }, () => {
+  it('(AC17) Validation will exist for the Date of offence field - invalid date', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '32/13/2023';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid offence date');
+  });
+
+  it('(AC17) Validation will exist for the Date of offence field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01@01#2023';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
+  });
+
+  it('(AC17) Validation will exist for the Date of offence field - no separators', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01012023';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
+  });
+
+  it('(AC18) Validation will exist for the Offence code field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an offence code');
+  });
 
+  it('(AC18) Validation will exist for the Offence code field - max length', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters more than 8 characters
     const longOffenceCode = 'A'.repeat(9); // Exceeds 8 characters
     cy.get(DOM_ELEMENTS.offenceCodeInput).type(longOffenceCode, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must be 7 or 8 characters');
+  });
 
+  it('(AC18) Validation will exist for the Offence code field - special characters', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CJ03$%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -622,32 +702,9 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC19) Validation will exist for the Time of offence field', { tags: ['@PO-857'] }, () => {
+  it('(AC19) Validation will exist for the Time of offence field - invalid hours', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '25:30';
     setupComponent();
-
-    // User enters time in wrong format or with special characters
-    cy.get(DOM_ELEMENTS.timeOfOffenceInput).type('25:70', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Enter time of offence in the correct format, such as 02:00 or 14:00',
-    );
-
-    cy.get(DOM_ELEMENTS.timeOfOffenceInput).clear().type('14-30', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Enter time of offence in the correct format, such as 02:00 or 14:00',
-    );
-
-    cy.get(DOM_ELEMENTS.timeOfOffenceInput).clear().type('2:30pm', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Enter time of offence in the correct format, such as 02:00 or 14:00',
-    );
-
-    cy.get(DOM_ELEMENTS.timeOfOffenceInput).clear().type('@!:$%', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -655,21 +712,65 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC20) Validation will exist for the Place of offence field', { tags: ['@PO-857'] }, () => {
+  it('(AC19) Validation will exist for the Time of offence field - invalid minutes', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14:70';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter time of offence in the correct format, such as 02:00 or 14:00',
+    );
+  });
+
+  it('(AC19) Validation will exist for the Time of offence field - incorrect format', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14-30';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter time of offence in the correct format, such as 02:00 or 14:00',
+    );
+  });
+
+  it('(AC19) Validation will exist for the Time of offence field - AM/PM format', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '2:30pm';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter time of offence in the correct format, such as 02:00 or 14:00',
+    );
+  });
+
+  it('(AC19) Validation will exist for the Time of offence field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '@!:$%';
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter time of offence in the correct format, such as 02:00 or 14:00',
+    );
+  });
+
+  it('(AC20) Validation will exist for the Place of offence field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter where the offence took place');
+  });
 
-    // User enters more than 30 characters
-    const longPlace = 'A'.repeat(30);
-    cy.get(DOM_ELEMENTS.placeOfOffenceInput).type(longPlace, { delay: 0 });
-    cy.get(DOM_ELEMENTS.placeOfOffenceInputHint).should('contain', 'You have 0 characters remaining');
+  it('(AC20) Validation will exist for the Place of offence field - max length', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'A'.repeat(31); // Exceeds 30 characters
+    setupComponent();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Place of offence must be 30 characters or fewer');
+  });
 
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.placeOfOffenceInput).clear().type('High Street $%^&*', { delay: 0 });
+  it('(AC20) Validation will exist for the Place of offence field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'High Street $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -677,24 +778,36 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC21) Validation will exist for the Amount imposed field', { tags: ['@PO-857'] }, () => {
+  it('(AC21) Validation will exist for the Amount imposed field - required field', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter amount imposed');
+  });
 
+  it('(AC21) Validation will exist for the Amount imposed field - non-numeric characters', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters amount with non-numeric characters
     cy.get(DOM_ELEMENTS.amountImposedInput).type('123.45abc', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter valid amount');
+  });
 
+  it('(AC21) Validation will exist for the Amount imposed field - special characters', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters amount with special characters
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type('100$%^&*', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter valid amount');
+  });
 
+  it('(AC21) Validation will exist for the Amount imposed field - max length', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters amount with more than 18 integers and 2 decimal places
     const longAmount = '1'.repeat(19) + '.99';
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type(longAmount, { delay: 0 });
@@ -703,7 +816,11 @@ describe('FinesMacManualFixedPenalty', () => {
       'contain',
       'Amount too long. Enter an amount that is less than 18 numbers before the decimal and 2 or less after',
     );
+  });
 
+  it('(AC21) Validation will exist for the Amount imposed field - decimal places', { tags: ['@PO-857'] }, () => {
+    setupComponent();
+    
     // User enters amount with more than 2 decimal places
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type('123.456', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -713,17 +830,16 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC22) Validation will exist for the Add comment field', { tags: ['@PO-857'] }, () => {
+  it('(AC22) Validation will exist for the Add comment field - max length', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'A'.repeat(30);
     setupComponent();
-
-    // User enters more than 30 characters
-    const longComment = 'A'.repeat(31); // Exceeds 30 characters
-    cy.get(DOM_ELEMENTS.commentsInput).type(longComment, { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.commentsInputHint).should('contain', 'You have 0 characters remaining');
+  });
 
-    // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.commentsInput).clear().type('Test comment $%^&*', { delay: 0 });
+  it('(AC22) Validation will exist for the Add comment field - special characters', { tags: ['@PO-857'] }, () => {
+    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
@@ -731,17 +847,18 @@ describe('FinesMacManualFixedPenalty', () => {
     );
   });
 
-  it('(AC23) Validation will exist for the Add account note field', { tags: ['@PO-857'] }, () => {
-    setupComponent();
-
+  it('(AC23) Validation will exist for the Add account note field - max length', { tags: ['@PO-857'] }, () => {
     // User enters more than 1000 characters
-    const longNote = 'A'.repeat(1001); // Exceeds 1000 characters
-    cy.get(DOM_ELEMENTS.accountNoteInput).type(longNote, { delay: 0 });
+    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(1000); 
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.accountNoteInputHint).should('contain', 'You have 0 characters remaining');
+  });
 
+  it('(AC23) Validation will exist for the Add account note field - special characters', { tags: ['@PO-857'] }, () => {
     // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.accountNoteInput).clear().type('Test account note $%^&*', { delay: 0 });
+    fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
+    setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
