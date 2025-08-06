@@ -139,7 +139,7 @@ def setupTestSpecifications() {
 
 def determineDevEnvironmentDeployment() {
   env.DEV_ENABLE_OPAL_FINES_SERVICE = true // Default to true for development environment as FE wont work without it
-  env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend.staging.platform.hmcts.net"
+  env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
   env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = "latest"
 
 
