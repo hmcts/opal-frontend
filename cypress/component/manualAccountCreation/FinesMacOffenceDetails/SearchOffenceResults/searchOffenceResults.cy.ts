@@ -161,25 +161,25 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsComponent', () => {
     //Handle page number buttons
     cy.get(DOM_ELEMENTS.paginationList).should('exist');
     cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
-    
+
     // Click on page 1 by content, not position
     cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 1 to 25 of 100 results');
-    
+
     // Click on page 2 by content, not position
     cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 26 to 50 of 100 results');
-    
+
     // Click on page 3 by content, not position
     cy.get(DOM_ELEMENTS.paginationPageNumber(3)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
     cy.get(DOM_ELEMENTS.paginationText).should('contain', 'Showing 51 to 75 of 100 results');
-    
+
     // Click on page 4 by content, not position
     cy.get(DOM_ELEMENTS.paginationPageNumber(4)).should('exist').click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('exist');
