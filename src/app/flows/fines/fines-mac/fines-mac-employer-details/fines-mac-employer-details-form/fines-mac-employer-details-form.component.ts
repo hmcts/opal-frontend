@@ -24,11 +24,19 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { SPECIAL_CHARACTERS_PATTERN, EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import {
+  SPECIAL_CHARACTERS_PATTERN,
+  EMAIL_ADDRESS_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
 const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',
@@ -60,8 +68,16 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    */
   private setupEmployerDetailsForm(): void {
     this.form = new FormGroup({
-      fm_employer_details_employer_company_name: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
-      fm_employer_details_employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
+      fm_employer_details_employer_company_name: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(35),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
+      fm_employer_details_employer_reference: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(20),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
       fm_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
         EMAIL_ADDRESS_PATTERN_VALIDATOR,

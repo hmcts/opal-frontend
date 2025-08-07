@@ -29,13 +29,16 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_DOT_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
 const SPECIAL_CHARACTER_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
-const LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_WITH_SPACES_DOT_PATTERN,
-  'alphabeticalTextPattern',
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
 );
 
 @Component({
@@ -74,7 +77,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),

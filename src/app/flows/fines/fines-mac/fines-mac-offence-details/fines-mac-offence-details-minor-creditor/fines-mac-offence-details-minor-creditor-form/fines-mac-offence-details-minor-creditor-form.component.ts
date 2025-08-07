@@ -30,17 +30,11 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
   NUMERIC_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
-//regex pattern validators for the form controls
-const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_SPACES_PATTERN,
-  'alphanumericTextPattern',
-);
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
 const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
@@ -179,7 +173,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     paymentReference.setValidators([
       Validators.required,
       Validators.maxLength(18),
-      ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
     ]);
   }
 
