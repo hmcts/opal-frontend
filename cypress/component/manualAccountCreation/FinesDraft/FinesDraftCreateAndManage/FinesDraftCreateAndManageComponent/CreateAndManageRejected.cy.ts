@@ -200,15 +200,15 @@ describe('FinesDraftCreateAndManageRejectedComponent', () => {
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Rejected').click();
 
-      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).should('exist');
       cy.get(DOM_ELEMENTS.defendant).contains('Robert Brown').should('exist');
 
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
       cy.get(DOM_ELEMENTS.defendant).contains('Emma Gonzalez').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Previous').should('exist');
+      cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
 
       cy.get(DOM_ELEMENTS.defendant)
         .its('length')

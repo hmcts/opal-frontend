@@ -59,7 +59,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       ],
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInFull);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInFull, 'fine');
     expect(result).toEqual(expectedPayload);
   });
 
@@ -88,7 +88,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
         },
       ],
     };
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInstallments);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInstallments, 'fine');
     expect(result).toEqual(expectedPayload);
   });
 
@@ -122,7 +122,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       ],
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateLumpSumPlusInstallments);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateLumpSumPlusInstallments, 'fine');
     expect(result).toEqual(expectedPayload);
   });
 
@@ -142,7 +142,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       enforcements: null,
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateNull);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateNull, 'fine');
     expect(result).toEqual(expectedPayload);
   });
 
@@ -164,7 +164,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
         paymentTermsStateWithUndefinedReason.fm_payment_terms_hold_enforcement_on_account = true;
         paymentTermsStateWithUndefinedReason.fm_payment_terms_reason_account_is_on_noenf = null;
 
-        const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateWithUndefinedReason);
+        const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateWithUndefinedReason, 'fine');
         expect(result?.enforcements?.[0]?.enforcement_result_responses?.[0]?.response).toBeNull();
       } else {
         fail('Failed to clone or prepare mock state for undefined reason test');
@@ -195,7 +195,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       fm_payment_terms_suspended_committal_date: null,
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(state);
+    const result = finesMacPayloadBuildAccountPaymentTerms(state, 'fine');
 
     expect(result.enforcements).toEqual([
       {
@@ -228,7 +228,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       fm_payment_terms_suspended_committal_date: null,
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(state);
+    const result = finesMacPayloadBuildAccountPaymentTerms(state, 'fine');
 
     expect(result.enforcements).toEqual([
       {

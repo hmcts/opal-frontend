@@ -2,15 +2,15 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 
 export const OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {
-    value: 'Police force (101)',
-    name: 'Police force (101)',
+    value: '101',
+    name: 'Police force',
   },
   {
-    value: 'Central ticket office (998)',
-    name: 'Central ticket office (998)',
+    value: '998',
+    name: 'Central ticket office',
   },
   {
-    value: 'Other (102)',
-    name: 'Other (102)',
+    value: '102',
+    name: 'Other',
   },
 ];

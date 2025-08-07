@@ -207,9 +207,6 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     expect(fixedPenaltyDetailsForm.formData['fm_offence_details_date_nto_issued']).toBe(
       formSubmit.formData['fm_fp_offence_details_date_nto_issued'],
     );
-    expect(fixedPenaltyDetailsForm.formData['fm_court_details_issuing_authority_id']).toBe(
-      formSubmit.formData['fm_fp_court_details_issuing_authority_id'],
-    );
   });
 
   it('should create autocomplete court items', () => {

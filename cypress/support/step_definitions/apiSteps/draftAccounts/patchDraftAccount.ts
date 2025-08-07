@@ -9,3 +9,12 @@ Given('I intercept the PATCH request for a draft account to ensure it returns a 
     },
   }).as('patchDraftAccountError');
 });
+Given('I intercept the POST request for a draft account to ensure it returns a 400 error', () => {
+  cy.intercept('POST', '/opal-fines-service/draft-accounts', {
+    statusCode: 400,
+    body: {
+      error: 'Bad Request',
+      message: 'Invalid request data',
+    },
+  }).as('postDraftAccountError');
+});
