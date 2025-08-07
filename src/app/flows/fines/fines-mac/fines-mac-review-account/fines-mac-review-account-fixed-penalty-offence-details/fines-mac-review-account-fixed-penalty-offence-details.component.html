@@ -165,7 +165,7 @@
         <ng-container name>Amount imposed</ng-container>
         <ng-container value>
           @if (offenceDetails.fm_offence_details_amount_imposed) {
-            {{ toMonetaryString(offenceDetails.fm_offence_details_amount_imposed.toString()) }}
+            {{ utilsService.convertToMonetaryString(offenceDetails.fm_offence_details_amount_imposed) }}
           } @else {
             <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
           }
