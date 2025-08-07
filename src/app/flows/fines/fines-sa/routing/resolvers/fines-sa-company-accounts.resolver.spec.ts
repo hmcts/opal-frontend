@@ -3,7 +3,6 @@ import { lastValueFrom, Observable, of } from 'rxjs';
 import { finesSaCompanyAccountsResolver } from './fines-sa-company-accounts.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesSaStore } from '../../stores/fines-sa.store';
-import { FinesSaService } from '../../services/fines-sa.service';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 
@@ -13,20 +12,17 @@ describe('finesSaCompanyAccountsResolver', () => {
     TestBed.runInInjectionContext(() => finesSaCompanyAccountsResolver(...resolverParameters));
 
   let opalFinesService: jasmine.SpyObj<OpalFines>;
-  let finesSaService: jasmine.SpyObj<FinesSaService>;
   let finesSaStore: FinesSaStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         { provide: OpalFines, useValue: jasmine.createSpyObj('OpalFines', ['getDefendantAccounts']) },
-        { provide: FinesSaService, useValue: jasmine.createSpyObj('FinesSaService', ['hasTabPopulated']) },
         FinesSaStore,
       ],
     });
 
     opalFinesService = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
-    finesSaService = TestBed.inject(FinesSaService) as jasmine.SpyObj<FinesSaService>;
     finesSaStore = TestBed.inject(FinesSaStore);
   });
 
@@ -104,14 +100,12 @@ describe('finesSaCompanyAccountsResolver', () => {
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: true,
     });
-    finesSaService.hasTabPopulated.and.returnValue(true);
     opalFinesService.getDefendantAccounts.and.returnValue(of({ count: 0, defendant_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
-    expect(finesSaService.hasTabPopulated).toHaveBeenCalledWith(comp);
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
         organisation_name: 'Acme Corp',
@@ -148,30 +142,21 @@ describe('finesSaCompanyAccountsResolver', () => {
   });
 
   it('should return empty result if company criteria is present but not populated', async () => {
-    const comp = {
-      fsa_search_account_companies_company_name: '',
-      fsa_search_account_companies_company_name_exact_match: false,
-      fsa_search_account_companies_address_line_1: '',
-      fsa_search_account_companies_post_code: '',
-      fsa_search_account_companies_include_aliases: false,
-    };
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,
       fsa_search_account_individual_search_criteria: null,
-      fsa_search_account_companies_search_criteria: comp,
+      fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
       fsa_search_account_business_unit_ids: null,
       fsa_search_account_active_accounts_only: null,
     });
-    finesSaService.hasTabPopulated.and.returnValue(false);
     const mockRoute = {} as ActivatedRouteSnapshot;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
-    expect(finesSaService.hasTabPopulated).toHaveBeenCalledWith(comp);
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
     expect(opalFinesService.getDefendantAccounts).not.toHaveBeenCalled();
   });

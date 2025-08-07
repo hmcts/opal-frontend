@@ -4,7 +4,6 @@ import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-s
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { FinesSaStore } from '../../stores/fines-sa.store';
-import { FinesSaService } from '../../services/fines-sa.service';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
@@ -24,7 +23,6 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/f
  */
 export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAccountResponse> = () => {
   const opalFinesService = inject(OpalFines);
-  const finesSaService = inject(FinesSaService);
   const finesSaStore = inject(FinesSaStore);
   const state = finesSaStore.searchAccount();
 
@@ -38,7 +36,7 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
   const ind = state.fsa_search_account_individual_search_criteria;
   const searchType = 'individual';
 
-  if (!hasAccountNumber && !hasReference && !(ind && finesSaService.hasTabPopulated(ind))) {
+  if (!hasAccountNumber && !hasReference && !ind) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 

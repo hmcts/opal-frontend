@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, Validators } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-minor-creditors-controls.constant';
@@ -15,7 +15,6 @@ import {
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { FINES_MINOR_CREDITOR_TYPES } from 'src/app/flows/fines/constants/fines-minor-creditor-types.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-import { FinesSaService } from '../../../../services/fines-sa.service';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-minor-creditors',
@@ -31,7 +30,6 @@ import { FinesSaService } from '../../../../services/fines-sa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, OnDestroy {
-  private readonly finesSaService = inject(FinesSaService);
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX;
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
@@ -179,17 +177,10 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
   /**
    * Applies validation logic to the minor creditor form section based on the selected creditor type.
    *
-   * - For 'individual' type, checks if any of the required individual fields (last name, first names, address line 1, post code)
-   *   are populated. If none are populated, sets a validation error on the type control.
-   * - For 'company' type, checks if any of the required company fields (company name, address line 1, post code)
-   *   are populated. If none are populated, sets a validation error on the type control.
+   * - For 'individual' type, checks if any of the required individual fields are populated. If none are populated, sets a validation error on the type control.
+   * - For 'company' type, checks if any of the required company fields are populated. If none are populated, sets a validation error on the type control.
    *
    * Marks the type control as touched after validation.
-   *
-   * @remarks
-   * Utilizes `finesSaService.isAnyTextFieldPopulated` to determine if any relevant fields contain data.
-   *
-   * @returns {void}
    */
   public applyMinorCreditorValidation(): void {
     const typeControl = this.getMinorCreditorType();
@@ -198,45 +189,26 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
       return;
     }
 
-    if (type === 'individual') {
-      const { lastNameControl, firstNamesControl, addressLine1Control, postCodeControl } =
-        this.getIndividualMinorCreditorControls();
+    const individualGroup = this.getIndividualMinorCreditorControls();
+    const companyGroup = this.getCompanyMinorCreditorControls();
 
-      const isEmpty = !this.finesSaService.isAnyTextFieldPopulated([
-        lastNameControl,
-        firstNamesControl,
-        addressLine1Control,
-        postCodeControl,
-      ]);
+    if (type === 'individual' && individualGroup) {
+      const hasValue = Object.values(individualGroup).some((control) => {
+        const value = control?.value;
+        return typeof value === 'string' ? !!value.trim() : !!value;
+      });
 
-      if (isEmpty) {
-        typeControl.setErrors({
-          requiredIndividualMinorCreditorData: true,
-        });
-      } else {
-        typeControl.setErrors(null);
-      }
-
+      typeControl.setErrors(hasValue ? null : { requiredIndividualMinorCreditorData: true });
       typeControl.markAsTouched();
     }
 
-    if (type === 'company') {
-      const { companyNameControl, addressLine1Control, postCodeControl } = this.getCompanyMinorCreditorControls();
+    if (type === 'company' && companyGroup) {
+      const hasValue = Object.values(companyGroup).some((control) => {
+        const value = control?.value;
+        return typeof value === 'string' ? !!value.trim() : !!value;
+      });
 
-      const isEmpty = !this.finesSaService.isAnyTextFieldPopulated([
-        companyNameControl,
-        addressLine1Control,
-        postCodeControl,
-      ]);
-
-      if (isEmpty) {
-        typeControl.setErrors({
-          requiredCompanyMinorCreditorData: true,
-        });
-      } else {
-        typeControl.setErrors(null);
-      }
-
+      typeControl.setErrors(hasValue ? null : { requiredCompanyMinorCreditorData: true });
       typeControl.markAsTouched();
     }
   }

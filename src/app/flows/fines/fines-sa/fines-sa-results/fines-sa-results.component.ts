@@ -13,10 +13,10 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../fines-sa-search/routing/constants/fines-sa-search-routing-paths.constant';
 import { Subject, takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
-import { FinesSaService } from '../services/fines-sa.service';
 import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -33,7 +33,6 @@ import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines
 })
 export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  private readonly finesSaService = inject(FinesSaService);
   private readonly router = inject(Router);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
   public readonly activatedRoute = inject(ActivatedRoute);
@@ -47,16 +46,61 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public minorCreditorsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
 
   /**
-   * Retrieves the search result view for fines and assigns it to the `resultView` property.
-   *
-   * This method calls the `getSearchResultView` method of the `finesSaService`, passing in
-   * the current search account from the `finesSaStore`. The resulting view is then stored
-   * in the `resultView` property for use within the component.
+   * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
+   * This method is used to update the view based on the selected search type.
    *
    * @private
    */
   private getResultView() {
-    this.resultView = this.finesSaService.getSearchResultView(this.finesSaStore.searchAccount());
+    this.resultView = this.finesSaStore.getSearchType();
+  }
+
+  /**
+   * Maps defendant account response data to an array of table data objects for display in the fines results table.
+   *
+   * @param data - The response object containing defendant account information.
+   * @param type - The type of defendant, either 'individual' or 'company', which determines the mapping logic.
+   * @returns An array of table data objects formatted for the fines results table. Returns an empty array if no accounts are present.
+   */
+  private mapDefendantAccounts(
+    data: IOpalFinesDefendantAccountResponse,
+    type: 'individual' | 'company',
+  ): IFinesSaResultsDefendantTableWrapperTableData[] {
+    if (data.count === 0) return [];
+
+    return data.defendant_accounts.map((defendantAccount) => {
+      const commonFields = {
+        ...FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
+        Account: defendantAccount.account_number,
+        'Address line 1': defendantAccount.address_line_1,
+        Postcode: defendantAccount.postcode,
+        'Business unit': defendantAccount.business_unit_name,
+        Ref: defendantAccount.prosecutor_case_reference,
+        Enf: defendantAccount.last_enforcement_action,
+        Balance: defendantAccount.account_balance,
+      };
+
+      if (type === 'individual') {
+        return {
+          ...commonFields,
+          Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+          Aliases: defendantAccount.aliases
+            ? defendantAccount.aliases.map((alias) => `${alias.alias_surname}, ${alias.alias_forenames}`).join('\n')
+            : null,
+          'Date of birth': defendantAccount.birth_date,
+          'NI number': defendantAccount.national_insurance_number,
+          'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+        };
+      } else {
+        return {
+          ...commonFields,
+          Name: defendantAccount.organisation_name,
+          Aliases: defendantAccount.aliases
+            ? defendantAccount.aliases.map((alias) => alias.organisation_name).join('\n')
+            : null,
+        };
+      }
+    });
   }
 
   /**
@@ -74,11 +118,11 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     ] as IOpalFinesDefendantAccountResponse | null;
 
     if (individualAccounts && individualAccounts.count > 0) {
-      this.individualsData = this.finesSaService.mapDefendantAccounts(individualAccounts, 'individual');
+      this.individualsData = this.mapDefendantAccounts(individualAccounts, 'individual');
     }
 
     if (companyAccounts && companyAccounts?.count > 0) {
-      this.companiesData = this.finesSaService.mapDefendantAccounts(companyAccounts, 'company');
+      this.companiesData = this.mapDefendantAccounts(companyAccounts, 'company');
     }
   }
 

@@ -3,31 +3,29 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesSaSearchAccountFormComponent } from './fines-sa-search-account-form.component';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
 import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-search-account-form-minor-creditors/fines-sa-search-account-form-minor-creditors.component';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from './fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../constants/fines-sa-search-account-state.constant';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormComponent>;
   let routerSpy: jasmine.SpyObj<Router>;
   let mockFinesSaStore: FinesSaStoreType;
-  let mockFinesSaService: jasmine.SpyObj<FinesSaService>;
 
   beforeEach(async () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    mockFinesSaService = jasmine.createSpyObj(FinesSaService, ['hasAnySearchCriteriaPopulated']);
 
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormComponent],
       providers: [
         { provide: ActivatedRoute, useValue: { fragment: of('individuals'), parent: 'search' } },
         { provide: Router, useValue: routerSpy },
-        { provide: FinesSaService, useValue: mockFinesSaService },
       ],
     }).compileComponents();
 
@@ -72,7 +70,6 @@ describe('FinesSaSearchAccountFormComponent', () => {
     spyOn(component as any, 'rePopulateForm');
     component.form.get('fsa_search_account_number')?.setValue('12345678');
     component.form.get('fsa_search_account_reference_case_number')?.setValue('REF123');
-    component['finesSaService'].hasAnySearchCriteriaPopulated = () => true;
 
     component.handleFormSubmit(new SubmitEvent('submit'));
 
@@ -183,7 +180,19 @@ describe('FinesSaSearchAccountFormComponent', () => {
     // only one of the three
     component.form.get('fsa_search_account_number')?.setValue('12345678');
     component.form.get('fsa_search_account_reference_case_number')?.setValue('');
-    mockFinesSaService.hasAnySearchCriteriaPopulated.and.returnValue(false);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(superSubmitSpy).toHaveBeenCalled();
+  });
+
+  it('should call super.handleFormSubmit when only account number is used', () => {
+    const superSubmitSpy = spyOn(FinesSaSearchAccountFormComponent.prototype, 'handleFormSubmit').and.callThrough();
+
+    mockFinesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    });
 
     component.handleFormSubmit(new SubmitEvent('submit'));
 
