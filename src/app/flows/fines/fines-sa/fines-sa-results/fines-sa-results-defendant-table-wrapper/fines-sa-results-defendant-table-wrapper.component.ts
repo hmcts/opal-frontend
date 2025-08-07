@@ -5,15 +5,16 @@ import {
   MojSortableTableHeaderComponent,
   MojSortableTableRowComponent,
   MojSortableTableRowDataComponent,
+  MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
-import { FinesSharedSortableTableFooterComponent } from '../../../components/fines-shared/fines-shared-sortable-table-footer/fines-shared-sortable-table-footer.component';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { IFinesSaResultsDefendantTableWrapperTableData } from './interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
 import { IFinesSaResultsDefendantTableWrapperTableSort } from './interfaces/fines-sa-results-defendant-table-wrapper-table-sort.interface';
 import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
+import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 
 @Component({
   selector: 'app-fines-sa-results-defendant-table-wrapper',
@@ -23,9 +24,10 @@ import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
+    MojSortableTableStatusComponent,
+    MojPaginationComponent,
     DateFormatPipe,
     NationalInsurancePipe,
-    FinesSharedSortableTableFooterComponent,
     CustomHorizontalScrollPaneComponent,
   ],
   templateUrl: './fines-sa-results-defendant-table-wrapper.component.html',

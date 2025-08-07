@@ -20,6 +20,7 @@ import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { REVIEW_HISTORY } from './constants/fines_draft_cav_tableConstants';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -100,6 +101,7 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   };
   beforeEach(() => {
+    interceptOffences();
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -108,26 +110,12 @@ describe('FinesMacReviewAccountComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     }).as('getDraftAccounts');
+  });
+  beforeEach(() => {
     cy.then(() => {
       finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
       finesDraftState = structuredClone(FINES_DRAFT_STATE);

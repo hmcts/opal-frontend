@@ -1,11 +1,5 @@
 <opal-lib-custom-horizontal-scroll-pane>
   <opal-lib-moj-sortable-table>
-    @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
-      <ng-container caption>
-        Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
-        {{ filteredTableDataSignal().length }} individual defendants
-      </ng-container>
-    }
     <ng-container head>
       <th
         opal-lib-moj-sortable-table-header
@@ -212,14 +206,23 @@
         </tr>
       }
     </ng-container>
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
   </opal-lib-moj-sortable-table>
 </opal-lib-custom-horizontal-scroll-pane>
-<app-fines-shared-sortable-table-footer
-  [tableData]="filteredTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-draft-table-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
 
 <ng-template #noData>
   <p
