@@ -353,3 +353,69 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 ```
+
+## 💡 Copilot Prompt Examples for Angular MCP
+
+### 📘 1. Ask for Documentation Help
+
+**Prompt:**
+
+> “How do Angular signals work?”
+
+**What Copilot does:**  
+Calls `search_documentation("signals")` and returns official Angular documentation context.
+
+---
+
+### 🧱 2. Generate Code
+
+**Prompt:**
+
+> “Generate a service for user authentication”
+
+**What Copilot does:**  
+Runs `ng generate service user-auth` through the MCP server — adds the file in the correct directory.
+
+---
+
+### 📚 3. Get Project File Structure
+
+**Prompt:**
+
+> “List all Angular modules in this project”
+
+**What Copilot does:**  
+Uses `list_projects` and `get_file_tree` to find and display modules across the workspace.
+
+---
+
+### 🧭 4. Navigate Routing Setup
+
+**Prompt:**
+
+> “What routes are defined in this app?”
+
+**What Copilot does:**  
+Parses routing modules and shows route paths, guards, and lazy-loaded modules.
+
+---
+
+### 🧹 5. Refactor with AI Help
+
+**Prompt:**
+
+> “Convert this component to use the standalone API”
+
+**What Copilot does:**  
+Updates component metadata with `standalone: true`, refactors imports, and removes old NgModule references.
+
+---
+
+### 🛠️ 6. Add Angular Libraries
+
+**Prompt:**
+
+> “Add Angular Material”
+
+**What Copilot does:**  
+Triggers `ng add @angular/material` to install the package and configure animations + theming.
