@@ -79,32 +79,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Converts a date string in 'dd/MM/yyyy' format to an RFC 3339 date string ('YYYY-MM-DD').
-   *
-   * @param date - The date string in 'dd/MM/yyyy' format or null.
-   * @returns The date string in RFC 3339 format ('YYYY-MM-DD') if valid, otherwise null.
-   */
-  private toRfc3339Date(date: string | null): string | null {
-    if (!date) return null;
-    const dateTime = this.dateService.getFromFormat(date, 'dd/MM/yyyy');
-    return dateTime.isValid ? dateTime.toISODate() : null;
-  }
-
-  /**   * Converts a date string in RFC 3339 format ('yyyy-MM-dd') back to 'dd/MM/yyyy' format.
-   *
-   * @param date - The RFC 3339 date string to convert, or null.
-   * @returns The date string in 'dd/MM/yyyy' format, or null if the input is null or invalid.
-   */
-  private fromRfc3339Date(date: string | null): string | null {
-    if (!date) {
-      return null;
-    }
-
-    const dateTime = this.dateService.getFromFormat(date, 'yyyy-MM-dd');
-    return dateTime.isValid ? dateTime.toFormat('dd/MM/yyyy') : null;
-  }
-
-  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -153,7 +127,7 @@ export class FinesMacPayloadService {
     const offences = finesMacPayloadBuildAccountOffences(
       offenceDetailsForms,
       courtDetailsState,
-      this.toRfc3339Date.bind(this),
+
       fixedPenaltyDetails,
       accountType,
     );
@@ -324,7 +298,7 @@ export class FinesMacPayloadService {
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id!, sessionUserState)!,
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, sessionUserState)!,
       validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
       version: draftAccountPayload.version!,
     };
