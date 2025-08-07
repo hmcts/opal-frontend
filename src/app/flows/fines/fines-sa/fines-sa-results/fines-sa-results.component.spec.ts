@@ -6,6 +6,7 @@ import { FinesSaService } from '../services/fines-sa.service';
 import { FinesSaStore } from '../stores/fines-sa.store';
 import { FinesSaStoreType } from '../stores/types/fines-sa.type';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
+import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -13,6 +14,7 @@ describe('FinesSaResultsComponent', () => {
   let finesSaService: jasmine.SpyObj<FinesSaService>;
   let finesSaStore: FinesSaStoreType;
   let router: jasmine.SpyObj<Router>;
+  const expectedResult = [{ ...FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY, Account: 'IND001' }];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,7 +30,7 @@ describe('FinesSaResultsComponent', () => {
         },
         {
           provide: FinesSaService,
-          useValue: jasmine.createSpyObj('FinesSaService', ['getSearchResultView']),
+          useValue: jasmine.createSpyObj('FinesSaService', ['getSearchResultView', 'mapDefendantAccounts']),
         },
         {
           provide: Router,
@@ -40,6 +42,7 @@ describe('FinesSaResultsComponent', () => {
     fixture = TestBed.createComponent(FinesSaResultsComponent);
     component = fixture.componentInstance;
     finesSaService = TestBed.inject(FinesSaService) as jasmine.SpyObj<FinesSaService>;
+    finesSaService.mapDefendantAccounts.and.returnValue(expectedResult);
     finesSaStore = TestBed.inject(FinesSaStore);
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
@@ -50,116 +53,52 @@ describe('FinesSaResultsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialise resultView and individualsData on init', () => {
+  it('should initialise resultView, load snapshot data, and set up fragment listener on init', () => {
     const resultView = 'accountNumber';
     const searchAccount = {};
     finesSaStore.setSearchAccount(searchAccount as IFinesSaSearchAccountState);
     finesSaService.getSearchResultView.and.returnValue(resultView);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getIndividualsData');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getCompaniesData');
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupFragmentListener');
+
+    component['activatedRoute'].snapshot.data = {
+      individualAccounts: {
+        count: 0,
+        defendant_accounts: [],
+      },
+      companyAccounts: {
+        count: 0,
+        defendant_accounts: [],
+      },
+    };
 
     component.ngOnInit();
 
     expect(component.resultView).toBe(resultView);
-    expect(component['getIndividualsData']).toHaveBeenCalled();
-    expect(component['getCompaniesData']).toHaveBeenCalled();
+    expect(finesSaService.mapDefendantAccounts).not.toHaveBeenCalled();
     expect(component['setupFragmentListener']).toHaveBeenCalled();
   });
 
-  it('should set individualsData when data is available', () => {
-    const mockData = {
+  it('should populate individualsData and companiesData from snapshot if present', () => {
+    const mockIndividualData = {
       count: 1,
-      defendant_accounts: [
-        {
-          account_number: 'ACC123',
-          defendant_surname: 'Smith',
-          defendant_first_names: 'John',
-          aliases: [{ alias_surname: 'Jones', alias_forenames: 'J' }],
-          birth_date: '1980-01-01',
-          address_line_1: '1 High St',
-          postcode: 'AB1 2CD',
-          national_insurance_number: 'AB123456C',
-          parent_guardian_surname: 'Doe',
-          parent_guardian_first_names: 'Jane',
-          business_unit_name: 'Test BU',
-          prosecutor_case_reference: 'REF123',
-          last_enforcement_action: 'Warrant',
-          account_balance: 123.45,
-        },
-      ],
+      defendant_accounts: [{ account_number: 'IND001' }],
     };
-    component['activatedRoute'].snapshot.data = { individualAccounts: mockData };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getIndividualsData();
-
-    expect(component.individualsData.length).toBe(1);
-    expect(component.individualsData[0]).toEqual(
-      jasmine.objectContaining({
-        Account: 'ACC123',
-        Name: 'Smith, John',
-        Aliases: 'Jones, J',
-        'Address line 1': '1 High St',
-        Postcode: 'AB1 2CD',
-        'Business unit': 'Test BU',
-        Ref: 'REF123',
-        Enf: 'Warrant',
-        Balance: 123.45,
-      }),
-    );
-  });
-
-  it('should set companiesData when data is available', () => {
-    const mockData = {
+    const mockCompanyData = {
       count: 1,
-      defendant_accounts: [
-        {
-          account_number: 'ACC123',
-          organisation_name: 'Acme Corp',
-          aliases: [{ organisation_name: 'Acme Ltd' }],
-          address_line_1: '1 High St',
-          postcode: 'AB1 2CD',
-          business_unit_name: 'Test BU',
-          prosecutor_case_reference: 'REF123',
-          last_enforcement_action: 'Warrant',
-          account_balance: 123.45,
-        },
-      ],
+      defendant_accounts: [{ account_number: 'IND001' }],
     };
-    component['activatedRoute'].snapshot.data = { companyAccounts: mockData };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getCompaniesData();
+    component['activatedRoute'].snapshot.data = {
+      individualAccounts: mockIndividualData,
+      companyAccounts: mockCompanyData,
+    };
 
-    expect(component.companiesData.length).toBe(1);
-    expect(component.companiesData[0]).toEqual(
-      jasmine.objectContaining({
-        Account: 'ACC123',
-        Name: 'Acme Corp',
-        Aliases: 'Acme Ltd',
-        'Address line 1': '1 High St',
-        Postcode: 'AB1 2CD',
-        'Business unit': 'Test BU',
-        Ref: 'REF123',
-        Enf: 'Warrant',
-        Balance: 123.45,
-      }),
-    );
-  });
+    component['loadDefendantDataFromRouteSnapshot']();
 
-  it('should set individualsData and companiesData to empty when no data is available', () => {
-    component['activatedRoute'].snapshot.data = { individualAccounts: null, companyAccounts: null };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getIndividualsData();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getCompaniesData();
-    expect(component.companiesData).toEqual([]);
-    expect(component.individualsData).toEqual([]);
+    expect(component.individualsData.length).toEqual(1);
+    expect(component.companiesData.length).toEqual(1);
   });
 
   it('should open account details in a new tab', () => {
@@ -171,61 +110,6 @@ describe('FinesSaResultsComponent', () => {
 
     expect(router.serializeUrl).toHaveBeenCalled();
     expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank');
-  });
-
-  it('should set Individuals Aliases to null when no aliases are present', () => {
-    const mockData = {
-      count: 1,
-      defendant_accounts: [
-        {
-          account_number: 'ACC999',
-          defendant_surname: 'Bloggs',
-          defendant_first_names: 'Joe',
-          aliases: null,
-          birth_date: '1970-01-01',
-          address_line_1: '2 Low St',
-          postcode: 'XY9 9ZZ',
-          national_insurance_number: 'CD987654Z',
-          parent_guardian_surname: 'Smith',
-          parent_guardian_first_names: 'Mary',
-          business_unit_name: 'BU 1',
-          prosecutor_case_reference: 'PCR000',
-          last_enforcement_action: 'Fine',
-          account_balance: 0,
-        },
-      ],
-    };
-    component['activatedRoute'].snapshot.data = { individualAccounts: mockData };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getIndividualsData();
-
-    expect(component.individualsData[0].Aliases).toBeNull();
-  });
-
-  it('should set Companies Aliases to null when no aliases are present', () => {
-    const mockData = {
-      count: 1,
-      defendant_accounts: [
-        {
-          account_number: 'ACC123',
-          organisation_name: 'Acme Corp',
-          aliases: null,
-          address_line_1: '1 High St',
-          postcode: 'AB1 2CD',
-          business_unit_name: 'Test BU',
-          prosecutor_case_reference: 'REF123',
-          last_enforcement_action: 'Warrant',
-          account_balance: 123.45,
-        },
-      ],
-    };
-    component['activatedRoute'].snapshot.data = { companyAccounts: mockData };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).getCompaniesData();
-
-    expect(component.companiesData[0].Aliases).toBeNull();
   });
 
   it('should default fragment to "companies" when individuals are empty and companies are not', () => {

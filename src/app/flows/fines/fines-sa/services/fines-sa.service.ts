@@ -6,6 +6,9 @@ import { IFinesSaSearchAccountFormCompaniesState } from '../fines-sa-search/fine
 import { IFinesSaSearchAccountFormMinorCreditorsState } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/interfaces/fines-sa-search-account-form-minor-creditors-state.interface';
 import { FinesSaResultsTabsType } from '../fines-sa-results/types/fines-sa-results-tabs.type';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IFinesSaResultsDefendantTableWrapperTableData } from '../fines-sa-results/fines-sa-results-defendant-table-wrapper/interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
+import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from '../fines-sa-results/fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
 
 @Injectable({
   providedIn: 'any',
@@ -87,6 +90,54 @@ export class FinesSaService {
     return controls.some((ctrl) => {
       const value = ctrl?.value;
       return typeof value === 'string' ? !!value.trim() : !!value;
+    });
+  }
+
+  /**
+   * Maps defendant account response data to an array of table data objects for display.
+   *
+   * @param data - The defendant account response data to map.
+   * @param type - The type of defendant, either 'individual' or 'company'.
+   * @returns An array of table data objects formatted for the defendant results table.
+   */
+  public mapDefendantAccounts(
+    data: IOpalFinesDefendantAccountResponse,
+    type: 'individual' | 'company',
+  ): IFinesSaResultsDefendantTableWrapperTableData[] {
+    if (data.count === 0) return [];
+
+    return data.defendant_accounts.map((defendantAccount) => {
+      const commonFields = {
+        ...FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
+        Account: defendantAccount.account_number,
+        'Address line 1': defendantAccount.address_line_1,
+        Postcode: defendantAccount.postcode,
+        'Business unit': defendantAccount.business_unit_name,
+        Ref: defendantAccount.prosecutor_case_reference,
+        Enf: defendantAccount.last_enforcement_action,
+        Balance: defendantAccount.account_balance,
+      };
+
+      if (type === 'individual') {
+        return {
+          ...commonFields,
+          Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+          Aliases: defendantAccount.aliases
+            ? defendantAccount.aliases.map((alias) => `${alias.alias_surname}, ${alias.alias_forenames}`).join('\n')
+            : null,
+          'Date of birth': defendantAccount.birth_date,
+          'NI number': defendantAccount.national_insurance_number,
+          'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+        };
+      } else {
+        return {
+          ...commonFields,
+          Name: defendantAccount.organisation_name,
+          Aliases: defendantAccount.aliases
+            ? defendantAccount.aliases.map((alias) => alias.organisation_name).join('\n')
+            : null,
+        };
+      }
     });
   }
 }
