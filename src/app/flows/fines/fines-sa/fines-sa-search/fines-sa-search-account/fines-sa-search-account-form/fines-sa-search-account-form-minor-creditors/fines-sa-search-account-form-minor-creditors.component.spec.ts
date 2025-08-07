@@ -2,18 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-search-account-form-minor-creditors.component';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './constants/fines-sa-search-account-form-minor-creditors-controls.constant';
-import { FinesSaService } from '../../../../services/fines-sa.service';
 
 describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMinorCreditorsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormMinorCreditorsComponent>;
-  let mockFinesSaService: jasmine.SpyObj<FinesSaService>;
 
   beforeEach(async () => {
-    mockFinesSaService = jasmine.createSpyObj(FinesSaService, ['isAnyTextFieldPopulated']);
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormMinorCreditorsComponent],
-      providers: [{ provide: FinesSaService, useValue: mockFinesSaService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
@@ -78,7 +74,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   });
 
   it('should set requiredIndividualMinorCreditorData error if individual fields are empty', () => {
-    mockFinesSaService.isAnyTextFieldPopulated.and.returnValue(false);
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
 
     component.applyMinorCreditorValidation();
@@ -89,9 +84,8 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   });
 
   it('should not set error if any individual field is populated', () => {
-    mockFinesSaService.isAnyTextFieldPopulated.and.returnValue(true);
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
-    component.form.get('fsa_search_account_minor_creditors_last_name')?.setValue('Smith'); // ✅ actually populate a field
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.setValue('Smith');
 
     component['applyMinorCreditorValidation']();
     fixture.detectChanges();
@@ -101,7 +95,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   });
 
   it('should set requiredCompanyMinorCreditorData error if company fields are empty', () => {
-    mockFinesSaService.isAnyTextFieldPopulated.and.returnValue(false);
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
 
     component.applyMinorCreditorValidation();
@@ -112,7 +105,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   });
 
   it('should not set error if any company field is populated', () => {
-    mockFinesSaService.isAnyTextFieldPopulated.and.returnValue(true);
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
     component.form.get('fsa_search_account_minor_creditors_company_name')?.setValue('Example Ltd');
 

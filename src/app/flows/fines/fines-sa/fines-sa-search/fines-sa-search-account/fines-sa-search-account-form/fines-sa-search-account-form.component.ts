@@ -31,7 +31,6 @@ import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
-import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
@@ -75,7 +74,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS,
     majorCreditors: {},
   };
-  private readonly finesSaService = inject(FinesSaService);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
 
@@ -227,12 +225,27 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * @param event The SubmitEvent triggered by the form.
    */
   override handleFormSubmit(event: SubmitEvent): void {
-    const accountNumber = this.form.get('fsa_search_account_number')?.value?.trim();
-    const referenceNumber = this.form.get('fsa_search_account_reference_case_number')?.value?.trim();
+    const accountNumber = this.form.get('fsa_search_account_number')?.value;
+    const referenceNumber = this.form.get('fsa_search_account_reference_case_number')?.value;
+    const individualTab = this.form.get('fsa_search_account_individual_search_criteria') as FormGroup;
+    const companyTab = this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
+    const minorCreditorTab = this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
+    const majorCreditorTab = this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
 
-    const hasTabData = this.finesSaService.hasAnySearchCriteriaPopulated(this.form.value);
+    const isGroupPopulated = (group: FormGroup) =>
+      Object.values(group.controls).some((control) => {
+        const value = control.value;
+        return typeof value === 'string' ? !!value.trim() : !!value;
+      });
 
-    const criteriaUsed = [!!accountNumber, !!referenceNumber, hasTabData].filter(Boolean).length;
+    const criteriaUsed = [
+      !!accountNumber,
+      !!referenceNumber,
+      isGroupPopulated(individualTab),
+      isGroupPopulated(companyTab),
+      isGroupPopulated(minorCreditorTab),
+      isGroupPopulated(majorCreditorTab),
+    ].filter(Boolean).length;
 
     if (criteriaUsed > 1) {
       this.finesSaStore.setSearchAccountTemporary(this.form.value);

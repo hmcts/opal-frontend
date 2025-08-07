@@ -100,7 +100,19 @@
   }
 </ng-template>
 <ng-template #companies>
-  <p>Companies Results</p>
+  @if (companiesData.length > 0 && companiesData.length <= 100) {
+    <app-fines-sa-results-defendant-table-wrapper
+      [tableData]="companiesData"
+      [existingSortState]="defendantsSort"
+      [isCompany]="true"
+      (accountNumberClicked)="onAccountNumberClick($event)"
+    >
+    </app-fines-sa-results-defendant-table-wrapper>
+  } @else if (companiesData.length === 0) {
+    <ng-container *ngTemplateOutlet="noResults"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="tooManyResults"></ng-container>
+  }
 </ng-template>
 <ng-template #minorCreditors>
   <p>Minor creditors Results</p>

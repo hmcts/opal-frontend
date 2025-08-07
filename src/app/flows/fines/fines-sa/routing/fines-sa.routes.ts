@@ -6,6 +6,7 @@ import { routing as searchRouting } from '../fines-sa-search/routing/fines-sa-se
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts.resolver';
+import { finesSaCompanyAccountsResolver } from './resolvers/fines-sa-company-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -28,6 +29,7 @@ export const routing: Routes = [
     },
     resolve: {
       individualAccounts: finesSaIndividualAccountsResolver,
+      companyAccounts: finesSaCompanyAccountsResolver,
     },
   },
   {

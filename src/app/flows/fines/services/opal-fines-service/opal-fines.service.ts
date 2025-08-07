@@ -37,8 +37,9 @@ import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-o
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
-import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-acount-search-params.interface';
+import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -406,9 +407,17 @@ export class OpalFines {
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
   ): Observable<IOpalFinesDefendantAccountResponse> {
-    const mock = structuredClone(
-      OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
-    ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    let mock: IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    if (searchParams.search_type === 'individual') {
+      mock = structuredClone(
+        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
+      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    } else {
+      mock = structuredClone(
+        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK,
+      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    }
+
     mock._debug_searchParams = searchParams;
     return of(mock);
   }

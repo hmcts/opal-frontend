@@ -7,21 +7,21 @@ import { FinesSaStore } from '../../stores/fines-sa.store';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
- * Resolver that retrieves individual defendant accounts based on current search criteria in the Fines SA flow.
+ * Resolver that retrieves company defendant accounts based on current search criteria in the Fines SA flow.
  *
  * The resolver determines which search criteria to apply in the following order of precedence:
  *
  * 1. If an account number is provided, the search is performed using only the account number.
  * 2. If no account number is provided but a reference case number is, the search is performed using the reference.
- * 3. If neither of the above are provided but the "Individual" tab contains populated data, a detailed individual criteria search is performed.
+ * 3. If neither of the above are provided but the "Company" tab contains populated data, a detailed individual criteria search is performed.
  * 4. If none of the above criteria are present, no API call is made and an empty result set is returned.
  *
- * This resolver is intended specifically for individual account searches. If only the "Companies" tab is filled,
+ * This resolver is intended specifically for Company account searches. If only the "Companies" tab is filled,
  * this resolver will return an empty response without making an API call.
  *
  * @returns Observable of IOpalFinesDefendantAccountResponse
  */
-export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAccountResponse> = () => {
+export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccountResponse> = () => {
   const opalFinesService = inject(OpalFines);
   const finesSaStore = inject(FinesSaStore);
   const state = finesSaStore.searchAccount();
@@ -33,10 +33,10 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const ind = state.fsa_search_account_individual_search_criteria;
-  const searchType = 'individual';
+  const comp = state.fsa_search_account_companies_search_criteria;
+  const searchType = 'company';
 
-  if (!hasAccountNumber && !hasReference && !ind) {
+  if (!hasAccountNumber && !hasReference && !comp) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 
@@ -55,19 +55,15 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
       ...common,
     });
   } else {
-    const individualCriteria = ind!;
+    const companyCriteria = comp!;
     return opalFinesService.getDefendantAccounts({
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
       search_type: searchType,
-      surname: individualCriteria.fsa_search_account_individuals_last_name,
-      exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match,
-      forename: individualCriteria.fsa_search_account_individuals_first_names,
-      exact_match_forenames: individualCriteria.fsa_search_account_individuals_first_names_exact_match,
-      date_of_birth: individualCriteria.fsa_search_account_individuals_date_of_birth,
-      ni_number: individualCriteria.fsa_search_account_individuals_national_insurance_number,
-      address_line: individualCriteria.fsa_search_account_individuals_address_line_1,
-      postcode: individualCriteria.fsa_search_account_individuals_post_code,
-      include_aliases: individualCriteria.fsa_search_account_individuals_include_aliases,
+      organisation_name: companyCriteria.fsa_search_account_companies_company_name,
+      exact_match_organisation_name: companyCriteria.fsa_search_account_companies_company_name_exact_match,
+      include_aliases: companyCriteria.fsa_search_account_companies_include_aliases,
+      address_line: companyCriteria.fsa_search_account_companies_address_line_1,
+      postcode: companyCriteria.fsa_search_account_companies_post_code,
       ...common,
     });
   }
