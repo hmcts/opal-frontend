@@ -31,7 +31,7 @@ import { FinesSaService } from '../../../../services/fines-sa.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, OnDestroy {
-  private finesSaService = inject(FinesSaService);
+  private readonly finesSaService = inject(FinesSaService);
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX;
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
