@@ -90,6 +90,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    */
   private resetAndValidateControls(controls: (AbstractControl | null)[]): void {
     controls.forEach((control) => {
+      control?.clearValidators();
       control?.reset(null, { emitEvent: false });
       control?.updateValueAndValidity();
     });
