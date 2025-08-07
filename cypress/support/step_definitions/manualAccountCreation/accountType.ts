@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I see the heading under the fine radio button is {string}', (businessUnitHeading: string) => {
   cy.get('.govuk-radios')

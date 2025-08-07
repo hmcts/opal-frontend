@@ -18,6 +18,7 @@ import {
 } from './intercepts/check-and-validate-intercepts';
 import { OPAL_FINES_VALIDATE_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_validate_over_25_account_mock';
 import { OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK } from './mocks/fines-draft-validate-account.mock';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesDraftCheckAndValidateRejectedComponent', () => {
   const setupComponent = () => {
@@ -112,7 +113,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
         cy.get(DOM_ELEMENTS.dob).contains('—');
         cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
 
@@ -123,7 +124,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
         cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES.Fine);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
 
@@ -136,7 +137,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
         cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES.Fine);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
     cy.get(DOM_ELEMENTS.tableRow)
@@ -145,7 +146,7 @@ describe('FinesDraftCheckAndValidateRejectedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
         cy.get(DOM_ELEMENTS.dob).contains('—');
         cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
   });

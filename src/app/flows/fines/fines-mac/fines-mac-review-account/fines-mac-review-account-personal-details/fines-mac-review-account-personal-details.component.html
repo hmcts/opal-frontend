@@ -36,7 +36,7 @@
         <ng-container name>Last name</ng-container>
         <ng-container value>{{ personalDetails.fm_personal_details_surname }}</ng-container>
       </div>
-      @if (accountType !== accountTypesKeys.fixedPenalty) {
+      @if (accountType !== accountTypesKeys['Fixed Penalty']) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -71,7 +71,7 @@
           }
         </ng-container>
       </div>
-      @if (accountType !== accountTypesKeys.fixedPenalty) {
+      @if (accountType !== accountTypesKeys['Fixed Penalty']) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -102,7 +102,7 @@
           }
         </ng-container>
       </div>
-      @if (showVehicleDetails && accountType !== accountTypesKeys.fixedPenalty) {
+      @if (showVehicleDetails && accountType !== accountTypesKeys['Fixed Penalty']) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"

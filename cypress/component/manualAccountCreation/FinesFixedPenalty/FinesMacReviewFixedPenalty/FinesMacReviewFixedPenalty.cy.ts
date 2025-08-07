@@ -21,6 +21,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   let fixedPenaltyMock: IFinesMacState;
@@ -165,7 +166,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Section 1 - Account Details (No heading)
       cy.get(DOM_ELEMENTS.businessUnit).should('contain', 'Test Business Unit');
-      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fixed Penalty');
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult');
 
       // Section 2 - Issuing Authority and Court Details
@@ -301,7 +302,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Section 1 - Account Details
       cy.get(DOM_ELEMENTS.businessUnit).should('contain', 'Corporate Penalties Unit');
-      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fixed Penalty');
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Court Details

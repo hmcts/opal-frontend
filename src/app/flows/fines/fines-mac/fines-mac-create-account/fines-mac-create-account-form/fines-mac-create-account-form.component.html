@@ -33,14 +33,14 @@
         [labelText]="accountType.value"
         [inputId]="accountType.key"
         inputName="fm_create_account_account_type"
-        [inputValue]="accountType.key"
+        [inputValue]="accountType.value"
         [control]="form.get('fm_create_account_account_type')"
-        [inputValueHint]="accountType.key === accountTypesKeys.conditionalCaution ? 'Adult or youth only' : ''"
+        [inputValueHint]="accountType.value === accountTypesKeys['Conditional Caution'] ? 'Adult or youth only' : ''"
       ></div>
 
-      @switch (accountType.key) {
-        @case (accountTypesKeys.fine) {
-          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.fine) {
+      @switch (accountType.value) {
+        @case (accountTypesKeys.Fine) {
+          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.Fine) {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;
@@ -49,8 +49,8 @@
             ></ng-container>
           }
         }
-        @case (accountTypesKeys.fixedPenalty) {
-          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.fixedPenalty) {
+        @case (accountTypesKeys['Fixed Penalty']) {
+          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys['Fixed Penalty']) {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;

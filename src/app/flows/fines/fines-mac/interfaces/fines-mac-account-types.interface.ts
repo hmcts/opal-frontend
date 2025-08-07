@@ -1,5 +1,5 @@
 export interface IFinesMacAccountTypes {
-  fine: string;
-  fixedPenalty: string;
-  conditionalCaution: string;
+  Fine: string;
+  'Fixed Penalty': string;
+  'Conditional Caution': string;
 }

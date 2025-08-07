@@ -6,8 +6,6 @@ import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_minor_creditors_elements';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_minor_creditors_mock';
-import { delay } from 'cypress/types/bluebird';
-import { only } from 'node:test';
 
 describe('Search Account Component - Minor Creditors', () => {
   let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);

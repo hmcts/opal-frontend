@@ -4,7 +4,7 @@
   "submitted_by": "L077JG",
   "business_unit_id": 77,
   "account_snapshot": {
-    "account_type": "fixedPenalty",
+    "account_type": "Fixed Penalty",
     "created_date": "2025-07-01",
     "submitted_by": "L077JG",
     "defendant_name": "companyNewName",
@@ -13,7 +13,7 @@
     "date_of_birth": null,
     "defendant_type": "company"
   },
-  "account_type": "fixedPenalty",
+  "account_type": "Fixed Penalty",
   "account_status": "Published",
   "account_status_date": "2025-07-01",
   "account_number": "FP123456"
