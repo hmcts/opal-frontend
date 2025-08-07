@@ -22,13 +22,6 @@
       subNavItemFragment="at-a-glance"
       subNavItemText="At a glance"
     ></li>
-    <li
-      opal-lib-moj-sub-navigation-item
-      subNavItemId="defendant-tab"
-      [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="defendant"
-      subNavItemText="Defendant"
-    ></li>
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -37,10 +30,5 @@
     <app-fines-acc-defendant-details-at-a-glance-tab
       [tabData]="tabData$ | async"
     ></app-fines-acc-defendant-details-at-a-glance-tab>
-  }
-  @case ('defendant') {
-    <div class="govuk-grid-column-full">
-      <p>{{ tabData$ | async | json }}</p>
-    </div>
   }
 }

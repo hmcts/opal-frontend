@@ -14,13 +14,12 @@ import {
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { Observable, Subject } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAccountDetailsAtAGlanceTabRefData, IOpalFinesAccountDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
+import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 @Component({
   selector: 'app-fines-acc-defendant-details',
   imports: [
     AsyncPipe,
-    JsonPipe,
     FinesAccDetailsAccountInfoComponent,
     FinesAccDetailsAccountInfoBlockComponent,
     FinesAccDetailsAccountHeadingComponent,
