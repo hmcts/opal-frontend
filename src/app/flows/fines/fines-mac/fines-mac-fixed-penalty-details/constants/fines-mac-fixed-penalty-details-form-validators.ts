@@ -59,11 +59,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_personal_details_address_line_3: [optionalMaxLengthValidator(16), SPECIAL_CHARACTER_PATTERN_VALIDATOR],
   fm_fp_personal_details_post_code: [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
   fm_fp_court_details_imposing_court_id: [Validators.required],
-  fm_fp_court_details_issuing_authority_id: [
+
+  fm_fp_court_details_originator_id: [
     Validators.required,
     Validators.maxLength(41),
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
+  fm_fp_court_details_originator_name: null,
   fm_fp_account_comments_notes_comments: [
     Validators.maxLength(30),
     ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
@@ -72,6 +74,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     Validators.maxLength(1000),
     ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
   ],
+
   fm_fp_account_comments_notes_system_notes: null,
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
