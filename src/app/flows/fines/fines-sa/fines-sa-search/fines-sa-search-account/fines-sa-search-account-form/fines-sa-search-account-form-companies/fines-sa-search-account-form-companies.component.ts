@@ -41,7 +41,7 @@ export class FinesSaSearchAccountFormCompaniesComponent implements OnInit, OnDes
   private handleConditionalValidation(): void {
     const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
     const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl || !includeAliasesControl;
-    
+
     if (companyControlsHaveValue) {
       return;
     }
