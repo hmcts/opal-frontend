@@ -1,4 +1,6 @@
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../../../constants/fines-mac-account-types-keys';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
+import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-impositions-state.interface';
@@ -118,7 +120,29 @@ const buildAccountOffencesImpositionsPayload = (
 export const finesMacPayloadBuildAccountOffences = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   courtDetailsState: IFinesMacCourtDetailsState,
+  fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
+  accountType?: string | null,
 ): IFinesMacPayloadAccountOffences[] => {
+  // If fixed penalty details are provided, use them to build and return a single offence payload
+  if (fixedPenaltyDetails && accountType && accountType === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
+    return [
+      {
+        date_of_sentence: fixedPenaltyDetails.fm_offence_details_date_of_offence,
+        imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id,
+        offence_id: fixedPenaltyDetails.fm_offence_details_offence_id,
+        impositions: [
+          {
+            result_id: 'FO',
+            amount_imposed: Number(fixedPenaltyDetails.fm_offence_details_amount_imposed),
+            amount_paid: 0,
+            major_creditor_id: null,
+            minor_creditor: null,
+          },
+        ],
+      },
+    ];
+  }
+  // If no fixed penalty details are provided, build the offences payload from the offence details state
   return offenceDetailsState.map((offence) => {
     const childFormData: IFinesMacOffenceDetailsMinorCreditorForm[] = offence.childFormData?.length
       ? offence.childFormData

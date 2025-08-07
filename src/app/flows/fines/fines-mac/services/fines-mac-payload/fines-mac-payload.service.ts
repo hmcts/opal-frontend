@@ -31,6 +31,9 @@ import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -92,9 +95,11 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
+    const { formData: fixedPenaltyDetails } = finesMacState.fixedPenaltyDetails;
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
+    const accountType = accountDetailsState['fm_create_account_account_type'];
 
     // Build the parts of our payload...
     const initialPayload = finesMacPayloadBuildAccountBase(
@@ -102,6 +107,7 @@ export class FinesMacPayloadService {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetails,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -112,16 +118,26 @@ export class FinesMacPayloadService {
       companyDetailsState,
       parentGuardianDetailsState,
     );
-    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    let fp_ticket_detail = null;
+    if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
+      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails);
+    }
+    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
+    const offences = finesMacPayloadBuildAccountOffences(
+      offenceDetailsForms,
+      courtDetailsState,
+
+      fixedPenaltyDetails,
+      accountType,
+    );
 
     // Return our payload object
     return {
       ...initialPayload,
       defendant: defendant,
       offences: offences,
-      fp_ticket_detail: null,
+      fp_ticket_detail: fp_ticket_detail,
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };
@@ -175,7 +191,7 @@ export class FinesMacPayloadService {
       version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
 
-    // Transform the payload, format the dates to the correct format
+    // Transform the payload, format the dates and times to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
@@ -313,6 +329,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+    finesMacState = finesMacPayloadMapAccountFixedPenalty(finesMacState, transformedPayload, offencesRefData);
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);

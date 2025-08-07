@@ -3,7 +3,7 @@ export const DOM_ELEMENTS = {
   app: 'app-fines-mac-review-account',
   pageHeading: 'h1.govuk-heading-l',
   backLink: 'opal-lib-govuk-back-link',
-  submitButton: '[data-cy=submit]',
+  submitButton: '#submitAccountButton',
 
   // Summary card elements
   summaryCards: '.govuk-summary-card',
@@ -61,7 +61,7 @@ export const DOM_ELEMENTS = {
   instalmentPeriod: '[summaryListRowId="instalmentPeriod"] dd',
 
   // Comments and Notes section
-  commentsNotesCard: '[summaryCardListId="comments-notes"]',
+  commentsNotesCard: '[summarycardlistid="account-comments-and-notes"]',
   comments: '#accountCommentsAndNotesAccountCommentValue',
   accountNotes: '#accountCommentsAndNotesAccountNoteValue',
 

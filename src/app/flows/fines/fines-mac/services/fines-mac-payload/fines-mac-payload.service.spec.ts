@@ -16,8 +16,9 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
-import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-state';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
+import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -25,6 +26,7 @@ describe('FinesMacPayloadService', () => {
   let finesMacState: IFinesMacState | null;
   let sessionUserState: ISessionUserState | null;
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
+  let finesMacPayloadAddAccountFixedPenalty: IFinesMacAddAccountPayload;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -34,6 +36,7 @@ describe('FinesMacPayloadService', () => {
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     sessionUserState = structuredClone(SESSION_USER_STATE_MOCK);
     finesMacPayloadAddAccount = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    finesMacPayloadAddAccountFixedPenalty = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK);
   });
 
   afterAll(() => {
@@ -76,6 +79,23 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(finesMacPayloadAddAccount);
   });
 
+  it('should create an add account payload for fixed penalty', () => {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    finesMacState.accountDetails.formData.fm_create_account_account_type = 'fixedPenalty';
+    finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+
+    // finesMacPayloadAddAccountFixedPenalty.account.account_type = 'fixedPenalty';
+    // finesMacPayloadAddAccountFixedPenalty.account.defendant.parent_guardian = null;
+    expect(result).toEqual(finesMacPayloadAddAccountFixedPenalty);
+  });
+
   it('should create a replace account payload', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
       fail('Required mock states are not properly initialised');
@@ -105,7 +125,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
+    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_STATE.fixedPenaltyDetails.formData;
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
     finesMacState.deleteAccountConfirmation.formData = FINES_MAC_STATE.deleteAccountConfirmation.formData;
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
@@ -197,7 +217,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE;
+    finesMacState.fixedPenaltyDetails.formData = { ...FINES_MAC_STATE.fixedPenaltyDetails.formData };
     finesMacState.deleteAccountConfirmation.formData = { ...FINES_MAC_STATE.deleteAccountConfirmation.formData };
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
