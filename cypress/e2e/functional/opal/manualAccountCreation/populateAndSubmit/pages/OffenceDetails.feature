@@ -1161,7 +1161,7 @@ Feature: Manual account creation - Offence Details
     And I clear the "Act and section" text field
     And I click the search button
     Then I see "Search results" on the page header
-    And I see "100 offences" text on the page
+    And I see "100 results" text on the page
 
 
   Scenario: Offence search / results screen - Axe core [@PO-545, @PO-667, PO-987]
