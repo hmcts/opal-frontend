@@ -177,7 +177,10 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
   private setupIndividualConditionalValidation(): void {
     const { firstNamesControl, lastNameControl, firstNamesExactMatchControl, lastNameExactMatchControl } =
       this.getIndividualMinorCreditorControls();
-    if (!firstNamesControl || !lastNameControl || !firstNamesExactMatchControl || !lastNameExactMatchControl) return;
+    const individualControlsHaveValue =
+      !firstNamesControl || !lastNameControl || !firstNamesExactMatchControl || !lastNameExactMatchControl;
+
+    if (individualControlsHaveValue) return;
 
     firstNamesControl.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -205,7 +208,9 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
     if (minorCreditorType !== 'company') return;
 
     const { companyNameControl, companyNameExactMatchControl } = this.getCompanyMinorCreditorControls();
-    if (!companyNameControl || !companyNameExactMatchControl) return;
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl;
+
+    if (companyControlsHaveValue) return;
 
     const companyNameHasValue = !!companyNameControl?.value?.trim();
     const companyNameExactMatchHasValue = !!companyNameExactMatchControl?.value;
@@ -220,9 +225,13 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
     companyNameControl.updateValueAndValidity({ emitEvent: false });
   }
 
+  /**
+   * Sets up conditional validation for the company name and its exact match flag.
+   */
   private setupCompanyConditionalValidation(): void {
     const { companyNameControl, companyNameExactMatchControl } = this.getCompanyMinorCreditorControls();
-    if (!companyNameControl || !companyNameExactMatchControl) return;
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl;
+    if (companyControlsHaveValue) return;
 
     companyNameControl.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))

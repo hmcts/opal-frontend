@@ -40,8 +40,9 @@ export class FinesSaSearchAccountFormCompaniesComponent implements OnInit, OnDes
    */
   private handleConditionalValidation(): void {
     const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
-
-    if (!companyNameControl || !companyNameExactMatchControl || !includeAliasesControl) {
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl || !includeAliasesControl;
+    
+    if (companyControlsHaveValue) {
       return;
     }
 
@@ -67,7 +68,9 @@ export class FinesSaSearchAccountFormCompaniesComponent implements OnInit, OnDes
    */
   private setupConditionalValidation(): void {
     const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
-    if (!companyNameControl || !companyNameExactMatchControl || !includeAliasesControl) return;
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl || !includeAliasesControl;
+
+    if (companyControlsHaveValue) return;
 
     companyNameControl.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
