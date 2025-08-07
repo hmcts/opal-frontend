@@ -12,6 +12,10 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 export const FINES_MAC_COMPANY_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {
     controlName: 'fm_company_details_alias_company_name',
-    validators: [Validators.required, Validators.maxLength(30), ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
+    validators: [
+      Validators.required,
+      Validators.maxLength(30),
+      ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ],
   },
 ];
