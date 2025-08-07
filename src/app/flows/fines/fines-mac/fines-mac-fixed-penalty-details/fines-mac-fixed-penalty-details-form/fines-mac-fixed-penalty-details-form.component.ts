@@ -52,6 +52,7 @@ import { TransformationService } from '@hmcts/opal-frontend-common/services/tran
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -73,6 +74,7 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fi
     MojDatePickerComponent,
     CapitalisationDirective,
     AlphagovAccessibleAutocompleteComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-fixed-penalty-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
