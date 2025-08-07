@@ -57,6 +57,10 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       'getFromFormatToFormat',
       'getDateRange',
     ]);
+    mockDateService.getDateRange.and.returnValue({
+      from: '2023-01-01',
+      to: '2023-01-07',
+    });
 
     routerEventSubject = new Subject<NavigationEnd>();
     mockRouter = jasmine.createSpyObj('Router', ['navigate'], { events: routerEventSubject.asObservable() });
@@ -197,10 +201,6 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
-    mockDateService.getDateRange.and.returnValue({
-      from: '2023-01-01',
-      to: '2023-01-07',
-    });
     finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     activatedRoute.fragment = of('deleted');
     activatedRoute.snapshot.data = {

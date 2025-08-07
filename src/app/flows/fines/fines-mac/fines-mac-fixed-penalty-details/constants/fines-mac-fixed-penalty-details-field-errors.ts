@@ -20,12 +20,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
-  fm_fp_court_details_issuing_authority_id: {
+  fm_fp_court_details_originator_id: {
     required: {
       message: `Enter the issuing authority`,
       priority: 1,
     },
   },
+  fm_fp_court_details_originator_name: {},
   fm_fp_account_comments_notes_comments: {
     maxlength: {
       message: `Add comment must be 30 characters or fewer`,

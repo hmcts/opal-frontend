@@ -1,10 +1,4 @@
 <opal-lib-moj-sortable-table>
-  @if (displayTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
-    <ng-container caption
-      >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of
-      {{ displayTableDataSignal().length }} offences</ng-container
-    >
-  }
   <ng-container head>
     <th
       opal-lib-moj-sortable-table-header
@@ -87,10 +81,20 @@
       </tr>
     }
   </ng-container>
+  <ng-container status>
+    <opal-lib-moj-sortable-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    />
+  </ng-container>
 </opal-lib-moj-sortable-table>
-<app-fines-shared-sortable-table-footer
-  [tableData]="displayTableDataSignal()"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  (changePage)="onPageChange($event)"
-/>
+
+@if (displayTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-draft-table-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}

@@ -10,6 +10,8 @@ import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../mocks/state/fin
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../mocks/state/fines-mac-payload-offence-details-state.mock';
 import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-state.interface';
 import { FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK } from '../mocks/fines-mac-payload-account-account-initial.mock';
+import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
+import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 
 describe('finesMacPayloadBuildAccountBase', () => {
   let expectedPayload: IFinesMacPayloadAccountAccountInitial | null;
@@ -18,6 +20,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
   let accountDetailsState: IFinesMacAccountDetailsState | null;
   let paymentTermsState: IFinesMacPaymentTermsState | null;
   let offenceDetailsState: IFinesMacOffenceDetailsState[] | null;
+  let fixedPenaltyDetailsState: IFinesMacFixedPenaltyDetailsStoreState;
 
   beforeEach(() => {
     expectedPayload = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK);
@@ -25,6 +28,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
     accountDetailsState = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK);
     paymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
     offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
+    fixedPenaltyDetailsState = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
     offenceMock = structuredClone({
       fm_offence_details_id: 0,
       fm_offence_details_date_of_sentence: null,
@@ -65,6 +69,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -93,6 +98,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -123,6 +129,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -148,6 +155,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -177,6 +185,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -206,6 +215,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -232,6 +242,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);
@@ -260,6 +271,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetailsState,
     );
 
     expect(result).toEqual(expectedPayload);

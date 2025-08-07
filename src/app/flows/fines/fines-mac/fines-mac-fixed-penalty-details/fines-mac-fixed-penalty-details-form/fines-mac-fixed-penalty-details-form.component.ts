@@ -137,8 +137,9 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_company_details_address_line_3: new FormControl(null),
       fm_fp_company_details_postcode: new FormControl(null),
       // Court Details
+      fm_fp_court_details_originator_id: new FormControl(null),
+      fm_fp_court_details_originator_name: new FormControl(null),
       fm_fp_court_details_imposing_court_id: new FormControl(null),
-      fm_fp_court_details_issuing_authority_id: new FormControl(null),
       // Comments and Notes
       fm_fp_account_comments_notes_comments: new FormControl(null),
       fm_fp_account_comments_notes_notes: new FormControl(null),
@@ -168,7 +169,6 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    */
   private setValidators(): void {
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_imposing_court_id`);
-    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_issuing_authority_id`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_comments`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_notes`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_system_notes`);
@@ -186,6 +186,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_originator_id`);
 
     if (this.defendantType === this.defendantTypesKeys.company) {
       this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_company_name`);
@@ -292,6 +293,61 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
+   * Retrieves the prosecutor details based on the originator ID from the fixed penalty details.
+   * It finds the corresponding prosecutor from the prosecutorsData array
+   * and returns the pretty name for that prosecutor or null if not found.
+   *
+   * @private
+   * @returns {string | null}
+   */
+  private getProsecutorFromId(prosecutorId: string): IAlphagovAccessibleAutocompleteItem | null {
+    const prosecutor = this.issuingAuthorityAutoCompleteItems.find(
+      (p: IAlphagovAccessibleAutocompleteItem) => p.value == prosecutorId,
+    );
+    if (!prosecutor) {
+      return null;
+    }
+    return prosecutor;
+  }
+
+  /**
+   * Sets the court_details_originator_name form control to the prosecutor name if it exists.
+   * @param event
+   */
+  private setProsecutorName(): void {
+    const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
+    const idValue = idControl?.value != null ? idControl.value.toString() : '';
+    const prosecutor = this.getProsecutorFromId(idValue);
+
+    if (prosecutor && typeof prosecutor.name === 'string') {
+      // Remove any parenthesis and content inside, and trim whitespace
+      const prosecutorName = this.stripFirstParenthesesBlock(prosecutor.name);
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
+    } else {
+      // Optionally clear the name if not found
+      this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue('');
+    }
+  }
+
+  /**
+   * Strips out the first parentheses block from the given text.
+   * This method looks for the first occurrence of parentheses in the text,
+   * removes the content within them, and returns the modified text.
+   * @param {string} text - The text from which to strip the first parentheses block.
+   * @returns {string} - The modified text with the first parentheses block removed.
+   */
+  private stripFirstParenthesesBlock(text: string): string {
+    const open = text.indexOf('(');
+    const close = text.indexOf(')', open);
+    if (open !== -1 && close !== -1 && close > open) {
+      const before = text.slice(0, open);
+      const after = text.slice(close + 1);
+      return (before + after).trim();
+    }
+    return text.trim();
+  }
+
+  /**
    *
    * @returns An object containing the form data for fixed penalty details, including personal details, court details,
    * comments and notes, language preferences, and offence details.
@@ -354,5 +410,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   public override ngOnInit(): void {
     this.initialFixedPenaltyDetailsSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setProsecutorName();
+    super.handleFormSubmit(event);
   }
 }
