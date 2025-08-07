@@ -345,12 +345,12 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it(
-    'Should show all values in LJA and Enforcement Court auto complete fields when selected',
+    'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
     { tags: ['@PO-1990'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
-      //Verify working input fields
+      //Verify autocomplete fields display all values when selected
       cy.get(DOM_ELEMENTS.ljaInput).focus().click();
       cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', 'Asylum & Immigration Tribunal (9985)');
       cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
