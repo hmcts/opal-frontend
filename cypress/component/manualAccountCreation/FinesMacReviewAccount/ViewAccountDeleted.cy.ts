@@ -19,6 +19,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 
 describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -79,22 +80,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     });
   };
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
+    interceptOffences();
   });
 
   it('AC.2 The Reason for Deletion screen will be created as per the design artefact', { tags: ['@PO-603'] }, () => {

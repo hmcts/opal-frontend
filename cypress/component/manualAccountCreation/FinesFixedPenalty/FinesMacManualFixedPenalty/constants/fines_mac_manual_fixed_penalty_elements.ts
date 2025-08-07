@@ -2,9 +2,9 @@ export const DOM_ELEMENTS = {
   app: 'app-fines-mac-fixed-penalty-details-form',
   pageTitle: 'h1.govuk-heading-l',
 
-  issuingAuthorityInput: 'input[id="fm_fp_court_details_issuing_authority_id-autocomplete"]',
+  issuingAuthorityInput: 'input[id="fm_fp_court_details_originator_id-autocomplete"]',
   enforcementCourtInput: 'input[id="fm_fp_court_details_imposing_court_id-autocomplete"]',
-  issuingAuthorityDropDown: '[id^="fm_fp_court_details_issuing_authority_id-autocomplete__option"]',
+  issuingAuthorityDropDown: '[id^="fm_fp_court_details_originator_id-autocomplete__option"]',
   enforcementCourtDropDown: '[id^="fm_fp_court_details_imposing_court_id-autocomplete__option"]',
   companyName: '#fm_fp_company_details_company_name',
 

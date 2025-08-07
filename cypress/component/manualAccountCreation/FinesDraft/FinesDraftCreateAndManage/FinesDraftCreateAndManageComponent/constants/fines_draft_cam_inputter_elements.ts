@@ -5,7 +5,7 @@ export const DOM_ELEMENTS = {
 
   rejectedIcon: 'span[id = "inputter-rejected-tab-rejected-count"]',
   statusHeading: 'h2.govuk-heading-m',
-  tableCaption: 'caption.govuk-table__caption',
+  tableCaption: '.moj-pagination__results',
   table: 'table.govuk-table',
   tableHeadings: 'th.govuk-table__header',
 
@@ -17,6 +17,9 @@ export const DOM_ELEMENTS = {
   accountType: 'td[id = "accountType"]',
   businessUnit: 'td[id = "businessUnit"]',
 
-  paginationLinks: 'a.govuk-link.govuk-pagination__link',
+  previousPageButton: '.moj-pagination__item--prev',
+  nextPageButton: '.moj-pagination__item--next',
+  //Added as Page Number is now dynamic
+  paginationPageNumber: (pageNum: number | string) => `.moj-pagination__item:contains("${pageNum}")`,
   rejectedAccounts: 'a.govuk-link',
 };

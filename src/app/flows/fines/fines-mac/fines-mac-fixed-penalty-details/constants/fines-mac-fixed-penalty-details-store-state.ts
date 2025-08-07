@@ -13,5 +13,4 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_STORE_STATE: IFinesMacFixedPenaltyD
   fm_offence_details_driving_licence_number: null,
   fm_offence_details_nto_nth: null,
   fm_offence_details_date_nto_issued: null,
-  fm_court_details_issuing_authority_id: null,
 };

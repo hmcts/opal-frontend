@@ -1,9 +1,9 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I enter {string} into the Issuing Authority search box', (issuingAuthority: string) => {
-  cy.get('#fm_fp_court_details_issuing_authority_id-autocomplete').type(issuingAuthority);
+  cy.get('#fm_fp_court_details_originator_id-autocomplete').type(issuingAuthority);
   cy.get('.autocomplete__option').should('not.contain', 'No results found');
-  cy.get('#fm_fp_court_details_issuing_authority_id-autocomplete').type('{downArrow}{enter}');
+  cy.get('#fm_fp_court_details_originator_id-autocomplete').type('{downArrow}{enter}');
 });
 
 Then('I enter {string} into the Enforcement court search box', (enforcementCourt: string) => {
