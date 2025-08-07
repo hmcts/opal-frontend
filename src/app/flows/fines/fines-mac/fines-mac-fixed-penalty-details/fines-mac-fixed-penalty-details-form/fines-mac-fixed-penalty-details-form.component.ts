@@ -188,6 +188,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`);
+    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_originator_id`);
 
     if (this.defendantType === this.defendantTypesKeys.company) {
       this.addValidatorsToControl(`${this.fixedPenaltyPrefix}company_details_company_name`);

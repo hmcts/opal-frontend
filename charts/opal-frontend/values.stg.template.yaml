@@ -46,8 +46,6 @@ opal-fines-service:
       FEATURES_APP_INSIGHTS_ENABLED: false
 postgresql:
   enabled: true
-  image:
-    tag: '15.4.0'
   auth:
     username: opal
     password: opal

@@ -120,7 +120,6 @@ const buildAccountOffencesImpositionsPayload = (
 export const finesMacPayloadBuildAccountOffences = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   courtDetailsState: IFinesMacCourtDetailsState,
-  toRfc3339Date: (date: string | null) => string | null,
   fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
   accountType?: string | null,
 ): IFinesMacPayloadAccountOffences[] => {
@@ -153,7 +152,7 @@ export const finesMacPayloadBuildAccountOffences = (
       childFormData,
     );
     return {
-      date_of_sentence: toRfc3339Date(offence.formData.fm_offence_details_date_of_sentence),
+      date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,
       imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id ?? null,
       offence_id: offence.formData.fm_offence_details_offence_id ?? null,
       impositions: impositions.length ? impositions : null,
