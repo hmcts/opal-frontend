@@ -50,8 +50,8 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `The company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text`,
+    alphanumericTextPattern: {
+      message: `The company must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
@@ -142,7 +142,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Payment reference must be 18 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
+    alphabeticalTextPattern: {
       message: 'Payment reference must only contain letters',
       priority: 3,
     },

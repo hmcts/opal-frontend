@@ -33,9 +33,14 @@ import {
   LETTERS_WITH_SPACES_PATTERN,
   SPECIAL_CHARACTERS_PATTERN,
   NUMERIC_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
+);
 const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
 
@@ -153,7 +158,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private setCompanyValidators(): void {
     const { fm_offence_details_minor_creditor_company_name: companyName } = this.form.controls;
-    companyName.setValidators([Validators.required, Validators.maxLength(50), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]);
+    companyName.setValidators([
+      Validators.required,
+      Validators.maxLength(50),
+      ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ]);
   }
 
   /**
