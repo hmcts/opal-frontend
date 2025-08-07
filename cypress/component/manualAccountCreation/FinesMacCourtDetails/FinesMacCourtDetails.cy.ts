@@ -13,6 +13,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 import { data } from 'cypress/types/jquery';
+import { only } from 'node:test';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
@@ -343,4 +344,35 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
   });
+
+  it(
+    'Should show all values in LJA and Enforcement Court auto complete fields when selected',
+    { tags: ['@PO-1990'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+
+      //Verify working input fields
+      cy.get(DOM_ELEMENTS.ljaInput).focus().click();
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete)
+        .find('li')
+        .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete)
+        .find('li')
+        .contains("Birmingham and Solihull Magistrates' Court (5004)")
+        .click();
+
+      cy.get(DOM_ELEMENTS.enforcementCourt).focus().click();
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete)
+        .find('li')
+        .should('contain', 'Port Talbot Justice Centre (999)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (101)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (998)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
+    },
+  );
 });
