@@ -13,7 +13,6 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 import { data } from 'cypress/types/jquery';
-import { only } from 'node:test';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
