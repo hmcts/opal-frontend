@@ -38,8 +38,10 @@ import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-off
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
+import { OPAL_FINES_MINOR_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-defendant-account-response-minor-creditor.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -418,6 +420,25 @@ export class OpalFines {
       ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
     }
 
+    mock._debug_searchParams = searchParams;
+    return of(mock);
+  }
+
+  /**
+   * Retrieves a list of minor creditor accounts based on the provided search parameters.
+   *
+   * @param searchParams - The parameters used to search for minor creditor accounts.
+   * @returns An Observable emitting a response containing the minor creditor accounts and the search parameters used (for debugging purposes).
+   */
+  public getMinorCreditorAccounts(
+    searchParams: IOpalFinesDefendantAccountSearchParams,
+  ): Observable<IOpalFinesMinorCreditorAccountsResponse> {
+    let mock: IOpalFinesMinorCreditorAccountsResponse & { _debug_searchParams?: unknown };
+    mock = structuredClone(
+      OPAL_FINES_MINOR_CREDITOR_ACCOUNTS_RESPONSE_MOCK,
+    ) as IOpalFinesMinorCreditorAccountsResponse & {
+      _debug_searchParams?: unknown;
+    };
     mock._debug_searchParams = searchParams;
     return of(mock);
   }
