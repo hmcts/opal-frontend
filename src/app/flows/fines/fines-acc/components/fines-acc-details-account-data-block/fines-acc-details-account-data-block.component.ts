@@ -1,9 +1,8 @@
-import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-fines-acc-details-account-data-block',
-  imports: [JsonPipe],
+  imports: [],
   templateUrl: './fines-acc-details-account-data-block.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

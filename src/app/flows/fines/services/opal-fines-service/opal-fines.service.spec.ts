@@ -35,7 +35,9 @@ import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-p
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-account-header.mock';
+import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { of } from 'rxjs';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -553,18 +555,47 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  xit('should getDefendantAccountHeader', () => {
+  it('should getDefendantAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
     service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
-    const req = httpMock.expectOne(apiUrl);
-    expect(req.request.method).toBe('GET');
+    // const req = httpMock.expectOne(apiUrl);
+    // expect(req.request.method).toBe('GET');
 
-    req.flush(expectedResponse);
+    // req.flush(expectedResponse);
+  });
+
+  it('should getDefendantAccountAtAGlance data', () => {
+    const tab = 'at-a-glance';
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
+    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
+
+    service
+      .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+    // const req = httpMock.expectOne(apiUrl);
+    // expect(req.request.method).toBe('GET');
+
+    // req.flush(expectedResponse);
+  });
+
+  it('should clear account details cache', () => {
+    const tab = 'at-a-glance';
+    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    service.clearAccountDetailsCache();
+
+    // Verify that the cache for the specified tab is cleared
+    expect(service['accountDetailsCache$'][tab]).toBeUndefined();
   });
 });

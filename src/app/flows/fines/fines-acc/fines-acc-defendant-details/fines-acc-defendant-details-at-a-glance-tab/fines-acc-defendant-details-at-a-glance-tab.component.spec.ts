@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab.component';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-tab-ref-data.mock';
 
 describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   let component: FinesAccDefendantDetailsAtAGlanceTabComponent;
@@ -13,6 +14,7 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccDefendantDetailsAtAGlanceTabComponent);
     component = fixture.componentInstance;
+    component.tabData = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     fixture.detectChanges();
   });
 

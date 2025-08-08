@@ -31,7 +31,7 @@ export const routing: Routes = [
           routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.details,
         },
-        resolve: { title: TitleResolver, headerDataAndBusinessUnit: defendantAccountHeadingResolver },
+        resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
       },
       {
         path: `${FINES_ACC_ROUTING_PATHS.children.note}/add`,

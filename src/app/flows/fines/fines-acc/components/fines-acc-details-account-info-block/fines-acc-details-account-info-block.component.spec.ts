@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDetailsAccountInfoBlockComponent } from './fines-acc-details-account-info-block.component';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-account-header.mock';
+import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
 
 describe('FinesAccDetailsAccountInfoBlockComponent', () => {
   let component: FinesAccDetailsAccountInfoBlockComponent;

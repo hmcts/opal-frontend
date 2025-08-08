@@ -1,8 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { Observable, Subject } from 'rxjs';
+// Services
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+// Stores
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+// Components
+import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesAccDetailsAccountInfoComponent } from '../components/fines-acc-details-account-info/fines-acc-details-account-info.component';
 import { FinesAccDetailsAccountInfoBlockComponent } from '../components/fines-acc-details-account-info-block/fines-acc-details-account-info-block.component';
 import { FinesAccDetailsAccountHeadingComponent } from '../components/fines-acc-details-account-heading/fines-acc-details-account-heading.component';
@@ -11,11 +16,18 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
-import { Observable, Subject } from 'rxjs';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+// Pipes
+import { AsyncPipe } from '@angular/common';
+// Constants
+import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+// Interfaces
+import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+
 @Component({
   selector: 'app-fines-acc-defendant-details',
   imports: [
@@ -26,21 +38,27 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsComponent extends AbstractTabData implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
   private readonly opalFinesService = inject(OpalFines);
-  public tabData$ = new Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData>();
-  public readonly utilsService = inject(UtilsService);
-  public accountData!: IOpalFinesDefendantAccountHeader;
-  public businessUnit!: IOpalFinesBusinessUnitNonSnakeCase;
+  private readonly permissionsService = inject(PermissionsService);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly userState = this.globalStore.userState();
+  private readonly destroy$ = new Subject<void>();
 
+  public readonly utilsService = inject(UtilsService);
+  public tabData$ = new Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData>();
+  public accountData!: IOpalFinesDefendantAccountHeader;
+
+  /**
+   * Fetches the defendant account heading data and current tab fragment from the route.
+   */
   private getDataFromRoute(): void {
-    this.accountData = this.activatedRoute.snapshot.data['headerDataAndBusinessUnit'].headingData;
-    this.businessUnit = this.activatedRoute.snapshot.data['headerDataAndBusinessUnit'].businessUnit;
+    this.accountData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 
@@ -57,24 +75,51 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.opalFinesService.clearAccountDetailsCache(),
     );
 
+    const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
+
     this.tabData$ = this.createTabDataStream<
       IOpalFinesAccountDetailsAtAGlanceTabRefData,
       IOpalFinesAccountDetailsAtAGlanceTabRefData
     >(
       fragment$,
       (tab) => tab,
-      (tab) => this.opalFinesService.getDefendantAccountAtAGlance(tab, this.accountData.id),
+      (tab) =>
+        this.opalFinesService.getDefendantAccountAtAGlance(
+          tab,
+          defendant_account_id,
+          business_unit_id,
+          business_unit_user_id,
+        ),
       (res) => res,
     );
   }
 
-  public linkClickEvent(): void {
-    // This method can be used to handle link click events if needed.
-    // Currently, it does nothing but can be extended in the future.
+  /**
+   * Checks if the user has the specified permission in any of their roles.
+   * @param permissionKey The key of the permission to check.
+   * @returns True if the user has the permission, false otherwise.
+   */
+  public hasPermission(permissionKey: string): boolean {
+    return this.permissionsService.hasPermissionAccess(
+      FINES_PERMISSIONS[permissionKey],
+      this.userState.business_unit_user,
+    );
   }
 
+  /**
+   * Navigates to the add account note page.
+   */
   public navigateToAddAccountNotePage(): void {
     this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
+  }
+
+  /**
+   * Navigates back to the account search results page.
+   */
+  public navigateBack(): void {
+    this['router'].navigate([
+      `/${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`,
+    ]);
   }
 
   public ngOnInit(): void {

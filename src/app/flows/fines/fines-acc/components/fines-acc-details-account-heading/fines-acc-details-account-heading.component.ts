@@ -5,6 +5,7 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { IOpalFinesDefendantAccountHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
 
 @Component({
   selector: 'app-fines-acc-details-account-heading',
@@ -14,11 +15,13 @@ import { IOpalFinesDefendantAccountHeader } from '../../fines-acc-defendant-deta
     GovukHeadingWithCaptionComponent,
     GovukButtonDirective,
     UpperCasePipe,
+    MojButtonMenuComponent,
   ],
   templateUrl: './fines-acc-details-account-heading.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDetailsAccountHeadingComponent {
   @Input() accountData!: IOpalFinesDefendantAccountHeader;
+  @Input() showAddAccountNoteButton = false;
   @Output() addAccountNote = new EventEmitter<void>();
 }

@@ -1,12 +1,14 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+
 <app-fines-acc-details-account-heading
   [accountData]="accountData"
   (addAccountNote)="navigateToAddAccountNotePage()"
+  [showAddAccountNoteButton]="hasPermission('account-notes')"
 ></app-fines-acc-details-account-heading>
 
-<app-fines-acc-details-account-info
-  [accountData]="accountData"
-  [businessUnit]="businessUnit"
-></app-fines-acc-details-account-info>
+<app-fines-acc-details-account-info [accountData]="accountData"></app-fines-acc-details-account-info>
 
 <app-fines-acc-details-account-info-block
   [accountData]="accountData"
