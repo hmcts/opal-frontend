@@ -1,4 +1,5 @@
 import '@cypress/grep';
+import 'cypress-mochawesome-reporter/register';
 import { addGdsBodyClass } from '@hmcts/opal-frontend-common/components/govuk/helpers';
 
 beforeEach(function () {
