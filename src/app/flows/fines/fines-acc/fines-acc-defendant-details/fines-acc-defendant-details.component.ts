@@ -8,17 +8,27 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 // Components
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
-import { FinesAccDetailsAccountInfoComponent } from '../components/fines-acc-details-account-info/fines-acc-details-account-info.component';
-import { FinesAccDetailsAccountInfoBlockComponent } from '../components/fines-acc-details-account-info-block/fines-acc-details-account-info-block.component';
-import { FinesAccDetailsAccountHeadingComponent } from '../components/fines-acc-details-account-heading/fines-acc-details-account-heading.component';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
+import { CustomSummaryMetricBarComponent } from '@hmcts/opal-frontend-common/components/custom/custom-summary-metric-bar';
+import { CustomSummaryMetricBarItemComponent } from '@hmcts/opal-frontend-common/components/custom/custom-summary-metric-bar/custom-summary-metric-bar-item';
+import { CustomSummaryMetricBarItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-summary-metric-bar/custom-summary-metric-bar-item/custom-summary-metric-bar-item-label';
+import { CustomSummaryMetricBarItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-summary-metric-bar/custom-summary-metric-bar-item/custom-summary-metric-bar-item-value';
+import { CustomAccountInformationComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information';
+import { CustomAccountInformationItemComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item';
+import { CustomAccountInformationItemLabelComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-label';
+import { CustomAccountInformationItemValueComponent } from '@hmcts/opal-frontend-common/components/custom/custom-account-information/custom-account-information-item/custom-account-information-item-value';
+import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
+import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
+import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
-// Pipes
-import { AsyncPipe } from '@angular/common';
+// Pipes & Directives
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -32,13 +42,24 @@ import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opa
   selector: 'app-fines-acc-defendant-details',
   imports: [
     AsyncPipe,
-    FinesAccDetailsAccountInfoComponent,
-    FinesAccDetailsAccountInfoBlockComponent,
-    FinesAccDetailsAccountHeadingComponent,
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     GovukBackLinkComponent,
+    CustomSummaryMetricBarComponent,
+    CustomSummaryMetricBarItemComponent,
+    CustomSummaryMetricBarItemLabelComponent,
+    CustomSummaryMetricBarItemValueComponent,
+    CustomAccountInformationComponent,
+    CustomAccountInformationItemComponent,
+    CustomAccountInformationItemLabelComponent,
+    CustomAccountInformationItemValueComponent,
+    GovukTagComponent,
+    MojButtonMenuComponent,
+    GovukHeadingWithCaptionComponent,
+    CustomPageHeaderComponent,
+    UpperCasePipe,
+    GovukButtonDirective,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

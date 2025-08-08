@@ -3,9 +3,6 @@ import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
-import { FinesAccDetailsAccountInfoComponent } from '../components/fines-acc-details-account-info/fines-acc-details-account-info.component';
-import { FinesAccDetailsAccountInfoBlockComponent } from '../components/fines-acc-details-account-info-block/fines-acc-details-account-info-block.component';
-import { FinesAccDetailsAccountHeadingComponent } from '../components/fines-acc-details-account-heading/fines-acc-details-account-heading.component';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -53,9 +50,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FinesAccDefendantDetailsComponent,
-        FinesAccDetailsAccountInfoComponent,
-        FinesAccDetailsAccountInfoBlockComponent,
-        FinesAccDetailsAccountHeadingComponent,
         FinesAccDefendantDetailsAtAGlanceTabComponent,
         MojSubNavigationComponent,
         MojSubNavigationItemComponent,
