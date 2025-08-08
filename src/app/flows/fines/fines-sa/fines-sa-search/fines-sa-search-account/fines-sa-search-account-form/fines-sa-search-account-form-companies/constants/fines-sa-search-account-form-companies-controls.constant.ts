@@ -1,15 +1,15 @@
 import { FormControl, Validators } from '@angular/forms';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_PATTERN,
-} from '../../../../../../constants/fines-patterns.constant';
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  LETTERS_WITH_SPACES_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
 
 const characterValidator = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'invalidCharacterPattern',
 );
-const nameValidator = patternValidator(LETTERS_SPACES_HYPHENS_APOSTROPHES_PATTERN, 'invalidNamePattern');
+const nameValidator = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'invalidNamePattern');
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX = 'fsa_search_account_companies_';
 

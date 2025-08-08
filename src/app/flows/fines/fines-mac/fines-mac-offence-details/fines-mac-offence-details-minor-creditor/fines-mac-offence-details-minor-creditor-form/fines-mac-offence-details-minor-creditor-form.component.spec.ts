@@ -65,7 +65,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     forenamesControl.setValue('A very long name exceeding twenty characters');
     expect(forenamesControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphabetical text validator on forenames
+    // Test pattern invalid validator on forenames
     forenamesControl.setValue('/$£');
     expect(forenamesControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
 
@@ -77,7 +77,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     surnameControl.setValue('A very long surname exceeding thirty characters');
     expect(surnameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphabetical text validator on surname
+    // Test pattern invalid validator on surname
     surnameControl.setValue('/$£');
     expect(surnameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
   });
@@ -97,7 +97,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     companyNameControl.setValue('A very long company name exceeding fifty characters');
     expect(companyNameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphabetical text validator on company name
+    // Test alphabetical text pattern validator on company name
     companyNameControl.setValue('/$£');
     expect(companyNameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
   });
@@ -147,7 +147,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(paymentReferenceControl.errors?.['maxlength']).toBeTruthy();
 
     paymentReferenceControl.setValue('Invalid@Reference'); // Invalid characters
-    expect(paymentReferenceControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(paymentReferenceControl.errors?.['alphanumericTextPattern']).toBeTruthy();
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();

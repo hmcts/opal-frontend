@@ -10,6 +10,11 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'The employer name must be 35 characters or fewer',
       priority: 2,
     },
+    alphanumericTextPattern: {
+      message:
+        'Employer name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+      priority: 3,
+    },
   },
   fm_employer_details_employer_reference: {
     required: {
@@ -19,6 +24,11 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
     maxlength: {
       message: 'The employee reference must be 20 characters or fewer',
       priority: 2,
+    },
+    alphanumericTextPattern: {
+      message:
+        'Employer reference must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+      priority: 3,
     },
   },
   fm_employer_details_employer_email_address: {

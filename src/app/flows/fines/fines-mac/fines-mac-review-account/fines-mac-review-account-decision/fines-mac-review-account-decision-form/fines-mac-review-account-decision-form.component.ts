@@ -4,8 +4,6 @@ import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-revi
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-decision-options.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
@@ -17,6 +15,18 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
 
 import { IFinesMacReviewAccountDecisionFieldErrors } from '../interfaces/fines-mac-review-account-decision-field-errors.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fines-mac-review-account-decision-field-errors.constant';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  SPECIAL_CHARACTERS_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericTextPattern',
+);
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 
 @Component({
   selector: 'app-fines-mac-review-account-decision-form',
@@ -46,7 +56,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
    * The form contains two controls:
    * - `fm_review_account_decision`: A required field for the account decision.
    * - `fm_review_account_rejection_reason`: An optional field for the rejection reason,
-   *   validated by `specialCharactersValidator` and `alphabeticalTextValidator`.
+   *   validated by `patternValidator`.
    *
    * This method assigns the constructed `FormGroup` to the `form` property.
    *
@@ -56,8 +66,8 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl(null, [
-        specialCharactersValidator(),
-        alphabeticalTextValidator(),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
     });
   }

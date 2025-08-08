@@ -10,8 +10,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `Company name must only contain letters`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
@@ -24,8 +24,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 1`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text for alias 1`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 1`,
       priority: 3,
     },
   },
@@ -38,8 +38,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 2`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text for alias 2`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 2`,
       priority: 3,
     },
   },
@@ -52,8 +52,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 3`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text for alias 3`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 3`,
       priority: 3,
     },
   },
@@ -66,8 +66,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 4`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text for alias 4`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 4`,
       priority: 3,
     },
   },
@@ -80,8 +80,8 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `The company name must be 30 characters or fewer for alias 5`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `The company name must only contain alphabetical text for alias 5`,
+    alphanumericTextPattern: {
+      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 5`,
       priority: 3,
     },
   },
