@@ -84,7 +84,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
         'Address line 1': defendantAccount.address_line_1,
         Postcode: defendantAccount.postcode,
         'NI number': defendantAccount.national_insurance_number,
-        'Parent or guardian': `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+        'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
         'Business unit': defendantAccount.business_unit_name,
         Ref: defendantAccount.prosecutor_case_reference,
         Enf: defendantAccount.last_enforcement_action,
