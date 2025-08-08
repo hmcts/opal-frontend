@@ -14,7 +14,7 @@ describe('FinesAccDetailsAccountDataBlockComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccDetailsAccountDataBlockComponent);
     component = fixture.componentInstance;
-    component.blockData = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
+    component.tabData = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     fixture.detectChanges();
   });
 
