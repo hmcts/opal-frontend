@@ -47,10 +47,9 @@ describe('FinesDraftTableWrapperComponent', () => {
   it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {
     spyOn(component.linkClicked, 'emit');
 
-    const testId = 123;
-    component.onDefendantClick(testId);
+    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
 
-    expect(component.linkClicked.emit).toHaveBeenCalledWith(testId);
+    expect(component.linkClicked.emit).toHaveBeenCalledWith(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
   });
 
   it('should emit accountClicked event with the correct account number when onAccountClick is called', () => {

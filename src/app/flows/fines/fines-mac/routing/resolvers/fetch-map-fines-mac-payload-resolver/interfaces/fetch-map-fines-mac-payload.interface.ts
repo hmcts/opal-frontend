@@ -4,6 +4,7 @@ import { IFinesMacAddAccountPayload } from '../../../../services/fines-mac-paylo
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
 export interface IFetchMapFinesMacPayload {
   finesMacState: IFinesMacState;
@@ -12,4 +13,5 @@ export interface IFetchMapFinesMacPayload {
   majorCreditors: IOpalFinesMajorCreditorRefData;
   localJusticeAreas: IOpalFinesLocalJusticeAreaRefData;
   results: IOpalFinesResultsRefData;
+  prosecutors: IOpalFinesProsecutorRefData;
 }
