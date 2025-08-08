@@ -39,7 +39,6 @@
   </div>
 }
 
-
 <div class="govuk-grid-column-three-quarters">
   <opal-lib-custom-account-information>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
@@ -65,7 +64,9 @@
   <opal-lib-custom-summary-metric-bar>
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
-      <p opal-lib-custom-summary-metric-bar-item-value>{{ utilsService.convertToMonetaryString(accountData.imposed) }}</p>
+      <p opal-lib-custom-summary-metric-bar-item-value>
+        {{ utilsService.convertToMonetaryString(accountData.imposed) }}
+      </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
