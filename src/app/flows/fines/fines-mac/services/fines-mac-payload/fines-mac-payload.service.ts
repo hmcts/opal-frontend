@@ -31,6 +31,9 @@ import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
+import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -54,29 +57,25 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Converts a date string in 'dd/MM/yyyy' format to an RFC 3339 date string ('YYYY-MM-DD').
+   * Retrieves the business unit user ID associated with a given business unit ID.
    *
-   * @param date - The date string in 'dd/MM/yyyy' format or null.
-   * @returns The date string in RFC 3339 format ('YYYY-MM-DD') if valid, otherwise null.
+   * @param businessUnitId - The ID of the business unit to search for. Can be null.
+   * @param sessionUserState - The current session user state containing business unit user information.
+   * @returns The business unit user ID if found, otherwise null.
    */
-  private toRfc3339Date(date: string | null): string | null {
-    if (!date) return null;
-    const dateTime = this.dateService.getFromFormat(date, 'dd/MM/yyyy');
-    return dateTime.isValid ? dateTime.toISODate() : null;
-  }
+  private getBusinessUnitBusinessUserId(
+    businessUnitId: number | null,
+    sessionUserState: ISessionUserState,
+  ): string | null {
+    const businessUnitUserId = sessionUserState.business_unit_user.find(
+      (businessUnit) => businessUnit.business_unit_id === businessUnitId,
+    );
 
-  /**   * Converts a date string in RFC 3339 format ('yyyy-MM-dd') back to 'dd/MM/yyyy' format.
-   *
-   * @param date - The RFC 3339 date string to convert, or null.
-   * @returns The date string in 'dd/MM/yyyy' format, or null if the input is null or invalid.
-   */
-  private fromRfc3339Date(date: string | null): string | null {
-    if (!date) {
-      return null;
+    if (businessUnitUserId) {
+      return businessUnitUserId.business_unit_user_id;
     }
 
-    const dateTime = this.dateService.getFromFormat(date, 'yyyy-MM-dd');
-    return dateTime.isValid ? dateTime.toFormat('dd/MM/yyyy') : null;
+    return null;
   }
 
   /**
@@ -96,9 +95,11 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
+    const { formData: fixedPenaltyDetails } = finesMacState.fixedPenaltyDetails;
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
+    const accountType = accountDetailsState['fm_create_account_account_type'];
 
     // Build the parts of our payload...
     const initialPayload = finesMacPayloadBuildAccountBase(
@@ -106,6 +107,7 @@ export class FinesMacPayloadService {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetails,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -116,12 +118,18 @@ export class FinesMacPayloadService {
       companyDetailsState,
       parentGuardianDetailsState,
     );
-    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    let fp_ticket_detail = null;
+    if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
+      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails);
+    }
+    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
     const offences = finesMacPayloadBuildAccountOffences(
       offenceDetailsForms,
       courtDetailsState,
-      this.toRfc3339Date.bind(this),
+
+      fixedPenaltyDetails,
+      accountType,
     );
 
     // Return our payload object
@@ -129,7 +137,7 @@ export class FinesMacPayloadService {
       ...initialPayload,
       defendant: defendant,
       offences: offences,
-      fp_ticket_detail: null,
+      fp_ticket_detail: fp_ticket_detail,
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };
@@ -183,7 +191,7 @@ export class FinesMacPayloadService {
       version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
 
-    // Transform the payload, format the dates to the correct format
+    // Transform the payload, format the dates and times to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
@@ -290,7 +298,7 @@ export class FinesMacPayloadService {
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id!, sessionUserState)!,
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, sessionUserState)!,
       validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
       version: draftAccountPayload.version!,
     };
@@ -321,12 +329,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
-    finesMacState.offenceDetails.forEach(
-      (offence) =>
-        (offence.formData.fm_offence_details_date_of_sentence = this.fromRfc3339Date(
-          offence.formData.fm_offence_details_date_of_sentence,
-        )),
-    );
+    finesMacState = finesMacPayloadMapAccountFixedPenalty(finesMacState, transformedPayload, offencesRefData);
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
@@ -354,27 +357,5 @@ export class FinesMacPayloadService {
     } else {
       return `${payload.account.defendant.company_name}`;
     }
-  }
-
-  /**
-   * Retrieves the business unit user ID associated with a given business unit ID.
-   *
-   * @param businessUnitId - The ID of the business unit to search for. Can be null.
-   * @param sessionUserState - The current session user state containing business unit user information.
-   * @returns The business unit user ID if found, otherwise null.
-   */
-  public getBusinessUnitBusinessUserId(
-    businessUnitId: number | null,
-    sessionUserState: ISessionUserState,
-  ): string | null {
-    const businessUnitUserId = sessionUserState.business_unit_user.find(
-      (businessUnit) => businessUnit.business_unit_id === businessUnitId,
-    );
-
-    if (businessUnitUserId) {
-      return businessUnitUserId.business_unit_user_id;
-    }
-
-    return null;
   }
 }
