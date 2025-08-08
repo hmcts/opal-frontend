@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
+import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-not-provided',
@@ -8,5 +8,5 @@ import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountNotProvidedComponent {
-  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
+  public readonly defaultValues = FINES_DEFAULT_VALUES;
 }

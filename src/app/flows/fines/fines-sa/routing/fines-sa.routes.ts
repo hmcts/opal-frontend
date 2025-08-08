@@ -5,6 +5,7 @@ import { FINES_SA_ROUTING_TITLES } from './constants/fines-sa-routing-titles.con
 import { routing as searchRouting } from '../fines-sa-search/routing/fines-sa-search.routes';
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -24,6 +25,9 @@ export const routing: Routes = [
     canActivate: [authGuard, finesSaFlowStateGuard],
     data: {
       title: FINES_SA_ROUTING_TITLES.children.results,
+    },
+    resolve: {
+      individualAccounts: finesSaIndividualAccountsResolver,
     },
   },
   {
