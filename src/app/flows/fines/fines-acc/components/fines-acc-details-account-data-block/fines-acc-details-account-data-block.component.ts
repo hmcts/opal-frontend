@@ -8,5 +8,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class FinesAccDetailsAccountDataBlockComponent {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @Input() accountData: any; // Replace 'any' with the appropriate type for accountData
+  @Input() tabData: any; // Replace 'any' with the appropriate type for accountData
 }
