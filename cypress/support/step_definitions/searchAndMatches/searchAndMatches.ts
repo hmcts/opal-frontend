@@ -78,7 +78,6 @@ Then('I verify the include alias checkbox is not checked', () => {
   cy.get('#fsa_search_account_companies_company_name_exact_match').should('not.be.checked');
 });
 
-
 When('I click the {string} link and handle new window navigation', (linkText: string) => {
   // Intercept window.open calls to prevent opening new tabs/windows
   cy.window().then((win) => {
@@ -86,6 +85,6 @@ When('I click the {string} link and handle new window navigation', (linkText: st
       win.location.href = url;
     });
   });
-  
+
   cy.contains('a', linkText).click();
 });

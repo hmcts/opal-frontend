@@ -5,7 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_results_individuals_elements';
-import { EMPTY_SEARCH_RESULTS_MOCK, SEARCH_RESULTS_WITH_DATA_MOCK, LARGE_SEARCH_RESULTS_MOCK, PAGINATION_SEARCH_RESULTS_MOCK} from './mocks/search_results_individuals_mock';
+import {
+  EMPTY_SEARCH_RESULTS_MOCK,
+  SEARCH_RESULTS_WITH_DATA_MOCK,
+  LARGE_SEARCH_RESULTS_MOCK,
+  PAGINATION_SEARCH_RESULTS_MOCK,
+} from './mocks/search_results_individuals_mock';
 import { SORTING_SEARCH_RESULTS_MOCK } from './mocks/search_results_sorting_mock';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_individual_mock';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
@@ -81,92 +86,95 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
-    
+
     // Should show too many results message when more than 100 results
     cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('be.visible');
     cy.get(DOM_ELEMENTS.tooManyResultsHeading).should('contain', 'There are more than 100 results');
-    
+
     cy.get(DOM_ELEMENTS.addMoreInfoLink).should('be.visible');
     cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
-    
+
     cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
-
   });
 
-  it('(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results', { tags: ['PO-717'] }, () => {
-    setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
+  it(
+    '(AC4) Displays Search Results - Individuals screen with correct table structure and data formatting for 100 or less results',
+    { tags: ['PO-717'] },
+    () => {
+      setupComponent(SEARCH_RESULTS_WITH_DATA_MOCK);
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-    
-    cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-    
-    // Verify all column headers are present (AC4 requirements)
-    cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
-    cy.get(DOM_ELEMENTS.nameHeader).should('contain', 'Name');
-    cy.get(DOM_ELEMENTS.aliasesHeader).should('contain', 'Aliases');
-    cy.get(DOM_ELEMENTS.dobHeader).should('contain', 'Date of birth');
-    cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.niNumberHeader).should('contain', 'NI number');
-    cy.get(DOM_ELEMENTS.parentGuardianHeader).should('contain', 'Parent or guardian');
-    cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.refHeader).should('contain', 'Ref');
-    cy.get(DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
-    cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
-    
-    // Verify data is displayed correctly (AC4 field requirements)
-    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '13001BU');
-    cy.get(DOM_ELEMENTS.accountCell).first().find('a').should('exist');
-    
-    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'SMITH, John Michael');
-    
-    cy.get(DOM_ELEMENTS.aliasesCell).first().should('contain', 'SMITH, John Michael');
-    
-    cy.get(DOM_ELEMENTS.dobCell).first().should('contain', '01 Jun 1985');
-    
-    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
-    
-    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
-    
-    cy.get(DOM_ELEMENTS.niNumberCell).first().should('contain', 'JK 56 78 90 C');
-    
-    cy.get(DOM_ELEMENTS.parentGuardianCell).first().should('contain', 'DOE, Jane');
-    
-    cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Test Business Unit');
-    
-    cy.get(DOM_ELEMENTS.refCell).first().should('contain', 'PCR19274548');
-    
-    cy.get(DOM_ELEMENTS.enfCell).first().should('contain', 'BWTD');
-    
-    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£714.00');
-    
-    cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '13002BU');
-    cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'DOE, Jane');
-    cy.get(DOM_ELEMENTS.dobCell).eq(1).should('contain', '15 Mar 1990');
-    cy.get(DOM_ELEMENTS.enfCell).eq(1).should('contain', 'WARRANT');
-    cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£524.00');
-    
-    cy.get(DOM_ELEMENTS.aliasesCell).eq(1).should('not.contain', 'SMITH');
-    
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('not.contain', 'DOE, Jane');
-  });
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+
+      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+
+      // Verify all column headers are present (AC4 requirements)
+      cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
+      cy.get(DOM_ELEMENTS.nameHeader).should('contain', 'Name');
+      cy.get(DOM_ELEMENTS.aliasesHeader).should('contain', 'Aliases');
+      cy.get(DOM_ELEMENTS.dobHeader).should('contain', 'Date of birth');
+      cy.get(DOM_ELEMENTS.addressHeader).should('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.postcodeHeader).should('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.niNumberHeader).should('contain', 'NI number');
+      cy.get(DOM_ELEMENTS.parentGuardianHeader).should('contain', 'Parent or guardian');
+      cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
+      cy.get(DOM_ELEMENTS.refHeader).should('contain', 'Ref');
+      cy.get(DOM_ELEMENTS.enfHeader).should('contain', 'ENF');
+      cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
+
+      // Verify data is displayed correctly (AC4 field requirements)
+      cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '13001BU');
+      cy.get(DOM_ELEMENTS.accountCell).first().find('a').should('exist');
+
+      cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'SMITH, John Michael');
+
+      cy.get(DOM_ELEMENTS.aliasesCell).first().should('contain', 'SMITH, John Michael');
+
+      cy.get(DOM_ELEMENTS.dobCell).first().should('contain', '01 Jun 1985');
+
+      cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
+
+      cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
+
+      cy.get(DOM_ELEMENTS.niNumberCell).first().should('contain', 'JK 56 78 90 C');
+
+      cy.get(DOM_ELEMENTS.parentGuardianCell).first().should('contain', 'DOE, Jane');
+
+      cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Test Business Unit');
+
+      cy.get(DOM_ELEMENTS.refCell).first().should('contain', 'PCR19274548');
+
+      cy.get(DOM_ELEMENTS.enfCell).first().should('contain', 'BWTD');
+
+      cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£714.00');
+
+      cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '13002BU');
+      cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'DOE, Jane');
+      cy.get(DOM_ELEMENTS.dobCell).eq(1).should('contain', '15 Mar 1990');
+      cy.get(DOM_ELEMENTS.enfCell).eq(1).should('contain', 'WARRANT');
+      cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£524.00');
+
+      cy.get(DOM_ELEMENTS.aliasesCell).eq(1).should('not.contain', 'SMITH');
+
+      cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('not.contain', 'DOE, Jane');
+    },
+  );
 
   it('(AC4d) Displays pagination with 25 results per page and 4 pages for 100 results', { tags: ['PO-717'] }, () => {
     setupComponent(PAGINATION_SEARCH_RESULTS_MOCK);
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
-    
+
     cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-    
+
     cy.get(DOM_ELEMENTS.paginationElement).should('exist');
-    
+
     // Verify pagination text shows correct total results
     cy.get(DOM_ELEMENTS.paginationText).should('contain', '100 results');
-    
+
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '1');
-    
+
     cy.get(DOM_ELEMENTS.paginationList).within(() => {
       cy.get(DOM_ELEMENTS.paginationListItem).should('have.length.at.least', 4);
       cy.contains('1').should('exist');
@@ -174,10 +182,10 @@ describe('FinesSaResultsComponent - Individuals', () => {
       cy.contains('…').should('exist');
       cy.contains('4').should('exist');
     });
-    
+
     // Verify exactly 25 results are displayed
     cy.get(DOM_ELEMENTS.table).should('have.length', 25);
-    
+
     cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '1300001BU');
     cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'SMITH1, John');
 
@@ -185,40 +193,39 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.nameCell).eq(24).should('contain', 'SMITH25, John');
 
     cy.get(DOM_ELEMENTS.paginationPageNumber(2)).click();
-    
+
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '2');
-    
+
     cy.get(DOM_ELEMENTS.table).should('have.length', 25);
-    
+
     cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '1300026BU');
     cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'SMITH26, Jane');
-    
+
     cy.get(DOM_ELEMENTS.paginationPageNumber(4)).click();
-    
+
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
-    
+
     cy.get(DOM_ELEMENTS.table).should('have.length', 25);
-    
+
     cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '1300076BU');
     cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'SMITH76, Jane');
-    
+
     cy.get(DOM_ELEMENTS.accountCell).eq(24).should('contain', '1300100BU');
     cy.get(DOM_ELEMENTS.nameCell).eq(24).should('contain', 'SMITH100, Jane');
-    
+
     cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
     // Should not exist on last page
-    cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist'); 
-    
+    cy.get(DOM_ELEMENTS.nextPageButton).should('not.exist');
+
     // Navigate back to page 1 using Previous button
     cy.get(DOM_ELEMENTS.previousPageButton).click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '3');
-    
+
     // Navigate to page 2 using Next button
     cy.get(DOM_ELEMENTS.nextPageButton).should('exist');
     cy.get(DOM_ELEMENTS.nextPageButton).click();
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
   });
-
 
   it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-717'] }, () => {
     setupComponent(SORTING_SEARCH_RESULTS_MOCK);
@@ -267,7 +274,7 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobCell).eq(1).should('contain', '12 Sep 1982');
     cy.get(DOM_ELEMENTS.dobCell).eq(2).should('contain', '01 Jun 1985');
     cy.get(DOM_ELEMENTS.dobCell).eq(3).should('contain', '25 Dec 1988');
-    cy.get(DOM_ELEMENTS.dobCell).eq(4).should('contain', '15 Mar 1990'); 
+    cy.get(DOM_ELEMENTS.dobCell).eq(4).should('contain', '15 Mar 1990');
 
     cy.get(DOM_ELEMENTS.dobHeader).click();
 
