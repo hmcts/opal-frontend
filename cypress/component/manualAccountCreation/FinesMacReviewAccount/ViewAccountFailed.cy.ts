@@ -19,6 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from 'src/app/flows/fines/fines-mac/constants/fines-mac-defendant-types-keys';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 
 describe('FinesMacReviewAccountComponent - View Failed Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -78,22 +79,7 @@ describe('FinesMacReviewAccountComponent - View Failed Account', () => {
     });
   };
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
+    interceptOffences();
   });
 
   it('AC.2,4 - should render correctly - AY', { tags: ['@PO-1073'] }, () => {

@@ -1,5 +1,4 @@
 #!groovy
-/* groovylint-disable */
 import uk.gov.hmcts.contino.GithubAPI
 
 @Library('Infrastructure')
@@ -49,20 +48,20 @@ def getProjectLabels() {
   return testLabels
 }
 def performArtifactOperations() {
-    sh 'mkdir -p cypress/parallel/weights/pipeline'
+  sh 'mkdir -p cypress/parallel/weights/pipeline'
 
-    sh '''
+  sh '''
     echo "Listing all artifacts before copy artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
     '''
 
-    script {
+  script {
         def projectName = getProjectName()
         try {
-            copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
+      copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
         } catch (Exception e) {
-            echo "Error copying artifacts: ${e}"
+      echo "Error copying artifacts: ${e}"
         }
 
         sh '''
@@ -70,10 +69,10 @@ def performArtifactOperations() {
         ls -l1a cypress/parallel/weights/
         ls -l1a cypress/parallel/weights/pipeline/
         '''
-    }
+  }
 
-    try {
-        sh '''
+  try {
+    sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
             echo "Moved smoke-parallel-weights.json"
@@ -94,10 +93,10 @@ def performArtifactOperations() {
         fi
         '''
     } catch (Exception e) {
-        echo "Artifacts not found or copy failed: ${e}"
-    }
+    echo "Artifacts not found or copy failed: ${e}"
+  }
 
-    sh '''
+  sh '''
     echo "Listing all copied artifacts:"
     ls -l1a cypress/parallel/weights/
     ls -l1a cypress/parallel/weights/pipeline/
@@ -105,7 +104,7 @@ def performArtifactOperations() {
 }
 
 def setupTestSpecifications() {
-    script {
+  script {
         def projectName = getProjectName()
         def labels = getProjectLabels()
         sh "echo 'Test Labels: ${labels}'"
@@ -114,48 +113,42 @@ def setupTestSpecifications() {
 
         // Add additional labels as needed
         if (labels.contains('test_enq')) {
-            directories.add('accountEnquiry')
+      directories.add('accountEnquiry')
         }
         if (labels.contains('test_remo')) {
-            directories.add('reciprocalMaintenance')
+      directories.add('reciprocalMaintenance')
         }
         if (labels.contains('test_mac')) {
-            directories.add('manualAccountCreation')
+      directories.add('manualAccountCreation')
         }
         sh "echo 'Directories: ${directories}'"
 
         if (directories.isEmpty() || projectName == 'HMCTS/opal-frontend/master') {
-            // No specific test labels, include all directories
-            env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+      // No specific test labels, include all directories
+      env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
         } else {
-            // Build the glob pattern using curly braces
-            def dirList = directories.join(',')
-            env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
+      // Build the glob pattern using curly braces
+      def dirList = directories.join(',')
+      env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
         }
         sh "echo 'Test Specs: ${env.TEST_SPECS}'"
-    }
+  }
 }
 
-
 def determineDevEnvironmentDeployment() {
-  env.DEV_ENABLE_OPAL_FINES_SERVICE = false
-  env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend.staging.platform.hmcts.net"
-  env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = "latest"
-
-  onPR {
-    env.DEV_ENABLE_OPAL_FINES_SERVICE = true // Default to true for development environment as FE wont work without it
-  }
+  env.DEV_ENABLE_OPAL_FINES_SERVICE = true // Default to true for development environment as FE wont work without it
+  env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
+  env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = 'latest'
 
   def githubApi = new GithubAPI(this)
-  if (githubApi.checkForLabel(env.BRANCH_NAME, "enable_keep_helm")) {
-    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "enable_opal_")) {
-
+  if (githubApi.checkForLabel(env.BRANCH_NAME, 'enable_keep_helm')) {
+    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'enable_opal_')) {
       //Fines service
       if (label ==~ /enable_opal_fines_service.*/) {
         env.DEV_ENABLE_OPAL_FINES_SERVICE = true
         env.DEV_OPAL_FINES_SERVICE_URL = "https://opal-frontend-pr-${env.CHANGE_ID}-fines-service.dev.platform.hmcts.net"
         if (label ==~ /enable_opal_fines_service:pr-.*/) {
-          env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = label.replace("enable_opal_fines_service:", "")
+          env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX = label.replace('enable_opal_fines_service:', '')
         }
         echo "Deploying Opal fines service (${env.DEV_OPAL_FINES_SERVICE_URL} - ${env.DEV_OPAL_FINES_SERVICE_IMAGE_SUFFIX}) instance in PR environment"
       }
@@ -181,7 +174,7 @@ withPipeline(type, product, component) {
     afterSuccess('checkout') {
     performArtifactOperations()
     setupTestSpecifications()
-}
+    }
 
   afterSuccess('test') {
     script {
@@ -196,7 +189,7 @@ withPipeline(type, product, component) {
           '''
         sh"echo 'Archiving weight files in ${sourceJobName}'"
         archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/component-parallel-weights.json', allowEmptyArchive: true
-        }
+    }
   }
 
   afterAlways('test') {
@@ -205,13 +198,27 @@ withPipeline(type, product, component) {
       def skipLabel = 'skip_opal_component'
 
       if (!labels.contains(skipLabel)) {
-        echo "Running opal component tests (no skip label present)"
-        yarnBuilder.yarn('test:opalComponent')
+        echo 'Running opal component tests (no skip label present)'
+        try {
+          yarnBuilder.yarn('test:opalComponent')
+        } catch (Exception e) {
+          echo "Opal component tests failed: ${e}"
+          currentBuild.result = 'FAILURE'
+        } finally {
+            archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
+            publishHTML target: [
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : 'functional-output/component-report/',
+              reportFiles          : 'index.html',
+              reportName           : 'Component Test Report'
+          ]
+        }
       } else {
         echo "Skipping opal component tests due to label: ${skipLabel}"
       }
     }
-    archiveArtifacts artifacts: 'functional-output/**', allowEmptyArchive: true
   }
 
   afterSuccess('functionalTest:dev') {
@@ -241,7 +248,6 @@ withPipeline(type, product, component) {
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
-
     }
   }
 
@@ -250,36 +256,36 @@ withPipeline(type, product, component) {
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
         keepAll              : true,
-        reportDir            : "functional-output/prod/cucumber/",
-        reportFiles          : "functional-report.html",
-        reportName           : "Cucumber Functional Test Report"
+        reportDir            : 'functional-output/prod/cucumber/',
+        reportFiles          : 'functional-report.html',
+        reportName           : 'Cucumber Functional Test Report'
     ]
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
         keepAll              : true,
-        reportDir            : "smoke-output/prod/cucumber/",
-        reportFiles          : "smoke-report.html",
-        reportName           : "Cucumber Smoke Test Report"
+        reportDir            : 'smoke-output/prod/cucumber/',
+        reportFiles          : 'smoke-report.html',
+        reportName           : 'Cucumber Smoke Test Report'
     ]
-  }
+      }
   afterAlways('functionalTest:dev') {
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
         keepAll              : true,
-        reportDir            : "functional-output/prod/cucumber/",
-        reportFiles          : "functional-report.html",
-        reportName           : "Cucumber Functional Test Report"
+        reportDir            : 'functional-output/prod/cucumber/',
+        reportFiles          : 'functional-report.html',
+        reportName           : 'Cucumber Functional Test Report'
     ]
 
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
         keepAll              : true,
-        reportDir            : "smoke-output/prod/cucumber/",
-        reportFiles          : "smoke-report.html",
-        reportName           : "Cucumber Smoke Test Report"
+        reportDir            : 'smoke-output/prod/cucumber/',
+        reportFiles          : 'smoke-report.html',
+        reportName           : 'Cucumber Smoke Test Report'
     ]
   }
 }
