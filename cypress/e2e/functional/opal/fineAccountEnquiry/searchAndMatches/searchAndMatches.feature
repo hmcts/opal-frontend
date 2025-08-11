@@ -345,6 +345,7 @@ Feature: Account Search and Matches
     Then I see "Enter last name" text on the page
 
 
+
   @PO-705
   Scenario: Route guard prevents accidental navigation away from search screen with data
     #PO-705 - AC8. Route guard prevents accidental navigation away from search screen with data
@@ -370,3 +371,22 @@ Feature: Account Search and Matches
     Then I see "Search for an account" on the page header
     And I see "REF-123" in the "Reference or case number" field
     And I see "John" in the "First names" field
+
+  @PO-717
+  Scenario: Successful Search For Individual Defendant Accounts
+    When I enter "12345678" into the "Account number" field
+    And I click the "Search" button
+
+    # PO-717 - AC5. Back Button navigates to Search Page
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    Then I see "12345678" in the "Account number" field
+    Then I see "Individuals" on the page header
+
+
+    # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
+    # Handles window.open navigation
+    When I click the "Search" button
+    When I click the "130001BU" link and handle new window navigation
+    Then I see "Account Details" on the page header
