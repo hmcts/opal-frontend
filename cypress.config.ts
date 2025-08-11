@@ -130,9 +130,25 @@ export default defineConfig({
       },
     },
     specPattern: 'cypress/component/**/*.cy.ts',
+    reporter: 'cypress-multi-reporters',
+    reporterOptions: {
+      reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter',
+      mochaJunitReporterReporterOptions: {
+        mochaFile: 'functional-output/prod/component-test-output-[hash].xml',
+        toConsole: false,
+      },
+      cypressMochawesomeReporterReporterOptions: {
+        reportDir: 'functional-output/component-report',
+        overwrite: false,
+        html: false,
+        json: true,
+      },
+    },
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
       require('@cypress/grep/src/plugin')(config);
+      require('cypress-mochawesome-reporter/plugin')(on);
+
       config.env['messagesOutput'] =
         `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
       return config;
