@@ -97,9 +97,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     companyNameControl.setValue('A very long company name exceeding fifty characters');
     expect(companyNameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test alphabetical text pattern validator on company name
+    // Test alphanumeric text pattern validator on company name
     companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(companyNameControl.errors?.['alphanumericTextPattern']).toBeTruthy();
   });
 
   it('should set validators for payment detail controls', () => {
@@ -147,7 +147,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(paymentReferenceControl.errors?.['maxlength']).toBeTruthy();
 
     paymentReferenceControl.setValue('Invalid@Reference'); // Invalid characters
-    expect(paymentReferenceControl.errors?.['alphanumericTextPattern']).toBeTruthy();
+    expect(paymentReferenceControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();
