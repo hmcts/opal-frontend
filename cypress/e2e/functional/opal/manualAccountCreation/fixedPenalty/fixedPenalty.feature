@@ -31,7 +31,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     And I enter "01/01/2023" into the "Date of offence" date field
     And I enter "HY35014" into the "Offence code" field
     And I enter "14:30" into the "Time of offence" field
-    And I enter "Oxford Street, London" into the "Place of offence" text field
+    And I enter "Oxford Street - London" into the "Place of offence" text field
     And I enter "150" into the Amount imposed field
 
     # Select vehicle type and fill related fields

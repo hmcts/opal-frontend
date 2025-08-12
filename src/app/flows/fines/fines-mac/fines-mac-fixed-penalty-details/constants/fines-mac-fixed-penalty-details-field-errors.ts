@@ -14,7 +14,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_personal_details_address_line_3: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_address_line_3,
   fm_fp_personal_details_post_code: {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_post_code,
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       priority: 2,
       message: `Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
     },
@@ -32,7 +32,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Add comment must be 30 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Add comment must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
@@ -42,7 +42,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Add account note must be 1000 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
@@ -59,7 +59,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Notice number must be 16 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Notice number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -101,7 +101,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Place of offence must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -129,7 +129,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Registration number must be 7 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -149,7 +149,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
