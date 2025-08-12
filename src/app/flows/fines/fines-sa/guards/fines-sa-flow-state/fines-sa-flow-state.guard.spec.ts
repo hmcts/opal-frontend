@@ -56,7 +56,7 @@ describe('finesSaFlowStateGuard', () => {
   it('should return true if search criteria is populated', fakeAsync(async () => {
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     });
 
     const result = await runFinesSaEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesSaFlowStateGuard, urlPath));

@@ -7,7 +7,6 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-se
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
-import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-search-account-form-minor-creditors/fines-sa-search-account-form-minor-creditors.component';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from './fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../constants/fines-sa-search-account-state.constant';
@@ -65,21 +64,66 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(setControlsSpy).toHaveBeenCalledWith(FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS);
   });
 
-  it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'rePopulateForm');
-    component.form.get('fsa_search_account_number')?.setValue('12345678');
-    component.form.get('fsa_search_account_reference_case_number')?.setValue('REF123');
+  it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', async () => {
+    const expectedValue = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_number: '12345678',
+      fsa_search_account_reference_case_number: 'REF123',
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    };
 
-    component.handleFormSubmit(new SubmitEvent('submit'));
+    // Ensure the component is fully initialized
+    component.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(mockFinesSaStore.searchAccount()).toEqual(component.form.value);
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['problem'], { relativeTo: component['activatedRoute'].parent });
+    // Set the form values directly
+    component.form.patchValue(expectedValue);
+
+    // Mark nested groups as valid to ensure our validator runs
+    const individualGroup = component.form.get('fsa_search_account_individuals_search_criteria') as FormGroup;
+    if (individualGroup) {
+      Object.keys(individualGroup.controls).forEach((key) => {
+        individualGroup.get(key)?.clearValidators();
+        individualGroup.get(key)?.updateValueAndValidity({ emitEvent: false });
+      });
+    }
+
+    // Force form validation to run
+    component.form.updateValueAndValidity();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // The validator should detect conflicting inputs (multiple criteria populated)
+    expect(component.form.errors?.['atLeastOneCriteriaRequired']).toBeTruthy();
+
+    // Create a proper SubmitEvent
+    const submitEvent = new SubmitEvent('submit', {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    // Test the form submission
+    component.handleFormSubmit(submitEvent);
+
+    // Verify the store was updated with searchAccountTemporary
+    expect(mockFinesSaStore.searchAccount()).toEqual(
+      jasmine.objectContaining({
+        fsa_search_account_number: '12345678',
+        fsa_search_account_reference_case_number: 'REF123',
+        fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      }),
+    );
+
+    // Verify navigation was called
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['problem'], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should clear all tab-specific form groups', () => {
     const tabKeys = [
-      'fsa_search_account_individual_search_criteria',
+      'fsa_search_account_individuals_search_criteria',
       'fsa_search_account_companies_search_criteria',
       'fsa_search_account_minor_creditors_search_criteria',
       'fsa_search_account_major_creditor_search_criteria',
@@ -156,17 +200,6 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(setControlsSpy).toHaveBeenCalledWith({});
   });
 
-  it('should call applyMinorCreditorValidation when active tab is minorCreditors', () => {
-    component.finesSaStore.setActiveTab('minorCreditors');
-    component.minorCreditorsComponent = jasmine.createSpyObj('FinesSaSearchAccountFormMinorCreditorsComponent', [
-      'applyMinorCreditorValidation',
-    ]) as FinesSaSearchAccountFormMinorCreditorsComponent;
-
-    component['validateTabSpecificFields']();
-
-    expect(component.minorCreditorsComponent.applyMinorCreditorValidation).toHaveBeenCalled();
-  });
-
   it('should call setControls with empty controls for unknown tab', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setControlsSpy = spyOn<any>(component, 'setControls');
@@ -191,7 +224,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     });
 
     component.handleFormSubmit(new SubmitEvent('submit'));

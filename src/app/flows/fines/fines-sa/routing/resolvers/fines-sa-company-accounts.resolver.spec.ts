@@ -30,7 +30,7 @@ describe('finesSaCompanyAccountsResolver', () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: 'ACC123',
       fsa_search_account_reference_case_number: null,
-      fsa_search_account_individual_search_criteria: null,
+      fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
@@ -58,7 +58,7 @@ describe('finesSaCompanyAccountsResolver', () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: 'REF456',
-      fsa_search_account_individual_search_criteria: null,
+      fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
@@ -93,7 +93,7 @@ describe('finesSaCompanyAccountsResolver', () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,
-      fsa_search_account_individual_search_criteria: null,
+      fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: comp,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
@@ -125,7 +125,7 @@ describe('finesSaCompanyAccountsResolver', () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,
-      fsa_search_account_individual_search_criteria: null,
+      fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
@@ -145,7 +145,7 @@ describe('finesSaCompanyAccountsResolver', () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,
-      fsa_search_account_individual_search_criteria: null,
+      fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,

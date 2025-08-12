@@ -46,10 +46,10 @@ describe('FinesSaStore', () => {
   it('should patch searchAccount state with individual search criteria', () => {
     const newState = {
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     };
     store.setSearchAccount(newState as IFinesSaSearchAccountState);
-    expect(store.searchAccount().fsa_search_account_individual_search_criteria).toEqual(
+    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(
       FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
     );
     expect(store.getSearchType()).toBe('individuals');
@@ -82,7 +82,7 @@ describe('FinesSaStore', () => {
   it('should fall back to accountNumber when all criteria are null or empty', () => {
     const nullCriteriaState: IFinesSaSearchAccountState = {
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
-      fsa_search_account_individual_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
     };
 
     store.setSearchAccount(nullCriteriaState);
@@ -112,7 +112,7 @@ describe('FinesSaStore', () => {
   it('should reset search criteria only', () => {
     store.setSearchAccount({ ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'reset-me' });
     store.resetDefendantSearchCriteria();
-    expect(store.searchAccount().fsa_search_account_individual_search_criteria).toEqual(null);
+    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(null);
   });
 
   it('should reset only the searchAccount object', () => {

@@ -33,7 +33,7 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const ind = state.fsa_search_account_individual_search_criteria;
+  const ind = state.fsa_search_account_individuals_search_criteria;
   const searchType = 'individual';
 
   if (!hasAccountNumber && !hasReference && !ind) {

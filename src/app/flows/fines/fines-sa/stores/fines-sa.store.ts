@@ -57,8 +57,8 @@ export const FinesSaStore = signalStore(
       }
 
       if (
-        searchAccount.fsa_search_account_individual_search_criteria &&
-        hasPopulatedValues(searchAccount.fsa_search_account_individual_search_criteria)
+        searchAccount.fsa_search_account_individuals_search_criteria &&
+        hasPopulatedValues(searchAccount.fsa_search_account_individuals_search_criteria)
       ) {
         return 'individuals';
       }
