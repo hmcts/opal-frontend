@@ -79,6 +79,10 @@ describe('FinesSaResultsComponent - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.checkSearchLink).should('be.visible');
     cy.get(DOM_ELEMENTS.checkSearchLink).should('contain', 'Check your search');
+    //(AC2b) Check your search link is clickable and functional
+    // Test that the link is clickable (Full Test to be implemented when API complete)
+    cy.get(DOM_ELEMENTS.checkSearchLink).should('have.class', 'govuk-link');
+    cy.get(DOM_ELEMENTS.checkSearchLink).click();
   });
 
   it('(AC3) Handles more than 100 search matches correctly', { tags: ['PO-717'] }, () => {
@@ -95,6 +99,11 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.addMoreInfoLink).should('contain', 'Try adding more information');
 
     cy.get(DOM_ELEMENTS.tableWrapper).should('not.exist');
+
+    //(AC3b) Try adding more information link is clickable and functional
+    // Test that the link is clickable (Full Test to be implemented when API complete)
+    cy.get(DOM_ELEMENTS.addMoreInfoLink).should('have.class', 'govuk-link');
+    cy.get(DOM_ELEMENTS.addMoreInfoLink).click();
   });
 
   it(
