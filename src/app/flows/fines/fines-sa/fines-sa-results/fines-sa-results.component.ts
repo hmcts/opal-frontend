@@ -5,7 +5,11 @@ import { GovukTabsComponent } from '@hmcts/opal-frontend-common/components/govuk
 import { GovukTabsListItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-list-item';
 import { GovukTabsPanelComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-panel';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import {
+  IOpalFinesDefendantAccount,
+  IOpalFinesDefendantAccountAlias,
+  IOpalFinesDefendantAccountResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { FinesSaResultsDefendantTableWrapperComponent } from './fines-sa-results-defendant-table-wrapper/fines-sa-results-defendant-table-wrapper.component';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-results-defendant-table-wrapper-table-sort-default.constant';
 import { IFinesSaResultsDefendantTableWrapperTableData } from './fines-sa-results-defendant-table-wrapper/interfaces/fines-sa-results-defendant-table-wrapper-table-data.interface';
@@ -69,40 +73,78 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     if (data.count === 0) return [];
 
     return data.defendant_accounts.map((defendantAccount) => {
-      const commonFields = {
-        ...FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
-        Account: defendantAccount.account_number,
-        'Address line 1': defendantAccount.address_line_1,
-        Postcode: defendantAccount.postcode,
-        'NI number': defendantAccount.national_insurance_number,
-        'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
-        'Business unit': defendantAccount.business_unit_name,
-        Ref: defendantAccount.prosecutor_case_reference,
-        Enf: defendantAccount.last_enforcement_action,
-        Balance: defendantAccount.account_balance,
-      };
+      const commonFields = this.buildCommonFields(defendantAccount);
 
-      if (type === 'individual') {
-        return {
-          ...commonFields,
-          Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
-          Aliases: defendantAccount.aliases
-            ? defendantAccount.aliases.map((alias) => `${alias.alias_surname}, ${alias.alias_forenames}`).join('\n')
-            : null,
-          'Date of birth': defendantAccount.birth_date,
-          'NI number': defendantAccount.national_insurance_number,
-          'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
-        };
-      } else {
-        return {
-          ...commonFields,
-          Name: defendantAccount.organisation_name,
-          Aliases: defendantAccount.aliases
-            ? defendantAccount.aliases.map((alias) => alias.organisation_name).join('\n')
-            : null,
-        };
-      }
+      return type === 'individual'
+        ? this.buildIndividualFields(commonFields, defendantAccount)
+        : this.buildCompanyFields(commonFields, defendantAccount);
     });
+  }
+
+  /**
+   * Builds common fields shared between individual and company defendant accounts.
+   *
+   * @param defendantAccount - The defendant account data from the API response.
+   * @returns Object containing common fields for both individual and company types.
+   */
+  private buildCommonFields(
+    defendantAccount: IOpalFinesDefendantAccount,
+  ): IFinesSaResultsDefendantTableWrapperTableData {
+    return {
+      ...FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY,
+      Account: defendantAccount.account_number,
+      'Address line 1': defendantAccount.address_line_1,
+      Postcode: defendantAccount.postcode,
+      'Business unit': defendantAccount.business_unit_name,
+      Ref: defendantAccount.prosecutor_case_reference,
+      Enf: defendantAccount.last_enforcement_action,
+      Balance: defendantAccount.account_balance,
+    };
+  }
+
+  /**
+   * Builds individual-specific fields for defendant account table data.
+   *
+   * @param commonFields - Base fields shared between individual and company types.
+   * @param defendantAccount - The defendant account data from the API response.
+   * @returns Complete individual defendant table data object.
+   */
+  private buildIndividualFields(
+    commonFields: IFinesSaResultsDefendantTableWrapperTableData,
+    defendantAccount: IOpalFinesDefendantAccount,
+  ): IFinesSaResultsDefendantTableWrapperTableData {
+    return {
+      ...commonFields,
+      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+      Aliases: defendantAccount.aliases
+        ? defendantAccount.aliases
+            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.alias_surname}, ${alias.alias_forenames}`)
+            .join('\n')
+        : null,
+      'Date of birth': defendantAccount.birth_date,
+      'NI number': defendantAccount.national_insurance_number,
+      'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+    };
+  }
+
+  /**
+   * Builds company-specific fields for defendant account table data.
+   *
+   * @param commonFields - Base fields shared between individual and company types.
+   * @param defendantAccount - The defendant account data from the API response.
+   * @returns Complete company defendant table data object.
+   */
+  private buildCompanyFields(
+    commonFields: IFinesSaResultsDefendantTableWrapperTableData,
+    defendantAccount: IOpalFinesDefendantAccount,
+  ): IFinesSaResultsDefendantTableWrapperTableData {
+    return {
+      ...commonFields,
+      Name: defendantAccount.organisation_name,
+      Aliases: defendantAccount.aliases
+        ? defendantAccount.aliases.map((alias: IOpalFinesDefendantAccountAlias) => alias.organisation_name).join('\n')
+        : null,
+    };
   }
 
   /**

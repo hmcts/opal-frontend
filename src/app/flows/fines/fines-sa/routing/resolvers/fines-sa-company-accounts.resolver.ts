@@ -13,11 +13,10 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/f
  *
  * 1. If an account number is provided, the search is performed using only the account number.
  * 2. If no account number is provided but a reference case number is, the search is performed using the reference.
- * 3. If neither of the above are provided but the "Company" tab contains populated data, a detailed individual criteria search is performed.
+ * 3. If neither of the above are provided but the "Company" tab contains populated data, a detailed company criteria search is performed.
  * 4. If none of the above criteria are present, no API call is made and an empty result set is returned.
  *
- * This resolver is intended specifically for Company account searches. If only the "Companies" tab is filled,
- * this resolver will return an empty response without making an API call.
+ * This resolver is intended specifically for Company account searches.
  *
  * @returns Observable of IOpalFinesDefendantAccountResponse
  */
@@ -26,45 +25,43 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
   const finesSaStore = inject(FinesSaStore);
   const state = finesSaStore.searchAccount();
 
-  const common = {
+  // Create base object with defaults, search type, and common fields
+  const baseSearchParams = {
+    ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+    search_type: 'company' as const,
     business_unit_ids: state.fsa_search_account_business_unit_ids,
     active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   };
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const comp = state.fsa_search_account_companies_search_criteria;
-  const searchType = 'company';
+  const companyCriteria = state.fsa_search_account_companies_search_criteria;
 
-  if (!hasAccountNumber && !hasReference && !comp) {
+  if (!hasAccountNumber && !hasReference && !companyCriteria) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 
   if (hasAccountNumber) {
     return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
+      ...baseSearchParams,
       account_number: state.fsa_search_account_number,
-      ...common,
-    });
-  } else if (hasReference) {
-    return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
-      pcr: state.fsa_search_account_reference_case_number,
-      ...common,
-    });
-  } else {
-    const companyCriteria = comp!;
-    return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
-      organisation_name: companyCriteria.fsa_search_account_companies_company_name,
-      exact_match_organisation_name: companyCriteria.fsa_search_account_companies_company_name_exact_match,
-      include_aliases: companyCriteria.fsa_search_account_companies_include_aliases,
-      address_line: companyCriteria.fsa_search_account_companies_address_line_1,
-      postcode: companyCriteria.fsa_search_account_companies_post_code,
-      ...common,
     });
   }
+
+  if (hasReference) {
+    return opalFinesService.getDefendantAccounts({
+      ...baseSearchParams,
+      pcr: state.fsa_search_account_reference_case_number,
+    });
+  }
+
+  // Company criteria search
+  return opalFinesService.getDefendantAccounts({
+    ...baseSearchParams,
+    organisation_name: companyCriteria!.fsa_search_account_companies_company_name,
+    exact_match_organisation_name: companyCriteria!.fsa_search_account_companies_company_name_exact_match,
+    include_aliases: companyCriteria!.fsa_search_account_companies_include_aliases,
+    address_line: companyCriteria!.fsa_search_account_companies_address_line_1,
+    postcode: companyCriteria!.fsa_search_account_companies_post_code,
+  });
 };
