@@ -11,26 +11,12 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { DOM_ELEMENTS } from './constants/review_summary_elements';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('ReviewSummaryComponent', () => {
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    );
+    interceptOffences();
   });
 
   let finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };

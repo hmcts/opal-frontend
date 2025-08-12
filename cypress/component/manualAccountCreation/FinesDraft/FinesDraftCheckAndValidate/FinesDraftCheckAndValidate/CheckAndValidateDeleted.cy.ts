@@ -145,14 +145,14 @@ describe('FinesDraftCheckAndValidateDeleteComponent', () => {
 
     cy.get(DOM_ELEMENTS.navigationLinks).contains('Deleted').click();
 
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
-    cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
+    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+    cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
+    cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
     cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
     cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Robert Brown').should('exist');
 
     cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
-    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 - 50 of 50 accounts').should('exist');
+    cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 26 to 50 of 50 results').should('exist');
 
     cy.get(DOM_ELEMENTS.defendant).eq(24).contains('Emma Gonzalez').should('exist');
     cy.get(DOM_ELEMENTS.paginationLinks).contains('Previous').should('exist');

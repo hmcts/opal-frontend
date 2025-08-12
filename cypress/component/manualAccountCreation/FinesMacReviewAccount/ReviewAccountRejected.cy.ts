@@ -19,6 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { data } from 'cypress/types/jquery';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
@@ -94,22 +95,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   };
 
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
+    interceptOffences();
   });
 
   it(

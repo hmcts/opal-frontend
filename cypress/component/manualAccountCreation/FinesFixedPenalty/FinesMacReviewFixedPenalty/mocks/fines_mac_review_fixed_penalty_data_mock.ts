@@ -206,7 +206,6 @@ export const FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK: IFinesMacState = {
       fm_offence_details_driving_licence_number: 'DRIVER123',
       fm_offence_details_nto_nth: 'NTO123',
       fm_offence_details_date_nto_issued: '20/06/2025',
-      fm_court_details_issuing_authority_id: '1223',
     },
   },
 };
