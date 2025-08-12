@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import {
   GovukCheckboxesComponent,
@@ -13,7 +14,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
   templateUrl: './fines-sa-search-account-form-companies.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormCompaniesComponent {
-  @Input({ required: true }) public form!: FormGroup;
-  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
+export class FinesSaSearchAccountFormCompaniesComponent extends AbstractFormBaseComponent {
+  @Input({ required: true }) public override form!: FormGroup;
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
 }

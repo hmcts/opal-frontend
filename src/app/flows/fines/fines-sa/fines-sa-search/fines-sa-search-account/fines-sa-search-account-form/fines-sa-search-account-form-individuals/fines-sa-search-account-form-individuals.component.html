@@ -61,6 +61,7 @@
   [control]="form.get('fsa_search_account_individuals_date_of_birth')!"
   [maxDate]="yesterday"
   [errors]="formControlErrorMessages['fsa_search_account_individuals_date_of_birth']"
+  (dateChange)="setInputValue($event, 'fsa_search_account_individuals_date_of_birth')"
 ></opal-lib-moj-date-picker>
 <opal-lib-govuk-text-input
   labelText="National Insurance number"

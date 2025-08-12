@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-minor-creditors-controls.constant';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil, distinctUntilChanged } from 'rxjs';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
@@ -15,7 +14,8 @@ import {
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { FINES_MINOR_CREDITOR_TYPES } from 'src/app/flows/fines/constants/fines-minor-creditor-types.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-import { FinesSaService } from '../../../../services/fines-sa.service';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search-account-form-minor-creditors.validator';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-minor-creditors',
@@ -30,14 +30,11 @@ import { FinesSaService } from '../../../../services/fines-sa.service';
   templateUrl: './fines-sa-search-account-form-minor-creditors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, OnDestroy {
-  private readonly finesSaService = inject(FinesSaService);
-  private readonly ngUnsubscribe = new Subject<void>();
-  private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS_PREFIX;
+export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFormBaseComponent {
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
 
-  @Input({ required: true }) public form!: FormGroup;
-  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) public override form!: FormGroup;
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public readonly minorCreditorTypes: IGovUkRadioOptions[] = Object.entries(this.finesMinorCreditorTypes).map(
     ([key, value]) => ({
       key,
@@ -45,90 +42,47 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
     }),
   );
 
-  /**
-   * Retrieves form controls related to individual minor creditors.
-   * @returns An object containing controls for last name, first names,
-   * their exact match flags, address line 1, and post code.
-   */
-  private getIndividualMinorCreditorControls() {
-    return {
-      lastNameControl: this.form.get(`${this.prefix}last_name`),
-      lastNameExactMatchControl: this.form.get(`${this.prefix}last_name_exact_match`),
-      firstNamesControl: this.form.get(`${this.prefix}first_names`),
-      firstNamesExactMatchControl: this.form.get(`${this.prefix}first_names_exact_match`),
-      addressLine1Control: this.form.get(`${this.prefix}individual_address_line_1`),
-      postCodeControl: this.form.get(`${this.prefix}individual_post_code`),
-    };
+  private get minorCreditorType(): FormControl {
+    return this.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
   }
 
   /**
-   * Retrieves form controls related to company minor creditors.
-   * @returns An object containing controls for company name,
-   * its exact match flag, address line 1, and post code.
+   * Gets the `FormGroup` instance associated with the 'fsa_search_account_minor_creditors_individual' control
+   * from the main form. This group contains the form controls and validation logic for individual minor creditors.
+   *
+   * @returns {FormGroup} The form group for individual minor creditors.
    */
-  private getCompanyMinorCreditorControls() {
-    return {
-      companyNameControl: this.form.get(`${this.prefix}company_name`),
-      companyNameExactMatchControl: this.form.get(`${this.prefix}company_name_exact_match`),
-      addressLine1Control: this.form.get(`${this.prefix}company_address_line_1`),
-      postCodeControl: this.form.get(`${this.prefix}company_post_code`),
-    };
+  public get individualGroup(): FormGroup {
+    return this.form.get('fsa_search_account_minor_creditors_individual') as FormGroup;
   }
 
   /**
-   * Retrieves the form control for the minor creditor type selector.
-   * @returns The AbstractControl representing the minor creditor type.
+   * Gets the FormGroup instance associated with the 'fsa_search_account_minor_creditors_company' control
+   * from the parent form. This FormGroup contains the form controls and validation state
+   * for the minor creditors company section of the search account form.
+   *
+   * @returns {FormGroup} The FormGroup for the minor creditors company.
    */
-  private getMinorCreditorType() {
-    return this.form.get(`${this.prefix}minor_creditor_type`);
+  public get companyGroup(): FormGroup {
+    return this.form.get('fsa_search_account_minor_creditors_company') as FormGroup;
   }
 
   /**
-   * Resets and updates the validity of the provided form controls.
-   * This method clears the value and validation state of each control without emitting events.
-   * @param controls An array of AbstractControl or null to reset and validate.
+   * Resets the provided FormGroup to its initial state and updates its validation status.
+   *
+   * This method performs the following actions on the given FormGroup:
+   * - Resets the form group without emitting value change events.
+   * - Marks the form group as pristine (no changes made).
+   * - Marks the form group as untouched (no controls have been visited).
+   * - Updates the value and validity of the form group without emitting events.
+   *
+   * @param group - The FormGroup instance to reset and validate.
    */
-  private resetAndValidateControls(controls: (AbstractControl | null)[]): void {
-    controls.forEach((control) => {
-      control?.reset(null, { emitEvent: false });
-      control?.updateValueAndValidity();
-    });
-  }
-
-  /**
-   * Handles changes to the minor creditor type form control.
-   * Resets and validates relevant form controls depending on whether the selected type
-   * is 'individual' or 'company', ensuring only appropriate fields are active.
-   */
-  private handleMinorCreditorTypeChange(): void {
-    const minorCreditorTypeControl = this.getMinorCreditorType();
-    if (!minorCreditorTypeControl) return;
-
-    const isIndividual = minorCreditorTypeControl.value === 'individual';
-    const isCompany = minorCreditorTypeControl.value === 'company';
-
-    const individualControls = Object.values(this.getIndividualMinorCreditorControls());
-    const companyControls = Object.values(this.getCompanyMinorCreditorControls());
-
-    if (isCompany) {
-      this.resetAndValidateControls(individualControls);
-    }
-    if (isIndividual) {
-      this.resetAndValidateControls(companyControls);
-    }
-  }
-
-  /**
-   * Sets up a subscription to listen for changes on the minor creditor type control.
-   * When the minor creditor type changes, it triggers form control resets and validations.
-   */
-  private setupMinorCreditorTypeChangeListener(): void {
-    const minorCreditorTypeControl = this.getMinorCreditorType();
-    if (!minorCreditorTypeControl) return;
-
-    minorCreditorTypeControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.handleMinorCreditorTypeChange();
-    });
+  private resetAndValidateFormGroup(group: FormGroup): void {
+    group.reset(undefined, { emitEvent: false });
+    group.markAsPristine();
+    group.markAsUntouched();
+    group.updateValueAndValidity({ onlySelf: true, emitEvent: false });
   }
 
   /**
@@ -137,29 +91,46 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    * If first_names is populated and last_name is not, last_name becomes required.
    */
   private handleLastNameConditionalValidation(): void {
-    const minorCreditorType = this.getMinorCreditorType()?.value;
-    if (minorCreditorType !== 'individual') return;
+    const type = this.minorCreditorType?.value;
 
-    const { firstNamesControl, lastNameControl } = this.getIndividualMinorCreditorControls();
-    if (!firstNamesControl || !lastNameControl) return;
+    if (type !== 'individual') {
+      return;
+    }
 
-    const firstNamesHasValue = !!firstNamesControl?.value?.trim();
-    const lastNameHasValue = !!lastNameControl?.value?.trim();
-    const shouldRequireLastName = firstNamesHasValue && !lastNameHasValue;
+    // Add null checks for missing form groups
+    const individualGroup = this.form.get('fsa_search_account_minor_creditors_individual') as FormGroup;
+    if (!individualGroup) {
+      return; // Exit gracefully if group doesn't exist
+    }
 
-    if (shouldRequireLastName) {
+    const firstNamesControl = individualGroup.get('fsa_search_account_minor_creditors_first_names');
+    const lastNameControl = individualGroup.get('fsa_search_account_minor_creditors_last_name');
+
+    // Check if controls exist
+    if (!firstNamesControl || !lastNameControl) {
+      return; // Exit gracefully if controls don't exist
+    }
+
+    const firstNamesValue = firstNamesControl.value;
+    const lastNameValue = lastNameControl.value;
+
+    const hasFirstNames = typeof firstNamesValue === 'string' ? firstNamesValue.trim() : firstNamesValue;
+    const hasLastName = typeof lastNameValue === 'string' ? lastNameValue.trim() : lastNameValue;
+
+    if (hasFirstNames && !hasLastName) {
       lastNameControl.addValidators(Validators.required);
     } else {
       lastNameControl.removeValidators(Validators.required);
     }
-    lastNameControl.updateValueAndValidity({ emitEvent: false });
+
+    lastNameControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
   }
 
   /**
    * Sets up conditional validation for last name based on first names for individual minor creditors.
    */
   private setupConditionalLastNameValidation(): void {
-    const { firstNamesControl } = this.getIndividualMinorCreditorControls();
+    const firstNamesControl = this.individualGroup.get('fsa_search_account_minor_creditors_first_names') as FormControl;
     if (!firstNamesControl) return;
 
     firstNamesControl.valueChanges
@@ -168,93 +139,75 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
   }
 
   /**
+   * Sets up listeners and validators for the minor creditor type selection in the form.
+   *
+   * - Applies a custom validator to the 'minor_creditor_type' control, ensuring required data is present
+   *   based on the selected type (individual or company).
+   * - Subscribes to changes in the 'minor_creditor_type' control to reset and update the corresponding
+   *   form group (individual or company) when the type changes.
+   * - Subscribes to value changes in both the individual and company form groups to trigger form-level
+   *   validation updates.
+   *
+   * This method should be called during component initialization to ensure the form behaves correctly
+   * when users interact with the minor creditor type selection.
+   *
+   * @private
+   */
+  private setupMinorCreditorTypeListener(): void {
+    const typeControl = this.minorCreditorType;
+    if (typeControl) {
+      typeControl.setValidators(
+        requiredMinorCreditorDataValidator(() => ({
+          individualGroup: this.individualGroup,
+          companyGroup: this.companyGroup,
+        })),
+      );
+      typeControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    }
+
+    this.minorCreditorType?.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
+      .subscribe((type) => {
+        if (type === 'individual') {
+          this.resetAndValidateFormGroup(this.companyGroup);
+        } else if (type === 'company') {
+          this.resetAndValidateFormGroup(this.individualGroup);
+        }
+        // Only now update the typeControl validity
+        typeControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      });
+
+    // Only update validity if the group is valid and dirty, and avoid loops
+    this.individualGroup.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe(() => {
+      if (typeControl?.dirty) {
+        typeControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      }
+    });
+
+    this.companyGroup.valueChanges.pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged()).subscribe(() => {
+      if (typeControl?.dirty) {
+        typeControl.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      }
+    });
+  }
+
+  /**
    * Initializes listeners for form control changes.
    * Sets up minor creditor type change handling and dynamic validation rules.
    */
   private initialiseFormListeners(): void {
-    this.setupMinorCreditorTypeChangeListener();
+    this.setupMinorCreditorTypeListener();
     this.setupConditionalLastNameValidation();
   }
 
   /**
-   * Applies validation logic to the minor creditor form section based on the selected creditor type.
+   * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
    *
-   * - For 'individual' type, checks if any of the required individual fields (last name, first names, address line 1, post code)
-   *   are populated. If none are populated, sets a validation error on the type control.
-   * - For 'company' type, checks if any of the required company fields (company name, address line 1, post code)
-   *   are populated. If none are populated, sets a validation error on the type control.
-   *
-   * Marks the type control as touched after validation.
-   *
-   * @remarks
-   * Utilizes `finesSaService.isAnyTextFieldPopulated` to determine if any relevant fields contain data.
-   *
-   * @returns {void}
+   * This override sets up a listener for changes to the minor creditor type and then calls the parent class's
+   * `ngOnInit` method to ensure any inherited initialization logic is executed.
    */
-  public applyMinorCreditorValidation(): void {
-    const typeControl = this.getMinorCreditorType();
-    const type = typeControl?.value;
-    if (!type) {
-      return;
-    }
-
-    if (type === 'individual') {
-      const { lastNameControl, firstNamesControl, addressLine1Control, postCodeControl } =
-        this.getIndividualMinorCreditorControls();
-
-      const isEmpty = !this.finesSaService.isAnyTextFieldPopulated([
-        lastNameControl,
-        firstNamesControl,
-        addressLine1Control,
-        postCodeControl,
-      ]);
-
-      if (isEmpty) {
-        typeControl.setErrors({
-          requiredIndividualMinorCreditorData: true,
-        });
-      } else {
-        typeControl.setErrors(null);
-      }
-
-      typeControl.markAsTouched();
-    }
-
-    if (type === 'company') {
-      const { companyNameControl, addressLine1Control, postCodeControl } = this.getCompanyMinorCreditorControls();
-
-      const isEmpty = !this.finesSaService.isAnyTextFieldPopulated([
-        companyNameControl,
-        addressLine1Control,
-        postCodeControl,
-      ]);
-
-      if (isEmpty) {
-        typeControl.setErrors({
-          requiredCompanyMinorCreditorData: true,
-        });
-      } else {
-        typeControl.setErrors(null);
-      }
-
-      typeControl.markAsTouched();
-    }
-  }
-
-  /**
-   * Angular lifecycle hook called on component initialization.
-   * Sets up necessary form listeners to manage minor creditor search fields dynamically.
-   */
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     this.initialiseFormListeners();
-  }
-
-  /**
-   * Angular lifecycle hook called on component destruction.
-   * Cleans up subscriptions to prevent memory leaks.
-   */
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    super.ngOnInit();
   }
 }

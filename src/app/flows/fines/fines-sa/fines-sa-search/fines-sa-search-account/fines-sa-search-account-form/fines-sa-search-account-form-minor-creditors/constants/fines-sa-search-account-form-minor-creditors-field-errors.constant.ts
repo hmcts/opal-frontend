@@ -8,7 +8,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
         priority: 1,
       },
       requiredCompanyMinorCreditorData: {
-        message: 'Enter minor creditor company name or address',
+        message: 'Enter minor creditor company name or address or postcode',
         priority: 1,
       },
     },
