@@ -2817,9 +2817,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/webpack-preprocessor@npm:^6.0.2":
-  version: 6.0.4
-  resolution: "@cypress/webpack-preprocessor@npm:6.0.4"
+"@cypress/webpack-preprocessor@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@cypress/webpack-preprocessor@npm:7.0.0"
   dependencies:
     bluebird: "npm:3.7.1"
     debug: "npm:^4.3.4"
@@ -2828,9 +2828,9 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
-    babel-loader: ^8.3 || ^9 || ^10
-    webpack: ^4 || ^5
-  checksum: 10/65acd85be422b755a1503342bdf46c149daef74dd9fd57a6aa9023313fa23bff357c9677e21500f41dc24dcf306595317c1f984879801fc41bdaaa95f4d7f26f
+    babel-loader: ^9 || ^10
+    webpack: ^5
+  checksum: 10/5684cfb3e5d7299dd7e06010ddaed6540ed9c5d9d00766a389a3a0cd79aaed9075086c241b9f89c4251787c4df8a556a9e4117d63558b6c552d0c6decec06829
   languageName: node
   linkType: hard
 
@@ -14024,7 +14024,7 @@ __metadata:
     "@angular/ssr": "npm:^20.0.0"
     "@badeball/cypress-cucumber-preprocessor": "npm:^22.0.0"
     "@cypress/grep": "npm:^4.1.0"
-    "@cypress/webpack-preprocessor": "npm:^6.0.2"
+    "@cypress/webpack-preprocessor": "npm:^7.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
