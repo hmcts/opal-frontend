@@ -112,7 +112,6 @@ There are two options depending on whether you're working with local or publishe
   ```
 
   This will:
-
   - Import the published versions of `@hmcts/opal-frontend-common` and `@hmcts/opal-frontend-common-node`
   - Build the application for production
   - Serve it on **http://localhost:4000**
@@ -135,7 +134,6 @@ There are two options depending on whether you're working with local or publishe
   ```
 
   This will:
-
   - Import the local builds of the common libraries
   - Build the application for production
   - Serve it on **http://localhost:4000**
@@ -300,3 +298,124 @@ This is useful when you're no longer working on the libraries directly or want t
 Run `yarn ng generate component component-name` to generate a new component. You can also use `yarn ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 Note the requirement for prefixing the `ng` commands with `yarn`
+
+## Angular code LLM prompts
+
+https://angular.dev/ai/develop-with-ai
+
+Paste the following prompt into your AI assistant of choice.
+
+```markdown
+You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## TypeScript Best Practices
+
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+
+## Angular Best Practices
+
+- Always use standalone components over NgModules
+- Do NOT set `standalone: true` inside the `@Component`, `@Directive` and `@Pipe` decorators
+- Use signals for state management
+- Implement lazy loading for feature routes
+- Use `NgOptimizedImage` for all static images.
+- Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
+
+## Components
+
+- Keep components small and focused on a single responsibility
+- Use `input()` and `output()` functions instead of decorators
+- Use `computed()` for derived state
+- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
+- Prefer inline templates for small components
+- Prefer Reactive forms instead of Template-driven ones
+- Do NOT use `ngClass`, use `class` bindings instead
+- DO NOT use `ngStyle`, use `style` bindings instead
+
+## State Management
+
+- Use signals for local component state
+- Use `computed()` for derived state
+- Keep state transformations pure and predictable
+- Do NOT use `mutate` on signals, use `update` or `set` instead
+
+## Templates
+
+- Keep templates simple and avoid complex logic
+- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- Use the async pipe to handle observables
+
+## Services
+
+- Design services around a single responsibility
+- Use the `providedIn: 'root'` option for singleton services
+- Use the `inject()` function instead of constructor injection
+```
+
+## 💡 Copilot Prompt Examples for Angular MCP
+
+### 📘 1. Ask for Documentation Help
+
+**Prompt:**
+
+> “How do Angular signals work?”
+
+**What Copilot does:**  
+Calls `search_documentation("signals")` and returns official Angular documentation context.
+
+---
+
+### 🧱 2. Generate Code
+
+**Prompt:**
+
+> “Generate a service for user authentication”
+
+**What Copilot does:**  
+Runs `ng generate service user-auth` through the MCP server — adds the file in the correct directory.
+
+---
+
+### 📚 3. Get Project File Structure
+
+**Prompt:**
+
+> “List all Angular modules in this project”
+
+**What Copilot does:**  
+Uses `list_projects` and `get_file_tree` to find and display modules across the workspace.
+
+---
+
+### 🧭 4. Navigate Routing Setup
+
+**Prompt:**
+
+> “What routes are defined in this app?”
+
+**What Copilot does:**  
+Parses routing modules and shows route paths, guards, and lazy-loaded modules.
+
+---
+
+### 🧹 5. Refactor with AI Help
+
+**Prompt:**
+
+> “Convert this component to use the standalone API”
+
+**What Copilot does:**  
+Updates component metadata with `standalone: true`, refactors imports, and removes old NgModule references.
+
+---
+
+### 🛠️ 6. Add Angular Libraries
+
+**Prompt:**
+
+> “Add Angular Material”
+
+**What Copilot does:**  
+Triggers `ng add @angular/material` to install the package and configure animations + theming.

@@ -18,6 +18,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
 
 describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -75,22 +76,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     });
   };
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
+    interceptOffences();
   });
 
   it('AC.2,4 - should render correctly - AY', { tags: ['PO-601'] }, () => {
@@ -103,23 +89,18 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 8);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'personal-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(5)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(6).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(7)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
+    cy.get('#account-details-summary-card-list').should('exist');
+    cy.get('#court-details-summary-card-list').should('exist');
+    cy.get('#personal-details-summary-card-list').should('exist');
+    cy.get('#contact-details-summary-card-list').should('exist');
+    cy.get('#employer-details-summary-card-list').should('exist');
+    cy.get('#offences-and-imposition-summary-card-list').should('exist');
+    cy.get('#payment-terms-summary-card-list').should('exist');
+    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
-      .should('not.exist');
-    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
+    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+    cy.get('#company-details-summary-card-list').should('not.exist');
+    cy.get('#defendant-details-summary-card-list').should('not.exist');
 
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
@@ -187,23 +168,18 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 9);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(2)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'parent-guardian-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(4).should('have.attr', 'ng-reflect-summary-card-list-id', 'defendant-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('have.attr', 'ng-reflect-summary-card-list-id', 'employer-details');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(6)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(7).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(8)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
+    cy.get('#account-details-summary-card-list').should('exist');
+    cy.get('#court-details-summary-card-list').should('exist');
+    cy.get('#defendant-details-summary-card-list').should('exist');
+    cy.get('#contact-details-summary-card-list').should('exist');
+    cy.get('#employer-details-summary-card-list').should('exist');
+    cy.get('#offences-and-imposition-summary-card-list').should('exist');
+    cy.get('#payment-terms-summary-card-list').should('exist');
+    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
+    cy.get('#parent-guardian-details-summary-card-list').should('exist');
 
-    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="company-details"]').should('not.exist');
+    cy.get('#company-details-summary-card-list').should('not.exist');
+    cy.get('#personal-details-summary-card-list').should('not.exist');
 
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');
@@ -220,23 +196,18 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     cy.get(DOM_ELEMENTS.status).should('contain.text', 'Rejected');
 
     cy.get(DOM_ELEMENTS.summaryCard).should('exist').and('have.length', 7);
-    cy.get(DOM_ELEMENTS.summaryCard).eq(0).should('have.attr', 'ng-reflect-summary-card-list-id', 'account-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(1).should('have.attr', 'ng-reflect-summary-card-list-id', 'court-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(2).should('have.attr', 'ng-reflect-summary-card-list-id', 'company-details');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(3).should('have.attr', 'ng-reflect-summary-card-list-id', 'contact-details');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(4)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'offences-and-imposition');
-    cy.get(DOM_ELEMENTS.summaryCard).eq(5).should('have.attr', 'ng-reflect-summary-card-list-id', 'payment-terms');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .eq(6)
-      .should('have.attr', 'ng-reflect-summary-card-list-id', 'account-comments-and-notes');
+    cy.get('#account-details-summary-card-list').should('exist');
+    cy.get('#court-details-summary-card-list').should('exist');
+    cy.get('#company-details-summary-card-list').should('exist');
+    cy.get('#contact-details-summary-card-list').should('exist');
+    cy.get('#offences-and-imposition-summary-card-list').should('exist');
+    cy.get('#payment-terms-summary-card-list').should('exist');
+    cy.get('#account-comments-and-notes-summary-card-list').should('exist');
 
-    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="personal-details"]').should('not.exist');
-    cy.get(DOM_ELEMENTS.summaryCard).filter('[ng-reflect-summary-card-list-id="employer-details"]').should('not.exist');
-    cy.get(DOM_ELEMENTS.summaryCard)
-      .filter('[ng-reflect-summary-card-list-id="parent-guardian-details"]')
-      .should('not.exist');
+    cy.get('#parent-guardian-details-summary-card-list').should('not.exist');
+    cy.get('#personal-details-summary-card-list').should('not.exist');
+    cy.get('#employer-details-summary-card-list').should('not.exist');
+    cy.get('#defendant-details-summary-card-list').should('not.exist');
 
     cy.get(DOM_ELEMENTS.langPrefDocLanguage).should('not.exist');
     cy.get(DOM_ELEMENTS.langPrefCourtHeatingLanguage).should('not.exist');

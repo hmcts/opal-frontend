@@ -3,13 +3,13 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesMacLanguagePreferencesForm } from './interfaces/fines-mac-language-preferences-form.interface';
 import { FinesMacLanguagePreferencesFormComponent } from './fines-mac-language-preferences-form/fines-mac-language-preferences-form.component';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-language-preferences',
-  imports: [CommonModule, RouterModule, FinesMacLanguagePreferencesFormComponent],
+  imports: [RouterModule, FinesMacLanguagePreferencesFormComponent],
   templateUrl: './fines-mac-language-preferences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

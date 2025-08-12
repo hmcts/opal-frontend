@@ -54,7 +54,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -77,7 +77,7 @@ Feature: Manual account creation - Offence Details
 
 
     #Imposition 3 - default creditor
-    And I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 3
+    When I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 3
     And I enter "500" into the "Amount imposed" field for imposition 3
     And I enter "250" into the "Amount paid" field for imposition 3
 
@@ -137,7 +137,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -173,7 +173,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 2
-    Then I see the following Minor creditor details for impostion 2:
+    Then I see the following Minor creditor details for imposition 2:
       | Minor creditor    | CNAME                   |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -186,30 +186,30 @@ Feature: Manual account creation - Offence Details
     When I click on the "Change" link for imposition 1
     Then I see "Minor creditor details" on the page header
 
-    When I enter "FNAME1" into the "First name" field
-    And I enter "LNAME1" into the "Last name" field
-    And I enter "Addr1_edit" into the "Address Line 1" field
-    And I enter "Addr2_edit" into the "Address Line 2" field
-    And I enter "Addr3_edit" into the "Address Line 3" field
+    When I enter "FNAMEONE" into the "First name" field
+    And I enter "LNAMEONE" into the "Last name" field
+    And I enter "Addr1 edit" into the "Address Line 1" field
+    And I enter "Addr2 edit" into the "Address Line 2" field
+    And I enter "Addr3 edit" into the "Address Line 3" field
     And I enter "ED32 1IT" into the "Postcode" field
 
-    Then I enter "F LNAME1" into the "Name on the account" field
+    Then I enter "F LNAMEONE" into the "Name on the account" field
     And I enter "654321" into the "Sort code" field
     And I enter "87654321" into the "Account number" field
-    And I enter "REF1" into the "Payment reference" field
+    And I enter "REFONE" into the "Payment reference" field
 
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
-      | Minor creditor    | FNAME1 LNAME1                          |
-      | Address           | Addr1_editAddr2_editAddr3_editED32 1IT |
+    Then I see the following Minor creditor details for imposition 1:
+      | Minor creditor    | FNAMEONE LNAMEONE                      |
+      | Address           | Addr1 editAddr2 editAddr3 editED32 1IT |
       | Payment method    | BACS                                   |
-      | Account name      | F LNAME1                               |
+      | Account name      | F LNAMEONE                             |
       | Sort code         | 65-43-21                               |
       | Account number    | 87654321                               |
-      | Payment reference | REF1                                   |
+      | Payment reference | REFONE                                 |
 
     # Remove minor creditor for imposition 2
     When I click on the "Remove" link for imposition 2
@@ -240,46 +240,46 @@ Feature: Manual account creation - Offence Details
     Then I click the "Yes - remove minor creditor" button
     Then I see "Add an offence" on the page header
 
-    And I do not see the Minor creditor details for impostion 2
+    And I do not see the Minor creditor details for imposition 2
 
     #Adding imposition 2 again to be removed later
     When I click on the "Add minor creditor details" link for imposition 2
     Then I see "Minor creditor details" on the page header
 
     When I select the "Company" radio button
-    And I enter "CNAME_NEW" into the "Company" field
-    And I enter "Addr1_" into the "Address Line 1" field
-    And I enter "Addr2_" into the "Address Line 2" field
-    And I enter "Addr3_" into the "Address Line 3" field
+    And I enter "CNAMENEW" into the "Company" field
+    And I enter "Addr1" into the "Address Line 1" field
+    And I enter "Addr2" into the "Address Line 2" field
+    And I enter "Addr3" into the "Address Line 3" field
     And I enter "TE12 3ST" into the "Postcode" field
 
     Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME_2" into the "Name on the account" field
+    And I enter "FLNAME TWO" into the "Name on the account" field
     And I enter "654321" into the "Sort code" field
     And I enter "87654321" into the "Account number" field
-    And I enter "REF_2" into the "Payment reference" field
+    And I enter "REFTWO" into the "Payment reference" field
 
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 2
-    Then I see the following Minor creditor details for impostion 2:
-      | Minor creditor    | CNAME_NEW                  |
-      | Address           | Addr1_Addr2_Addr3_TE12 3ST |
-      | Payment method    | BACS                       |
-      | Account name      | F LNAME_2                  |
-      | Sort code         | 65-43-21                   |
-      | Account number    | 87654321                   |
-      | Payment reference | REF_2                      |
+    Then I see the following Minor creditor details for imposition 2:
+      | Minor creditor    | CNAMENEW                |
+      | Address           | Addr1Addr2Addr3TE12 3ST |
+      | Payment method    | BACS                    |
+      | Account name      | FLNAME TWO              |
+      | Sort code         | 65-43-21                |
+      | Account number    | 87654321                |
+      | Payment reference | REFTWO                  |
 
     When I click the "Review offence" button
     Then I see "Offences and impositions" on the page header
 
     When the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor      | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | FNAME1 LNAME1 | £200.00        | £100.00     | £100.00           |
-      | Compensation | CNAME_NEW     | £200.00        | £100.00     | £100.00           |
-      | Totals       |               | £400.00        | £200.00     | £200.00           |
+      | Imposition   | Creditor                          | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | Mr FNAMEONE LNAMEONE Show details | £200.00        | £100.00     | £100.00           |
+      | Compensation | CNAMENEW                          | £200.00        | £100.00     | £100.00           |
+      | Totals       |                                   | £400.00        | £200.00     | £200.00           |
 
     Then I click on the "Change" link
     Then I see "Add an offence" on the page header
@@ -287,47 +287,47 @@ Feature: Manual account creation - Offence Details
     When I click on the "Change" link for imposition 1
     Then I see "Minor creditor details" on the page header
 
-    When I enter "FNAME2_EDIT" into the "First name" field
-    And I enter "LNAME2_EDIT" into the "Last name" field
-    And I enter "Addr1_edit" into the "Address Line 1" field
-    And I enter "Addr2_edit" into the "Address Line 2" field
-    And I enter "Addr3_edit" into the "Address Line 3" field
+    When I enter "FNAMETWOEDIT" into the "First name" field
+    And I enter "LNAMETWOEDIT" into the "Last name" field
+    And I enter "Addr1edit" into the "Address Line 1" field
+    And I enter "Addr2edit" into the "Address Line 2" field
+    And I enter "Addr3edit" into the "Address Line 3" field
     And I enter "TE12 3ST" into the "Postcode" field
 
-    Then I enter "F LNAME2_EDIT" into the "Name on the account" field
+    Then I enter "F LNAMETWOEDIT" into the "Name on the account" field
     And I enter "123456" into the "Sort code" field
     And I enter "12345678" into the "Account number" field
-    And I enter "REF_EDIT" into the "Payment reference" field
+    And I enter "REFEDIT" into the "Payment reference" field
 
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
-      | Minor creditor    | FNAME2_EDIT LNAME2_EDIT                |
-      | Address           | Addr1_editAddr2_editAddr3_editTE12 3ST |
-      | Payment method    | BACS                                   |
-      | Account name      | F LNAME2_EDIT                          |
-      | Sort code         | 12-34-56                               |
-      | Account number    | 12345678                               |
-      | Payment reference | REF_EDIT                               |
+    Then I see the following Minor creditor details for imposition 1:
+      | Minor creditor    | FNAMETWOEDIT LNAMETWOEDIT           |
+      | Address           | Addr1editAddr2editAddr3editTE12 3ST |
+      | Payment method    | BACS                                |
+      | Account name      | F LNAMETWOEDIT                      |
+      | Sort code         | 12-34-56                            |
+      | Account number    | 12345678                            |
+      | Payment reference | REFEDIT                             |
 
     # Remove minor creditor for imposition 2
     When I click on the "Remove" link for imposition 2
     Then I see "Are you sure you want to remove this minor creditor?" on the page header
     And I see the following Minor creditor details:
-      | Minor creditor    | CNAME_NEW                  |
-      | Address           | Addr1_Addr2_Addr3_TE12 3ST |
-      | Payment method    | BACS                       |
-      | Account name      | F LNAME_2                  |
-      | Sort code         | 65-43-21                   |
-      | Account number    | 87654321                   |
-      | Payment reference | REF_2                      |
+      | Minor creditor    | CNAMENEW                |
+      | Address           | Addr1Addr2Addr3TE12 3ST |
+      | Payment method    | BACS                    |
+      | Account name      | FLNAME TWO              |
+      | Sort code         | 65-43-21                |
+      | Account number    | 87654321                |
+      | Payment reference | REFTWO                  |
 
     When I click the "Yes - remove minor creditor" button
     Then I see "Add an offence" on the page header
 
-    And I do not see the Minor creditor details for impostion 2
+    And I do not see the Minor creditor details for imposition 2
     #change to major creditor
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
@@ -335,7 +335,7 @@ Feature: Manual account creation - Offence Details
     And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
 
     # Add another imposition with a minor creditor
-    Then I click the "Add another imposition" button
+    When I click the "Add another imposition" button
     And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 3
     And I enter "200" into the "Amount imposed" field for imposition 3
     And I enter "100" into the "Amount paid" field for imposition 3
@@ -351,7 +351,7 @@ Feature: Manual account creation - Offence Details
     And I enter "TE12 3ST" into the "Postcode" field
 
     Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME3" into the "Name on the account" field
+    And I enter "F LNAMETHREE" into the "Name on the account" field
     And I enter "123456" into the "Sort code" field
     And I enter "12345678" into the "Account number" field
     And I enter "REF" into the "Payment reference" field
@@ -360,11 +360,11 @@ Feature: Manual account creation - Offence Details
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 3
-    Then I see the following Minor creditor details for impostion 3:
+    Then I see the following Minor creditor details for imposition 3:
       | Minor creditor    | CNAME3                  |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
-      | Account name      | F LNAME3                |
+      | Account name      | F LNAMETHREE            |
       | Sort code         | 12-34-56                |
       | Account number    | 12345678                |
       | Payment reference | REF                     |
@@ -373,11 +373,11 @@ Feature: Manual account creation - Offence Details
     Then I see "Offences and impositions" on the page header
 
     When the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                   | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | Mr FNAME2_EDIT LNAME2_EDIT | £200.00        | £100.00     | £100.00           |
-      | Compensation | Temporary Creditor (TEMP)  | £200.00        | £100.00     | £100.00           |
-      | Compensation | CNAME3                     | £200.00        | £100.00     | £100.00           |
-      | Totals       |                            | £600.00        | £300.00     | £300.00           |
+      | Imposition   | Creditor                     | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | Mr FNAMETWOEDIT LNAMETWOEDIT | £200.00        | £100.00     | £100.00           |
+      | Compensation | Temporary Creditor (TEMP)    | £200.00        | £100.00     | £100.00           |
+      | Compensation | CNAME3                       | £200.00        | £100.00     | £100.00           |
+      | Totals       |                              | £600.00        | £300.00     | £300.00           |
 
   Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684, @PO-1395]
     When I enter "TP11003" into the "Offence code" field
@@ -936,7 +936,7 @@ Feature: Manual account creation - Offence Details
 
     Then I click Cancel, a window pops up and I click Ok
 
-    And I do not see the Minor creditor details for impostion 1
+    And I do not see the Minor creditor details for imposition 1
 
     Then I click on the "Add minor creditor details" link for imposition 1
     And I see "Minor creditor details" on the page header
@@ -1161,7 +1161,7 @@ Feature: Manual account creation - Offence Details
     And I clear the "Act and section" text field
     And I click the search button
     Then I see "Search results" on the page header
-    And I see "100 offences" text on the page
+    And I see "100 results" text on the page
 
 
   Scenario: Offence search / results screen - Axe core [@PO-545, @PO-667, PO-987]

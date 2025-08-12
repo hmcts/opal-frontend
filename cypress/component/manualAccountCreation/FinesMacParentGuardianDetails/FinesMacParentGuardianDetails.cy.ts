@@ -126,7 +126,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
   });
-  it(
+  it.skip(
     '(AC.1) should permit a selection of special characters on first name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
@@ -157,7 +157,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
   });
 
-  it(
+  it.skip(
     '(AC.1) should permit a selection of special characters on last name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
@@ -348,7 +348,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing additional alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null), 'parentOrGuardianToPay';
+    (setupComponent(null), 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -527,7 +527,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it.skip('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 

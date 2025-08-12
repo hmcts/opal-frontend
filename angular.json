@@ -42,12 +42,7 @@
                 "output": "./assets/fonts"
               }
             ],
-            "styles": [
-              "./node_modules/govuk-frontend/dist/govuk/all.scss",
-              "./node_modules/@ministryofjustice/frontend/moj/all.scss",
-              "./node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css",
-              "./node_modules/@hmcts/opal-frontend-common/styles/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"],
             "allowedCommonJsDependencies": ["accessible-autocomplete"]
           },
@@ -103,7 +98,6 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }

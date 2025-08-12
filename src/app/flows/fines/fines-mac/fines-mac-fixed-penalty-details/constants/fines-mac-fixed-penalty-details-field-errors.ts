@@ -1,3 +1,4 @@
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors';
@@ -13,24 +14,25 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
   fm_fp_personal_details_address_line_3: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_address_line_3,
   fm_fp_personal_details_post_code: {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_post_code,
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       priority: 2,
       message: `Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
     },
   },
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
-  fm_fp_court_details_issuing_authority_id: {
+  fm_fp_court_details_originator_id: {
     required: {
       message: `Enter the issuing authority`,
       priority: 1,
     },
   },
+  fm_fp_court_details_originator_name: {},
   fm_fp_account_comments_notes_comments: {
     maxlength: {
       message: `Add comment must be 30 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Add comment must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
@@ -40,7 +42,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Add account note must be 1000 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
@@ -57,7 +59,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Notice number must be 16 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Notice number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -99,7 +101,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Place of offence must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -127,7 +129,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Registration number must be 7 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 3,
     },
@@ -147,7 +149,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: `Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       priority: 2,
     },
@@ -166,4 +168,9 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 3,
     },
   },
+  fm_fp_company_details_company_name: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_company_name,
+  fm_fp_company_details_address_line_1: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_1,
+  fm_fp_company_details_address_line_2: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_2,
+  fm_fp_company_details_address_line_3: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_address_line_3,
+  fm_fp_company_details_postcode: FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS.fm_company_details_postcode,
 };

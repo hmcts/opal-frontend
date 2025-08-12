@@ -31,7 +31,7 @@ Feature: PO-414 - Minor Creditor - Removal - Adult or Youth
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
       | Payment method | Not provided |
@@ -46,7 +46,7 @@ Feature: PO-414 - Minor Creditor - Removal - Adult or Youth
     When I click on the "No - cancel" link
     Then I see "Add an offence" on the page header
     When I click on the "Show details" link for imposition 1
-    And I see the following Minor creditor details for impostion 1:
+    And I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
       | Payment method | Not provided |
@@ -87,7 +87,7 @@ Feature: PO-414 - Minor Creditor - Removal - Adult or Youth
     Then I see "Add an offence" on the page header
 
     When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -110,7 +110,7 @@ Feature: PO-414 - Minor Creditor - Removal - Adult or Youth
     When I click on the "No - cancel" link
     Then I see "Add an offence" on the page header
     When I click on the "Show details" link for imposition 1
-    And I see the following Minor creditor details for impostion 1:
+    And I see the following Minor creditor details for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |

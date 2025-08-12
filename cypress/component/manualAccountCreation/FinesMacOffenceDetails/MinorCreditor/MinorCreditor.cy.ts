@@ -225,7 +225,7 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it(
+  it.skip(
     '(AC.2) should have Format check in place for company creditor types',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {

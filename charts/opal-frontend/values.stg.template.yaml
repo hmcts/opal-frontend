@@ -43,11 +43,10 @@ opal-fines-service:
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
+      FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
       FEATURES_APP_INSIGHTS_ENABLED: false
 postgresql:
   enabled: true
-  image:
-    tag: '15.4.0'
   auth:
     username: opal
     password: opal
