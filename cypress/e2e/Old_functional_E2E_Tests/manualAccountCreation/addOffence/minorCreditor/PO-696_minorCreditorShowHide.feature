@@ -31,10 +31,10 @@ Feature: PO-696 - Minor Creditor Show/Hide
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME |
 
-    And I do not see the Minor creditor details for impostion 1
+    And I do not see the Minor creditor details for imposition 1
 
   Scenario: AC4 - The User can Show/Hide the Minor Creditor details
     Given I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 1
@@ -52,16 +52,16 @@ Feature: PO-696 - Minor Creditor Show/Hide
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME |
 
-    And I do not see the Minor creditor details for impostion 1
+    And I do not see the Minor creditor details for imposition 1
     And I do not see the "Hide" link for imposition 1
 
     When I click on the "Show" link for imposition 1
     Then I do not see the "Show" link for imposition 1
 
-    And I see the following Minor creditor details for impostion 1:
+    And I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
       | Payment method | Not provided |
@@ -69,7 +69,7 @@ Feature: PO-696 - Minor Creditor Show/Hide
     When I click on the "Hide" link for imposition 1
     Then I do not see the "Hide" link for imposition 1
 
-    Then I see the following Minor creditor details for impostion 1:
+    Then I see the following Minor creditor details for imposition 1:
       | Minor creditor | FNAME LNAME |
 
-    And I do not see the Minor creditor details for impostion 1
+    And I do not see the Minor creditor details for imposition 1

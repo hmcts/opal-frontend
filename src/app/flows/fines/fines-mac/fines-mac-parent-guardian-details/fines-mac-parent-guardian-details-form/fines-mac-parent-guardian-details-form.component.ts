@@ -19,13 +19,17 @@ import {
   GovukCheckboxesComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
+
+// regex pattern validators for the form controls
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
+const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -69,12 +73,12 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        alphabeticalTextValidator(),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        alphabeticalTextValidator(),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_aliases: new FormArray([]),
       fm_parent_guardian_details_add_alias: new FormControl(null),
@@ -83,15 +87,15 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(25),
-        specialCharactersValidator(),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(25),
-        specialCharactersValidator(),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(13),
-        specialCharactersValidator(),
+        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),

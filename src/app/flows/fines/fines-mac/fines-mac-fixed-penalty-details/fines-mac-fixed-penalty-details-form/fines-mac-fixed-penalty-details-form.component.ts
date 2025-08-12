@@ -52,6 +52,7 @@ import { TransformationService } from '@hmcts/opal-frontend-common/services/tran
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
+
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
