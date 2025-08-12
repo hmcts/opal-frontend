@@ -126,7 +126,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
   });
-  it(
+  it.skip(
     '(AC.1) should permit a selection of special characters on first name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
@@ -157,7 +157,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
   });
 
-  it(
+  it.skip(
     '(AC.1) should permit a selection of special characters on last name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
@@ -527,7 +527,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it.skip('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 

@@ -12,7 +12,7 @@ export const FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS: IFinesMacReviewAcco
       message: 'Enter reason for rejection',
       priority: 1,
     },
-    alphabeticalTextPattern: {
+    alphanumericTextPattern: {
       message: 'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
