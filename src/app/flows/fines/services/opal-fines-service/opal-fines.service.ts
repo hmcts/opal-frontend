@@ -406,6 +406,7 @@ export class OpalFines {
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
   ): Observable<IOpalFinesDefendantAccountResponse> {
+    console.info(searchParams);
     const mock = structuredClone(
       OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
     ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
