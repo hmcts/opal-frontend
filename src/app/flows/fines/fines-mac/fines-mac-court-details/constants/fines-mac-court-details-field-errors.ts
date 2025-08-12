@@ -16,7 +16,7 @@ export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS: IFinesMacCourtDetailsFieldErr
       message: 'You have entered too many characters. Enter 30 characters or fewer',
       priority: 2,
     },
-    pattern: {
+    alphanumericTextPattern: {
       message: 'Enter letters and numbers only',
       priority: 3,
     },

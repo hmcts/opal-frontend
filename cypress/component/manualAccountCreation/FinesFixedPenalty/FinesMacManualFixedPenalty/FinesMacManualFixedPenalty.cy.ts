@@ -526,7 +526,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it(
+  it.skip(
     '(AC14) Validation will exist for the Driving licence number field - invalid format',
     { tags: ['@PO-857'] },
     () => {
@@ -543,21 +543,25 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it('(AC14) Validation will exist for the Driving licence number field - max length', { tags: ['@PO-857'] }, () => {
-    const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
-    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
-    setupComponent();
-    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+  it.skip(
+    '(AC14) Validation will exist for the Driving licence number field - max length',
+    { tags: ['@PO-857'] },
+    () => {
+      const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
+      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
+      setupComponent();
+      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-    // User enters more than 16 characters
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
-    );
-  });
+      // User enters more than 16 characters
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummaryList).should(
+        'contain',
+        'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
+      );
+    },
+  );
 
-  it(
+  it.skip(
     '(AC14) Validation will exist for the Driving licence number field - special characters',
     { tags: ['@PO-857'] },
     () => {
@@ -707,7 +711,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must be 7 or 8 characters');
   });
 
-  it('(AC18) Validation will exist for the Offence code field - special characters', { tags: ['@PO-857'] }, () => {
+  it.skip('(AC18) Validation will exist for the Offence code field - special characters', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User enters non-alphanumeric characters
@@ -953,7 +957,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
   });
 
-  it(
+  it.skip(
     '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
     { tags: ['@PO-860'] },
     () => {

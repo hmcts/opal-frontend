@@ -257,9 +257,9 @@ Feature: Navigate and edit sections from task list
     And I enter "qq123456c" into the "National insurance number" field
     Then I see "QQ123456C" in the "National insurance number" field
     And I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "fname1"
-    And I set the "Alias 1", "Last name" to "lname1"
-    Then I see "Alias 1", "Last name" is set to "LNAME1"
+    And I set the "Alias 1", "First names" to "fnameone"
+    And I set the "Alias 1", "Last name" to "lnameone"
+    Then I see "Alias 1", "Last name" is set to "LNAMEONE"
 
     Then I click the "Return to account details" button
     And I see the "Check and submit" section heading
