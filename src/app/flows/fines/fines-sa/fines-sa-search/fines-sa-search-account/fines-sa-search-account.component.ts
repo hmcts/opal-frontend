@@ -5,6 +5,7 @@ import { IFinesSaSearchAccountForm } from './interfaces/fines-sa-search-account-
 import { FINES_SA_ROUTING_PATHS } from '../../routing/constants/fines-sa-routing-paths.constant';
 import { FinesSaSearchAccountFormComponent } from './fines-sa-search-account-form/fines-sa-search-account-form.component';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 @Component({
   selector: 'app-fines-sa-search-account',
@@ -14,6 +15,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 })
 export class FinesSaSearchAccountComponent extends AbstractFormParentBaseComponent {
   private readonly finesSaStore = inject(FinesSaStore);
+  private readonly opalFinesService = inject(OpalFines);
   private readonly finesRoutingPaths = FINES_ROUTING_PATHS;
   private readonly finesSaRoutingPaths = FINES_SA_ROUTING_PATHS;
 

@@ -1,12 +1,14 @@
 import { mount } from 'cypress/angular';
 import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
 import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
-import { delay } from 'cypress/types/bluebird';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesSaService } from 'src/app/flows/fines/fines-sa/services/fines-sa.service';
+import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -15,6 +17,22 @@ describe('Search Account Component - Individuals', () => {
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
+        provideRouter([
+          {
+            path: 'fines/search-accounts/results',
+            component: FinesSaSearchAccountComponent,
+            resolve: {
+              individualAccounts: finesSaIndividualAccountsResolver,
+            },
+            runGuardsAndResolvers: 'always',
+          },
+          {
+            path: 'fines/search-accounts',
+            component: FinesSaSearchAccountComponent,
+          },
+        ]),
+        OpalFines,
+        FinesSaService,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -37,7 +55,7 @@ describe('Search Account Component - Individuals', () => {
         },
       ],
       componentProperties: {
-        handleSearchAccountSubmit: formSubmit,
+        //handleSearchAccountSubmit: formSubmit,
       },
     });
   };
@@ -381,13 +399,43 @@ describe('Search Account Component - Individuals', () => {
   });
 
   it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
-    setupComponent(null);
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
 
-    cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020', { delay: 0 });
+    cy.get(DOM_ELEMENTS.dobInput).focus().type('15/05/2020', { delay: 0 });
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+    cy.get('@consoleLog').should('have.been.calledWith', 'Form submitted with data');
+  });
+
+  it.only('example test to get the object from the console to mimick testing the payload', () => {
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+      'John';
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+      'Doe';
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+      '15/05/1990';
+
+    setupComponent(null);
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const params = stub.getCall(0).args[0];
+      expect(params).to.have.property('forename', 'John');
+      expect(params).to.have.property('surname', 'Doe');
+    });
   });
 });
