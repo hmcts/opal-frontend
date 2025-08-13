@@ -28,6 +28,7 @@ import {
 import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-results-minor-creditor-table-wrapper/interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
 import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
 import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
+import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-data-empty.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -89,6 +90,16 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Maps the creditor accounts response data to an array of table data objects for display.
+   *
+   * @param data - The response object containing creditor account information.
+   * @returns An array of table data objects formatted for the minor creditor table.
+   *
+   * If the response contains no creditor accounts (`count === 0`), an empty array is returned.
+   * For each creditor account, common fields are built and then extended with either
+   * organisation-specific or individual-specific fields based on the presence of `organisation_name`.
+   */
   private mapCreditorAccounts(
     data: IOpalFinesCreditorAccountResponse,
   ): IFinesSaResultsMinorCreditorTableWrapperTableData[] {
@@ -102,10 +113,17 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Builds a table data object containing common creditor fields for a given creditor account.
+   *
+   * @param account - The creditor account object containing account and defendant details.
+   * @returns An object representing the table data for the minor creditor, populated with fields such as account ID, account number, address, business unit, defendant information, and balance.
+   */
   private buildCommonCreditorFields(
     account: IOpalFinesCreditorAccount,
   ): IFinesSaResultsMinorCreditorTableWrapperTableData {
     return {
+      ...FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY,
       'Creditor account id': account.creditor_account_id,
       Account: account.account_number,
       'Address line 1': account.address_line_1,
@@ -118,10 +136,17 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
           : `${account.defendant.surname}, ${account.defendant.firstnames}`
         : null,
       Balance: account.account_balance,
-      Name: '', // to be set in the org/individual methods
     };
   }
 
+  /**
+   * Builds a new `IFinesSaResultsMinorCreditorTableWrapperTableData` object by merging the provided
+   * `common` data with the creditor organisation's name from the given account.
+   *
+   * @param common - The base table data to be extended.
+   * @param account - The creditor account containing the organisation name.
+   * @returns A new table data object with the organisation name set in the `Name` field.
+   */
   private buildOrganisationCreditorFields(
     common: IFinesSaResultsMinorCreditorTableWrapperTableData,
     account: IOpalFinesCreditorAccount,
@@ -132,6 +157,14 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Builds and returns a new `IFinesSaResultsMinorCreditorTableWrapperTableData` object
+   * by merging the provided `common` data with the creditor's name, formatted as "surname, firstnames".
+   *
+   * @param common - The base table data to be extended.
+   * @param account - The creditor account containing name details.
+   * @returns A new table data object with the creditor's name field populated.
+   */
   private buildIndividualCreditorFields(
     common: IFinesSaResultsMinorCreditorTableWrapperTableData,
     account: IOpalFinesCreditorAccount,
@@ -209,7 +242,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Loads individual and company defendant data from the activated route snapshot if available.
+   * Loads individual and company defendant data and minor creditor data from the activated route snapshot if available.
    * Transforms the raw data using the fines service mapper before assigning to component state.
    *
    * @private

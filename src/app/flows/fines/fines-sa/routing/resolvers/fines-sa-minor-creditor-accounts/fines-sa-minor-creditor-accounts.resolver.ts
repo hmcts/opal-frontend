@@ -6,6 +6,20 @@ import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { of } from 'rxjs';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-creditor-account-search-params-defaults.constant';
 
+/**
+ * Resolves minor creditor account search results for the Fines SA flow.
+ *
+ * This resolver determines the appropriate search parameters based on the current state
+ * from the `FinesSaStore` and invokes the `OpalFines` service to fetch creditor accounts.
+ *
+ * The logic follows these rules:
+ * - If a reference case number is present, returns an empty result.
+ * - If neither an account number nor minor creditor search criteria are present, returns an empty result.
+ * - If an account number is present, searches by account number.
+ * - If minor creditor criteria are present, searches by either individual or organisation details.
+ *
+ * @returns An observable of `IOpalFinesCreditorAccountResponse` containing the search results.
+ */
 export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorAccountResponse> = () => {
   const opalFinesService = inject(OpalFines);
   const finesSaStore = inject(FinesSaStore);
