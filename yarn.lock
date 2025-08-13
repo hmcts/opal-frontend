@@ -3550,15 +3550,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.32":
-  version: 0.0.32
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.32"
+"@hmcts/opal-frontend-common@npm:^0.0.33":
+  version: 0.0.33
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.33"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/519f248b55e4d9872d308494197aafe3c68def413f7075f4a0e03f33531532c18e1666b1e6fe07fab483d4bae0e3213ca96c390d8107db356bacb62b047e3327
+  checksum: 10/8fa4282095271aedca5149b016ae36822e25287e347223895f8326ef5033b6824e3b0f7e61b0a55797041fe9a1e4c380f7f55bae0ee888e6087a89097243b4a9
   languageName: node
   linkType: hard
 
@@ -6528,8 +6528,8 @@ __metadata:
   linkType: hard
 
 "applicationinsights@npm:~2.9.6":
-  version: 2.9.7
-  resolution: "applicationinsights@npm:2.9.7"
+  version: 2.9.8
+  resolution: "applicationinsights@npm:2.9.8"
   dependencies:
     "@azure/core-auth": "npm:1.7.2"
     "@azure/core-rest-pipeline": "npm:1.16.3"
@@ -6548,7 +6548,7 @@ __metadata:
   peerDependenciesMeta:
     applicationinsights-native-metrics:
       optional: true
-  checksum: 10/ac06f065fc790633329813488dae6b08a5b1702ba414cb3228e81c4cdb2bd39754bd55fc14e02648165abdc99d661fc50d3311783a17aa1da9acc94663dabab0
+  checksum: 10/e8298cea60a6c3e7a5d66f1264d85f37fcf35da33e8a6570340dbb13fc744b410b2511b83a242931bc3a3249d7a3e13678e53a75f827b432487fb6c9b9162002
   languageName: node
   linkType: hard
 
@@ -14028,7 +14028,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.32"
+    "@hmcts/opal-frontend-common": "npm:^0.0.33"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.12"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
