@@ -165,7 +165,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       this.individualsData = this.mapDefendantAccounts(individualAccounts, 'individual');
     }
 
-    if (companyAccounts && companyAccounts?.count > 0) {
+    if (companyAccounts && companyAccounts.count > 0) {
       this.companiesData = this.mapDefendantAccounts(companyAccounts, 'company');
     }
   }
