@@ -415,18 +415,14 @@ describe('Search Account Component - Individuals', () => {
   });
 
   it.only('example test to get the object from the console to mimick testing the payload', () => {
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
-      'John';
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
-      'Doe';
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
-      '15/05/1990';
-
     setupComponent(null);
 
     cy.window().then((win) => {
       cy.stub(win.console, 'info').as('consoleLog');
     });
+    cy.get(DOM_ELEMENTS.firstNamesInput).type('John', { delay: 0 });
+    cy.get(DOM_ELEMENTS.lastNameInput).type('Doe', { delay: 0 });
+    cy.get(DOM_ELEMENTS.dobInput).type('15/05/1990', { delay: 0 });
 
     cy.get(DOM_ELEMENTS.searchButton).click();
 
@@ -436,6 +432,27 @@ describe('Search Account Component - Individuals', () => {
       const params = stub.getCall(0).args[0];
       expect(params).to.have.property('forename', 'John');
       expect(params).to.have.property('surname', 'Doe');
+    });
+  });
+  it.only('another example test to get the object from the console to mimick testing the payload', () => {
+    setupComponent(null);
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+    cy.get(DOM_ELEMENTS.firstNamesInput).type('alan', { delay: 0 });
+    cy.get(DOM_ELEMENTS.lastNameInput).type('smith', { delay: 0 });
+    cy.get(DOM_ELEMENTS.dobInput).type('15/05/1991', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const params = stub.getCall(0).args[0];
+      expect(params).to.have.property('forename', 'alan');
+      expect(params).to.have.property('surname', 'smith');
+      expect(params).to.have.property('date_of_birth', '15/05/1991');
     });
   });
 });
