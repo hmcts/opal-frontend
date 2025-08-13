@@ -7,7 +7,7 @@ import {
 import { IFinesMacContactDetailsState } from '../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
-import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
+import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-contact-details',
@@ -26,7 +26,7 @@ export class FinesMacReviewAccountContactDetailsComponent {
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeContactDetails = new EventEmitter<void>();
 
-  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
+  public readonly defaultValues = FINES_DEFAULT_VALUES;
 
   /**
    * Emits an event to indicate that contact details needs changed.
