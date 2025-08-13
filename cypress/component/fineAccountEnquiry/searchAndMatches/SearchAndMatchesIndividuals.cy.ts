@@ -1,12 +1,14 @@
 import { mount } from 'cypress/angular';
 import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
 import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
-import { delay } from 'cypress/types/bluebird';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesSaService } from 'src/app/flows/fines/fines-sa/services/fines-sa.service';
+import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -15,6 +17,22 @@ describe('Search Account Component - Individuals', () => {
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
+        provideRouter([
+          {
+            path: 'fines/search-accounts/results',
+            component: FinesSaSearchAccountComponent,
+            resolve: {
+              individualAccounts: finesSaIndividualAccountsResolver,
+            },
+            runGuardsAndResolvers: 'always',
+          },
+          {
+            path: 'fines/search-accounts',
+            component: FinesSaSearchAccountComponent,
+          },
+        ]),
+        OpalFines,
+        FinesSaService,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -37,7 +55,7 @@ describe('Search Account Component - Individuals', () => {
         },
       ],
       componentProperties: {
-        handleSearchAccountSubmit: formSubmit,
+        //handleSearchAccountSubmit: formSubmit,
       },
     });
   };
@@ -382,12 +400,172 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC5b. should validate dob field dependency', { tags: ['PO-705'] }, () => {
     setupComponent(null);
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
 
-    cy.get(DOM_ELEMENTS.dobInput).type('15/05/2020', { delay: 0 });
+    cy.get(DOM_ELEMENTS.dobInput).focus().type('15/05/2020', { delay: 0 });
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+
+    cy.get('@consoleLog').should('have.not.been.calledOnce');
+  });
+
+  it(
+    'AC1. should send correct API parameters when search is triggered from Individuals tab',
+    { tags: ['PO-717'] },
+    () => {
+      individualSearchMock.fsa_search_account_business_unit_ids = [1, 2, 3];
+      individualSearchMock.fsa_search_account_active_accounts_only = true;
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+        'Smith';
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name_exact_match = true;
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+        'John';
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names_exact_match = false;
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+        '15/05/1990';
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+        'AB123456C';
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_include_aliases = true;
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+        '123 High Street';
+      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+        'SW1A 1AA';
+
+      setupComponent(null);
+
+      cy.window().then((win) => {
+        cy.stub(win.console, 'info').as('consoleLog');
+      });
+
+      cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith');
+      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).should('be.checked');
+      cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John');
+      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).should('not.be.checked');
+      cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/05/1990');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456C');
+      cy.get(DOM_ELEMENTS.includeAliasesCheckbox).should('be.checked');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 High Street');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SW1A 1AA');
+      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('be.checked');
+
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get('@consoleLog').should('have.been.calledOnce');
+
+      cy.get('@consoleLog').then((stub: any) => {
+        const apiParams = stub.getCall(0).args[0];
+
+        // AC1a: Verify all required parameters are present and correctly mapped
+
+        expect(apiParams).to.have.property('business_unit_ids');
+        expect(apiParams.business_unit_ids).to.deep.equal([1, 2, 3]);
+
+        expect(apiParams).to.have.property('active_accounts_only', true);
+
+        expect(apiParams).to.have.property('surname', 'Smith');
+        expect(apiParams).to.have.property('exact_match_surname', true);
+
+        expect(apiParams).to.have.property('forename', 'John');
+        expect(apiParams).to.have.property('exact_match_forenames', false);
+
+        expect(apiParams).to.have.property('date_of_birth', '15/05/1990');
+
+        expect(apiParams).to.have.property('ni_number', 'AB123456C');
+
+        expect(apiParams).to.have.property('include_aliases', true);
+
+        expect(apiParams).to.have.property('address_line', '123 High Street');
+
+        expect(apiParams).to.have.property('postcode', 'SW1A 1AA');
+
+        expect(apiParams).to.have.property('search_type', 'individual');
+
+        expect(apiParams.organisation_name).to.be.null;
+      });
+    },
+  );
+
+  it('AC1. should send correct API parameters when active accounts checkbox is unchecked', { tags: ['PO-717'] }, () => {
+    individualSearchMock.fsa_search_account_business_unit_ids = [5];
+    individualSearchMock.fsa_search_account_active_accounts_only = false;
+    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+      'Doe';
+
+    setupComponent(null);
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+
+    // Verify active accounts checkbox is unchecked
+    cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Doe');
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const apiParams = stub.getCall(0).args[0];
+
+      expect(apiParams).to.have.property('active_accounts_only', false);
+      expect(apiParams).to.have.property('business_unit_ids').that.deep.equals([5]);
+      expect(apiParams).to.have.property('surname', 'Doe');
+    });
+  });
+
+  it('AC1. should send correct API parameters with minimal required data', { tags: ['PO-717'] }, () => {
+    individualSearchMock.fsa_search_account_business_unit_ids = [10];
+    individualSearchMock.fsa_search_account_active_accounts_only = true;
+    individualSearchMock.fsa_search_account_individual_search_criteria = {
+      fsa_search_account_individuals_last_name: 'Johnson',
+      fsa_search_account_individuals_last_name_exact_match: false,
+      fsa_search_account_individuals_first_names: '',
+      fsa_search_account_individuals_first_names_exact_match: false,
+      fsa_search_account_individuals_include_aliases: false,
+      fsa_search_account_individuals_date_of_birth: '',
+      fsa_search_account_individuals_national_insurance_number: '',
+      fsa_search_account_individuals_address_line_1: '',
+      fsa_search_account_individuals_post_code: '',
+    };
+
+    setupComponent(null);
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+
+    // Verify only surname is populated
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Johnson');
+    cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.dobInput).should('have.value', '');
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const apiParams = stub.getCall(0).args[0];
+
+      // Verify minimal required parameters
+      expect(apiParams).to.have.property('surname', 'Johnson');
+      expect(apiParams).to.have.property('exact_match_surname', false);
+      expect(apiParams).to.have.property('business_unit_ids').that.deep.equals([10]);
+      expect(apiParams).to.have.property('active_accounts_only', true);
+      expect(apiParams).to.have.property('search_type', 'individual');
+
+      // Verify empty/null fields are handled correctly
+      expect(apiParams.forename).to.be.oneOf([null, '']);
+      expect(apiParams.date_of_birth).to.be.oneOf([null, '']);
+      expect(apiParams.ni_number).to.be.oneOf([null, '']);
+      expect(apiParams.address_line).to.be.oneOf([null, '']);
+      expect(apiParams.postcode).to.be.oneOf([null, '']);
+      expect(apiParams).to.have.property('include_aliases', false);
+    });
   });
 });
