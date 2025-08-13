@@ -87,6 +87,18 @@ Feature: Account Search and Matches
     And I validate the "Include aliases" checkbox is not checked
     And I validate the "Active accounts only" checkbox is checked
 
+    #PO-1969 Clear error messages when switching tabs after validation errors
+    And I select the last name exact match checkbox
+    And I click the "Search" button
+    Then I see the error message "Enter last name" at the top of the page
+    Then I see "There is a problem" text on the page
+    And I see "Enter last name" text on the page
+
+    When I click on the "Companies" link
+    And I click on the "Individuals" link
+    And I verify the last name exact match checkbox is not checked
+    Then I do not see "Enter last name" text on the page
+
     #PO-712 - AC6. Tab switching clears data on the company tab
     When I click on the "Companies" link
     And I enter "CompanyOne" into the "Company name" field
@@ -370,3 +382,4 @@ Feature: Account Search and Matches
     Then I see "Search for an account" on the page header
     And I see "REF-123" in the "Reference or case number" field
     And I see "John" in the "First names" field
+

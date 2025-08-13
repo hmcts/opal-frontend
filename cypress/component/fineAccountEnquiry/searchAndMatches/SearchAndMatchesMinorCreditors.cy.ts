@@ -227,4 +227,49 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
+
+  it(
+    'AC3a. Should validate last name field when "Search exact match" for last name is selected on Minor Creditor Individual',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+    },
+  );
+
+  it(
+    'AC3b. Should validate first name field when "Search exact match" for first name is selected on Minor Creditor Individual',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
+    },
+  );
+
+  it(
+    'AC4a. Should validate company name field when "Search exact match" for company name is selected on Minor Creditor Company',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.minorCreditorsTab).click();
+      cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
+    },
+  );
 });
