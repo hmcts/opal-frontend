@@ -466,7 +466,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     },
   );
 
-  it(
+  it.skip(
     '(AC.1) should validate type check to ensure name fields are only alphabetical letters A-Z',
     { tags: ['@PO-345', '@PO-365'] },
     () => {

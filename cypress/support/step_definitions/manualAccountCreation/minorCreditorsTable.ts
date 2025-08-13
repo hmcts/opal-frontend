@@ -26,7 +26,7 @@ const verifyMinorCreditorDetails = (
   });
 };
 
-Then('I see the following Minor creditor details for impostion {int}:', (index: number, dataTable: DataTable) => {
+Then('I see the following Minor creditor details for imposition {int}:', (index: number, dataTable: DataTable) => {
   const details = dataTable.rowsHash();
   const summary = cy
     .contains('legend', 'Impositions')
@@ -38,7 +38,7 @@ Then('I see the following Minor creditor details for impostion {int}:', (index: 
   verifyMinorCreditorDetails(summary, details);
 });
 
-Then('I do not see the Minor creditor details for impostion {int}', (index: number, dataTable: DataTable) => {
+Then('I do not see the Minor creditor details for imposition {int}', (index: number, dataTable: DataTable) => {
   cy.contains('legend', 'Impositions')
     .parent()
     .find('opal-lib-moj-ticket-panel')
