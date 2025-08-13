@@ -67,9 +67,11 @@ export function atLeastOneCriteriaValidator(group: AbstractControl): ValidationE
     Boolean,
   ).length;
 
-  return populatedCount === 1
-    ? null
-    : populatedCount === 0
-      ? { formEmpty: true }
-      : { atLeastOneCriteriaRequired: true };
+  if (populatedCount === 1) {
+    return null;
+  } else if (populatedCount === 0) {
+    return { formEmpty: true };
+  } else {
+    return { atLeastOneCriteriaRequired: true };
+  }
 }
