@@ -10,8 +10,8 @@ export const FINES_ACC_ADD_NOTE_FIELD_ERRORS: IFinesAccAddNoteFieldErrors = {
       message: `Account note must be 1000 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
-      message: `Account note must only contain alphabetical text`,
+    alphanumericTextPattern: {
+      message: `Account note must only contain alphanumeric characters, hyphens, spaces, apostrophes, and dots`,
       priority: 3,
     },
   },

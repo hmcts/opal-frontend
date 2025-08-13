@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
@@ -9,7 +9,9 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.interface';
 import { IFinesAccAddNoteFieldErrors } from '../interfaces/fines-acc-note-add-form-field-errors.interface';
 import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { FinesAccStore } from '../../store/fines-acc-store';
 
 @Component({
   selector: 'app-fines-acc-note-add-form',
@@ -27,6 +29,10 @@ import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validator
 export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddNoteForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
+  private readonly finesAccStore = inject(FinesAccStore);
+
+  public readonly accountData = this.finesAccStore.accountData();
+  public readonly defendantName = this.finesAccStore.defendantName();
 
   override fieldErrors: IFinesAccAddNoteFieldErrors = FINES_ACC_ADD_NOTE_FIELD_ERRORS;
 
@@ -38,7 +44,7 @@ export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent impl
       facc_add_notes: new FormControl(null, [
         Validators.required,
         Validators.maxLength(1000),
-        alphabeticalTextValidator(),
+        patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
       ]),
     });
   }
