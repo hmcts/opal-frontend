@@ -1,4 +1,4 @@
-export interface IFinesMacReviewAccountDefaultValues {
+export interface IFinesDefaultValues {
   notProvidedLabel: string;
   notProvidedAriaLabel: string;
 }
