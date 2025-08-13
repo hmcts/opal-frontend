@@ -390,34 +390,38 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
-  
+
   it('AC1a. Should validate last name field when alias checkbox selected', { tags: ['PO-1969'] }, () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');;
+    cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
     cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
   });
 
-it('AC1b. Should validate last name field when "Search exact match" for last name is selected', { tags: ['PO-1969'] }, () => {
-  setupComponent(null);
+  it(
+    'AC1b. Should validate last name field when "Search exact match" for last name is selected',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
 
-  cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
-  cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-  cy.get(DOM_ELEMENTS.lastNameError)
-    .should('exist')
-    .and('contain', 'Enter last name');
-});
-it('AC1c. Should validate first name field when "Search exact match" for first name is selected', { tags: ['PO-1969'] }, () => {
-  setupComponent(null);
+      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+    },
+  );
+  it(
+    'AC1c. Should validate first name field when "Search exact match" for first name is selected',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
 
-  cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
-  cy.get(DOM_ELEMENTS.searchButton).click();
+      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
 
-  cy.get(DOM_ELEMENTS.firstNamesError)
-    .should('exist')
-    .and('contain', 'Enter first name');
-});
+      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
+    },
+  );
 });
