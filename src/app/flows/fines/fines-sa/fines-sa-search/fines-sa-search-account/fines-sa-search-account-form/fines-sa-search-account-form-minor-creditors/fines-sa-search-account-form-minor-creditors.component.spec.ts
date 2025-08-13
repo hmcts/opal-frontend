@@ -274,4 +274,46 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(() => (component as any)['setupCompanyConditionalValidation']()).not.toThrow();
   });
+
+  it('should remove required validators from first names and last name controls', () => {
+    const firstNamesControl = component.form.get('fsa_search_account_minor_creditors_first_names');
+    const lastNameControl = component.form.get('fsa_search_account_minor_creditors_last_name');
+
+    firstNamesControl?.addValidators(Validators.required);
+    lastNameControl?.addValidators(Validators.required);
+
+    expect(firstNamesControl?.hasValidator(Validators.required)).toBeTrue();
+    expect(lastNameControl?.hasValidator(Validators.required)).toBeTrue();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).clearIndividualDynamicValidators();
+
+    expect(firstNamesControl?.hasValidator(Validators.required)).toBeFalse();
+    expect(lastNameControl?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should handle missing controls gracefully', () => {
+    component.form = new FormGroup({});
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any).clearIndividualDynamicValidators()).not.toThrow();
+  });
+
+  it('should remove required validator from company name control', () => {
+    const companyNameControl = component.form.get('fsa_search_account_minor_creditors_company_name');
+
+    companyNameControl?.addValidators(Validators.required);
+    expect(companyNameControl?.hasValidator(Validators.required)).toBeTrue();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).clearCompanyDynamicValidators();
+
+    expect(companyNameControl?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should handle missing controls gracefully', () => {
+    component.form = new FormGroup({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any).clearCompanyDynamicValidators()).not.toThrow();
+  });
 });

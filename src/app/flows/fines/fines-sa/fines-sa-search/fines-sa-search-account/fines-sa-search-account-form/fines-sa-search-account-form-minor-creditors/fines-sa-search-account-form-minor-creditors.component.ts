@@ -90,16 +90,46 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    */
   private resetAndValidateControls(controls: (AbstractControl | null)[]): void {
     controls.forEach((control) => {
-      control?.clearValidators();
+      control?.setErrors(null);
       control?.reset(null, { emitEvent: false });
       control?.updateValueAndValidity();
     });
   }
 
   /**
+   * Removes dynamically added required validators from individual tab controls.
+   * This ensures that conditional validation rules don't persist when switching to company tab.
+   */
+  private clearIndividualDynamicValidators(): void {
+    const { firstNamesControl, lastNameControl } = this.getIndividualMinorCreditorControls();
+
+    if (firstNamesControl) {
+      firstNamesControl.removeValidators(Validators.required);
+      firstNamesControl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    if (lastNameControl) {
+      lastNameControl.removeValidators(Validators.required);
+      lastNameControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  /**
+   * Removes dynamically added required validators from company tab controls.
+   * This ensures that conditional validation rules don't persist when switching to individual tab.
+   */
+  private clearCompanyDynamicValidators(): void {
+    const { companyNameControl } = this.getCompanyMinorCreditorControls();
+
+    if (companyNameControl) {
+      companyNameControl.removeValidators(Validators.required);
+      companyNameControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  /**
    * Handles changes to the minor creditor type form control.
-   * Resets and validates relevant form controls depending on whether the selected type
-   * is 'individual' or 'company', ensuring only appropriate fields are active.
+   * Completely clears inactive tab including dynamically added validators and field states.
    */
   private handleMinorCreditorTypeChange(): void {
     const minorCreditorTypeControl = this.getMinorCreditorType();
@@ -112,9 +142,13 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
     const companyControls = Object.values(this.getCompanyMinorCreditorControls());
 
     if (isCompany) {
+      // Clear individual tab: remove dynamic validators first, then clear field states
+      this.clearIndividualDynamicValidators();
       this.resetAndValidateControls(individualControls);
     }
     if (isIndividual) {
+      // Clear company tab: remove dynamic validators first, then clear field states
+      this.clearCompanyDynamicValidators();
       this.resetAndValidateControls(companyControls);
     }
   }
