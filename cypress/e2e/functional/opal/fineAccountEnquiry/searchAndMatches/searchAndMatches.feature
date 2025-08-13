@@ -5,7 +5,7 @@ Feature: Account Search and Matches
     Then I am on the dashboard
     When I navigate to Search For An Account
 
-  @PO-705 @PO-712 @PO-715
+  @PO-705 @PO-712 @PO-715 @PO-1969
   Scenario: Switching to a new tab clears all fields on the 'search for an account' page
     #PO-705 - AC2 should not trigger any actions when Search button is clicked with no data field populated
     When I click the "Search" button
