@@ -115,7 +115,18 @@
   }
 </ng-template>
 <ng-template #minorCreditors>
-  <p>Minor creditors Results</p>
+  @if (minorCreditorsData.length > 0 && minorCreditorsData.length <= 100) {
+    <app-fines-sa-results-minor-creditor-table-wrapper
+      [tableData]="minorCreditorsData"
+      [existingSortState]="minorCreditorsSort"
+      (accountNumberClicked)="onAccountNumberClick($event)"
+    >
+    </app-fines-sa-results-minor-creditor-table-wrapper>
+  } @else if (minorCreditorsData.length === 0) {
+    <ng-container *ngTemplateOutlet="noResults"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="tooManyResults"></ng-container>
+  }
 </ng-template>
 
 <ng-template #noResults>

@@ -6,6 +6,7 @@ import { FinesSaStore } from '../stores/fines-sa.store';
 import { FinesSaStoreType } from '../stores/types/fines-sa.type';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -61,6 +62,10 @@ describe('FinesSaResultsComponent', () => {
         count: 0,
         defendant_accounts: [],
       },
+      minorCreditorAccounts: {
+        count: 0,
+        creditor_accounts: [],
+      },
     };
 
     component.ngOnInit();
@@ -78,16 +83,22 @@ describe('FinesSaResultsComponent', () => {
       count: 1,
       defendant_accounts: [{ account_number: 'IND001' }],
     };
+    const mockMinorCreditorData = {
+      count: 1,
+      creditor_accounts: [{ account_number: 'MIN001' }],
+    };
 
     component['activatedRoute'].snapshot.data = {
       individualAccounts: mockIndividualData,
       companyAccounts: mockCompanyData,
+      minorCreditorAccounts: mockMinorCreditorData,
     };
 
     component['loadDefendantDataFromRouteSnapshot']();
 
     expect(component.individualsData.length).toEqual(1);
     expect(component.companiesData.length).toEqual(1);
+    expect(component.minorCreditorsData.length).toEqual(1);
   });
 
   it('should open account details in a new tab', () => {
@@ -236,5 +247,96 @@ describe('FinesSaResultsComponent', () => {
         Balance: 250,
       }),
     );
+  });
+
+  it('should return mapped minor creditor individual data', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 1,
+      creditor_accounts: [
+        {
+          organisation: false,
+          creditor_account_id: '1',
+          business_unit_id: 'BU001',
+          account_number: 'ACC123',
+          defendant_account_id: '1',
+          defendant: {
+            firstnames: 'John',
+            surname: 'Smith',
+            organisation_name: null,
+          },
+          organisation_name: null,
+          firstnames: 'John',
+          surname: 'Smith',
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          business_unit_name: 'Unit A',
+          account_balance: 500,
+        },
+      ],
+    };
+
+    const result = component['mapCreditorAccounts'](mockData);
+    expect(result.length).toBe(1);
+    expect(result[0]).toEqual(
+      jasmine.objectContaining({
+        Account: 'ACC123',
+        Name: 'Smith, John',
+        'Address line 1': '1 Main St',
+        Postcode: 'AB1 2CD',
+        'Business unit': 'Unit A',
+        Defendant: 'Smith, John',
+        Balance: 500,
+      }),
+    );
+  });
+
+  it('should return mapped minor creditor company data', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 1,
+      creditor_accounts: [
+        {
+          organisation: true,
+          creditor_account_id: '1',
+          business_unit_id: 'BU001',
+          account_number: 'ACC123',
+          defendant_account_id: '1',
+          defendant: {
+            firstnames: null,
+            surname: null,
+            organisation_name: 'Test Corp',
+          },
+          organisation_name: 'Test Corp',
+          firstnames: null,
+          surname: null,
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          business_unit_name: 'Unit A',
+          account_balance: 500,
+        },
+      ],
+    };
+
+    const result = component['mapCreditorAccounts'](mockData);
+    expect(result.length).toBe(1);
+    expect(result[0]).toEqual(
+      jasmine.objectContaining({
+        Account: 'ACC123',
+        Name: 'Test Corp',
+        'Address line 1': '1 Main St',
+        Postcode: 'AB1 2CD',
+        'Business unit': 'Unit A',
+        Defendant: 'Test Corp',
+        Balance: 500,
+      }),
+    );
+  });
+
+  it('should return an empty array if no creditor accounts are provided', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 0,
+      creditor_accounts: [],
+    };
+    const result = component['mapCreditorAccounts'](mockData);
+    expect(result).toEqual([]);
   });
 });

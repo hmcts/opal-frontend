@@ -21,6 +21,13 @@ import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
+import {
+  IOpalFinesCreditorAccountResponse,
+  IOpalFinesCreditorAccount,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-results-minor-creditor-table-wrapper/interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
+import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
+import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -31,6 +38,7 @@ import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fin
     GovukTabsListItemComponent,
     GovukTabsPanelComponent,
     FinesSaResultsDefendantTableWrapperComponent,
+    FinesSaResultsMinorCreditorTableWrapperComponent,
   ],
   templateUrl: './fines-sa-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,10 +52,10 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public resultView!: FinesSaResultsTabsType;
 
   public readonly defendantsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public readonly minorCreditorsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  public readonly minorCreditorsSort = FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public individualsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
   public companiesData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
-  public minorCreditorsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
+  public minorCreditorsData = [] as IFinesSaResultsMinorCreditorTableWrapperTableData[];
 
   /**
    * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
@@ -79,6 +87,59 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
         ? this.buildIndividualFields(commonFields, defendantAccount)
         : this.buildCompanyFields(commonFields, defendantAccount);
     });
+  }
+
+  private mapCreditorAccounts(
+    data: IOpalFinesCreditorAccountResponse,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData[] {
+    if (data.count === 0) return [];
+
+    return data.creditor_accounts.map((account) => {
+      const commonFields = this.buildCommonCreditorFields(account);
+      return account.organisation_name
+        ? this.buildOrganisationCreditorFields(commonFields, account)
+        : this.buildIndividualCreditorFields(commonFields, account);
+    });
+  }
+
+  private buildCommonCreditorFields(
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      'Creditor account id': account.creditor_account_id,
+      Account: account.account_number,
+      'Address line 1': account.address_line_1,
+      Postcode: account.postcode,
+      'Business unit': account.business_unit_name,
+      'Defendant account id': account.defendant_account_id,
+      Defendant: account.defendant
+        ? account.defendant.organisation_name
+          ? `${account.defendant.organisation_name}`
+          : `${account.defendant.surname}, ${account.defendant.firstnames}`
+        : null,
+      Balance: account.account_balance,
+      Name: '', // to be set in the org/individual methods
+    };
+  }
+
+  private buildOrganisationCreditorFields(
+    common: IFinesSaResultsMinorCreditorTableWrapperTableData,
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      ...common,
+      Name: `${account.organisation_name}`,
+    };
+  }
+
+  private buildIndividualCreditorFields(
+    common: IFinesSaResultsMinorCreditorTableWrapperTableData,
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      ...common,
+      Name: `${account.surname}, ${account.firstnames}`,
+    };
   }
 
   /**
@@ -160,6 +221,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     const companyAccounts = this.activatedRoute.snapshot.data[
       'companyAccounts'
     ] as IOpalFinesDefendantAccountResponse | null;
+    const minorCreditorAccounts = this.activatedRoute.snapshot.data[
+      'minorCreditorAccounts'
+    ] as IOpalFinesCreditorAccountResponse | null;
 
     if (individualAccounts && individualAccounts.count > 0) {
       this.individualsData = this.mapDefendantAccounts(individualAccounts, 'individual');
@@ -167,6 +231,10 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
 
     if (companyAccounts && companyAccounts?.count > 0) {
       this.companiesData = this.mapDefendantAccounts(companyAccounts, 'company');
+    }
+
+    if (minorCreditorAccounts && minorCreditorAccounts.count > 0) {
+      this.minorCreditorsData = this.mapCreditorAccounts(minorCreditorAccounts);
     }
   }
 

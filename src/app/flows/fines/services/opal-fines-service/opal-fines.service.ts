@@ -38,10 +38,11 @@ import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-off
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
-import { OPAL_FINES_MINOR_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-defendant-account-response-minor-creditor.mock';
+import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
+import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -431,15 +432,14 @@ export class OpalFines {
    * @param searchParams - The parameters used to search for minor creditor accounts.
    * @returns An Observable emitting a response containing the minor creditor accounts and the search parameters used (for debugging purposes).
    */
-  public getMinorCreditorAccounts(
-    searchParams: IOpalFinesDefendantAccountSearchParams,
+  public getCreditorAccounts(
+    searchParams: IOpalFinesCreditorAccountsSearchParams,
   ): Observable<IOpalFinesMinorCreditorAccountsResponse> {
-    let mock: IOpalFinesMinorCreditorAccountsResponse & { _debug_searchParams?: unknown };
-    mock = structuredClone(
-      OPAL_FINES_MINOR_CREDITOR_ACCOUNTS_RESPONSE_MOCK,
-    ) as IOpalFinesMinorCreditorAccountsResponse & {
-      _debug_searchParams?: unknown;
-    };
+    console.info(searchParams);
+    const mock = structuredClone(
+      OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK,
+    ) as IOpalFinesMinorCreditorAccountsResponse & { _debug_searchParams?: unknown };
+
     mock._debug_searchParams = searchParams;
     return of(mock);
   }
