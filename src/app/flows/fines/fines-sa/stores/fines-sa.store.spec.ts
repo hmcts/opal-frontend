@@ -51,16 +51,10 @@ describe('FinesSaStore', () => {
     expect(store.unsavedChanges()).toBeTrue();
   });
 
-  it('should reset search criteria only', () => {
-    store.setSearchAccount({ ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'reset-me' });
-    store.resetDefendantSearchCriteria();
-    expect(store.searchAccount().fsa_search_account_individual_search_criteria).toEqual(null);
-  });
-
   it('should reset only the searchAccount object', () => {
     store.setSearchAccount({ ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'abc' });
     store.resetSearchAccount();
-    expect(store.searchAccount()).toEqual({} as IFinesSaSearchAccountState);
+    expect(store.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
   });
 
   it('should reset stateChanges and unsavedChanges', () => {
@@ -78,7 +72,7 @@ describe('FinesSaStore', () => {
     store.setUnsavedChanges(true);
 
     store.resetStore();
-    expect(store.searchAccount()).toEqual({} as IFinesSaSearchAccountState);
+    expect(store.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
     expect(store.activeTab()).toBe('individuals');
     expect(store.stateChanges()).toBeFalse();
     expect(store.unsavedChanges()).toBeFalse();
