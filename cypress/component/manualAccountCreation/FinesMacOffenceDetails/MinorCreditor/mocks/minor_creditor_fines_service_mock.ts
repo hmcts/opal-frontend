@@ -15,6 +15,8 @@ import { IFinesMacState } from 'src/app/flows/fines/fines-mac/interfaces/fines-m
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM } from 'src/app/flows/fines/fines-mac/fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-details-store-form';
 
 export const FINES_MINOR_CREDITOR_MOCK: IFinesMacState = {
   accountDetails: {
@@ -23,9 +25,10 @@ export const FINES_MINOR_CREDITOR_MOCK: IFinesMacState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_business_unit_id: 17,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
-      fm_create_account_account_type: 'fine',
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
     },
   },
+  fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM,
   employerDetails: FINES_MAC_EMPLOYER_DETAILS_FORM,
   contactDetails: FINES_MAC_CONTACT_DETAILS_FORM,
   parentGuardianDetails: FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM,
