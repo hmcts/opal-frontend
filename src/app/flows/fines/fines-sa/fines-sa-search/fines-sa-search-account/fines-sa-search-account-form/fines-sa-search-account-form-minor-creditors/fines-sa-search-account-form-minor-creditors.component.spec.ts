@@ -33,6 +33,28 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should require first name if first name exact match is true', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
+    component.form.get('fsa_search_account_minor_creditors_first_names_exact_match')?.setValue(true);
+    component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_first_name')?.updateValueAndValidity();
+
+    expect(
+      component.form.get('fsa_search_account_minor_creditors_first_names')?.hasValidator(Validators.required),
+    ).toBeTrue();
+  });
+
+  it('should not require first name if first name exact match is false', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
+    component.form.get('fsa_search_account_minor_creditors_first_names_exact_match')?.setValue(false);
+    component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_first_name')?.updateValueAndValidity();
+
+    expect(
+      component.form.get('fsa_search_account_minor_creditors_first_names')?.hasValidator(Validators.required),
+    ).toBeFalse();
+  });
+
   it('should not require last name if first name is empty', () => {
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
     component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('');
@@ -49,6 +71,31 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
     component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('John');
     component.form.get('fsa_search_account_minor_creditors_last_name')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.updateValueAndValidity();
+
+    expect(
+      component.form.get('fsa_search_account_minor_creditors_last_name')?.hasValidator(Validators.required),
+    ).toBeTrue();
+  });
+
+  it('should require last name if lastNameExactMatch is true', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
+    component.form.get('fsa_search_account_minor_creditors_last_name_exact_match')?.setValue(true);
+    component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.updateValueAndValidity();
+
+    expect(
+      component.form.get('fsa_search_account_minor_creditors_last_name')?.hasValidator(Validators.required),
+    ).toBeTrue();
+  });
+
+  it('should require last name if both lastNameExactMatch and first names are populated', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
+    component.form.get('fsa_search_account_minor_creditors_first_names')?.setValue('John');
+    component.form.get('fsa_search_account_minor_creditors_last_name_exact_match')?.setValue(true);
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.setValue('');
+    component.form.get('fsa_search_account_minor_creditors_last_name')?.updateValueAndValidity();
 
     expect(
       component.form.get('fsa_search_account_minor_creditors_last_name')?.hasValidator(Validators.required),
@@ -63,10 +110,10 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     fixture.detectChanges();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => (component as any)['handleLastNameConditionalValidation']()).not.toThrow();
+    expect(() => (component as any)['handleIndividualConditionalValidation']()).not.toThrow();
   });
 
-  it('should skip setup if first names control is missing', () => {
+  it('should skip setup if first names and exact match control is missing', () => {
     component.form = new FormGroup({
       fsa_search_account_minor_creditors_last_name: new FormControl('Smith'),
     });
@@ -74,7 +121,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     fixture.detectChanges();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => (component as any)['setupConditionalLastNameValidation']()).not.toThrow();
+    expect(() => (component as any)['setupIndividualConditionalValidation']()).not.toThrow();
   });
 
   it('should set requiredIndividualMinorCreditorData error if individual fields are empty', () => {
@@ -155,13 +202,118 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     expect(() => (component as any).setupMinorCreditorTypeChangeListener()).not.toThrow();
   });
 
-  it('should return early if last name or first names controls are missing', () => {
+  it('should return early if last name or first names or exact match controls are missing', () => {
     component.form = new FormGroup({
       fsa_search_account_minor_creditors_minor_creditor_type: new FormControl('individual'),
       // deliberately exclude first_names or last_name
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => (component as any).handleLastNameConditionalValidation()).not.toThrow();
+    expect(() => (component as any).handleIndividualConditionalValidation()).not.toThrow();
+  });
+
+  it('should require company name if companyNameExactMatch is true and company name is empty', () => {
+    // Set up form with company type and empty company name while exact match is true
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
+    component.form.get('fsa_search_account_minor_creditors_company_name_exact_match')?.setValue(true);
+    component.form.get('fsa_search_account_minor_creditors_company_name')?.setValue('');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).handleCompanyConditionalValidation();
+    const hasRequired = component.form
+      .get('fsa_search_account_minor_creditors_company_name')
+      ?.hasValidator(Validators.required);
+    expect(hasRequired).toBeTrue();
+  });
+
+  it('should not require company name if companyNameExactMatch is true but company name is provided', () => {
+    // Set up form with company type and a non-empty company name
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
+    component.form.get('fsa_search_account_minor_creditors_company_name_exact_match')?.setValue(true);
+    component.form.get('fsa_search_account_minor_creditors_company_name')?.setValue('Example Ltd');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).handleCompanyConditionalValidation();
+    const hasRequired = component.form
+      .get('fsa_search_account_minor_creditors_company_name')
+      ?.hasValidator(Validators.required);
+    expect(hasRequired).toBeFalse();
+  });
+
+  it('should remove required validator if companyNameExactMatch is false regardless of company name value', () => {
+    // Set up form with company type and explicit false for companyNameExactMatch
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
+    component.form.get('fsa_search_account_minor_creditors_company_name_exact_match')?.setValue(false);
+    component.form.get('fsa_search_account_minor_creditors_company_name')?.setValue('');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).handleCompanyConditionalValidation();
+    const hasRequired = component.form
+      .get('fsa_search_account_minor_creditors_company_name')
+      ?.hasValidator(Validators.required);
+    expect(hasRequired).toBeFalse();
+  });
+
+  it('should not throw if company controls are missing', () => {
+    // Replace form with one that does not include company controls.
+    component.form = new FormGroup({
+      fsa_search_account_minor_creditors_minor_creditor_type: new FormControl('company'),
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any).handleCompanyConditionalValidation()).not.toThrow();
+  });
+
+  it('should skip setup if company name and exact match control is missing', () => {
+    component.form = new FormGroup({
+      //empty controls
+    });
+    component.formControlErrorMessages = {};
+    fixture.detectChanges();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any)['setupCompanyConditionalValidation']()).not.toThrow();
+  });
+
+  it('should remove required validators from first names and last name controls', () => {
+    const firstNamesControl = component.form.get('fsa_search_account_minor_creditors_first_names');
+    const lastNameControl = component.form.get('fsa_search_account_minor_creditors_last_name');
+
+    firstNamesControl?.addValidators(Validators.required);
+    lastNameControl?.addValidators(Validators.required);
+
+    expect(firstNamesControl?.hasValidator(Validators.required)).toBeTrue();
+    expect(lastNameControl?.hasValidator(Validators.required)).toBeTrue();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).clearIndividualDynamicValidators();
+
+    expect(firstNamesControl?.hasValidator(Validators.required)).toBeFalse();
+    expect(lastNameControl?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should handle missing controls gracefully', () => {
+    component.form = new FormGroup({});
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any).clearIndividualDynamicValidators()).not.toThrow();
+  });
+
+  it('should remove required validator from company name control', () => {
+    const companyNameControl = component.form.get('fsa_search_account_minor_creditors_company_name');
+
+    companyNameControl?.addValidators(Validators.required);
+    expect(companyNameControl?.hasValidator(Validators.required)).toBeTrue();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).clearCompanyDynamicValidators();
+
+    expect(companyNameControl?.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should handle missing controls gracefully', () => {
+    component.form = new FormGroup({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => (component as any).clearCompanyDynamicValidators()).not.toThrow();
   });
 });
