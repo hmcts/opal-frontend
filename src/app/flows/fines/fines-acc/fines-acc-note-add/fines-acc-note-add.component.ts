@@ -66,6 +66,6 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    console.log('unsaved changes:', unsavedChanges);
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }
