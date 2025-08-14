@@ -9,8 +9,8 @@ import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/int
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -53,7 +53,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component.ngOnInit();
-    component.form.controls['fm_create_account_account_type'].setValue(FINES_MAC_ACCOUNT_TYPES_KEYS.fine);
+    component.form.controls['fm_create_account_account_type'].setValue(FINES_MAC_ACCOUNT_TYPES.Fine);
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -63,7 +63,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component['setupAccountTypeListener']();
-    component.form.get('fm_create_account_account_type')!.setValue(FINES_MAC_ACCOUNT_TYPES_KEYS.fine);
+    component.form.get('fm_create_account_account_type')!.setValue(FINES_MAC_ACCOUNT_TYPES.Fine);
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -98,7 +98,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fine', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
+    const accountType = FINES_MAC_ACCOUNT_TYPES.Fine;
     const fieldName = 'fm_create_account_fine_defendant_type';
     const validators = [Validators.required];
     const fieldsToRemove = ['fm_create_account_fixed_penalty_defendant_type'];
@@ -117,7 +117,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fixed penalty', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    const accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
     const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const validators = [Validators.required];
     const fieldsToRemove = ['fm_create_account_fine_defendant_type'];
@@ -136,7 +136,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - conditional caution', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.conditionalCaution;
+    const accountType = FINES_MAC_ACCOUNT_TYPES['Conditional Caution'];
     const fieldsToRemove = ['fm_create_account_fine_defendant_type', 'fm_create_account_fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
@@ -153,7 +153,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty;
+    const accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
     const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
@@ -166,7 +166,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type based on account type - fine', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.fine;
+    const accountType = FINES_MAC_ACCOUNT_TYPES.Fine;
     const fieldName = 'fm_create_account_fine_defendant_type';
     const fieldValue = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
@@ -179,7 +179,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
-    const accountType = FINES_MAC_ACCOUNT_TYPES_KEYS.conditionalCaution;
+    const accountType = FINES_MAC_ACCOUNT_TYPES['Conditional Caution'];
     const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
 
     component.form.get('fm_create_account_account_type')?.setValue(accountType);
