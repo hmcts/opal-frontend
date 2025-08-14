@@ -6,7 +6,6 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { FinesAccStore } from '../store/fines-acc-store';
 // Components
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -69,7 +68,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly opalFinesService = inject(OpalFines);
   private readonly permissionsService = inject(PermissionsService);
   private readonly globalStore = inject(GlobalStore);
-  private readonly finesAccStore = inject(FinesAccStore);
   private readonly userState = this.globalStore.userState();
   private readonly destroy$ = new Subject<void>();
 
@@ -82,9 +80,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    */
   private getDataFromRoute(): void {
     this.accountData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
-    if (this.accountData) {
-      this.finesAccStore.setAccountData(this.accountData);
-    }
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 

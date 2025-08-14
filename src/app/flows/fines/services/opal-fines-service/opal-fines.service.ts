@@ -40,6 +40,7 @@ import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defe
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -447,5 +448,32 @@ export class OpalFines {
     //   `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`
     // );
     return of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @returns An Observable that emits the created note data.
+   */
+  public postAddNotePayload(payload: IOpalFinesAddNotePayload): Observable<IOpalFinesAddNoteResponse> {
+    // return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload);
+
+    // Return payload data with additional response fields for realistic testing
+    const response: IOpalFinesAddNoteResponse = {
+      note_id: Math.floor(Math.random() * 100000) + 1, // Generate random note ID
+      associated_record_type: payload.associated_record_type,
+      associated_record_id: payload.associated_record_id,
+      note_type: payload.note_type,
+      note_text: payload.note_text,
+      created_date: new Date().toISOString(), // Current timestamp
+      created_by: 'test.user@hmcts.net', // Mock user for testing
+    };
+
+    return of(response);
   }
 }

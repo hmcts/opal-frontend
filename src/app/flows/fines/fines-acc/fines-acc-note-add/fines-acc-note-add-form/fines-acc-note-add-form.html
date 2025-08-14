@@ -1,4 +1,8 @@
-<opal-lib-govuk-heading-with-caption captionText="{{ accountData?.account_number }}" headingText="{{defendantName}}">
+<opal-lib-govuk-heading-with-caption
+  captionText="{{ accountName }} - {{ defendantName }}"
+  headingText="Add account note"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-0"
+>
 </opal-lib-govuk-heading-with-caption>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-text-area

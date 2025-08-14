@@ -11,7 +11,6 @@ import { IFinesAccAddNoteFieldErrors } from '../interfaces/fines-acc-note-add-fo
 import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
 import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { FinesAccStore } from '../../store/fines-acc-store';
 
 @Component({
   selector: 'app-fines-acc-note-add-form',
@@ -29,11 +28,10 @@ import { FinesAccStore } from '../../store/fines-acc-store';
 export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddNoteForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
-  private readonly finesAccStore = inject(FinesAccStore);
 
-  public readonly accountData = this.finesAccStore.accountData();
-  public readonly defendantName = this.finesAccStore.defendantName();
-
+  //mocking ACC store data for demonstration purposes
+  public readonly accountName = '123456789';
+  public readonly defendantName = 'Mr John, Peter DOE';
   override fieldErrors: IFinesAccAddNoteFieldErrors = FINES_ACC_ADD_NOTE_FIELD_ERRORS;
 
   /**
