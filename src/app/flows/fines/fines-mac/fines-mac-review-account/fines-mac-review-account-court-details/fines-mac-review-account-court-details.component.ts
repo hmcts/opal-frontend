@@ -15,11 +15,11 @@ import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
 import {
   IOpalFinesProsecutor,
   IOpalFinesProsecutorRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -46,7 +46,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   public sendingCourt!: string | null;
   public prosecutor!: string | null;
   public issuingAuthority!: string | null;
-  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
+  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
   public cardTitle = 'Court Details';
 
   /**
@@ -112,7 +112,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getCourtDetailsData(): void {
     this.getEnforcementCourt();
-    if (this.accountType === this.accountTypesKeys.fixedPenalty) {
+    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
       this.issuingAuthority =
         this.getProsecutor() ?? this.getSendingCourt(this.courtDetails.fm_court_details_originator_id);
     } else {
@@ -128,7 +128,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    * @private
    */
   private setCardTitle(): void {
-    if (this.accountType === this.accountTypesKeys.fixedPenalty) {
+    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
       this.cardTitle = 'Issuing authority and court details';
     } else {
       this.cardTitle = 'Court details';
