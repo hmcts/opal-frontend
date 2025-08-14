@@ -10,12 +10,12 @@ export const DOM_ELEMENTS = {
   businessUnitAutoComplete: 'ul[id = "fm_create_account_business_unit_id-autocomplete__listbox"]',
   //account type
   accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
-  fineInput: 'input[id = "fine"]',
-  fineLabel: 'label[for = "fine"]',
-  fixedPenaltyInput: 'input[id = "fixedPenalty"]',
-  fixedPenaltyLabel: 'label[for = "fixedPenalty"]',
-  conditionalCautionInput: 'input[id = "conditionalCaution"]',
-  conditionalCautionLabel: 'label[for = "conditionalCaution"]',
+  fineInput: 'input[id = "Fine"]',
+  fineLabel: 'label[for = "Fine"]',
+  fixedPenaltyInput: 'input[id = "FixedPenalty"]',
+  fixedPenaltyLabel: 'label[for = "FixedPenalty"]',
+  conditionalCautionInput: 'input[id = "ConditionalCaution"]',
+  conditionalCautionLabel: 'label[for = "ConditionalCaution"]',
 
   //fine
   defendantTypeTitle: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
@@ -35,7 +35,7 @@ export const DOM_ELEMENTS = {
   FPCompanyLabel: 'label[for = "company"]',
 
   //conditional caution
-  ConditionalCautionHint: 'div[id = "conditionalCaution-item-hint"]',
+  ConditionalCautionHint: 'div[id = "ConditionalCaution-item-hint"]',
 
   continueButton: 'button[id = "submitForm"]',
   cancelLink: 'a.govuk-link.button-link',
