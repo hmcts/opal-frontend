@@ -100,7 +100,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Name on the account must be 18 characters or fewer',
       priority: 2,
     },
-    LETTERS_WITH_SPACES_PATTERN: {
+    lettersWithSpacesPattern: {
       message: 'Name on account must only contain letters',
       priority: 3,
     },
