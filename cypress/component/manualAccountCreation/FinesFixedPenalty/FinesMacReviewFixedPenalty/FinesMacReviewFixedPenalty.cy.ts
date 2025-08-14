@@ -24,6 +24,7 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   const routes: Routes = [
@@ -166,7 +167,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Section 1 - Account Details (No heading)
       cy.get(DOM_ELEMENTS.businessUnit).should('contain', 'Test Business Unit');
-      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fixed Penalty');
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult');
 
       // Section 2 - Issuing Authority and Court Details
@@ -302,7 +303,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       // Section 1 - Account Details
       cy.get(DOM_ELEMENTS.businessUnit).should('contain', 'Corporate Penalties Unit');
-      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fixed Penalty');
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
 
       // Section 2 - Court Details
@@ -438,7 +439,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
         //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
         //Delete this comment once PO-1996 is complete
-        const account_type = 'fixedPenalty';
+        const account_type = 'Fixed Penalty';
         expect(request.request.body.account_type).to.equal(account_type);
         expect(request.request.body.account.account_type).to.equal(account_type);
 
@@ -506,7 +507,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
       //Delete this comment once PO-1996 is complete
-      const account_type = 'fixedPenalty';
+      const account_type = 'Fixed Penalty';
       expect(request.request.body.account_type).to.equal(account_type);
       expect(request.request.body.account.account_type).to.equal(account_type);
 

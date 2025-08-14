@@ -7,7 +7,7 @@ interface IControlNames {
 }
 
 export interface IFinesMacCreateAccountControlNames {
-  fine: IControlNames;
-  fixedPenalty: IControlNames;
-  conditionalCaution: IControlNames;
+  Fine: IControlNames;
+  'Fixed Penalty': IControlNames;
+  'Conditional Caution': IControlNames;
 }

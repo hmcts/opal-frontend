@@ -1,3 +1,4 @@
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../constants/fines-mac-account-types';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mocks/fines-mac-payload-account-defendant-individual.mock';
@@ -11,7 +12,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
-    account_type: 'fixedPenalty',
+    account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Crown Prosecution Service',
     originator_id: '4821',
@@ -100,7 +101,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
       },
     ],
   },
-  account_type: 'fixedPenalty',
+  account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
   account_status: 'Submitted',
   timeline_data: [
     {
