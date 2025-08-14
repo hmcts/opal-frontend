@@ -4,7 +4,7 @@
     <app-fines-mac-review-account-failed-banner></app-fines-mac-review-account-failed-banner>
   }
   @if (!isReadOnly) {
-    @if (accountType === accountTypesKeys.fixedPenalty) {
+    @if (accountType === accountTypesKeys['Fixed Penalty']) {
       <h1 class="govuk-heading-l">Check fixed penalty account details</h1>
     } @else {
       <h1 class="govuk-heading-l">Check account details</h1>
@@ -59,7 +59,7 @@
     </app-fines-mac-review-account-company-details>
   }
 
-  @if (accountType !== accountTypesKeys.fixedPenalty) {
+  @if (accountType !== accountTypesKeys['Fixed Penalty']) {
     <app-fines-mac-review-account-contact-details
       [contactDetails]="finesMacStore.contactDetails().formData"
       [isReadOnly]="isReadOnly"
@@ -77,7 +77,7 @@
 
   @if (
     finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== defendantTypesKeys.company &&
-    accountType !== accountTypesKeys.fixedPenalty
+    accountType !== accountTypesKeys['Fixed Penalty']
   ) {
     <app-fines-mac-review-account-employer-details
       [employerDetails]="finesMacStore.employerDetails().formData"
@@ -87,7 +87,7 @@
     ></app-fines-mac-review-account-employer-details>
   }
 
-  @if (accountType === accountTypesKeys.fixedPenalty) {
+  @if (accountType === accountTypesKeys['Fixed Penalty']) {
     <app-fines-mac-review-account-fixed-penalty-offence-details
       [offenceDetails]="finesMacStore.fixedPenaltyDetails().formData"
       [isReadOnly]="isReadOnly"

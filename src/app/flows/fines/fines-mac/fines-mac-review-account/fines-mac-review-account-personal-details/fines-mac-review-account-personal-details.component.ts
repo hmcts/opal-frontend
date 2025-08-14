@@ -10,7 +10,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../constants/fines-mac-account-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 
 @Component({
@@ -38,7 +38,7 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   public aliases!: string[];
   public dob!: string | null;
   public address!: string[];
-  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
+  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
 
   /**
    * Retrieves and formats alias data from the personal details.
