@@ -3,7 +3,7 @@ import { IFinesSaSearchAccountFormCompaniesFieldErrors } from '../interfaces/fin
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearchAccountFormCompaniesFieldErrors = {
   fsa_search_account_companies_company_name: {
     lettersWithSpacesPattern: {
-      message: 'Company name must only letters or numbers',
+      message: 'Company name must only contain letters',
       priority: 1,
     },
     maxlength: {

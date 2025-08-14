@@ -173,8 +173,8 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only only contain letters');
-    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only only contain letters');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only contain letters');
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
