@@ -439,7 +439,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
         //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
         //Delete this comment once PO-1996 is complete
-        const account_type = 'fixedPenalty';
+        const account_type = 'Fixed Penalty';
         expect(request.request.body.account_type).to.equal(account_type);
         expect(request.request.body.account.account_type).to.equal(account_type);
 
@@ -507,7 +507,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
 
       //AC defines Manual Fixed Penalty but currently is fixedPenalty - This will be fixed in PO-1996, where the account type will be updated to 'Fixed Penalty'
       //Delete this comment once PO-1996 is complete
-      const account_type = 'fixedPenalty';
+      const account_type = 'Fixed Penalty';
       expect(request.request.body.account_type).to.equal(account_type);
       expect(request.request.body.account.account_type).to.equal(account_type);
 

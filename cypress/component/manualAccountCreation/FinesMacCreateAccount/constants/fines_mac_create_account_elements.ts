@@ -35,7 +35,7 @@ export const DOM_ELEMENTS = {
   FPCompanyLabel: 'label[for = "company"]',
 
   //conditional caution
-  ConditionalCautionHint: 'div[id = "Conditional Caution-item-hint"]',
+  ConditionalCautionHint: 'div[id = "ConditionalCaution-item-hint"]',
 
   continueButton: 'button[id = "submitForm"]',
   cancelLink: 'a.govuk-link.button-link',
