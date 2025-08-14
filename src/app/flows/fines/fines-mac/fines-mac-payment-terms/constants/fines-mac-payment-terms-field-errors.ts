@@ -131,7 +131,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Reason must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Reason must only contain letters or numbers`,
       priority: 3,
     },
   },
@@ -161,7 +161,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Prison and prison number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Prison and prison number must only contain letters or numbers`,
       priority: 3,
     },
   },

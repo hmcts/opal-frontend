@@ -10,7 +10,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Parent or guardian's first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Parent or guardian's first name(s) must only contain letters`,
       priority: 2,
     },
@@ -24,7 +24,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Parent or guardian's last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Parent or guardian's last name must only contain letters`,
       priority: 2,
     },
@@ -38,7 +38,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 1 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 1 first name(s) must only contain letters`,
       priority: 3,
     },
@@ -52,7 +52,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 1 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 1 last name must only contain letters`,
       priority: 3,
     },
@@ -66,7 +66,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 2 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 2 first name(s) must only contain letters`,
       priority: 3,
     },
@@ -80,7 +80,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 2 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 2 last name must only contain letters`,
       priority: 3,
     },
@@ -94,7 +94,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 3 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 3 first name(s) must only contain letters`,
       priority: 3,
     },
@@ -108,7 +108,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 3 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 3 last name must only contain letters`,
       priority: 3,
     },
@@ -122,7 +122,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 4 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 4 first name(s) must only contain letters`,
       priority: 3,
     },
@@ -136,7 +136,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 4 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 4 last name must only contain letters`,
       priority: 3,
     },
@@ -150,7 +150,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 5 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 5 first name(s) must only contain letters`,
       priority: 3,
     },
@@ -164,7 +164,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Alias 5 last name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphabeticalTextPattern: {
+    lettersWithSpacesPattern: {
       message: `Alias 5 last name must only contain letters`,
       priority: 3,
     },
@@ -198,7 +198,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: 'Address line 1 must be 25 characters or fewer',
       priority: 2,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 1 must only contain letters or numbers',
       priority: 3,
     },
@@ -208,7 +208,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: 'Address line 2 must be 25 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 2 must only contain letters or numbers',
       priority: 2,
     },
@@ -218,7 +218,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Address line 3 must be 13 characters or fewer`,
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 3 must only contain letters or numbers',
       priority: 2,
     },

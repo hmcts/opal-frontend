@@ -13,12 +13,8 @@ export const FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS: IFinesMacReviewAcco
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Reason for rejection must only contain letters or numbers',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
 };

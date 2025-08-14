@@ -10,7 +10,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Company name must only contain letters`,
       priority: 3,
     },
@@ -24,7 +24,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 1 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Alias 1 company name must only contain letters`,
       priority: 3,
     },
@@ -38,7 +38,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 2 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Alias 2 company name must only contain letters`,
       priority: 3,
     },
@@ -52,7 +52,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 3 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Alias 3 company name must only contain letters`,
       priority: 3,
     },
@@ -66,7 +66,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 4 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Alias 4 company name must only contain letters`,
       priority: 3,
     },
@@ -80,7 +80,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Alias 5 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
+    lettersWithSpacesDotPattern: {
       message: `Alias 5 company name must only contain letters`,
       priority: 3,
     },
@@ -94,7 +94,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 1 must only contain letters or numbers',
       priority: 3,
     },
@@ -104,7 +104,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 2 must only contain letters or numbers',
       priority: 2,
     },
@@ -114,7 +114,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Address line 3 must be 16 characters or fewer`,
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 3 must only contain letters or numbers',
       priority: 2,
     },
@@ -124,9 +124,9 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: `The postcode must only contain alphabetical text`,
-      priority: 3,
+    alphanumericTextPattern: {
+      message: `The postcode must only contain letters or numbers`,
+      priority: 2,
     },
   },
 };

@@ -10,9 +10,8 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Employer name must be 35 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message:
-        'Employer name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+    lettersWithSpacesPattern: {
+      message: 'Employer name must only contain letters',
       priority: 3,
     },
   },
@@ -26,8 +25,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
     alphanumericTextPattern: {
-      message:
-        'Employer reference must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+      message: 'Employer reference must only contain letters or numbers',
       priority: 3,
     },
   },
@@ -60,7 +58,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 1 must only contain letters or numbers',
       priority: 3,
     },
@@ -70,7 +68,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 2 must only contain letters or numbers',
       priority: 2,
     },
@@ -80,7 +78,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 3 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 3 must only contain letters or numbers',
       priority: 2,
     },
@@ -90,7 +88,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 4 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 4 must only contain letters or numbers',
       priority: 2,
     },
@@ -100,7 +98,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Address line 5 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
+    alphanumericTextPattern: {
       message: 'Address line 5 must only contain letters or numbers',
       priority: 2,
     },

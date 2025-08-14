@@ -2,8 +2,8 @@ import { IFinesSaSearchAccountFormCompaniesFieldErrors } from '../interfaces/fin
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearchAccountFormCompaniesFieldErrors = {
   fsa_search_account_companies_company_name: {
-    invalidNamePattern: {
-      message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
+    lettersWithSpacesPattern: {
+      message: 'Company name must only letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -14,8 +14,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
   fsa_search_account_companies_company_name_exact_match: {},
   fsa_search_account_companies_include_aliases: {},
   fsa_search_account_companies_address_line_1: {
-    invalidCharacterPattern: {
-      message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Address line 1 must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -24,8 +24,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearch
     },
   },
   fsa_search_account_companies_post_code: {
-    invalidCharacterPattern: {
-      message: 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Post code must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {

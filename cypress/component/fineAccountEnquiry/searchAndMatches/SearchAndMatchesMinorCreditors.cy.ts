@@ -94,12 +94,8 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.lastNameError)
-      .should('exist')
-      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
 
@@ -111,12 +107,8 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'Name123');
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.firstNamesError)
-      .should('exist')
-      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only contain letters');
+    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only contain letters');
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
@@ -128,8 +120,8 @@ describe('Search Account Component - Minor Creditors', () => {
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only include letters a to z');
-    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only include letters a to z');
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only contain letters');
+    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only contain letters');
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
@@ -139,13 +131,10 @@ describe('Search Account Component - Minor Creditors', () => {
       'Address123?';
     cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'contain',
-      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Error).should(
       'contain',
-      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 1 must only contain letters or numbers',
     );
     cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).clear();
   });
@@ -157,14 +146,8 @@ describe('Search Account Component - Minor Creditors', () => {
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'contain',
-      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
-    cy.get(DOM_ELEMENTS.postcodeError).should(
-      'contain',
-      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only contain letters or numbers');
+    cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 

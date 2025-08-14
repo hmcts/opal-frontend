@@ -67,7 +67,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test pattern invalid validator on forenames
     forenamesControl.setValue('/$£');
-    expect(forenamesControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
 
     // Test required validator on surname
     surnameControl.setValue('');
@@ -79,7 +79,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test pattern invalid validator on surname
     surnameControl.setValue('/$£');
-    expect(surnameControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(surnameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
   });
 
   it('should set validators for company name control', () => {
@@ -99,7 +99,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test alphanumeric text pattern validator on company name
     companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['alphanumericTextPattern']).toBeTruthy();
+    expect(companyNameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
   });
 
   it('should set validators for payment detail controls', () => {
@@ -117,7 +117,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(nameOnAccountControl.errors?.['maxlength']).toBeTruthy();
 
     nameOnAccountControl.setValue('Invalid@Name'); // Invalid characters
-    expect(nameOnAccountControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(nameOnAccountControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
 
     nameOnAccountControl.setValue('Valid Name'); // Valid input
     expect(nameOnAccountControl.valid).toBeTruthy();
@@ -147,7 +147,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(paymentReferenceControl.errors?.['maxlength']).toBeTruthy();
 
     paymentReferenceControl.setValue('Invalid@Reference'); // Invalid characters
-    expect(paymentReferenceControl.errors?.['alphabeticalTextPattern']).toBeTruthy();
+    expect(paymentReferenceControl.errors?.['alphanumericTextPattern']).toBeTruthy();
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();

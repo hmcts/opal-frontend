@@ -80,8 +80,8 @@ describe('Search Account Component - Company', () => {
       'Company123';
 
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only include letters a to z');
-    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only include letters a to z');
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only contain letters');
+    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only contain letters');
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 
@@ -91,14 +91,8 @@ describe('Search Account Component - Company', () => {
       'Address123?';
 
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'contain',
-      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
-    cy.get(DOM_ELEMENTS.addressLine1Error).should(
-      'contain',
-      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Address line 1 must only contain letters or numbers');
+    cy.get(DOM_ELEMENTS.addressLine1Error).should('contain', 'Address line 1 must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
 
@@ -109,14 +103,8 @@ describe('Search Account Component - Company', () => {
 
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'contain',
-      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
-    cy.get(DOM_ELEMENTS.postcodeError).should(
-      'contain',
-      'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must only contain letters or numbers');
+    cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });

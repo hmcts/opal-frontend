@@ -30,14 +30,17 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  SPECIAL_CHARACTERS_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  LETTERS_WITH_SPACES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
-const SPECIAL_CHARACTER_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+const LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR = patternValidator(
+  LETTERS_WITH_SPACES_DOT_PATTERN,
+  'lettersWithSpacesDotPattern',
+);
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
 
@@ -77,24 +80,27 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
       fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        SPECIAL_CHARACTER_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_company_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_company_details_postcode: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
     });
   }
 

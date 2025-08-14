@@ -1,21 +1,18 @@
 import { FormControl, Validators } from '@angular/forms';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  LETTERS_WITH_SPACES_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
-const characterValidator = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'invalidCharacterPattern',
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
 );
-const nameValidator = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'invalidNamePattern');
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX = 'fsa_search_account_companies_';
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS: Record<string, FormControl> = {
   [`${FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX}company_name`]: new FormControl<string | null>(null, [
-    nameValidator,
+    LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
     Validators.maxLength(50),
   ]),
   [`${FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX}company_name_exact_match`]: new FormControl<
@@ -23,11 +20,11 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS: Record<string, For
   >(null),
   [`${FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX}include_aliases`]: new FormControl<boolean | null>(null),
   [`${FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX}address_line_1`]: new FormControl<string | null>(null, [
-    characterValidator,
+    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
     Validators.maxLength(30),
   ]),
   [`${FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX}post_code`]: new FormControl<string | null>(null, [
-    characterValidator,
+    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
     Validators.maxLength(8),
   ]),
 };

@@ -112,10 +112,10 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
-      .and('contain', 'Account number must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+      .and('contain', 'Account number must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.accountNumberError)
       .should('exist')
-      .and('contain', 'Account number must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+      .and('contain', 'Account number must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.accountNumberInput).clear();
   });
@@ -145,16 +145,10 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
-      .and(
-        'contain',
-        'Reference or case number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
+      .and('contain', 'Reference or case number must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.referenceNumberError)
       .should('exist')
-      .and(
-        'contain',
-        'Reference or case number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
+      .and('contain', 'Reference or case number must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.referenceNumberInput).clear();
   });
@@ -166,12 +160,8 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.lastNameError)
-      .should('exist')
-      .and('contain', 'Last name must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Last name must only contain letters');
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Last name must only contain letters');
 
     cy.get(DOM_ELEMENTS.lastNameInput).clear();
   });
@@ -183,12 +173,8 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.firstNamesError)
-      .should('exist')
-      .and('contain', 'First names must only include letters a to z, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'First names must only only contain letters');
+    cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'First names must only only contain letters');
 
     cy.get(DOM_ELEMENTS.firstNamesInput).clear();
   });
@@ -242,16 +228,10 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
-      .and(
-        'contain',
-        'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
+      .and('contain', 'National Insurance number must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.niNumberError)
       .should('exist')
-      .and(
-        'contain',
-        'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      );
+      .and('contain', 'National Insurance number must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.niNumberInput).clear();
   });
@@ -265,10 +245,10 @@ describe('Search Account Component - Individuals', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
-      .and('contain', 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+      .and('contain', 'Address line 1 must only contain letters or numbers');
     cy.get(DOM_ELEMENTS.addressLine1Error)
       .should('exist')
-      .and('contain', 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+      .and('contain', 'Address line 1 must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.addressLine1Input).clear();
   });
@@ -280,12 +260,8 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SW1A @#!');
     cy.get(DOM_ELEMENTS.searchButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain', 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes');
-    cy.get(DOM_ELEMENTS.postcodeError)
-      .should('exist')
-      .and('contain', 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain', 'Postcode must only contain letters or numbers');
+    cy.get(DOM_ELEMENTS.postcodeError).should('exist').and('contain', 'Postcode must only contain letters or numbers');
 
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
