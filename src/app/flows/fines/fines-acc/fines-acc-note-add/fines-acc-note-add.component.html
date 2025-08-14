@@ -1,1 +1,6 @@
-<h1>Add Account Note</h1>
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-acc-note-add-form
+    (formSubmit)="handleAddNoteSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-acc-note-add-form>
+</div>
