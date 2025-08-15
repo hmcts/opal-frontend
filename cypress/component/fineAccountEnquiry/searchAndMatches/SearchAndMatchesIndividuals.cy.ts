@@ -7,7 +7,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesSaService } from 'src/app/flows/fines/fines-sa/services/fines-sa.service';
 import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
 
 describe('Search Account Component - Individuals', () => {
@@ -32,7 +31,6 @@ describe('Search Account Component - Individuals', () => {
           },
         ]),
         OpalFines,
-        FinesSaService,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -420,20 +418,20 @@ describe('Search Account Component - Individuals', () => {
     () => {
       individualSearchMock.fsa_search_account_business_unit_ids = [1, 2, 3];
       individualSearchMock.fsa_search_account_active_accounts_only = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
         'Smith';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name_exact_match = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name_exact_match = true;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
         'John';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names_exact_match = false;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names_exact_match = false;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
         '15/05/1990';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
         'AB123456C';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_include_aliases = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_include_aliases = true;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
         '123 High Street';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
         'SW1A 1AA';
 
       setupComponent(null);
@@ -493,7 +491,7 @@ describe('Search Account Component - Individuals', () => {
   it('AC1. should send correct API parameters when active accounts checkbox is unchecked', { tags: ['PO-717'] }, () => {
     individualSearchMock.fsa_search_account_business_unit_ids = [5];
     individualSearchMock.fsa_search_account_active_accounts_only = false;
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'Doe';
 
     setupComponent(null);
@@ -522,7 +520,7 @@ describe('Search Account Component - Individuals', () => {
   it('AC1. should send correct API parameters with minimal required data', { tags: ['PO-717'] }, () => {
     individualSearchMock.fsa_search_account_business_unit_ids = [10];
     individualSearchMock.fsa_search_account_active_accounts_only = true;
-    individualSearchMock.fsa_search_account_individual_search_criteria = {
+    individualSearchMock.fsa_search_account_individuals_search_criteria = {
       fsa_search_account_individuals_last_name: 'Johnson',
       fsa_search_account_individuals_last_name_exact_match: false,
       fsa_search_account_individuals_first_names: '',
@@ -568,4 +566,38 @@ describe('Search Account Component - Individuals', () => {
       expect(apiParams).to.have.property('include_aliases', false);
     });
   });
+
+  it('AC1a. Should validate last name field when alias checkbox selected', { tags: ['PO-1969'] }, () => {
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.includeAliasesCheckbox).check().should('be.checked');
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+  });
+
+  it(
+    'AC1b. Should validate last name field when "Search exact match" for last name is selected',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.lastNameError).should('exist').and('contain', 'Enter last name');
+    },
+  );
+  it(
+    'AC1c. Should validate first name field when "Search exact match" for first name is selected',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.firstNamesExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.firstNamesError).should('exist').and('contain', 'Enter first name');
+    },
+  );
 });

@@ -28,24 +28,32 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS: IFinesSa
     },
     fsa_search_account_minor_creditors_last_name_exact_match: {},
     fsa_search_account_minor_creditors_first_names: {
+      required: {
+        message: 'Enter first name',
+        priority: 1,
+      },
       invalidNamePattern: {
         message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
-        priority: 1,
+        priority: 2,
       },
       maxlength: {
         message: 'First names must be 20 characters or fewer',
-        priority: 2,
+        priority: 3,
       },
     },
     fsa_search_account_minor_creditors_first_names_exact_match: {},
     fsa_search_account_minor_creditors_company_name: {
+      required: {
+        message: 'Enter company name',
+        priority: 1,
+      },
       invalidNamePattern: {
         message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
-        priority: 1,
+        priority: 2,
       },
       maxlength: {
         message: 'Company name must be 50 characters or fewer',
-        priority: 2,
+        priority: 3,
       },
     },
     fsa_search_account_minor_creditors_company_name_exact_match: {},
