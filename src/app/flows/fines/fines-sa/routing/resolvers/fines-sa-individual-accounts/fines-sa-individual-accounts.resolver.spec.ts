@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, Observable, of } from 'rxjs';
 import { finesSaIndividualAccountsResolver } from './fines-sa-individual-accounts.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesSaStore } from '../../stores/fines-sa.store';
-import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
+import { FinesSaStore } from '../../../stores/fines-sa.store';
+import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 
 describe('finesSaIndividualAccountsResolver', () => {
