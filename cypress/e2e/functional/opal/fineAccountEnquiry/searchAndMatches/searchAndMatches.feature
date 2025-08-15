@@ -5,7 +5,7 @@ Feature: Account Search and Matches
     Then I am on the dashboard
     When I navigate to Search For An Account
 
-  @PO-705 @PO-712 @PO-715
+  @PO-705 @PO-712 @PO-715 @PO-1969
   Scenario: Switching to a new tab clears all fields on the 'search for an account' page
     #PO-705 - AC2 should not trigger any actions when Search button is clicked with no data field populated
     When I click the "Search" button
@@ -86,6 +86,18 @@ Feature: Account Search and Matches
     And I verify the first names exact match checkbox is not checked
     And I validate the "Include aliases" checkbox is not checked
     And I validate the "Active accounts only" checkbox is checked
+
+    #PO-1969 Clear error messages when switching tabs after validation errors
+    And I select the last name exact match checkbox
+    And I click the "Search" button
+    Then I see the error message "Enter last name" at the top of the page
+    Then I see "There is a problem" text on the page
+    And I see "Enter last name" text on the page
+
+    When I click on the "Companies" link
+    And I click on the "Individuals" link
+    And I verify the last name exact match checkbox is not checked
+    Then I do not see "Enter last name" text on the page
 
     #PO-712 - AC6. Tab switching clears data on the company tab
     When I click on the "Companies" link
