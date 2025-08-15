@@ -130,8 +130,8 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Reason must be 28 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `Reason must only contain letters or numbers`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Reason must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
@@ -160,8 +160,8 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Prison and prison number must be 28 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `Prison and prison number must only contain letters or numbers`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Prison and prison number must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },

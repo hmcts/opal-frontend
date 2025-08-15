@@ -27,7 +27,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import {
   EMAIL_ADDRESS_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_WITH_SPACES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
@@ -36,7 +36,10 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',
@@ -71,12 +74,12 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(35),
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_reference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),

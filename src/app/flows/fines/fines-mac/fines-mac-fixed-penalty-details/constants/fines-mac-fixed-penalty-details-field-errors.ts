@@ -1,3 +1,4 @@
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-field-errors.constant';
 import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
@@ -27,8 +28,9 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_court_details_originator_name: {},
-  fm_fp_account_comments_notes_comments: {},
-  fm_fp_account_comments_notes_notes: {},
+  fm_fp_account_comments_notes_comments:
+    FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments,
+  fm_fp_account_comments_notes_notes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_notes,
   fm_fp_account_comments_notes_system_notes: {},
   fm_fp_language_preferences_document_language: {},
   fm_fp_language_preferences_hearing_language: {},
@@ -83,8 +85,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `Place of offence must only contain letters or numbers`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },

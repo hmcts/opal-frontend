@@ -10,8 +10,9 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Employer name must be 35 characters or fewer',
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: 'Employer name must only contain letters',
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message:
+        'Employer name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       priority: 3,
     },
   },
@@ -24,8 +25,9 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       message: 'Employee reference must be 20 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: 'Employer reference must only contain letters or numbers',
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message:
+        'Employer reference must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       priority: 3,
     },
   },

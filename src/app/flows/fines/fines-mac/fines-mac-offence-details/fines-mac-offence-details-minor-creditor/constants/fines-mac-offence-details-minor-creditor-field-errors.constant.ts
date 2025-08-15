@@ -50,8 +50,8 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    lettersWithSpacesPattern: {
-      message: `Company name must only contain letters`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },

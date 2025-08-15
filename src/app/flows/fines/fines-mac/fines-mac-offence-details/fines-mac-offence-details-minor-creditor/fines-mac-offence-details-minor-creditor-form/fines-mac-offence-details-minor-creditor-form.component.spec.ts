@@ -99,7 +99,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test alphanumeric text pattern validator on company name
     companyNameControl.setValue('/$£');
-    expect(companyNameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    expect(companyNameControl.errors?.['alphanumericWithHyphensSpacesApostrophesDotPattern']).toBeTruthy();
   });
 
   it('should set validators for payment detail controls', () => {

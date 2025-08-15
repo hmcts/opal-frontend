@@ -11,9 +11,14 @@ import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   DRIVING_LICENCE_NUMBER_PATTERN,
   TIME_FORMAT_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -53,8 +58,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
     ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
   ],
   fm_fp_court_details_originator_name: null,
-  fm_fp_account_comments_notes_comments: null,
-  fm_fp_account_comments_notes_notes: null,
+  fm_fp_account_comments_notes_comments: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
+  fm_fp_account_comments_notes_notes: [ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR],
   fm_fp_account_comments_notes_system_notes: null,
   fm_fp_language_preferences_document_language: null,
   fm_fp_language_preferences_hearing_language: null,
@@ -76,7 +81,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_offence_details_place_of_offence: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
   ],
   fm_fp_offence_details_amount_imposed: [Validators.required, amountValidator(18, 2)],
   fm_fp_offence_details_vehicle_registration_number: [

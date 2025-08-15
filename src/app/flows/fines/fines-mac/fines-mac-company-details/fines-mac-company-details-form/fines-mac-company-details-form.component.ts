@@ -30,14 +30,14 @@ import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_WITH_SPACES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
-const LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_WITH_SPACES_DOT_PATTERN,
-  'lettersWithSpacesDotPattern',
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -80,7 +80,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        LETTERS_WITH_SPACES_DOT_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
