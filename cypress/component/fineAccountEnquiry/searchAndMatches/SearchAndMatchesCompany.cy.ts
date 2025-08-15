@@ -6,7 +6,6 @@ import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_company_elements';
 import { COMPANY_SEARCH_STATE_MOCK } from './mocks/search_and_matches_company_mock';
-import { delay } from 'cypress/types/bluebird';
 
 describe('Search Account Component - Company', () => {
   let companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
