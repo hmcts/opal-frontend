@@ -7,12 +7,8 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Offence Code must only contain letters or numbers',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
   fm_offence_details_search_offences_short_title: {
@@ -21,12 +17,8 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Short Title must only contain letters or numbers',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
   fm_offence_details_search_offences_act_section: {
@@ -35,12 +27,8 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Act & Section must only contain letters or numbers',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
 };
