@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
@@ -17,7 +8,8 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-individuals-controls.constant';
 
 @Component({
@@ -26,14 +18,12 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX } from './cons
   templateUrl: './fines-sa-search-account-form-individuals.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnDestroy {
-  private readonly ngUnsubscribe = new Subject<void>();
+export class FinesSaSearchAccountFormIndividualsComponent extends AbstractFormBaseComponent {
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX;
-
   protected readonly dateService = inject(DateService);
 
-  @Input({ required: true }) public form!: FormGroup;
-  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) public override form!: FormGroup;
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Output() public setDateOfBirth = new EventEmitter<string>();
   public yesterday!: string;
 
@@ -152,16 +142,9 @@ export class FinesSaSearchAccountFormIndividualsComponent implements OnInit, OnD
   /**
    * Angular lifecycle hook - initialises conditional validation and computes yesterday’s date.
    */
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     this.setupConditionalValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-  }
-
-  /**
-   * Angular lifecycle hook - tears down subscriptions when the component is destroyed.
-   */
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    super.ngOnInit();
   }
 }

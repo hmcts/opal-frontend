@@ -7,6 +7,7 @@ import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-fl
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts.resolver';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { finesSaCompanyAccountsResolver } from './resolvers/fines-sa-company-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -33,6 +34,7 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       individualAccounts: finesSaIndividualAccountsResolver,
+      companyAccounts: finesSaCompanyAccountsResolver,
     },
   },
   {
