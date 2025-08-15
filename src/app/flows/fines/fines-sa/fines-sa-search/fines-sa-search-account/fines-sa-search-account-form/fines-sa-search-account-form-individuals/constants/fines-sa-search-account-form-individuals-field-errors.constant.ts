@@ -17,6 +17,10 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
   },
   fsa_search_account_individuals_last_name_exact_match: {},
   fsa_search_account_individuals_first_names: {
+    required: {
+      message: 'Enter first name',
+      priority: 1,
+    },
     invalidNamePattern: {
       message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 1,
