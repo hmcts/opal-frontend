@@ -161,11 +161,13 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
   /**
    * Clears all controls in all tab-specific search criteria form groups.
+   * Clears all error messages.
    */
   private clearSearchForm(): void {
     ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
+    this.clearAllErrorMessages();
   }
 
   /**

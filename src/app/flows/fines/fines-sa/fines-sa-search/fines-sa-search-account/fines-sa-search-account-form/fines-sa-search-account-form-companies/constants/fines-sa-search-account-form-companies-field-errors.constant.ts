@@ -2,6 +2,10 @@ import { IFinesSaSearchAccountFormCompaniesFieldErrors } from '../interfaces/fin
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearchAccountFormCompaniesFieldErrors = {
   fsa_search_account_companies_company_name: {
+    required: {
+      message: 'Enter company name',
+      priority: 1,
+    },
     lettersWithSpacesPattern: {
       message: 'Company name must only contain letters',
       priority: 1,

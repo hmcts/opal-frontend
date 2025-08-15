@@ -152,4 +152,28 @@ describe('Search Account Component - Company', () => {
     cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
+
+  it('AC2a. Should validate company name field when "Alias" checkbox is selected', { tags: ['PO-1969'] }, () => {
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.companiesTab).click();
+    cy.get(DOM_ELEMENTS.includeAliasCheckbox).check().should('be.checked');
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
+  });
+
+  it(
+    'AC2b. Should validate company name field when "Search exact match" for company name is selected',
+    { tags: ['PO-1969'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.companiesTab).click();
+      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).check().should('be.checked');
+      cy.get(DOM_ELEMENTS.searchButton).click();
+
+      cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
+    },
+  );
 });
