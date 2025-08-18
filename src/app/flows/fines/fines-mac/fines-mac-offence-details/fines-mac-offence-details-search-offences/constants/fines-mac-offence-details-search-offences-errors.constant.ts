@@ -24,7 +24,7 @@ export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceD
   },
   fm_offence_details_search_offences_act_section: {
     maxlength: {
-      message: 'Act and section must be 4000 characters or fewer',
+      message: 'Act and section must be 4,000 characters or fewer',
       priority: 1,
     },
     alphanumericWithHyphensSpacesApostrophesDotPattern: {
