@@ -5,6 +5,7 @@ import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/com
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 
 @Component({
   selector: 'app-acc-note-add',
@@ -15,13 +16,15 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
   protected readonly opalFinesService = inject(OpalFines);
+  protected readonly finesAccStore = inject(FinesAccountStore);
 
   private buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     //mock construct the payload for adding a note
     return {
-      associated_record_type: 'FinesAccount',
-      associated_record_id: 123456789,
-      note_type: 'account_note',
+      account_version: 1,
+      associated_record_type: this.finesAccStore.party_type()!,
+      associated_record_id: this.finesAccStore.party_id()!,
+      note_type: 'AA',
       note_text: form.formData.facc_add_notes!,
     };
   }
@@ -35,7 +38,6 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
     this.opalFinesService.postAddNotePayload(this.buildAddNotePayload(form)).subscribe({
       next: (res) => {
         console.log('note created:', res);
-        // Navigate back to defendant details page on success
         this.routerNavigate(this.finesAccRoutingPaths.children.details);
       },
       error: (err) => console.error('failed to add note', err),

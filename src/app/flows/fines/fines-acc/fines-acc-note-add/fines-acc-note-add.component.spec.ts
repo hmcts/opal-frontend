@@ -1,16 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccNoteAddComponent } from './fines-acc-note-add.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesAccountStore } from '../stores/fines-acc.store';
+import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
+import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form-mock';
+import {
+  IOpalFinesAddNotePayload,
+  IOpalFinesAddNoteResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 
 describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;
   let fixture: ComponentFixture<FinesAccNoteAddComponent>;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockFinesAccountStore: any;
 
   beforeEach(async () => {
+    // Create mock OpalFines service
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['postAddNotePayload']);
+
+    // Create mock FinesAccountStore with signal methods
+    mockFinesAccountStore = {
+      party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
+      party_id: jasmine.createSpy('party_id').and.returnValue('12345'),
+      getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue('123456789'),
+      party_name: jasmine.createSpy('party_name').and.returnValue('Mr John, Peter DOE'),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesAccNoteAddComponent],
       providers: [
@@ -23,6 +44,14 @@ describe('FinesAccNoteAddComponent', () => {
             parent: of('details'),
           },
         },
+        {
+          provide: OpalFines,
+          useValue: mockOpalFinesService,
+        },
+        {
+          provide: FinesAccountStore,
+          useValue: mockFinesAccountStore,
+        },
       ],
     }).compileComponents();
 
@@ -33,5 +62,159 @@ describe('FinesAccNoteAddComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should build correct payload with form data', () => {
+    const testForm: IFinesAccAddNoteForm = {
+      formData: {
+        facc_add_notes: 'Test note content',
+      },
+      nestedFlow: false,
+    };
+
+    const result = (component as any).buildAddNotePayload(testForm);
+
+    expect(result).toEqual({
+      account_version: 1,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: 'Test note content',
+    });
+  });
+
+  it('should call store methods to get party data', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+
+    (component as any).buildAddNotePayload(testForm);
+
+    expect(mockFinesAccountStore.party_type).toHaveBeenCalled();
+    expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
+  });
+
+  it('should call opalFinesService with correct payload on form submission', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const expectedPayload: IOpalFinesAddNotePayload = {
+      account_version: 1,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+    };
+
+    const mockResponse: IOpalFinesAddNoteResponse = {
+      note_id: 123,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+      created_date: '2024-01-01T10:00:00Z',
+      created_by: 'test_user',
+    };
+
+    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
+    spyOn(component as any, 'routerNavigate');
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(mockOpalFinesService.postAddNotePayload).toHaveBeenCalledWith(expectedPayload);
+  });
+
+  it('should navigate to details page on successful API call', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const mockResponse: IOpalFinesAddNoteResponse = {
+      note_id: 123,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+      created_date: '2024-01-01T10:00:00Z',
+      created_by: 'test_user',
+    };
+
+    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
+    spyOn(component as any, 'routerNavigate');
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect((component as any).routerNavigate).toHaveBeenCalledWith(
+      (component as any).finesAccRoutingPaths.children.details,
+    );
+  });
+
+  it('should log success message on successful API call', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const mockResponse: IOpalFinesAddNoteResponse = {
+      note_id: 123,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+      created_date: '2024-01-01T10:00:00Z',
+      created_by: 'test_user',
+    };
+
+    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
+    spyOn(console, 'log');
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(console.log).toHaveBeenCalledWith('note created:', mockResponse);
+  });
+
+  it('should log error message on API call failure', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const mockError = new Error('API Error');
+    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => mockError));
+    spyOn(console, 'error');
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(console.error).toHaveBeenCalledWith('failed to add note', mockError);
+  });
+
+  it('should not navigate on API call failure', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
+    spyOn(component as any, 'routerNavigate');
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect((component as any).routerNavigate).not.toHaveBeenCalled();
+  });
+
+  it('should set stateUnsavedChanges to true when passed true', () => {
+    component.handleUnsavedChanges(true);
+
+    expect((component as any).stateUnsavedChanges).toBe(true);
+  });
+
+  it('should set stateUnsavedChanges to false when passed false', () => {
+    component.handleUnsavedChanges(false);
+
+    expect((component as any).stateUnsavedChanges).toBe(false);
+  });
+
+  it('should update stateUnsavedChanges value correctly', () => {
+    component.handleUnsavedChanges(false);
+    expect((component as any).stateUnsavedChanges).toBe(false);
+
+    component.handleUnsavedChanges(true);
+    expect((component as any).stateUnsavedChanges).toBe(true);
+
+    component.handleUnsavedChanges(false);
+    expect((component as any).stateUnsavedChanges).toBe(false);
+  });
+
+  it('should have finesAccRoutingPaths injected', () => {
+    expect((component as any).finesAccRoutingPaths).toBeDefined();
+  });
+
+  it('should have opalFinesService injected', () => {
+    expect((component as any).opalFinesService).toBeDefined();
+  });
+
+  it('should have finesAccStore injected', () => {
+    expect((component as any).finesAccStore).toBeDefined();
   });
 });

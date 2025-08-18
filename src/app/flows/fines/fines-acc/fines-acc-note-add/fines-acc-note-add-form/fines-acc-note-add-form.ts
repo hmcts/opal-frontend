@@ -11,6 +11,7 @@ import { IFinesAccAddNoteFieldErrors } from '../interfaces/fines-acc-note-add-fo
 import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
 import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { FinesAccountStore } from '../../stores/fines-acc.store';
 
 @Component({
   selector: 'app-fines-acc-note-add-form',
@@ -28,10 +29,9 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddNoteForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
-
-  //mocking ACC store data for demonstration purposes
-  public readonly accountName = '123456789';
-  public readonly defendantName = 'Mr John, Peter DOE';
+  protected readonly finesAccStore = inject(FinesAccountStore);
+  protected readonly accountNumber = this.finesAccStore.getAccountNumber();
+  protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddNoteFieldErrors = FINES_ACC_ADD_NOTE_FIELD_ERRORS;
 
   /**
@@ -56,6 +56,15 @@ export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent impl
     this.setInitialErrorMessages();
   }
 
+  /**
+   * Initializes the component.
+   *
+   * This lifecycle hook performs the initial setup for adding notes by calling
+   * the `initialAddNotesSetup()` method and subsequently invokes the base class's
+   * `ngOnInit()` to ensure any inherited initialization logic is executed.
+   *
+   * @override
+   */
   public override ngOnInit(): void {
     this.initialAddNotesSetup();
     super.ngOnInit();

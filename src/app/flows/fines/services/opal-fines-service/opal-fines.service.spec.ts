@@ -37,8 +37,11 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draf
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
+import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { of } from 'rxjs';
 import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -613,6 +616,83 @@ describe('OpalFines', () => {
     expect(result).toEqual({
       ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
       version: '12345',
+    });
+  });
+
+  it('should send a POST request to add note API with correct payload and return mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const expectedUrl = OPAL_FINES_PATHS.notes;
+
+    service.postAddNotePayload(payload).subscribe((response) => {
+      expect(response.note_id).toBeGreaterThan(0);
+      expect(response.note_id).toBeLessThanOrEqual(100000);
+      expect(response.associated_record_type).toEqual(payload.associated_record_type);
+      expect(response.associated_record_id).toEqual(payload.associated_record_id);
+      expect(response.note_type).toEqual(payload.note_type);
+      expect(response.note_text).toEqual(payload.note_text);
+      expect(response.created_date).toBeDefined();
+      expect(response.created_by).toBe('test.user@hmcts.net');
+
+      const createdDate = new Date(response.created_date);
+      expect(createdDate).toBeInstanceOf(Date);
+      expect(createdDate.getTime()).not.toBeNaN();
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return a response with server-generated fields when using real API', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
+
+    const httpPostSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+    service['http'].post(OPAL_FINES_PATHS.notes, payload).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload);
+  });
+
+  it('should generate random note_id and current timestamp in mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+
+    const responses: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      service.postAddNotePayload(payload).subscribe((response) => {
+        responses.push(response.note_id);
+        expect(response.note_id).toBeGreaterThan(0);
+        expect(response.note_id).toBeLessThanOrEqual(100000);
+        expect(response.created_by).toBe('test.user@hmcts.net');
+
+        const createdDate = new Date(response.created_date);
+        expect(createdDate).toBeInstanceOf(Date);
+        expect(createdDate.getTime()).not.toBeNaN();
+      });
+    }
+
+    const uniqueIds = new Set(responses);
+    expect(uniqueIds.size).toBeGreaterThan(1);
+  });
+
+  it('should preserve all payload fields in the response', () => {
+    const payload: IOpalFinesAddNotePayload = {
+      account_version: 42,
+      associated_record_type: 'custom_type',
+      associated_record_id: 'test-id-123',
+      note_type: 'Important',
+      note_text: 'Custom test note with special characters: áéíóú & symbols!',
+    };
+
+    service.postAddNotePayload(payload).subscribe((response) => {
+      expect(response.associated_record_type).toEqual(payload.associated_record_type);
+      expect(response.associated_record_id).toEqual(payload.associated_record_id);
+      expect(response.note_type).toEqual(payload.note_type);
+      expect(response.note_text).toEqual(payload.note_text);
+
+      expect(response.note_id).toBeDefined();
+      expect(response.created_date).toBeDefined();
+      expect(response.created_by).toBeDefined();
     });
   });
 });
