@@ -37,6 +37,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-
 // Interfaces
 import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -72,6 +73,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly destroy$ = new Subject<void>();
 
   public readonly utilsService = inject(UtilsService);
+  public accountStore = inject(FinesAccountStore);
   public tabData$ = new Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData>();
   public accountData!: IOpalFinesDefendantAccountHeader;
 
