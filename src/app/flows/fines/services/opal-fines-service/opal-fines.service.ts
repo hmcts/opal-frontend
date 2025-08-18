@@ -41,6 +41,9 @@ import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-a
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-acount-search-params.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -490,5 +493,18 @@ export class OpalFines {
     };
 
     return of(response);
+   * Retrieves the defendant accounts related to fines.
+   *
+   * @returns An Observable emitting a mock response of type {@link IOpalFinesDefendantAccountResponse}.
+   */
+  public getDefendantAccounts(
+    searchParams: IOpalFinesDefendantAccountSearchParams,
+  ): Observable<IOpalFinesDefendantAccountResponse> {
+    console.info(searchParams);
+    const mock = structuredClone(
+      OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
+    ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    mock._debug_searchParams = searchParams;
+    return of(mock);
   }
 }

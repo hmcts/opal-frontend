@@ -28,7 +28,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
-import { FinesSaSearchAccountTabs } from '../types/fines-sa-search-account-tabs.type';
+import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
 import { FinesSaService } from '../../../services/fines-sa.service';
@@ -63,7 +63,7 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-s
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
-  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
+  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTab, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
     minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
@@ -125,7 +125,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         });
       }
 
-      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTabs);
+      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTab);
       this.switchTab(this.finesSaStore.activeTab());
     });
   }
@@ -155,11 +155,13 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
   /**
    * Clears all controls in all tab-specific search criteria form groups.
+   * Clears all error messages.
    */
   private clearSearchForm(): void {
     ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
+    this.clearAllErrorMessages();
   }
 
   /**
@@ -170,12 +172,12 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private switchTab(tab: string | Event): void {
     this.fieldErrors = {
       ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTabs],
+      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
     } as IFinesSaSearchAccountFieldErrors;
 
     this.clearSearchForm();
 
-    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] ?? {});
+    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTab] ?? {});
 
     this.rePopulateForm(this.finesSaStore.searchAccount());
     this.finesSaStore.resetSearchAccount();

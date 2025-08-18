@@ -36,7 +36,7 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesDefendantAccou
           // Update Fines Account Store with this account
           const party_name = `${headingData.title} ${headingData.firstnames} ${headingData.surname?.toUpperCase()}`;
           accountStore.setAccountState({
-            account_number: headingData.account_number,
+            account_number: +headingData.account_number,
             party_type: headingData.debtor_type,
             party_name,
             party_id: headingData.defendant_account_id,
