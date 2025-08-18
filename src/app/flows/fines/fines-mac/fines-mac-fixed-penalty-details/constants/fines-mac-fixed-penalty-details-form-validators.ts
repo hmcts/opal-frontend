@@ -100,7 +100,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_company_details_company_name: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
   ],
   fm_fp_company_details_address_line_1: [
     Validators.required,
