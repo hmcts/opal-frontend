@@ -185,4 +185,24 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
     expect(result).toEqual({ count: 0, creditor_accounts: [] });
     expect(opalFinesService.getCreditorAccounts).not.toHaveBeenCalled();
   });
+
+  it('should return empty result if no search criteria is provided', async () => {
+    finesSaStore.setSearchAccount({
+      fsa_search_account_number: null,
+      fsa_search_account_reference_case_number: null,
+      fsa_search_account_individuals_search_criteria: null,
+      fsa_search_account_companies_search_criteria: null,
+      fsa_search_account_minor_creditors_search_criteria: {} as IFinesSaSearchAccountFormMinorCreditorsState,
+      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_business_unit_ids: null,
+      fsa_search_account_active_accounts_only: null,
+    });
+    const mockRoute = {} as ActivatedRouteSnapshot;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
+
+    expect(result).toEqual({ count: 0, creditor_accounts: [] });
+    expect(opalFinesService.getCreditorAccounts).not.toHaveBeenCalled();
+  });
 });

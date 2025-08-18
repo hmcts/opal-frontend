@@ -51,49 +51,53 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
     });
   }
 
-  if (minorCreditorCriteria!.fsa_search_account_minor_creditors_minor_creditor_type === 'individual') {
-    return opalFinesService.getCreditorAccounts({
-      ...baseSearchParams,
-      creditor: {
-        organisation: false,
-        surname:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_last_name,
-        exact_match_surname:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_last_name_exact_match,
-        forenames:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_first_names,
-        exact_match_forenames:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_first_names_exact_match,
-        address_line_1:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_individual_address_line_1,
-        postcode:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
-            .fsa_search_account_minor_creditors_individual_post_code,
-      },
-    });
+  if (minorCreditorCriteria && minorCreditorCriteria.fsa_search_account_minor_creditors_minor_creditor_type) {
+    if (minorCreditorCriteria.fsa_search_account_minor_creditors_minor_creditor_type === 'individual') {
+      return opalFinesService.getCreditorAccounts({
+        ...baseSearchParams,
+        creditor: {
+          organisation: false,
+          surname:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_last_name,
+          exact_match_surname:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_last_name_exact_match,
+          forenames:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_first_names,
+          exact_match_forenames:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_first_names_exact_match,
+          address_line_1:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_individual_address_line_1,
+          postcode:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+              .fsa_search_account_minor_creditors_individual_post_code,
+        },
+      });
+    } else {
+      return opalFinesService.getCreditorAccounts({
+        ...baseSearchParams,
+        creditor: {
+          organisation: true,
+          organisation_name:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+              .fsa_search_account_minor_creditors_company_name,
+          exact_match_organisation_name:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+              .fsa_search_account_minor_creditors_company_name_exact_match,
+          address_line_1:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+              .fsa_search_account_minor_creditors_company_address_line_1,
+          postcode:
+            minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+              .fsa_search_account_minor_creditors_company_post_code,
+        },
+      });
+    }
   } else {
-    return opalFinesService.getCreditorAccounts({
-      ...baseSearchParams,
-      creditor: {
-        organisation: true,
-        organisation_name:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
-            .fsa_search_account_minor_creditors_company_name,
-        exact_match_organisation_name:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
-            .fsa_search_account_minor_creditors_company_name_exact_match,
-        address_line_1:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
-            .fsa_search_account_minor_creditors_company_address_line_1,
-        postcode:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
-            .fsa_search_account_minor_creditors_company_post_code,
-      },
-    });
+    return of({ count: 0, creditor_accounts: [] } as IOpalFinesCreditorAccountResponse);
   }
 };
