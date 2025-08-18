@@ -159,7 +159,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     Then I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -182,7 +182,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
     And I click on the "Companies" link
@@ -194,7 +194,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
     And I click on the "Companies" link
@@ -206,7 +206,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
 
@@ -222,7 +222,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -242,7 +242,7 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
     And I click the "Search" button
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
     And I click on the "Individuals" link
@@ -252,7 +252,7 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
     And I click on the "Individuals" link
@@ -262,7 +262,7 @@ Feature: Account Search and Matches
     When I enter "REF-123" into the "Reference or case number" field
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
 
     When I click on the "Go back" link
     Then I see "Search for an account" on the page header
@@ -279,7 +279,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -296,10 +296,9 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
     And I click on the "Minor creditors" link
-    And I select the "Company" radio button
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -318,7 +317,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -336,7 +335,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem" text on the page
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -403,5 +402,19 @@ Feature: Account Search and Matches
     When I click the "130001BU" link and handle new window navigation
     Then I see "Account Details" on the page header
 
+  # PO-717 AC3b & AC2b Will be covered once API integration is complete
 
-# PO-717 AC3b & AC2b Will be covered once API integration is complete
+  @PO-708
+  Scenario: Successful Search For Minor Creditor Accounts
+    When I click on the "Minor creditors" link
+    When I select the 'Individual' radio button
+    Then I enter "Test" into the "Last name" field
+    And I click the "Search" button
+
+    Then I see "Search results" on the page header
+
+    # AC10 Check Back Link Works Correctly
+    When I click on the "Back" link
+    Then I see "Search for an account" on the page header
+
+# PO-708 AC3b & AC2b Will be covered once API integration is complete

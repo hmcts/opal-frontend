@@ -4,16 +4,39 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { DOM_ELEMENTS } from './constants/search_and_matches_minor_creditors_elements';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_minor_creditors_mock';
+import { finesSaMinorCreditorAccountsResolver } from '../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
+import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
 describe('Search Account Component - Minor Creditors', () => {
   let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
 
   const setupComponent = (formSubmit: any = null) => {
+    const componentProperties: any = {};
+    if (formSubmit) {
+      componentProperties.handleSearchAccountSubmit = formSubmit;
+    }
+
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
+        provideRouter([
+          {
+            path: 'fines/search-accounts/results',
+            component: FinesSaSearchAccountComponent,
+            resolve: {
+              minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
+            },
+            runGuardsAndResolvers: 'always',
+          },
+          {
+            path: 'fines/search-accounts',
+            component: FinesSaSearchAccountComponent,
+          },
+        ]),
+        OpalFines,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -35,9 +58,7 @@ describe('Search Account Component - Minor Creditors', () => {
           },
         },
       ],
-      componentProperties: {
-        handleSearchAccountSubmit: formSubmit,
-      },
+      componentProperties,
     });
   };
   beforeEach(() => {
@@ -224,6 +245,101 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Post code must be 8 characters or fewer');
     cy.get(DOM_ELEMENTS.postcodeError).should('contain', 'Post code must be 8 characters or fewer');
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
+  });
+
+  it.only('AC1a. should send correct API parameters when search is triggered from Minor Creditors tab - Individual', { tags: ['PO-708'] }, () => {
+    minorCreditorsSearchMock.fsa_search_account_business_unit_ids = [1, 2, 3];
+    minorCreditorsSearchMock.fsa_search_account_active_accounts_only = true;
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_minor_creditor_type = 'individual';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name = 'Smith';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name_exact_match = true;
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names = 'John';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names_exact_match = false;
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1 = '123 Main Street';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code = 'SW1A 1AA';
+
+    setupComponent();
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+
+    cy.get(DOM_ELEMENTS.minorCreditorIndividualRadioButton).click();
+    cy.get(DOM_ELEMENTS.lastNameExactMatchCheckbox).check();
+    cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith');
+    cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John');
+    cy.get(DOM_ELEMENTS.minorIndividualAddressLine1Input).should('have.value', '123 Main Street');
+    cy.get(DOM_ELEMENTS.minorIndividualPostcodeInput).should('have.value', 'SW1A 1AA');
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const apiParams = stub.getCall(0).args[0];
+
+      // Verify business units parameter
+      expect(apiParams).to.have.property('business_unit_ids');
+      expect(apiParams.business_unit_ids).to.deep.equal([1, 2, 3]);
+
+      // Verify active_accounts_only is always FALSE for minor creditors
+      expect(apiParams).to.have.property('active_accounts_only', false);
+
+      // Verify creditor object structure for individual
+      expect(apiParams).to.have.property('creditor');
+      expect(apiParams.creditor).to.have.property('surname', 'Smith');
+      expect(apiParams.creditor).to.have.property('exact_match_surname', true);
+      expect(apiParams.creditor).to.have.property('forenames', 'John');
+      expect(apiParams.creditor).to.have.property('exact_match_forenames', false);
+      expect(apiParams.creditor).to.have.property('address_line_1', '123 Main Street');
+      expect(apiParams.creditor).to.have.property('postcode', 'SW1A 1AA');
+      expect(apiParams.creditor).to.have.property('organisation', false);
+    });
+  });
+
+  it.only('AC1a. should send correct API parameters when search is triggered from Minor Creditors tab - Company', { tags: ['PO-708'] }, () => {
+    minorCreditorsSearchMock.fsa_search_account_business_unit_ids = [4, 5];
+    minorCreditorsSearchMock.fsa_search_account_active_accounts_only = true;
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_minor_creditor_type = 'company';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name = 'Tech Solutions Ltd';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name_exact_match = true;
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1 = '456 Business Park';
+    minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code = 'B1 2RT';
+
+    setupComponent();
+
+    cy.window().then((win) => {
+      cy.stub(win.console, 'info').as('consoleLog');
+    });
+
+    cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
+    cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).check();
+    cy.get(DOM_ELEMENTS.companyNameInput).should('have.value', 'Tech Solutions Ltd');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '456 Business Park');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'B1 2RT');
+
+    cy.get(DOM_ELEMENTS.searchButton).click();
+
+    cy.get('@consoleLog').should('have.been.calledOnce');
+
+    cy.get('@consoleLog').then((stub: any) => {
+      const apiParams = stub.getCall(0).args[0];
+
+      // Verify business units parameter
+      expect(apiParams).to.have.property('business_unit_ids');
+      expect(apiParams.business_unit_ids).to.deep.equal([4, 5]);
+
+      // Verify active_accounts_only is always FALSE for minor creditors
+      expect(apiParams).to.have.property('active_accounts_only', false);
+
+      // Verify creditor object structure for company
+      expect(apiParams).to.have.property('creditor');
+      expect(apiParams.creditor).to.have.property('organisation_name', 'Tech Solutions Ltd');
+      expect(apiParams.creditor).to.have.property('exact_match_organisation_name', true);
+      expect(apiParams.creditor).to.have.property('address_line_1', '456 Business Park');
+      expect(apiParams.creditor).to.have.property('postcode', 'B1 2RT');
+      expect(apiParams.creditor).to.have.property('organisation', true);
+    });
   });
 
   it(
