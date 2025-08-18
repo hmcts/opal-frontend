@@ -37,7 +37,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
-      fsa_search_account_active_accounts_only: true,
+      fsa_search_account_active_accounts_only: false,
     });
     opalFinesService.getCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
@@ -49,7 +49,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       jasmine.objectContaining({
         account_number: 'ACC123',
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 1, creditor_accounts: [] });
@@ -64,7 +64,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_minor_creditors_search_criteria: null,
       fsa_search_account_major_creditor_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
-      fsa_search_account_active_accounts_only: true,
+      fsa_search_account_active_accounts_only: false,
     });
     opalFinesService.getCreditorAccounts.and.returnValue(of({ count: 0, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
@@ -97,7 +97,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_minor_creditors_search_criteria: min,
       fsa_search_account_major_creditor_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
-      fsa_search_account_active_accounts_only: true,
+      fsa_search_account_active_accounts_only: false,
     });
     opalFinesService.getCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
@@ -117,7 +117,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
           postcode: '',
         },
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 1, creditor_accounts: [] });
@@ -142,7 +142,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_minor_creditors_search_criteria: min,
       fsa_search_account_major_creditor_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
-      fsa_search_account_active_accounts_only: true,
+      fsa_search_account_active_accounts_only: false,
     });
     opalFinesService.getCreditorAccounts.and.returnValue(of({ count: 1, creditor_accounts: [] }));
     const mockRoute = {} as ActivatedRouteSnapshot;
@@ -160,7 +160,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
           postcode: '',
         },
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 1, creditor_accounts: [] });
