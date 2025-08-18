@@ -11,7 +11,7 @@ export const FINES_ACC_ADD_NOTE_FIELD_ERRORS: IFinesAccAddNoteFieldErrors = {
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Account note must only contain alphanumeric characters, hyphens, spaces, apostrophes, and dots`,
+      message: `Account note must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
