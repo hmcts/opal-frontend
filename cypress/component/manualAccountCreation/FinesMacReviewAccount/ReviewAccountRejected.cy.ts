@@ -20,6 +20,7 @@ import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { data } from 'cypress/types/jquery';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -119,7 +120,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
-        expect(request.body.account).to.have.property('account_type', 'fine');
+        expect(request.body.account).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES.Fine);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
         expect(request.body.account.defendant).to.have.property('title', 'Mr');
         expect(request.body.account.defendant).to.have.property('surname', 'Doe');
@@ -130,7 +131,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.account.defendant).to.have.property('address_line_3', 'Fake City');
         expect(request.body.account.defendant).to.have.property('post_code', 'AB12 3CD');
 
-        expect(request.body).to.have.property('account_type', 'fine');
+        expect(request.body).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES.Fine);
         expect(request.body).to.have.property('account_status', 'Resubmitted');
         expect(request.body).to.have.property('timeline_data');
 

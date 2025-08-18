@@ -39,6 +39,7 @@ import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-a
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { of } from 'rxjs';
 import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -613,6 +614,17 @@ describe('OpalFines', () => {
     expect(result).toEqual({
       ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
       version: '12345',
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = { some: 'param' } as any;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
     });
   });
 });

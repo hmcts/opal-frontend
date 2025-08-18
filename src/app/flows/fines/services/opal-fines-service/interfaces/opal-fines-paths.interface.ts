@@ -9,4 +9,5 @@ export interface IOpalFinesPaths {
   searchOffences: string;
   prosecutorRefData: string;
   defendantAccounts: string;
+  searchDefendantAccounts: string;
 }

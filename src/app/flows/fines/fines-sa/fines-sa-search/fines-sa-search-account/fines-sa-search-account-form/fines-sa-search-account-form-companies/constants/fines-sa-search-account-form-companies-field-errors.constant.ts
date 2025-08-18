@@ -2,6 +2,10 @@ import { IFinesSaSearchAccountFormCompaniesFieldErrors } from '../interfaces/fin
 
 export const FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS: IFinesSaSearchAccountFormCompaniesFieldErrors = {
   fsa_search_account_companies_company_name: {
+    required: {
+      message: 'Enter company name',
+      priority: 1,
+    },
     invalidNamePattern: {
       message: 'Company name must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 1,

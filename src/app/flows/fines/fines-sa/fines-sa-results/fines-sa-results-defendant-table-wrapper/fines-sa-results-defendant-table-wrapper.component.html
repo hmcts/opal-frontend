@@ -1,0 +1,233 @@
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table>
+    <ng-container head>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Account"
+        [sortDirection]="sortStateSignal()['Account']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
+      >
+        Account
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Name"
+        [sortDirection]="sortStateSignal()['Name']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        {{ isCompany ? 'Company' : 'Name' }}
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Aliases"
+        [sortDirection]="sortStateSignal()['Aliases']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Aliases
+      </th>
+      @if (!isCompany) {
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Date of birth"
+          [sortDirection]="sortStateSignal()['Date of birth']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="1"
+        >
+          Date of birth
+        </th>
+      }
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Address line 1"
+        [sortDirection]="sortStateSignal()['Address line 1']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Address line 1
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Postcode"
+        [sortDirection]="sortStateSignal()['Postcode']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Postcode
+      </th>
+      @if (!isCompany) {
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="NI number"
+          [sortDirection]="sortStateSignal()['NI number']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="1"
+        >
+          NI number
+        </th>
+        <th
+          opal-lib-moj-sortable-table-header
+          columnKey="Parent or guardian"
+          [sortDirection]="sortStateSignal()['Parent or guardian']"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="1"
+        >
+          Parent or guardian
+        </th>
+      }
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Business unit"
+        [sortDirection]="sortStateSignal()['Business unit']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Business unit
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Ref"
+        [sortDirection]="sortStateSignal()['Ref']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Ref
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Enf"
+        [sortDirection]="sortStateSignal()['Enf']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        ENF
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Balance"
+        [sortDirection]="sortStateSignal()['Balance']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Balance
+      </th>
+    </ng-container>
+    <ng-container row>
+      @for (row of paginatedTableDataComputed(); track row['Account']) {
+        <tr opal-lib-moj-sortable-table-row>
+          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              tabindex="0"
+              (click)="goToAccount(row['Account'])"
+              (keyup.enter)="goToAccount(row['Account'])"
+              >{{ row['Account'] }}</a
+            >
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="name">
+            @if (row['Name'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Name'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="aliases">
+            @if (row['Aliases'] === null || row['Aliases'].length === 0) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Aliases'] }}
+            }
+          </td>
+          @if (!isCompany) {
+            <td opal-lib-moj-sortable-table-row-data id="dateOfBirth">
+              @if (row['Date of birth'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+              }
+            </td>
+          }
+          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
+            @if (row['Address line 1'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Address line 1'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="postcode">
+            @if (row['Postcode'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Postcode'] }}
+            }
+          </td>
+          @if (!isCompany) {
+            <td opal-lib-moj-sortable-table-row-data id="nationalInsuranceNumber">
+              @if (row['NI number'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['NI number'] | nationalInsurance }}
+              }
+            </td>
+            <td opal-lib-moj-sortable-table-row-data id="parentOrGuardian">
+              @if (row['Parent or guardian'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
+                {{ row['Parent or guardian'] }}
+              }
+            </td>
+          }
+          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
+            {{ row['Business unit'] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="ref">
+            @if (row['Ref'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Ref'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="enf">
+            @if (row['Enf'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Enf'] | uppercase }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="balance">
+            @if (row['Balance'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Balance'] | currency: 'GBP' }}
+            }
+          </td>
+        </tr>
+      }
+    </ng-container>
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-draft-table-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
+
+<ng-template #noData>
+  <p
+    class="govuk-!-margin-0"
+    [innerHTML]="finesDefaultValues.notProvidedLabel"
+    [ariaLabel]="finesDefaultValues.notProvidedAriaLabel"
+  ></p>
+</ng-template>
