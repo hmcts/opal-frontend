@@ -21,7 +21,7 @@ export const FORMAT_CHECK = {
   addressLine1SpecialCharactersPattern: 'Address line 1 must only contain letters or numbers',
   addressLine2SpecialCharactersPattern: 'Address line 2 must only contain letters or numbers',
   addressLine3SpecialCharactersPattern: 'Address line 3 must only contain letters or numbers',
-  companyNameAlphabeticalTextPattern: `Company name must only contain letters`,
+  companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
   surnameAlphabeticalTextPattern: `Last name must only contain letters`,
   forenamesAlphabeticalTextPattern: `First name(s) must only contain letters`,
 };

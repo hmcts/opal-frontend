@@ -22,12 +22,18 @@ export const MAX_LENGTH_VALIDATION = {
 };
 
 export const ALPHABETICAL_TEXT_PATTERN_VALIDATION = {
-  alphabeticalTextPattern: 'Company name must only contain letters',
-  alphabeticalTextPatternAlias1: 'Alias 1 company name must only contain letters',
-  alphabeticalTextPatternAlias2: 'Alias 2 company name must only contain letters',
-  alphabeticalTextPatternAlias3: 'Alias 3 company name must only contain letters',
-  alphabeticalTextPatternAlias4: 'Alias 4 company name must only contain letters',
-  alphabeticalTextPatternAlias5: 'Alias 5 company name must only contain letters',
+  alphabeticalTextPattern:
+    'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+  alphabeticalTextPatternAlias1:
+    'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+  alphabeticalTextPatternAlias2:
+    'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+  alphabeticalTextPatternAlias3:
+    'Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+  alphabeticalTextPatternAlias4:
+    'Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+  alphabeticalTextPatternAlias5:
+    'Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
 };
 
 export const SPECIAL_CHARACTERS_PATTERN_VALIDATION = {

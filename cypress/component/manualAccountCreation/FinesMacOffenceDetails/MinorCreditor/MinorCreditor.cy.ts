@@ -191,7 +191,11 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
-      if (value != 'Company name must only contain letters' && value != 'Enter last name') {
+      if (
+        value !=
+          'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
+        value != 'Enter last name'
+      ) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
     }
@@ -225,7 +229,7 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it.skip(
+  it(
     '(AC.2) should have Format check in place for company creditor types',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {

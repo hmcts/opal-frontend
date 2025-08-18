@@ -114,12 +114,18 @@ describe('Search Account Component - Minor Creditors', () => {
   it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company_name =
-      'Company123';
+      'Company123!';
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Company name must only contain letters');
-    cy.get(DOM_ELEMENTS.companyNameError).should('contain', 'Company name must only contain letters');
+    cy.get(DOM_ELEMENTS.errorSummary).should(
+      'contain',
+      'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    );
+    cy.get(DOM_ELEMENTS.companyNameError).should(
+      'contain',
+      'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+    );
     cy.get(DOM_ELEMENTS.companyNameInput).clear();
   });
 

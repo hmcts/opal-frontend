@@ -117,7 +117,7 @@ describe('FinesMacManualFixedPenalty', () => {
         "Enter defendant's first name(s)",
         "Enter defendant's last name",
         'Enter address line 1, typically the building and street',
-        'Enter an Enforcement court',
+        'Enter an enforcement court',
         'Enter the issuing authority',
         'Enter Notice number',
         'Enter an offence code',
@@ -236,18 +236,18 @@ describe('FinesMacManualFixedPenalty', () => {
     // User does not provide a value
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters more than 35 characters
     const longText = 'A'.repeat(36); // Exceeds 35 characters
     cy.get(DOM_ELEMENTS.enforcementCourtInput).type(longText);
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters non-alphanumeric characters (assuming there's validation for this)
     cy.get(DOM_ELEMENTS.enforcementCourtInput).clear().type('Invalid@Court#123');
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an Enforcement court');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
   });
 
   it('(AC4) Validation will exist for the Title field', { tags: ['@PO-857'] }, () => {
@@ -280,10 +280,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = longName;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's first name(s) must be 20 characters or fewer",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must be 20 characters or fewer");
   });
 
   it('(AC5) Validation will exist for the First names field - alphanumeric check', { tags: ['@PO-857'] }, () => {
@@ -291,10 +288,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = 'John123@#$';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's first name(s) must only contain alphabetical text",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must only contain letters");
   });
 
   it('(AC6) Validation will exist for the Last name field - required field', { tags: ['@PO-857'] }, () => {
@@ -311,7 +305,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = longName;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "The defendant's last name must be 30 characters or fewer");
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must be 30 characters or fewer");
   });
 
   it('(AC6) Validation will exist for the Last name field - alphanumeric check', { tags: ['@PO-857'] }, () => {
@@ -319,10 +313,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = 'Smith123@#$';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      "The defendant's last name must only contain alphabetical text",
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must only contain letters");
   });
 
   it('(AC7) Validation will exist for the Date of birth field - future date', { tags: ['@PO-857'] }, () => {
@@ -380,14 +371,14 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = longAddress;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must be 30 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must be 30 characters or fewer');
   });
 
   it('(AC8) Validation will exist for the Address Line 1 field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Street $%^&*';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 1 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must only contain letters or numbers');
   });
 
   it('(AC9) Validation will exist for the Address Line 2 field - max length', { tags: ['@PO-857'] }, () => {
@@ -396,7 +387,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = longAddress;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must be 30 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must be 30 characters or fewer');
   });
 
   it('(AC9) Validation will exist for the Address Line 2 field - special characters', { tags: ['@PO-857'] }, () => {
@@ -404,7 +395,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartment 123 $%^&*';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 2 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must only contain letters or numbers');
   });
 
   it('(AC10) Validation will exist for the Address Line 3 field - max length', { tags: ['@PO-857'] }, () => {
@@ -413,7 +404,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = longAddress;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must be 16 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must be 16 characters or fewer');
   });
 
   it('(AC10) Validation will exist for the Address Line 3 field - special characters', { tags: ['@PO-857'] }, () => {
@@ -421,7 +412,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'West $%^&*';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The address line 3 must not contain special characters');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must only contain letters or numbers');
   });
 
   it('(AC11) Validation will exist for the Postcode field - max length', { tags: ['@PO-857'] }, () => {
@@ -430,7 +421,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = longPostcode;
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'The postcode must be 8 characters or fewer');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Postcode must be 8 characters or fewer');
   });
 
   it('(AC11) Validation will exist for the Postcode field - special characters', { tags: ['@PO-857'] }, () => {
@@ -438,10 +429,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = 'SW1A$%^&';
     setupComponent();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Postcode must only contain letters or numbers');
   });
 
   it('(AC12) Validation will exist for the Notice number field - required field', { tags: ['@PO-857'] }, () => {
@@ -466,10 +454,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Notice number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Notice number must only contain letters or numbers');
   });
 
   it('(AC13) Validation will exist for the Registration number field - required field', { tags: ['@PO-857'] }, () => {
@@ -505,7 +490,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
-        'Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Registration number must only contain letters or numbers',
       );
     },
   );
@@ -526,7 +511,7 @@ describe('FinesMacManualFixedPenalty', () => {
     },
   );
 
-  it.skip(
+  it(
     '(AC14) Validation will exist for the Driving licence number field - invalid format',
     { tags: ['@PO-857'] },
     () => {
@@ -538,30 +523,23 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
-        'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
+        'Enter Driving licence number in the correct format, like ABCDE123456AA1B1',
       );
     },
   );
 
-  it.skip(
-    '(AC14) Validation will exist for the Driving licence number field - max length',
-    { tags: ['@PO-857'] },
-    () => {
-      const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
-      fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
-      setupComponent();
-      cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
+  it('(AC14) Validation will exist for the Driving licence number field - max length', { tags: ['@PO-857'] }, () => {
+    const longDrivingLicense = 'A'.repeat(17); // Exceeds 16 characters
+    fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_driving_licence_number = longDrivingLicense;
+    setupComponent();
+    cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-      // User enters more than 16 characters
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should(
-        'contain',
-        'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
-      );
-    },
-  );
+    // User enters more than 16 characters
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Driving licence number must be 16 characters or fewer');
+  });
 
-  it.skip(
+  it(
     '(AC14) Validation will exist for the Driving licence number field - special characters',
     { tags: ['@PO-857'] },
     () => {
@@ -573,7 +551,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
-        'Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)',
+        'Driving licence number must only contain letters or numbers',
       );
     },
   );
@@ -596,7 +574,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Notice to owner or hirer number (NTO/NTH) must only contain letters or numbers',
     );
   });
 
@@ -711,16 +689,13 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must be 7 or 8 characters');
   });
 
-  it.skip('(AC18) Validation will exist for the Offence code field - special characters', { tags: ['@PO-857'] }, () => {
+  it('(AC18) Validation will exist for the Offence code field - special characters', { tags: ['@PO-857'] }, () => {
     setupComponent();
 
     // User enters non-alphanumeric characters
-    cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CJ03$%^&*', { delay: 0 });
+    cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CJ03$%^&', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummaryList).should(
-      'contain',
-      'Offence code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must only contain letters or numbers');
   });
 
   it('(AC19) Validation will exist for the Time of offence field - invalid hours', { tags: ['@PO-857'] }, () => {
@@ -795,7 +770,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Place of offence must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
     );
   });
 
@@ -839,7 +814,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Amount too long. Enter an amount that is less than 18 numbers before the decimal and 2 or less after',
+      'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
     );
   });
 
@@ -851,7 +826,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Amount too long. Enter an amount that is less than 18 numbers before the decimal and 2 or less after',
+      'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
     );
   });
 
@@ -868,7 +843,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Add comment must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
     );
   });
 
@@ -887,7 +862,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
-      'Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Add account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
     );
   });
 
@@ -957,7 +932,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
   });
 
-  it.skip(
+  it(
     '(AC1b, AC1c) Validation will exist for the Company Name field - non-alphanumeric character check',
     { tags: ['@PO-860'] },
     () => {
@@ -967,7 +942,10 @@ describe('FinesMacManualFixedPenalty', () => {
       // User enters non-alphanumeric characters
       fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company!123';
       cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must only contain letters');
+      cy.get(DOM_ELEMENTS.errorSummaryList).should(
+        'contain',
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      );
     },
   );
 });

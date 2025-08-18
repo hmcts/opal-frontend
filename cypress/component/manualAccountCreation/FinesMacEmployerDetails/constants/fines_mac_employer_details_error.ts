@@ -19,7 +19,8 @@ export const LENGTH_VALIDATION = {
   employer_name_maxlength: 'Employer name must be 35 characters or fewer',
   employer_reference_maxlength: 'Employee reference must be 20 characters or fewer',
   employer_email_maxlength: 'Employer email address must be 76 characters or fewer',
-  employer_phone_maxlength: 'Enter employer telephone number in the correct format',
+  employer_phone_maxlength:
+    'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
   employer_address1_maxlength: 'Address line 1 must be 30 characters or fewer',
   employer_address2_maxlength: 'Address line 2 must be 30 characters or fewer',
   employer_address3_maxlength: 'Address line 3 must be 30 characters or fewer',

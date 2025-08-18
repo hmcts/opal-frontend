@@ -126,29 +126,16 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
   });
-  it.skip(
-    '(AC.1) should permit a selection of special characters on first name field',
-    { tags: ['@PO-344', '@PO-569'] },
-    () => {
-      cy.wrap(permittedSpecialCharacters).each((character: string) => {
-        cy.then(() => {
-          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
-          setupComponent(null, 'parentOrGuardianToPay');
-        });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.invalidFirstNames);
+  it('(AC.1) should not permit special characters on first name field', { tags: ['@PO-344', '@PO-569'] }, () => {
+    cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
+      cy.then(() => {
+        finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
+        setupComponent(null, 'parentOrGuardianToPay');
       });
-
-      cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
-        cy.then(() => {
-          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
-          setupComponent(null, 'parentOrGuardianToPay');
-        });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
-      });
-    },
-  );
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
+    });
+  });
   it('(AC.1) should have length validation on last name field', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
@@ -157,29 +144,16 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
   });
 
-  it.skip(
-    '(AC.1) should permit a selection of special characters on last name field',
-    { tags: ['@PO-344', '@PO-569'] },
-    () => {
-      cy.wrap(permittedSpecialCharacters).each((character: string) => {
-        cy.then(() => {
-          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
-          setupComponent(null, 'parentOrGuardianToPay');
-        });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.invalidLastNames);
+  it('(AC.1) should not permit special characters on last name field', { tags: ['@PO-344', '@PO-569'] }, () => {
+    cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
+      cy.then(() => {
+        finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
+        setupComponent(null, 'parentOrGuardianToPay');
       });
-
-      cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
-        cy.then(() => {
-          finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
-          setupComponent(null, 'parentOrGuardianToPay');
-        });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
-      });
-    },
-  );
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
+    });
+  });
 
   it('(AC.2) should reqiure first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
@@ -527,7 +501,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
 
-  it.skip('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
+  it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
@@ -550,20 +524,22 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).blur();
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(getAliasFirstName(0)).type('alias0fname');
-    cy.get(getAliasLastName(0)).type('alias0lname').should('have.value', 'ALIAS0LNAME');
+    cy.get(getAliasFirstName(0)).type('aliasfname');
+    cy.get(getAliasLastName(0)).type('aliaslname').should('have.value', 'ALIASLNAME');
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'LNAME');
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SL86ET');
     cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB712348B');
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('have.value', 'AP12 SLU');
 
+    const aliasNumber = ['one', 'two', 'three', 'four', 'five'];
+
     // Add the remaining four aliases using loop
     for (let i = 1; i < 5; i++) {
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      cy.get(getAliasFirstName(i)).type(`alias${i + 1}fname`);
+      cy.get(getAliasFirstName(i)).type(`alias${aliasNumber[i]}fname`);
       cy.get(getAliasLastName(i))
-        .type(`alias${i + 1}lname`)
-        .should('have.value', `ALIAS${i + 1}LNAME`);
+        .type(`alias${aliasNumber[i]}lname`)
+        .should('have.value', `ALIAS${aliasNumber[i].toUpperCase()}LNAME`);
     }
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
