@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -96,6 +96,16 @@ export class OpalFines {
       submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
       notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
     });
+  }
+
+  /**
+   * Adds the version information from the response headers to the response body.
+   * @param response - The HTTP response containing the body and headers.
+   * @returns The updated response body including the version information.
+   */
+  private addVersionToBody<T>(response: HttpResponse<T>): T {
+    const etag = response.headers.get('ETag') || undefined;
+    return { ...response.body, version: etag } as T;
   }
 
   /**
@@ -426,10 +436,14 @@ export class OpalFines {
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$[tab]) {
-      this.accountDetailsCache$[tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
-      //   .get<IOpalFinesAccountDetailsTabRefData>(`${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`)
-      //   .pipe(shareReplay(1));
+      //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
+      //   .pipe(
+      //     map((response) => this.addVersionToBody(response)),
+      //     shareReplay(1)
+      //   );
+      this.accountDetailsCache$[tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
     }
 
     return this.accountDetailsCache$[tab];
@@ -443,8 +457,9 @@ export class OpalFines {
    * @returns An Observable that emits the defendant account header data.
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesDefendantAccountHeader> {
-    // return this.http.get<IOpalFinesDefendantAccountHeader>(
-    //   `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`
+    // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    // return this.http.get<IOpalFinesDefendantAccountHeader>(url, { observe: 'response' }).pipe(
+    //   map(response => this.addVersionToBody(response))
     // );
     return of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
   }

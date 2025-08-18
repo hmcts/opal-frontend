@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpHeaders, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
@@ -38,6 +38,7 @@ import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecut
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { of } from 'rxjs';
+import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -597,5 +598,21 @@ describe('OpalFines', () => {
 
     // Verify that the cache for the specified tab is cleared
     expect(service['accountDetailsCache$'][tab]).toBeUndefined();
+  });
+
+  it('should add version to response body', () => {
+    const mockResponse: HttpResponse<IOpalFinesDefendantAccountHeader> = new HttpResponse({
+      body: FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+      headers: new HttpHeaders({ ETag: '12345' }),
+      status: 200,
+      statusText: 'OK',
+    });
+
+    const result = service['addVersionToBody'](mockResponse);
+
+    expect(result).toEqual({
+      ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+      version: '12345',
+    });
   });
 });

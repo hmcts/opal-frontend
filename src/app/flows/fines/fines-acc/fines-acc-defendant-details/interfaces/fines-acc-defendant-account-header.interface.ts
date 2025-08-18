@@ -1,5 +1,5 @@
 export interface IOpalFinesDefendantAccountHeader {
-  version: number;
+  version: string | undefined;
   defendant_account_id: string;
   account_number: string;
   has_parent_guardian: boolean;
