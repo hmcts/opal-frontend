@@ -146,11 +146,9 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
       return;
     }
 
-    const hasValue = (v: unknown) => (v == null ? false : typeof v === 'string' ? v.trim().length > 0 : true);
-
-    const firstNamesHasValue = hasValue(firstNamesControl.value);
-    const dobHasValue = hasValue(dobControl.value);
-    const lastNameHasValue = hasValue(lastNameControl.value);
+    const firstNamesHasValue = this.hasValue(firstNamesControl.value);
+    const dobHasValue = this.hasValue(dobControl.value);
+    const lastNameHasValue = this.hasValue(lastNameControl.value);
     const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl.value;
     const lastNameExactMatchHasValue = !!lastNameExactMatchControl.value;
     const includeAliasesHasValue = !!includeAliasesControl.value;

@@ -97,9 +97,7 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
     const { companyNameControl, companyNameExactMatchControl, includeAliasesControl } = this.getCompanyNameControls();
     if (!companyNameControl || !companyNameExactMatchControl || !includeAliasesControl) return;
 
-    const hasValue = (v: unknown) => (v == null ? false : typeof v === 'string' ? v.trim().length > 0 : true);
-
-    const companyNameHasValue = hasValue(companyNameControl.value);
+    const companyNameHasValue = this.hasValue(companyNameControl.value);
     const companyNameExactMatchHasValue = !!companyNameExactMatchControl.value;
     const includeAliasesHasValue = !!includeAliasesControl.value;
 
