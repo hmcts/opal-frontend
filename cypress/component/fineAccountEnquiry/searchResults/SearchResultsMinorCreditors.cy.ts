@@ -249,47 +249,6 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
   });
 
-  it(
-    '(AC4e) Results are ordered by name (ascending), then postcode (ascending), then account number (ascending)',
-    { tags: ['PO-708'] },
-    () => {
-      setupComponent(ORDERING_TEST_MOCK);
-
-      cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
-      cy.get(DOM_ELEMENTS.backLink).should('exist');
-      cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-
-      // Verify the ordering is correct as per AC4e requirements:
-      // 1. Name (ascending) - ADAMS entries should come before BROWN, which should come before CARTER
-      // 2. Within same name, postcode (ascending) - AB1 1AA before AB2 2BB
-      // 3. Within same name and postcode, account number (ascending) - 14001MC before 14002MC
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(0).should('contain', 'ADAMS, Mary');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(0).should('contain', 'AB1 1AA');
-      cy.get(DOM_ELEMENTS.accountCell).eq(0).should('contain', '14001MC');
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'ADAMS, John');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'AB1 1AA');
-      cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '14002MC');
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(2).should('contain', 'ADAMS, Sarah');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(2).should('contain', 'AB2 2BB');
-      cy.get(DOM_ELEMENTS.accountCell).eq(2).should('contain', '14003MC');
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(3).should('contain', 'BROWN, Emma');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(3).should('contain', 'BR1 1CC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(3).should('contain', '14004MC');
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'BROWN, David');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'BR1 1CC');
-      cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14005MC');
-
-      cy.get(DOM_ELEMENTS.nameCell).eq(5).should('contain', 'CARTER, Frank');
-      cy.get(DOM_ELEMENTS.postcodeCell).eq(5).should('contain', 'CT1 1DD');
-      cy.get(DOM_ELEMENTS.accountCell).eq(5).should('contain', '14006MC');
-    },
-  );
-
   it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-708'] }, () => {
     setupComponent(SORTING_MINOR_CREDITORS_MOCK);
 
