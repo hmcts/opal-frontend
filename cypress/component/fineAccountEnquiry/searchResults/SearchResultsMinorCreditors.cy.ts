@@ -11,6 +11,7 @@ import {
   COMPANY_SEARCH_RESULTS_MOCK,
   LARGE_SEARCH_RESULTS_MOCK,
   ORDERING_TEST_MOCK,
+  SORTING_MINOR_CREDITORS_MOCK,
 } from './mocks/search_results_minor_creditors_mock';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from '../searchAndMatches/mocks/search_and_matches_minor_creditors_mock';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
@@ -248,7 +249,7 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.paginationCurrentPage).should('contain', '4');
   });
 
-  it.only(
+  it(
     '(AC4e) Results are ordered by name (ascending), then postcode (ascending), then account number (ascending)',
     { tags: ['PO-708'] },
     () => {
@@ -288,4 +289,86 @@ describe('FinesSaResultsComponent - Minor Creditors', () => {
       cy.get(DOM_ELEMENTS.accountCell).eq(5).should('contain', '14006MC');
     },
   );
+
+  it('(AC4f) Should sort by each column - ascending then descending', { tags: ['PO-708'] }, () => {
+    setupComponent(SORTING_MINOR_CREDITORS_MOCK);
+
+    cy.get(DOM_ELEMENTS.heading).should('contain', 'Search results');
+    cy.get(DOM_ELEMENTS.backLink).should('exist');
+    cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
+
+    // Initially account number in descending order
+    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
+    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+
+    // Test Account column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
+    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14005MC');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.accountHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14005MC');
+    cy.get(DOM_ELEMENTS.accountCell).eq(4).should('contain', '14001MC');
+
+    // Test Name column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'ANDERSON, Lisa');
+    cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.nameHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'WILLIAMS, Sarah');
+    cy.get(DOM_ELEMENTS.nameCell).eq(4).should('contain', 'ANDERSON, Lisa');
+
+    // Test Address column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '1 High Street');
+    cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '8 Park Avenue');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.addressHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '8 Park Avenue');
+    cy.get(DOM_ELEMENTS.addressCell).eq(4).should('contain', '1 High Street');
+
+    // Test Postcode column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'B2 4TY');
+    cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'RG1 9RT');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.postcodeHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'RG1 9RT');
+    cy.get(DOM_ELEMENTS.postcodeCell).eq(4).should('contain', 'B2 4TY');
+
+    // Test Balance column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£310.00');
+    cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£890.00');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.balanceHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£890.00');
+    cy.get(DOM_ELEMENTS.balanceCell).eq(4).should('contain', '£310.00');
+
+    // Test Business unit column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Central Unit');
+    cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'West Unit');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.businessUnitHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'West Unit');
+    cy.get(DOM_ELEMENTS.businessUnitCell).eq(4).should('contain', 'Central Unit');
+
+    // Test Defendant column sorting - sort ascending
+    cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'ANDERSON, Lisa');
+    cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'WILLIAMS, Sarah');
+
+    // sort descending
+    cy.get(DOM_ELEMENTS.defendantHeader).find('button').click();
+    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'WILLIAMS, Sarah');
+    cy.get(DOM_ELEMENTS.defendantCell).eq(4).should('contain', 'ANDERSON, Lisa');
+  });
 });
