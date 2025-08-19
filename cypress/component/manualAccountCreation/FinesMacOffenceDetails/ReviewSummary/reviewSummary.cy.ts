@@ -12,6 +12,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { DOM_ELEMENTS } from './constants/review_summary_elements';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('ReviewSummaryComponent', () => {
   beforeEach(() => {
@@ -115,7 +116,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£300.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£20.00');
@@ -180,7 +181,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£100.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£300.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£600.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');
@@ -269,7 +270,7 @@ describe('ReviewSummaryComponent', () => {
       cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£300.00');
       cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£2100.00');
 
-      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
       cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£600.00');
       cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£200.00');

@@ -90,15 +90,46 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    */
   private resetAndValidateControls(controls: (AbstractControl | null)[]): void {
     controls.forEach((control) => {
+      control?.setErrors(null);
       control?.reset(null, { emitEvent: false });
       control?.updateValueAndValidity();
     });
   }
 
   /**
+   * Removes dynamically added required validators from individual tab controls.
+   * This ensures that conditional validation rules don't persist when switching to company tab.
+   */
+  private clearIndividualDynamicValidators(): void {
+    const { firstNamesControl, lastNameControl } = this.getIndividualMinorCreditorControls();
+
+    if (firstNamesControl) {
+      firstNamesControl.removeValidators(Validators.required);
+      firstNamesControl.updateValueAndValidity({ emitEvent: false });
+    }
+
+    if (lastNameControl) {
+      lastNameControl.removeValidators(Validators.required);
+      lastNameControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  /**
+   * Removes dynamically added required validators from company tab controls.
+   * This ensures that conditional validation rules don't persist when switching to individual tab.
+   */
+  private clearCompanyDynamicValidators(): void {
+    const { companyNameControl } = this.getCompanyMinorCreditorControls();
+
+    if (companyNameControl) {
+      companyNameControl.removeValidators(Validators.required);
+      companyNameControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  /**
    * Handles changes to the minor creditor type form control.
-   * Resets and validates relevant form controls depending on whether the selected type
-   * is 'individual' or 'company', ensuring only appropriate fields are active.
+   * Completely clears inactive tab including dynamically added validators and field states.
    */
   private handleMinorCreditorTypeChange(): void {
     const minorCreditorTypeControl = this.getMinorCreditorType();
@@ -111,9 +142,13 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
     const companyControls = Object.values(this.getCompanyMinorCreditorControls());
 
     if (isCompany) {
+      // Clear individual tab: remove dynamic validators first, then clear field states
+      this.clearIndividualDynamicValidators();
       this.resetAndValidateControls(individualControls);
     }
     if (isIndividual) {
+      // Clear company tab: remove dynamic validators first, then clear field states
+      this.clearCompanyDynamicValidators();
       this.resetAndValidateControls(companyControls);
     }
   }
@@ -136,35 +171,110 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    * If the minor creditor type is not 'individual', does nothing.
    * If first_names is populated and last_name is not, last_name becomes required.
    */
-  private handleLastNameConditionalValidation(): void {
+  private handleIndividualConditionalValidation(): void {
     const minorCreditorType = this.getMinorCreditorType()?.value;
     if (minorCreditorType !== 'individual') return;
 
-    const { firstNamesControl, lastNameControl } = this.getIndividualMinorCreditorControls();
+    const { firstNamesControl, lastNameControl, firstNamesExactMatchControl, lastNameExactMatchControl } =
+      this.getIndividualMinorCreditorControls();
     if (!firstNamesControl || !lastNameControl) return;
 
+    //last name validation
     const firstNamesHasValue = !!firstNamesControl?.value?.trim();
     const lastNameHasValue = !!lastNameControl?.value?.trim();
-    const shouldRequireLastName = firstNamesHasValue && !lastNameHasValue;
+    const lastNameExactMatchHasValue = !!lastNameExactMatchControl?.value;
+    const shouldRequireLastName = (firstNamesHasValue || lastNameExactMatchHasValue) && !lastNameHasValue;
 
+    //first name validation
+    const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl?.value;
+    const shouldRequireFirstName = firstNamesExactMatchHasValue && !firstNamesHasValue;
+
+    //last name validation
     if (shouldRequireLastName) {
       lastNameControl.addValidators(Validators.required);
     } else {
       lastNameControl.removeValidators(Validators.required);
     }
     lastNameControl.updateValueAndValidity({ emitEvent: false });
+
+    //first name validation
+    if (shouldRequireFirstName) {
+      firstNamesControl.addValidators(Validators.required);
+    } else {
+      firstNamesControl.removeValidators(Validators.required);
+    }
+    firstNamesControl.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
-   * Sets up conditional validation for last name based on first names for individual minor creditors.
+   * Sets up conditional validation listeners for first names, last name, and their exact match flags.
    */
-  private setupConditionalLastNameValidation(): void {
-    const { firstNamesControl } = this.getIndividualMinorCreditorControls();
-    if (!firstNamesControl) return;
+  private setupIndividualConditionalValidation(): void {
+    const { firstNamesControl, lastNameControl, firstNamesExactMatchControl, lastNameExactMatchControl } =
+      this.getIndividualMinorCreditorControls();
+    const individualControlsHaveValue =
+      !firstNamesControl || !lastNameControl || !firstNamesExactMatchControl || !lastNameExactMatchControl;
+
+    if (individualControlsHaveValue) return;
 
     firstNamesControl.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.handleLastNameConditionalValidation());
+      .subscribe(() => this.handleIndividualConditionalValidation());
+
+    lastNameControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleIndividualConditionalValidation());
+
+    firstNamesExactMatchControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleIndividualConditionalValidation());
+
+    lastNameExactMatchControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleIndividualConditionalValidation());
+  }
+
+  /**
+   * Conditionally applies the "required" validation to the company name field based on if exact match is selected.
+   * @private
+   */
+  private handleCompanyConditionalValidation(): void {
+    const minorCreditorType = this.getMinorCreditorType()?.value;
+    if (minorCreditorType !== 'company') return;
+
+    const { companyNameControl, companyNameExactMatchControl } = this.getCompanyMinorCreditorControls();
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl;
+
+    if (companyControlsHaveValue) return;
+
+    const companyNameHasValue = !!companyNameControl?.value?.trim();
+    const companyNameExactMatchHasValue = !!companyNameExactMatchControl?.value;
+
+    const shouldRequireCompanyName = companyNameExactMatchHasValue && !companyNameHasValue;
+
+    if (shouldRequireCompanyName) {
+      companyNameControl.addValidators(Validators.required);
+    } else {
+      companyNameControl.removeValidators(Validators.required);
+    }
+    companyNameControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
+   * Sets up conditional validation for the company name and its exact match flag.
+   */
+  private setupCompanyConditionalValidation(): void {
+    const { companyNameControl, companyNameExactMatchControl } = this.getCompanyMinorCreditorControls();
+    const companyControlsHaveValue = !companyNameControl || !companyNameExactMatchControl;
+    if (companyControlsHaveValue) return;
+
+    companyNameControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleCompanyConditionalValidation());
+
+    companyNameExactMatchControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleCompanyConditionalValidation());
   }
 
   /**
@@ -173,7 +283,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent implements OnInit, 
    */
   private initialiseFormListeners(): void {
     this.setupMinorCreditorTypeChangeListener();
-    this.setupConditionalLastNameValidation();
+    this.setupIndividualConditionalValidation();
+    this.setupCompanyConditionalValidation();
   }
 
   /**

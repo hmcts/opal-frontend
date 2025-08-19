@@ -1,7 +1,8 @@
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
 import { IFinesMacPayloadAccountAccountInitial } from '../../interfaces/fines-mac-payload-account-initial.interface';
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK: IFinesMacPayloadAccountAccountInitial = {
-  account_type: 'conditionalCaution',
+  account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
   defendant_type: 'adultOrYouthOnly',
   originator_name: 'Crown Prosecution Service',
   originator_id: '4821',

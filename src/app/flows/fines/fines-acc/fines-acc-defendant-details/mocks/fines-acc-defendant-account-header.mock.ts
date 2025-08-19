@@ -1,7 +1,7 @@
 import { IOpalFinesDefendantAccountHeader } from '../interfaces/fines-acc-defendant-account-header.interface';
 
 export const FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK: IOpalFinesDefendantAccountHeader = {
-  version: '1',
+  version: 1,
   defendant_account_id: 'ABC123DEF456',
   account_number: '123456789',
   has_parent_guardian: false,

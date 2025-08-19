@@ -6,11 +6,11 @@ import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 export const FinesAccountStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
-    account_number: '' as string | null,
-    party_id: '' as string | null,
-    party_type: '' as string | null,
-    party_name: '' as string | null,
-    version: '' as string | null,
+    account_number: null as string | null,
+    party_id: null as string | null,
+    party_type: null as string | null,
+    party_name: null as string | null,
+    version: null as number | null,
   })),
   withHooks((store) => {
     return {

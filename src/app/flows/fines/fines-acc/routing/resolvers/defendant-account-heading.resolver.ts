@@ -40,7 +40,7 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesDefendantAccou
             party_type: headingData.debtor_type,
             party_name,
             party_id: headingData.defendant_account_id,
-            version: headingData.version ?? null,
+            version: Number(headingData.version),
           });
         }),
       );

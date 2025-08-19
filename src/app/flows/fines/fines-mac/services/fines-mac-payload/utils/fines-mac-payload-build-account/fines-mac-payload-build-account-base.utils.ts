@@ -1,4 +1,4 @@
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../../../../constants/fines-mac-account-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
 import { IFinesMacAccountDetailsState } from '../../../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
@@ -59,7 +59,7 @@ export const finesMacPayloadBuildAccountBase = (
   fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsStoreState,
 ): IFinesMacPayloadAccountAccountInitial => {
   let earliestDateOfSentence = null;
-  if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES_KEYS.fixedPenalty) {
+  if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
     earliestDateOfSentence = fixedPenaltyDetails.fm_offence_details_date_of_offence;
   } else {
     earliestDateOfSentence = sortOffenceDetailsByDate(offenceDetailsState)[0].fm_offence_details_date_of_sentence;

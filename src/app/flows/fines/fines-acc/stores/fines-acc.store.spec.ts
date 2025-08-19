@@ -21,38 +21,38 @@ describe('FinesAccountStore', () => {
   });
 
   it('should initialize with empty strings', () => {
-    expect(store.account_number()).toBe('');
-    expect(store.party_id()).toBe('');
-    expect(store.party_name()).toBe('');
-    expect(store.party_type()).toBe('');
-    expect(store.version()).toBe('');
+    expect(store.account_number()).toBe(null);
+    expect(store.party_id()).toBe(null);
+    expect(store.party_name()).toBe(null);
+    expect(store.party_type()).toBe(null);
+    expect(store.version()).toBe(null);
   });
 
   it('setAccountState should set all fields at once', () => {
     const payload: IFinesAccountState = {
-      account_number: 'ACC-777',
+      account_number: '77',
       party_id: 'PARTY-123',
       party_type: 'business',
       party_name: 'Acme Ltd',
-      version: 'v3',
+      version: 3,
     };
 
     store.setAccountState(payload);
 
-    expect(store.account_number()).toBe('ACC-777');
+    expect(store.account_number()).toBe('77');
     expect(store.party_id()).toBe('PARTY-123');
     expect(store.party_type()).toBe('business');
     expect(store.party_name()).toBe('Acme Ltd');
-    expect(store.version()).toBe('v3');
+    expect(store.version()).toBe(3);
   });
 
   it('getAccountState should return a snapshot of current state', () => {
     const payload: IFinesAccountState = {
-      account_number: 'ACC-777',
+      account_number: '88',
       party_id: 'PARTY-123',
       party_type: 'individual',
       party_name: 'Jane Doe',
-      version: 'v4',
+      version: 4,
     };
 
     store.setAccountState(payload);
@@ -60,21 +60,21 @@ describe('FinesAccountStore', () => {
     const snapshot = store.getAccountState();
 
     expect(snapshot).toEqual({
-      account_number: 'ACC-777',
+      account_number: '88',
       party_id: 'PARTY-123',
       party_type: 'individual',
       party_name: 'Jane Doe',
-      version: 'v4',
+      version: 4,
     });
   });
 
   it('clearAccountState should reset to FINES_ACCOUNT_STATE', () => {
     store.setAccountState({
-      account_number: 'X',
+      account_number: '99',
       party_id: 'Y',
       party_type: 'Z',
       party_name: 'A',
-      version: '1',
+      version: 1,
     });
 
     store.clearAccountState();
