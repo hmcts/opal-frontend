@@ -4,7 +4,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 
 - the web server for when the app is deployed in Kubernetes.
 
-- to proxy API requests to internally-facing backend API services, such as the [opal-fines-service](https://github.com/hmcts/opal-fines-service).
+- to proxy API requests to internally-facing backend API services, such as the [opal-fines-service](https://github.com/hmcts/opal-fines-service). 
 
 ## Contents
 
