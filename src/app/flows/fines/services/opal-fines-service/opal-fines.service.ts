@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,6 +36,10 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
+import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-acount-search-params.interface';
@@ -53,6 +57,7 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
+  private accountDetailsCache$: { [key: string]: Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -94,6 +99,16 @@ export class OpalFines {
       submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
       notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
     });
+  }
+
+  /**
+   * Adds the version information from the response headers to the response body.
+   * @param response - The HTTP response containing the body and headers.
+   * @returns The updated response body including the version information.
+   */
+  private addVersionToBody<T>(response: HttpResponse<T>): T {
+    const etag = response.headers.get('ETag') || undefined;
+    return { ...response.body, version: Number(etag) } as T;
   }
 
   /**
@@ -313,6 +328,15 @@ export class OpalFines {
   }
 
   /**
+   * Clears the cache of account details by resetting the `accountDetailsCache$` property to an empty object.
+   * This method is typically used to remove all cached account details data, ensuring that subsequent operations
+   * fetch fresh data or start with a clean state.
+   */
+  public clearAccountDetailsCache(): void {
+    this.accountDetailsCache$ = {};
+  }
+
+  /**
    * Retrieves a draft account summary by its ID.
    *
    * @param draftAccountId - The ID of the draft account to retrieve.
@@ -396,6 +420,51 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param tab - The tab for which to retrieve the account details.
+   * @param defendant_account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountAtAGlance(
+    tab: string,
+    defendant_account_id: string,
+    business_unit_id: string,
+    business_unit_user_id: string | null,
+  ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+    if (!this.accountDetailsCache$[tab]) {
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      // this.accountDetailsCache$[tab] = this.http
+      //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
+      //   .pipe(
+      //     map((response) => this.addVersionToBody(response)),
+      //     shareReplay(1)
+      //   );
+      this.accountDetailsCache$[tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    }
+
+    return this.accountDetailsCache$[tab];
+  }
+
+  /**
+   * Retrieves the defendant account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
+   *
+   * @param accountId - The unique identifier of the defendant account.
+   * @returns An Observable that emits the defendant account header data.
+   */
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesDefendantAccountHeader> {
+    // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    // return this.http.get<IOpalFinesDefendantAccountHeader>(url, { observe: 'response' }).pipe(
+    //   map(response => this.addVersionToBody(response))
+    // );
+    return of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
   }
 
   /**
