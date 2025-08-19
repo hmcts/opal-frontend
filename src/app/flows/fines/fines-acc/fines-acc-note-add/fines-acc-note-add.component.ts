@@ -21,7 +21,7 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
   private buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     //mock construct the payload for adding a note
     return {
-      account_version: 1,
+      account_version: this.finesAccStore.version()!,
       associated_record_type: this.finesAccStore.party_type()!,
       associated_record_id: this.finesAccStore.party_id()!,
       note_type: 'AA',

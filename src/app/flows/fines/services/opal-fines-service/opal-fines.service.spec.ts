@@ -694,7 +694,9 @@ describe('OpalFines', () => {
       expect(response.note_id).toBeDefined();
       expect(response.created_date).toBeDefined();
       expect(response.created_by).toBeDefined();
-      
+    });
+  });
+
   it('should return the mocked defendant accounts response with search params injected', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const searchParams = { some: 'param' } as any;

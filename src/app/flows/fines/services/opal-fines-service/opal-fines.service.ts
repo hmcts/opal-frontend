@@ -492,6 +492,9 @@ export class OpalFines {
     };
 
     return of(response);
+  }
+
+  /**
    * Retrieves the defendant accounts related to fines.
    *
    * @returns An Observable emitting a mock response of type {@link IOpalFinesDefendantAccountResponse}.
