@@ -208,21 +208,22 @@ export const LARGE_SEARCH_RESULTS_MOCK: IOpalFinesCreditorAccountResponse = {
     postcode: `MC${index + 1} 2RT`,
     business_unit_name: 'Minor Creditors Unit',
     business_unit_id: 'MCU001',
-    defendant: index % 3 === 0 
-      ? {
-          firstnames: null,
-          surname: null,
-          organisation_name: `Company ${index + 1} Ltd`,
-        }
-      : {
-          firstnames: index % 2 === 0 ? 'John' : 'Jane',
-          surname: `CREDITOR${index + 1}`,
-          organisation_name: null,
-        },
+    defendant:
+      index % 3 === 0
+        ? {
+            firstnames: null,
+            surname: null,
+            organisation_name: `Company ${index + 1} Ltd`,
+          }
+        : {
+            firstnames: index % 2 === 0 ? 'John' : 'Jane',
+            surname: `CREDITOR${index + 1}`,
+            organisation_name: null,
+          },
     defendant_account_id: (index + 200).toString(),
     account_balance: 300.0 + index * 5,
     organisation_name: index % 3 === 0 ? `Company ${index + 1} Ltd` : null,
-    firstnames: index % 3 === 0 ? null : (index % 2 === 0 ? 'John' : 'Jane'),
+    firstnames: index % 3 === 0 ? null : index % 2 === 0 ? 'John' : 'Jane',
     surname: index % 3 === 0 ? null : `CREDITOR${index + 1}`,
   })),
 };
