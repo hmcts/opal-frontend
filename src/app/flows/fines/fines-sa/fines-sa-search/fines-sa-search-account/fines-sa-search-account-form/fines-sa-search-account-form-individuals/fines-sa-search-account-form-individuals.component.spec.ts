@@ -24,8 +24,6 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     // Provide an empty parent FormGroup; the component under test will add its own controls in ngOnInit
     component.form = new FormGroup({});
     // Provide the required inputs expected by the abstract base
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = {};
     component.formControlErrorMessages = {};
 
     // Trigger ngOnInit so controls are installed into the empty group
@@ -171,8 +169,6 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       // missing date_of_birth and other optional controls
     });
     // keep inputs consistent when swapping the form mid-test
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = (component as any).fieldErrors ?? {};
     component.formControlErrorMessages = component.formControlErrorMessages ?? {};
     fixture.detectChanges();
 
@@ -185,11 +181,46 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       // missing both first name and dob and other controls
     });
     // keep inputs consistent when swapping the form mid-test
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = (component as any).fieldErrors ?? {};
     component.formControlErrorMessages = component.formControlErrorMessages ?? {};
     fixture.detectChanges();
 
     expect(() => component['setupConditionalValidation']()).not.toThrow();
+  });
+
+  it('should install its controls into the provided FormGroup on init', () => {
+    const names = [
+      'fsa_search_account_individuals_last_name',
+      'fsa_search_account_individuals_last_name_exact_match',
+      'fsa_search_account_individuals_first_names',
+      'fsa_search_account_individuals_first_names_exact_match',
+      'fsa_search_account_individuals_include_aliases',
+      'fsa_search_account_individuals_date_of_birth',
+      'fsa_search_account_individuals_national_insurance_number',
+      'fsa_search_account_individuals_address_line_1',
+      'fsa_search_account_individuals_post_code',
+    ];
+    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+  });
+
+  it('should remove its installed controls on destroy when nested in a parent group', () => {
+    // Recreate an isolated child group and nest it under a parent to ensure `form.parent` is truthy
+    const child = new FormGroup({});
+    const parent = new FormGroup({ fsa_search_account_individuals_search_criteria: child });
+
+    component.form = child;
+    component.formControlErrorMessages = {};
+    fixture.detectChanges(); // triggers ngOnInit -> installs controls
+    component.ngOnInit();
+
+    // Sanity check: controls are present
+    expect(child.get('fsa_search_account_individuals_last_name')).toBeTruthy();
+
+    // Destroy and ensure controls are removed from the child group
+    component.ngOnDestroy();
+
+    const names = Object.keys(child.controls);
+    expect(names).withContext('expected no controls after destroy').toEqual([]);
+    // parent still has the child group placeholder
+    expect(parent.get('fsa_search_account_individuals_search_criteria')).toBe(child);
   });
 });

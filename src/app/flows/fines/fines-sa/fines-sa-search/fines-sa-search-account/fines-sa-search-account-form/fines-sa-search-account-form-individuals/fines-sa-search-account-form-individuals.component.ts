@@ -15,11 +15,8 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './constants/fines-sa-search-account-form-individuals-field-errors.constant';
-import { IFinesSaSearchAccountFormIndividualsFieldErrors } from './interfaces/fines-sa-search-account-form-individuals-field-errors.interface';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -35,9 +32,12 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
  *
  * Responsibilities:
  * - Build and install its own controls into the parent-provided FormGroup.
- * - Register this sub-form's field-error messages into the shared `fieldErrors` map passed down by the parent.
  * - Manage conditional validation (e.g. when exact-match or alias flags toggle required fields).
  * - Re-populate values from the store and sync validators accordingly.
+ *
+ * Notes:
+ * - The parent component is the single source of truth for field error templates and computed messages.
+ *   This sub-form only receives `form` and `formControlErrorMessages` and does not emit error maps.
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
@@ -47,15 +47,10 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
 })
 export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNestedFormBaseComponent {
   private readonly finesSaStore = inject(FinesSaStore);
-  private readonly individualsFieldErrors: IFinesSaSearchAccountFormIndividualsFieldErrors =
-    FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS;
   protected readonly dateService = inject(DateService);
 
   @Input({ required: true }) public override form!: FormGroup;
-  @Input({ required: true })
-  public override fieldErrors!: IAbstractFormBaseFieldErrors;
-  @Input({ required: true })
-  public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public yesterday!: string;
 
   /**
@@ -123,7 +118,7 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
    * - Last name becomes required when first names or DOB are provided, or when exact-match/aliases flags are set.
    * - First names become required when the first-names exact-match flag is set.
    *
-   * Uses the base helper `setRequired` to toggle validators and update validity without emitting events.
+   * Uses the base helper `setValidatorPresence` to add/remove `Validators.required` and update validity quietly.
    */
   private handleConditionalValidation(): void {
     const {
@@ -199,13 +194,12 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
   }
 
   /**
-   * Installs this sub-form's controls, registers its error messages into the shared map,
-   * sets up conditional validation, rehydrates values from the store, and syncs validators once.
+   * Installs this sub-form's controls, sets up conditional validation,
+   * rehydrates values from the store, and syncs validators once.
    */
   private setupIndividualForm(): void {
     const controlsGroup = this.buildIndividualFormControls();
     this.addControlsToNestedFormGroup(controlsGroup);
-    this.registerNestedFormFieldErrors(this.individualsFieldErrors);
     this.setupConditionalValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_individuals_search_criteria);
@@ -215,11 +209,11 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
   /**
    * Angular lifecycle hook: initialise the Individuals sub-form before invoking the base setup.
    *
-   * Note: the parent passes in the shared `form`, `fieldErrors`, and `formControlErrorMessages` maps.
-   * This component registers its own error definitions so the parent can render summaries and inline messages.
+   * The parent passes in the shared nested `form` group and `formControlErrorMessages`.
+   * This component installs its own controls, wires conditional validation, and hydrates from the store.
    */
   public override ngOnInit(): void {
-    this.setupIndividualForm();
     super.ngOnInit();
+    this.setupIndividualForm();
   }
 }

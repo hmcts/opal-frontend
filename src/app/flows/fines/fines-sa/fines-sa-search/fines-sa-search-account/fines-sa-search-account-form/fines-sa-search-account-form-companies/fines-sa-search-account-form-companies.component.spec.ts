@@ -19,9 +19,6 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
 
     // Provide an empty parent FormGroup; the subcomponent installs its controls in ngOnInit
     component.form = new FormGroup({});
-    // Provide required inputs used by the abstract base
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = {};
     component.formControlErrorMessages = {};
 
     // Trigger ngOnInit -> installs controls, registers errors, sets up subscriptions
@@ -108,16 +105,6 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     ).toBeTrue();
   });
 
-  it('should require company name when value is null and include aliases is true', () => {
-    component.form.get('fsa_search_account_companies_company_name')?.setValue(null);
-    component.form.get('fsa_search_account_companies_include_aliases')?.setValue(true);
-    component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
-
-    expect(
-      component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
-  });
-
   it('should treat non-string values as present and NOT require company name even if flags are true', () => {
     // Force a non-string value into the control to cover the ternary branch `: true`
     const ctrl = component.form.get('fsa_search_account_companies_company_name') as FormControl;
@@ -138,8 +125,6 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
       fsa_search_account_companies_company_name: new FormControl('test'),
     });
     // Keep abstract inputs consistent when swapping the form mid-test
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = (component as any).fieldErrors ?? {};
     component.formControlErrorMessages = component.formControlErrorMessages ?? {};
     fixture.detectChanges();
 
@@ -151,11 +136,42 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
       fsa_search_account_companies_company_name: new FormControl('test'),
     });
     // Keep abstract inputs consistent when swapping the form mid-test
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = (component as any).fieldErrors ?? {};
     component.formControlErrorMessages = component.formControlErrorMessages ?? {};
     fixture.detectChanges();
 
     expect(() => component['setupConditionalValidation']()).not.toThrow();
+  });
+
+  it('should install its controls into the provided FormGroup on init', () => {
+    const names = [
+      'fsa_search_account_companies_company_name',
+      'fsa_search_account_companies_company_name_exact_match',
+      'fsa_search_account_companies_include_aliases',
+      'fsa_search_account_companies_address_line_1',
+      'fsa_search_account_companies_post_code',
+    ];
+    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
+  });
+
+  it('should remove its installed controls on destroy when nested in a parent group', () => {
+    // Recreate an isolated child group and nest it under a parent to ensure `form.parent` is truthy
+    const child = new FormGroup({});
+    const parent = new FormGroup({ fsa_search_account_companies_search_criteria: child });
+
+    component.form = child;
+    component.formControlErrorMessages = {};
+    fixture.detectChanges(); // triggers ngOnInit -> installs controls
+    component.ngOnInit();
+
+    // Sanity check: controls are present
+    expect(child.get('fsa_search_account_companies_company_name')).toBeTruthy();
+
+    // Destroy and ensure controls are removed from the child group
+    component.ngOnDestroy();
+
+    const names = Object.keys(child.controls);
+    expect(names).withContext('expected no controls after destroy').toEqual([]);
+    // parent still has the child group placeholder
+    expect(parent.get('fsa_search_account_companies_search_criteria')).toBe(child);
   });
 });

@@ -218,4 +218,20 @@ describe('FinesSaSearchAccountFormComponent', () => {
 
     expect(superSubmitSpy).toHaveBeenCalled();
   });
+
+  describe('updateFormErrorSummaryMessages', () => {
+    it('should update formErrorSummaryMessage with provided messages', () => {
+      const mockMessages = [
+        { fieldId: 'fsa_search_account_number', message: 'Invalid account number' },
+        { fieldId: 'fsa_search_account_reference_case_number', message: 'Invalid reference' },
+      ];
+      component.updateFormErrorSummaryMessages(mockMessages);
+      expect(component.formErrorSummaryMessage).toBe(mockMessages);
+    });
+
+    it('should set formErrorSummaryMessage to an empty array if given an empty array', () => {
+      component.updateFormErrorSummaryMessages([]);
+      expect(component.formErrorSummaryMessage).toEqual([]);
+    });
+  });
 });

@@ -29,7 +29,25 @@ import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 
+/**
+ * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).
+ *
+ * Responsibilities:
+ * - Owns the root FormGroup and all error state (field error templates, inline messages, and summary).
+ * - Builds static controls and hosts empty nested groups for each tab’s sub-form.
+ * - Determines the active tab from the URL fragment and swaps the tab-specific error templates.
+ * - Clears nested groups and rehydrates persisted values when switching tabs.
+ * - Delegates installation of tab controls and conditional validation to the child components.
+ *
+ * Notes:
+ * - Children **do not** emit error maps; this component remains the single source of truth for
+ *   `fieldErrors`, `formControlErrorMessages`, and `formErrorSummaryMessage`.
+ */
 @Component({
   selector: 'app-fines-sa-search-account-form',
   imports: [
@@ -56,14 +74,34 @@ import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-accou
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
+  /**
+   * Tab-specific field error templates. On tab change, the parent recomputes
+   * `fieldErrors = { ...BASE, ...tabFieldErrorMap[activeTab] }` and then
+   * calls `setInitialErrorMessages()` to seed inline/summary structures.
+   */
+  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTab, Partial<IFinesSaSearchAccountFieldErrors>> = {
+    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
+    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
+    majorCreditors: {},
+  };
 
+  /**
+   * Emits after `handleFormSubmit` runs the base validation/submission logic and the form is valid.
+   */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
 
   public readonly finesSaStore = inject(FinesSaStore);
+  /**
+   * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
+   * Children read computed inline messages via their `[formControlErrorMessages]` input only.
+   */
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
   /**
-   * Sets up the base structure of the form, including all static and tab-specific search criteria controls.
+   * Creates the root FormGroup, including static controls and empty nested groups
+   * into which each tab’s sub-form installs its own controls. Attaches the
+   * cross-field validator that enforces “at least one criterion”.
    */
   private setupBaseSearchAccountForm(): void {
     this.form = new FormGroup(
@@ -89,9 +127,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Subscribes to the ActivatedRoute fragment to determine the active tab.
-   * If no fragment is provided, defaults to 'individuals' and updates the URL accordingly.
-   * Also triggers the corresponding tab switch on initial load.
+   * Subscribes to the route fragment to resolve the active tab. If missing, defaults
+   * to `individuals` (and updates the URL). Triggers `switchTab` on initial load and
+   * whenever the fragment changes.
    */
   private setupFragmentListener(): void {
     (this['activatedRoute'] as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
@@ -110,7 +148,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Calls form setup, routing subscription, and initialises error messages.
+   * Builds the form shell, wires the fragment listener, and seeds empty error message
+   * structures based on the initial tab’s templates.
    */
   private initialFormSetup(): void {
     this.setupBaseSearchAccountForm();
@@ -119,8 +158,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Clears all controls in all tab-specific search criteria form groups.
-   * Clears all error messages.
+   * Resets all tab-specific nested FormGroups (without emitting) and clears the parent’s
+   * inline/summary error messages.
    */
   private clearSearchForm(): void {
     ['individuals', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
@@ -130,11 +169,22 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Switches the current tab by updating the error map and applying tab-specific controls.
-   * Also repopulates the form state once after initial navigation.
-   * @param tab The tab name or fragment string.
+   * Switches the active tab:
+   * - Recomputes `fieldErrors` from the base + tab-specific templates.
+   * - Seeds empty inline/summary messages via `setInitialErrorMessages()`.
+   * - Clears all tab groups, then rehydrates any persisted form state from the store.
+   * - Persists the selected tab to the store (and resets temporary state if the tab changed).
+   *
+   * @param tab Fragment string identifying the tab (the component treats this as a string).
    */
   private switchTab(tab: string | Event): void {
+    this.fieldErrors = {
+      ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
+      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
+    } as IFinesSaSearchAccountFieldErrors;
+
+    this.setInitialErrorMessages();
+
     // Reset existing values/validation in all tab groups
     this.clearSearchForm();
 
@@ -149,15 +199,11 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Handles the internal validation and navigation logic for form submission.
-   *
-   * - If the form has the 'atLeastOneCriteriaRequired' error, it temporarily stores the form value
-   *   in the FinesSaStore and navigates to the problem route, preventing further processing.
-   * - If the form has the 'formEmpty' error, it simply returns and does not proceed.
-   * - Otherwise, allows the submission to continue (handled by the parent class).
-   *
-   * This method is intended to be called before the main form submission logic to ensure
-   * that the form meets minimum criteria and to provide user feedback or navigation if not.
+   * Pre-submit guard:
+   * - If multiple criteria are populated (`atLeastOneCriteriaRequired`), persist the transient
+   *   form state and navigate to the problem route to inform the user.
+   * - If the form is empty (`formEmpty`), do nothing.
+   * - Otherwise, allow the base class to continue with submission.
    */
   private handleFormSubmission(): void {
     if (this.form.errors?.['atLeastOneCriteriaRequired']) {
@@ -173,9 +219,15 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     }
   }
 
-  // Note: for the 'individuals' tab the nested group starts empty; the child adds controls on init.
   /**
-   * Returns the FormGroup associated with the currently active tab.
+   * Receives error-summary items (e.g., from a shared summary component) and replaces the parent-held summary.
+   */
+  public updateFormErrorSummaryMessages(event: IAbstractFormBaseFormErrorSummaryMessage[]): void {
+    this.formErrorSummaryMessage = event;
+  }
+
+  /**
+   * Convenience accessor for the nested FormGroup associated with the current tab.
    */
   public get searchCriteriaForm(): FormGroup {
     switch (this.finesSaStore.activeTab()) {
@@ -193,7 +245,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Navigates to the Filter by Business Units page, saving current form data and preserving tab state.
+   * Navigates to the “Filter by Business Units” flow, preserving the current form value and tab fragment.
    */
   public goToFilterBusinessUnits(): void {
     this.finesSaStore.setSearchAccountTemporary(this.form.value);
@@ -203,14 +255,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Handles the form submission event for the fines search account form.
-   *
-   * - If the form has the 'atLeastOneCriteriaRequired' error, it temporarily stores the form value
-   *   and navigates to the problem route.
-   * - If the form has the 'formEmpty' error, it prevents further processing.
-   * - Otherwise, it delegates the handling to the parent class implementation.
-   *
-   * @param event - The submit event triggered by the form submission.
+   * Runs pre-submit guards, then delegates to the base `handleFormSubmit` implementation.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
     this.handleFormSubmission();
@@ -218,7 +263,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Angular lifecycle hook - initialises form and invokes parent component lifecycle logic.
+   * Angular lifecycle:
+   * - Build the form shell and route subscriptions.
+   * - Invoke the base lifecycle for shared behaviour (e.g., unsaved-changes wiring).
    */
   public override ngOnInit(): void {
     this.initialFormSetup();

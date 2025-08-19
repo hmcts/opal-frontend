@@ -75,8 +75,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     component.form = new FormGroup({});
     // Provide required inputs expected by the abstract base
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).fieldErrors = {} as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component.formControlErrorMessages = {} as any;
     component.formErrorSummaryMessage = [];
 
@@ -89,6 +87,15 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     expect(firstNames.hasValidator(Validators.required)).toBeFalse();
     expect(lastName.hasValidator(Validators.required)).toBeFalse();
     expect(companyName.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should install its controls into the provided FormGroup on init', () => {
+    const names = [
+      'fsa_search_account_minor_creditors_minor_creditor_type',
+      'fsa_search_account_minor_creditors_individual',
+      'fsa_search_account_minor_creditors_company',
+    ];
+    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
   });
 
   describe('Individual conditional validation', () => {
@@ -245,7 +252,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cmp = fx.componentInstance as any;
     cmp.form = form;
-    cmp.fieldErrors = {};
     cmp.formControlErrorMessages = {};
     cmp.formErrorSummaryMessage = [];
     fx.detectChanges();
@@ -258,7 +264,6 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cmp = fx.componentInstance as any;
     cmp.form = form;
-    cmp.fieldErrors = {};
     cmp.formControlErrorMessages = {};
     cmp.formErrorSummaryMessage = [];
     // Intentionally DO NOT call detectChanges/ngOnInit
@@ -528,5 +533,28 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(company.pristine).toBeTrue();
       expect(company.untouched).toBeTrue();
     });
+  });
+
+  it('should remove its installed controls on destroy when nested in a parent group', () => {
+    // Create a fresh instance so we can control parent/child relationship
+    const child = new FormGroup({});
+    const parent = new FormGroup({ fsa_search_account_minor_creditors_search_criteria: child });
+
+    const { fx, cmp } = createComponentWithFormNoInit(child);
+    // Provide required input
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cmp.formControlErrorMessages = {} as any;
+    // Now trigger ngOnInit via detectChanges to install controls
+    fx.detectChanges();
+
+    // Sanity check: type control present
+    expect(child.get('fsa_search_account_minor_creditors_minor_creditor_type')).toBeTruthy();
+
+    // Destroy and ensure controls are removed from the child group
+    cmp.ngOnDestroy();
+
+    expect(Object.keys(child.controls)).withContext('expected no controls after destroy').toEqual([]);
+    // parent still holds the (now empty) child group reference
+    expect(parent.get('fsa_search_account_minor_creditors_search_criteria')).toBe(child);
   });
 });

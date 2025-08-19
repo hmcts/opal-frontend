@@ -1,9 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  IAbstractFormBaseFormErrorSummaryMessage,
-  IAbstractFormControlErrorMessage,
-} from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { takeUntil, distinctUntilChanged } from 'rxjs';
 import {
   GovukCheckboxesComponent,
@@ -25,9 +21,10 @@ import {
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { IFinesSaSearchAccountFormMinorCreditorsFieldErrors } from './interfaces/fines-sa-search-account-form-minor-creditors-field-errors.interface';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
-import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import {
+  IAbstractFormBaseFormErrorSummaryMessage,
+  IAbstractFormControlErrorMessage,
+} from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -43,9 +40,12 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
  *
  * Responsibilities:
  * - Build and install its own controls into the parent-provided FormGroup.
- * - Register this sub-form's field-error messages into the shared `fieldErrors` map passed down by the parent.
  * - Manage conditional validation for both the Individual and Company tabs.
  * - Re-populate values from the store and sync validators accordingly.
+ *
+ * Notes:
+ * - The parent component is the single source of truth for field error templates and computed messages.
+ *   This sub-form only receives `form` and `formControlErrorMessages` and does not emit error maps.
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-minor-creditors',
@@ -63,22 +63,20 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
 export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNestedFormBaseComponent {
   private readonly finesSaStore = inject(FinesSaStore);
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
-  private readonly minorCreditorFieldErrors: IFinesSaSearchAccountFormMinorCreditorsFieldErrors =
-    FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS;
 
   @Input({ required: true }) public override form!: FormGroup;
-  @Input({ required: true })
-  public override fieldErrors!: IAbstractFormBaseFieldErrors;
-  @Input({ required: true })
-  public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
-  @Input({ required: true }) public override formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Output() public formErrorSummaryMessagesChange = new EventEmitter<IAbstractFormBaseFormErrorSummaryMessage[]>();
   public readonly minorCreditorTypes: IGovUkRadioOptions[] = Object.entries(this.finesMinorCreditorTypes).map(
     ([key, value]) => ({
       key,
       value,
     }),
   );
-
+  /**
+   * Convenience accessor for the minor creditor type control from the installed parent form.
+   * Returns the control instance; callers should treat it as present once controls are installed.
+   */
   private get minorCreditorType(): FormControl {
     return this.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
   }
@@ -170,7 +168,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
    * Applies conditional `required` rules for the Individual tab.
    * - Last name becomes required when first names has a value or when the last-name exact-match flag is set.
    * - First names becomes required when the first-names exact-match flag is set.
-   * Uses the base `setRequired` helper to toggle validators and update validity without emitting events.
+   * Uses the base `setValidatorPresence` helper to add/remove `Validators.required` and update validity quietly.
    */
   private handleIndividualConditionalValidation(): void {
     const type = this.minorCreditorType.value;
@@ -232,7 +230,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
   /**
    * Applies conditional `required` rules for the Company tab.
    * - Company name becomes required when the exact-match flag is set and the field is empty.
-   * Uses the base `setRequired` helper to toggle validators and update validity without emitting events.
+   * Uses the base `setValidatorPresence` helper to add/remove `Validators.required` and update validity quietly.
    */
   private handleCompanyConditionalValidation(): void {
     const minorCreditorType = this.minorCreditorType.value;
@@ -306,8 +304,10 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
         }
         // Only now update the typeControl validity
         typeControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+        // On tab switch, reset inline/summary errors; parent owns field error templates
         this.clearAllErrorMessages();
-        this.emitCurrentErrorMaps();
+        this.setInitialErrorMessages();
+        this.formErrorSummaryMessagesChange.emit([]);
       });
 
     // Only update validity if the group is valid and dirty, and avoid loops
@@ -325,14 +325,13 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
   }
 
   /**
-   * Installs this sub-form's controls, registers its error messages into the shared map,
-   * sets up conditional validation and the type listener, rehydrates store values, and syncs validators once.
+   * Installs this sub-form's controls, sets up the type listener and conditional validation,
+   * rehydrates store values, and runs a one-off validator sync.
    */
   private setupMinorCreditorForm(): void {
     const controlGroup = this.buildMinorCreditorFormControls();
     this.addControlsToNestedFormGroup(controlGroup);
     this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_minor_creditors_search_criteria);
-    this.registerNestedFormFieldErrors(this.minorCreditorFieldErrors);
     this.setupMinorCreditorTypeListener();
     this.setupIndividualConditionalValidation();
     this.setupCompanyConditionalValidation();
@@ -341,8 +340,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
   /**
    * Angular lifecycle hook: initialise the Minor Creditors sub-form then invoke base setup.
    *
-   * Note: the parent passes in the shared `form`, `fieldErrors`, and `formControlErrorMessages` maps.
-   * This component registers its own error definitions so the parent can render summaries and inline messages.
+   * The parent passes in the shared nested `form` group and `formControlErrorMessages`.
+   * This component installs its own controls, wires conditional validation, and hydrates from the store.
    */
   public override ngOnInit(): void {
     this.setupMinorCreditorForm();
