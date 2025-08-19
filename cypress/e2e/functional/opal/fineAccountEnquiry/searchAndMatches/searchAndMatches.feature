@@ -417,4 +417,10 @@ Feature: Account Search and Matches
     When I click on the "Back" link
     Then I see "Search for an account" on the page header
 
+    # AC4g. Click on Account Number link and verify navigation to template page
+    # Handles window.open navigation
+    When I click the "Search" button
+    When I click the "ORG1001" link and handle new window navigation
+    Then I see "Account Details" on the page header
+
 # PO-708 AC3b & AC2b Will be covered once API integration is complete
