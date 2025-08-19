@@ -78,15 +78,26 @@
           <opal-lib-govuk-tabs-panel id="individuals">
             <app-fines-sa-search-account-form-individuals
               [form]="searchCriteriaForm"
+              [fieldErrors]="fieldErrors"
               [formControlErrorMessages]="formControlErrorMessages"
-            ></app-fines-sa-search-account-form-individuals>
+              (fieldErrorsChange)="updateFieldErrors($event)"
+              (formControlErrorMessagesChange)="updateFormControlErrorMessages($event)"
+              (formErrorSummaryMessageChange)="updateFormErrorSummaryMessage($event)"
+              (formErrorsChange)="updateFormErrors($event)"
+            >
+            </app-fines-sa-search-account-form-individuals>
           </opal-lib-govuk-tabs-panel>
         }
         @case ('companies') {
           <opal-lib-govuk-tabs-panel id="companies">
             <app-fines-sa-search-account-form-companies
               [form]="searchCriteriaForm"
+              [fieldErrors]="fieldErrors"
               [formControlErrorMessages]="formControlErrorMessages"
+              (fieldErrorsChange)="updateFieldErrors($event)"
+              (formControlErrorMessagesChange)="updateFormControlErrorMessages($event)"
+              (formErrorSummaryMessageChange)="updateFormErrorSummaryMessage($event)"
+              (formErrorsChange)="updateFormErrors($event)"
             ></app-fines-sa-search-account-form-companies>
           </opal-lib-govuk-tabs-panel>
         }
@@ -94,7 +105,12 @@
           <opal-lib-govuk-tabs-panel id="minor-creditors">
             <app-fines-sa-search-account-form-minor-creditors
               [form]="searchCriteriaForm"
+              [fieldErrors]="fieldErrors"
               [formControlErrorMessages]="formControlErrorMessages"
+              [formErrorSummaryMessage]="formErrorSummaryMessage"
+              (fieldErrorsChange)="updateFieldErrors($event)"
+              (formControlErrorMessagesChange)="updateFormControlErrorMessages($event)"
+              (formErrorSummaryMessageChange)="updateFormErrorSummaryMessage($event)"
             ></app-fines-sa-search-account-form-minor-creditors>
           </opal-lib-govuk-tabs-panel>
         }

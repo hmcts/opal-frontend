@@ -6,7 +6,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter last name',
       priority: 1,
     },
-    invalidNamePattern: {
+    lettersSpacesHyphensApostrophesDotPattern: {
       message: 'Last name must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 2,
     },
@@ -21,7 +21,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter first name',
       priority: 1,
     },
-    invalidNamePattern: {
+    lettersSpacesHyphensApostrophesDotPattern: {
       message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
       priority: 1,
     },
@@ -47,7 +47,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_national_insurance_number: {
-    invalidCharacterPattern: {
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
       message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
     },
@@ -57,7 +57,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_address_line_1: {
-    invalidCharacterPattern: {
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
       message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
     },
@@ -67,7 +67,7 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_post_code: {
-    invalidCharacterPattern: {
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
       message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 1,
     },

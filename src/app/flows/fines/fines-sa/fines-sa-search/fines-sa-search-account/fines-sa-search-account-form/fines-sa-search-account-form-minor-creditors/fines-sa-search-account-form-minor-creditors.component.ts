@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { takeUntil, distinctUntilChanged, merge } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  IAbstractFormBaseFormErrorSummaryMessage,
+  IAbstractFormControlErrorMessage,
+} from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { takeUntil, distinctUntilChanged } from 'rxjs';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
@@ -14,9 +17,36 @@ import {
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { FINES_MINOR_CREDITOR_TYPES } from 'src/app/flows/fines/constants/fines-minor-creditor-types.constant';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search-account-form-minor-creditors.validator';
+import { FinesSaStore } from '../../../../stores/fines-sa.store';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { IFinesSaSearchAccountFormMinorCreditorsFieldErrors } from './interfaces/fines-sa-search-account-form-minor-creditors-field-errors.interface';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
+import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
+const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
+  'lettersSpacesHyphensApostrophesDotPattern',
+);
+
+/**
+ * Nested Minor Creditors sub-form for Search Account.
+ *
+ * Responsibilities:
+ * - Build and install its own controls into the parent-provided FormGroup.
+ * - Register this sub-form's field-error messages into the shared `fieldErrors` map passed down by the parent.
+ * - Manage conditional validation for both the Individual and Company tabs.
+ * - Re-populate values from the store and sync validators accordingly.
+ */
 @Component({
   selector: 'app-fines-sa-search-account-form-minor-creditors',
   imports: [
@@ -30,11 +60,18 @@ import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search
   templateUrl: './fines-sa-search-account-form-minor-creditors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFormBaseComponent {
+export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNestedFormBaseComponent {
+  private readonly finesSaStore = inject(FinesSaStore);
   private readonly finesMinorCreditorTypes = FINES_MINOR_CREDITOR_TYPES;
+  private readonly minorCreditorFieldErrors: IFinesSaSearchAccountFormMinorCreditorsFieldErrors =
+    FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS;
 
   @Input({ required: true }) public override form!: FormGroup;
-  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true })
+  public override fieldErrors!: IAbstractFormBaseFieldErrors;
+  @Input({ required: true })
+  public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) public override formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   public readonly minorCreditorTypes: IGovUkRadioOptions[] = Object.entries(this.finesMinorCreditorTypes).map(
     ([key, value]) => ({
       key,
@@ -47,87 +84,93 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
   }
 
   /**
-   * Gets the `FormGroup` instance associated with the 'fsa_search_account_minor_creditors_individual' control
-   * from the main form. This group contains the form controls and validation logic for individual minor creditors.
-   *
-   * @returns {FormGroup} The form group for individual minor creditors.
+   * Convenience accessor for the Individual tab group from the installed parent form.
+   * Returns the group instance; callers should treat it as present once controls are installed.
    */
   public get individualGroup(): FormGroup {
     return this.form.get('fsa_search_account_minor_creditors_individual') as FormGroup;
   }
 
   /**
-   * Gets the FormGroup instance associated with the 'fsa_search_account_minor_creditors_company' control
-   * from the parent form. This FormGroup contains the form controls and validation state
-   * for the minor creditors company section of the search account form.
-   *
-   * @returns {FormGroup} The FormGroup for the minor creditors company.
+   * Convenience accessor for the Company tab group from the installed parent form.
+   * Returns the group instance; callers should treat it as present once controls are installed.
    */
   public get companyGroup(): FormGroup {
     return this.form.get('fsa_search_account_minor_creditors_company') as FormGroup;
   }
 
   /**
-   * Removes dynamically added required validators from individual tab controls.
-   * This ensures that conditional validation rules don't persist when switching to company tab.
+   * Creates a **detached** builder FormGroup containing all controls owned by the Minor Creditors sub-form.
+   * The returned controls are *not* attached to any parent yet; they are installed via `addControlsToNestedFormGroup`.
    */
-  private clearIndividualDynamicValidators(): void {
-    const firstNamesControl = this.individualGroup.get('fsa_search_account_minor_creditors_first_names');
-    const lastNameControl = this.individualGroup.get('fsa_search_account_minor_creditors_last_name');
-    this.toggleRequired(firstNamesControl, false);
-    this.toggleRequired(lastNameControl, false);
-  }
-
-  /**
-   * Resets and updates the validity of the provided form controls.
-   * This method clears the value and validation state of each control without emitting events.
-   * @param controls An array of AbstractControl or null to reset and validate.
-   */
-  private resetAndValidateControls(controls: (AbstractControl | null)[]): void {
-    controls.forEach((control) => {
-      control?.setErrors(null);
-      control?.reset(null, { emitEvent: false });
-      control?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+  private buildMinorCreditorFormControls(): FormGroup {
+    return new FormGroup({
+      fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null, [
+        Validators.nullValidator,
+      ]),
+      fsa_search_account_minor_creditors_individual: new FormGroup({
+        fsa_search_account_minor_creditors_last_name: new FormControl<string | null>(null, [
+          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(30),
+        ]),
+        fsa_search_account_minor_creditors_last_name_exact_match: new FormControl<boolean | null>(null),
+        fsa_search_account_minor_creditors_first_names: new FormControl<string | null>(null, [
+          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(20),
+        ]),
+        fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean | null>(null),
+        fsa_search_account_minor_creditors_individual_address_line_1: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(30),
+        ]),
+        fsa_search_account_minor_creditors_individual_post_code: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(8),
+        ]),
+      }),
+      fsa_search_account_minor_creditors_company: new FormGroup({
+        fsa_search_account_minor_creditors_company_name: new FormControl<string | null>(null, [
+          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(50),
+        ]),
+        fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean | null>(null),
+        fsa_search_account_minor_creditors_company_address_line_1: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(30),
+        ]),
+        fsa_search_account_minor_creditors_company_post_code: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          Validators.maxLength(8),
+        ]),
+      }),
     });
   }
 
   /**
-   * Adds or removes the `required` validator on a control and updates its validity without emitting events.
+   * Removes dynamically-added `required` validators from Individual tab controls.
+   * Ensures conditional rules do not persist when switching to the Company tab.
    */
-  private toggleRequired(control: AbstractControl | null, shouldBeRequired: boolean): void {
-    if (!control) return;
-    if (shouldBeRequired) {
-      control.addValidators(Validators.required);
-    } else {
-      control.removeValidators(Validators.required);
-    }
-    control.updateValueAndValidity({ emitEvent: false });
+  private clearIndividualDynamicValidators(): void {
+    const firstNamesControl = this.individualGroup.get('fsa_search_account_minor_creditors_first_names');
+    const lastNameControl = this.individualGroup.get('fsa_search_account_minor_creditors_last_name');
+    this.setValidatorPresence(firstNamesControl, Validators.required, false);
+    this.setValidatorPresence(lastNameControl, Validators.required, false);
   }
 
   /**
-   * Removes dynamically added required validators from company tab controls.
-   * This ensures that conditional validation rules don't persist when switching to individual tab.
+   * Removes dynamically-added `required` validators from Company tab controls.
+   * Ensures conditional rules do not persist when switching to the Individual tab.
    */
   private clearCompanyDynamicValidators(): void {
     const companyNameControl = this.companyGroup.get('fsa_search_account_minor_creditors_company_name');
-    this.toggleRequired(companyNameControl, false);
+    this.setValidatorPresence(companyNameControl, Validators.required, false);
   }
 
   /**
-   * Sets up a subscription to listen for changes on the minor creditor type control.
-   * When the minor creditor type changes, it triggers form control resets and validations.
-   */
-  private resetAndValidateFormGroup(group: FormGroup): void {
-    group.reset(undefined, { emitEvent: false });
-    group.markAsPristine();
-    group.markAsUntouched();
-    group.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-  }
-
-  /**
-   * Applies conditional validation to the last name field for individual minor creditors.
-   * If the minor creditor type is not 'individual', does nothing.
-   * If first_names is populated and last_name is not, last_name becomes required.
+   * Applies conditional `required` rules for the Individual tab.
+   * - Last name becomes required when first names has a value or when the last-name exact-match flag is set.
+   * - First names becomes required when the first-names exact-match flag is set.
+   * Uses the base `setRequired` helper to toggle validators and update validity without emitting events.
    */
   private handleIndividualConditionalValidation(): void {
     const type = this.minorCreditorType.value;
@@ -145,22 +188,23 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
 
     if (!firstNamesControl || !lastNameControl) return;
 
-    const firstNamesHasValue = !!(firstNamesControl.value as string)?.trim?.();
-    const lastNameHasValue = !!(lastNameControl.value as string)?.trim?.();
+    const firstNamesHasValue = this.hasValue(firstNamesControl.value);
+    const lastNameHasValue = this.hasValue(lastNameControl.value);
     const lastNameExactMatchHasValue = !!lastNameExactMatchControl?.value;
     const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl?.value;
 
     // last name required if first names OR last name exact match is set but last name is empty
     const shouldRequireLastName = (firstNamesHasValue || lastNameExactMatchHasValue) && !lastNameHasValue;
-    this.toggleRequired(lastNameControl, shouldRequireLastName);
+    this.setValidatorPresence(lastNameControl, Validators.required, shouldRequireLastName);
 
     // first names required if first names exact match is set but first names is empty
     const shouldRequireFirstName = firstNamesExactMatchHasValue && !firstNamesHasValue;
-    this.toggleRequired(firstNamesControl, shouldRequireFirstName);
+    this.setValidatorPresence(firstNamesControl, Validators.required, shouldRequireFirstName);
   }
 
   /**
-   * Sets up conditional validation listeners for first names, last name, and their exact match flags.
+   * Wires the Individual tab conditional validation to relevant controls' `valueChanges` with auto-unsubscribe.
+   * No-ops if any required control is missing (defensive in case the group is not yet fully installed).
    */
   private setupIndividualConditionalValidation(): void {
     const firstNamesControl = this.individualGroup.get('fsa_search_account_minor_creditors_first_names') as FormControl;
@@ -176,19 +220,19 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
       !firstNamesControl || !lastNameControl || !firstNamesExactMatchControl || !lastNameExactMatchControl;
     if (areMissingIndividualControls) return;
 
-    merge(
-      firstNamesControl.valueChanges,
-      lastNameControl.valueChanges,
-      firstNamesExactMatchControl.valueChanges,
-      lastNameExactMatchControl.valueChanges,
-    )
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.handleIndividualConditionalValidation());
+    this.subscribeValidation(
+      () => this.handleIndividualConditionalValidation(),
+      firstNamesControl,
+      lastNameControl,
+      firstNamesExactMatchControl,
+      lastNameExactMatchControl,
+    );
   }
 
   /**
-   * Conditionally applies the "required" validation to the company name field based on if exact match is selected.
-   * @private
+   * Applies conditional `required` rules for the Company tab.
+   * - Company name becomes required when the exact-match flag is set and the field is empty.
+   * Uses the base `setRequired` helper to toggle validators and update validity without emitting events.
    */
   private handleCompanyConditionalValidation(): void {
     const minorCreditorType = this.minorCreditorType.value;
@@ -201,15 +245,16 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
     const areMissingCompanyControls = !companyNameControl || !companyNameExactMatchControl;
     if (areMissingCompanyControls) return;
 
-    const companyNameHasValue = !!(companyNameControl.value as string)?.trim?.();
+    const companyNameHasValue = this.hasValue(companyNameControl.value);
     const companyNameExactMatchHasValue = !!companyNameExactMatchControl.value;
 
     const shouldRequireCompanyName = companyNameExactMatchHasValue && !companyNameHasValue;
-    this.toggleRequired(companyNameControl, shouldRequireCompanyName);
+    this.setValidatorPresence(companyNameControl, Validators.required, shouldRequireCompanyName);
   }
 
   /**
-   * Sets up conditional validation for the company name and its exact match flag.
+   * Wires the Company tab conditional validation to relevant controls' `valueChanges` with auto-unsubscribe.
+   * No-ops if any required control is missing (defensive in case the group is not yet fully installed).
    */
   private setupCompanyConditionalValidation(): void {
     const companyNameControl = this.companyGroup.get('fsa_search_account_minor_creditors_company_name') as FormControl;
@@ -220,25 +265,18 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
     const areMissingCompanyControls = !companyNameControl || !companyNameExactMatchControl;
     if (areMissingCompanyControls) return;
 
-    merge(companyNameControl.valueChanges, companyNameExactMatchControl.valueChanges)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(() => this.handleCompanyConditionalValidation());
+    this.subscribeValidation(
+      () => this.handleCompanyConditionalValidation(),
+      companyNameControl,
+      companyNameExactMatchControl,
+    );
   }
 
   /**
-   * Sets up listeners and validators for the minor creditor type selection in the form.
-   *
-   * - Applies a custom validator to the 'minor_creditor_type' control, ensuring required data is present
-   *   based on the selected type (individual or company).
-   * - Subscribes to changes in the 'minor_creditor_type' control to reset and update the corresponding
-   *   form group (individual or company) when the type changes.
-   * - Subscribes to value changes in both the individual and company form groups to trigger form-level
-   *   validation updates.
-   *
-   * This method should be called during component initialization to ensure the form behaves correctly
-   * when users interact with the minor creditor type selection.
-   *
-   * @private
+   * Sets up the minor-creditor type behaviour and form-level validator.
+   * - Installs the custom `requiredMinorCreditorDataValidator` on the type control.
+   * - When switching tabs, clears dynamic validators and resets relevant group state.
+   * - Revalidates the type control when either sub-group changes (avoids recursive loops).
    */
   private setupMinorCreditorTypeListener(): void {
     const typeControl = this.minorCreditorType;
@@ -268,6 +306,8 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
         }
         // Only now update the typeControl validity
         typeControl?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+        this.clearAllErrorMessages();
+        this.emitCurrentErrorMaps();
       });
 
     // Only update validity if the group is valid and dirty, and avoid loops
@@ -285,23 +325,27 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractFor
   }
 
   /**
-   * Initializes listeners for form control changes.
-   * Sets up minor creditor type change handling and dynamic validation rules.
+   * Installs this sub-form's controls, registers its error messages into the shared map,
+   * sets up conditional validation and the type listener, rehydrates store values, and syncs validators once.
    */
-  private initialiseFormListeners(): void {
+  private setupMinorCreditorForm(): void {
+    const controlGroup = this.buildMinorCreditorFormControls();
+    this.addControlsToNestedFormGroup(controlGroup);
+    this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_minor_creditors_search_criteria);
+    this.registerNestedFormFieldErrors(this.minorCreditorFieldErrors);
     this.setupMinorCreditorTypeListener();
     this.setupIndividualConditionalValidation();
     this.setupCompanyConditionalValidation();
   }
 
   /**
-   * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
+   * Angular lifecycle hook: initialise the Minor Creditors sub-form then invoke base setup.
    *
-   * This override sets up a listener for changes to the minor creditor type and then calls the parent class's
-   * `ngOnInit` method to ensure any inherited initialization logic is executed.
+   * Note: the parent passes in the shared `form`, `fieldErrors`, and `formControlErrorMessages` maps.
+   * This component registers its own error definitions so the parent can render summaries and inline messages.
    */
   public override ngOnInit(): void {
-    this.initialiseFormListeners();
+    this.setupMinorCreditorForm();
     super.ngOnInit();
   }
 }

@@ -2,14 +2,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
-
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -25,17 +24,10 @@ import { IFinesSaSearchAccountFieldErrors } from '../interfaces/fines-sa-search-
 import { FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-sa-search-account-field-errors.constant';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
-
 import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 
 @Component({
@@ -64,18 +56,6 @@ import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-accou
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
-  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTab, Partial<IFinesSaSearchAccountFieldErrors>> = {
-    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
-    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
-    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
-    majorCreditors: {},
-  };
-  private readonly tabControlsMap = {
-    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS,
-    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS,
-    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS,
-    majorCreditors: {},
-  };
 
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
 
@@ -125,8 +105,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         });
       }
 
-      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTab);
-      this.switchTab(this.finesSaStore.activeTab());
+      this.switchTab(resolvedFragment);
     });
   }
 
@@ -137,24 +116,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     this.setupBaseSearchAccountForm();
     this.setupFragmentListener();
     this.setInitialErrorMessages();
-  }
-
-  /**
-   * Replaces the controls inside the currently active tab's search criteria FormGroup.
-   * Accepts either a Record of controls or a FormGroup instance.
-   * @param controls An object containing control names and their AbstractControl instances, or a FormGroup.
-   */
-  private setControls(controls: Record<string, AbstractControl> | FormGroup): void {
-    const group = this.searchCriteriaForm;
-
-    // Clear existing controls
-    Object.keys(group.controls).forEach((key) => group.removeControl(key));
-
-    if (controls instanceof FormGroup) {
-      Object.entries(controls.controls).forEach(([key, control]) => group.addControl(key, control));
-    } else {
-      Object.entries(controls).forEach(([key, control]) => group.addControl(key, control));
-    }
   }
 
   /**
@@ -174,17 +135,17 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * @param tab The tab name or fragment string.
    */
   private switchTab(tab: string | Event): void {
-    this.fieldErrors = {
-      ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
-    } as IFinesSaSearchAccountFieldErrors;
-
+    // Reset existing values/validation in all tab groups
     this.clearSearchForm();
 
-    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTab] ?? {});
-
+    // Rehydrate any previously saved form state (child also handles its own patching where needed)
     this.rePopulateForm(this.finesSaStore.searchAccount());
-    this.finesSaStore.resetSearchAccount();
+
+    if (tab !== this.finesSaStore.activeTab()) {
+      this.finesSaStore.resetSearchAccount();
+    }
+
+    this.finesSaStore.setActiveTab(tab as FinesSaSearchAccountTab);
   }
 
   /**
@@ -212,6 +173,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     }
   }
 
+  // Note: for the 'individuals' tab the nested group starts empty; the child adds controls on init.
   /**
    * Returns the FormGroup associated with the currently active tab.
    */
