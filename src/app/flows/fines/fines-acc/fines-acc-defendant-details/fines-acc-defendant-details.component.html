@@ -75,9 +75,9 @@
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
-      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid:</p>
+      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.paid) }}
+        {{ utilsService.convertToMonetaryString(accountData.paid + accountData.written_off) }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">

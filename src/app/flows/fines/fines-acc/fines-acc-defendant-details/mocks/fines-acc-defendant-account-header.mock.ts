@@ -19,7 +19,7 @@ export const FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK: IOpalFinesDefendantAccount
   paid: 800,
   written_off: 200,
   account_balance: -100,
-  is_youth: false,
+  is_youth: true,
   // organisaton = false
   title: 'Mr',
   firstnames: 'John, Peter',
