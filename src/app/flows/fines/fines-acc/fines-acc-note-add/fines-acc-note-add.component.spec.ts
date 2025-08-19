@@ -18,7 +18,12 @@ describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;
   let fixture: ComponentFixture<FinesAccNoteAddComponent>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockFinesAccountStore: any;
+  let mockFinesAccountStore: {
+    party_type: jasmine.Spy;
+    party_id: jasmine.Spy;
+    getAccountNumber: jasmine.Spy;
+    party_name: jasmine.Spy;
+  };
 
   beforeEach(async () => {
     // Create mock OpalFines service
@@ -72,7 +77,7 @@ describe('FinesAccNoteAddComponent', () => {
       nestedFlow: false,
     };
 
-    const result = (component as any).buildAddNotePayload(testForm);
+    const result = component['buildAddNotePayload'](testForm);
 
     expect(result).toEqual({
       account_version: 1,
@@ -86,7 +91,7 @@ describe('FinesAccNoteAddComponent', () => {
   it('should call store methods to get party data', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
 
-    (component as any).buildAddNotePayload(testForm);
+    component['buildAddNotePayload'](testForm);
 
     expect(mockFinesAccountStore.party_type).toHaveBeenCalled();
     expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
@@ -113,7 +118,7 @@ describe('FinesAccNoteAddComponent', () => {
     };
 
     mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
-    spyOn(component as any, 'routerNavigate');
+    spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
 
@@ -133,13 +138,11 @@ describe('FinesAccNoteAddComponent', () => {
     };
 
     mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
-    spyOn(component as any, 'routerNavigate');
+    spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
 
-    expect((component as any).routerNavigate).toHaveBeenCalledWith(
-      (component as any).finesAccRoutingPaths.children.details,
-    );
+    expect(component['routerNavigate']).toHaveBeenCalledWith(component['finesAccRoutingPaths'].children.details);
   });
 
   it('should log success message on successful API call', () => {
@@ -176,45 +179,45 @@ describe('FinesAccNoteAddComponent', () => {
   it('should not navigate on API call failure', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
-    spyOn(component as any, 'routerNavigate');
+    spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
 
-    expect((component as any).routerNavigate).not.toHaveBeenCalled();
+    expect(component['routerNavigate']).not.toHaveBeenCalled();
   });
 
   it('should set stateUnsavedChanges to true when passed true', () => {
     component.handleUnsavedChanges(true);
 
-    expect((component as any).stateUnsavedChanges).toBe(true);
+    expect(component['stateUnsavedChanges']).toBe(true);
   });
 
   it('should set stateUnsavedChanges to false when passed false', () => {
     component.handleUnsavedChanges(false);
 
-    expect((component as any).stateUnsavedChanges).toBe(false);
+    expect(component['stateUnsavedChanges']).toBe(false);
   });
 
   it('should update stateUnsavedChanges value correctly', () => {
     component.handleUnsavedChanges(false);
-    expect((component as any).stateUnsavedChanges).toBe(false);
+    expect(component['stateUnsavedChanges']).toBe(false);
 
     component.handleUnsavedChanges(true);
-    expect((component as any).stateUnsavedChanges).toBe(true);
+    expect(component['stateUnsavedChanges']).toBe(true);
 
     component.handleUnsavedChanges(false);
-    expect((component as any).stateUnsavedChanges).toBe(false);
+    expect(component['stateUnsavedChanges']).toBe(false);
   });
 
   it('should have finesAccRoutingPaths injected', () => {
-    expect((component as any).finesAccRoutingPaths).toBeDefined();
+    expect(component['finesAccRoutingPaths']).toBeDefined();
   });
 
   it('should have opalFinesService injected', () => {
-    expect((component as any).opalFinesService).toBeDefined();
+    expect(component['opalFinesService']).toBeDefined();
   });
 
   it('should have finesAccStore injected', () => {
-    expect((component as any).finesAccStore).toBeDefined();
+    expect(component['finesAccStore']).toBeDefined();
   });
 });

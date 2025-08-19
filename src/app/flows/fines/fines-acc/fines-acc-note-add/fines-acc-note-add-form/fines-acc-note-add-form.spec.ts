@@ -11,7 +11,11 @@ describe('FinesAccNoteAddFormComponent', () => {
   let component: FinesAccNoteAddFormComponent;
   let fixture: ComponentFixture<FinesAccNoteAddFormComponent>;
   let formSubmit: IFinesAccAddNoteForm;
-  let mockFinesAccountStore: any;
+  let mockFinesAccountStore: {
+    getAccountNumber: jasmine.Spy;
+    party_name: jasmine.Spy;
+    account_number: jasmine.Spy;
+  };
 
   beforeEach(async () => {
     formSubmit = structuredClone(FINES_ACC_ADD_NOTE_FORM_MOCK);
@@ -41,7 +45,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccNoteAddFormComponent);
     component = fixture.componentInstance;
-    mockFinesAccountStore = TestBed.inject(FinesAccountStore);
+    mockFinesAccountStore = TestBed.inject(FinesAccountStore) as unknown as typeof mockFinesAccountStore;
     fixture.detectChanges();
   });
 
@@ -58,8 +62,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should display account number and defendant name from store', () => {
-    expect((component as any).accountNumber).toBe('123456789');
-    expect((component as any).defendantName).toBe('Mr John, Peter DOE');
+    expect(component['accountNumber']).toBe('123456789');
+    expect(component['defendantName']).toBe('Mr John, Peter DOE');
     expect(mockFinesAccountStore.getAccountNumber).toHaveBeenCalled();
     expect(mockFinesAccountStore.party_name).toHaveBeenCalled();
   });
@@ -97,7 +101,7 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should emit formSubmit event when form is submitted with valid data', () => {
-    spyOn((component as any).formSubmit, 'emit');
+    spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       facc_add_notes: formSubmit.formData.facc_add_notes,
@@ -105,7 +109,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     const mockEvent = {} as SubmitEvent;
     component.handleFormSubmit(mockEvent);
 
-    expect((component as any).formSubmit.emit).toHaveBeenCalledWith(
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
       jasmine.objectContaining({
         formData: jasmine.objectContaining({
           facc_add_notes: formSubmit.formData.facc_add_notes,
@@ -115,13 +119,13 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should not emit formSubmit event when form is invalid', () => {
-    spyOn((component as any).formSubmit, 'emit');
+    spyOn(component['formSubmit'], 'emit');
     component.form.patchValue({
       facc_add_notes: null,
     });
     const mockEvent = {} as SubmitEvent;
     component.handleFormSubmit(mockEvent);
-    expect((component as any).formSubmit.emit).not.toHaveBeenCalled();
+    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
   });
 
   it('should set initial error messages', () => {
@@ -184,20 +188,20 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should have correct routing paths', () => {
-    expect((component as any).finesAccRoutingPaths).toBeDefined();
+    expect(component['finesAccRoutingPaths']).toBeDefined();
   });
 
   it('should have finesAccStore injected', () => {
-    expect((component as any).finesAccStore).toBeDefined();
+    expect(component['finesAccStore']).toBeDefined();
   });
 
   it('should retrieve account data from store', () => {
-    expect((component as any).accountNumber).toBe('123456789');
-    expect((component as any).defendantName).toBe('Mr John, Peter DOE');
+    expect(component['accountNumber']).toBe('123456789');
+    expect(component['defendantName']).toBe('Mr John, Peter DOE');
   });
 
   it('should handle form submission with mock data', () => {
-    spyOn((component as any).formSubmit, 'emit');
+    spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue({
       facc_add_notes: FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes,
@@ -207,7 +211,7 @@ describe('FinesAccNoteAddFormComponent', () => {
 
     component.handleFormSubmit(mockEvent);
 
-    expect((component as any).formSubmit.emit).toHaveBeenCalledWith(
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
       jasmine.objectContaining({
         formData: jasmine.objectContaining({
           facc_add_notes: FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes,
@@ -225,11 +229,11 @@ describe('FinesAccNoteAddFormComponent', () => {
 
     component.handleFormSubmit(mockEvent);
 
-    expect((component as any).formSubmitted).toBeTruthy();
+    expect(component['formSubmitted']).toBeTruthy();
   });
 
   it('should call initialAddNotesSetup on ngOnInit', () => {
-    const spy = spyOn(component as any, 'initialAddNotesSetup').and.callThrough();
+    const spy = spyOn(component, 'initialAddNotesSetup' as never).and.callThrough();
 
     component.ngOnInit();
 
@@ -237,9 +241,9 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('should call setupAddNotesForm during initialization', () => {
-    const spy = spyOn(component as any, 'setupAddNotesForm').and.callThrough();
+    const spy = spyOn(component, 'setupAddNotesForm' as never).and.callThrough();
 
-    (component as any).initialAddNotesSetup();
+    component['initialAddNotesSetup']();
 
     expect(spy).toHaveBeenCalled();
   });

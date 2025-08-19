@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 
 describe('finesAccAccountStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccountStore: any;
 
   const testAccountNumber = '123456789';
@@ -104,27 +105,25 @@ describe('finesAccAccountStateGuard', () => {
     expect(result).toBe(mockResult);
   }));
 
-  it('should redirect with account number in URL when account exists but needs to redirect', fakeAsync(async () => {
-    // Set up account number to exist
+  it('builds the redirect URL including the account number (explicit branch coverage)', fakeAsync(async () => {
+    // Arrange – make sure a number exists in the store
     mockFinesAccountStore.getAccountNumber.and.returnValue(testAccountNumber);
 
-    // Create a modified guard that simulates the redirect path being called with an account number
-    const testGuard = () => {
-      // This directly tests the redirect path logic from the actual guard
+    const guardThatOnlyReturnsRedirect = () => {
       const finesAccountStore = TestBed.inject(FinesAccountStore);
       const accountNumber = finesAccountStore.getAccountNumber();
-
       if (accountNumber) {
-        const redirectUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.acc.root}/${accountNumber}/${FINES_ACC_ROUTING_PATHS.children.details}`;
-        return mockRouter.parseUrl(redirectUrl);
+        const url = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.acc.root}/${accountNumber}/${FINES_ACC_ROUTING_PATHS.children.details}`;
+        return mockRouter.parseUrl(url);
       }
-
-      return mockRouter.parseUrl(expectedUrlWithoutAccount);
+      const url = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.acc.root}/${FINES_ACC_ROUTING_PATHS.children.details}`;
+      return mockRouter.parseUrl(url);
     };
 
-    const result = await runFinesAccEmptyFlowGuardWithContext(testGuard);
+    const result = await runFinesAccEmptyFlowGuardWithContext(guardThatOnlyReturnsRedirect);
 
-    expect(result).toBeInstanceOf(UrlTree);
+    // Assert – the branch produced a UrlTree for the account-number path
+    expect(result).toEqual(jasmine.any(UrlTree));
     expect(mockRouter.parseUrl).toHaveBeenCalledWith(expectedUrlWithAccount);
   }));
 });
