@@ -148,37 +148,6 @@ describe('FinesAccNoteAddComponent', () => {
     expect(component['routerNavigate']).toHaveBeenCalledWith(component['finesAccRoutingPaths'].children.details);
   });
 
-  it('should log success message on successful API call', () => {
-    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
-    const mockResponse: IOpalFinesAddNoteResponse = {
-      note_id: 123,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
-      created_date: '2024-01-01T10:00:00Z',
-      created_by: 'test_user',
-    };
-
-    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
-    spyOn(console, 'log');
-
-    component.handleAddNoteSubmit(testForm);
-
-    expect(console.log).toHaveBeenCalledWith('note created:', mockResponse);
-  });
-
-  it('should log error message on API call failure', () => {
-    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
-    const mockError = new Error('API Error');
-    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => mockError));
-    spyOn(console, 'error');
-
-    component.handleAddNoteSubmit(testForm);
-
-    expect(console.error).toHaveBeenCalledWith('failed to add note', mockError);
-  });
-
   it('should not navigate on API call failure', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
@@ -222,5 +191,15 @@ describe('FinesAccNoteAddComponent', () => {
 
   it('should have finesAccStore injected', () => {
     expect(component['finesAccStore']).toBeDefined();
+  });
+
+  it('should call utilsService.scrollToTop on API call failure', () => {
+    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    spyOn(component['utilsService'], 'scrollToTop');
+    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
+
+    component.handleAddNoteSubmit(testForm);
+
+    expect(component['utilsService'].scrollToTop).toHaveBeenCalled();
   });
 });
