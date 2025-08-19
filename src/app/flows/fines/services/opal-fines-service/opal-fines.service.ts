@@ -108,7 +108,7 @@ export class OpalFines {
    */
   private addVersionToBody<T>(response: HttpResponse<T>): T {
     const etag = response.headers.get('ETag') || undefined;
-    return { ...response.body, version: etag } as T;
+    return { ...response.body, version: Number(etag) } as T;
   }
 
   /**

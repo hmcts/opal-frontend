@@ -613,7 +613,7 @@ describe('OpalFines', () => {
 
     expect(result).toEqual({
       ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
-      version: '12345',
+      version: 12345,
     });
   });
 
