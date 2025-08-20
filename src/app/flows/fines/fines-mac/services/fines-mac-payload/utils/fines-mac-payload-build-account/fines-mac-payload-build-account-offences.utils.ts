@@ -96,7 +96,11 @@ const buildAccountOffencesImpositionsPayload = (
       fm_offence_details_amount_paid: amountPaid,
       fm_offence_details_major_creditor_id: majorCreditorId,
     }) => {
-      const impositionMinorCreditor = impositionId !== null ? childFormData[impositionId] : null;
+      const impositionMinorCreditor =
+        impositionId !== null
+          ? (childFormData.find((child) => child.formData.fm_offence_details_imposition_position === impositionId) ??
+            null)
+          : null;
       const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
 
       return {
