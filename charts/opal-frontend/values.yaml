@@ -43,3 +43,7 @@ postgresql:
     registry: hmctspublic.azurecr.io
     repository: imported/bitnami/postgresql
     tag: '17.5.0'
+
+global:
+  security:
+    allowInsecureImages: true
