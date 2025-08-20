@@ -8212,8 +8212,8 @@ __metadata:
   linkType: hard
 
 "cypress-mochawesome-reporter@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "cypress-mochawesome-reporter@npm:4.0.0"
+  version: 4.0.1
+  resolution: "cypress-mochawesome-reporter@npm:4.0.1"
   dependencies:
     commander: "npm:^10.0.1"
     fs-extra: "npm:^11.3.0"
@@ -8224,7 +8224,7 @@ __metadata:
     cypress: ">=6.2.0"
   bin:
     generate-mochawesome-report: cli.js
-  checksum: 10/e5d95186da96576bbdd6bafb80dad3d05d2b9d9670caba436bff8a79e8472001b8d6075bc39005be7b9489967148ffa4f02a59cfcefbc3545e9a838572bbfa12
+  checksum: 10/85303943ccc09fed4f4d467626b2140def1986726df696a7a910070e842a826c95d73fda89936717e7ace3addb7202d770e1f4a6c0914a3a75ed25fb71a37039
   languageName: node
   linkType: hard
 
