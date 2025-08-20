@@ -5,11 +5,8 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 
 export const finesAccStateGuard = hasUrlStateMatchGuard(
-  () => {
-    const finesAccountStore = inject(FinesAccountStore);
-    return finesAccountStore.account_number();
-  },
-  (route) => !route.params['accountId'], // Skip validation if no account number in URL
+  () => inject(FinesAccountStore).account_number(),
+  (route) => !route.params['accountId'],
   (storeAccountNumber, route) => {
     const urlAccountNumber = route.params['accountId'];
 
