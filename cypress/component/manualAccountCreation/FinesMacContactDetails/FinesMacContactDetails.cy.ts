@@ -111,7 +111,7 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it('(AC.3) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-370'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.addEmployerDetailsButton).should('contain', 'Add employer details');
   });

@@ -60,7 +60,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
       case FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly:
         this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
         break;
-      case FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay:
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
         this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
         break;
       case FINES_MAC_DEFENDANT_TYPES_KEYS.company:

@@ -11,7 +11,7 @@ Feature: Accessibility Tests for Check and Validate Screens
     Then I check accessibility
 
     # Create a draft account with rejected status for testing
-    Given I create a "pgToPay" draft account with the following details:
+    Given I create a "parentOrGuardianToPay" draft account with the following details:
       | account.defendant.forenames | Accessibility |
       | account.defendant.surname   | Test          |
     When I update the last created draft account with status "Rejected"

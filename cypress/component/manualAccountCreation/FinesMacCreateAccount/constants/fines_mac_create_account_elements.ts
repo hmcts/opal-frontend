@@ -22,8 +22,8 @@ export const DOM_ELEMENTS = {
   defendantTypeHint: 'div[id = "fm_create_account_fine_defendant_typeHint"]',
   adultOrYouthInput: 'input[id = "adultOrYouthOnly"]',
   adultOrYouthLabel: 'label[for = "adultOrYouthOnly"]',
-  parentOrGuardianToPayInput: 'input[id = "pgToPay"]',
-  parentOrGuardianToPayLabel: 'label[for = "pgToPay"]',
+  parentOrGuardianToPayInput: 'input[id = "parentOrGuardianToPay"]',
+  parentOrGuardianToPayLabel: 'label[for = "parentOrGuardianToPay"]',
   companyInput: 'input[id = "company"]',
   companyLabel: 'label[for = "company"]',
 

@@ -66,7 +66,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
@@ -103,7 +103,7 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
       return;
     }
 
-    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
 
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];

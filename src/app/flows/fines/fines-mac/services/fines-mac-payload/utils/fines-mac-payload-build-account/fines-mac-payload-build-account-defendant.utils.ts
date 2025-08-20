@@ -117,7 +117,7 @@ export const finesMacPayloadBuildAccountDefendant = (
   // This is so we have all fields present in the payload, even if they are null
 
   switch (defendantType) {
-    case FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay:
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
       return applyBasePayloadsToParentGuardianDefendant(
         finesMacPayloadBuildAccountDefendantParentGuardian(
           personalDetailsState,

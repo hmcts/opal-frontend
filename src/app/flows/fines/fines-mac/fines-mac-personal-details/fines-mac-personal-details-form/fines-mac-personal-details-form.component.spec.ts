@@ -222,7 +222,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'dateOfBirthListener');
     mockDateService.getPreviousDate.and.returnValue('19/08/2024');
 
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
     component['initialPersonalDetailsSetup']();
 
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();

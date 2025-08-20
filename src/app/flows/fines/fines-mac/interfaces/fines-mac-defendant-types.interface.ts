@@ -1,5 +1,5 @@
 export interface IFinesMacDefendantTypes {
   adultOrYouthOnly: string;
-  pgToPay: string;
+  parentOrGuardianToPay: string;
   company: string;
 }

@@ -2,6 +2,6 @@ import { IFinesMacDefendantTypesKeys } from '../interfaces/fines-mac-defendant-t
 
 export const FINES_MAC_DEFENDANT_TYPES_KEYS: IFinesMacDefendantTypesKeys = {
   adultOrYouthOnly: 'adultOrYouthOnly',
-  pgToPay: 'pgToPay',
+  parentOrGuardianToPay: 'parentOrGuardianToPay',
   company: 'company',
 };

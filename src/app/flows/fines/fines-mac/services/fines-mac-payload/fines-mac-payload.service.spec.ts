@@ -325,7 +325,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('John Doe');
   });
 
-  it('should return forenames and surname when defendant_type is "pgToPay"', () => {
+  it('should return forenames and surname when defendant_type is "parentOrGuardianToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;
@@ -333,7 +333,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
         defendant: {
           forenames: 'Jane',
           surname: 'Smith',
@@ -344,7 +344,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('Jane Smith');
   });
 
-  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "pgToPay"', () => {
+  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "parentOrGuardianToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;

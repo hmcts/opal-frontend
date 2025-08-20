@@ -104,7 +104,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.2) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
@@ -440,7 +440,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.5) should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-505'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     // Verify the vehicle details section is not rendered
     cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
@@ -451,7 +451,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.titleInput).select('Mr');
     cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });

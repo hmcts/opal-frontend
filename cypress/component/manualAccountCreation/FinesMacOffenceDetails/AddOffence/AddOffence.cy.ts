@@ -153,7 +153,7 @@ describe('FinesMacAddOffenceComponent', () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
       setupComponent(null, 'company');
@@ -556,7 +556,7 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
     { tags: ['@PO-1060'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
       const SELECTOR = impostitionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);

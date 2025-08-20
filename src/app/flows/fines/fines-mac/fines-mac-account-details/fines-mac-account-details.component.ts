@@ -78,7 +78,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public accountType!: string;
   public documentLanguage!: string;
   public courtHearingLanguage!: string;
-  public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.pgToPay];
+  public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
   public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
@@ -200,7 +200,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
       case FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly:
         this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
         break;
-      case FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay:
+      case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
         this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
         break;
       case FINES_MAC_DEFENDANT_TYPES_KEYS.company:

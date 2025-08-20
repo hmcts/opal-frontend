@@ -143,7 +143,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian',
     { tags: ['@PO-344', '@PO-499'] },
     () => {
-      setupComponent(null, 'pgToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
+      setupComponent(null, 'parentOrGuardianToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');

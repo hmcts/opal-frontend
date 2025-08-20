@@ -26,7 +26,7 @@ function convertDataTableToNestedObject(dataTable: DataTable): Record<string, an
   return overrides;
 }
 
-type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
+type DefendantType = 'company' | 'adultOrYouthOnly' | 'parentOrGuardianToPay';
 
 /**
  * Get the appropriate payload file name based on the account type
@@ -35,7 +35,7 @@ function getPayloadFileForAccountType(accountType: DefendantType): string {
   const payloadFiles = {
     company: 'companyPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
-    pgToPay: 'parentOrGuardianPayload.json',
+    parentOrGuardianToPay: 'parentOrGuardianPayload.json',
   };
   return payloadFiles[accountType];
 }

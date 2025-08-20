@@ -315,14 +315,14 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
   it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.companyNameInput).type('Company XYZ Ltd.', { delay: 0 });
     cy.get(DOM_ELEMENTS.companyNameInput).blur();

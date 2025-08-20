@@ -74,7 +74,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should render the ParentGuardianDetails component', () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
@@ -82,7 +82,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.1) should load all elements on the screen correctly',
     { tags: ['@PO-344', '@PO-364', '@PO-436', '@PO-569'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
 
@@ -120,7 +120,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it('(AC.1) should have length validation on first name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'a'.repeat(31);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -133,7 +133,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.wrap(permittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
-          setupComponent(null, 'pgToPay');
+          setupComponent(null, 'parentOrGuardianToPay');
         });
         cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
         cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.invalidFirstNames);
@@ -142,7 +142,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
-          setupComponent(null, 'pgToPay');
+          setupComponent(null, 'parentOrGuardianToPay');
         });
         cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
@@ -150,7 +150,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     },
   );
   it('(AC.1) should have length validation on last name field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -164,7 +164,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.wrap(permittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
-          setupComponent(null, 'pgToPay');
+          setupComponent(null, 'parentOrGuardianToPay');
         });
         cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
         cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_CHECK.invalidLastNames);
@@ -173,7 +173,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.wrap(nonPermittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
-          setupComponent(null, 'pgToPay');
+          setupComponent(null, 'parentOrGuardianToPay');
         });
         cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
@@ -182,21 +182,21 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it('(AC.2) should reqiure first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
   });
 
   it('(AC.2) should reqiure last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingLastName);
   });
 
   it('(AC.3) should validate the functionality of the Add Aliases tick box', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
     cy.get(DOM_ELEMENTS.legend).should('contain', 'Alias 1');
@@ -212,7 +212,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.4, AC.5, AC.6) should have working alias workflow and remove button',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
 
       cy.get(DOM_ELEMENTS.aliasAdd).click();
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
@@ -266,7 +266,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it('(AC.7) should validate unticking add aliases removes all aliases', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     cy.get(DOM_ELEMENTS.aliasAdd).check();
     cy.get(DOM_ELEMENTS.aliasAddButton).click();
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -292,7 +292,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing alias', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -300,7 +300,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -312,7 +312,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -324,7 +324,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing additional alias first name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -348,7 +348,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.8) should show error for missing additional alias last name', { tags: ['@PO-344', '@PO-569'] }, () => {
-    (setupComponent(null), 'pgToPay');
+    (setupComponent(null), 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias = true;
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
@@ -375,7 +375,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.3) should display validation error when date of birth is in the future',
     { tags: ['@PO-344', '@PO-364'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/3000';
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -384,7 +384,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it('(AC.3) should display validation error when date of birth is invalid', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -395,7 +395,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.4) should not accept national insurance number in the incorrect format',
     { tags: ['@PO-344', '@PO-436'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number = 'AB1234565C';
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -404,7 +404,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   );
 
   it('(AC.1) should have max length validation for address line 1', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -412,14 +412,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.1) should not permit asterisks in address line 1', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
   });
   it('(AC.1) should have max length validation for address line 2', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -427,14 +427,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.1) should not permit asterisks in address line 2', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
   });
   it('(AC.9) should have max length validation for address line 3', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(14);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -442,14 +442,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.1) should not permit asterisks in address line 3', { tags: ['@PO-344', '@PO-436'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
   });
   it('(AC.1) should have max length validation for postcode', { tags: ['@PO-344', '@PO-364'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_post_code = 'a'.repeat(9);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -457,7 +457,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('(AC.10) should have max length validation for make and model field', { tags: ['@PO-344', '@PO-569'] }, () => {
-    setupComponent(null, 'pgToPay');
+    setupComponent(null, 'parentOrGuardianToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
@@ -467,7 +467,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.10) should have max length validation for registration number field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
-      setupComponent(null, 'pgToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_registration_mark = 'a'.repeat(
         12,
       );
@@ -483,7 +483,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
-      setupComponent(mockFormSubmit, 'pgToPay');
+      setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
         'John Jacob Jingleheimer Schmidt Jingleheimer';
@@ -514,7 +514,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
-      setupComponent(mockFormSubmit, 'pgToPay');
+      setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'FNAME';
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'LNAME';
@@ -529,7 +529,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   it.skip('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.firstNameInput).type('fname', { delay: 0 });
     cy.get(DOM_ELEMENTS.firstNameInput).blur();

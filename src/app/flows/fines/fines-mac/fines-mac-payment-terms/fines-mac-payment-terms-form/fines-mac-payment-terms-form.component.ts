@@ -468,7 +468,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
           !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
         this.addRequestPaymentCardControl();
         break;
-      case this.defendantTypes.pgToPay:
+      case this.defendantTypes.parentOrGuardianToPay:
         this.accessDefaultDates = true;
         this.accessCollectionOrder = true;
         this.addRequestPaymentCardControl();
