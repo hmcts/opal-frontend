@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form';
-import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../mocks/fines-acc-add-note-form-mock';
+import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form.component';
+import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../mocks/fines-acc-add-note-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.interface';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { provideRouter } from '@angular/router';
+import { FINES_ACC_ADD_NOTE_FIELD_ERRORS } from '../constants/fines-acc-note-add-form-field-errors.constant';
 
 describe('FinesAccNoteAddFormComponent', () => {
   let component: FinesAccNoteAddFormComponent;
@@ -94,10 +95,10 @@ describe('FinesAccNoteAddFormComponent', () => {
     const noteControl = component.form.get('facc_add_notes');
 
     noteControl?.setValue('/$£');
-    expect(noteControl?.hasError('alphanumericTextPattern')).toBeTruthy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
 
     noteControl?.setValue('Valid note text');
-    expect(noteControl?.hasError('alphanumericTextPattern')).toBeFalsy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeFalsy();
   });
 
   it('should emit formSubmit event when form is submitted with valid data', () => {
@@ -131,12 +132,14 @@ describe('FinesAccNoteAddFormComponent', () => {
   it('should set initial error messages', () => {
     expect(component.fieldErrors).toBeDefined();
     expect(component.fieldErrors.facc_add_notes).toBeDefined();
-    expect(component.fieldErrors.facc_add_notes['required'].message).toBe('Add account note or click cancel to return');
-    expect(component.fieldErrors.facc_add_notes['maxlength'].message).toBe(
-      'Account note must be 1000 characters or fewer',
+    expect(component.fieldErrors.facc_add_notes['required'].message).toBe(
+      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['required'].message,
     );
-    expect(component.fieldErrors.facc_add_notes['alphanumericTextPattern'].message).toBe(
-      'Account note must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+    expect(component.fieldErrors.facc_add_notes['maxlength'].message).toBe(
+      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['maxlength'].message,
+    );
+    expect(component.fieldErrors.facc_add_notes['alphanumericWithHyphensSpacesApostrophesDotPattern'].message).toBe(
+      FINES_ACC_ADD_NOTE_FIELD_ERRORS.facc_add_notes['alphanumericWithHyphensSpacesApostrophesDotPattern'].message,
     );
   });
 
@@ -180,11 +183,11 @@ describe('FinesAccNoteAddFormComponent', () => {
 
     const allowedSpecialChars = 'Note with spaces';
     noteControl?.setValue(allowedSpecialChars);
-    expect(noteControl?.hasError('alphanumericTextPattern')).toBeFalsy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeFalsy();
 
     const disallowedSpecialChars = 'Note with /$£';
     noteControl?.setValue(disallowedSpecialChars);
-    expect(noteControl?.hasError('alphanumericTextPattern')).toBeTruthy();
+    expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
   });
 
   it('should have correct routing paths', () => {

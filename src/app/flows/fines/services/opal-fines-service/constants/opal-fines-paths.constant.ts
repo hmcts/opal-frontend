@@ -14,7 +14,6 @@ const defendantAccounts = 'defendant-accounts';
 const notes = 'notes';
 const defendantAccountsSearch = '/search';
 
-
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitRefData: `${baseUrl}${businessUnit}`,
   localJusticeAreaRefData: `${baseUrl}${localJusticeArea}`,

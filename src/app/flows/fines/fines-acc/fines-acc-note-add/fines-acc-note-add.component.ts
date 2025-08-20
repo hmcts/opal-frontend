@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form/fines-acc-note-add-form';
+import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
@@ -20,6 +20,16 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
   protected readonly utilsService = inject(UtilsService);
   protected readonly finesAccStore = inject(FinesAccountStore);
 
+  /**
+   * Constructs the payload for adding a note.
+   *
+   * This method collects necessary data from the finesAccStore as well as the form input to build the
+   * payload required for adding a new note to the account. It gathers the account version, the associated
+   * record's type and ID, the note type (hardcoded as 'AA'), and the note text from the form data.
+   *
+   * @param form - The form containing note data for the fines account.
+   * @returns The payload object conforming to the IOpalFinesAddNotePayload interface.
+   */
   private buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
     // construct the payload for adding a note
     return {

@@ -23,13 +23,13 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
     FormsModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './fines-acc-note-add-form.html',
+  templateUrl: './fines-acc-note-add-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+  private readonly finesAccStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddNoteForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
-  protected readonly finesAccStore = inject(FinesAccountStore);
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddNoteFieldErrors = FINES_ACC_ADD_NOTE_FIELD_ERRORS;
@@ -42,7 +42,10 @@ export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent impl
       facc_add_notes: new FormControl(null, [
         Validators.required,
         Validators.maxLength(1000),
-        patternValidator(ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN, 'alphanumericTextPattern'),
+        patternValidator(
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+          'alphanumericWithHyphensSpacesApostrophesDotPattern',
+        ),
       ]),
     });
   }

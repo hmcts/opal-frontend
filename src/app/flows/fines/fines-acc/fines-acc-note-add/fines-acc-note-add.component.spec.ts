@@ -8,7 +8,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
-import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form-mock';
+import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form.mock';
 import {
   IOpalFinesAddNotePayload,
   IOpalFinesAddNoteResponse,
