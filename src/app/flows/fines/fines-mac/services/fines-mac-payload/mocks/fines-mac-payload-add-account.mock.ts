@@ -69,6 +69,10 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
       default_days_in_jail: 12,
       enforcements: [
         {
+          result_id: 'COLLO',
+          enforcement_result_responses: null,
+        },
+        {
           result_id: 'PRIS',
           enforcement_result_responses: [
             {
