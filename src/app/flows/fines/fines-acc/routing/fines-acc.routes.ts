@@ -7,6 +7,8 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_ACC_ROUTING_TITLES } from './constants/fines-acc-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
+import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-account-state.guard';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -38,7 +40,8 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['search-and-view-accounts'], accRootPermissionIds['account-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.note,
@@ -52,7 +55,8 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.comments,

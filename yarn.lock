@@ -3522,9 +3522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.12":
-  version: 0.0.12
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.12"
+"@hmcts/opal-frontend-common-node@file:/Users/arnabsubedi/Repos/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.7
+  resolution: "@hmcts/opal-frontend-common-node@file:/Users/arnabsubedi/Repos/opal-frontend-common-node-lib/dist#/Users/arnabsubedi/Repos/opal-frontend-common-node-lib/dist::hash=113c27&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -3533,32 +3533,32 @@ __metadata:
     applicationinsights: "npm:~2.9.6"
     axios: "npm:^1.6.2"
     body-parser: "npm:^2.0.0"
-    config: "npm:^4.0.0"
-    connect-redis: "npm:^9.0.0"
+    config: "npm:^3.3.9"
+    connect-redis: "npm:^8.0.0"
     cookie-parser: "npm:^1.4.6"
-    csrf-csrf: "npm:^4.0.0"
+    csrf-csrf: "npm:^3.0.6"
     express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     helmet: "npm:^8.0.0"
     http-proxy-middleware: "npm:^3.0.0"
     luxon: "npm:^3.4.3"
     prettier: "npm:^3.0.3"
-    redis: "npm:^5.0.0"
+    redis: "npm:^4.6.11"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/81a14185a633c567047f5f237fa286ca65abf5b2e94690dd1070e7584ace1270fdc984aa10c7a69536e6fe930c80bdcdd4dc805355a23e3f3a8504a1b9512e5b
+  checksum: 10/ae0f7782bda483c581a55bdc88eb0b02e31f7b087483f3c7460dc068e3242bc8daa327f23963b550aa7af02d48c1b0f5d43c00d06d01b04d6e277dd3cbe20730
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.33":
-  version: 0.0.33
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.33"
+"@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.34
+  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=d5546d&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/8fa4282095271aedca5149b016ae36822e25287e347223895f8326ef5033b6824e3b0f7e61b0a55797041fe9a1e4c380f7f55bae0ee888e6087a89097243b4a9
+  checksum: 10/1f83ce2a6a4db0afaeaecb7369df4a5b87a31b2b77ee8f00267571fa4d9242124c3a565a06de5cc1647e9176f0d455c8b3bbb7f4118c5c77b92e9fcc06cf4ab4
   languageName: node
   linkType: hard
 
@@ -4946,12 +4946,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/bloom@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@redis/bloom@npm:1.2.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10/a16408f729ddd032a52c9d998661dfa7beabc0e92760d30619c3166c7a53a98c037956d93d230b787005fd8a599a7456461ca7429c1916893c2d13d59a41e0e6
+  languageName: node
+  linkType: hard
+
 "@redis/bloom@npm:5.8.1":
   version: 5.8.1
   resolution: "@redis/bloom@npm:5.8.1"
   peerDependencies:
     "@redis/client": ^5.8.1
   checksum: 10/f691b1dce21f6d9271591a5f0ba01c5bc559315488e03ce260924791cb5f02ee0f49bfd399a1b8610136194d626066ebffd87ddfe47d1f5330d49083c91b3d4a
+  languageName: node
+  linkType: hard
+
+"@redis/client@npm:1.6.1":
+  version: 1.6.1
+  resolution: "@redis/client@npm:1.6.1"
+  dependencies:
+    cluster-key-slot: "npm:1.1.2"
+    generic-pool: "npm:3.9.0"
+    yallist: "npm:4.0.0"
+  checksum: 10/3ef20235b9b0ecba728bbc7208eabbdfc2eebb50c6fb95b20486a0c14e9d6f3ce620ac0d3d14d7f682ea7cb953b13bf89bd94932b7ab3babeb12ba77136b4291
   languageName: node
   linkType: hard
 
@@ -4964,6 +4984,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/graph@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@redis/graph@npm:1.1.1"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10/96b8ee9bec124947465848b56a014805f9639e09704e03c75a92072a319599ac9dcd4f9ace22970a7f72131a241166ad31db4dc6931b34808d22a5ca94649ba5
+  languageName: node
+  linkType: hard
+
+"@redis/json@npm:1.0.7":
+  version: 1.0.7
+  resolution: "@redis/json@npm:1.0.7"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10/df0ac5035608d2e82289237d1adbf541af3743a86692df9958a2c89281bce024eeecfc031db51774d8a46639c5ec34ce9f8b71ebec7bce21865920e36ca3db57
+  languageName: node
+  linkType: hard
+
 "@redis/json@npm:5.8.1":
   version: 5.8.1
   resolution: "@redis/json@npm:5.8.1"
@@ -4973,12 +5011,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redis/search@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@redis/search@npm:1.2.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10/25bba222c0fb1ec1f2db08fe157d30d56a8ffe234214c72d3a7a991daefe77f18c5e6440ab3aa297aef88bafd5448b04ac9fcd84671f2dadc8989712c06b63b4
+  languageName: node
+  linkType: hard
+
 "@redis/search@npm:5.8.1":
   version: 5.8.1
   resolution: "@redis/search@npm:5.8.1"
   peerDependencies:
     "@redis/client": ^5.8.1
   checksum: 10/a5e12dd2c752e09e2052c3cd8d6ff8f2ff6f6c9336e07557a5a93c1ad6a908babdad8377a6d1ee1655054fcf9c2658e815d8463a23c1525302f9dc5da69c5fc5
+  languageName: node
+  linkType: hard
+
+"@redis/time-series@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@redis/time-series@npm:1.1.0"
+  peerDependencies:
+    "@redis/client": ^1.0.0
+  checksum: 10/e1d000eef7f37645f7f4ff94f32dd998384360b12fed1e4d614d828c065b72d7627e27444fab781fac4fdfe301c45f893417550fb1011d3b75237566ff0954e0
   languageName: node
   linkType: hard
 
@@ -7852,6 +7908,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"config@npm:^3.3.9":
+  version: 3.3.12
+  resolution: "config@npm:3.3.12"
+  dependencies:
+    json5: "npm:^2.2.3"
+  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
+  languageName: node
+  linkType: hard
+
 "config@npm:^4.0.0":
   version: 4.1.1
   resolution: "config@npm:4.1.1"
@@ -7872,6 +7937,15 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10/3b26bf4041fdb33deacdcb3af9ae11e9a0b413fb14c95844d74a460b55e407625b364955dcf965c654605cde9d24ad5dad423c489aa430825aab2035859aba0c
+  languageName: node
+  linkType: hard
+
+"connect-redis@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "connect-redis@npm:8.1.0"
+  peerDependencies:
+    express-session: ">=1"
+  checksum: 10/c51bc8beeb801b34d92e6fe7ade87f15d8317f78bdaf82260e49b5e0455dc5b81e2355601b799547a7b51b67d6d56158af9c126586ca7b456006c58581b73405
   languageName: node
   linkType: hard
 
@@ -8122,6 +8196,15 @@ __metadata:
   version: 0.0.2
   resolution: "crypt@npm:0.0.2"
   checksum: 10/2c72768de3d28278c7c9ffd81a298b26f87ecdfe94415084f339e6632f089b43fe039f2c93f612bcb5ffe447238373d93b2e8c90894cba6cfb0ac7a74616f8b9
+  languageName: node
+  linkType: hard
+
+"csrf-csrf@npm:^3.0.6":
+  version: 3.2.2
+  resolution: "csrf-csrf@npm:3.2.2"
+  dependencies:
+    http-errors: "npm:^2.0.0"
+  checksum: 10/d21dc324d1c3c81e7693a638c631d689be6723d84bdf7b2fd77e6d88ec73330215beef719976792f122f0281fa10c7b4e9e8a67129cef86904e234c62fb40b9b
   languageName: node
   linkType: hard
 
@@ -10525,6 +10608,13 @@ __metadata:
   version: 1.2.3
   resolution: "functions-have-names@npm:1.2.3"
   checksum: 10/0ddfd3ed1066a55984aaecebf5419fbd9344a5c38dd120ffb0739fac4496758dcf371297440528b115e4367fc46e3abc86a2cc0ff44612181b175ae967a11a05
+  languageName: node
+  linkType: hard
+
+"generic-pool@npm:3.9.0":
+  version: 3.9.0
+  resolution: "generic-pool@npm:3.9.0"
+  checksum: 10/3c632d30a6a7d47412dc67ddc517992691e0fde819c0cb6b5871bc87d10f61a7c09f12a60dbd77c78ae3e6ca10db41e2eaee28985ce724d9620354a006205ce1
   languageName: node
   linkType: hard
 
@@ -14028,8 +14118,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.33"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.12"
+    "@hmcts/opal-frontend-common": "file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/dist/opal-frontend-common"
+    "@hmcts/opal-frontend-common-node": "file:/Users/arnabsubedi/Repos/opal-frontend-common-node-lib/dist"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
@@ -15053,6 +15143,20 @@ __metadata:
   dependencies:
     resolve: "npm:^1.1.6"
   checksum: 10/fe76bf9c21875ac16e235defedd7cbd34f333c02a92546142b7911a0f7c7059d2e16f441fe6fb9ae203f459c05a31b2bcf26202896d89e390eda7514d5d2702b
+  languageName: node
+  linkType: hard
+
+"redis@npm:^4.6.11":
+  version: 4.7.1
+  resolution: "redis@npm:4.7.1"
+  dependencies:
+    "@redis/bloom": "npm:1.2.0"
+    "@redis/client": "npm:1.6.1"
+    "@redis/graph": "npm:1.1.1"
+    "@redis/json": "npm:1.0.7"
+    "@redis/search": "npm:1.2.0"
+    "@redis/time-series": "npm:1.1.0"
+  checksum: 10/42e55071c6e6191940b88466f444db409d6a4f953e06588141a791a4cc2d3f1bc068dd0fad18eeee105353b1e3b885406abf23dcc56f80972f27e4f8507bd388
   languageName: node
   linkType: hard
 
@@ -18198,17 +18302,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yallist@npm:4.0.0, yallist@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "yallist@npm:4.0.0"
+  checksum: 10/4cb02b42b8a93b5cf50caf5d8e9beb409400a8a4d85e83bb0685c1457e9ac0b7a00819e9f5991ac25ffabb56a78e2f017c1acc010b3a1babfe6de690ba531abd
+  languageName: node
+  linkType: hard
+
 "yallist@npm:^3.0.2":
   version: 3.1.1
   resolution: "yallist@npm:3.1.1"
   checksum: 10/9af0a4329c3c6b779ac4736c69fae4190ac03029fa27c1aef4e6bcc92119b73dea6fe5db5fe881fb0ce2a0e9539a42cdf60c7c21eda04d1a0b8c082e38509efb
-  languageName: node
-  linkType: hard
-
-"yallist@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "yallist@npm:4.0.0"
-  checksum: 10/4cb02b42b8a93b5cf50caf5d8e9beb409400a8a4d85e83bb0685c1457e9ac0b7a00819e9f5991ac25ffabb56a78e2f017c1acc010b3a1babfe6de690ba531abd
   languageName: node
   linkType: hard
 
