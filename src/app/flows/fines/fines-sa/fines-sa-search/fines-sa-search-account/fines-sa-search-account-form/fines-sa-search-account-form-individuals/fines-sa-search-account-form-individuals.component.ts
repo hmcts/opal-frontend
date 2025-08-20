@@ -148,7 +148,7 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractFormBa
    * - Calls the parent class's `ngOnInit` method to ensure any inherited initialization logic is executed.
    */
   public override ngOnInit(): void {
-    this.setupConditionalLastNameValidation();
+    this.setupConditionalValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     super.ngOnInit();
   }
