@@ -11,7 +11,7 @@
     "submitted_by_name": "opal-test",
     "business_unit_name": "Business Unit C",
     "date_of_birth": "2010-05-15",
-    "defendant_type": "parentOrGuardianToPay"
+    "defendant_type": "pgToPay"
   },
   "account_type": "fine",
   "account_status": "Published",
