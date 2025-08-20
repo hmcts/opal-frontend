@@ -26,7 +26,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR: IFinesMacPa
           email_address: null,
           payout_hold: true,
           pay_by_bacs: true,
-          bank_account_type: 1,
+          bank_account_type: '1',
           bank_sort_code: '000000',
           bank_account_number: '01010101',
           bank_account_name: 'Mr Test Test',

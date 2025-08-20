@@ -69,7 +69,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     email_address: null,
     payout_hold: payoutOnHold,
     pay_by_bacs: payByBacs,
-    bank_account_type: 1,
+    bank_account_type: '1',
     bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
