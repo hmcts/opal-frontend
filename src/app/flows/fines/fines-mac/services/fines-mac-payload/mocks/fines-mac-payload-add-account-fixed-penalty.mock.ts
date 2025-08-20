@@ -74,29 +74,6 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
       default_days_in_jail: null,
       enforcements: null,
     },
-    // {
-    //   payment_terms_type_code: 'B',
-    //   effective_date: '2024-10-15',
-    //   instalment_period: null,
-    //   lump_sum_amount: null,
-    //   instalment_amount: null,
-    //   default_days_in_jail: 12,
-    //   enforcements: [
-    //     {
-    //       result_id: 'PRIS',
-    //       enforcement_result_responses: [
-    //         {
-    //           parameter_name: 'earliestreleasedate',
-    //           response: '2024-10-12',
-    //         },
-    //         {
-    //           parameter_name: 'prisonandprisonnumber',
-    //           response: 'test test',
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
     account_notes: [
       {
         account_note_serial: 3,
