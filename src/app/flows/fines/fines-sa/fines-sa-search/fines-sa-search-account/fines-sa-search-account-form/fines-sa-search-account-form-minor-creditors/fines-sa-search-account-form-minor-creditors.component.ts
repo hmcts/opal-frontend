@@ -332,6 +332,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
     const controlGroup = this.buildMinorCreditorFormControls();
     this.addControlsToNestedFormGroup(controlGroup);
     this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_minor_creditors_search_criteria);
+    this.finesSaStore.resetSearchAccount();
     this.setupMinorCreditorTypeListener();
     this.setupIndividualConditionalValidation();
     this.setupCompanyConditionalValidation();

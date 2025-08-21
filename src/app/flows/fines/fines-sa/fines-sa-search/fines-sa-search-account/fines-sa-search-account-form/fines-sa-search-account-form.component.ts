@@ -153,6 +153,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    */
   private initialFormSetup(): void {
     this.setupBaseSearchAccountForm();
+    this.rePopulateForm(this.finesSaStore.searchAccount());
     this.setupFragmentListener();
     this.setInitialErrorMessages();
   }
@@ -187,13 +188,6 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
     // Reset existing values/validation in all tab groups
     this.clearSearchForm();
-
-    // Rehydrate any previously saved form state (child also handles its own patching where needed)
-    this.rePopulateForm(this.finesSaStore.searchAccount());
-
-    if (tab !== this.finesSaStore.activeTab()) {
-      this.finesSaStore.resetSearchAccount();
-    }
 
     this.finesSaStore.setActiveTab(tab as FinesSaSearchAccountTab);
   }

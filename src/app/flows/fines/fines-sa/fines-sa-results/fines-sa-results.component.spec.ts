@@ -7,6 +7,7 @@ import { FinesSaStoreType } from '../stores/types/fines-sa.type';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -133,6 +134,120 @@ describe('FinesSaResultsComponent', () => {
       replaceUrl: true,
     });
     expect(setTabSpy).toHaveBeenCalledWith('companies');
+  });
+
+  describe('computeDefaultFragment', () => {
+    it('returns empty string when all buckets are zero', () => {
+      component.individualsData = [];
+      component.companiesData = [];
+      component.minorCreditorsData = [];
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('');
+    });
+
+    it('returns empty string when any bucket is >= 100', () => {
+      component.individualsData.length = 100;
+      component.companiesData.length = 0;
+      component.minorCreditorsData.length = 0;
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('');
+    });
+
+    it('prefers individuals when 1–99', () => {
+      component.individualsData.length = 1;
+      component.companiesData.length = 50;
+      component.minorCreditorsData.length = 50;
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('individuals');
+    });
+
+    it('returns blank when all buckets are oversize (>= 100)', () => {
+      component.individualsData.length = 100;
+      component.companiesData.length = 100;
+      component.minorCreditorsData.length = 100;
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('');
+    });
+
+    it('falls back to companies when individuals are 0 and companies are 1–99', () => {
+      component.individualsData.length = 0;
+      component.companiesData.length = 1;
+      component.minorCreditorsData.length = 0;
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('companies');
+    });
+
+    it('falls back to minorCreditors when individuals and companies are 0 and minorCreditors are 1–99', () => {
+      component.individualsData.length = 0;
+      component.companiesData.length = 0;
+      component.minorCreditorsData.length = 1;
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('minorCreditors');
+    });
+
+    it('hits the fallback branch for unexpected lengths (guards against impossible states)', () => {
+      // Simulate an impossible runtime state by replacing arrays with objects
+      // that expose a non-standard length. This avoids triggering anyOversize/allZero
+      // and bypasses the 1–99 checks, forcing the fallback.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      component.individualsData = { length: -1 } as unknown as any;
+      component.companiesData.length = 0;
+      component.minorCreditorsData.length = 0;
+
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('');
+    });
+
+    it('falls back when lengths are NaN', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      component.individualsData = { length: Number.NaN } as unknown as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      component.companiesData = { length: Number.NaN } as unknown as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      component.minorCreditorsData = { length: Number.NaN } as unknown as any;
+
+      const result = component['computeDefaultFragment']();
+      expect(result).toBe('');
+    });
+  });
+
+  it('should not navigate when a fragment is already present and should set the active tab to that fragment', () => {
+    component.resultView = 'referenceCaseNumber';
+    component.individualsData = [];
+    component.companiesData = [];
+    component.minorCreditorsData = [];
+
+    const activatedRoute = component['activatedRoute'];
+    activatedRoute.fragment = of('individuals');
+
+    const navigateSpy = router.navigate;
+    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setupFragmentListener();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(setTabSpy).toHaveBeenCalledWith('individuals');
+  });
+
+  it('should set active tab to empty string and not navigate when any bucket is oversize (>= 100)', () => {
+    component.resultView = 'accountNumber';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.individualsData = new Array(100).fill({}) as any;
+    component.companiesData = [];
+    component.minorCreditorsData = [];
+
+    const activatedRoute = component['activatedRoute'];
+    activatedRoute.fragment = of(null);
+
+    const navigateSpy = router.navigate;
+    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).setupFragmentListener();
+
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(setTabSpy).toHaveBeenCalledWith('' as FinesSaSearchAccountTab);
   });
 
   it('should navigate back to search page with correct fragment', () => {

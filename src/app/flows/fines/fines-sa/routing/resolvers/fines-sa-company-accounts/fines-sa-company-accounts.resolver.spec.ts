@@ -48,7 +48,7 @@ describe('finesSaCompanyAccountsResolver', () => {
         account_number: 'ACC123',
         search_type: 'company',
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
@@ -76,7 +76,7 @@ describe('finesSaCompanyAccountsResolver', () => {
         pcr: 'REF456',
         search_type: 'company',
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
@@ -118,6 +118,50 @@ describe('finesSaCompanyAccountsResolver', () => {
         active_accounts_only: true,
       }),
     );
+    expect(result).toEqual({ count: 0, defendant_accounts: [] });
+  });
+
+  it('should default active_accounts_only to true when nullish in company criteria search', async () => {
+    const comp = {
+      fsa_search_account_companies_company_name: 'Umbrella Inc',
+      fsa_search_account_companies_company_name_exact_match: true,
+      fsa_search_account_companies_address_line_1: '1 Main St',
+      fsa_search_account_companies_post_code: 'AB1 2CD',
+      fsa_search_account_companies_include_aliases: true,
+    };
+
+    finesSaStore.setSearchAccount({
+      fsa_search_account_number: null,
+      fsa_search_account_reference_case_number: null,
+      fsa_search_account_individuals_search_criteria: null,
+      fsa_search_account_companies_search_criteria: comp,
+      fsa_search_account_minor_creditors_search_criteria: null,
+      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_business_unit_ids: [42],
+      // This is intentionally nullish to exercise the `?? true` default
+      fsa_search_account_active_accounts_only: null,
+    });
+
+    opalFinesService.getDefendantAccounts.and.returnValue(of({ count: 0, defendant_accounts: [] }));
+    const mockRoute = {} as ActivatedRouteSnapshot;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
+
+    expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        organisation_name: 'Umbrella Inc',
+        exact_match_organisation_name: true,
+        address_line: '1 Main St',
+        postcode: 'AB1 2CD',
+        include_aliases: true,
+        search_type: 'company',
+        business_unit_ids: [42],
+        // The key assertion: nullish value defaults to true via `?? true`
+        active_accounts_only: true,
+      }),
+    );
+
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
   });
 

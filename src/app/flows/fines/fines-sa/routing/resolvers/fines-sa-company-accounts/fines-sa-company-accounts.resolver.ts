@@ -30,7 +30,6 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
     ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
     search_type: 'company' as const,
     business_unit_ids: state.fsa_search_account_business_unit_ids,
-    active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   };
 
   const hasAccountNumber = !!state.fsa_search_account_number;
@@ -45,6 +44,7 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       account_number: state.fsa_search_account_number,
+      active_accounts_only: false,
     });
   }
 
@@ -52,6 +52,7 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       pcr: state.fsa_search_account_reference_case_number,
+      active_accounts_only: false,
     });
   }
 
@@ -63,5 +64,6 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
     include_aliases: companyCriteria!.fsa_search_account_companies_include_aliases,
     address_line: companyCriteria!.fsa_search_account_companies_address_line_1,
     postcode: companyCriteria!.fsa_search_account_companies_post_code,
+    active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   });
 };
