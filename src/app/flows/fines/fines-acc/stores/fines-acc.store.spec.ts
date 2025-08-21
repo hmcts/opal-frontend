@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesAccountStore } from './fines-acc.store';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-account-state.constant';
-import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
+import { IFinesAccountState } from '../interfaces/fines-acc-state.interface';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
 
 describe('FinesAccountStore', () => {

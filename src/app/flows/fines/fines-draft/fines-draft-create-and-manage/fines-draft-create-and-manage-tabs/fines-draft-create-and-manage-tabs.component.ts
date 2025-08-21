@@ -18,7 +18,7 @@ import {
   MojSubNavigationItemComponent,
   MojSubNavigationComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
+import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { Observable, Subject } from 'rxjs';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
@@ -44,8 +44,8 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
     MojAlertIconComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
-    MojBadgeComponent,
     FinesDraftTableWrapperComponent,
+    MojNotificationBadgeComponent
   ],
   templateUrl: './fines-draft-create-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

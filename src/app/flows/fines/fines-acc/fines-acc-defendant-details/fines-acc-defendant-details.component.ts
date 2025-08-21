@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -36,8 +36,9 @@ import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-s
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 // Interfaces
 import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
-import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
+import { IFinesAccountDetailsTabsData } from '../interfaces/fines-acc-tab-data-types.interface';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_DATA } from './constants/fines-acc-defendant-account-tabs-data.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -74,7 +75,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
-  public tabData$ = new Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData>();
+  public tabData$: IFinesAccountDetailsTabsData = structuredClone(FINES_ACC_DEFENDANT_ACCOUNT_TABS_DATA);
   public accountData!: IOpalFinesDefendantAccountHeader;
 
   /**
@@ -100,21 +101,33 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
     const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
 
-    this.tabData$ = this.createTabDataStream<
-      IOpalFinesAccountDetailsAtAGlanceTabRefData,
-      IOpalFinesAccountDetailsAtAGlanceTabRefData
-    >(
-      fragment$,
-      (tab) => tab,
-      (tab) =>
-        this.opalFinesService.getDefendantAccountAtAGlance(
-          tab,
-          defendant_account_id,
-          business_unit_id,
-          business_unit_user_id,
-        ),
-      (res) => res,
-    );
+    fragment$.subscribe((tab) => {
+      switch(tab) {
+        case 'at-a-glance':
+          this.tabData$['at-a-glance'] = this.opalFinesService.getDefendantAccountAtAGlance(
+            tab,
+            defendant_account_id,
+            business_unit_id,
+            business_unit_user_id,
+          ).pipe(
+            tap((data) => {
+              this.compareVersion(data.version);
+            }),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$)
+          );
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+
+  private compareVersion(version: number | undefined,): void {
+    if (version !== this.accountStore.version()) {
+      console.error('version mismatch', version, this.accountStore.version());
+    }
   }
 
   /**

@@ -1,5 +1,82 @@
-<div class="govuk-grid-column-full">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full"></div>
+@if (tabData) {
+  <div class="govuk-grid-column-full">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="headingStyle">Defendant</h2>
+        <hr [class]="headingHrStyle">
+
+        <h3 [class]="keyStyle">Name</h3>
+        <p [class]="valueStyle">{{ tabData.debtor_detail.title }} {{ tabData.debtor_detail.first_names }} {{ tabData.debtor_detail.surname | uppercase }}</p>
+
+        @if (tabData.debtor_detail.date_of_birth) {
+        <h3 [class]="keyStyle">Date of birth</h3>
+        <p [class]="valueStyle">{{ dateService.getFromFormatToFormat(tabData.debtor_detail.date_of_birth, 'dd/MM/yyyy', 'dd MMMM yyyy') }}</p>
+        }
+
+        <h3 [class]="keyStyle">Address</h3>
+        <p [class]="valueStyle">
+          {{ tabData.debtor_detail.address_line_1 }}
+          @if (tabData.debtor_detail.address_line_2) {
+            <br />
+            {{ tabData.debtor_detail.address_line_2 }}
+          }
+          @if (tabData.debtor_detail.address_line_3) {
+            <br />
+            {{ tabData.debtor_detail.address_line_3 }}
+          }
+          @if (tabData.debtor_detail.address_line_4) {
+            <br />
+            {{ tabData.debtor_detail.address_line_4 }}
+          }
+          @if (tabData.debtor_detail.address_line_5) {
+            <br />
+            {{ tabData.debtor_detail.address_line_5 }}
+          }
+          <br />
+          {{ tabData.debtor_detail.post_code }}
+        </p>
+
+        <h3 [class]="keyStyle">National Insurance Number</h3>
+        <p [class]="valueStyle">{{ tabData.debtor_detail.national_insurance_number }}</p>
+
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="headingStyle">Payment terms</h2>
+        <hr [class]="headingHrStyle">
+
+        @if (tabData.payment_terms.payment_terms_summary) {
+        <h3 [class]="keyStyle">Payment terms</h3>
+        <p [class]="valueStyle">{{ tabData.payment_terms.payment_terms_summary }}</p>
+        }
+
+        @if (tabData.payment_terms.instalment_period) {
+        <h3 [class]="keyStyle">Frequency</h3>
+        <p [class]="valueStyle">{{ tabData.payment_terms.instalment_period }}</p>
+        }
+
+        @if (tabData.payment_terms.instalment_amount) {
+        <h3 [class]="keyStyle">Installments</h3>
+        <p [class]="valueStyle">{{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}</p>
+        }
+
+        @if (tabData.payment_terms.effective_date) {
+        <h3 [class]="keyStyle">Start date</h3>
+        <p [class]="valueStyle">{{ dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy') }}</p>
+        }
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="headingStyle">Enforcement status</h2>        
+        <hr [class]="headingHrStyle">
+        <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour'" tagId="enforcement_status">{{tabData.enforcement_status.last_enforcement_action_title}}</opal-lib-govuk-tag>
+        <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--purple">Lorem ipsum 1</opal-lib-moj-badge>
+
+        <p>{{ tabData.enforcement_status.last_enforcement_action_title }} {{ tabData.enforcement_status.last_enforcement_action }}</p>
+        <h2 [class]="headingStyle">Comments</h2>
+        <hr [class]="headingHrStyle">
+
+      </div>
+    </div>
   </div>
-</div>
+}

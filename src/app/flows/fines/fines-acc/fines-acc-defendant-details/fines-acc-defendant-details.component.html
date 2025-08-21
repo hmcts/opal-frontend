@@ -104,7 +104,7 @@
 @switch (activeTab) {
   @case ('at-a-glance') {
     <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabData$ | async"
+      [tabData]="tabData$['at-a-glance'] | async"
     ></app-fines-acc-defendant-details-at-a-glance-tab>
   }
 }
