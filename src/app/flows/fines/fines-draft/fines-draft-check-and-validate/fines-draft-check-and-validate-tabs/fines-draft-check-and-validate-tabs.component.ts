@@ -29,9 +29,9 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
-import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -44,7 +44,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
     MojAlertContentComponent,
     MojAlertIconComponent,
     MojAlertTextComponent,
-    MojBadgeComponent,
+    MojNotificationBadgeComponent
   ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
