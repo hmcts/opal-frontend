@@ -9,6 +9,7 @@ import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individ
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesSaService } from 'src/app/flows/fines/fines-sa/services/fines-sa.service';
 import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
+import {getFirstDayOfCurrentMonth} from '../../../support/utils/dateUtils'
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -230,6 +231,17 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobError).should('exist').and('contain', 'Date must be in the format DD/MM/YYYY');
 
     cy.get(DOM_ELEMENTS.dobInput).clear();
+  });
+
+  it('date picker should show the date in correct formate DD/MM/YYYY', { tags: ['PO-1998'] }, () => {
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
+    cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click ();    
+    const expectedDate = getFirstDayOfCurrentMonth();
+    cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);             
+    cy.get(DOM_ELEMENTS.searchButton).click();
+    
   });
 
   it('AC3i. should show error for invalid NI number', { tags: ['PO-705'] }, () => {
