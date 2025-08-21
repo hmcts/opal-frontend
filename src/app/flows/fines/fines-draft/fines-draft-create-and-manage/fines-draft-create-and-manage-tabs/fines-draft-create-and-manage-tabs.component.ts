@@ -45,8 +45,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     FinesDraftTableWrapperComponent,
-    MojNotificationBadgeComponent
-
+    MojNotificationBadgeComponent,
   ],
   templateUrl: './fines-draft-create-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

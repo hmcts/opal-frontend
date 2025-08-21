@@ -44,7 +44,7 @@ import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/compo
     MojAlertContentComponent,
     MojAlertIconComponent,
     MojAlertTextComponent,
-    MojNotificationBadgeComponent
+    MojNotificationBadgeComponent,
   ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
