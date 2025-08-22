@@ -4,7 +4,11 @@ import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-s
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+} from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
  * Resolver that retrieves company defendant accounts based on current search criteria in the Fines SA flow.
@@ -28,22 +32,30 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
   // Create base object with defaults, search type, and common fields
   const baseSearchParams = {
     ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-    search_type: 'company' as const,
-    business_unit_ids: state.fsa_search_account_business_unit_ids,
+    // MODIFY BELOW CODE ONCE BU SELECTION IMPLEMENTED
+    business_unit_ids:
+      state.fsa_search_account_business_unit_ids ??
+      OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
   };
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const companyCriteria = state.fsa_search_account_companies_search_criteria;
+  const hasCompanyCriteria = Object.values(state.fsa_search_account_companies_search_criteria ?? {}).some(
+    (x) => x !== null,
+  );
 
-  if (!hasAccountNumber && !hasReference && !companyCriteria) {
+  if (!hasAccountNumber && !hasReference && !hasCompanyCriteria) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 
   if (hasAccountNumber) {
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
-      account_number: state.fsa_search_account_number,
+      reference_number: {
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+        account_number: state.fsa_search_account_number,
+        organisation: true,
+      },
       active_accounts_only: false,
     });
   }
@@ -51,19 +63,28 @@ export const finesSaCompanyAccountsResolver: ResolveFn<IOpalFinesDefendantAccoun
   if (hasReference) {
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
-      pcr: state.fsa_search_account_reference_case_number,
+      reference_number: {
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+        prosecutor_case_reference: state.fsa_search_account_reference_case_number,
+        organisation: true,
+      },
       active_accounts_only: false,
     });
   }
 
   // Company criteria search
+  const companyCriteria = state.fsa_search_account_companies_search_criteria;
   return opalFinesService.getDefendantAccounts({
     ...baseSearchParams,
-    organisation_name: companyCriteria!.fsa_search_account_companies_company_name,
-    exact_match_organisation_name: companyCriteria!.fsa_search_account_companies_company_name_exact_match,
-    include_aliases: companyCriteria!.fsa_search_account_companies_include_aliases,
-    address_line: companyCriteria!.fsa_search_account_companies_address_line_1,
-    postcode: companyCriteria!.fsa_search_account_companies_post_code,
+    defendant: {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+      organisation_name: companyCriteria!.fsa_search_account_companies_company_name,
+      exact_match_organisation_name: companyCriteria!.fsa_search_account_companies_company_name_exact_match,
+      include_aliases: companyCriteria!.fsa_search_account_companies_include_aliases ?? false,
+      address_line_1: companyCriteria!.fsa_search_account_companies_address_line_1,
+      postcode: companyCriteria!.fsa_search_account_companies_post_code,
+      organisation: true,
+    },
     active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   });
 };

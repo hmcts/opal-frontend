@@ -5,6 +5,11 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+} from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-state.constant';
 
 describe('finesSaCompanyAccountsResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,8 +50,11 @@ describe('finesSaCompanyAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        account_number: 'ACC123',
-        search_type: 'company',
+        reference_number: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+          account_number: 'ACC123',
+          organisation: true,
+        },
         business_unit_ids: [1],
         active_accounts_only: false,
       }),
@@ -73,8 +81,11 @@ describe('finesSaCompanyAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        pcr: 'REF456',
-        search_type: 'company',
+        reference_number: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+          prosecutor_case_reference: 'REF456',
+          organisation: true,
+        },
         business_unit_ids: [1],
         active_accounts_only: false,
       }),
@@ -84,11 +95,9 @@ describe('finesSaCompanyAccountsResolver', () => {
 
   it('should call API with company criteria if account and reference are missing', async () => {
     const comp = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE,
       fsa_search_account_companies_company_name: 'Acme Corp',
       fsa_search_account_companies_company_name_exact_match: false,
-      fsa_search_account_companies_address_line_1: '',
-      fsa_search_account_companies_post_code: '',
-      fsa_search_account_companies_include_aliases: false,
     };
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
@@ -108,12 +117,13 @@ describe('finesSaCompanyAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        organisation_name: 'Acme Corp',
-        exact_match_organisation_name: false,
-        address_line: '',
-        postcode: '',
-        include_aliases: false,
-        search_type: 'company',
+        defendant: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+          organisation: true,
+          organisation_name: 'Acme Corp',
+          exact_match_organisation_name: false,
+          include_aliases: false,
+        },
         business_unit_ids: [1],
         active_accounts_only: true,
       }),
@@ -123,6 +133,7 @@ describe('finesSaCompanyAccountsResolver', () => {
 
   it('should default active_accounts_only to true when nullish in company criteria search', async () => {
     const comp = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE,
       fsa_search_account_companies_company_name: 'Umbrella Inc',
       fsa_search_account_companies_company_name_exact_match: true,
       fsa_search_account_companies_address_line_1: '1 Main St',
@@ -150,14 +161,16 @@ describe('finesSaCompanyAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        organisation_name: 'Umbrella Inc',
-        exact_match_organisation_name: true,
-        address_line: '1 Main St',
-        postcode: 'AB1 2CD',
-        include_aliases: true,
-        search_type: 'company',
+        defendant: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+          organisation: true,
+          organisation_name: 'Umbrella Inc',
+          exact_match_organisation_name: true,
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          include_aliases: true,
+        },
         business_unit_ids: [42],
-        // The key assertion: nullish value defaults to true via `?? true`
         active_accounts_only: true,
       }),
     );
