@@ -1,7 +1,7 @@
 import { mount } from 'cypress/angular';
 import { FinesSaSearchAccountComponent } from '../../../../src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-account/fines-sa-search-account.component';
 import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fines-sa.store';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
