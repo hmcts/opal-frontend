@@ -4,7 +4,11 @@ import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-s
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+} from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
  * Resolver that retrieves individual defendant accounts based on current search criteria in the Fines SA flow.
@@ -29,23 +33,30 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
   // Create base object with defaults, search type, and common fields
   const baseSearchParams = {
     ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-    search_type: 'individual' as const,
-    business_unit_ids: state.fsa_search_account_business_unit_ids,
-    active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
+    // MODIFY BELOW CODE ONCE BU SELECTION IMPLEMENTED
+    business_unit_ids:
+      state.fsa_search_account_business_unit_ids ??
+      OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
   };
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const individualCriteria = state.fsa_search_account_individuals_search_criteria;
+  const hasIndividualCriteria = Object.values(state.fsa_search_account_individuals_search_criteria ?? {}).some(
+    (x) => x !== null,
+  );
 
-  if (!hasAccountNumber && !hasReference && !individualCriteria) {
+  if (!hasAccountNumber && !hasReference && !hasIndividualCriteria) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 
   if (hasAccountNumber) {
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
-      account_number: state.fsa_search_account_number,
+      reference_number: {
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+        account_number: state.fsa_search_account_number,
+        organisation: false,
+      },
       active_accounts_only: false,
     });
   }
@@ -53,23 +64,32 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
   if (hasReference) {
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
-      pcr: state.fsa_search_account_reference_case_number,
+      reference_number: {
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+        prosecutor_case_reference: state.fsa_search_account_reference_case_number,
+        organisation: false,
+      },
       active_accounts_only: false,
     });
   }
 
   // Individual criteria search
+  const individualCriteria = state.fsa_search_account_individuals_search_criteria!;
   return opalFinesService.getDefendantAccounts({
     ...baseSearchParams,
-    surname: individualCriteria!.fsa_search_account_individuals_last_name,
-    exact_match_surname: individualCriteria!.fsa_search_account_individuals_last_name_exact_match,
-    forename: individualCriteria!.fsa_search_account_individuals_first_names,
-    exact_match_forenames: individualCriteria!.fsa_search_account_individuals_first_names_exact_match,
-    date_of_birth: individualCriteria!.fsa_search_account_individuals_date_of_birth,
-    ni_number: individualCriteria!.fsa_search_account_individuals_national_insurance_number,
-    address_line: individualCriteria!.fsa_search_account_individuals_address_line_1,
-    postcode: individualCriteria!.fsa_search_account_individuals_post_code,
-    include_aliases: individualCriteria!.fsa_search_account_individuals_include_aliases,
+    defendant: {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+      surname: individualCriteria!.fsa_search_account_individuals_last_name,
+      exact_match_surname: individualCriteria!.fsa_search_account_individuals_last_name_exact_match,
+      forenames: individualCriteria!.fsa_search_account_individuals_first_names,
+      exact_match_forenames: individualCriteria!.fsa_search_account_individuals_first_names_exact_match,
+      birth_date: individualCriteria!.fsa_search_account_individuals_date_of_birth,
+      national_insurance_number: individualCriteria!.fsa_search_account_individuals_national_insurance_number,
+      address_line_1: individualCriteria!.fsa_search_account_individuals_address_line_1,
+      postcode: individualCriteria!.fsa_search_account_individuals_post_code,
+      include_aliases: individualCriteria!.fsa_search_account_individuals_include_aliases ?? false,
+      organisation: false,
+    },
     active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   });
 };

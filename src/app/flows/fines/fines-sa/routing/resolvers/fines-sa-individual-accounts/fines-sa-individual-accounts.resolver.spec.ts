@@ -5,6 +5,11 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+} from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE } from '../../../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-state.constant';
 
 describe('finesSaIndividualAccountsResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,8 +50,11 @@ describe('finesSaIndividualAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        account_number: 'ACC123',
-        search_type: 'individual',
+        reference_number: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+          account_number: 'ACC123',
+          organisation: false,
+        },
         business_unit_ids: [1],
         active_accounts_only: false,
       }),
@@ -73,8 +81,11 @@ describe('finesSaIndividualAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        pcr: 'REF456',
-        search_type: 'individual',
+        reference_number: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
+          prosecutor_case_reference: 'REF456',
+          organisation: false,
+        },
         business_unit_ids: [1],
         active_accounts_only: false,
       }),
@@ -84,15 +95,11 @@ describe('finesSaIndividualAccountsResolver', () => {
 
   it('should call API with individual criteria if account and reference are missing', async () => {
     const ind = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
       fsa_search_account_individuals_last_name: 'Smith',
       fsa_search_account_individuals_last_name_exact_match: false,
       fsa_search_account_individuals_first_names: 'John',
       fsa_search_account_individuals_first_names_exact_match: false,
-      fsa_search_account_individuals_date_of_birth: null,
-      fsa_search_account_individuals_national_insurance_number: '',
-      fsa_search_account_individuals_address_line_1: '',
-      fsa_search_account_individuals_post_code: '',
-      fsa_search_account_individuals_include_aliases: false,
     };
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
@@ -112,16 +119,15 @@ describe('finesSaIndividualAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        surname: 'Smith',
-        exact_match_surname: false,
-        forename: 'John',
-        exact_match_forenames: false,
-        date_of_birth: null,
-        ni_number: '',
-        address_line: '',
-        postcode: '',
-        include_aliases: false,
-        search_type: 'individual',
+        defendant: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+          surname: 'Smith',
+          exact_match_surname: false,
+          forenames: 'John',
+          exact_match_forenames: false,
+          include_aliases: false,
+          organisation: false,
+        },
         business_unit_ids: [1],
         active_accounts_only: true,
       }),
@@ -131,12 +137,11 @@ describe('finesSaIndividualAccountsResolver', () => {
 
   it('should default active_accounts_only to true when nullish in individual criteria search', async () => {
     const ind = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
       fsa_search_account_individuals_last_name: 'Doe',
       fsa_search_account_individuals_last_name_exact_match: true,
       fsa_search_account_individuals_first_names: 'Jane',
       fsa_search_account_individuals_first_names_exact_match: true,
-      fsa_search_account_individuals_date_of_birth: null,
-      fsa_search_account_individuals_national_insurance_number: '',
       fsa_search_account_individuals_address_line_1: '2 Side St',
       fsa_search_account_individuals_post_code: 'CD3 4EF',
       fsa_search_account_individuals_include_aliases: true,
@@ -162,18 +167,18 @@ describe('finesSaIndividualAccountsResolver', () => {
 
     expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        surname: 'Doe',
-        exact_match_surname: true,
-        forename: 'Jane',
-        exact_match_forenames: true,
-        date_of_birth: null,
-        ni_number: '',
-        address_line: '2 Side St',
-        postcode: 'CD3 4EF',
-        include_aliases: true,
-        search_type: 'individual',
+        defendant: {
+          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
+          surname: 'Doe',
+          exact_match_surname: true,
+          forenames: 'Jane',
+          exact_match_forenames: true,
+          address_line_1: '2 Side St',
+          postcode: 'CD3 4EF',
+          include_aliases: true,
+          organisation: false,
+        },
         business_unit_ids: [99],
-        // Key assertion: nullish defaults to true
         active_accounts_only: true,
       }),
     );

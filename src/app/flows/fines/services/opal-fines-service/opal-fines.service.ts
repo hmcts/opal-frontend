@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,9 +36,6 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
-import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
@@ -410,20 +407,10 @@ export class OpalFines {
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
   ): Observable<IOpalFinesDefendantAccountResponse> {
-    console.info(searchParams);
-    let mock: IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    if (searchParams.search_type === 'individual') {
-      mock = structuredClone(
-        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
-      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    } else {
-      mock = structuredClone(
-        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK,
-      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    }
-
-    mock._debug_searchParams = searchParams;
-    return of(mock);
+    return this.http.post<IOpalFinesDefendantAccountResponse>(
+      `${OPAL_FINES_PATHS.searchDefendantAccounts}`,
+      searchParams,
+    );
   }
 
   /**
@@ -435,12 +422,9 @@ export class OpalFines {
   public getCreditorAccounts(
     searchParams: IOpalFinesCreditorAccountsSearchParams,
   ): Observable<IOpalFinesMinorCreditorAccountsResponse> {
-    console.info(searchParams);
-    const mock = structuredClone(
-      OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK,
-    ) as IOpalFinesMinorCreditorAccountsResponse & { _debug_searchParams?: unknown };
-
-    mock._debug_searchParams = searchParams;
-    return of(mock);
+    return this.http.post<IOpalFinesMinorCreditorAccountsResponse>(
+      `${OPAL_FINES_PATHS.searchCreditorAccounts}`,
+      searchParams,
+    );
   }
 }

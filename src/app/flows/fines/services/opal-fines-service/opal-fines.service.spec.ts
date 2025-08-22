@@ -36,16 +36,9 @@ import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import {
-  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
-} from './mocks/opal-fines-defendant-account-search-params.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
-import {
-  OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
-  OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
-} from './mocks/opal-fines-creditor-account-search-params.mock';
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -563,47 +556,75 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
-  it('should return the mocked defendant accounts response with search params injected - individual', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+  it('should send a POST request to search defendant accounts API with correct body', () => {
+    const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const expectedResponse = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchDefendantAccounts}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getDefendantAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
   });
 
-  it('should return the mocked defendant accounts response with search params injected - company', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+  it('should handle errors when search offences API fails', () => {
+    const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchDefendantAccounts}`;
+    const errorMessage = 'Failed to search defendant accounts';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getDefendantAccounts(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 
-  it('should return the mocked creditor accounts response with search params injected - company', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+  it('should send a POST request to search creditor accounts API with correct body', () => {
+    const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const expectedResponse = OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchCreditorAccounts}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getCreditorAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getCreditorAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
   });
 
-  it('should return the mocked creditor accounts response with search params injected - individual', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+  it('should handle errors when search offences API fails', () => {
+    const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchCreditorAccounts}`;
+    const errorMessage = 'Failed to search creditor accounts';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getCreditorAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getCreditorAccounts(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 });
