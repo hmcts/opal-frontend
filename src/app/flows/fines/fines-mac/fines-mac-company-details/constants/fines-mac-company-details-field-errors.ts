@@ -10,78 +10,78 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
   fm_company_details_alias_company_name_0: {
     required: {
-      message: `Enter company name for alias 1`,
+      message: `Enter alias 1 company name`,
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 30 characters or fewer for alias 1`,
+      message: `Alias 1 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 1`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
   fm_company_details_alias_company_name_1: {
     required: {
-      message: `Enter company name for alias 2`,
+      message: `Enter alias 2 company name`,
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 30 characters or fewer for alias 2`,
+      message: `Alias 2 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 2`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
   fm_company_details_alias_company_name_2: {
     required: {
-      message: `Enter company name for alias 3`,
+      message: `Enter alias 3 company name`,
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 30 characters or fewer for alias 3`,
+      message: `Alias 3 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 3`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
   fm_company_details_alias_company_name_3: {
     required: {
-      message: `Enter company name for alias 4`,
+      message: `Enter alias 4 company name`,
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 30 characters or fewer for alias 4`,
+      message: `Alias 4 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 4`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
   fm_company_details_alias_company_name_4: {
     required: {
-      message: `Enter company name for alias 5`,
+      message: `Enter alias 5 company name`,
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 30 characters or fewer for alias 5`,
+      message: `Alias 5 company name must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `The company name must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes for alias 5`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
@@ -91,42 +91,42 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 1,
     },
     maxlength: {
-      message: 'The address line 1 must be 30 characters or fewer',
+      message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    specialCharactersPattern: {
-      message: 'The address line 1 must not contain special characters',
+    alphanumericTextPattern: {
+      message: 'Address line 1 must only contain letters or numbers',
       priority: 3,
     },
   },
   fm_company_details_address_line_2: {
     maxlength: {
-      message: 'The address line 2 must be 30 characters or fewer',
+      message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    specialCharactersPattern: {
-      message: 'The address line 2 must not contain special characters',
+    alphanumericTextPattern: {
+      message: 'Address line 2 must only contain letters or numbers',
       priority: 2,
     },
   },
   fm_company_details_address_line_3: {
     maxlength: {
-      message: `The address line 3 must be 16 characters or fewer`,
+      message: `Address line 3 must be 16 characters or fewer`,
       priority: 1,
     },
-    specialCharactersPattern: {
-      message: 'The address line 3 must not contain special characters',
+    alphanumericTextPattern: {
+      message: 'Address line 3 must only contain letters or numbers',
       priority: 2,
     },
   },
   fm_company_details_postcode: {
     maxlength: {
-      message: `The postcode must be 8 characters or fewer`,
+      message: `Postcode must be 8 characters or fewer`,
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: `The postcode must only contain alphabetical text`,
-      priority: 3,
+    alphanumericTextPattern: {
+      message: `The postcode must only contain letters or numbers`,
+      priority: 2,
     },
   },
 };

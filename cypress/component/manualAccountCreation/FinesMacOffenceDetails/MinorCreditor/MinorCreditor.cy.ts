@@ -166,7 +166,7 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (const [, value] of Object.entries(LENGTH_CHECK)) {
-        if (value != 'The company name must be 50 characters or fewer') {
+        if (value != 'Company name must be 50 characters or fewer') {
           cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
         }
       }
@@ -192,8 +192,9 @@ describe('FinesMacMinorCreditor', () => {
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
       if (
-        value != 'The company name must only contain alphabetical text' &&
-        value != "Enter minor creditor's last name"
+        value !=
+          'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
+        value != 'Enter last name'
       ) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
@@ -228,7 +229,7 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it.skip(
+  it(
     '(AC.2) should have Format check in place for company creditor types',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {

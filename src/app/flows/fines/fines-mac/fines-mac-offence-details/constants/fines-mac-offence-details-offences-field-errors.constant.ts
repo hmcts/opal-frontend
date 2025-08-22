@@ -11,7 +11,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 2,
     },
     invalidDate: {
-      message: 'Enter a valid date of sentence',
+      message: 'Enter a valid date',
       priority: 3,
     },
     invalidFutureDate: {
@@ -24,8 +24,8 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       message: 'Enter an offence code',
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: 'Offence code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Offence code must only contain letters or numbers',
       priority: 2,
     },
     maxlength: {

@@ -42,12 +42,15 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { LETTERS_WITH_SPACES_PATTERN, SPECIAL_CHARACTERS_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 // regex pattern validators for the form controls
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
-const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -110,15 +113,15 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

@@ -4,7 +4,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validator for letters with spaces
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'alphabeticalTextPattern');
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {

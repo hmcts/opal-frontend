@@ -4,6 +4,7 @@ Then('I see the error message {string} at the top of the page', (errorMessage: s
   cy.get('.govuk-error-summary').should('contain', errorMessage);
 });
 Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
+  cy.get('.govuk-error-message');
   cy.contains('.govuk-error-message', errorMessage).siblings('label, h1').should('contain', fieldName);
 });
 Then('I see the error message {string} above the {string} payment field', (errorMessage: string, fieldName: string) => {
