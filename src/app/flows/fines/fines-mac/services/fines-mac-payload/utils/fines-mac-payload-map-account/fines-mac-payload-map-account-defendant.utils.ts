@@ -20,7 +20,7 @@ export const finesMacPayloadMapAccountDefendant = (
 ): IFinesMacState => {
   const { defendant_type: defendantType, defendant } = payload;
   switch (defendantType) {
-    case FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay:
+    case FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay:
       return finesMacPayloadMapAccountDefendantParentGuardianPayload(mappedFinesMacState, defendant);
     case FINES_MAC_DEFENDANT_TYPES_KEYS.company:
       return finesMacPayloadMapAccountDefendantCompanyPayload(mappedFinesMacState, defendant);

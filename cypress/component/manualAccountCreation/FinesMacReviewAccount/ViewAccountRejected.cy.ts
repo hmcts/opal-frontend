@@ -160,7 +160,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   it('AC.2,5 - should render correctly - AYPG', { tags: ['PO-601'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Rejected';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     setupComponent(fetchMap);
 
@@ -231,7 +231,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
     fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     setupComponent(fetchMap);
 

@@ -20,6 +20,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -88,6 +89,7 @@ describe('FinesMacPayloadService', () => {
 
     finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
     finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
+    finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
 
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
@@ -325,7 +327,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('John Doe');
   });
 
-  it('should return forenames and surname when defendant_type is "parentOrGuardianToPay"', () => {
+  it('should return forenames and surname when defendant_type is "pgToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;
@@ -333,7 +335,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
         defendant: {
           forenames: 'Jane',
           surname: 'Smith',
@@ -344,7 +346,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('Jane Smith');
   });
 
-  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "parentOrGuardianToPay"', () => {
+  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "pgToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;
