@@ -19,11 +19,11 @@ Feature: Manual account creation - Parent Guardian Details
     When I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
     And I select the "Add aliases" checkbox
-    And I set the "Alias 1", "First names" to "ALIAS 1 FNAME"
-    And I set the "Alias 1", "Last name" to "ALIAS 1 LNAME"
+    And I set the "Alias 1", "First names" to "ALIAS FNAME"
+    And I set the "Alias 1", "Last name" to "ALIAS LNAME"
     And I select add another alias
-    And I set the "Alias 2", "First names" to "ALIAS 2 FNAME"
-    And I set the "Alias 2", "Last name" to "ALIAS 2 LNAME"
+    And I set the "Alias 2", "First names" to "ALIAS FNAME"
+    And I set the "Alias 2", "Last name" to "ALIAS LNAME"
 
     And I enter a date of birth 18 years ago
 
@@ -43,10 +43,10 @@ Feature: Manual account creation - Parent Guardian Details
     And I see "FNAME" in the "First names" field
     And I see "LNAME" in the "Last name" field
     And I validate the "Add aliases" checkbox is checked
-    And I see "Alias 1", "First names" is set to "ALIAS 1 FNAME"
-    And I see "Alias 1", "Last name" is set to "ALIAS 1 LNAME"
-    And I see "Alias 2", "First names" is set to "ALIAS 2 FNAME"
-    And I see "Alias 2", "Last name" is set to "ALIAS 2 LNAME"
+    And I see "Alias 1", "First names" is set to "ALIAS FNAME"
+    And I see "Alias 1", "Last name" is set to "ALIAS LNAME"
+    And I see "Alias 2", "First names" is set to "ALIAS FNAME"
+    And I see "Alias 2", "Last name" is set to "ALIAS LNAME"
 
 
     And I see "Addr1" in the "Address line 1" field

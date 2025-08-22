@@ -80,7 +80,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['problem'], { relativeTo: component['activatedRoute'].parent });
   });
 
-  it('should clear all tab-specific form groups', () => {
+  it('should clear all tab-specific form groups and should clear all error messages', () => {
     const tabKeys = [
       'fsa_search_account_individual_search_criteria',
       'fsa_search_account_companies_search_criteria',
@@ -99,6 +99,8 @@ describe('FinesSaSearchAccountFormComponent', () => {
       const group = component.form.get(key) as FormGroup;
       expect(group.get('dummy')?.value).toBeNull();
     });
+
+    expect(component.formControlErrorMessages).toEqual({});
   });
 
   it('should trigger setSearchAccountTemporary and navigate to filter business units', () => {

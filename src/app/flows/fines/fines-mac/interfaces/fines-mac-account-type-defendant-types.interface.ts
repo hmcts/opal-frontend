@@ -1,14 +1,14 @@
 export interface IFinesMacAccountTypeDefendantTypes {
-  fine: {
+  Fine: {
     adultOrYouthOnly: string;
     parentOrGuardianToPay: string;
     company: string;
   };
-  fixedPenalty: {
+  'Fixed Penalty': {
     adultOrYouthOnly: string;
     company: string;
   };
-  conditionalCaution: {
+  'Conditional Caution': {
     adultOrYouthOnly: string;
   };
 }

@@ -39,9 +39,9 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-c
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
-import { FINES_MAC_ACCOUNT_TYPES_KEYS } from '../constants/fines-mac-account-types-keys';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -101,7 +101,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
   public accountStatus!: string;
-  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES_KEYS;
+  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public showTimeline = false;
 
@@ -169,7 +169,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (
       !(
         !this.finesDraftStore.checker() &&
-        this.accountType === this.accountTypesKeys.fixedPenalty &&
+        this.accountType === this.accountTypesKeys['Fixed Penalty'] &&
         this.accountStatus === 'Rejected'
       )
     ) {
@@ -355,6 +355,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
+    if (this.finesMacStore.getAccountType() === this.accountTypesKeys['Fixed Penalty']) {
+      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      return;
+    }
     if (this.isReadOnly) {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
@@ -368,7 +372,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
         this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
       }
     } else {
-      if (this.accountType === this.accountTypesKeys.fixedPenalty) {
+      if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
         if (this.accountStatus === 'Rejected') {
           this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
         } else {
@@ -386,7 +390,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * otherwise, it navigates back to the account details page.
    */
   public change(): void {
-    if (this.accountType === this.accountTypesKeys.fixedPenalty) {
+    if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
       this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);

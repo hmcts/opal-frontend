@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,6 +36,9 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-acount-search-params.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -393,5 +396,21 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant accounts related to fines.
+   *
+   * @returns An Observable emitting a mock response of type {@link IOpalFinesDefendantAccountResponse}.
+   */
+  public getDefendantAccounts(
+    searchParams: IOpalFinesDefendantAccountSearchParams,
+  ): Observable<IOpalFinesDefendantAccountResponse> {
+    console.info(searchParams);
+    const mock = structuredClone(
+      OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
+    ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
+    mock._debug_searchParams = searchParams;
+    return of(mock);
   }
 }
