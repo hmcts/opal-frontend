@@ -74,7 +74,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     formSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(formSubmit);

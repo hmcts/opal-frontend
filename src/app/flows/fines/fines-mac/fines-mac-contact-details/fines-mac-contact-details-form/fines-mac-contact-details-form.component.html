@@ -1,7 +1,5 @@
 @let heading =
-  defendantType === defendantTypeKeys.parentOrGuardianToPay
-    ? 'Parent or guardian contact details'
-    : 'Defendant contact details';
+  defendantType === defendantTypeKeys.pgToPay ? 'Parent or guardian contact details' : 'Defendant contact details';
 <h1 class="govuk-heading-l">{{ heading }}</h1>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
