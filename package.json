@@ -87,7 +87,7 @@
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
-    "@hmcts/opal-frontend-common": "^0.0.33",
+    "@hmcts/opal-frontend-common": "^0.0.35",
     "@hmcts/opal-frontend-common-node": "^0.0.12",
     "@hmcts/properties-volume": "^1.1.0",
     "@microsoft/applicationinsights-web": "^3.3.5",
@@ -165,7 +165,7 @@
     "mochawesome-report-generator": "^6.2.0",
     "typescript": "~5.8.0"
   },
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.9.3",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
