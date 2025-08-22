@@ -44,7 +44,7 @@ export const FinesDraftStore = signalStore(
     getDefendantName: computed(() => {
       if (
         store.account().defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly ||
-        store.account().defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay
+        store.account().defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay
       ) {
         return `${store.account().defendant.forenames} ${store.account().defendant.surname}`;
       } else {

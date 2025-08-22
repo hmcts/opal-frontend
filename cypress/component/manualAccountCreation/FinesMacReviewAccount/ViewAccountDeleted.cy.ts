@@ -176,7 +176,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
   it('(AC2,.5) should render all elements on the screen for AYPG', { tags: ['@PO-603'] }, () => {
     let fetchMap = structuredClone(reviewAccountFetchMap);
     fetchMap.finesMacDraft.account_status = 'Deleted';
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     setupComponent(fetchMap);
 
@@ -246,7 +246,7 @@ describe('FinesMacReviewAccountComponent - View Deleted Account', () => {
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_document_language = 'CY';
     fetchMap.finesMacState.languagePreferences.formData.fm_language_preferences_hearing_language = 'CY';
     fetchMap.finesMacState.businessUnit.welsh_language = true;
-    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    fetchMap.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     setupComponent(fetchMap);
 

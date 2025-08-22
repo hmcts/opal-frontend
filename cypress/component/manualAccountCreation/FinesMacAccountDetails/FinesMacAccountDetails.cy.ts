@@ -121,7 +121,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524'] },
     () => {
       setupComponent(null);
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(DOM_ELEMENTS.dataPage).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
@@ -213,8 +213,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     'should show option to continue if all required forms have been provided for AYPG',
     { tags: ['@PO-653', '@PO-344'] },
     () => {
-      setupComponent(null, 'parentOrGuardianToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      setupComponent(null, 'pgToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
       cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
@@ -228,7 +228,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     () => {
       setupComponent(null);
 
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
       cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
