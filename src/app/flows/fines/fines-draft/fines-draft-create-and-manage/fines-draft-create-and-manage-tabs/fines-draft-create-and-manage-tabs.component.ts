@@ -169,7 +169,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
 
     const route =
-      this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES.fixedPenalty
+      this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']
         ? this.finesDraftService.PATH_AMEND_ACCOUNT
         : this.finesDraftService.PATH_REVIEW_ACCOUNT;
 
