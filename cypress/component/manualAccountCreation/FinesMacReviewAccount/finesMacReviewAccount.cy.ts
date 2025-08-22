@@ -1434,50 +1434,56 @@ describe('FinesMacReviewAccountComponent', () => {
           ]);
       });
   });
-  it.only('minor creditor bank account number', { tags: ['PO-1988'] }, () => {
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+  it(
+    'minor creditor bank account number is correct and is against the correct imposition',
+    { tags: ['PO-1988', 'PO-2092'] },
+    () => {
+      //PO-1988 Verify bank account type is sent as '1' for minor creditor when bank account details are provided
+      //PO-2092 Verify minor creditor details are sent against the correct imposition
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
-    finesMacState.offenceDetails[0].formData.fm_offence_details_impositions[1] = {
-      fm_offence_details_imposition_id: 1,
-      fm_offence_details_result_id: 'FCOST',
-      fm_offence_details_amount_imposed: 200,
-      fm_offence_details_amount_paid: 50,
-      fm_offence_details_balance_remaining: 150,
-      fm_offence_details_needs_creditor: true,
-      fm_offence_details_creditor: 'minor',
-      fm_offence_details_major_creditor_id: null,
-    };
-    finesMacState.offenceDetails[0].childFormData ??= [];
-    finesMacState.offenceDetails[0].childFormData[0] = {
-      formData: {
-        fm_offence_details_imposition_position: 1,
-        fm_offence_details_minor_creditor_creditor_type: 'individual',
-        fm_offence_details_minor_creditor_title: 'Mr',
-        fm_offence_details_minor_creditor_forenames: 'james',
-        fm_offence_details_minor_creditor_surname: 'BOND',
-        fm_offence_details_minor_creditor_company_name: null,
-        fm_offence_details_minor_creditor_address_line_1: 'Addr1',
-        fm_offence_details_minor_creditor_address_line_2: 'Addr2',
-        fm_offence_details_minor_creditor_address_line_3: 'Addr3',
-        fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
-        fm_offence_details_minor_creditor_pay_by_bacs: true,
-        fm_offence_details_minor_creditor_bank_account_name: 'testAccountName',
-        fm_offence_details_minor_creditor_bank_sort_code: '123456',
-        fm_offence_details_minor_creditor_bank_account_number: '12345678',
-        fm_offence_details_minor_creditor_bank_account_ref: 'accountRef',
-      },
-      nestedFlow: false,
-    };
+      finesMacState.offenceDetails[0].formData.fm_offence_details_impositions[1] = {
+        fm_offence_details_imposition_id: 1,
+        fm_offence_details_result_id: 'FCOST',
+        fm_offence_details_amount_imposed: 200,
+        fm_offence_details_amount_paid: 50,
+        fm_offence_details_balance_remaining: 150,
+        fm_offence_details_needs_creditor: true,
+        fm_offence_details_creditor: 'minor',
+        fm_offence_details_major_creditor_id: null,
+      };
+      finesMacState.offenceDetails[0].childFormData ??= [];
+      finesMacState.offenceDetails[0].childFormData[0] = {
+        formData: {
+          fm_offence_details_imposition_position: 1,
+          fm_offence_details_minor_creditor_creditor_type: 'individual',
+          fm_offence_details_minor_creditor_title: 'Mr',
+          fm_offence_details_minor_creditor_forenames: 'james',
+          fm_offence_details_minor_creditor_surname: 'BOND',
+          fm_offence_details_minor_creditor_company_name: null,
+          fm_offence_details_minor_creditor_address_line_1: 'Addr1',
+          fm_offence_details_minor_creditor_address_line_2: 'Addr2',
+          fm_offence_details_minor_creditor_address_line_3: 'Addr3',
+          fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
+          fm_offence_details_minor_creditor_pay_by_bacs: true,
+          fm_offence_details_minor_creditor_bank_account_name: 'testAccountName',
+          fm_offence_details_minor_creditor_bank_sort_code: '123456',
+          fm_offence_details_minor_creditor_bank_account_number: '12345678',
+          fm_offence_details_minor_creditor_bank_account_ref: 'accountRef',
+        },
+        nestedFlow: false,
+      };
 
-    setupComponent(finesDraftState, null, false, false);
-    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+      setupComponent(finesDraftState, null, false, false);
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
 
-    cy.wait('@postDraftAccount')
-      .its('request.body')
-      .then((body) => {
-        expect(body.account.offences[0].impositions).to.be.an('array').that.has.lengthOf(2);
-        expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
-        expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
-      });
-  });
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.offences[0].impositions).to.be.an('array').that.has.lengthOf(2);
+          expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
+          expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
+        });
+    },
+  );
 });
