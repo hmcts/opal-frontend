@@ -2,6 +2,6 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
 
 export const FINES_MAC_DEFENDANT_TYPES: IFinesMacDefendantTypes = {
   adultOrYouthOnly: 'Adult or youth only',
-  parentOrGuardianToPay: 'Adult or youth with parent or guardian to pay',
+  pgToPay: 'Adult or youth with parent or guardian to pay',
   company: 'Company',
 };

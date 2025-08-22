@@ -43,10 +43,7 @@
     finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.adultOrYouthOnly
   ) {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-  } @else if (
-    finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
-    defendantTypesKeys.parentOrGuardianToPay
-  ) {
+  } @else if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
     <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
   } @else {
     <app-fines-mac-review-account-company-details
@@ -68,10 +65,7 @@
     ></app-fines-mac-review-account-contact-details>
   }
 
-  @if (
-    finesMacStore.accountDetails().formData.fm_create_account_defendant_type ===
-    defendantTypesKeys.parentOrGuardianToPay
-  ) {
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === defendantTypesKeys.pgToPay) {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
   }
 

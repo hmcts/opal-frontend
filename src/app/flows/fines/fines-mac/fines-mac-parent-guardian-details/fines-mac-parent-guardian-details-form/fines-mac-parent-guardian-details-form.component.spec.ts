@@ -39,8 +39,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type =
-      FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
