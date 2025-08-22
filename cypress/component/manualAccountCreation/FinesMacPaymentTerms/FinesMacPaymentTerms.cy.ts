@@ -43,7 +43,6 @@ describe('FinesMacPaymentTermsComponent', () => {
             const store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
             store.setAccountCommentsNotes = mockSetAccountCommentsNote;
-
             return store;
           },
         },

@@ -41,7 +41,13 @@ describe('FinesMacReviewAccountComponent', () => {
         OpalFines,
         UtilsService,
         FinesMacPayloadService,
-        Router,
+        {
+          provide: Router,
+          useValue: {
+            navigate: cy.stub().as('routerNavigate'),
+            navigateByUrl: cy.stub().as('routerNavigateByUrl'),
+          },
+        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -106,7 +112,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
-    });
+    }).as('postDraftAccount');
     cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -1253,4 +1259,225 @@ describe('FinesMacReviewAccountComponent', () => {
       );
     },
   );
+  it(
+    'COLLO should not be sent in draft account payload when payment terms are not applicable',
+    { tags: ['PO-2093'] },
+    () => {
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+      Object.assign(finesMacState.paymentTerms.formData, {
+        fm_payment_terms_collection_order_made: false,
+
+        fm_payment_terms_collection_order_date: '',
+        fm_payment_terms_collection_order_made_today: false,
+      });
+
+      setupComponent(finesDraftState, null, false, false);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.payment_terms).to.have.property('enforcements', null);
+        });
+    },
+  );
+  it(
+    'COLLO should be sent in draft account payload when collection order is made previously',
+    { tags: ['PO-2093'] },
+    () => {
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+      Object.assign(finesMacState.paymentTerms.formData, {
+        fm_payment_terms_collection_order_made: true,
+
+        fm_payment_terms_collection_order_date: '01/01/2027',
+        fm_payment_terms_collection_order_made_today: false,
+      });
+
+      setupComponent(finesDraftState, null, false, false);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.payment_terms)
+            .to.have.property('enforcements')
+            .and.to.be.an('array')
+            .that.has.lengthOf(1)
+            .which.has.deep.members([
+              {
+                result_id: 'COLLO',
+                enforcement_result_responses: null,
+              },
+            ]);
+        });
+    },
+  );
+  it('COLLO should be sent in draft account payload when collection order is made today', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: false,
+
+      fm_payment_terms_collection_order_date: '',
+      fm_payment_terms_collection_order_made_today: true,
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(1)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+          ]);
+      });
+  });
+  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: true,
+
+      fm_payment_terms_collection_order_date: '01/01/2027',
+      fm_payment_terms_collection_order_made_today: false,
+
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_hold_enforcement_on_account: true,
+      fm_payment_terms_reason_account_is_on_noenf: 'test3',
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(2)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+            {
+              result_id: 'NOENF',
+              enforcement_result_responses: [
+                {
+                  parameter_name: 'reason',
+                  response: 'test3',
+                },
+              ],
+            },
+          ]);
+      });
+  });
+  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: true,
+
+      fm_payment_terms_collection_order_date: '01/01/2027',
+      fm_payment_terms_collection_order_made_today: false,
+
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_earliest_release_date: 'test1',
+      fm_payment_terms_prison_and_prison_number: 'test2',
+      fm_payment_terms_enforcement_action: 'PRIS',
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(2)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+            {
+              result_id: 'PRIS',
+              enforcement_result_responses: [
+                {
+                  parameter_name: 'earliestreleasedate',
+                  response: 'test1',
+                },
+                {
+                  parameter_name: 'prisonandprisonnumber',
+                  response: 'test2',
+                },
+              ],
+            },
+          ]);
+      });
+  });
+  it.only('minor creditor bank account number', { tags: ['PO-1988'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    finesMacState.offenceDetails[0].formData.fm_offence_details_impositions[1] = {
+      fm_offence_details_imposition_id: 1,
+      fm_offence_details_result_id: 'FCOST',
+      fm_offence_details_amount_imposed: 200,
+      fm_offence_details_amount_paid: 50,
+      fm_offence_details_balance_remaining: 150,
+      fm_offence_details_needs_creditor: true,
+      fm_offence_details_creditor: 'minor',
+      fm_offence_details_major_creditor_id: null,
+    };
+    finesMacState.offenceDetails[0].childFormData ??= [];
+    finesMacState.offenceDetails[0].childFormData[0] = {
+      formData: {
+        fm_offence_details_imposition_position: 1,
+        fm_offence_details_minor_creditor_creditor_type: 'individual',
+        fm_offence_details_minor_creditor_title: 'Mr',
+        fm_offence_details_minor_creditor_forenames: 'james',
+        fm_offence_details_minor_creditor_surname: 'BOND',
+        fm_offence_details_minor_creditor_company_name: null,
+        fm_offence_details_minor_creditor_address_line_1: 'Addr1',
+        fm_offence_details_minor_creditor_address_line_2: 'Addr2',
+        fm_offence_details_minor_creditor_address_line_3: 'Addr3',
+        fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
+        fm_offence_details_minor_creditor_pay_by_bacs: true,
+        fm_offence_details_minor_creditor_bank_account_name: 'testAccountName',
+        fm_offence_details_minor_creditor_bank_sort_code: '123456',
+        fm_offence_details_minor_creditor_bank_account_number: '12345678',
+        fm_offence_details_minor_creditor_bank_account_ref: 'accountRef',
+      },
+      nestedFlow: false,
+    };
+
+    setupComponent(finesDraftState, null, false, false);
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.offences[0].impositions).to.be.an('array').that.has.lengthOf(2);
+        expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
+        expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
+      });
+  });
 });
