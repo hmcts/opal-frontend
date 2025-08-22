@@ -1345,7 +1345,7 @@ describe('FinesMacReviewAccountComponent', () => {
           ]);
       });
   });
-  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093'] }, () => {
+  it('enforcements should be correct when COLLO and NOENF are selected', { tags: ['PO-2093'] }, () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     Object.assign(finesMacState.paymentTerms.formData, {
