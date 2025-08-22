@@ -5,7 +5,7 @@ export const OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK: IOpalFine
   defendant_account_id: '123456789',
   account_number: '987654321',
   debtor_detail: {
-    debtor_type: 'Individual',
+    debtor_type: 'Parent/Guardian',
     organisation: false,
     address_line_1: '123 Main Street',
     address_line_2: 'Apt 4B',
@@ -13,13 +13,13 @@ export const OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK: IOpalFine
     address_line_4: null,
     address_line_5: null,
     post_code: 'AB12 3CD',
-    document_language: 'English',
-    hearing_language: 'English',
+    document_language: 'Welsh and English',
+    hearing_language: 'English only',
     organisation_name: null,
     organisation_aliases: null,
     title: 'Mr',
     first_names: 'John',
-    surname: 'Doe',
+    surname: 'Smith',
     date_of_birth: '01/01/1980',
     national_insurance_number: 'AB123456C',
     individual_aliases: [
@@ -27,35 +27,33 @@ export const OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK: IOpalFine
         alias_id: '1',
         sequence_number: 1,
         surname: 'Smith',
-        forenames: 'Jonathan'
-      }
-    ]
+        forenames: 'Johnny',
+      },
+    ],
   },
   payment_terms: {
     payment_terms_summary: 'Monthly instalments',
-    payment_terms_type_code: 'INST',
+    payment_terms_type_code: 'Instalments',
     effective_date: '01/01/2024',
-    instalment_period: 'Monthly',
-    lump_sum_amount: null,
-    instalment_amount: 100.00,
+    instalment_period: 'Fortnightly',
+    lump_sum_amount: 50.0,
+    instalment_amount: 100.0,
     last_payment_date: '01/05/2024',
-    next_payment_date: '01/06/2024'
+    next_payment_date: '01/06/2024',
   },
   enforcement_status: {
-    last_enforcement_action: 'Warning issued',
-    last_enforcement_action_title: 'Final Warning',
-    collection_order_made: 'Yes',
-    default_days_in_jail: null,
-    enforcement_override_id: null,
-    enforcement_override_title: null,
-    last_movement_date: '03/04/2024'
+    last_enforcement_action: 'ABCD',
+    last_enforcement_action_title: 'Deduction of benefits order',
+    collection_order_made: false,
+    default_days_in_jail: 3,
+    enforcement_override_id: 'BWTD',
+    enforcement_override_title: 'Bail warrant - Dated',
+    last_movement_date: '03/04/2024',
   },
   account_notes: {
-    account_comment: 'Account in good standing.',
-    free_text_note_1: 'First note.',
-    free_text_note_2: null,
-    free_text_note_3: null
-  }
+    account_comment: 'Highly vulnerable person',
+    free_text_note_1: null,
+    free_text_note_2: 'They require welsh and english documents',
+    free_text_note_3: null,
+  },
 };
-
-

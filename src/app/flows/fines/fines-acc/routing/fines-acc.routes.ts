@@ -18,6 +18,10 @@ export const routing: Routes = [
   },
   {
     path: 'defendant/:accountId',
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
     children: [
       {
         path: FINES_ACC_ROUTING_PATHS.children.details,
@@ -26,9 +30,7 @@ export const routing: Routes = [
           import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then(
             (c) => c.FinesAccDefendantDetailsComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.details,
         },
         resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
@@ -38,9 +40,9 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [routePermissionsGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts'], accRootPermissionIds['account-notes']],
+          routePermissionId: [accRootPermissionIds['account-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.note,
         },
         resolve: { title: TitleResolver },
@@ -52,9 +54,9 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [routePermissionsGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },

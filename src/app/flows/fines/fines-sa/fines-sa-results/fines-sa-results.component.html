@@ -109,7 +109,7 @@
 <ng-template #noResults>
   <h2 class="govuk-heading-m">There are no matching results</h2>
   <p class="govuk-body-m">
-    <a class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
+    <a href="#" class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
       >Check your search</a
     >
     and try again
@@ -118,7 +118,7 @@
 <ng-template #tooManyResults>
   <h2 class="govuk-heading-m">There are more than 100 results</h2>
   <p class="govuk-body-m">
-    <a class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
+    <a href="#" class="govuk-link" tabindex="0" (click)="navigateBackToSearch()" (keyup.enter)="navigateBackToSearch()"
       >Try adding more information</a
     >
     to your search

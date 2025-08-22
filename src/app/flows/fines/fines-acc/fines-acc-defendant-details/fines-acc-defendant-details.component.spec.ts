@@ -95,6 +95,14 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
+  it('should call router.navigate when navigateToAddCommentsPage is called', () => {
+    const event: Event = new Event('click');
+    component.navigateToAddCommentsPage(event);
+    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
   it('should navigate back to the search results page when navigateBack is called', () => {
     component.navigateBack();
     expect(routerSpy.navigate).toHaveBeenCalledWith([

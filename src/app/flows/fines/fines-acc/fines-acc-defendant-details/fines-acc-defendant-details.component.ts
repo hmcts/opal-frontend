@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -102,20 +102,17 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
 
     fragment$.subscribe((tab) => {
-      switch(tab) {
+      switch (tab) {
         case 'at-a-glance':
-          this.tabData$['at-a-glance'] = this.opalFinesService.getDefendantAccountAtAGlance(
-            tab,
-            defendant_account_id,
-            business_unit_id,
-            business_unit_user_id,
-          ).pipe(
-            tap((data) => {
-              this.compareVersion(data.version);
-            }),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$)
-          );
+          this.tabData$['at-a-glance'] = this.opalFinesService
+            .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+            .pipe(
+              tap((data) => {
+                this.compareVersion(data.version);
+              }),
+              distinctUntilChanged(),
+              takeUntil(this.destroy$),
+            );
           break;
         default:
           break;
@@ -123,9 +120,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     });
   }
 
-
-  private compareVersion(version: number | undefined,): void {
+  private compareVersion(version: number | undefined): void {
     if (version !== this.accountStore.version()) {
+      // ToDo
       console.error('version mismatch', version, this.accountStore.version());
     }
   }
@@ -147,6 +144,16 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    */
   public navigateToAddAccountNotePage(): void {
     this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
+  }
+
+  /**
+   * Navigates to the add comments page.
+   */
+  public navigateToAddCommentsPage(event: Event): void {
+    event.preventDefault();
+    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**

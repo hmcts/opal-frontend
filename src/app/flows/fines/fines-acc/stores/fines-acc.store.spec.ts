@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesAccountStore } from './fines-acc.store';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-account-state.constant';
-import { IFinesAccountState } from '../interfaces/fines-acc-state.interface';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
+import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 
 describe('FinesAccountStore', () => {
   let store: FinesAccountStoreType;
@@ -87,5 +87,26 @@ describe('FinesAccountStore', () => {
       party_name: initialState.party_name,
       version: initialState.version,
     });
+  });
+
+  it('should getAccountNumber', () => {
+    const payload: IFinesAccountState = {
+      account_number: '77',
+      party_id: 'PARTY-123',
+      party_type: 'business',
+      party_name: 'Acme Ltd',
+      version: 3,
+    };
+
+    store.setAccountState(payload);
+
+    const accountNumber = store.getAccountNumber();
+
+    expect(accountNumber).toBe('77');
+  });
+
+  it('should return an empty string if account number is not set', () => {
+    const accountNumber = store.getAccountNumber();
+    expect(accountNumber).toBe('');
   });
 });
