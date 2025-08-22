@@ -3550,7 +3550,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-
 "@hmcts/opal-frontend-common@npm:^0.0.35":
   version: 0.0.35
   resolution: "@hmcts/opal-frontend-common@npm:0.0.35"
