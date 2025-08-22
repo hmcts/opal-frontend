@@ -27,7 +27,6 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
     },
   },
-  fixedPenaltyDetails: FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM,
   employerDetails: {
     ...FINES_MAC_EMPLOYER_DETAILS_FORM,
     formData: {
