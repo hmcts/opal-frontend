@@ -18,11 +18,11 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     originator_id: '4821',
     prosecutor_case_reference: 'P2BC305678',
     enforcement_court_id: 'Magistrates Court Database (204)',
-    collection_order_made: true,
+    collection_order_made: null,
     collection_order_made_today: null,
-    collection_order_date: '2024-10-22',
-    suspended_committal_date: '2024-10-12',
-    payment_card_request: true,
+    collection_order_date: null,
+    suspended_committal_date: null,
+    payment_card_request: null,
     account_sentence_date: '2024-12-12',
     defendant: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
@@ -67,26 +67,12 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     },
     payment_terms: {
       payment_terms_type_code: 'B',
-      effective_date: '2024-10-15',
+      effective_date: null,
       instalment_period: null,
       lump_sum_amount: null,
       instalment_amount: null,
-      default_days_in_jail: 12,
-      enforcements: [
-        {
-          result_id: 'PRIS',
-          enforcement_result_responses: [
-            {
-              parameter_name: 'earliestreleasedate',
-              response: '2024-10-12',
-            },
-            {
-              parameter_name: 'prisonandprisonnumber',
-              response: 'test test',
-            },
-          ],
-        },
-      ],
+      default_days_in_jail: null,
+      enforcements: null,
     },
     account_notes: [
       {

@@ -41,7 +41,7 @@ describe('finesMacPayloadMapAccountDefendant', () => {
     }
 
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
-    payload.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    payload.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK;
 
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);

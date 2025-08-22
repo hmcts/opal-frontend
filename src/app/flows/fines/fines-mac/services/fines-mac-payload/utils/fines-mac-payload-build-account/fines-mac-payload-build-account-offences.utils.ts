@@ -69,7 +69,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     email_address: null,
     payout_hold: payoutOnHold,
     pay_by_bacs: payByBacs,
-    bank_account_type: 1,
+    bank_account_type: '1',
     bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
@@ -96,7 +96,11 @@ const buildAccountOffencesImpositionsPayload = (
       fm_offence_details_amount_paid: amountPaid,
       fm_offence_details_major_creditor_id: majorCreditorId,
     }) => {
-      const impositionMinorCreditor = impositionId !== null ? childFormData[impositionId] : null;
+      const impositionMinorCreditor =
+        impositionId !== null
+          ? (childFormData.find((child) => child.formData.fm_offence_details_imposition_position === impositionId) ??
+            null)
+          : null;
       const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
 
       return {

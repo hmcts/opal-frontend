@@ -189,7 +189,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
       formData: {
         ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
-        fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+        fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       },
       nestedFlow: false,
     };
