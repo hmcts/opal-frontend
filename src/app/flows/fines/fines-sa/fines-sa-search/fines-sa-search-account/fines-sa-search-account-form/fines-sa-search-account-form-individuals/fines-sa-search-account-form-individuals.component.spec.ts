@@ -3,6 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesSaSearchAccountFormIndividualsComponent } from './fines-sa-search-account-form-individuals.component';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './constants/fines-sa-search-account-form-individuals-controls.constant';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
@@ -11,7 +13,10 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormIndividualsComponent, ReactiveFormsModule],
-      providers: [DateService],
+      providers: [
+        { provide: ActivatedRoute, useValue: { fragment: of('individuals'), parent: 'search' } },
+        DateService,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesSaSearchAccountFormIndividualsComponent);
