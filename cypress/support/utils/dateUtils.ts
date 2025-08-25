@@ -57,3 +57,14 @@ export function getDaysAgo(days: number): string {
 
   return `${year}-${month}-${day}`;
 }
+
+export function getFirstDayOfCurrentMonth(): string {
+  const today = new Date();
+  const dob = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const day = String(dob.getDate()).padStart(2, '0');
+  const month = String(dob.getMonth() + 1).padStart(2, '0');
+  const year = dob.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
