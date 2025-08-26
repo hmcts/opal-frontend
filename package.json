@@ -165,7 +165,7 @@
     "mochawesome-report-generator": "^6.2.0",
     "typescript": "~5.8.0"
   },
-  "packageManager": "yarn@4.9.3",
+  "packageManager": "yarn@4.9.4",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
