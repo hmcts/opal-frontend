@@ -3,7 +3,7 @@ import { ResolveFn } from '@angular/router';
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
-import { FinesSaStore } from '../../stores/fines-sa.store';
+import { FinesSaStore } from '../../../stores/fines-sa.store';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
