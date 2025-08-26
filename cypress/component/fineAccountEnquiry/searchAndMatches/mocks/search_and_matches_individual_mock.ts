@@ -4,7 +4,7 @@ export const INDIVIDUAL_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
   fsa_search_account_business_unit_ids: null,
   fsa_search_account_number: '',
   fsa_search_account_reference_case_number: '',
-  fsa_search_account_individual_search_criteria: {
+  fsa_search_account_individuals_search_criteria: {
     fsa_search_account_individuals_last_name: '',
     fsa_search_account_individuals_last_name_exact_match: false,
     fsa_search_account_individuals_first_names: '',

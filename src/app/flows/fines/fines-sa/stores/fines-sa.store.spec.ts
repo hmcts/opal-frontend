@@ -3,6 +3,10 @@ import { FinesSaStore } from './fines-sa.store';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { FinesSaStoreType } from './types/fines-sa.type';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-companies/mocks/fines-sa-search-account-form-companies-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-minor-creditors/mocks/fines-sa-search-account-form-minor-creditors-state.mock';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE } from '../fines-sa-search/fines-sa-search-account/fines-sa-search-account-form/fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-state.constant';
 
 describe('FinesSaStore', () => {
   let store: FinesSaStoreType;
@@ -29,6 +33,60 @@ describe('FinesSaStore', () => {
     expect(store.stateChanges()).toBeTrue();
     expect(store.unsavedChanges()).toBeFalse();
     expect(store.searchAccountPopulated()).toBeFalse();
+    expect(store.getSearchType()).toBe('accountNumber');
+  });
+
+  it('should patch searchAccount state with reference or case number', () => {
+    const newState = { ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_reference_case_number: 'REF123' };
+    store.setSearchAccount(newState as IFinesSaSearchAccountState);
+    expect(store.searchAccount().fsa_search_account_reference_case_number).toBe('REF123');
+    expect(store.getSearchType()).toBe('referenceCaseNumber');
+  });
+
+  it('should patch searchAccount state with individual search criteria', () => {
+    const newState = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    };
+    store.setSearchAccount(newState as IFinesSaSearchAccountState);
+    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(
+      FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK,
+    );
+    expect(store.getSearchType()).toBe('individuals');
+  });
+
+  it('should patch searchAccount state with companies search criteria', () => {
+    const newState = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_companies_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
+    };
+    store.setSearchAccount(newState as IFinesSaSearchAccountState);
+    expect(store.searchAccount().fsa_search_account_companies_search_criteria).toEqual(
+      FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_STATE_MOCK,
+    );
+    expect(store.getSearchType()).toBe('companies');
+  });
+
+  it('should patch searchAccount state with minor creditors search criteria', () => {
+    const newState = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_minor_creditors_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
+    };
+    store.setSearchAccount(newState as IFinesSaSearchAccountState);
+    expect(store.searchAccount().fsa_search_account_minor_creditors_search_criteria).toEqual(
+      FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_STATE_MOCK,
+    );
+    expect(store.getSearchType()).toBe('minorCreditors');
+  });
+
+  it('should fall back to accountNumber when all criteria are null or empty', () => {
+    const nullCriteriaState: IFinesSaSearchAccountState = {
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_individuals_search_criteria: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE,
+    };
+
+    store.setSearchAccount(nullCriteriaState);
+    expect(store.getSearchType()).toBe('accountNumber');
   });
 
   it('should temporarily patch searchAccount via setSearchAccountTemporary', () => {
@@ -54,7 +112,7 @@ describe('FinesSaStore', () => {
   it('should reset search criteria only', () => {
     store.setSearchAccount({ ...FINES_SA_SEARCH_ACCOUNT_STATE, fsa_search_account_number: 'reset-me' });
     store.resetDefendantSearchCriteria();
-    expect(store.searchAccount().fsa_search_account_individual_search_criteria).toEqual(null);
+    expect(store.searchAccount().fsa_search_account_individuals_search_criteria).toEqual(null);
   });
 
   it('should reset only the searchAccount object', () => {

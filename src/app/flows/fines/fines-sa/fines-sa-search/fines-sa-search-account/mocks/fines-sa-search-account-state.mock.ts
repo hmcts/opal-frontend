@@ -4,7 +4,7 @@ export const FINES_SA_SEARCH_ACCOUNT_STATE_MOCK: IFinesSaSearchAccountState = {
   fsa_search_account_business_unit_ids: [1, 2],
   fsa_search_account_number: 'ACC12345678',
   fsa_search_account_reference_case_number: 'REF987654321',
-  fsa_search_account_individual_search_criteria: {
+  fsa_search_account_individuals_search_criteria: {
     fsa_search_account_individuals_last_name: 'Doe',
     fsa_search_account_individuals_last_name_exact_match: true,
     fsa_search_account_individuals_first_names: 'John',
