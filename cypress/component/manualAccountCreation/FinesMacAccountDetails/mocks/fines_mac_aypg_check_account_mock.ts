@@ -23,7 +23,7 @@ export const FINES_AYPG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
     formData: {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_business_unit_id: 17,
-      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+      fm_create_account_defendant_type: 'pgToPay',
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
     },
   },
