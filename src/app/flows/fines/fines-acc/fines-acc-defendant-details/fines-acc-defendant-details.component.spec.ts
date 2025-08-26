@@ -9,7 +9,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from './mocks/fines-acc-defendant-account-header.mock';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-tab-ref-data.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -22,6 +22,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   let activatedRouteStub: Partial<ActivatedRoute>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let fragment$: Subject<'at-a-glance' | 'defendant' | 'payment-terms'> = new Subject();
 
   beforeEach(async () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -74,7 +75,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should default to at-a-glance tab if no fragment is present', () => {
     const activatedRoute = TestBed.inject(ActivatedRoute);
     activatedRoute.snapshot.fragment = null; // Simulate no fragment
-    component['getDataFromRoute']();
+    component['getHeaderDataFromRoute']();
     expect(component.activeTab).toBe('at-a-glance');
   });
 
@@ -109,4 +110,35 @@ describe('FinesAccDefendantDetailsComponent', () => {
       `/${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`,
     ]);
   });
+
+  // it('should load correct tab data when tab is changed', () => {
+  //   // Arrange
+  //   const defendantAccountId = 'DEF123';
+  //   const businessUnitId = 'BU456';
+  //   const businessUnitUserId = 'USER789';
+  //   component.accountData = {
+  //     defendant_account_id: defendantAccountId,
+  //     business_unit_id: businessUnitId,
+  //     business_unit_user_id: businessUnitUserId,
+  //     version: 1,
+  //     // ...other required mock properties
+  //   } as any;
+
+  //   // Spy on the service method
+  //   spyOn(component['opalFinesService'], 'getDefendantAccountAtAGlance').and.returnValue(
+  //     of({ version: 42, someData: 'expected' })
+  //   );
+
+  //   // Act: Simulate tab change
+  //   component.fragment$.next('at-a-glance');
+
+  //   // Assert: The tab data should be loaded with the expected observable value
+  //   component.tabs['at-a-glance'].data?.subscribe((data) => {
+  //     expect(data).toEqual({ version: 42, someData: 'expected' });
+  //   });
+
+  //   expect(component['opalFinesService'].getDefendantAccountAtAGlance)
+  //     .toHaveBeenCalledWith('at-a-glance', defendantAccountId, businessUnitId, businessUnitUserId);
+  // });
+
 });

@@ -34,6 +34,7 @@ export const routing: Routes = [
           title: FINES_ACC_ROUTING_TITLES.children.details,
         },
         resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
+        runGuardsAndResolvers: 'always'
       },
       {
         path: `${FINES_ACC_ROUTING_PATHS.children.note}/add`,

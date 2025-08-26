@@ -91,23 +91,35 @@
 
 <div class="govuk-grid-column-full">
   <opal-lib-moj-sub-navigation subNavId="account-details-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    @for(tab of tabs | keyvalue; track tab.key){
     <li
       opal-lib-moj-sub-navigation-item
-      subNavItemId="at-a-glance-tab"
+      [subNavItemId]="tab.key + '-tab'"
       [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="at-a-glance"
-      subNavItemText="At a glance"
+      [subNavItemFragment]="tab.key"
+      [subNavItemText]="tab.value.title"
     ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 
 @switch (activeTab) {
   @case ('at-a-glance') {
     <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabData$['at-a-glance'] | async"
+      [tabData]="tabs['at-a-glance'].data | async"
       [hasAccountMaintenencePermission]="!hasPermission('account-maintenance')"
       [isYouth]="accountData.is_youth"
       (addComments)="navigateToAddCommentsPage($event)"
     ></app-fines-acc-defendant-details-at-a-glance-tab>
+  }
+  @case ('defendant') {
+    <div class="govuk-grid-column-full">
+      <p>Defendant Version: {{ (tabs['defendant'].data | async).version }}</p>
+  </div>
+  }
+  @case ('payment-terms') {
+    <div class="govuk-grid-column-full">
+      <p>Payment Terms Version: {{ (tabs['payment-terms'].data | async).version }}</p>
+  </div>
   }
 }

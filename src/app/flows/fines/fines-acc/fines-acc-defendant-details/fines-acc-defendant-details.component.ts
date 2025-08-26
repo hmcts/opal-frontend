@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -27,7 +27,7 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 // Pipes & Directives
-import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
@@ -37,8 +37,9 @@ import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-
 // Interfaces
 import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { IFinesAccountDetailsTabsData } from '../interfaces/fines-acc-tab-data-types.interface';
-import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_DATA } from './constants/fines-acc-defendant-account-tabs-data.constant';
+import { IFinesAccountDetailsTabs } from '../interfaces/fines-acc-tab-data-types.interface';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs-data.constant';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -62,6 +63,7 @@ import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_DATA } from './constants/fines-acc-def
     CustomPageHeaderComponent,
     UpperCasePipe,
     GovukButtonDirective,
+    KeyValuePipe
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,16 +74,19 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
   private readonly destroy$ = new Subject<void>();
+  private fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+      this.opalFinesService.clearAccountDetailsCache(),
+    );
 
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
-  public tabData$: IFinesAccountDetailsTabsData = structuredClone(FINES_ACC_DEFENDANT_ACCOUNT_TABS_DATA);
+  public tabs: IFinesAccountDetailsTabs = FINES_ACC_DEFENDANT_ACCOUNT_TABS;
   public accountData!: IOpalFinesDefendantAccountHeader;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
    */
-  private getDataFromRoute(): void {
+  private getHeaderDataFromRoute(): void {
     this.accountData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
@@ -95,31 +100,52 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    *
    */
   private setupTabDataStream(): void {
-    const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
-      this.opalFinesService.clearAccountDetailsCache(),
-    );
+
 
     const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
 
-    fragment$.subscribe((tab) => {
+    this.fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabData$['at-a-glance'] = this.opalFinesService
-            .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
-            .pipe(
-              tap((data) => {
-                this.compareVersion(data.version);
-              }),
-              distinctUntilChanged(),
-              takeUntil(this.destroy$),
-            );
+          this.tabs[tab].data = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+          );
           break;
-        default:
+        case 'defendant':
+          this.tabs[tab].data = this.fetchTabData(
+            of({ version: 3 })
+          );
+          break;
+        case 'payment-terms':
+          this.tabs[tab].data = this.fetchTabData(
+            of({ version: 1 })
+          );
           break;
       }
     });
   }
 
+  /**
+   * Fetches the data for a specific tab by calling the provided service function.
+   * Compares the version of the fetched data with the current version in the store.
+   * @param serviceCall the service function that retrieves the tab data
+   * @returns an observable of the tab data
+   */
+  private fetchTabData<T extends { version: number | undefined }>(serviceCall: Observable<T>): Observable<T> {
+    return serviceCall.pipe(
+      tap((data) => {
+        this.compareVersion(data.version);
+      }),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+    );
+  }
+
+  /**
+   * Compares the version of the fetched data with the current version in the store.
+   * If there is a mismatch, it triggers a warning banner
+   * @param version the version of the fetched data
+   */
   private compareVersion(version: number | undefined): void {
     if (version !== this.accountStore.version()) {
       // ToDo
@@ -148,6 +174,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Navigates to the add comments page.
+   * @param event The click event that triggered the navigation.
    */
   public navigateToAddCommentsPage(event: Event): void {
     event.preventDefault();
@@ -166,7 +193,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public ngOnInit(): void {
-    this.getDataFromRoute();
+    this.getHeaderDataFromRoute();
     this.setupTabDataStream();
   }
 
