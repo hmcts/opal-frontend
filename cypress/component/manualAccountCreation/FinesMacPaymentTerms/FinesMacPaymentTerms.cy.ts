@@ -18,7 +18,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 describe('FinesMacPaymentTermsComponent', () => {
   let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
   const date = new Date();
-  const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
+  const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
 
   const setupComponent = (
     defendantTypeMock: string | undefined = '',
@@ -43,7 +43,6 @@ describe('FinesMacPaymentTermsComponent', () => {
             const store = new FinesMacStore();
             store.setFinesMacStore(finesMacState);
             store.setAccountCommentsNotes = mockSetAccountCommentsNote;
-
             return store;
           },
         },
@@ -209,7 +208,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,AC.3,AC.4)Should load all elements on the screen correctly for AYPG defendant types',
     { tags: ['@PO-566', '@PO-587', '@PO-649', '@PO-344'] },
     () => {
-      setupComponent('parentOrGuardianToPay');
+      setupComponent('pgToPay');
 
       cy.get(DOM_ELEMENTS.pageTitle).should('exist');
       cy.get(DOM_ELEMENTS.legend).should('exist');
@@ -554,7 +553,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   );
 
   it('(AC.16a) should load button for next page for AYPG Defendant', { tags: ['@PO-429', '@PO-344'] }, () => {
-    setupComponent('parentOrGuardianToPay');
+    setupComponent('pgToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add account comments and notes');
   });
@@ -1034,7 +1033,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'Cannot calculate total time in days');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
 
-          setupComponent('parentOrGuardianToPay');
+          setupComponent('pgToPay');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'Cannot calculate total time in days');
           cy.get(DOM_ELEMENTS.calculatedDays).should('contain', 'You must enter a date days in default were imposed');
         });
@@ -1211,7 +1210,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
+      setupComponent('pgToPay', mockSetAccountCommentsNotes);
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
@@ -1258,7 +1257,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
+    setupComponent('pgToPay', mockSetAccountCommentsNotes);
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
     cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
@@ -1320,7 +1319,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
+    setupComponent('pgToPay', mockSetAccountCommentsNotes);
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -1409,7 +1408,7 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent('parentOrGuardianToPay', mockSetAccountCommentsNotes);
+      setupComponent('pgToPay', mockSetAccountCommentsNotes);
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');

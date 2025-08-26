@@ -374,7 +374,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+    setupComponent(mockFormSubmit, 'pgToPay');
 
     formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
     formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';

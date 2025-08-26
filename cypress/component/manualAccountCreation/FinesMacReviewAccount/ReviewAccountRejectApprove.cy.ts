@@ -239,7 +239,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
     cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -293,7 +293,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('exist');
     cy.get(DOM_ELEMENTS.PGregistrationNumber).should('exist');
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
     cy.get(DOM_ELEMENTS.accountTypeData)
@@ -457,7 +457,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     { tags: ['@PO-594'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
-      const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
+      const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
