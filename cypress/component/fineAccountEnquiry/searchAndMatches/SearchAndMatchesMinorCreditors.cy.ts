@@ -247,7 +247,7 @@ describe('Search Account Component - Minor Creditors', () => {
     cy.get(DOM_ELEMENTS.postcodeInput).clear();
   });
 
-  it.only(
+  it(
     'AC1a. should send correct API parameters when search is triggered from Minor Creditors tab - Individual',
     { tags: ['PO-708'] },
     () => {
@@ -306,7 +306,7 @@ describe('Search Account Component - Minor Creditors', () => {
     },
   );
 
-  it.only(
+  it(
     'AC1a. should send correct API parameters when search is triggered from Minor Creditors tab - Company',
     { tags: ['PO-708'] },
     () => {
