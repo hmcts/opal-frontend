@@ -46,6 +46,7 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       account_number: state.fsa_search_account_number,
+      active_accounts_only: false,
     });
   }
 
@@ -53,6 +54,7 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       pcr: state.fsa_search_account_reference_case_number,
+      active_accounts_only: false,
     });
   }
 
@@ -68,5 +70,6 @@ export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAcc
     address_line: individualCriteria!.fsa_search_account_individuals_address_line_1,
     postcode: individualCriteria!.fsa_search_account_individuals_post_code,
     include_aliases: individualCriteria!.fsa_search_account_individuals_include_aliases,
+    active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   });
 };

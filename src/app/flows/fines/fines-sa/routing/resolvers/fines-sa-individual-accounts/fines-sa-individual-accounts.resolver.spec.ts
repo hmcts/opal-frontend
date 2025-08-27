@@ -48,7 +48,7 @@ describe('finesSaIndividualAccountsResolver', () => {
         account_number: 'ACC123',
         search_type: 'individual',
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 1, defendant_accounts: [] });
@@ -76,7 +76,7 @@ describe('finesSaIndividualAccountsResolver', () => {
         pcr: 'REF456',
         search_type: 'individual',
         business_unit_ids: [1],
-        active_accounts_only: true,
+        active_accounts_only: false,
       }),
     );
     expect(result).toEqual({ count: 1, defendant_accounts: [] });
@@ -127,6 +127,58 @@ describe('finesSaIndividualAccountsResolver', () => {
       }),
     );
     expect(result).toEqual({ count: 1, defendant_accounts: [] });
+  });
+
+  it('should default active_accounts_only to true when nullish in individual criteria search', async () => {
+    const ind = {
+      fsa_search_account_individuals_last_name: 'Doe',
+      fsa_search_account_individuals_last_name_exact_match: true,
+      fsa_search_account_individuals_first_names: 'Jane',
+      fsa_search_account_individuals_first_names_exact_match: true,
+      fsa_search_account_individuals_date_of_birth: null,
+      fsa_search_account_individuals_national_insurance_number: '',
+      fsa_search_account_individuals_address_line_1: '2 Side St',
+      fsa_search_account_individuals_post_code: 'CD3 4EF',
+      fsa_search_account_individuals_include_aliases: true,
+    };
+
+    finesSaStore.setSearchAccount({
+      fsa_search_account_number: null,
+      fsa_search_account_reference_case_number: null,
+      fsa_search_account_individuals_search_criteria: ind,
+      fsa_search_account_companies_search_criteria: null,
+      fsa_search_account_minor_creditors_search_criteria: null,
+      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_business_unit_ids: [99],
+      // Intentionally nullish to exercise the `?? true` default
+      fsa_search_account_active_accounts_only: null,
+    });
+
+    opalFinesService.getDefendantAccounts.and.returnValue(of({ count: 0, defendant_accounts: [] }));
+    const mockRoute = {} as ActivatedRouteSnapshot;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
+
+    expect(opalFinesService.getDefendantAccounts).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        surname: 'Doe',
+        exact_match_surname: true,
+        forename: 'Jane',
+        exact_match_forenames: true,
+        date_of_birth: null,
+        ni_number: '',
+        address_line: '2 Side St',
+        postcode: 'CD3 4EF',
+        include_aliases: true,
+        search_type: 'individual',
+        business_unit_ids: [99],
+        // Key assertion: nullish defaults to true
+        active_accounts_only: true,
+      }),
+    );
+
+    expect(result).toEqual({ count: 0, defendant_accounts: [] });
   });
 
   it('should return empty result if no search criteria is provided', async () => {
