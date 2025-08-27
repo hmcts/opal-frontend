@@ -294,12 +294,12 @@ Feature: Account Search and Matches
 
     #PO-715 - AC9a. Error when 2 out of 3 sections contain data - Case 1: Account number + Reference
     When I enter "12345678" into the "Account number" field
-    And I enter "REF-1234242" into the "Reference or case number" field
+    And I enter "REF-123" into the "Reference or case number" field
     And I click on the "Minor creditors" link
     And I select the "Company" radio button
     And I click the "Search" button
 
-    Then I see "There is a problem"
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
