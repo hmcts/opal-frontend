@@ -1,6 +1,6 @@
 export interface IFinesAccSummaryTabsContentStyles {
-    heading: string,
-    hr: string,
-    key: string,
-    value: string,
-  }
+  heading: string;
+  hr: string;
+  key: string;
+  value: string;
+}
