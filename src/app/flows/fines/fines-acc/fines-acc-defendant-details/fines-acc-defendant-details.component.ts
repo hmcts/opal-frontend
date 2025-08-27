@@ -38,7 +38,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-
 import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccountDetailsTabs } from '../interfaces/fines-acc-tab-data-types.interface';
-import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs-data.constant';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs.constant';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
