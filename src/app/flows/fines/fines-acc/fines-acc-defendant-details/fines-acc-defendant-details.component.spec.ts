@@ -9,11 +9,18 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from './mocks/fines-acc-defendant-account-header.mock';
-import { of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-at-a-glance-tab-ref-data.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
+import { OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-history-and-notes-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-impositions-tab-ref-data.mock';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -22,7 +29,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   let activatedRouteStub: Partial<ActivatedRoute>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let fragment$: Subject<'at-a-glance' | 'defendant' | 'payment-terms'> = new Subject();
+  let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
 
   beforeEach(async () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -37,15 +44,42 @@ describe('FinesAccDefendantDetailsComponent', () => {
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };
 
+    mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
+      'transformAccountHeaderForStore',
+    ]);
+    mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
+
     mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
     mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
 
     mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
-      'getDefendantAccountAtAGlance',
+      'getDefendantAccountHeadingData',
+      'getDefendantAccountAtAGlanceTabData',
+      'getDefendantAccountImpositionsTabData',
+      'getDefendantAccountHistoryAndNotesTabData',
+      'getDefendantAccountEnforcementTabData',
+      'getDefendantAccountPaymentTermsTabData',
+      'getDefendantAccountDefendantTabData',
       'clearAccountDetailsCache',
     ]);
-    mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
+    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK));
+    mockOpalFinesService.getDefendantAccountAtAGlanceTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountDefendantTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountPaymentTermsTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
 
     await TestBed.configureTestingModule({
@@ -60,6 +94,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: FinesAccPayloadService, useValue: mockPayloadService },
       ],
     }).compileComponents();
 
@@ -111,34 +146,37 @@ describe('FinesAccDefendantDetailsComponent', () => {
     ]);
   });
 
-  // it('should load correct tab data when tab is changed', () => {
-  //   // Arrange
-  //   const defendantAccountId = 'DEF123';
-  //   const businessUnitId = 'BU456';
-  //   const businessUnitUserId = 'USER789';
-  //   component.accountData = {
-  //     defendant_account_id: defendantAccountId,
-  //     business_unit_id: businessUnitId,
-  //     business_unit_user_id: businessUnitUserId,
-  //     version: 1,
-  //     // ...other required mock properties
-  //   } as any;
+  it('should fetch the defendant tab data when fragment is changed to defendant', () => {
+    component['refreshFragment$'].next('defendant');
+    expect(mockOpalFinesService.getDefendantAccountDefendantTabData).toHaveBeenCalled();
+  });
 
-  //   // Spy on the service method
-  //   spyOn(component['opalFinesService'], 'getDefendantAccountAtAGlance').and.returnValue(
-  //     of({ version: 42, someData: 'expected' })
-  //   );
+  it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
+    component['refreshFragment$'].next('enforcement');
+    expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+  });
 
-  //   // Act: Simulate tab change
-  //   component.fragment$.next('at-a-glance');
+  it('should fetch the payment terms tab data when fragment is changed to payment-terms', () => {
+    component['refreshFragment$'].next('payment-terms');
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsTabData).toHaveBeenCalled();
+  });
 
-  //   // Assert: The tab data should be loaded with the expected observable value
-  //   component.tabs['at-a-glance'].data?.subscribe((data) => {
-  //     expect(data).toEqual({ version: 42, someData: 'expected' });
-  //   });
+  it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
+    component['refreshFragment$'].next('history-and-notes');
+    expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalled();
+  });
 
-  //   expect(component['opalFinesService'].getDefendantAccountAtAGlance)
-  //     .toHaveBeenCalledWith('at-a-glance', defendantAccountId, businessUnitId, businessUnitUserId);
-  // });
+  it('should fetch the impositions tab data when fragment is changed to impositions', () => {
+    component['refreshFragment$'].next('impositions');
+    expect(mockOpalFinesService.getDefendantAccountImpositionsTabData).toHaveBeenCalled();
+  });
 
+  it('should refresh the data for the header and current tab when refreshPage is called', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    const event = new Event('click');
+    component.refreshPage(event);
+    expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(
+      Number(MOCK_FINES_ACCOUNT_STATE.account_number),
+    );
+  });
 });

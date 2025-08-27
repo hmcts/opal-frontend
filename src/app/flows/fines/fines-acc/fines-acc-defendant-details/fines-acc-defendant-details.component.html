@@ -2,26 +2,33 @@
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 </div>
 
-  @if (accountStore.hasVersionMismatch()) {
-    <div class="govuk-grid-column-full">
-      <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
-        <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
-        <opal-lib-moj-alert-content content>
-          <opal-lib-moj-alert-content-text>Some information on this page may be out of date. <a href='#' (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text>
-        </opal-lib-moj-alert-content>
-      </opal-lib-moj-alert>
-    </div>
-  } 
-  @else if (accountStore.successMessage()) {
-    <div class="govuk-grid-column-full">
-      <opal-lib-moj-alert type="success" ariaLabel="offenceCodeMessage" [showDismiss]="true" (dismissed)="dismissSuccessAlert()">
-        <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
-        <opal-lib-moj-alert-content content>
-          <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
-        </opal-lib-moj-alert-content>
-      </opal-lib-moj-alert>
-    </div>
-  }
+@if (accountStore.hasVersionMismatch()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
+      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text
+          >Some information on this page may be out of date.
+          <a href="#" (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text
+        >
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+} @else if (accountStore.successMessage()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert
+      type="success"
+      ariaLabel="offenceCodeMessage"
+      [showDismiss]="true"
+      (dismissed)="accountStore.clearSuccessMessage()"
+    >
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+}
 
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
@@ -112,14 +119,14 @@
 
 <div class="govuk-grid-column-full">
   <opal-lib-moj-sub-navigation subNavId="account-details-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-    @for(tab of tabs | keyvalue; track tab.key){
-    <li
-      opal-lib-moj-sub-navigation-item
-      [subNavItemId]="tab.key + '-tab'"
-      [activeSubNavItemFragment]="activeTab"
-      [subNavItemFragment]="tab.key"
-      [subNavItemText]="tab.value.title"
-    ></li>
+    @for (tab of tabs | keyvalue; track tab.key) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        [subNavItemId]="tab.key + '-tab'"
+        [activeSubNavItemFragment]="activeTab"
+        [subNavItemFragment]="tab.key"
+        [subNavItemText]="tab.value.title"
+      ></li>
     }
   </opal-lib-moj-sub-navigation>
 </div>
@@ -135,12 +142,27 @@
   }
   @case ('defendant') {
     <div class="govuk-grid-column-full">
-      <p>Defendant Version: {{ (tabs['defendant'].data | async).version }}</p>
-  </div>
+      <p>Account Version: {{ (tabs['defendant'].data | async)?.version }}</p>
+    </div>
   }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full">
-      <p>Payment Terms Version: {{ (tabs['payment-terms'].data | async).version }}</p>
-  </div>
+      <p>Account Terms Version: {{ (tabs['payment-terms'].data | async)?.version }}</p>
+    </div>
+  }
+  @case ('enforcement') {
+    <div class="govuk-grid-column-full">
+      <p>Account Enforcement Version: {{ (tabs['enforcement'].data | async)?.version }}</p>
+    </div>
+  }
+  @case ('impositions') {
+    <div class="govuk-grid-column-full">
+      <p>Account Impositions Version: {{ (tabs['impositions'].data | async)?.version }}</p>
+    </div>
+  }
+  @case ('history-and-notes') {
+    <div class="govuk-grid-column-full">
+      <p>Account Version: {{ (tabs['history-and-notes'].data | async)?.version }}</p>
+    </div>
   }
 }

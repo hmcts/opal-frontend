@@ -3,26 +3,26 @@ import { IFinesAccountDetailsTabs } from '../../interfaces/fines-acc-tab-data-ty
 export const FINES_ACC_DEFENDANT_ACCOUNT_TABS: IFinesAccountDetailsTabs = {
   'at-a-glance': {
     title: 'At a glance',
-    data: null
+    data: null,
   },
-  'defendant': {
+  defendant: {
     title: 'Defendant',
-    data: null
+    data: null,
   },
   'payment-terms': {
     title: 'Payment terms',
-    data: null
+    data: null,
   },
-  'enforcement': {
+  enforcement: {
     title: 'Enforcement',
-    data: null
+    data: null,
   },
-  'impositions': {
+  impositions: {
     title: 'Impositions',
-    data: null
+    data: null,
   },
   'history-and-notes': {
     title: 'History and notes',
-    data: null
-  }
-}
+    data: null,
+  },
+};

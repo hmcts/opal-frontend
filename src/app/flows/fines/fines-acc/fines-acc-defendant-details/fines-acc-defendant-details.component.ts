@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, merge, Observable, of, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -39,7 +39,13 @@ import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defenda
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccountDetailsTabs } from '../interfaces/fines-acc-tab-data-types.interface';
 import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs-data.constant';
-import { MojAlertComponent, MojAlertContentComponent, MojAlertIconComponent, MojAlertTextComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -67,7 +73,7 @@ import { MojAlertComponent, MojAlertContentComponent, MojAlertIconComponent, Moj
     MojAlertComponent,
     MojAlertContentComponent,
     MojAlertTextComponent,
-    MojAlertIconComponent
+    MojAlertIconComponent,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,11 +83,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly permissionsService = inject(PermissionsService);
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
+  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly destroy$ = new Subject<void>();
-  private readonly localFragment$ = new Subject<string>();
-  private fragment$ = merge(this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
-    this.opalFinesService.clearAccountDetailsCache(),
-  ), this.localFragment$);
+  private readonly refreshFragment$ = new Subject<string>();
 
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
@@ -99,30 +103,77 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
-   * This method listens to changes in the route fragment (representing the active tab),
+   * This method listens to changes in either the route fragment (representing the active tab)
+   * or the refreshFragment (triggered when a user refreshes the current tab),
    * and updates the tab data stream accordingly. It uses the provided initial tab,
    * and constructs the necessary parameters for fetching and populating the tab's table data.
    *
    */
   private setupTabDataStream(): void {
+    const fragment$ = merge(
+      this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+        this.opalFinesService.clearAccountDetailsCache(),
+      ),
+      this.refreshFragment$,
+    );
+
     const { defendant_account_id, business_unit_id } = this.accountData;
     const business_unit_user_id = this.accountStore.business_unit_user_id();
 
-    this.fragment$.subscribe((tab) => {
+    fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabs[tab].data = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+            this.opalFinesService.getDefendantAccountAtAGlanceTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
           );
           break;
         case 'defendant':
           this.tabs[tab].data = this.fetchTabData(
-            of({ version: 3 })
+            this.opalFinesService.getDefendantAccountDefendantTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
           );
           break;
         case 'payment-terms':
           this.tabs[tab].data = this.fetchTabData(
-            of({ version: 1 })
+            this.opalFinesService.getDefendantAccountPaymentTermsTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
+          );
+          break;
+        case 'enforcement':
+          this.tabs[tab].data = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountEnforcementTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
+          );
+          break;
+        case 'impositions':
+          this.tabs[tab].data = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountImpositionsTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
+          );
+          break;
+        case 'history-and-notes':
+          this.tabs[tab].data = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(
+              defendant_account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
           );
           break;
       }
@@ -194,30 +245,21 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * @param event The click event that triggered the refresh.
    */
   public refreshPage(event: Event): void {
-    event.preventDefault(); 
-    this.accountStore.setSuccessMessage('Information is up to date');
+    event.preventDefault();
     this.accountStore.setHasVersionMismatch(false);
 
-    this.opalFinesService.getDefendantAccountHeadingData(Number(this.accountStore.getAccountNumber())).pipe(
-      tap((headingData) => {
-        this.accountStore.setAccountState(headingData);
-      })
-    ).subscribe(() => this.localFragment$.next(this.activeTab));
-    // Force refresh to ensure that resolvers are re-run and component is destroyed and re-initialized
-    // this['router'].navigateByUrl('/', { skipLocationChange: true }).then(() => {
-    //   this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.details}`], { 
-    //     relativeTo: this.activatedRoute, 
-    //     fragment: this.activeTab,
-    //   });
-    // });
-  }
-
-  /**
-   * Dismisses the success alert.
-   */
-  public dismissSuccessAlert(): void {
-    console.log('dismissing success alert at component level');
-    this.accountStore.clearSuccessMessage();
+    this.opalFinesService
+      .getDefendantAccountHeadingData(Number(this.accountStore.getAccountNumber()))
+      .pipe(
+        tap((headingData) => {
+          this.accountStore.setAccountState(this.payloadService.transformAccountHeaderForStore(headingData));
+        }),
+      )
+      .subscribe((res) => {
+        this.accountStore.setSuccessMessage('Information is up to date');
+        this.accountData = res;
+        this.refreshFragment$.next(this.activeTab);
+      });
   }
 
   /**
@@ -235,6 +277,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public ngOnDestroy(): void {
+    this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();

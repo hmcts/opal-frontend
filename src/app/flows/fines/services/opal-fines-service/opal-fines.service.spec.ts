@@ -36,10 +36,16 @@ import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-at-a-glance-tab-ref-data.mock';
 import { of } from 'rxjs';
 import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT } from './constants/opal-fines-defendant-account-details-cache.constant';
+import { OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-history-and-notes-tab-ref-data.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -572,8 +578,7 @@ describe('OpalFines', () => {
     // req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountAtAGlance data', () => {
-    const tab = 'at-a-glance';
+  it('should getDefendantAccountAtAGlanceTabData', () => {
     const defendant_account_id: string = '123456789';
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
@@ -581,7 +586,7 @@ describe('OpalFines', () => {
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
     service
-      .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountAtAGlanceTabData(defendant_account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
@@ -592,13 +597,78 @@ describe('OpalFines', () => {
     // req.flush(expectedResponse);
   });
 
+  it('should getDefendantAccounDefendantTabData', () => {
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
+
+    service
+      .getDefendantAccountDefendantTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+  });
+
+  it('should getDefendantAccountEnforcementTabData', () => {
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
+
+    service
+      .getDefendantAccountEnforcementTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+  });
+
+  it('should getDefendantAccountImpositionsTabData', () => {
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
+
+    service
+      .getDefendantAccountImpositionsTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+  });
+
+  it('should getDefendantAccountPaymentTermsTabData', () => {
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
+
+    service
+      .getDefendantAccountPaymentTermsTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+  });
+
+  it('should getDefendantAccountHistoryAndNotesTabData', () => {
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
+
+    service
+      .getDefendantAccountHistoryAndNotesTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+  });
+
   it('should clear account details cache', () => {
     const tab = 'at-a-glance';
     service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
     service.clearAccountDetailsCache();
 
     // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$'][tab]).toBeUndefined();
+    expect(service['accountDetailsCache$']).toEqual(OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT);
   });
 
   it('should add version to response body', () => {
@@ -614,6 +684,22 @@ describe('OpalFines', () => {
     expect(result).toEqual({
       ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
       version: 12345,
+    });
+  });
+
+  it('should set version to undefined if ETag not present in response header', () => {
+    const mockResponse: HttpResponse<IOpalFinesDefendantAccountHeader> = new HttpResponse({
+      body: FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+      headers: new HttpHeaders({}),
+      status: 200,
+      statusText: 'OK',
+    });
+
+    const result = service['addVersionToBody'](mockResponse);
+
+    expect(result).toEqual({
+      ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+      version: undefined,
     });
   });
 
