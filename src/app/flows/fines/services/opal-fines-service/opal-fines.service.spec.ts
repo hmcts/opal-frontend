@@ -40,7 +40,7 @@ import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mock
 import { of } from 'rxjs';
 import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT } from './constants/opal-fines-defendant-account-details-cache.constant';
+import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-impositions-tab-ref-data.mock';
@@ -668,7 +668,7 @@ describe('OpalFines', () => {
     service.clearAccountDetailsCache();
 
     // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$']).toEqual(OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT);
+    expect(service['accountDetailsCache$']).toEqual(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
   });
 
   it('should add version to response body', () => {

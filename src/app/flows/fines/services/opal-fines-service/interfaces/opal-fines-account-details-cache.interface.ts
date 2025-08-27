@@ -6,7 +6,7 @@ import { IOpalFinesAccountDetailsHistoryAndNotesTabRefData } from './opal-fines-
 import { IOpalFinesAccountDetailsImpositionsTabRefData } from './opal-fines-account-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDetailsPaymentTermsTabRefData } from './opal-fines-account-details-payment-terms-tab-ref-data.interface';
 
-export interface IOpalFinesAccountDetailsCache {
+export interface IOpalFinesAccountDetailsTabsData {
   'at-a-glance': Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> | null;
   defendant: Observable<IOpalFinesAccountDetailsDefendantTabRefData> | null;
   'payment-terms': Observable<IOpalFinesAccountDetailsPaymentTermsTabRefData> | null;

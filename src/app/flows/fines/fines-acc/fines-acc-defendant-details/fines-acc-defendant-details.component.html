@@ -125,7 +125,7 @@
         [subNavItemId]="tab.key + '-tab'"
         [activeSubNavItemFragment]="activeTab"
         [subNavItemFragment]="tab.key"
-        [subNavItemText]="tab.value.title"
+        [subNavItemText]="tab.value"
       ></li>
     }
   </opal-lib-moj-sub-navigation>
@@ -134,7 +134,7 @@
 @switch (activeTab) {
   @case ('at-a-glance') {
     <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabs['at-a-glance'].data | async"
+      [tabData]="tabsData['at-a-glance'] | async"
       [hasAccountMaintenencePermission]="!hasPermission('account-maintenance')"
       [isYouth]="accountData.is_youth"
       (addComments)="navigateToAddCommentsPage($event)"
@@ -142,27 +142,27 @@
   }
   @case ('defendant') {
     <div class="govuk-grid-column-full">
-      <p>Account Version: {{ (tabs['defendant'].data | async)?.version }}</p>
+      <p>Account Version: {{ (tabsData['defendant'] | async)?.version }}</p>
     </div>
   }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full">
-      <p>Account Terms Version: {{ (tabs['payment-terms'].data | async)?.version }}</p>
+      <p>Account Terms Version: {{ (tabsData['payment-terms'] | async)?.version }}</p>
     </div>
   }
   @case ('enforcement') {
     <div class="govuk-grid-column-full">
-      <p>Account Enforcement Version: {{ (tabs['enforcement'].data | async)?.version }}</p>
+      <p>Account Enforcement Version: {{ (tabsData['enforcement'] | async)?.version }}</p>
     </div>
   }
   @case ('impositions') {
     <div class="govuk-grid-column-full">
-      <p>Account Impositions Version: {{ (tabs['impositions'].data | async)?.version }}</p>
+      <p>Account Impositions Version: {{ (tabsData['impositions'] | async)?.version }}</p>
     </div>
   }
   @case ('history-and-notes') {
     <div class="govuk-grid-column-full">
-      <p>Account Version: {{ (tabs['history-and-notes'].data | async)?.version }}</p>
+      <p>Account Version: {{ (tabsData['history-and-notes'] | async)?.version }}</p>
     </div>
   }
 }

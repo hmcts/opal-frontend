@@ -53,8 +53,8 @@ import { IOpalFinesAccountDetailsEnforcementTabRefData } from './interfaces/opal
 import { IOpalFinesAccountDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsCache } from './interfaces/opal-fines-account-details-cache.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT } from './constants/opal-fines-defendant-account-details-cache.constant';
+import { IOpalFinesAccountDetailsTabsData } from './interfaces/opal-fines-account-details-cache.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -69,8 +69,8 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDetailsCache = structuredClone(
-    OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT,
+  private accountDetailsCache$: IOpalFinesAccountDetailsTabsData = structuredClone(
+    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
   );
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
@@ -347,7 +347,7 @@ export class OpalFines {
    * fetch fresh data or start with a clean state.
    */
   public clearAccountDetailsCache(): void {
-    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_CACHE_DEFAULT);
+    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
   }
 
   /**

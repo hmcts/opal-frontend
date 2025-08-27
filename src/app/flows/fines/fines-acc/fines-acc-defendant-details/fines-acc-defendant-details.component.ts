@@ -46,6 +46,8 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { IOpalFinesAccountDetailsTabsData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-cache.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-details-tabs-data.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -90,6 +92,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDetailsTabs = FINES_ACC_DEFENDANT_ACCOUNT_TABS;
+  public tabsData: IOpalFinesAccountDetailsTabsData = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
   public accountData!: IOpalFinesDefendantAccountHeader;
 
   /**
@@ -123,7 +126,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountAtAGlanceTabData(
               defendant_account_id,
               business_unit_id,
@@ -132,7 +135,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'defendant':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountDefendantTabData(
               defendant_account_id,
               business_unit_id,
@@ -141,7 +144,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'payment-terms':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountPaymentTermsTabData(
               defendant_account_id,
               business_unit_id,
@@ -150,7 +153,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'enforcement':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountEnforcementTabData(
               defendant_account_id,
               business_unit_id,
@@ -159,7 +162,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'impositions':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountImpositionsTabData(
               defendant_account_id,
               business_unit_id,
@@ -168,7 +171,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'history-and-notes':
-          this.tabs[tab].data = this.fetchTabData(
+          this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(
               defendant_account_id,
               business_unit_id,
