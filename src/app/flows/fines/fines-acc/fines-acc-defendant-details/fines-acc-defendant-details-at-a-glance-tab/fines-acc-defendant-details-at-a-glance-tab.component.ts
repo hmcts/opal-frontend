@@ -17,6 +17,17 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   @Input() tabData!: IOpalFinesAccountDetailsAtAGlanceTabRefData | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
+  @Input() style: {
+    heading: string;
+    hr: string;
+    key: string;
+    value: string;
+  } = {
+    heading: '',
+    hr: '',
+    key: '',
+    value: '',
+  };
   @Output() addComments = new EventEmitter<Event>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();

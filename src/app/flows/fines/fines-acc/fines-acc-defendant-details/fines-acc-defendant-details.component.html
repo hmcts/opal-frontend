@@ -138,6 +138,7 @@
       [hasAccountMaintenencePermission]="!hasPermission('account-maintenance')"
       [isYouth]="accountData.is_youth"
       (addComments)="navigateToAddCommentsPage($event)"
+      [style]="tabContentStyles"
     ></app-fines-acc-defendant-details-at-a-glance-tab>
   }
   @case ('defendant') {
