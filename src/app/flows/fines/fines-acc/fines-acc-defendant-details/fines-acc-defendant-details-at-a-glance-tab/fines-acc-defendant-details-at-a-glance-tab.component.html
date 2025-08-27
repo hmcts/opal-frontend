@@ -2,8 +2,8 @@
   <div class="govuk-grid-column-full">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
-        <h2 [class]="headingStyle">Defendant</h2>
-        <hr [class]="headingHrStyle" />
+        <h2 [class]="style.heading">Defendant</h2>
+        <hr [class]="style.hr" />
 
         @if (
           tabData.debtor_detail.document_language === languages.CY ||
@@ -14,23 +14,23 @@
           }}</opal-lib-govuk-tag>
         }
 
-        <h3 [class]="keyStyle">Name</h3>
-        <p [class]="valueStyle">
+        <h3 [class]="style.key">Name</h3>
+        <p [class]="style.value">
           {{ tabData.debtor_detail.title }} {{ tabData.debtor_detail.first_names }}
           {{ tabData.debtor_detail.surname | uppercase }}
         </p>
 
         @if (tabData.debtor_detail.individual_aliases && tabData.debtor_detail.individual_aliases.length > 0) {
-          <h3 [class]="keyStyle">Aliases</h3>
-          <p [class]="valueStyle">
+          <h3 [class]="style.key">Aliases</h3>
+          <p [class]="style.value">
             @for (alias of tabData.debtor_detail.individual_aliases; track alias.alias_id) {
               {{ alias.forenames }} {{ alias.surname | uppercase }}<br />
             }
           </p>
         }
 
-        <h3 [class]="keyStyle">Date of birth</h3>
-        <p [class]="valueStyle">
+        <h3 [class]="style.key">Date of birth</h3>
+        <p [class]="style.value">
           {{
             tabData.debtor_detail.date_of_birth
               ? dateService.getFromFormatToFormat(tabData.debtor_detail.date_of_birth, 'dd/MM/yyyy', 'dd MMMM yyyy')
@@ -38,8 +38,8 @@
           }}
         </p>
 
-        <h3 [class]="keyStyle">Address</h3>
-        <p [class]="valueStyle">
+        <h3 [class]="style.key">Address</h3>
+        <p [class]="style.value">
           {{ tabData.debtor_detail.address_line_1 }}
           @if (tabData.debtor_detail.address_line_2) {
             <br />
@@ -61,8 +61,8 @@
           {{ tabData.debtor_detail.post_code | uppercase }}
         </p>
 
-        <h3 [class]="keyStyle">National Insurance Number</h3>
-        <p [class]="valueStyle">
+        <h3 [class]="style.key">National Insurance Number</h3>
+        <p [class]="style.value">
           {{
             tabData.debtor_detail.national_insurance_number
               ? (tabData.debtor_detail.national_insurance_number | uppercase)
@@ -74,49 +74,49 @@
           tabData.debtor_detail.document_language === languages.CY ||
           tabData.debtor_detail.hearing_language === languages.CY
         ) {
-          <h2 [class]="headingStyle">Language preferences</h2>
-          <hr [class]="headingHrStyle" />
-          <h3 [class]="keyStyle">Document language</h3>
-          <p [class]="valueStyle">{{ tabData.debtor_detail.document_language }}</p>
-          <h3 [class]="keyStyle">Court hearing language</h3>
-          <p [class]="valueStyle">{{ tabData.debtor_detail.hearing_language }}</p>
+          <h2 [class]="style.heading">Language preferences</h2>
+          <hr [class]="style.hr" />
+          <h3 [class]="style.key">Document language</h3>
+          <p [class]="style.value">{{ tabData.debtor_detail.document_language }}</p>
+          <h3 [class]="style.key">Court hearing language</h3>
+          <p [class]="style.value">{{ tabData.debtor_detail.hearing_language }}</p>
         }
       </div>
 
       <div class="govuk-grid-column-one-third">
-        <h2 [class]="headingStyle">Payment terms</h2>
-        <hr [class]="headingHrStyle" />
+        <h2 [class]="style.heading">Payment terms</h2>
+        <hr [class]="style.hr" />
 
         @if (tabData.payment_terms.payment_terms_type_code === 'By date') {
-          <h3 [class]="keyStyle">Payment terms</h3>
-          <p [class]="valueStyle">Pay by date</p>
+          <h3 [class]="style.key">Payment terms</h3>
+          <p [class]="style.value">Pay by date</p>
           @if (tabData.payment_terms.effective_date) {
-            <h3 [class]="keyStyle">By date</h3>
-            <p [class]="valueStyle">
+            <h3 [class]="style.key">By date</h3>
+            <p [class]="style.value">
               {{
                 dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
               }}
             </p>
           }
         } @else if (tabData.payment_terms.payment_terms_type_code === 'Instalments') {
-          <h3 [class]="keyStyle">Payment terms</h3>
+          <h3 [class]="style.key">Payment terms</h3>
           @if (tabData.payment_terms.lump_sum_amount) {
-            <p [class]="valueStyle">Lump sum plus instalments</p>
+            <p [class]="style.value">Lump sum plus instalments</p>
           } @else {
-            <p [class]="valueStyle">Instalments only</p>
+            <p [class]="style.value">Instalments only</p>
           }
 
-          <h3 [class]="keyStyle">Frequency</h3>
-          <p [class]="valueStyle">{{ tabData.payment_terms.instalment_period }}</p>
+          <h3 [class]="style.key">Frequency</h3>
+          <p [class]="style.value">{{ tabData.payment_terms.instalment_period }}</p>
           @if (tabData.payment_terms.instalment_amount) {
-            <h3 [class]="keyStyle">Instalments</h3>
-            <p [class]="valueStyle">
+            <h3 [class]="style.key">Instalments</h3>
+            <p [class]="style.value">
               {{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}
             </p>
           }
           @if (tabData.payment_terms.effective_date) {
-            <h3 [class]="keyStyle">Start date</h3>
-            <p [class]="valueStyle">
+            <h3 [class]="style.key">Start date</h3>
+            <p [class]="style.value">
               {{
                 dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
               }}
@@ -126,8 +126,8 @@
       </div>
 
       <div class="govuk-grid-column-one-third">
-        <h2 [class]="headingStyle">Enforcement status</h2>
-        <hr [class]="headingHrStyle" />
+        <h2 [class]="style.heading">Enforcement status</h2>
+        <hr [class]="style.hr" />
         <opal-lib-govuk-tag
           [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
           tagId="enforcement_status"
@@ -151,23 +151,23 @@
           >
         }
         @if (tabData.enforcement_status.default_days_in_jail) {
-          <h3 [class]="keyStyle">Days in default</h3>
-          <p [class]="valueStyle">
+          <h3 [class]="style.key">Days in default</h3>
+          <p [class]="style.value">
             {{ tabData.enforcement_status.default_days_in_jail }}
             {{ tabData.enforcement_status.default_days_in_jail > 1 ? 'days' : 'day' }}
           </p>
         }
         @if (tabData.enforcement_status.enforcement_override_id) {
-          <h3 [class]="keyStyle">Enforcement override</h3>
-          <p [class]="valueStyle">
+          <h3 [class]="style.key">Enforcement override</h3>
+          <p [class]="style.value">
             {{ tabData.enforcement_status.enforcement_override_title }}
             {{ tabData.enforcement_status.enforcement_override_id }}
           </p>
         }
         <hr />
         @if (tabData.enforcement_status.last_movement_date) {
-          <h3 [class]="keyStyle">Date of last movement</h3>
-          <p [class]="valueStyle">
+          <h3 [class]="style.key">Date of last movement</h3>
+          <p [class]="style.value">
             {{
               dateService.getFromFormatToFormat(
                 tabData.enforcement_status.last_movement_date,
@@ -178,23 +178,23 @@
           </p>
         }
 
-        <h2 [class]="headingStyle">Comments</h2>
-        <hr [class]="headingHrStyle" />
+        <h2 [class]="style.heading">Comments</h2>
+        <hr [class]="style.hr" />
         @if (
           tabData.account_notes.account_comment ||
           tabData.account_notes.free_text_note_1 ||
           tabData.account_notes.free_text_note_2 ||
           tabData.account_notes.free_text_note_3
         ) {
-          <h3 [class]="keyStyle">Comment</h3>
-          <p [class]="valueStyle">{{ tabData.account_notes.account_comment ?? '-' }}</p>
-          <h3 [class]="keyStyle">Free text notes</h3>
+          <h3 [class]="style.key">Comment</h3>
+          <p [class]="style.value">{{ tabData.account_notes.account_comment ?? '-' }}</p>
+          <h3 [class]="style.key">Free text notes</h3>
           @if (
             tabData.account_notes.free_text_note_1 ||
             tabData.account_notes.free_text_note_2 ||
             tabData.account_notes.free_text_note_3
           ) {
-            <p [class]="valueStyle">
+            <p [class]="style.value">
               @if (tabData.account_notes.free_text_note_1) {
                 {{ tabData.account_notes.free_text_note_1 }}
                 <br />
@@ -208,10 +208,10 @@
               }
             </p>
           } @else {
-            <p [class]="valueStyle">&mdash;</p>
+            <p [class]="style.value">&mdash;</p>
           }
           @if (hasAccountMaintenencePermission) {
-            <p [class]="valueStyle">
+            <p [class]="style.value">
               <a
                 class="govuk-link govuk-link--no-visited-state"
                 href="#"
@@ -222,7 +222,7 @@
             </p>
           }
         } @else if (hasAccountMaintenencePermission) {
-          <p [class]="valueStyle">
+          <p [class]="style.value">
             <a
               class="govuk-link govuk-link--no-visited-state"
               href="#"

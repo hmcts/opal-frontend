@@ -32,11 +32,4 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
-
-  public headingStyle = 'govuk-heading-s govuk-!-margin-bottom-2 govuk-!-margin-top-2';
-  public headingHrStyle =
-    'govuk-section-break govuk-section-break--m govuk-section-break--visible custom-section-break--4px govuk-!-margin-bottom-3 govuk-!-margin-top-0';
-  public keyStyle =
-    'govuk-!-font-size-16 govuk-!-font-weight-bold govuk-!-margin-top-0 govuk-!-margin-bottom-1 govuk-body';
-  public valueStyle = 'govuk-!-font-size-16  govuk-!-margin-top-0 govuk-!-margin-bottom-2 govuk-body';
 }
