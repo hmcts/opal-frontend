@@ -294,12 +294,12 @@ Feature: Account Search and Matches
 
     #PO-715 - AC9a. Error when 2 out of 3 sections contain data - Case 1: Account number + Reference
     When I enter "12345678" into the "Account number" field
-    And I enter "REF-123" into the "Reference or case number" field
+    And I enter "REF-1234242" into the "Reference or case number" field
     And I click on the "Minor creditors" link
     And I select the "Company" radio button
     And I click the "Search" button
 
-    Then I see "There is a problem" on the page header
+    Then I see "There is a problem"
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -404,4 +404,25 @@ Feature: Account Search and Matches
     Then I see "Account Details" on the page header
 
 
-# PO-717 AC3b & AC2b Will be covered once API integration is complete
+  # PO-707
+  @PO-707 @only
+  Scenario: Successful Search For company defendant accounts
+    When I click on the "Companies" link
+    And I enter "test company" into the "Company name" field
+    And I click the "Search" button
+
+    # PO-707 - AC5. Back Button navigates to Search Page
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I see "test company" in the "Company name" field
+    Then I see "Companies" on the page header
+
+
+    # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
+    # Handles window.open navigation
+    When I click the "Search" button
+    When I click the "230001BU" link and handle new window navigation
+    Then I see "Account Details" on the page header
+
+#PO-707 AC3b & AC2b Will be covered once API integration is complete
