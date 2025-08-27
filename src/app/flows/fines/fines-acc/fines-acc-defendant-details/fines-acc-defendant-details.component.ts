@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, Observable, of, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, merge, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -39,7 +39,7 @@ import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defenda
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccountDetailsTabs } from '../interfaces/fines-acc-tab-data-types.interface';
 import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs-data.constant';
-import { Router } from '@angular/router';
+import { MojAlertComponent, MojAlertContentComponent, MojAlertIconComponent, MojAlertTextComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -63,7 +63,11 @@ import { Router } from '@angular/router';
     CustomPageHeaderComponent,
     UpperCasePipe,
     GovukButtonDirective,
-    KeyValuePipe
+    KeyValuePipe,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertTextComponent,
+    MojAlertIconComponent
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,9 +78,10 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
   private readonly destroy$ = new Subject<void>();
-  private fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
-      this.opalFinesService.clearAccountDetailsCache(),
-    );
+  private readonly localFragment$ = new Subject<string>();
+  private fragment$ = merge(this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
+    this.opalFinesService.clearAccountDetailsCache(),
+  ), this.localFragment$);
 
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
@@ -100,9 +105,8 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    *
    */
   private setupTabDataStream(): void {
-
-
-    const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
+    const { defendant_account_id, business_unit_id } = this.accountData;
+    const business_unit_user_id = this.accountStore.business_unit_user_id();
 
     this.fragment$.subscribe((tab) => {
       switch (tab) {
@@ -147,9 +151,8 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * @param version the version of the fetched data
    */
   private compareVersion(version: number | undefined): void {
-    if (version !== this.accountStore.version()) {
-      // ToDo
-      console.error('version mismatch', version, this.accountStore.version());
+    if (version !== this.accountStore.base_version()) {
+      this.accountStore.setHasVersionMismatch(true);
     }
   }
 
@@ -184,6 +187,40 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
+   * Handles the page refresh action.
+   * Sets the version mismatch state to false.
+   * Sets the is refreshed state to true.
+   * Refreshes the page.
+   * @param event The click event that triggered the refresh.
+   */
+  public refreshPage(event: Event): void {
+    event.preventDefault(); 
+    this.accountStore.setSuccessMessage('Information is up to date');
+    this.accountStore.setHasVersionMismatch(false);
+
+    this.opalFinesService.getDefendantAccountHeadingData(Number(this.accountStore.getAccountNumber())).pipe(
+      tap((headingData) => {
+        this.accountStore.setAccountState(headingData);
+      })
+    ).subscribe(() => this.localFragment$.next(this.activeTab));
+    // Force refresh to ensure that resolvers are re-run and component is destroyed and re-initialized
+    // this['router'].navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //   this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.details}`], { 
+    //     relativeTo: this.activatedRoute, 
+    //     fragment: this.activeTab,
+    //   });
+    // });
+  }
+
+  /**
+   * Dismisses the success alert.
+   */
+  public dismissSuccessAlert(): void {
+    console.log('dismissing success alert at component level');
+    this.accountStore.clearSuccessMessage();
+  }
+
+  /**
    * Navigates back to the account search results page.
    */
   public navigateBack(): void {
@@ -198,6 +235,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public ngOnDestroy(): void {
+    this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
   }

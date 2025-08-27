@@ -438,6 +438,7 @@ export class OpalFines {
     business_unit_id: string,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+    console.log('getting at a glance');
     if (!this.accountDetailsCache$[tab]) {
       // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http

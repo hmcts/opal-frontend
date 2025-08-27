@@ -5,5 +5,6 @@ export const FINES_ACCOUNT_STATE: IFinesAccountState = {
   party_type: null,
   party_name: null,
   party_id: null,
-  version: null,
+  base_version: null,
+  business_unit_user_id: null
 };

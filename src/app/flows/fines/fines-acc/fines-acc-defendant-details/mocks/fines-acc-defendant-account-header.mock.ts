@@ -12,7 +12,7 @@ export const FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK: IOpalFinesDefendantAccount
   prosecutor_case_reference: 'DFG48583045',
   fixed_penalty_ticket_number: null,
   business_unit_name: 'Example',
-  business_unit_id: '61',
+  business_unit_id: '65',
   business_unit_code: '80',
   imposed: 1000,
   arrears: 200,
@@ -26,6 +26,4 @@ export const FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK: IOpalFinesDefendantAccount
   surname: 'Doe',
   // organisation = true
   organisation_name: 'Example Organisation',
-  // attained during resolver
-  business_unit_user_id: '61',
 };

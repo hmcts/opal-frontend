@@ -24,6 +24,4 @@ export interface IOpalFinesDefendantAccountHeader {
   surname: string | null;
   // organisation = true
   organisation_name: string | null;
-  // attained during resolver
-  business_unit_user_id: string | null;
 }

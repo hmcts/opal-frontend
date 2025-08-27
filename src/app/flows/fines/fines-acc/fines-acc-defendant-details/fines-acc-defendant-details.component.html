@@ -2,6 +2,27 @@
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 </div>
 
+  @if (accountStore.hasVersionMismatch()) {
+    <div class="govuk-grid-column-full">
+      <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
+        <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+        <opal-lib-moj-alert-content content>
+          <opal-lib-moj-alert-content-text>Some information on this page may be out of date. <a href='#' (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text>
+        </opal-lib-moj-alert-content>
+      </opal-lib-moj-alert>
+    </div>
+  } 
+  @else if (accountStore.successMessage()) {
+    <div class="govuk-grid-column-full">
+      <opal-lib-moj-alert type="success" ariaLabel="offenceCodeMessage" [showDismiss]="true" (dismissed)="dismissSuccessAlert()">
+        <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+        <opal-lib-moj-alert-content content>
+          <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
+        </opal-lib-moj-alert-content>
+      </opal-lib-moj-alert>
+    </div>
+  }
+
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>
