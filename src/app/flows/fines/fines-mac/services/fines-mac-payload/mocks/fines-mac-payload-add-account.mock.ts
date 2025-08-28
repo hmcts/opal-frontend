@@ -98,6 +98,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   },
   account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
   account_status: 'Submitted',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Timmy Test',
