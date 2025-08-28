@@ -1,10 +1,10 @@
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { IOpalFinesDefendantAccountHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { TestBed } from '@angular/core/testing';
 
@@ -18,7 +18,7 @@ describe('FinesAccPayloadService', () => {
     mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
 
     mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
-      FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK.business_unit_id,
+      FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_id,
     );
     mockGlobalStore.userState.and.returnValue(SESSION_USER_STATE_MOCK);
 
@@ -33,7 +33,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should transform account header for store', () => {
-    const header: IOpalFinesDefendantAccountHeader = FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK;
+    const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
 
     const result: IFinesAccountState = service.transformAccountHeaderForStore(header);
 
@@ -54,7 +54,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should handle missing surname gracefully', () => {
-    const header: IOpalFinesDefendantAccountHeader = FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK;
+    const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
 
     const result = service.transformAccountHeaderForStore(header);
 

@@ -35,10 +35,10 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 // Interfaces
-import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-account-header.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { IFinesAccountDetailsTabs } from '../interfaces/fines-acc-tab-data-types.interface';
-import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from './constants/fines-acc-defendant-account-tabs.constant';
+import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-tab-data-types.interface';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -46,7 +46,7 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
-import { IOpalFinesAccountDetailsTabsData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-cache.interface';
+import { IOpalFinesAccountDefendantDetailsTabsData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from './constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
@@ -93,9 +93,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
-  public tabs: IFinesAccountDetailsTabs = FINES_ACC_DEFENDANT_ACCOUNT_TABS;
-  public tabsData: IOpalFinesAccountDetailsTabsData = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
-  public accountData!: IOpalFinesDefendantAccountHeader;
+  public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
+  public tabsData: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
+    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
+  );
+  public accountData!: IOpalFinesAccountDefendantDetailsHeader;
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
 
   /**

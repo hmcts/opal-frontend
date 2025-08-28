@@ -1,6 +1,6 @@
-import { IOpalFinesAccountDetailsTabsData } from '../interfaces/opal-fines-account-details-cache.interface';
+import { IOpalFinesAccountDefendantDetailsTabsData } from '../interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 
-export const OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY: IOpalFinesAccountDetailsTabsData = {
+export const OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY: IOpalFinesAccountDefendantDetailsTabsData = {
   'at-a-glance': null,
   defendant: null,
   'payment-terms': null,

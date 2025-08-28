@@ -1,4 +1,4 @@
-export interface IOpalFinesDefendantAccountHeader {
+export interface IOpalFinesAccountDefendantDetailsHeader {
   version: number | undefined;
   defendant_account_id: string;
   account_number: string;

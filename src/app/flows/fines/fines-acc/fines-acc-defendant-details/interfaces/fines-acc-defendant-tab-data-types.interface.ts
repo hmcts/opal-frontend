@@ -1,4 +1,4 @@
-export interface IFinesAccountDetailsTabs {
+export interface IFinesAccountDefendantDetailsTabs {
   'at-a-glance': string;
   defendant: string;
   'payment-terms': string;

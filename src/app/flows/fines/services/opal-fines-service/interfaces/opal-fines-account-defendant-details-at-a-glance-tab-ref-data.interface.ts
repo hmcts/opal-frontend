@@ -1,4 +1,4 @@
-export interface IOpalFinesAccountDetailsAtAGlanceTabRefData {
+export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
   version: number | undefined;
   defendant_account_id: string;
   account_number: string;

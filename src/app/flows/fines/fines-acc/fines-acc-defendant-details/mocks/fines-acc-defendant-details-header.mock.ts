@@ -1,6 +1,6 @@
-import { IOpalFinesDefendantAccountHeader } from '../interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../interfaces/fines-acc-defendant-account-header.interface';
 
-export const FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK: IOpalFinesDefendantAccountHeader = {
+export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   version: 1,
   defendant_account_id: 'ABC123DEF456',
   account_number: '123456789',

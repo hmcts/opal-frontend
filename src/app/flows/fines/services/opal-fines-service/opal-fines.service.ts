@@ -36,24 +36,24 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
-import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
-import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-at-a-glance-tab-ref-data.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-at-a-glance-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-defendant-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-impositions-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-enforcement-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-payment-terms-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-history-and-notes-tab-ref-data.mock';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
+import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-acount-search-params.interface';
-import { IOpalFinesAccountDetailsDefendantTabRefData } from './interfaces/opal-fines-account-details-defendant-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-details-enforcement-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-details-history-and-notes-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-details-payment-terms-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDetailsTabsData } from './interfaces/opal-fines-account-details-cache.interface';
+import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from './interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 
 @Injectable({
@@ -69,7 +69,7 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDetailsTabsData = structuredClone(
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
     OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
   );
 
@@ -449,7 +449,7 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {
       // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
@@ -458,7 +458,7 @@ export class OpalFines {
       //     map((response) => this.addVersionToBody(response)),
       //     shareReplay(1)
       //   );
-      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
     }
 
     return this.accountDetailsCache$['at-a-glance'];
@@ -477,9 +477,9 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsDefendantTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
-      this.accountDetailsCache$['defendant'] = of(OPAL_FINES_ACCOUNT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['defendant'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
     }
     return this.accountDetailsCache$['defendant'];
   }
@@ -497,9 +497,9 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsEnforcementTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
     if (!this.accountDetailsCache$['enforcement']) {
-      this.accountDetailsCache$['enforcement'] = of(OPAL_FINES_ACCOUNT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['enforcement'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     }
     return this.accountDetailsCache$['enforcement'];
   }
@@ -517,9 +517,9 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsImpositionsTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
     if (!this.accountDetailsCache$['impositions']) {
-      this.accountDetailsCache$['impositions'] = of(OPAL_FINES_ACCOUNT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['impositions'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
     }
     return this.accountDetailsCache$['impositions'];
   }
@@ -537,10 +537,10 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsHistoryAndNotesTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
     if (!this.accountDetailsCache$['history-and-notes']) {
       this.accountDetailsCache$['history-and-notes'] = of(
-        OPAL_FINES_ACCOUNT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
       );
     }
     return this.accountDetailsCache$['history-and-notes'];
@@ -559,9 +559,11 @@ export class OpalFines {
     defendant_account_id: string,
     business_unit_id: string,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsPaymentTermsTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {
     if (!this.accountDetailsCache$['payment-terms']) {
-      this.accountDetailsCache$['payment-terms'] = of(OPAL_FINES_ACCOUNT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['payment-terms'] = of(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK,
+      );
     }
     return this.accountDetailsCache$['payment-terms'];
   }
@@ -573,12 +575,12 @@ export class OpalFines {
    * @param accountId - The unique identifier of the defendant account.
    * @returns An Observable that emits the defendant account header data.
    */
-  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesDefendantAccountHeader> {
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
     // return this.http.get<IOpalFinesDefendantAccountHeader>(url, { observe: 'response' }).pipe(
     //   map(response => this.addVersionToBody(response))
     // );
-    return of(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
+    return of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
   }
 
   /**
