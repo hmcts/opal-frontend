@@ -33,3 +33,11 @@ Then('I click the change link for the {string} section', (sectionName: string) =
     .contains('Change')
     .click();
 });
+
+Then('I see {string} in the Account comments and notes section', (text: string) => {
+  // Find the Account comments and notes section and verify the text content
+  cy.contains('h2.govuk-summary-card__title', 'Account comments and notes')
+    .parents('.govuk-summary-card')
+    .find('dd')
+    .should('contain', text);
+});

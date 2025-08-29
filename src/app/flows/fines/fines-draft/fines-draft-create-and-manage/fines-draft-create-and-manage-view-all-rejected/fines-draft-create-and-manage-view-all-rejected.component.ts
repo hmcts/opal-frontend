@@ -29,7 +29,8 @@ export class FinesDraftCreateAndManageViewAllRejectedComponent implements OnInit
 
   public readonly PATH_REVIEW_ACCOUNT = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
 
-  public onDefendantClick(draftAccountId: number): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    const draftAccountId = +row['Defendant id'];
     this.finesDraftStore.setViewAllAccounts(true);
     this.finesDraftStore.setAmend(false);
 

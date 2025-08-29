@@ -68,9 +68,12 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   });
 
   it('should call viewAllAccounts and amend then call onDefendantClick with PATH_REVIEW_ACCOUNT', () => {
-    component.onDefendantClick(123);
+    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
     expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
     expect(finesDraftStore.amend()).toBeFalsy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, component.PATH_REVIEW_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
+      component.PATH_REVIEW_ACCOUNT,
+    );
   });
 });

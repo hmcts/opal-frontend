@@ -272,3 +272,89 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     When I click the "Submit for review" button
 
     Then I should see the global error banner
+
+  @PO-1809
+  Scenario: Validate users amend and resubmit a rejected draft Fixed Penalty account
+
+    And I clear the business unit search box
+    And I enter "Camberwell green" into the business unit search box
+
+
+    When I select the "Adult or youth only" radio button
+    And I click the "Continue" button
+    Then I see "Fixed Penalty details" on the page header
+
+    # Fill in court details
+    And I enter "Central London County Court (372)" into the Issuing Authority search box
+    And I enter "Court 777 Camberwell CH09 (777)" into the Enforcement court search box
+
+    # Fill in personal details
+    When I select "Mr" from the "Title" dropdown
+    And I enter "John" into the "First names" field
+    And I enter "Smith" into the "Last name" field
+    And I enter "01/01/1980" into the "Date of birth" date field
+    And I enter "123 High Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    # Fill in fixed penalty details
+    And I enter "HY35014" into the "Offence code" field
+    And I enter "10:15" into the "Time of offence" field
+    And I enter "London Borough of Westminster" into the "Place of offence" text field
+    And I enter "500" into the Amount imposed field
+    And I enter "CP12COR" into the "Registration number" field
+    And I enter "SMITH010123JS9AB" into the "Driving licence number" field
+    And I enter "CORP2025" into the "Notice number" field
+    And I enter "05/07/2025" into the "Date of offence" date field
+
+    # Submit the form
+    And I click the "Review Account" button
+
+    # Verify navigation to 'Check account details' screen
+    Then I see "Check fixed penalty account details" on the page header
+    When I click the "Submit for review" button and capture the created account number
+    Then I see "You've submitted this account for review" text on the page
+
+    # Sign out and sign in as a different user to review and reject the account
+    And I click the Sign out link
+    When I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
+    Then I am on the dashboard
+    Then I navigate to Check and Validate Draft Accounts
+    And I see "Review accounts" on the page header
+    And I click on the "SMITH, John" link
+    Then I see "Mr John SMITH" on the page header
+    And the account status is "In review"
+    And I select the "Reject" radio button
+    And I enter "Testing review history" into the "Enter reason for rejection" text field
+    And I click on continue button
+    And I see "Review accounts" on the page header
+
+    # PO-1809 AC2 - 'Reason for rejection' screen displays Fixed Penalty Details data
+    Then I see "You have rejected John SMITH's account." text on the page
+
+
+    # Sign out and sign back in as a creator to amend and resubmit the rejected account
+    When I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    And I navigate to Create and Manage Draft Accounts
+    Then I click on the "Rejected" link
+
+    # PO-1809 AC1 - Navigate to 'Reason for rejection' screen when selecting defendant name hyperlink
+    And I click on the "SMITH, John" link
+
+
+    # PO-1809 AC2a - Fixed Penalty Details form is pre-populated with existing data
+    When I click on the "Change" link
+    And I enter "HY80508" into the "Offence code" field
+    And I enter "This is a test comment" into the "Add comment" text field
+
+    # PO-1809 AC3 - Data persisted and navigate to 'Check Fixed Penalty Details' screen
+    And I click the "Review Account" button
+    Then I see "Check fixed penalty account details" on the page header
+
+    # PO-1809 AC3a - 'Check Fixed Penalty Details' screen displays updated summary data
+    Then I see "Appeal against the issue of a notice under section 165 of the Highways Act 1980 (HY80508)" in the Offence code field
+    And I see "This is a test comment" in the Account comments and notes section
+    When I click the "Submit for review" button
+    Then I see "You have submitted John SMITH's account for review." text on the page
+
+

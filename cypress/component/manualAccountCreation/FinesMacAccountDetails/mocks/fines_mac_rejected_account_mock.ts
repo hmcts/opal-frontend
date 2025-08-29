@@ -98,6 +98,7 @@ export const FINES_REJECTED_ACCOUNT_MOCK: IFinesMacAddAccountPayload = {
   },
   account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
   account_status: 'Rejected',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Timmy Test',

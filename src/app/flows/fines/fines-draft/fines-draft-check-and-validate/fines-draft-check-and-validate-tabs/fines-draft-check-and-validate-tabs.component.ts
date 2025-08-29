@@ -149,9 +149,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    * then triggers the defendant click logic in the fines draft service,
    * navigating to the review account path.
    *
-   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   * @param row - The draft account row associated with the defendant.
    */
-  public onDefendantClick(draftAccountId: number): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    const draftAccountId = +row['Defendant id'];
     this.finesDraftStore.setFragmentAndChecker(this.activeTab, true);
     this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_REVIEW_ACCOUNT);
   }

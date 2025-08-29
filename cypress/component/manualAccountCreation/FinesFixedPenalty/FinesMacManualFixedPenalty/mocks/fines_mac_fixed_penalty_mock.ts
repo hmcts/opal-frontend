@@ -13,7 +13,7 @@ export const FINES_FIXED_PENALTY_MOCK = {
     formData: {
       // Offence Details Section
       fm_offence_details_notice_number: '',
-      fm_offence_details_offence_type: '',
+      fm_offence_details_offence_type: 'vehicle',
       fm_offence_details_date_of_offence: '',
       fm_offence_details_offence_id: null,
       fm_offence_details_offence_cjs_code: '',
