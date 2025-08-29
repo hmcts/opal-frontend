@@ -277,7 +277,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
-      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
       fm_create_account_business_unit_id: 1,
     };
@@ -293,9 +293,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     component.paymentTermsBypassDefendantTypes = [
-      FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     ];
 
@@ -308,7 +308,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
     component.defendantType = 'test';
     component.paymentTermsBypassDefendantTypes = [
-      FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     ];
 
@@ -330,7 +330,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
       ...parentOrGuardianToPay.accountDetails.formData,
-      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();

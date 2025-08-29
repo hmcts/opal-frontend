@@ -69,7 +69,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get('button[type="submit"]').should('contain', 'Add personal details');
   });
   it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527', '@PO-1449'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+    setupComponent(null, 'pgToPay');
     cy.get('app-fines-mac-court-details-form').should('exist');
 
     cy.get('button[type="submit"]').should('contain', 'Add parent or guardian details');
@@ -322,7 +322,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+    setupComponent(mockFormSubmit, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
     cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();

@@ -44,6 +44,10 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       default_days_in_jail: 12,
       enforcements: [
         {
+          result_id: 'COLLO',
+          enforcement_result_responses: null,
+        },
+        {
           result_id: 'PRIS',
           enforcement_result_responses: [
             {
@@ -78,6 +82,10 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       default_days_in_jail: null,
       enforcements: [
         {
+          result_id: 'COLLO',
+          enforcement_result_responses: null,
+        },
+        {
           result_id: 'NOENF',
           enforcement_result_responses: [
             {
@@ -106,6 +114,10 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       instalment_amount: 100,
       default_days_in_jail: 11,
       enforcements: [
+        {
+          result_id: 'COLLO',
+          enforcement_result_responses: null,
+        },
         {
           result_id: 'PRIS',
           enforcement_result_responses: [
@@ -165,7 +177,10 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
         paymentTermsStateWithUndefinedReason.fm_payment_terms_reason_account_is_on_noenf = null;
 
         const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateWithUndefinedReason, 'fine');
-        expect(result?.enforcements?.[0]?.enforcement_result_responses?.[0]?.response).toBeNull();
+        expect(result.enforcements?.[0]?.result_id).toEqual('COLLO');
+        expect(result.enforcements?.[0]?.enforcement_result_responses).toBeNull();
+        expect(result.enforcements?.[1]?.result_id).toEqual('NOENF');
+        expect(result.enforcements?.[1]?.enforcement_result_responses?.[0]?.response).toBeNull();
       } else {
         fail('Failed to clone or prepare mock state for undefined reason test');
       }
@@ -231,6 +246,10 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
     const result = finesMacPayloadBuildAccountPaymentTerms(state, 'fine');
 
     expect(result.enforcements).toEqual([
+      {
+        result_id: 'COLLO',
+        enforcement_result_responses: null,
+      },
       {
         result_id: 'PRIS',
         enforcement_result_responses: [

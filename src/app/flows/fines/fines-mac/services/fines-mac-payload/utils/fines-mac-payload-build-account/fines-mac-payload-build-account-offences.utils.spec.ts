@@ -258,7 +258,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
               email_address: null,
               payout_hold: false,
               pay_by_bacs: false,
-              bank_account_type: 1,
+              bank_account_type: '1',
               bank_sort_code: null,
               bank_account_number: null,
               bank_account_name: null,

@@ -19,7 +19,7 @@ Then('I check and verify radio buttons', () => {
   cy.get('[type="radio"]').should('have.length', '3');
   cy.get('input').invoke('attr', 'radio').log;
   cy.get('input[id="adultOrYouthOnly"]').check().should('be.checked');
-  cy.get('input[id="parentOrGuardianToPay"]').check().should('be.checked');
+  cy.get('input[id="pgToPay"]').check().should('be.checked');
   cy.get('input[id="company"]').check().should('be.checked');
 });
 
@@ -33,8 +33,8 @@ Then('I click on continue button', () => {
 //       cy.get('#adultOrYouthOnly').check(radioButton);
 //       break;
 //     }
-//     case 'parentOrGuardianToPay': {
-//       cy.get('input[id="parentOrGuardianToPay"]').check().should('be.checked');
+//     case 'pgToPay': {
+//       cy.get('input[id="pgToPay"]').check().should('be.checked');
 //       break;
 //     }
 //     case 'company': {
@@ -51,7 +51,7 @@ When('I select adults and youth only', () => {
   cy.get('input[id="adultOrYouthOnly"]').check().should('be.checked');
 });
 When('I select parent or guardian to pay', () => {
-  cy.get('input[id="parentOrGuardianToPay"]').check().should('be.checked');
+  cy.get('input[id="pgToPay"]').check().should('be.checked');
 });
 When('I select company', () => {
   cy.get('input[id="company"]').check().should('be.checked');
@@ -60,7 +60,7 @@ Then('I verify if adults and youth only checked', () => {
   cy.get('input[id="adultOrYouthOnly"]').should('be.checked');
 });
 Then('I verify if parent or guardian to pay checked', () => {
-  cy.get('input[id="parentOrGuardianToPay"]').should('be.checked');
+  cy.get('input[id="pgToPay"]').should('be.checked');
 });
 Then('I verify company radio button checked', () => {
   cy.get('input[id="company"]').should('be.checked');
