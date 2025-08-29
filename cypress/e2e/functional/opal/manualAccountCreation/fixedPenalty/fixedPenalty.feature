@@ -327,6 +327,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     And I enter "Testing review history" into the "Enter reason for rejection" text field
     And I click on continue button
     And I see "Review accounts" on the page header
+
     # PO-1809 AC2 - 'Reason for rejection' screen displays Fixed Penalty Details data
     Then I see "You have rejected John SMITH's account." text on the page
 
