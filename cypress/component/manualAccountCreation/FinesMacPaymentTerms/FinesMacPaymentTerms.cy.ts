@@ -1113,8 +1113,8 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
+          finesMacState.paymentTerms.formData.fm_payment_terms_prison_and_prison_number = 'HMP:Example-Prison';
           cy.get(DOM_ELEMENTS.earliestReleaseDate).type('32/09/2025', { delay: 0 });
-          cy.get(DOM_ELEMENTS.prisonAndPrisonNumber).type('@', { delay: 0 });
           cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
 
           for (const [, value] of Object.entries(ENFORCEMENT_ERRORS)) {

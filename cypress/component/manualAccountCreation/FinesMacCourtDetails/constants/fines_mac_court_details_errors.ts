@@ -2,7 +2,7 @@ export const MISSING_ERRORS = {
   //Missing Input Errors
   missingLJA: 'Enter a sending area or Local Justice Area',
   missingPCR: 'Enter a Prosecutor Case Reference',
-  missingEnforcementCourt: 'Enter an Enforcement court',
+  missingEnforcementCourt: 'Enter an enforcement court',
 };
 export const INVALID_ERRORS = {
   //Invalid Input Errors

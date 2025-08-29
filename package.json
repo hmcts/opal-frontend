@@ -125,11 +125,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
-    "@angular-eslint/builder": "20.1.1",
-    "@angular-eslint/eslint-plugin": "20.1.1",
-    "@angular-eslint/eslint-plugin-template": "20.1.1",
-    "@angular-eslint/schematics": "20.1.1",
-    "@angular-eslint/template-parser": "20.1.1",
+    "@angular-eslint/builder": "20.2.0",
+    "@angular-eslint/eslint-plugin": "20.2.0",
+    "@angular-eslint/eslint-plugin-template": "20.2.0",
+    "@angular-eslint/schematics": "20.2.0",
+    "@angular-eslint/template-parser": "20.2.0",
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.1.3",
     "@cypress/grep": "^4.1.0",
@@ -163,7 +163,7 @@
     "mochawesome": "^7.1.3",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.2.0",
-    "typescript": "~5.8.0"
+    "typescript": "~5.9.0"
   },
   "packageManager": "yarn@4.9.4",
   "cypress-cucumber-preprocessor": {
