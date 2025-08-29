@@ -1,4 +1,4 @@
-import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
+import { IFinesAccSummaryTabsContentStyles } from '../fines-acc-defendant-details/interfaces/fines-acc-summary-tabs-content-styles.interface';
 
 export const FINES_ACC_SUMMARY_TABS_CONTENT_STYLES: IFinesAccSummaryTabsContentStyles = {
   heading: 'govuk-heading-s govuk-!-margin-bottom-2 govuk-!-margin-top-2',

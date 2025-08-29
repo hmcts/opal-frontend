@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FinesAccountStore } from './fines-acc.store';
-import { FINES_ACCOUNT_STATE } from '../constants/fines-account-state.constant';
+import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';

@@ -1,6 +1,6 @@
 import { patchState, signalStore, withHooks, withState, withMethods, withComputed } from '@ngrx/signals';
 import { computed } from '@angular/core';
-import { FINES_ACCOUNT_STATE } from '../constants/fines-account-state.constant';
+import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 
 export const FinesAccountStore = signalStore(

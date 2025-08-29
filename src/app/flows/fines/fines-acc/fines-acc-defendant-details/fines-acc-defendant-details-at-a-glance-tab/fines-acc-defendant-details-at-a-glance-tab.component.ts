@@ -7,7 +7,7 @@ import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/
 import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
-import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
+import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-at-a-glance-tab',

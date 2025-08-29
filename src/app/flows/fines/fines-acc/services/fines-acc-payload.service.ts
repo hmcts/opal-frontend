@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 
 @Injectable({

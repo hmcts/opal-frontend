@@ -1,4 +1,4 @@
-import { IOpalFinesAccountDefendantDetailsHeader } from '../interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../interfaces/fines-acc-defendant-details-header.interface';
 
 export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   version: 1,
