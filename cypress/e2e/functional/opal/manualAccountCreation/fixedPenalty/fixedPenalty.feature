@@ -273,7 +273,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     Then I should see the global error banner
 
-  @only @PO-1809
+  @PO-1809
   Scenario: Validate users amend and resubmit a rejected draft Fixed Penalty account
 
     And I clear the business unit search box
