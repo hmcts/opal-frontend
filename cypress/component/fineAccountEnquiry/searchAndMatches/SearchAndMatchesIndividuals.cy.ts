@@ -7,9 +7,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesSaService } from 'src/app/flows/fines/fines-sa/services/fines-sa.service';
 import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
-import { getFirstDayOfCurrentMonth } from '../../../support/utils/dateUtils';
+import { getFirstDayOfCurrentMonth, getFirstDayOfPreviousMonth } from '../../../support/utils/dateUtils';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -33,7 +32,6 @@ describe('Search Account Component - Individuals', () => {
           },
         ]),
         OpalFines,
-        FinesSaService,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -155,7 +153,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3d. should show error for non-alphabetical last name', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'Smith123';
 
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'Smith123');
@@ -168,7 +166,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3e. should show error for non-alphabetical first names', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
       'John123';
 
     cy.get(DOM_ELEMENTS.firstNamesInput).should('have.value', 'John123');
@@ -181,7 +179,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3f. should show error for invalid date of birth format', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/AB/2020';
 
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/AB/2020');
@@ -194,7 +192,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3g. should show error for future date of birth', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '15/05/2030';
 
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '15/05/2030');
@@ -207,7 +205,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3h. should show error for incorrectly formatted date of birth', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
       '5/1/1980';
 
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', '5/1/1980');
@@ -223,15 +221,16 @@ describe('Search Account Component - Individuals', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
+    cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
     cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
-    const expectedDate = getFirstDayOfCurrentMonth();
+    const expectedDate = getFirstDayOfPreviousMonth();
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
     cy.get(DOM_ELEMENTS.searchButton).click();
   });
 
   it('AC3i. should show error for invalid NI number', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
       'AB123$%^C';
 
     cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123$%^C');
@@ -248,7 +247,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3j. should show error for invalid address line 1', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
       '123 Test St. ®©™';
 
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 Test St. ®©™');
@@ -265,7 +264,7 @@ describe('Search Account Component - Individuals', () => {
   });
   it('AC3k. should show error for invalid postcode', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
       'SW1A @#!';
 
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'SW1A @#!');
@@ -309,7 +308,7 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4c. should validate last name maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'ThisLastNameIsTooLongAndExceedsThirtyCharacters';
 
     cy.get(DOM_ELEMENTS.lastNameInput).should('have.value', 'ThisLastNameIsTooLongAndExceedsThirtyCharacters');
@@ -320,7 +319,7 @@ describe('Search Account Component - Individuals', () => {
   });
 
   it('AC4d. should validate first names maximum field length', { tags: ['PO-705'] }, () => {
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
       'ThisFirstNameIsTooLongAndExceedsTwentyChars';
     setupComponent(null);
 
@@ -333,7 +332,7 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4e. should validate National Insurance number maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
       'AB123456CD';
 
     cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456CD');
@@ -347,7 +346,7 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4f. should validate Address Line 1 maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
       'This address line is too long and exceeds thirty characters';
 
     cy.get(DOM_ELEMENTS.addressLine1Input).should(
@@ -364,7 +363,7 @@ describe('Search Account Component - Individuals', () => {
 
   it('AC4g. should validate Postcode maximum field length', { tags: ['PO-705'] }, () => {
     setupComponent(null);
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
       'AB12 3CDEF'; // 9 characters (exceeds 8)
 
     cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'AB12 3CDEF');
@@ -407,20 +406,20 @@ describe('Search Account Component - Individuals', () => {
     () => {
       individualSearchMock.fsa_search_account_business_unit_ids = [1, 2, 3];
       individualSearchMock.fsa_search_account_active_accounts_only = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
         'Smith';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name_exact_match = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name_exact_match = true;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names =
         'John';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_first_names_exact_match = false;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_date_of_birth =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_first_names_exact_match = false;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_date_of_birth =
         '15/05/1990';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_national_insurance_number =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_national_insurance_number =
         'AB123456C';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_include_aliases = true;
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_address_line_1 =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_include_aliases = true;
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_address_line_1 =
         '123 High Street';
-      individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_post_code =
+      individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_post_code =
         'SW1A 1AA';
 
       setupComponent(null);
@@ -480,7 +479,7 @@ describe('Search Account Component - Individuals', () => {
   it('AC1. should send correct API parameters when active accounts checkbox is unchecked', { tags: ['PO-717'] }, () => {
     individualSearchMock.fsa_search_account_business_unit_ids = [5];
     individualSearchMock.fsa_search_account_active_accounts_only = false;
-    individualSearchMock.fsa_search_account_individual_search_criteria!.fsa_search_account_individuals_last_name =
+    individualSearchMock.fsa_search_account_individuals_search_criteria!.fsa_search_account_individuals_last_name =
       'Doe';
 
     setupComponent(null);
@@ -509,7 +508,7 @@ describe('Search Account Component - Individuals', () => {
   it('AC1. should send correct API parameters with minimal required data', { tags: ['PO-717'] }, () => {
     individualSearchMock.fsa_search_account_business_unit_ids = [10];
     individualSearchMock.fsa_search_account_active_accounts_only = true;
-    individualSearchMock.fsa_search_account_individual_search_criteria = {
+    individualSearchMock.fsa_search_account_individuals_search_criteria = {
       fsa_search_account_individuals_last_name: 'Johnson',
       fsa_search_account_individuals_last_name_exact_match: false,
       fsa_search_account_individuals_first_names: '',
