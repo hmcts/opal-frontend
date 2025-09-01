@@ -201,7 +201,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add controls when has days in default is true', () => {
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     component['initialPaymentTermsSetup']();
 
@@ -215,7 +215,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove controls when has days in default is false', () => {
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     component['initialPaymentTermsSetup']();
 
@@ -325,7 +325,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     component['determineAccess']();
 

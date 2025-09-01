@@ -54,7 +54,7 @@ const buildPaymentTermEnforcements = (
 
   const enforcements = [];
 
-  if (!hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday) {
+  if (hasCollectionOrderBeenMade || hasCollectionOrderBeenMadeToday) {
     enforcements.push(buildEnforcement('COLLO', null));
   }
 

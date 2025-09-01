@@ -104,7 +104,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.2) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+    setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
@@ -257,7 +257,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
 
   it('(AC.10) should show error for missing alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
@@ -268,8 +268,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       fm_personal_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
   });
 
   it('(AC.10) should show error for missing alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
@@ -280,8 +280,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
       fm_personal_details_alias_forenames_0: 'John',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
 
   it('(AC.10) should show error for missing additional alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
@@ -298,14 +298,14 @@ describe('FinesMacPersonalDetailsComponent', () => {
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 1`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 2`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 3`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
   it('(AC.10) should show error for missing additional alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
@@ -322,14 +322,14 @@ describe('FinesMacPersonalDetailsComponent', () => {
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 1`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 2`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameTwo}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameTwo}`);
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 3`);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameThree}`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameThree}`);
   });
 
   it('(AC.9) should show error for future date of birth', { tags: ['@PO-272', '@PO-360'] }, () => {
@@ -440,7 +440,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.5) should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-505'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+    setupComponent(null, 'pgToPay');
 
     // Verify the vehicle details section is not rendered
     cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('not.exist');
@@ -451,7 +451,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+    setupComponent(mockFormSubmit, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.titleInput).select('Mr');
     cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
