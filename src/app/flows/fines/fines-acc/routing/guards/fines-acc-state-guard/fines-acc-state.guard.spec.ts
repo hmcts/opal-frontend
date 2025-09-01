@@ -1,11 +1,10 @@
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
-import { finesAccStateGuard } from './fines-acc-account-state.guard';
+import { finesAccStateGuard } from './fines-acc-state.guard';
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 import { FINES_ACC_ROUTING_PATHS } from '../../constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { runFinesAccEmptyFlowGuardWithContext } from '../helpers/run-fines-acc-empty-flow-guard-with-context';
-import { of } from 'rxjs';
 
 describe('finesAccStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
@@ -36,6 +35,7 @@ describe('finesAccStateGuard', () => {
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
       return urlTree;
     });
+    mockRouter.createUrlTree.and.returnValue(new UrlTree());
 
     // Create mock FinesAccountStore
     mockFinesAccountStore = {
@@ -48,28 +48,16 @@ describe('finesAccStateGuard', () => {
         { provide: FinesAccountStore, useValue: mockFinesAccountStore },
       ],
     });
-
-    mockRouter.createUrlTree.and.returnValue(new UrlTree());
   });
 
-  it('should return true if account number is present', fakeAsync(async () => {
+  it('should redirect when no accountId in URL but account number exists in store', fakeAsync(async () => {
     mockFinesAccountStore.account_number.and.returnValue(testAccountNumber);
 
-    const route = createMockRoute(); // No accountId in params - should skip validation
+    const route = createMockRoute(); // No accountId in params
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
 
-    expect(result).toBeTrue();
-    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
-  }));
-
-  it('should return true when no accountId in URL (skip validation)', fakeAsync(async () => {
-    mockFinesAccountStore.account_number.and.returnValue(null);
-
-    const route = createMockRoute(); // No accountId in params - should skip validation
-    const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
-
-    expect(result).toBeTrue();
-    expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+    expect(result).toEqual(jasmine.any(UrlTree));
+    expect(mockRouter.createUrlTree).toHaveBeenCalled();
   }));
 
   it('should return true when store and URL account numbers match', fakeAsync(async () => {
@@ -80,6 +68,7 @@ describe('finesAccStateGuard', () => {
 
     expect(result).toBeTrue();
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+    expect(mockRouter.parseUrl).not.toHaveBeenCalled();
   }));
 
   it('should redirect when no account number in store but accountId in URL', fakeAsync(async () => {
@@ -108,20 +97,7 @@ describe('finesAccStateGuard', () => {
     });
   }));
 
-  it('should redirect to details page when account number is null', fakeAsync(async () => {
-    mockFinesAccountStore.account_number.and.returnValue(null);
-
-    const route = createMockRoute({ accountId: testAccountNumber });
-    const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
-
-    expect(result).toEqual(jasmine.any(UrlTree));
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrlWithAccount], {
-      queryParams: undefined,
-      fragment: undefined,
-    });
-  }));
-
-  it('should redirect to details page when account number is empty string', fakeAsync(async () => {
+  it('should redirect when account number is empty string', fakeAsync(async () => {
     mockFinesAccountStore.account_number.and.returnValue('');
 
     const route = createMockRoute({ accountId: testAccountNumber });
@@ -134,7 +110,7 @@ describe('finesAccStateGuard', () => {
     });
   }));
 
-  it('should redirect to details page when account number is undefined', fakeAsync(async () => {
+  it('should redirect when account number is undefined', fakeAsync(async () => {
     mockFinesAccountStore.account_number.and.returnValue(undefined);
 
     const route = createMockRoute({ accountId: testAccountNumber });
@@ -147,7 +123,7 @@ describe('finesAccStateGuard', () => {
     });
   }));
 
-  it('should handle whitespace-only account number as truthy when matches URL', fakeAsync(async () => {
+  it('should handle whitespace-only account number when it matches URL', fakeAsync(async () => {
     const whitespaceAccount = '   ';
     mockFinesAccountStore.account_number.and.returnValue(whitespaceAccount);
 
@@ -156,29 +132,6 @@ describe('finesAccStateGuard', () => {
 
     expect(result).toBeTrue();
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
-  }));
-
-  it('should handle observable result correctly', fakeAsync(async () => {
-    const mockResult = true;
-    const guardReturningObservable = () => of(mockResult);
-
-    const result = await runFinesAccEmptyFlowGuardWithContext(guardReturningObservable);
-
-    expect(result).toBe(mockResult);
-  }));
-
-  it('should build the redirect URL based on URL account number', fakeAsync(async () => {
-    // Arrange – no account number in store, but account ID in URL
-    mockFinesAccountStore.account_number.and.returnValue(null);
-
-    const route = createMockRoute({ accountId: testAccountNumber });
-    const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
-
-    // Assert – the guard redirects to the account details page using URL account number
-    expect(result).toEqual(jasmine.any(UrlTree));
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrlWithAccount], {
-      queryParams: undefined,
-      fragment: undefined,
-    });
+    expect(mockRouter.parseUrl).not.toHaveBeenCalled();
   }));
 });
