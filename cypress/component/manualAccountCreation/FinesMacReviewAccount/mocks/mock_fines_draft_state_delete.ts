@@ -95,6 +95,7 @@ export const MOCK_FINES_DRAFT_STATE_DELETE: IFinesMacAddAccountPayload = {
   },
   account_type: null,
   account_status: 'Deleted',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Test User 1',
