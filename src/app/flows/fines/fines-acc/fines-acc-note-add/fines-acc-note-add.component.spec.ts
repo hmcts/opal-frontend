@@ -71,35 +71,6 @@ describe('FinesAccNoteAddComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should build correct payload with form data', () => {
-    const testForm: IFinesAccAddNoteForm = {
-      formData: {
-        facc_add_notes: 'Test note content',
-      },
-      nestedFlow: false,
-    };
-
-    const result = component['buildAddNotePayload'](testForm);
-
-    expect(result).toEqual({
-      account_version: 1,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: 'Test note content',
-    });
-  });
-
-  it('should call store methods to get party data', () => {
-    const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
-
-    component['buildAddNotePayload'](testForm);
-
-    expect(mockFinesAccountStore.version).toHaveBeenCalled();
-    expect(mockFinesAccountStore.party_type).toHaveBeenCalled();
-    expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
-  });
-
   it('should call opalFinesService with correct payload on form submission', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
