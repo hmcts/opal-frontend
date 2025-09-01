@@ -95,6 +95,7 @@ export const MOCK_FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
   },
   account_type: null,
   account_status: 'Rejected',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Test User 1',
