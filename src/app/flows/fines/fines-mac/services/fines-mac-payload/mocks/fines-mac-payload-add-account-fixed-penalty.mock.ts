@@ -89,6 +89,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
   },
   account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
   account_status: 'Submitted',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Timmy Test',

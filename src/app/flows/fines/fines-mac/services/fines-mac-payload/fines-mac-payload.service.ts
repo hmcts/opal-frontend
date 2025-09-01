@@ -165,6 +165,7 @@ export class FinesMacPayloadService {
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
+      account_status_message: null,
       timeline_data: timeLineData,
       version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
