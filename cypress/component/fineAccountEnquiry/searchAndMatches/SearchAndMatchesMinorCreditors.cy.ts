@@ -114,7 +114,7 @@ describe('Search Account Component - Minor Creditors', () => {
   it('AC6c. should show error for non-alphabetical company name', { tags: ['PO-715'] }, () => {
     setupComponent(null);
     minorCreditorsSearchMock.fsa_search_account_minor_creditors_search_criteria!.fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name =
-      'Company123';
+      'Company123?';
 
     cy.get(DOM_ELEMENTS.minorCreditorCompanyRadioButton).click();
     cy.get(DOM_ELEMENTS.searchButton).click();
