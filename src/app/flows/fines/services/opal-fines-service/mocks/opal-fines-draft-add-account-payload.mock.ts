@@ -143,6 +143,7 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
   },
   account_type: 'Fine',
   account_status: 'Submitted',
+  account_status_message: null,
   account_status_date: '2024-12-06T14:24:55.723011211Z',
   timeline_data: [
     {

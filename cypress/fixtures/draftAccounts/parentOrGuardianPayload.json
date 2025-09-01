@@ -8,7 +8,7 @@
   "submitted_by_name": "opal-test",
   "account": {
     "account_type": "fine",
-    "defendant_type": "parentOrGuardianToPay",
+    "defendant_type": "pgToPay",
     "originator_name": "Bedfordshire Magistrates' Court",
     "originator_id": 1080,
     "prosecutor_case_reference": "ABCD1234A",
@@ -120,7 +120,7 @@
               "email_address": null,
               "payout_hold": true,
               "pay_by_bacs": true,
-              "bank_account_type": 1,
+              "bank_account_type": "1",
               "bank_sort_code": "123456",
               "bank_account_number": "12345678",
               "bank_account_name": "F LNAME",

@@ -36,7 +36,7 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
     companyDetails: null,
     parentOrGuardianDetails: null,
   },
-  parentOrGuardianToPay: {
+  pgToPay: {
     courtDetails: {
       nextRoute: FINES_MAC_ROUTING_PATHS.children.parentGuardianDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.parentOrGuardianDetails,

@@ -26,6 +26,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 describe('FinesMacAccountDetailsComponent', () => {
@@ -276,7 +277,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
-      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
       fm_create_account_business_unit_id: 1,
     };
@@ -292,9 +293,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
-    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay;
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
     component.paymentTermsBypassDefendantTypes = [
-      FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     ];
 
@@ -307,7 +308,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
     component.defendantType = 'test';
     component.paymentTermsBypassDefendantTypes = [
-      FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
       FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     ];
 
@@ -329,7 +330,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
       ...parentOrGuardianToPay.accountDetails.formData,
-      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.parentOrGuardianToPay,
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();
@@ -364,6 +365,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
@@ -391,6 +393,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
