@@ -217,7 +217,7 @@ describe('Search Account Component - Individuals', () => {
     cy.get(DOM_ELEMENTS.dobInput).clear();
   });
 
-  it.only('date picker should show the date in correct format DD/MM/YYYY', { tags: ['PO-1998'] }, () => {
+  it('date picker should show the date in correct format DD/MM/YYYY', { tags: ['PO-1998'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
