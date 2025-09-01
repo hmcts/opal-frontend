@@ -5,7 +5,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 
 /**
- * A guard that validates the fines account state by comparing the store's account number with the 
+ * A guard that validates the fines account state by comparing the store's account number with the
  * "accountId" specified in the route parameters.
  *
  * This guard is constructed using the "hasUrlStateMatchGuard" function and performs the following steps:
