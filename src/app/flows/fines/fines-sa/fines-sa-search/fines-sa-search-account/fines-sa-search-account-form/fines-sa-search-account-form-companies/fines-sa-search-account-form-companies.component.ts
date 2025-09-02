@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import {
@@ -7,7 +7,8 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-companies-controls.constant';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-companies',
@@ -15,12 +16,11 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './fines-sa-search-account-form-companies.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormCompaniesComponent implements OnInit, OnDestroy {
-  private readonly ngUnsubscribe = new Subject<void>();
+export class FinesSaSearchAccountFormCompaniesComponent extends AbstractFormBaseComponent {
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS_PREFIX;
 
-  @Input({ required: true }) public form!: FormGroup;
-  @Input({ required: true }) public formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) public override form!: FormGroup;
+  @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
 
   /**
    * Gets the first names, last name, and date of birth controls from the form.
@@ -88,15 +88,8 @@ export class FinesSaSearchAccountFormCompaniesComponent implements OnInit, OnDes
   /**
    * Angular lifecycle hook - initialises conditional validation and computes yesterday’s date.
    */
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     this.setupConditionalValidation();
-  }
-
-  /**
-   * Angular lifecycle hook - tears down subscriptions when the component is destroyed.
-   */
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    super.ngOnInit();
   }
 }

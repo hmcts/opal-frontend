@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountSearchParams } from '../interfaces/opal-fines-defendant-acount-search-params.interface';
+import { IOpalFinesDefendantAccountSearchParams } from '../interfaces/opal-fines-defendant-account-search-params.interface';
 
 export const OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS: IOpalFinesDefendantAccountSearchParams = {
   search_type: null,
