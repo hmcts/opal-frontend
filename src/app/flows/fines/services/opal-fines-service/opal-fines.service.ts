@@ -37,7 +37,6 @@ import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-o
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
@@ -123,7 +122,7 @@ export class OpalFines {
    */
   private addVersionToBody<T>(response: HttpResponse<T>): T {
     const etag = response.headers.get('ETag');
-    return { ...response.body, version: etag ? Number(etag) : undefined } as T;
+    return { ...response.body, version: etag ? Number(etag) : 0 } as T;
   }
 
   /**
@@ -577,11 +576,10 @@ export class OpalFines {
    * @returns An Observable that emits the defendant account header data.
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
-    // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-    // return this.http.get<IOpalFinesDefendantAccountHeader>(url, { observe: 'response' }).pipe(
-    //   map(response => this.addVersionToBody(response))
-    // );
-    return of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    return this.http
+      .get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' })
+      .pipe(map((response) => this.addVersionToBody(response)));
   }
 
   /**

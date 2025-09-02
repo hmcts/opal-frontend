@@ -18,7 +18,7 @@ describe('FinesAccPayloadService', () => {
     mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
 
     mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
-      FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_id,
+      FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
     mockGlobalStore.userState.and.returnValue(SESSION_USER_STATE_MOCK);
 
@@ -32,22 +32,49 @@ describe('FinesAccPayloadService', () => {
     service = TestBed.inject(FinesAccPayloadService);
   });
 
-  it('should transform account header for store', () => {
+  it('should transform account header for store for an individual', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
 
     const result: IFinesAccountState = service.transformAccountHeaderForStore(header);
 
     expect(result).toEqual({
       account_number: header.account_number,
-      party_id: header.defendant_account_id,
-      party_type: header.debtor_type,
-      party_name: header.title + ' ' + header.firstnames + ' ' + header.surname?.toUpperCase(),
+      party_id: header.defendant_party_id,
+      party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
+      party_name:
+        header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
       base_version: Number(header.version),
-      business_unit_user_id: header.business_unit_id,
+      business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
-      Number(header.business_unit_id),
+      Number(header.business_unit_summary.business_unit_id),
+      SESSION_USER_STATE_MOCK,
+    );
+    expect(mockGlobalStore.userState).toHaveBeenCalled();
+  });
+
+  it('should transform account header for store for a company', () => {
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(header);
+
+    expect(result).toEqual({
+      account_number: header.account_number,
+      party_id: header.defendant_party_id,
+      party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
+      party_name: header.party_details.organisation_details?.organisation_name ?? '',
+      base_version: Number(header.version),
+      business_unit_user_id: header.business_unit_summary.business_unit_id,
+    });
+
+    expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
+      Number(header.business_unit_summary.business_unit_id),
       SESSION_USER_STATE_MOCK,
     );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
@@ -58,8 +85,14 @@ describe('FinesAccPayloadService', () => {
 
     const result = service.transformAccountHeaderForStore(header);
 
-    expect(result.party_name).toBe(header.title + ' ' + header.firstnames + ' ' + header.surname?.toUpperCase());
+    expect(result.party_name).toBe(
+      header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
+    );
     expect(result.base_version).toBe(Number(header.version));
-    expect(result.business_unit_user_id).toBe(header.business_unit_id);
+    expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
 });

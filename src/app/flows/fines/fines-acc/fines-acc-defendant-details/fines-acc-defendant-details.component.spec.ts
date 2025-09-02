@@ -176,7 +176,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const event = new Event('click');
     component.refreshPage(event);
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(
-      Number(MOCK_FINES_ACCOUNT_STATE.account_number),
+      Number(MOCK_FINES_ACCOUNT_STATE.party_id),
     );
   });
 });

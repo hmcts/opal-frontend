@@ -18,16 +18,21 @@ export class FinesAccPayloadService {
    * @returns The transformed payload object.
    */
   public transformAccountHeaderForStore(headingData: IOpalFinesAccountDefendantDetailsHeader): IFinesAccountState {
-    const party_name = `${headingData.title} ${headingData.firstnames} ${headingData.surname?.toUpperCase()}`;
+    let party_name = '';
+    if (headingData.party_details.organisation_flag) {
+      party_name = headingData.party_details.organisation_details?.organisation_name ?? '';
+    } else {
+      party_name = `${headingData.party_details.individual_details?.title} ${headingData.party_details.individual_details?.forenames} ${headingData.party_details.individual_details?.surname?.toUpperCase()}`;
+    }
     const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit_id),
+      Number(headingData.business_unit_summary.business_unit_id),
       this.globalStore.userState(),
     );
 
     return {
       account_number: headingData.account_number,
-      party_id: headingData.defendant_account_id,
-      party_type: headingData.debtor_type,
+      party_id: headingData.defendant_party_id,
+      party_type: headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name: party_name,
       base_version: Number(headingData.version),
       business_unit_user_id: business_unit_user_id,

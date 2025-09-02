@@ -92,4 +92,21 @@ describe('FinesAccountStore', () => {
     const accountNumber = store.getAccountNumber();
     expect(accountNumber).toBe('');
   });
+
+  it('should set version mismatch', () => {
+    store.setHasVersionMismatch(true);
+    expect(store.hasVersionMismatch()).toBe(true);
+  });
+
+  it('should set success message', () => {
+    store.setSuccessMessage('Success');
+    expect(store.successMessage()).toBe('Success');
+  });
+
+  it('should clear success message', () => {
+    store.setSuccessMessage('Success');
+    expect(store.successMessage()).toBe('Success');
+    store.clearSuccessMessage();
+    expect(store.successMessage()).toBe(null);
+  });
 });
