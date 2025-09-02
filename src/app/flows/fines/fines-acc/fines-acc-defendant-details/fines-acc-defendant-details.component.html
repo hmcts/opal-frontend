@@ -39,7 +39,7 @@
       ></opal-lib-govuk-heading-with-caption>
     </ng-container>
     <ng-container pageHeaderButtons>
-      @if (hasPermission('account-notes')) {
+      @if (hasPermission('add-account-activity-notes')) {
         <button
           opalLibGovukButton
           buttonId="addAccountNote"
@@ -137,7 +137,7 @@
   @case ('at-a-glance') {
     <app-fines-acc-defendant-details-at-a-glance-tab
       [tabData]="tabsData['at-a-glance'] | async"
-      [hasAccountMaintenencePermission]="!hasPermission('account-maintenance')"
+      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
       [isYouth]="accountData.is_youth"
       (addComments)="navigateToAddCommentsPage($event)"
       [style]="tabContentStyles"
