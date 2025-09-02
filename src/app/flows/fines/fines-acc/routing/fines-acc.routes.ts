@@ -7,6 +7,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_ACC_ROUTING_TITLES } from './constants/fines-acc-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -40,7 +41,7 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.note,
@@ -54,9 +55,10 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          routePermissionId: [accRootPermissionIds['account-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
