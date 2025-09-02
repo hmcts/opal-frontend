@@ -1,9 +1,12 @@
 import { IFinesPermissions } from '../interfaces/fines-permissions.interfaces';
 
 export const FINES_PERMISSIONS: IFinesPermissions = {
-  'collection-order': 4,
   'create-and-manage-draft-accounts': 1,
-  'search-and-view-accounts': 6,
+  'account-enquiry-account-notes': 2,
+  'account-enquiry': 3,
+  'collection-order': 4,
   'check-and-validate-draft-accounts': 5,
-  'account-notes': 2,
+  'search-and-view-accounts': 6,
+  'account-maintenance': 7,
+  'add-account-activity-notes': 8
 };
