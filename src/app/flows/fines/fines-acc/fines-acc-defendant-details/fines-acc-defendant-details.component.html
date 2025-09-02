@@ -7,7 +7,7 @@
     <ng-container pageHeaderHeading>
       <opal-lib-govuk-heading-with-caption
         [captionText]="accountData.account_number"
-        headingText="{{ accountData.party_details.individual_details?.title }} {{ accountData.party_details.individual_details?.forenames }} {{ accountData.party_details.individual_details?.surname | uppercase }}"
+        headingText="{{ accountStore.party_name() }}"
       ></opal-lib-govuk-heading-with-caption>
     </ng-container>
     <ng-container pageHeaderButtons>
