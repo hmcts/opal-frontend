@@ -35,10 +35,10 @@ import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-p
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-account-header.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { of } from 'rxjs';
-import { IOpalFinesDefendantAccountHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 
 describe('OpalFines', () => {
@@ -559,17 +559,18 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountHeader', () => {
     const accountId = 456;
-    const expectedResponse = FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK;
-    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
     service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
+      response.version = Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version);
       expect(response).toEqual(expectedResponse);
     });
 
-    // const req = httpMock.expectOne(apiUrl);
-    // expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
 
-    // req.flush(expectedResponse);
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
@@ -602,8 +603,8 @@ describe('OpalFines', () => {
   });
 
   it('should add version to response body', () => {
-    const mockResponse: HttpResponse<IOpalFinesDefendantAccountHeader> = new HttpResponse({
-      body: FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+    const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
+      body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
       headers: new HttpHeaders({ ETag: '12345' }),
       status: 200,
       statusText: 'OK',
@@ -612,7 +613,7 @@ describe('OpalFines', () => {
     const result = service['addVersionToBody'](mockResponse);
 
     expect(result).toEqual({
-      ...FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
       version: 12345,
     });
   });

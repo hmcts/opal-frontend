@@ -7,7 +7,7 @@
     <ng-container pageHeaderHeading>
       <opal-lib-govuk-heading-with-caption
         [captionText]="accountData.account_number"
-        headingText="{{ accountData.title }} {{ accountData.firstnames }} {{ accountData.surname | uppercase }}"
+        headingText="{{ accountData.party_details.individual_details?.title }} {{ accountData.party_details.individual_details?.forenames }} {{ accountData.party_details.individual_details?.surname | uppercase }}"
       ></opal-lib-govuk-heading-with-caption>
     </ng-container>
     <ng-container pageHeaderButtons>
@@ -27,9 +27,9 @@
   </opal-lib-custom-page-header>
 </div>
 
-@if (accountData.debtor_type === 'Parent/Guardian' || accountData.is_youth) {
+@if (accountData.parent_guardian_party_id || accountData.is_youth) {
   <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-    @if (accountData.debtor_type === 'Parent/Guardian') {
+    @if (accountData.parent_guardian_party_id) {
       <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--turquoise'" tagId="status"
         >Parent or Guardian to pay</opal-lib-govuk-tag
       >
@@ -52,7 +52,7 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
       <p opal-lib-custom-account-information-item-value>
-        {{ accountData.business_unit_name }} ({{ accountData.business_unit_code }})
+        {{ accountData.business_unit_summary.business_unit_name }} ({{ accountData.business_unit_summary.business_unit_id }})
       </p>
     </opal-lib-custom-account-information-item>
   </opal-lib-custom-account-information>
@@ -65,25 +65,25 @@
     <opal-lib-custom-summary-metric-bar-item>
       <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
       <p opal-lib-custom-summary-metric-bar-item-value>
-        {{ utilsService.convertToMonetaryString(accountData.imposed) }}
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.imposed_amount) }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.arrears) }}
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.arrears_amount) }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.paid + accountData.written_off) }}
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.paid_amount) }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
     <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
       <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Account Balance:</p>
       <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
-        {{ utilsService.convertToMonetaryString(accountData.account_balance) }}
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.account_balance) }}
       </p>
     </opal-lib-custom-summary-metric-bar-item>
   </opal-lib-custom-summary-metric-bar>

@@ -318,6 +318,19 @@ describe('FinesMacReviewAccountComponent', () => {
       });
     });
 
+    it('should navigate back the fixed Penalty Details form when isReadOnly is false, there is no accountType in the store and the account status is not Rejected', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      finesDraftStore.setAccountType('');
+      finesDraftStore.setAccountStatus('In Progress');
+      component.isReadOnly = false;
+      component.accountType = 'Fixed Penalty';
+
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
     it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
       finesDraftStore.setFragment('review');
