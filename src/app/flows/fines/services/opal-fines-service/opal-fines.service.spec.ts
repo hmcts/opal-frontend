@@ -40,6 +40,11 @@ import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mock
 import { of } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
+} from './mocks/opal-fines-defendant-account-search-params.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -618,13 +623,85 @@ describe('OpalFines', () => {
     });
   });
 
-  it('should return the mocked defendant accounts response with search params injected', () => {
+  it('should getDefendantAccountHeader', () => {
+    const accountId = 456;
+    const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+
+    service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
+      response.version = Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version);
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
+  });
+
+  it('should getDefendantAccountAtAGlance data', () => {
+    const tab = 'at-a-glance';
+    const defendant_account_id: string = '123456789';
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
+    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
+
+    service
+      .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+    // const req = httpMock.expectOne(apiUrl);
+    // expect(req.request.method).toBe('GET');
+
+    // req.flush(expectedResponse);
+  });
+
+  it('should clear account details cache', () => {
+    const tab = 'at-a-glance';
+    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    service.clearAccountDetailsCache();
+
+    // Verify that the cache for the specified tab is cleared
+    expect(service['accountDetailsCache$'][tab]).toBeUndefined();
+  });
+
+  it('should add version to response body', () => {
+    const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
+      body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+      headers: new HttpHeaders({ ETag: '12345' }),
+      status: 200,
+      statusText: 'OK',
+    });
+
+    const result = service['addVersionToBody'](mockResponse);
+
+    expect(result).toEqual({
+      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+      version: 12345,
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - individual', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = { some: 'param' } as any;
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     service.getDefendantAccounts(searchParams).subscribe((response: any) => {
       expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - company', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
       expect(response._debug_searchParams).toEqual(searchParams);
     });
   });
