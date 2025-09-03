@@ -28,11 +28,11 @@
               }
             </p>
           }
-        } 
-        @else {
+        } @else {
           <h3 [class]="style.key">Name</h3>
           <p [class]="style.value">
-            {{ tabData.party_details.individual_details?.title }} {{ tabData.party_details.individual_details?.forenames }}
+            {{ tabData.party_details.individual_details?.title }}
+            {{ tabData.party_details.individual_details?.forenames }}
             {{ tabData.party_details.individual_details?.surname | uppercase }}
           </p>
 
@@ -50,13 +50,16 @@
             <p [class]="style.value">
               {{
                 tabData.party_details.individual_details.date_of_birth !== null
-                  ? dateService.getFromFormatToFormat(tabData.party_details.individual_details.date_of_birth, 'dd/MM/yyyy', 'dd MMMM yyyy')
-                : '&mdash;'
-            }}
+                  ? dateService.getFromFormatToFormat(
+                      tabData.party_details.individual_details.date_of_birth,
+                      'dd/MM/yyyy',
+                      'dd MMMM yyyy'
+                    )
+                  : '&mdash;'
+              }}
             </p>
           }
         }
-
 
         <h3 [class]="style.key">Address</h3>
         <p [class]="style.value">
@@ -179,11 +182,19 @@
             {{ tabData.enforcement_status.default_days_in_jail > 1 ? 'days' : 'day' }}
           </p>
         }
-        @if (tabData.enforcement_status.enforcement_override?.enforcement_override_result?.enforcement_override_result_id) {
+        @if (
+          tabData.enforcement_status.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
+        ) {
           <h3 [class]="style.key">Enforcement override</h3>
           <p [class]="style.value">
-            {{ tabData.enforcement_status.enforcement_override?.enforcement_override_result?.enforcement_override_result_title }}
-            {{ tabData.enforcement_status.enforcement_override?.enforcement_override_result?.enforcement_override_result_id }}
+            {{
+              tabData.enforcement_status.enforcement_override?.enforcement_override_result
+                ?.enforcement_override_result_title
+            }}
+            {{
+              tabData.enforcement_status.enforcement_override?.enforcement_override_result
+                ?.enforcement_override_result_id
+            }}
           </p>
         }
         <hr />

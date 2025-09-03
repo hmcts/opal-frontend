@@ -10,4 +10,3 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'account-maintenance': 7,
   'add-account-activity-notes': 8,
 };
-

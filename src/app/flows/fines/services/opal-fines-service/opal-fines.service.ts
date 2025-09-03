@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
+import { map, Observable, of, shareReplay} from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -474,8 +474,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountDefendantTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
@@ -494,8 +494,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountEnforcementTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
     if (!this.accountDetailsCache$['enforcement']) {
@@ -514,8 +514,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountImpositionsTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
     if (!this.accountDetailsCache$['impositions']) {
@@ -534,8 +534,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountHistoryAndNotesTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
     if (!this.accountDetailsCache$['history-and-notes']) {
@@ -556,8 +556,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountPaymentTermsTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {
     if (!this.accountDetailsCache$['payment-terms']) {

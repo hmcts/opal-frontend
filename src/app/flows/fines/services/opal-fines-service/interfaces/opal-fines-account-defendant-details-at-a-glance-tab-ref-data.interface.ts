@@ -1,4 +1,3 @@
-
 interface IOpalFinesDefendantAccountOrganisationAlias {
   alias_id: string;
   sequence_number: number;
@@ -42,18 +41,18 @@ interface IOpalFinesDefendantAccountLanguagePreferences {
 }
 
 interface IOpalFinesDefendantAccountLanguagePreference {
-  language_code: "CY" | "EN";
-  language_display_name: "Welsh and English" | "English only";
+  language_code: 'CY' | 'EN';
+  language_display_name: 'Welsh and English' | 'English only';
 }
 
 interface IOpalFinesDefendantAccountInstalmentPeriod {
-  installment_period_code: 'W'|'M'|'F';
-  installment_period_display_name: 'Weekly'|'Monthly'|'Fortnightly';
+  installment_period_code: 'W' | 'M' | 'F';
+  installment_period_display_name: 'Weekly' | 'Monthly' | 'Fortnightly';
 }
 
 interface IOpalFinesDefendantAccountEnforcer {
   enforcer_id: number;
-  enforcer_name: string;  
+  enforcer_name: string;
 }
 
 interface IOpalFinesDefendantAccountLja {
@@ -101,7 +100,7 @@ interface IOpalFinesDefendantAccountPartyDetails {
 
 interface IOpalFinesDefendantAccountPaymentTermsType {
   payment_terms_type_code: 'B' | 'P' | 'I';
-  payment_terms_type_display_name: "By date" | "Paid" | "Instalments";
+  payment_terms_type_display_name: 'By date' | 'Paid' | 'Instalments';
 }
 
 interface IOpalFinesDefendantAccountPaymentTermsSummary {
