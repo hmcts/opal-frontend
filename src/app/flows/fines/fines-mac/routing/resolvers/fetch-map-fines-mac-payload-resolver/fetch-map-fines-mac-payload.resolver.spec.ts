@@ -16,6 +16,7 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
@@ -37,6 +38,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       'getMajorCreditors',
       'getLocalJusticeAreas',
       'getResults',
+      'getProsecutors',
     ]);
     mockFinesMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['mapAccountPayload']);
 
@@ -63,6 +65,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
     mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
     mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getProsecutors.and.returnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
     mockFinesMacPayloadService.mapAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,6 +81,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     });
 
     // Verify calls were made with the correct arguments
@@ -103,6 +107,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     mockOpalFinesService.getMajorCreditors.and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK));
     mockOpalFinesService.getLocalJusticeAreas.and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK));
     mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getProsecutors.and.returnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK));
 
     const mapPayloadResult = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     mapPayloadResult.offenceDetails = [];
@@ -122,6 +127,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     });
 
     // Verify calls were made with the correct arguments

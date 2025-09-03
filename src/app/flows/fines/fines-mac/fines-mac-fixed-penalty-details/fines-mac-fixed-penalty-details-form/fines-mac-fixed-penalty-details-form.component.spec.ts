@@ -327,18 +327,4 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
   });
-
-  describe('stripFirstParenthesesBlock', () => {
-    it('should remove the first parentheses block from the text', () => {
-      const text = 'Example text (with parentheses) to test.';
-      const result = component['stripFirstParenthesesBlock'](text);
-      expect(result).toBe('Example text  to test.');
-    });
-
-    it('should return the original text if no parentheses are found', () => {
-      const text = 'Example text without parentheses to test.';
-      const result = component['stripFirstParenthesesBlock'](text);
-      expect(result).toBe(text);
-    });
-  });
 });

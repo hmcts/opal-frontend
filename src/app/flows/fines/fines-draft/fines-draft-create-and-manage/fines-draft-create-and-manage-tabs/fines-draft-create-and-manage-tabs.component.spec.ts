@@ -186,18 +186,24 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is not "rejected"', () => {
     component.activeTab = 'review';
-    component.onDefendantClick(123);
+    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
     expect(finesDraftStore.fragment()).toEqual('review');
     expect(finesDraftStore.amend()).toBeFalsy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(123, finesDraftService.PATH_REVIEW_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
+      finesDraftService.PATH_REVIEW_ACCOUNT,
+    );
   });
 
   it('should call setFragmentAndAmend and onDefendantClick with PATH_AMEND_ACCOUNT when activeTab is "rejected"', () => {
     component.activeTab = 'rejected';
-    component.onDefendantClick(456);
+    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
     expect(finesDraftStore.fragment()).toEqual('rejected');
     expect(finesDraftStore.amend()).toBeTruthy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_AMEND_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
+      finesDraftService.PATH_AMEND_ACCOUNT,
+    );
   });
 
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
