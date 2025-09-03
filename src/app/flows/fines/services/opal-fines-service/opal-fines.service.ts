@@ -446,8 +446,8 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountAtAGlanceTabData(
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {

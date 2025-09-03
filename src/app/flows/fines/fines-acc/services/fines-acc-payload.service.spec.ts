@@ -48,6 +48,7 @@ describe('FinesAccPayloadService', () => {
         ' ' +
         header.party_details.individual_details?.surname?.toUpperCase(),
       base_version: Number(header.version),
+      business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
 
@@ -70,6 +71,7 @@ describe('FinesAccPayloadService', () => {
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
       base_version: Number(header.version),
+      business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
 
