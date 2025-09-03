@@ -399,7 +399,7 @@ Feature: Account Search and Matches
     # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "130001BU" link and handle new window navigation
+    When I click the "230001BU" link and handle new window navigation
     Then I see "Account Details" on the page header
 
 
