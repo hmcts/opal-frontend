@@ -91,15 +91,6 @@
             ></app-fines-sa-search-account-form-companies>
           </opal-lib-govuk-tabs-panel>
         }
-        @case ('minorCreditors') {
-          <opal-lib-govuk-tabs-panel id="minor-creditors">
-            <app-fines-sa-search-account-form-minor-creditors
-              [form]="searchCriteriaForm"
-              [formControlErrorMessages]="formControlErrorMessages"
-              (formErrorSummaryMessagesChange)="updateFormErrorSummaryMessages($event)"
-            ></app-fines-sa-search-account-form-minor-creditors>
-          </opal-lib-govuk-tabs-panel>
-        }
         @case ('majorCreditors') {
           <opal-lib-govuk-tabs-panel id="major-creditors">
             <app-fines-sa-search-account-form-major-creditors

@@ -44,10 +44,8 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public resultView!: FinesSaResultsTabsType;
 
   public readonly defendantsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public readonly minorCreditorsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public individualsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
   public companiesData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
-  public minorCreditorsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
 
   /**
    * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
