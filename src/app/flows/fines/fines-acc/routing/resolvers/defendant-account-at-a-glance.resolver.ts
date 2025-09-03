@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccAddCommentsFormState } from '../../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+
 export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFormState> = (
   route: ActivatedRouteSnapshot,
 ) => {
@@ -19,9 +20,9 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
   const payloadService = inject(FinesAccPayloadService);
 
   const accountState = accountStore.getAccountState();
-  const { party_id, business_unit_user_id } = accountState;
+  const { party_id, business_unit_user_id, business_unit_id } = accountState;
 
-  if (!party_id || !business_unit_user_id) {
+  if (!party_id || !business_unit_user_id || !business_unit_id) {
     throw new Error('Account state is not properly initialized');
   }
 
@@ -33,10 +34,6 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
    * @throws Error if the account ID is invalid or if the data cannot be fetched.
    */
   return opalFinesService
-    .getDefendantAccountAtAGlanceTabData(
-      party_id.toString(),
-      accountId, // business_unit_id
-      business_unit_user_id,
-    )
+    .getDefendantAccountAtAGlanceTabData(business_unit_user_id, business_unit_id, party_id)
     .pipe(map((atAGlanceData) => payloadService.transformAtAGlanceDataToCommentsForm(atAGlanceData)));
 };

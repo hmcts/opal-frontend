@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { convertToParamMap } from '@angular/router';
 import { of, firstValueFrom, Observable } from 'rxjs';
-
 import { defendantAccountAtAGlanceResolver } from './defendant-account-at-a-glance.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
@@ -39,6 +38,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
     const mockAccountState = {
       party_id: '456',
       business_unit_user_id: 'BU123',
+      business_unit_id: 'BU456',
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',
@@ -69,7 +69,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
 
     expect(result).toEqual(expectedFormData);
     expect(mockAccountStore.getAccountState).toHaveBeenCalled();
-    expect(mockOpalFinesService.getDefendantAccountAtAGlanceTabData).toHaveBeenCalledWith('456', '123', 'BU123');
+    expect(mockOpalFinesService.getDefendantAccountAtAGlanceTabData).toHaveBeenCalledWith('BU123', 'BU456', '456');
     expect(mockPayloadService.transformAtAGlanceDataToCommentsForm).toHaveBeenCalledWith(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
     );
@@ -91,6 +91,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
     const mockAccountState = {
       party_id: null,
       business_unit_user_id: 'BU123',
+      business_unit_id: 'BU456',
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',
@@ -114,6 +115,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
     const mockAccountState = {
       party_id: '456',
       business_unit_user_id: null,
+      business_unit_id: 'BU456',
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',

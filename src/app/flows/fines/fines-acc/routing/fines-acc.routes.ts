@@ -59,7 +59,7 @@ export const routing: Routes = [
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-notes']],
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
         resolve: {

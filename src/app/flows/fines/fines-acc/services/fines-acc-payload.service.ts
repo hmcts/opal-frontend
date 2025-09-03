@@ -51,13 +51,13 @@ export class FinesAccPayloadService {
   public transformAtAGlanceDataToCommentsForm(
     atAGlanceData: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData,
   ): IFinesAccAddCommentsFormState {
-    const { account_notes } = atAGlanceData;
+    const { comment_and_notes } = atAGlanceData;
 
     return {
-      facc_add_comment: account_notes.account_comment,
-      facc_add_free_text_1: account_notes.free_text_note_1,
-      facc_add_free_text_2: account_notes.free_text_note_2,
-      facc_add_free_text_3: account_notes.free_text_note_3,
+      facc_add_comment: comment_and_notes?.account_comment || '',
+      facc_add_free_text_1: comment_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: comment_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: comment_and_notes?.free_text_note_3 || '',
     };
   }
 }

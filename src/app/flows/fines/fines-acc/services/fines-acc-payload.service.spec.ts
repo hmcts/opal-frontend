@@ -106,17 +106,17 @@ describe('FinesAccPayloadService', () => {
     const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
     expect(result).toEqual({
-      facc_add_comment: atAGlanceData.account_notes.account_comment,
-      facc_add_free_text_1: atAGlanceData.account_notes.free_text_note_1,
-      facc_add_free_text_2: atAGlanceData.account_notes.free_text_note_2,
-      facc_add_free_text_3: atAGlanceData.account_notes.free_text_note_3,
+      facc_add_comment: atAGlanceData.comment_and_notes?.account_comment || '',
+      facc_add_free_text_1: atAGlanceData.comment_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: atAGlanceData.comment_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: atAGlanceData.comment_and_notes?.free_text_note_3 || '',
     });
   });
 
   it('should handle null account notes gracefully', () => {
     const atAGlanceData = {
       ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
-      account_notes: {
+      comment_and_notes: {
         account_comment: null,
         free_text_note_1: null,
         free_text_note_2: null,
@@ -127,10 +127,10 @@ describe('FinesAccPayloadService', () => {
     const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
     expect(result).toEqual({
-      facc_add_comment: null,
-      facc_add_free_text_1: null,
-      facc_add_free_text_2: null,
-      facc_add_free_text_3: null,
+      facc_add_comment: '',
+      facc_add_free_text_1: '',
+      facc_add_free_text_2: '',
+      facc_add_free_text_3: '',
     });
   });
 });
