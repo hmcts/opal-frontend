@@ -1,4 +1,4 @@
-interface IOpalFinesDefendantAccountAlias {
+export interface IOpalFinesDefendantAccountAlias {
   alias_number: number | null;
   organisation_name: string | null;
   alias_surname: string | null;

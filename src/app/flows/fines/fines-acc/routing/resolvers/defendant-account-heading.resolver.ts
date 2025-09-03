@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { tap } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
@@ -24,7 +24,18 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
    */
   return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
     tap((headingData) => {
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
+      if (isDefendantAccountHeader(headingData)) {
+        accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
+      }
     }),
   );
+
+  /**
+   * Type guard function
+   */
+  function isDefendantAccountHeader(
+    data: IOpalFinesAccountDefendantDetailsHeader | RedirectCommand,
+  ): data is IOpalFinesAccountDefendantDetailsHeader {
+    return !!data && typeof data === 'object' && 'defendant_party_id' in data;
+  }
 };

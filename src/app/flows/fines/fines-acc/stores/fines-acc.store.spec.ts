@@ -56,6 +56,7 @@ describe('FinesAccountStore', () => {
       party_type: payload.party_type,
       party_name: payload.party_name,
       base_version: payload.base_version,
+      business_unit_id: payload.business_unit_id,
       business_unit_user_id: payload.business_unit_user_id,
     });
   });
@@ -74,6 +75,7 @@ describe('FinesAccountStore', () => {
       party_type: initialState.party_type,
       party_name: initialState.party_name,
       base_version: initialState.base_version,
+      business_unit_id: initialState.business_unit_id,
       business_unit_user_id: initialState.business_unit_user_id,
     });
   });
@@ -91,5 +93,22 @@ describe('FinesAccountStore', () => {
   it('should return an empty string if account number is not set', () => {
     const accountNumber = store.getAccountNumber();
     expect(accountNumber).toBe('');
+  });
+
+  it('should set version mismatch', () => {
+    store.setHasVersionMismatch(true);
+    expect(store.hasVersionMismatch()).toBe(true);
+  });
+
+  it('should set success message', () => {
+    store.setSuccessMessage('Success');
+    expect(store.successMessage()).toBe('Success');
+  });
+
+  it('should clear success message', () => {
+    store.setSuccessMessage('Success');
+    expect(store.successMessage()).toBe('Success');
+    store.clearSuccessMessage();
+    expect(store.successMessage()).toBe(null);
   });
 });

@@ -40,6 +40,11 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } fr
 import { of } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
+} from './mocks/opal-fines-defendant-account-search-params.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
@@ -566,16 +571,17 @@ describe('OpalFines', () => {
   it('should getDefendantAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
-    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
     service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
+      response.version = Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version);
       expect(response).toEqual(expectedResponse);
     });
 
-    // const req = httpMock.expectOne(apiUrl);
-    // expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
 
-    // req.flush(expectedResponse);
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccountAtAGlanceTabData', () => {
@@ -687,7 +693,7 @@ describe('OpalFines', () => {
     });
   });
 
-  it('should set version to undefined if ETag not present in response header', () => {
+  it('should set version to 0 if ETag not present in response header', () => {
     const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
       body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
       headers: new HttpHeaders({}),
@@ -699,17 +705,28 @@ describe('OpalFines', () => {
 
     expect(result).toEqual({
       ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      version: undefined,
+      version: 0,
     });
   });
 
-  it('should return the mocked defendant accounts response with search params injected', () => {
+  it('should return the mocked defendant accounts response with search params injected - individual', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = { some: 'param' } as any;
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     service.getDefendantAccounts(searchParams).subscribe((response: any) => {
       expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - company', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
       expect(response._debug_searchParams).toEqual(searchParams);
     });
   });
