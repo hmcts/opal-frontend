@@ -37,7 +37,6 @@ import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-o
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
@@ -435,12 +434,12 @@ export class OpalFines {
    */
   public getDefendantAccountAtAGlance(
     tab: string,
-    defendant_account_id: string,
-    business_unit_id: string,
+    party_id: string | null,
+    business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$[tab]) {
-      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${party_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
       //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
       //   .pipe(
@@ -462,10 +461,9 @@ export class OpalFines {
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
-      map(response => this.addVersionToBody(response))
-    );
-    // return of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    return this.http
+      .get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' })
+      .pipe(map((response) => this.addVersionToBody(response)));
   }
 
   /**

@@ -41,8 +41,14 @@ describe('FinesAccPayloadService', () => {
       account_number: header.account_number,
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
-      party_name: header.party_details.individual_details?.title + ' ' + header.party_details.individual_details?.forenames + ' ' + header.party_details.individual_details?.surname?.toUpperCase(),
+      party_name:
+        header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
       base_version: Number(header.version),
+      business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
 
@@ -63,8 +69,9 @@ describe('FinesAccPayloadService', () => {
       account_number: header.account_number,
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
-      party_name: header.party_details.organisation_details?.organisation_name!,
+      party_name: header.party_details.organisation_details?.organisation_name ?? '',
       base_version: Number(header.version),
+      business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
 
@@ -80,7 +87,13 @@ describe('FinesAccPayloadService', () => {
 
     const result = service.transformAccountHeaderForStore(header);
 
-    expect(result.party_name).toBe(header.party_details.individual_details?.title + ' ' + header.party_details.individual_details?.forenames + ' ' + header.party_details.individual_details?.surname?.toUpperCase());
+    expect(result.party_name).toBe(
+      header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
+    );
     expect(result.base_version).toBe(Number(header.version));
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
