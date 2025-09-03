@@ -6,8 +6,6 @@ import { FinesSaStore } from '../stores/fines-sa.store';
 import { FinesSaStoreType } from '../stores/types/fines-sa.type';
 import { IFinesSaSearchAccountState } from '../fines-sa-search/fines-sa-search-account/interfaces/fines-sa-search-account-state.interface';
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
-import { IOpalFinesCreditorAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
-import { FinesSaSearchAccountTab } from '../fines-sa-search/fines-sa-search-account/types/fines-sa-search-account-tab.type';
 
 describe('FinesSaResultsComponent', () => {
   let component: FinesSaResultsComponent;
@@ -63,10 +61,6 @@ describe('FinesSaResultsComponent', () => {
         count: 0,
         defendant_accounts: [],
       },
-      minorCreditorAccounts: {
-        count: 0,
-        creditor_accounts: [],
-      },
     };
 
     component.ngOnInit();
@@ -84,22 +78,16 @@ describe('FinesSaResultsComponent', () => {
       count: 1,
       defendant_accounts: [{ account_number: 'IND001' }],
     };
-    const mockMinorCreditorData = {
-      count: 1,
-      creditor_accounts: [{ account_number: 'MIN001' }],
-    };
 
     component['activatedRoute'].snapshot.data = {
       individualAccounts: mockIndividualData,
       companyAccounts: mockCompanyData,
-      minorCreditorAccounts: mockMinorCreditorData,
     };
 
     component['loadDefendantDataFromRouteSnapshot']();
 
     expect(component.individualsData.length).toEqual(1);
     expect(component.companiesData.length).toEqual(1);
-    expect(component.minorCreditorsData.length).toEqual(1);
   });
 
   it('should open account details in a new tab', () => {
@@ -134,120 +122,6 @@ describe('FinesSaResultsComponent', () => {
       replaceUrl: true,
     });
     expect(setTabSpy).toHaveBeenCalledWith('companies');
-  });
-
-  describe('computeDefaultFragment', () => {
-    it('returns empty string when all buckets are zero', () => {
-      component.individualsData = [];
-      component.companiesData = [];
-      component.minorCreditorsData = [];
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('returns empty string when any bucket is >= 100', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('prefers individuals when 1–99', () => {
-      component.individualsData.length = 1;
-      component.companiesData.length = 50;
-      component.minorCreditorsData.length = 50;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('individuals');
-    });
-
-    it('returns blank when all buckets are oversize (>= 100)', () => {
-      component.individualsData.length = 100;
-      component.companiesData.length = 100;
-      component.minorCreditorsData.length = 100;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('falls back to companies when individuals are 0 and companies are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 1;
-      component.minorCreditorsData.length = 0;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('companies');
-    });
-
-    it('falls back to minorCreditors when individuals and companies are 0 and minorCreditors are 1–99', () => {
-      component.individualsData.length = 0;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 1;
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('minorCreditors');
-    });
-
-    it('hits the fallback branch for unexpected lengths (guards against impossible states)', () => {
-      // Simulate an impossible runtime state by replacing arrays with objects
-      // that expose a non-standard length. This avoids triggering anyOversize/allZero
-      // and bypasses the 1–99 checks, forcing the fallback.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      component.individualsData = { length: -1 } as unknown as any;
-      component.companiesData.length = 0;
-      component.minorCreditorsData.length = 0;
-
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-
-    it('falls back when lengths are NaN', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      component.individualsData = { length: Number.NaN } as unknown as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      component.companiesData = { length: Number.NaN } as unknown as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      component.minorCreditorsData = { length: Number.NaN } as unknown as any;
-
-      const result = component['computeDefaultFragment']();
-      expect(result).toBe('');
-    });
-  });
-
-  it('should not navigate when a fragment is already present and should set the active tab to that fragment', () => {
-    component.resultView = 'referenceCaseNumber';
-    component.individualsData = [];
-    component.companiesData = [];
-    component.minorCreditorsData = [];
-
-    const activatedRoute = component['activatedRoute'];
-    activatedRoute.fragment = of('individuals');
-
-    const navigateSpy = router.navigate;
-    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).setupFragmentListener();
-
-    expect(navigateSpy).not.toHaveBeenCalled();
-    expect(setTabSpy).toHaveBeenCalledWith('individuals');
-  });
-
-  it('should set active tab to empty string and not navigate when any bucket is oversize (>= 100)', () => {
-    component.resultView = 'accountNumber';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    component.individualsData = new Array(100).fill({}) as any;
-    component.companiesData = [];
-    component.minorCreditorsData = [];
-
-    const activatedRoute = component['activatedRoute'];
-    activatedRoute.fragment = of(null);
-
-    const navigateSpy = router.navigate;
-    const setTabSpy = spyOn(finesSaStore, 'setResultsActiveTab');
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).setupFragmentListener();
-
-    expect(navigateSpy).not.toHaveBeenCalled();
-    expect(setTabSpy).toHaveBeenCalledWith('' as FinesSaSearchAccountTab);
   });
 
   it('should navigate back to search page with correct fragment', () => {
@@ -362,96 +236,5 @@ describe('FinesSaResultsComponent', () => {
         Balance: 250,
       }),
     );
-  });
-
-  it('should return mapped minor creditor individual data', () => {
-    const mockData: IOpalFinesCreditorAccountResponse = {
-      count: 1,
-      creditor_accounts: [
-        {
-          organisation: false,
-          creditor_account_id: '1',
-          business_unit_id: 'BU001',
-          account_number: 'ACC123',
-          defendant_account_id: '1',
-          defendant: {
-            firstnames: 'John',
-            surname: 'Smith',
-            organisation_name: null,
-          },
-          organisation_name: null,
-          firstnames: 'John',
-          surname: 'Smith',
-          address_line_1: '1 Main St',
-          postcode: 'AB1 2CD',
-          business_unit_name: 'Unit A',
-          account_balance: 500,
-        },
-      ],
-    };
-
-    const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
-    expect(result[0]).toEqual(
-      jasmine.objectContaining({
-        Account: 'ACC123',
-        Name: 'Smith, John',
-        'Address line 1': '1 Main St',
-        Postcode: 'AB1 2CD',
-        'Business unit': 'Unit A',
-        Defendant: 'Smith, John',
-        Balance: 500,
-      }),
-    );
-  });
-
-  it('should return mapped minor creditor company data', () => {
-    const mockData: IOpalFinesCreditorAccountResponse = {
-      count: 1,
-      creditor_accounts: [
-        {
-          organisation: true,
-          creditor_account_id: '1',
-          business_unit_id: 'BU001',
-          account_number: 'ACC123',
-          defendant_account_id: '1',
-          defendant: {
-            firstnames: null,
-            surname: null,
-            organisation_name: 'Test Corp',
-          },
-          organisation_name: 'Test Corp',
-          firstnames: null,
-          surname: null,
-          address_line_1: '1 Main St',
-          postcode: 'AB1 2CD',
-          business_unit_name: 'Unit A',
-          account_balance: 500,
-        },
-      ],
-    };
-
-    const result = component['mapCreditorAccounts'](mockData);
-    expect(result.length).toBe(1);
-    expect(result[0]).toEqual(
-      jasmine.objectContaining({
-        Account: 'ACC123',
-        Name: 'Test Corp',
-        'Address line 1': '1 Main St',
-        Postcode: 'AB1 2CD',
-        'Business unit': 'Unit A',
-        Defendant: 'Test Corp',
-        Balance: 500,
-      }),
-    );
-  });
-
-  it('should return an empty array if no creditor accounts are provided', () => {
-    const mockData: IOpalFinesCreditorAccountResponse = {
-      count: 0,
-      creditor_accounts: [],
-    };
-    const result = component['mapCreditorAccounts'](mockData);
-    expect(result).toEqual([]);
   });
 });

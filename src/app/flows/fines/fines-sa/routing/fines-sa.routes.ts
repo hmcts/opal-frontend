@@ -5,10 +5,9 @@ import { FINES_SA_ROUTING_TITLES } from './constants/fines-sa-routing-titles.con
 import { routing as searchRouting } from '../fines-sa-search/routing/fines-sa-search.routes';
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
-import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts/fines-sa-individual-accounts.resolver';
+import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts.resolver';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { finesSaCompanyAccountsResolver } from './resolvers/fines-sa-company-accounts/fines-sa-company-accounts.resolver';
-import { finesSaMinorCreditorAccountsResolver } from './resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
+import { finesSaCompanyAccountsResolver } from './resolvers/fines-sa-company-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -36,7 +35,6 @@ export const routing: Routes = [
       title: TitleResolver,
       individualAccounts: finesSaIndividualAccountsResolver,
       companyAccounts: finesSaCompanyAccountsResolver,
-      minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
     },
   },
   {

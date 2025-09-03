@@ -115,3 +115,7 @@ Then('{string} is verified as disabled', (link: string) => {
 Then('{string} is verified as enabled', (link: string) => {
   cy.contains('a', link).invoke('is', 'enabled');
 });
+
+Then('I clear the business unit search box', () => {
+  cy.get('#fm_create_account_business_unit_id-autocomplete').clear();
+});

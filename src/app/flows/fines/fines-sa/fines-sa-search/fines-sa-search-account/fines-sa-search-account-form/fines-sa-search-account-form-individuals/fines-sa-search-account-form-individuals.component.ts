@@ -20,7 +20,6 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 })
 export class FinesSaSearchAccountFormIndividualsComponent extends AbstractFormBaseComponent {
   private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX;
-
   protected readonly dateService = inject(DateService);
 
   @Input({ required: true }) public override form!: FormGroup;

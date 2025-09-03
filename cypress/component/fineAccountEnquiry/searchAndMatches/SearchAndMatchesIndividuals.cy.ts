@@ -8,7 +8,7 @@ import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_element
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts.resolver';
-import { getFirstDayOfCurrentMonth } from '../../../support/utils/dateUtils';
+import { getFirstDayOfCurrentMonth, getFirstDayOfPreviousMonth } from '../../../support/utils/dateUtils';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -221,8 +221,9 @@ describe('Search Account Component - Individuals', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.dobDatePickerToggle).click();
+    cy.get(DOM_ELEMENTS.dobDatePickerPrevMonth).click();
     cy.get(DOM_ELEMENTS.dobDatePicker).contains(/^1$/).click();
-    const expectedDate = getFirstDayOfCurrentMonth();
+    const expectedDate = getFirstDayOfPreviousMonth();
     cy.get(DOM_ELEMENTS.dobInput).should('have.value', expectedDate);
     cy.get(DOM_ELEMENTS.searchButton).click();
   });

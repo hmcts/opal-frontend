@@ -159,7 +159,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     Then I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -182,7 +182,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
     And I click on the "Companies" link
@@ -194,7 +194,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
     And I click on the "Companies" link
@@ -206,7 +206,7 @@ Feature: Account Search and Matches
 
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
 
@@ -222,7 +222,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -242,7 +242,7 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
     And I click the "Search" button
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
     And I click on the "Individuals" link
@@ -252,7 +252,7 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
     And I click on the "Individuals" link
@@ -262,7 +262,7 @@ Feature: Account Search and Matches
     When I enter "REF-123" into the "Reference or case number" field
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
 
     When I click on the "Go back" link
     Then I see "Search for an account" on the page header
@@ -279,7 +279,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -296,9 +296,10 @@ Feature: Account Search and Matches
     When I enter "12345678" into the "Account number" field
     And I enter "REF-123" into the "Reference or case number" field
     And I click on the "Minor creditors" link
+    And I select the "Company" radio button
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -317,7 +318,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -335,7 +336,7 @@ Feature: Account Search and Matches
     And I enter "CompanyOne" into the "Company name" field
     And I click the "Search" button
 
-    Then I see "There is a problem" text on the page
+    Then I see "There is a problem" on the page header
     And I see "Reference data and account information cannot be entered together when searching for an account. Search using either:" text on the page
     And I see "account number" text on the page
     And I see "reference or case number" text on the page
@@ -402,25 +403,26 @@ Feature: Account Search and Matches
     When I click the "130001BU" link and handle new window navigation
     Then I see "Account Details" on the page header
 
-  # PO-717 AC3b & AC2b Will be covered once API integration is complete
 
-  @PO-708
-  Scenario: Successful Search For Minor Creditor Accounts
-    When I click on the "Minor creditors" link
-    When I select the 'Individual' radio button
-    Then I enter "Test" into the "Last name" field
+  # PO-707
+  @PO-707 @only
+  Scenario: Successful Search For company defendant accounts
+    When I click on the "Companies" link
+    And I enter "test company" into the "Company name" field
     And I click the "Search" button
 
+    # PO-707 - AC5. Back Button navigates to Search Page
     Then I see "Search results" on the page header
 
-    # AC10 Check Back Link Works Correctly
     When I click on the "Back" link
-    Then I see "Search for an account" on the page header
+    And I see "test company" in the "Company name" field
+    Then I see "Companies" on the page header
 
-    # AC4g. Click on Account Number link and verify navigation to template page
+
+    # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "ORG1001" link and handle new window navigation
+    When I click the "230001BU" link and handle new window navigation
     Then I see "Account Details" on the page header
 
-# PO-708 AC3b & AC2b Will be covered once API integration is complete
+#PO-707 AC3b & AC2b Will be covered once API integration is complete
