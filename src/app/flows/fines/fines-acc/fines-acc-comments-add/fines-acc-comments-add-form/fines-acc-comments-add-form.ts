@@ -3,7 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccAddCommentsForm } from '../interfaces/fines-acc-comments-add-form.interface';
@@ -19,7 +19,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
     GovukHeadingWithCaptionComponent,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    GovukTextInputComponent,
+    GovukTextAreaComponent,
     FormsModule,
     ReactiveFormsModule,
   ],
