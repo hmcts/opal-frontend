@@ -7,6 +7,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_ACC_ROUTING_TITLES } from './constants/fines-acc-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
+import { defendantAccountAtAGlanceResolver } from './resolvers/defendant-account-at-a-glance.resolver';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
@@ -61,7 +62,10 @@ export const routing: Routes = [
           routePermissionId: [accRootPermissionIds['account-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
-        resolve: { title: TitleResolver },
+        resolve: {
+          title: TitleResolver,
+          commentsFormData: defendantAccountAtAGlanceResolver,
+        },
       },
     ],
   },

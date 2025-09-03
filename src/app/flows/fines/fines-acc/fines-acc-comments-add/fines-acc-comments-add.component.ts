@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form/fines-acc-comments-add-form';
 import { IFinesAccAddCommentsForm } from './interfaces/fines-acc-comments-add-form.interface';
+import { IFinesAccAddCommentsFormState } from './interfaces/fines-acc-comments-add-form-state.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -19,6 +20,15 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
   protected readonly utilsService = inject(UtilsService);
   protected readonly finesAccStore = inject(FinesAccountStore);
   protected readonly finesAccPayloadService = inject(FinesAccPayloadService);
+
+  protected readonly prefilledFormData: IFinesAccAddCommentsFormState = this['activatedRoute'].snapshot.data[
+    'commentsFormData'
+  ] || {
+    facc_add_comment: null,
+    facc_add_free_text_1: null,
+    facc_add_free_text_2: null,
+    facc_add_free_text_3: null,
+  };
 
   /**
    * Handles the form submission for adding a note.

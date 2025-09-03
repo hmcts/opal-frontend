@@ -1,4 +1,5 @@
 <app-fines-acc-comments-add-form
+  [initialFormData]="prefilledFormData"
   (formSubmit)="handleAddNoteSubmit($event)"
   (unsavedChanges)="handleUnsavedChanges($event)"
 ></app-fines-acc-comments-add-form>
