@@ -1,4 +1,4 @@
-import { IOpalFinesDefendantAccountAlias } from "@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface";
+import { IOpalFinesDefendantAccountAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 
 export interface IOpalFinesAccountDefendantDetailsHeader {
   version: number | undefined;

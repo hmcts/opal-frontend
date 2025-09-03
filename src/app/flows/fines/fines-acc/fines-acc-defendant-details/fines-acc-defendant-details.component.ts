@@ -98,7 +98,10 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.opalFinesService.clearAccountDetailsCache(),
     );
 
-    const { defendant_party_id, business_unit_summary: { business_unit_id } } = this.accountData;
+    const {
+      defendant_party_id,
+      business_unit_summary: { business_unit_id },
+    } = this.accountData;
     const business_unit_user_id = this.accountStore.getAccountState().business_unit_user_id;
 
     this.tabData$ = this.createTabDataStream<

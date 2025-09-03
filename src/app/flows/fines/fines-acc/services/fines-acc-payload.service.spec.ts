@@ -11,17 +11,16 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { TestBed } from '@angular/core/testing';
 
-
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
   let mockMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let mockGlobalStore: jasmine.SpyObj<GlobalStoreType>;
   let mockFinesAccountStore: {
     version: jasmine.Spy;
+    base_version: jasmine.Spy;
     party_type: jasmine.Spy;
     party_id: jasmine.Spy;
   };
-
 
   beforeEach(() => {
     mockMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['getBusinessUnitBusinessUserId']);
@@ -29,6 +28,7 @@ describe('FinesAccPayloadService', () => {
 
     const mockStore = {
       version: jasmine.createSpy('version').and.returnValue(1),
+      base_version: jasmine.createSpy('base_version').and.returnValue(1),
       party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
       party_id: jasmine.createSpy('party_id').and.returnValue('12345'),
     };
@@ -56,7 +56,7 @@ describe('FinesAccPayloadService', () => {
   describe('buildAddNotePayload', () => {
     it('should build correct payload with form data', () => {
       // Setup mocks
-      mockFinesAccountStore.version.and.returnValue(5);
+      mockFinesAccountStore.base_version.and.returnValue(5);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
       mockFinesAccountStore.party_id.and.returnValue('12345');
 
@@ -80,7 +80,7 @@ describe('FinesAccPayloadService', () => {
 
     it('should call store methods to get party data', () => {
       // Setup mocks
-      mockFinesAccountStore.version.and.returnValue(1);
+      mockFinesAccountStore.base_version.and.returnValue(1);
       mockFinesAccountStore.party_type.and.returnValue('COMPANY');
       mockFinesAccountStore.party_id.and.returnValue('67890');
 
@@ -88,14 +88,14 @@ describe('FinesAccPayloadService', () => {
 
       service.buildAddNotePayload(testForm);
 
-      expect(mockFinesAccountStore.version).toHaveBeenCalled();
+      expect(mockFinesAccountStore.base_version).toHaveBeenCalled();
       expect(mockFinesAccountStore.party_type).toHaveBeenCalled();
       expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
     });
 
     it('should use the note text from form data', () => {
       // Setup mocks
-      mockFinesAccountStore.version.and.returnValue(3);
+      mockFinesAccountStore.base_version.and.returnValue(3);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
       mockFinesAccountStore.party_id.and.returnValue('54321');
 
@@ -107,7 +107,7 @@ describe('FinesAccPayloadService', () => {
 
     it('should handle null note text from form', () => {
       // Setup mocks
-      mockFinesAccountStore.version.and.returnValue(2);
+      mockFinesAccountStore.base_version.and.returnValue(2);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
       mockFinesAccountStore.party_id.and.returnValue('11111');
 
@@ -122,9 +122,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result.note_text).toBeNull();
       expect(result.note_type).toBe('AA');
-      ],
     });
-    service = TestBed.inject(FinesAccPayloadService);
   });
 
   it('should transform account header for store for an individual', () => {
@@ -136,7 +134,12 @@ describe('FinesAccPayloadService', () => {
       account_number: header.account_number,
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
-      party_name: header.party_details.individual_details?.title + ' ' + header.party_details.individual_details?.forenames + ' ' + header.party_details.individual_details?.surname?.toUpperCase(),
+      party_name:
+        header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
       base_version: Number(header.version),
       business_unit_user_id: header.business_unit_summary.business_unit_id,
     });
@@ -175,7 +178,13 @@ describe('FinesAccPayloadService', () => {
 
     const result = service.transformAccountHeaderForStore(header);
 
-    expect(result.party_name).toBe(header.party_details.individual_details?.title + ' ' + header.party_details.individual_details?.forenames + ' ' + header.party_details.individual_details?.surname?.toUpperCase());
+    expect(result.party_name).toBe(
+      header.party_details.individual_details?.title +
+        ' ' +
+        header.party_details.individual_details?.forenames +
+        ' ' +
+        header.party_details.individual_details?.surname?.toUpperCase(),
+    );
     expect(result.base_version).toBe(Number(header.version));
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });

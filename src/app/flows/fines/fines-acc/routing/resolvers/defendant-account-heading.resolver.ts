@@ -25,8 +25,8 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
   return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
     tap((headingData) => {
       if (isDefendantAccountHeader(headingData)) {
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
-    }
+        accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
+      }
     }),
   );
 
@@ -34,7 +34,7 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
    * Type guard function
    */
   function isDefendantAccountHeader(
-    data: IOpalFinesAccountDefendantDetailsHeader | RedirectCommand
+    data: IOpalFinesAccountDefendantDetailsHeader | RedirectCommand,
   ): data is IOpalFinesAccountDefendantDetailsHeader {
     return !!data && typeof data === 'object' && 'defendant_party_id' in data;
   }

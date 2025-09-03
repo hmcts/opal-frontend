@@ -8,5 +8,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'check-and-validate-draft-accounts': 5,
   'search-and-view-accounts': 6,
   'account-maintenance': 7,
-  'add-account-activity-notes': 8
+  'add-account-activity-notes': 8,
 };

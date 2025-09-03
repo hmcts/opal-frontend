@@ -23,7 +23,7 @@ describe('FinesAccNoteAddComponent', () => {
     party_id: jasmine.Spy;
     getAccountNumber: jasmine.Spy;
     party_name: jasmine.Spy;
-    version: jasmine.Spy;
+    base_version: jasmine.Spy;
   };
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe('FinesAccNoteAddComponent', () => {
       party_id: jasmine.createSpy('party_id').and.returnValue('12345'),
       getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue('123456789'),
       party_name: jasmine.createSpy('party_name').and.returnValue('Mr John, Peter DOE'),
-      version: jasmine.createSpy('version').and.returnValue(1),
+      base_version: jasmine.createSpy('base_version').and.returnValue(1),
     };
 
     await TestBed.configureTestingModule({
