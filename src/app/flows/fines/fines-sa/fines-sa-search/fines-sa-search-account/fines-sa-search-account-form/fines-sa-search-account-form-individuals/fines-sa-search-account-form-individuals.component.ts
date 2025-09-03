@@ -9,8 +9,8 @@ import {
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { takeUntil } from 'rxjs';
-import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-individuals-controls.constant';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
@@ -140,7 +140,11 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractFormBa
   }
 
   /**
-   * Angular lifecycle hook - initialises conditional validation and computes yesterday’s date.
+   * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
+   *
+   * - Sets up conditional validation for the last name field.
+   * - Initializes the `yesterday` property with the date of the previous day using the `dateService`.
+   * - Calls the parent class's `ngOnInit` method to ensure any inherited initialization logic is executed.
    */
   public override ngOnInit(): void {
     this.setupConditionalValidation();

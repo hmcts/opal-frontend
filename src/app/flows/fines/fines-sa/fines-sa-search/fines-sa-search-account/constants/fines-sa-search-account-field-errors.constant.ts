@@ -7,8 +7,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesSaSearchAccountFieldErr
       message: 'Account number must be 9 characters or fewer',
       priority: 1,
     },
-    invalidCharacterPattern: {
-      message: 'Account number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Account number must only contain letters or numbers',
       priority: 2,
     },
     invalidFormat: {
@@ -17,8 +17,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesSaSearchAccountFieldErr
     },
   },
   fsa_search_account_reference_case_number: {
-    invalidCharacterPattern: {
-      message: `Reference or case number must only include letters a to z, numbers, hyphens, spaces and apostrophes `,
+    alphanumericTextPattern: {
+      message: `Reference or case number must only contain letters or numbers `,
       priority: 1,
     },
     maxlength: {

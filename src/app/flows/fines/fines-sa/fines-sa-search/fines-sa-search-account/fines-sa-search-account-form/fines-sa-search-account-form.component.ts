@@ -37,6 +37,12 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fin
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
 
 import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Component({
   selector: 'app-fines-sa-search-account-form',
@@ -91,11 +97,11 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
         fsa_search_account_number: new FormControl<string | null>(null, [
           patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
-          patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(9),
         ]),
         fsa_search_account_reference_case_number: new FormControl<string | null>(null, [
-          patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_individuals_search_criteria: new FormGroup({}),
