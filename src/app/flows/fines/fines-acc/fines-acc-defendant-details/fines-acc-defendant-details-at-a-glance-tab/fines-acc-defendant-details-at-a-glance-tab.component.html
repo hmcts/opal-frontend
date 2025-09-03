@@ -14,31 +14,49 @@
           }}</opal-lib-govuk-tag>
         }
 
-        <h3 [class]="style.key">Name</h3>
-        <p [class]="style.value">
-          {{ tabData.party_details.individual_details?.title }} {{ tabData.party_details.individual_details?.forenames }}
-          {{ tabData.party_details.individual_details?.surname | uppercase }}
-        </p>
-
-        @if (tabData.party_details.individual_details?.individual_aliases) {
-          <h3 [class]="style.key">Aliases</h3>
+        @if (tabData.party_details.organisation_flag) {
+          <h3 [class]="style.key">Company Name</h3>
           <p [class]="style.value">
-            @for (alias of tabData.party_details.individual_details?.individual_aliases; track alias) {
-              {{ alias.alias_forenames }} {{ alias.alias_surname | uppercase }}<br />
-            }
+            {{ tabData.party_details.organisation_details?.organisation_name }}
           </p>
+
+          @if (tabData.party_details.organisation_details?.organisation_aliases) {
+            <h3 [class]="style.key">Aliases</h3>
+            <p [class]="style.value">
+              @for (alias of tabData.party_details.organisation_details?.organisation_aliases; track alias) {
+                {{ alias.organisation_name }}<br />
+              }
+            </p>
+          }
+        } 
+        @else {
+          <h3 [class]="style.key">Name</h3>
+          <p [class]="style.value">
+            {{ tabData.party_details.individual_details?.title }} {{ tabData.party_details.individual_details?.forenames }}
+            {{ tabData.party_details.individual_details?.surname | uppercase }}
+          </p>
+
+          @if (tabData.party_details.individual_details?.individual_aliases) {
+            <h3 [class]="style.key">Aliases</h3>
+            <p [class]="style.value">
+              @for (alias of tabData.party_details.individual_details?.individual_aliases; track alias) {
+                {{ alias.alias_forenames }} {{ alias.alias_surname | uppercase }}<br />
+              }
+            </p>
+          }
+
+          @if (tabData.party_details.individual_details && tabData.party_details.individual_details.date_of_birth) {
+            <h3 [class]="style.key">Date of birth</h3>
+            <p [class]="style.value">
+              {{
+                tabData.party_details.individual_details.date_of_birth !== null
+                  ? dateService.getFromFormatToFormat(tabData.party_details.individual_details.date_of_birth, 'dd/MM/yyyy', 'dd MMMM yyyy')
+                : '&mdash;'
+            }}
+            </p>
+          }
         }
 
-        @if (tabData.party_details.individual_details && tabData.party_details.individual_details.date_of_birth) {
-          <h3 [class]="style.key">Date of birth</h3>
-          <p [class]="style.value">
-            {{
-              tabData.party_details.individual_details.date_of_birth !== null
-                ? dateService.getFromFormatToFormat(tabData.party_details.individual_details.date_of_birth, 'dd/MM/yyyy', 'dd MMMM yyyy')
-              : '&mdash;'
-          }}
-          </p>
-        }
 
         <h3 [class]="style.key">Address</h3>
         <p [class]="style.value">
@@ -63,14 +81,16 @@
           {{ tabData.address.post_code | uppercase }}
         </p>
 
-        <h3 [class]="style.key">National Insurance Number</h3>
-        <p [class]="style.value">
-          {{
-            tabData.party_details.individual_details?.national_insurance_number
-              ? (tabData.party_details.individual_details?.national_insurance_number | uppercase)
-              : '&mdash;'
-          }}
-        </p>
+        @if (!tabData.party_details.organisation_flag) {
+          <h3 [class]="style.key">National Insurance Number</h3>
+          <p [class]="style.value">
+            {{
+              tabData.party_details.individual_details?.national_insurance_number
+                ? (tabData.party_details.individual_details?.national_insurance_number | uppercase)
+                : '&mdash;'
+            }}
+          </p>
+        }
 
         @if (
           tabData.language_preferences?.document_language?.language_code === languages.CY ||

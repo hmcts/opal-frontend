@@ -8,24 +8,12 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
   is_youth: false,
   party_details: {
     party_id: 'PARTY-001',
-    organisation_flag: false,
-    organisation_details: null,
-    individual_details: {
-      title: 'Mr',
-      forenames: 'John',
-      surname: 'Doe',
-      date_of_birth: '01/01/1990',
-      age: '34',
-      national_insurance_number: 'AB123456C',
-      individual_aliases: [
-        {
-          alias_number: 1,
-          organisation_name: 'Alias Org',
-          alias_surname: 'Smith',
-          alias_forenames: 'Johnny',
-        }
-      ]
-    }
+    organisation_flag: true,
+    organisation_details: {
+      organisation_name: 'Test Organisation',
+      organisation_aliases: null
+    },
+    individual_details: null
   },
   address: {
     address_line_1: '123 Main Street',
