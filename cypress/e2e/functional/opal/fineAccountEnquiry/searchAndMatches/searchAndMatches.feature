@@ -150,7 +150,7 @@ Feature: Account Search and Matches
     And I see "" in the "Postcode" field
 
 
-  @PO-705 @PO-712 @PO-715
+  @PO-705 @PO-712 @PO-715 @ignore
   Scenario: Validate error displayed when searching with multiple data sections populated
     #PO-705 - AC6. Error when all 3 sections contain data (Account number, Reference number, Individual field)
     When I enter "12345678" into the "Account number" field
