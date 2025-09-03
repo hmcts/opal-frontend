@@ -316,7 +316,7 @@ export const routing: Routes = [
       import('../fines-mac-fixed-penalty-details/fines-mac-fixed-penalty-details.component').then(
         (c) => c.FinesMacFixedPenaltyDetailsComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     resolve: {
       title: TitleResolver,

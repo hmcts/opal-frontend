@@ -1,6 +1,14 @@
-export const permittedSpecialCharacters = ['-', '*', '(', ')', '_', ',', '.', "'"];
+export const permittedSpecialCharacters: string[] = [];
 
 export const nonPermittedSpecialCharacters = [
+  "'",
+  '.',
+  ',',
+  '_',
+  ')',
+  '(',
+  '*',
+  '-',
   '@',
   '#',
   '$',

@@ -25,17 +25,20 @@ import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/valida
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  SPECIAL_CHARACTERS_PATTERN,
   EMAIL_ADDRESS_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 
 //regex pattern validators for the form controls
-const SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SPECIAL_CHARACTERS_PATTERN, 'specialCharactersPattern');
 const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericTextPattern',
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
 
 @Component({
@@ -89,23 +92,23 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

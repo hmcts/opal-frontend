@@ -399,8 +399,32 @@ Feature: Account Search and Matches
     # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "130001BU" link and handle new window navigation
+    When I click the "230001BU" link and handle new window navigation
     Then I see "Account Details" on the page header
+
+
+  # PO-707
+  @PO-707
+  Scenario: Successful Search For company defendant accounts
+    When I click on the "Companies" link
+    And I enter "test company" into the "Company name" field
+    And I click the "Search" button
+
+    # PO-707 - AC5. Back Button navigates to Search Page
+    Then I see "Search results" on the page header
+
+    When I click on the "Back" link
+    And I see "test company" in the "Company name" field
+    Then I see "Companies" on the page header
+
+
+    # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
+    # Handles window.open navigation
+    When I click the "Search" button
+    When I click the "230001BU" link and handle new window navigation
+    Then I see "Account Details" on the page header
+
+  #PO-707 AC3b & AC2b Will be covered once API integration is complete
 
   # PO-717 AC3b & AC2b Will be covered once API integration is complete
 
