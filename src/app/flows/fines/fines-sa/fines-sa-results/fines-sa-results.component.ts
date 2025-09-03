@@ -66,17 +66,17 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
    * - Otherwise pick the first bucket with 1–99 results in the order: individuals → companies → minorCreditors.
    */
   private computeDefaultFragment(): FinesSaSearchAccountTab {
-    const i = this.individualsData.length;
-    const c = this.companiesData.length;
-    const m = this.minorCreditorsData.length;
+    const individualsDataLen = this.individualsData.length;
+    const companiesDataLen = this.companiesData.length;
+    const minorCreditorsDataLen = this.minorCreditorsData.length;
 
-    const anyOversize = i >= 100 || c >= 100 || m >= 100;
-    const allZero = i === 0 && c === 0 && m === 0;
+    const anyOversize = individualsDataLen >= 100 || companiesDataLen >= 100 || minorCreditorsDataLen >= 100;
+    const allZero = individualsDataLen === 0 && companiesDataLen === 0 && minorCreditorsDataLen === 0;
 
     if (anyOversize || allZero) return '' as FinesSaSearchAccountTab;
-    if (i >= 1 && i <= 99) return 'individuals';
-    if (c >= 1 && c <= 99) return 'companies';
-    if (m >= 1 && m <= 99) return 'minorCreditors';
+    if (individualsDataLen >= 1 && individualsDataLen <= 99) return 'individuals';
+    if (companiesDataLen >= 1 && companiesDataLen <= 99) return 'companies';
+    if (minorCreditorsDataLen >= 1 && minorCreditorsDataLen <= 99) return 'minorCreditors';
 
     // Fallback safety - should not be reached
     return '' as FinesSaSearchAccountTab;
