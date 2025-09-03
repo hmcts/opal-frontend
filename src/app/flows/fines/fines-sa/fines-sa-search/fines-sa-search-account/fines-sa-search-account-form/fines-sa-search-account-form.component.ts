@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -9,6 +9,7 @@ import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
+
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -24,30 +25,24 @@ import { IFinesSaSearchAccountFieldErrors } from '../interfaces/fines-sa-search-
 import { FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS } from '../constants/fines-sa-search-account-field-errors.constant';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
-import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
+import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
-import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
-import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
-/**
- * Parent form for “Search Account” with tabbed sub-forms (Individuals, Companies, Minor Creditors, Major Creditors).
- *
- * Responsibilities:
- * - Owns the root FormGroup and all error state (field error templates, inline messages, and summary).
- * - Builds static controls and hosts empty nested groups for each tab’s sub-form.
- * - Determines the active tab from the URL fragment and swaps the tab-specific error templates.
- * - Clears nested groups and rehydrates persisted values when switching tabs.
- * - Delegates installation of tab controls and conditional validation to the child components.
- *
- * Notes:
- * - Children **do not** emit error maps; this component remains the single source of truth for
- *   `fieldErrors`, `formControlErrorMessages`, and `formErrorSummaryMessage`.
- */
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+
 @Component({
   selector: 'app-fines-sa-search-account-form',
   imports: [
@@ -74,62 +69,55 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-c
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
-  /**
-   * Tab-specific field error templates. On tab change, the parent recomputes
-   * `fieldErrors = { ...BASE, ...tabFieldErrorMap[activeTab] }` and then
-   * calls `setInitialErrorMessages()` to seed inline/summary structures.
-   */
   private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTab, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
     minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
     majorCreditors: {},
   };
+  private readonly tabControlsMap = {
+    individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS,
+    companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS,
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS,
+    majorCreditors: {},
+  };
+  private readonly finesSaService = inject(FinesSaService);
 
-  /**
-   * Emits after `handleFormSubmit` runs the base validation/submission logic and the form is valid.
-   */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
 
   public readonly finesSaStore = inject(FinesSaStore);
-  /**
-   * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
-   * Children read computed inline messages via their `[formControlErrorMessages]` input only.
-   */
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
+  @ViewChild(FinesSaSearchAccountFormMinorCreditorsComponent)
+  minorCreditorsComponent?: FinesSaSearchAccountFormMinorCreditorsComponent;
+
   /**
-   * Creates the root FormGroup, including static controls and empty nested groups
-   * into which each tab’s sub-form installs its own controls. Attaches the
-   * cross-field validator that enforces “at least one criterion”.
+   * Sets up the base structure of the form, including all static and tab-specific search criteria controls.
    */
   private setupBaseSearchAccountForm(): void {
-    this.form = new FormGroup(
-      {
-        fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
-        fsa_search_account_number: new FormControl<string | null>(null, [
-          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
-          patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
-          Validators.maxLength(9),
-        ]),
-        fsa_search_account_reference_case_number: new FormControl<string | null>(null, [
-          patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
-          Validators.maxLength(30),
-        ]),
-        fsa_search_account_individuals_search_criteria: new FormGroup({}),
-        fsa_search_account_companies_search_criteria: new FormGroup({}),
-        fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
-        fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
-        fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
-      },
-      { validators: atLeastOneCriteriaValidator },
-    );
+    this.form = new FormGroup({
+      fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
+      fsa_search_account_number: new FormControl<string | null>(null, [
+        patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        Validators.maxLength(9),
+      ]),
+      fsa_search_account_reference_case_number: new FormControl<string | null>(null, [
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        Validators.maxLength(30),
+      ]),
+      fsa_search_account_individual_search_criteria: new FormGroup({}),
+      fsa_search_account_companies_search_criteria: new FormGroup({}),
+      fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
+      fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
+      fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
+    });
   }
 
   /**
-   * Subscribes to the route fragment to resolve the active tab. If missing, defaults
-   * to `individuals` (and updates the URL). Triggers `switchTab` on initial load and
-   * whenever the fragment changes.
+   * Subscribes to the ActivatedRoute fragment to determine the active tab.
+   * If no fragment is provided, defaults to 'individuals' and updates the URL accordingly.
+   * Also triggers the corresponding tab switch on initial load.
    */
   private setupFragmentListener(): void {
     (this['activatedRoute'] as ActivatedRoute).fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
@@ -143,40 +131,49 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         });
       }
 
-      this.switchTab(resolvedFragment);
+      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTab);
+      this.switchTab(this.finesSaStore.activeTab());
     });
   }
 
   /**
-   * Builds the form shell, wires the fragment listener, and seeds empty error message
-   * structures based on the initial tab’s templates.
+   * Calls form setup, routing subscription, and initialises error messages.
    */
   private initialFormSetup(): void {
     this.setupBaseSearchAccountForm();
-    this.rePopulateForm(this.finesSaStore.searchAccount());
     this.setupFragmentListener();
     this.setInitialErrorMessages();
   }
 
   /**
-   * Resets all tab-specific nested FormGroups (without emitting) and clears the parent’s
-   * inline/summary error messages.
+   * Replaces the controls inside the currently active tab's search criteria FormGroup.
+   * @param controls An object containing control names and their FormControl instances.
+   */
+  private setControls(controls: Record<string, FormControl>): void {
+    const group = this.searchCriteriaForm;
+
+    // Clear existing
+    Object.keys(group.controls).forEach((key) => group.removeControl(key));
+
+    // Add new
+    Object.entries(controls).forEach(([key, control]) => group.addControl(key, control));
+  }
+
+  /**
+   * Clears all controls in all tab-specific search criteria form groups.
+   * Clears all error messages.
    */
   private clearSearchForm(): void {
-    ['individuals', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
+    ['individual', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
     this.clearAllErrorMessages();
   }
 
   /**
-   * Switches the active tab:
-   * - Recomputes `fieldErrors` from the base + tab-specific templates.
-   * - Seeds empty inline/summary messages via `setInitialErrorMessages()`.
-   * - Clears all tab groups, then rehydrates any persisted form state from the store.
-   * - Persists the selected tab to the store (and resets temporary state if the tab changed).
-   *
-   * @param tab Fragment string identifying the tab (the component treats this as a string).
+   * Switches the current tab by updating the error map and applying tab-specific controls.
+   * Also repopulates the form state once after initial navigation.
+   * @param tab The tab name or fragment string.
    */
   private switchTab(tab: string | Event): void {
     this.fieldErrors = {
@@ -184,49 +181,32 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
     } as IFinesSaSearchAccountFieldErrors;
 
-    this.setInitialErrorMessages();
-
-    // Reset existing values/validation in all tab groups
     this.clearSearchForm();
 
-    this.finesSaStore.setActiveTab(tab as FinesSaSearchAccountTab);
+    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTab] ?? {});
+
+    this.rePopulateForm(this.finesSaStore.searchAccount());
+    this.finesSaStore.resetSearchAccount();
   }
 
   /**
-   * Pre-submit guard:
-   * - If multiple criteria are populated (`atLeastOneCriteriaRequired`), persist the transient
-   *   form state and navigate to the problem route to inform the user.
-   * - If the form is empty (`formEmpty`), do nothing.
-   * - Otherwise, allow the base class to continue with submission.
+   * Validates fields that are specific to the currently active tab.
+   * For the "minorCreditors" tab, this ensures that at least one minor creditor search field is populated
+   * depending on the selected creditor type (individual or company), and sets the error on a representative control.
    */
-  private handleFormSubmission(): void {
-    if (this.form.errors?.['atLeastOneCriteriaRequired']) {
-      this.finesSaStore.setSearchAccountTemporary(this.form.value);
-      this['router'].navigate([this.finesSaSearchRoutingPaths.children.problem], {
-        relativeTo: this['activatedRoute'].parent,
-      });
-      return;
-    }
-
-    if (this.form.errors?.['formEmpty']) {
-      return;
+  private validateTabSpecificFields(): void {
+    if (this.finesSaStore.activeTab() === 'minorCreditors') {
+      this.minorCreditorsComponent?.applyMinorCreditorValidation();
     }
   }
 
   /**
-   * Receives error-summary items (e.g., from a shared summary component) and replaces the parent-held summary.
-   */
-  public updateFormErrorSummaryMessages(event: IAbstractFormBaseFormErrorSummaryMessage[]): void {
-    this.formErrorSummaryMessage = event;
-  }
-
-  /**
-   * Convenience accessor for the nested FormGroup associated with the current tab.
+   * Returns the FormGroup associated with the currently active tab.
    */
   public get searchCriteriaForm(): FormGroup {
     switch (this.finesSaStore.activeTab()) {
       case 'individuals':
-        return this.form.get('fsa_search_account_individuals_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_individual_search_criteria') as FormGroup;
       case 'companies':
         return this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
       case 'minorCreditors':
@@ -239,7 +219,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Navigates to the “Filter by Business Units” flow, preserving the current form value and tab fragment.
+   * Navigates to the Filter by Business Units page, saving current form data and preserving tab state.
    */
   public goToFilterBusinessUnits(): void {
     this.finesSaStore.setSearchAccountTemporary(this.form.value);
@@ -249,17 +229,34 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Runs pre-submit guards, then delegates to the base `handleFormSubmit` implementation.
+   * Handles the form submission logic including AC6 enforcement:
+   * If multiple criteria are used (account number + reference number + tab data), redirect to error.
+   * Otherwise, proceed with base class submission.
+   * @param event The SubmitEvent triggered by the form.
    */
-  public override handleFormSubmit(event: SubmitEvent): void {
-    this.handleFormSubmission();
+  override handleFormSubmit(event: SubmitEvent): void {
+    const accountNumber = this.form.get('fsa_search_account_number')?.value?.trim();
+    const referenceNumber = this.form.get('fsa_search_account_reference_case_number')?.value?.trim();
+
+    const hasTabData = this.finesSaService.hasAnySearchCriteriaPopulated(this.form.value);
+
+    const criteriaUsed = [!!accountNumber, !!referenceNumber, hasTabData].filter(Boolean).length;
+
+    if (criteriaUsed > 1) {
+      this.finesSaStore.setSearchAccountTemporary(this.form.value);
+      this['router'].navigate([this.finesSaSearchRoutingPaths.children.problem], {
+        relativeTo: this['activatedRoute'].parent,
+      });
+      return;
+    }
+
+    this.validateTabSpecificFields();
+
     super.handleFormSubmit(event);
   }
 
   /**
-   * Angular lifecycle:
-   * - Build the form shell and route subscriptions.
-   * - Invoke the base lifecycle for shared behaviour (e.g., unsaved-changes wiring).
+   * Angular lifecycle hook - initialises form and invokes parent component lifecycle logic.
    */
   public override ngOnInit(): void {
     this.initialFormSetup();

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import {
@@ -7,118 +7,45 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
-import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
-import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { FinesSaStore } from '../../../../stores/fines-sa.store';
-import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { takeUntil } from 'rxjs';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX } from './constants/fines-sa-search-account-form-individuals-controls.constant';
+import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
-);
-const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  'lettersSpacesHyphensApostrophesDotPattern',
-);
-
-/**
- * Nested Individuals sub-form for Search Account.
- *
- * Responsibilities:
- * - Build and install its own controls into the parent-provided FormGroup.
- * - Manage conditional validation (e.g. when exact-match or alias flags toggle required fields).
- * - Re-populate values from the store and sync validators accordingly.
- *
- * Notes:
- * - The parent component is the single source of truth for field error templates and computed messages.
- *   This sub-form only receives `form` and `formControlErrorMessages` and does not emit error maps.
- */
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
   imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent, MojDatePickerComponent],
   templateUrl: './fines-sa-search-account-form-individuals.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNestedFormBaseComponent {
-  private readonly finesSaStore = inject(FinesSaStore);
+export class FinesSaSearchAccountFormIndividualsComponent extends AbstractFormBaseComponent {
+  private readonly prefix = FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS_PREFIX;
+
   protected readonly dateService = inject(DateService);
 
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Output() public setDateOfBirth = new EventEmitter<string>();
   public yesterday!: string;
 
   /**
-   * Creates a **detached** builder FormGroup containing all controls owned by the Individuals sub-form.
-   * The returned controls are *not* attached to any parent yet; they are installed via `addControlsToNestedFormGroup`.
+   * Gets the first names, last name, and date of birth controls from the form.
+   * @returns Object containing references to the individual name-related controls.
    */
-  private buildIndividualFormControls(): FormGroup {
-    return new FormGroup({
-      fsa_search_account_individuals_last_name: new FormControl<string | null>(null, [
-        LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(30),
-      ]),
-      fsa_search_account_individuals_last_name_exact_match: new FormControl<boolean | null>(null),
-      fsa_search_account_individuals_first_names: new FormControl<string | null>(null, [
-        LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(20),
-      ]),
-      fsa_search_account_individuals_first_names_exact_match: new FormControl<boolean | null>(null),
-      fsa_search_account_individuals_include_aliases: new FormControl<boolean | null>(null),
-      fsa_search_account_individuals_date_of_birth: new FormControl<string | null>(null, [
-        optionalValidDateValidator(),
-        dateOfBirthValidator(),
-      ]),
-      fsa_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(9),
-      ]),
-      fsa_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(30),
-      ]),
-      fsa_search_account_individuals_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-        Validators.maxLength(8),
-      ]),
-    });
-  }
-
-  /**
-   * Convenience accessor for this sub-form's controls from the installed parent group.
-   * Returns `null` for any control that is missing to keep callers defensive.
-   */
-  private getIndividualFormControls(): {
-    firstNamesControl: FormControl | null;
-    dobControl: FormControl | null;
-    lastNameControl: FormControl | null;
-    firstNamesExactMatchControl: FormControl | null;
-    lastNameExactMatchControl: FormControl | null;
-    includeAliasesControl: FormControl | null;
-  } {
+  private getIndividualNameControls() {
     return {
-      firstNamesControl: this.form.get('fsa_search_account_individuals_first_names') as FormControl,
-      dobControl: this.form.get('fsa_search_account_individuals_date_of_birth') as FormControl,
-      lastNameControl: this.form.get('fsa_search_account_individuals_last_name') as FormControl,
-      firstNamesExactMatchControl: this.form.get(
-        'fsa_search_account_individuals_first_names_exact_match',
-      ) as FormControl,
-      lastNameExactMatchControl: this.form.get('fsa_search_account_individuals_last_name_exact_match') as FormControl,
-      includeAliasesControl: this.form.get('fsa_search_account_individuals_include_aliases') as FormControl,
+      firstNamesControl: this.form.get(`${this.prefix}first_names`),
+      dobControl: this.form.get(`${this.prefix}date_of_birth`),
+      lastNameControl: this.form.get(`${this.prefix}last_name`),
+      firstNamesExactMatchControl: this.form.get(`${this.prefix}first_names_exact_match`),
+      lastNameExactMatchControl: this.form.get(`${this.prefix}last_name_exact_match`),
+      includeAliasesControl: this.form.get(`${this.prefix}include_aliases`),
     };
   }
 
   /**
-   * Applies conditional `required` rules based on current values/toggles.
-   * - Last name becomes required when first names or DOB are provided, or when exact-match/aliases flags are set.
-   * - First names become required when the first-names exact-match flag is set.
-   *
-   * Uses the base helper `setValidatorPresence` to add/remove `Validators.required` and update validity quietly.
+   * Applies conditional validation to the last name field.
+   * If either first names or date of birth is populated and last name is not, last name becomes required.
    */
   private handleConditionalValidation(): void {
     const {
@@ -128,7 +55,7 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
       firstNamesExactMatchControl,
       lastNameExactMatchControl,
       includeAliasesControl,
-    } = this.getIndividualFormControls();
+    } = this.getIndividualNameControls();
 
     if (
       !firstNamesControl ||
@@ -141,28 +68,41 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
       return;
     }
 
-    const firstNamesHasValue = this.hasValue(firstNamesControl.value);
-    const dobHasValue = this.hasValue(dobControl.value);
-    const lastNameHasValue = this.hasValue(lastNameControl.value);
-    const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl.value;
-    const lastNameExactMatchHasValue = !!lastNameExactMatchControl.value;
-    const includeAliasesHasValue = !!includeAliasesControl.value;
+    const firstNamesHasValue = !!firstNamesControl?.value?.trim();
+    const dobHasValue = !!dobControl?.value?.trim();
+    const lastNameHasValue = !!lastNameControl?.value?.trim();
+    const firstNamesExactMatchHasValue = !!firstNamesExactMatchControl?.value;
+    const lastNameExactMatchHasValue = !!lastNameExactMatchControl?.value;
+    const includeAliasesHasValue = !!includeAliasesControl?.value;
 
-    // Last name validation rules
+    //Last name Validation
     const requireByNameOrDob = firstNamesHasValue || dobHasValue;
     const requireByOtherFlags = lastNameExactMatchHasValue || includeAliasesHasValue;
     const shouldRequireLastName = (requireByNameOrDob || requireByOtherFlags) && !lastNameHasValue;
 
-    // First names validation rules
+    //First name Validation
     const requireFirstName = firstNamesExactMatchHasValue && !firstNamesHasValue;
 
-    this.setValidatorPresence(lastNameControl, Validators.required, shouldRequireLastName);
-    this.setValidatorPresence(firstNamesControl, Validators.required, requireFirstName);
+    // Updating last name control validators
+    if (shouldRequireLastName) {
+      lastNameControl.addValidators(Validators.required);
+    } else {
+      lastNameControl.removeValidators(Validators.required);
+    }
+    lastNameControl.updateValueAndValidity({ emitEvent: false });
+
+    //Updating first names control Validators
+    if (requireFirstName) {
+      firstNamesControl.addValidators(Validators.required);
+    } else {
+      firstNamesControl.removeValidators(Validators.required);
+    }
+    firstNamesControl.updateValueAndValidity({ emitEvent: false });
   }
 
   /**
-   * Wires the conditional validation handler to relevant controls' `valueChanges` with auto-unsubscribe.
-   * No-ops if any required control is missing (defensive in case the group is not yet fully installed).
+   * Sets up subscriptions to watch first names and date of birth fields.
+   * Triggers conditional validation on the last name field when either changes.
    */
   private setupConditionalValidation(): void {
     const {
@@ -171,50 +111,45 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
       firstNamesExactMatchControl,
       lastNameExactMatchControl,
       includeAliasesControl,
-    } = this.getIndividualFormControls();
-
+    } = this.getIndividualNameControls();
     if (
       !firstNamesControl ||
       !dobControl ||
       !firstNamesExactMatchControl ||
       !lastNameExactMatchControl ||
       !includeAliasesControl
-    ) {
+    )
       return;
-    }
 
-    this.subscribeValidation(
-      () => this.handleConditionalValidation(),
-      firstNamesControl,
-      dobControl,
-      firstNamesExactMatchControl,
-      lastNameExactMatchControl,
-      includeAliasesControl,
-    );
+    firstNamesControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleConditionalValidation());
+
+    dobControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.handleConditionalValidation());
+
+    firstNamesExactMatchControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleConditionalValidation());
+
+    lastNameExactMatchControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleConditionalValidation());
+
+    includeAliasesControl.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.handleConditionalValidation());
   }
 
   /**
-   * Installs this sub-form's controls, sets up conditional validation,
-   * rehydrates values from the store, and syncs validators once.
-   */
-  private setupIndividualForm(): void {
-    const controlsGroup = this.buildIndividualFormControls();
-    this.addControlsToNestedFormGroup(controlsGroup);
-    this.setupConditionalValidation();
-    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-    this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_individuals_search_criteria);
-    this.finesSaStore.resetSearchAccount();
-    this.handleConditionalValidation();
-  }
-
-  /**
-   * Angular lifecycle hook: initialise the Individuals sub-form before invoking the base setup.
+   * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
    *
-   * The parent passes in the shared nested `form` group and `formControlErrorMessages`.
-   * This component installs its own controls, wires conditional validation, and hydrates from the store.
+   * - Sets up conditional validation for the last name field.
+   * - Initializes the `yesterday` property with the date of the previous day using the `dateService`.
+   * - Calls the parent class's `ngOnInit` method to ensure any inherited initialization logic is executed.
    */
   public override ngOnInit(): void {
+    this.setupConditionalValidation();
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     super.ngOnInit();
-    this.setupIndividualForm();
   }
 }

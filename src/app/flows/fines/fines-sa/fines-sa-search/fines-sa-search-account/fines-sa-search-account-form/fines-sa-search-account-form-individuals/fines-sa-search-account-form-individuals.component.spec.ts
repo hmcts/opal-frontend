@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesSaSearchAccountFormIndividualsComponent } from './fines-sa-search-account-form-individuals.component';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './constants/fines-sa-search-account-form-individuals-controls.constant';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -21,12 +22,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     fixture = TestBed.createComponent(FinesSaSearchAccountFormIndividualsComponent);
     component = fixture.componentInstance;
 
-    // Provide an empty parent FormGroup; the component under test will add its own controls in ngOnInit
-    component.form = new FormGroup({});
-    // Provide the required inputs expected by the abstract base
+    component.form = new FormGroup(FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS);
     component.formControlErrorMessages = {};
 
-    // Trigger ngOnInit so controls are installed into the empty group
     fixture.detectChanges();
   });
 
@@ -119,47 +117,6 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     ).toBeTrue();
   });
 
-  it('should require last name when first name is a non-string value (covers non-string branch of hasValue)', () => {
-    // Force a non-string value into first names to hit the `: true` ternary branch
-    const fnCtrl = component.form.get('fsa_search_account_individuals_first_names') as FormControl;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fnCtrl.setValue(0 as any); // number, not string
-    component.form.get('fsa_search_account_individuals_date_of_birth')?.setValue('');
-    component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
-
-    component['handleConditionalValidation']();
-    fnCtrl.updateValueAndValidity();
-    component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
-
-    expect(
-      component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required),
-    ).toBeTrue();
-  });
-
-  it('should NOT require first names when exact match is true but first names already contain a value', () => {
-    component.form.get('fsa_search_account_individuals_first_names_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_individuals_first_names')?.setValue('Jane');
-
-    component['handleConditionalValidation']();
-    component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
-
-    expect(
-      component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required),
-    ).toBeFalse();
-  });
-
-  it('should treat whitespace-only first names as empty and require when exact match is true', () => {
-    component.form.get('fsa_search_account_individuals_first_names_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_individuals_first_names')?.setValue('   ');
-
-    component['handleConditionalValidation']();
-    component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
-
-    expect(
-      component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required),
-    ).toBeTrue();
-  });
-
   it('should skip validation logic if controls are missing', () => {
     component.form = new FormGroup({
       // only some controls
@@ -168,8 +125,7 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       fsa_search_account_individuals_last_name: new FormControl(''),
       // missing date_of_birth and other optional controls
     });
-    // keep inputs consistent when swapping the form mid-test
-    component.formControlErrorMessages = component.formControlErrorMessages ?? {};
+    component.formControlErrorMessages = {};
     fixture.detectChanges();
 
     expect(() => component['handleConditionalValidation']()).not.toThrow();
@@ -180,47 +136,9 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       fsa_search_account_individuals_last_name: new FormControl('Smith'),
       // missing both first name and dob and other controls
     });
-    // keep inputs consistent when swapping the form mid-test
-    component.formControlErrorMessages = component.formControlErrorMessages ?? {};
+    component.formControlErrorMessages = {};
     fixture.detectChanges();
 
     expect(() => component['setupConditionalValidation']()).not.toThrow();
-  });
-
-  it('should install its controls into the provided FormGroup on init', () => {
-    const names = [
-      'fsa_search_account_individuals_last_name',
-      'fsa_search_account_individuals_last_name_exact_match',
-      'fsa_search_account_individuals_first_names',
-      'fsa_search_account_individuals_first_names_exact_match',
-      'fsa_search_account_individuals_include_aliases',
-      'fsa_search_account_individuals_date_of_birth',
-      'fsa_search_account_individuals_national_insurance_number',
-      'fsa_search_account_individuals_address_line_1',
-      'fsa_search_account_individuals_post_code',
-    ];
-    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
-  });
-
-  it('should remove its installed controls on destroy when nested in a parent group', () => {
-    // Recreate an isolated child group and nest it under a parent to ensure `form.parent` is truthy
-    const child = new FormGroup({});
-    const parent = new FormGroup({ fsa_search_account_individuals_search_criteria: child });
-
-    component.form = child;
-    component.formControlErrorMessages = {};
-    fixture.detectChanges(); // triggers ngOnInit -> installs controls
-    component.ngOnInit();
-
-    // Sanity check: controls are present
-    expect(child.get('fsa_search_account_individuals_last_name')).toBeTruthy();
-
-    // Destroy and ensure controls are removed from the child group
-    component.ngOnDestroy();
-
-    const names = Object.keys(child.controls);
-    expect(names).withContext('expected no controls after destroy').toEqual([]);
-    // parent still has the child group placeholder
-    expect(parent.get('fsa_search_account_individuals_search_criteria')).toBe(child);
   });
 });

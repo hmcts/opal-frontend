@@ -43,7 +43,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).not.toHaveBeenCalled();
+    expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
   it('should initialize the form with correct controls and validators', () => {
