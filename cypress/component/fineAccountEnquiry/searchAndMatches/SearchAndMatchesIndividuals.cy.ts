@@ -7,8 +7,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_individuals_elements';
 import { INDIVIDUAL_SEARCH_STATE_MOCK } from './mocks/search_and_matches_individual_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSaIndividualAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-individual-accounts/fines-sa-individual-accounts.resolver';
-import { getFirstDayOfCurrentMonth, getFirstDayOfPreviousMonth } from '../../../support/utils/dateUtils';
+import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import { getFirstDayOfPreviousMonth } from '../../../support/utils/dateUtils';
 
 describe('Search Account Component - Individuals', () => {
   let individualSearchMock = structuredClone(INDIVIDUAL_SEARCH_STATE_MOCK);
@@ -22,7 +22,7 @@ describe('Search Account Component - Individuals', () => {
             path: 'fines/search-accounts/results',
             component: FinesSaSearchAccountComponent,
             resolve: {
-              individualAccounts: finesSaIndividualAccountsResolver,
+              individualAccounts: finesSaDefendantAccountsResolver,
             },
             runGuardsAndResolvers: 'always',
           },
