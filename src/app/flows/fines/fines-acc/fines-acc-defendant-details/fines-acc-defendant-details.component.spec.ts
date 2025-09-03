@@ -8,7 +8,7 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK } from './mocks/fines-acc-defendant-account-header.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from './mocks/fines-acc-defendant-details-header.mock';
 import { of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-tab-ref-data.mock';
@@ -29,7 +29,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       fragment: of('at-a-glance'),
       snapshot: {
         data: {
-          defendantAccountHeadingData: FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK,
+          defendantAccountHeadingData: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
         },
         fragment: 'at-a-glance',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,7 +79,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should initialize accountData and activeTab from route data', () => {
-    expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_ACCOUNT_HEADER_MOCK);
+    expect(component.accountData).toEqual(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     expect(component.activeTab).toBe('at-a-glance');
   });
 

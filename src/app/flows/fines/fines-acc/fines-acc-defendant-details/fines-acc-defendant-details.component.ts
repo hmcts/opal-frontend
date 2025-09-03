@@ -35,7 +35,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 // Interfaces
-import { IOpalFinesDefendantAccountHeader } from './interfaces/fines-acc-defendant-account-header.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 
@@ -75,7 +75,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
   public tabData$ = new Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData>();
-  public accountData!: IOpalFinesDefendantAccountHeader;
+  public accountData!: IOpalFinesAccountDefendantDetailsHeader;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -98,7 +98,8 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.opalFinesService.clearAccountDetailsCache(),
     );
 
-    const { defendant_account_id, business_unit_id, business_unit_user_id } = this.accountData;
+    const { defendant_party_id, business_unit_summary: { business_unit_id } } = this.accountData;
+    const business_unit_user_id = this.accountStore.getAccountState().business_unit_user_id;
 
     this.tabData$ = this.createTabDataStream<
       IOpalFinesAccountDetailsAtAGlanceTabRefData,
@@ -109,7 +110,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       (tab) =>
         this.opalFinesService.getDefendantAccountAtAGlance(
           tab,
-          defendant_account_id,
+          defendant_party_id,
           business_unit_id,
           business_unit_user_id,
         ),

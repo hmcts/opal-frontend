@@ -43,7 +43,7 @@ export const routing: Routes = [
         canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts'], accRootPermissionIds['account-notes']],
+          routePermissionId: [accRootPermissionIds['search-and-view-accounts'], accRootPermissionIds['add-account-activity-notes']],
           title: FINES_ACC_ROUTING_TITLES.children.note,
         },
         resolve: { title: TitleResolver },

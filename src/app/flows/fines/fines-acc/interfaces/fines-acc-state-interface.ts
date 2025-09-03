@@ -3,5 +3,6 @@ export interface IFinesAccountState {
   party_type: string | null;
   party_name: string | null;
   party_id: string | null;
-  version: number | null;
+  base_version: number | null;
+  business_unit_user_id: string | null;
 }
