@@ -19,8 +19,8 @@ import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -39,6 +39,7 @@ import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draf
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
@@ -463,6 +464,33 @@ export class OpalFines {
     return this.http
       .get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' })
       .pipe(map((response) => this.addVersionToBody(response)));
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @returns An Observable that emits the created note data.
+   */
+  public addNote(payload: IOpalFinesAddNotePayload): Observable<IOpalFinesAddNoteResponse> {
+    // return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload);
+
+    // Return payload data with additional response fields for realistic testing
+    const response: IOpalFinesAddNoteResponse = {
+      note_id: Math.floor(Math.random() * 100000) + 1, // Generate random note ID
+      associated_record_type: payload.associated_record_type,
+      associated_record_id: payload.associated_record_id,
+      note_type: payload.note_type,
+      note_text: payload.note_text,
+      created_date: new Date().toISOString(), // Current timestamp
+      created_by: 'test.user@hmcts.net', // Mock user for testing
+    };
+
+    return of(response);
   }
 
   /**
