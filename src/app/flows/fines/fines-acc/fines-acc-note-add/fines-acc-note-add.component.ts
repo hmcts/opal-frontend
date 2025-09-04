@@ -34,7 +34,7 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent im
       .addNote(payload)
       .pipe(
         tap(() => this.routerNavigate(this.finesAccRoutingPaths.children.details)),
-        catchError((err) => {
+        catchError(() => {
           this.utilsService.scrollToTop();
           return EMPTY;
         }),
