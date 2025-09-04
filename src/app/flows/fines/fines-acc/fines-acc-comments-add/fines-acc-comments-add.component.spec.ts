@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 
 import { FinesAccCommentsAddComponent } from './fines-acc-comments-add.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -28,7 +29,7 @@ describe('FinesAccCommentsAddComponent', () => {
   };
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['postAddComment']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['patchDefendantAccount']);
     mockUtilsService = jasmine.createSpyObj('UtilsService', ['upperCaseFirstLetter']);
     mockFinesAccStore = {
       account_number: signal('123456'),
@@ -46,7 +47,7 @@ describe('FinesAccCommentsAddComponent', () => {
         base_version: 1,
       }),
     };
-    mockFinesAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['createAddCommentPayload']);
+    mockFinesAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildCommentsFormPayload']);
 
     await TestBed.configureTestingModule({
       imports: [FinesAccCommentsAddComponent],
@@ -153,11 +154,25 @@ describe('FinesAccCommentsAddComponent', () => {
       nestedFlow: false,
     };
 
-    spyOn(console, 'log'); // Spy on console.log to verify it's called
+    const mockPayload = {
+      version: 1,
+      account_comments_notes: {
+        account_comment: 'Test comment',
+        account_free_note_1: 'Free text 1',
+        account_free_note_2: null,
+        account_free_note_3: null,
+      },
+    };
+
+    mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
+    mockOpalFinesService.patchDefendantAccount.and.returnValue(
+      of({ version: 2, defendant_account_id: '789', message: 'Success' }),
+    );
 
     component.handleAddNoteSubmit(mockFormData);
 
-    expect(console.log).toHaveBeenCalledWith('Form submitted:', mockFormData);
+    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(mockFormData.formData, 1);
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith('789', mockPayload);
   });
 
   it('should have access to required services', () => {
@@ -188,11 +203,25 @@ describe('FinesAccCommentsAddComponent', () => {
       nestedFlow: false,
     };
 
-    spyOn(console, 'log');
+    const mockPayload = {
+      version: 1,
+      account_comments_notes: {
+        account_comment: 'Only comment',
+        account_free_note_1: null,
+        account_free_note_2: null,
+        account_free_note_3: null,
+      },
+    };
+
+    mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
+    mockOpalFinesService.patchDefendantAccount.and.returnValue(
+      of({ version: 2, defendant_account_id: '789', message: 'Success' }),
+    );
 
     component.handleAddNoteSubmit(partialFormData);
 
-    expect(console.log).toHaveBeenCalledWith('Form submitted:', partialFormData);
+    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(partialFormData.formData, 1);
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith('789', mockPayload);
   });
 
   it('should have correct component selector', () => {

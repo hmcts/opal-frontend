@@ -36,6 +36,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
   it('should resolve comments form data successfully', async () => {
     const accountId = '123';
     const mockAccountState = {
+      account_id: 456,
       party_id: '456',
       business_unit_user_id: 'BU123',
       business_unit_id: 'BU456',
@@ -69,7 +70,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
 
     expect(result).toEqual(expectedFormData);
     expect(mockAccountStore.getAccountState).toHaveBeenCalled();
-    expect(mockOpalFinesService.getDefendantAccountAtAGlanceTabData).toHaveBeenCalledWith('BU123', 'BU456', '456');
+    expect(mockOpalFinesService.getDefendantAccountAtAGlanceTabData).toHaveBeenCalledWith(456, 'BU456', 'BU123');
     expect(mockPayloadService.transformAtAGlanceDataToCommentsForm).toHaveBeenCalledWith(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
     );
@@ -86,10 +87,11 @@ describe('defendantAccountAtAGlanceResolver', () => {
     }).toThrowError('Account ID is required');
   });
 
-  it('should throw error when party_id is missing', () => {
+  it('should throw error when account_id is missing', () => {
     const accountId = 123;
     const mockAccountState = {
-      party_id: null,
+      account_id: null,
+      party_id: '456',
       business_unit_user_id: 'BU123',
       business_unit_id: 'BU456',
       account_number: 'ACC123',
@@ -113,6 +115,7 @@ describe('defendantAccountAtAGlanceResolver', () => {
   it('should throw error when business_unit_user_id is missing', () => {
     const accountId = 123;
     const mockAccountState = {
+      account_id: 123,
       party_id: '456',
       business_unit_user_id: null,
       business_unit_id: 'BU456',

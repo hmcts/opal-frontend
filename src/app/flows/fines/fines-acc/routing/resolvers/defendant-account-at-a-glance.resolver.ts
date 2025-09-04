@@ -20,9 +20,9 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
   const payloadService = inject(FinesAccPayloadService);
 
   const accountState = accountStore.getAccountState();
-  const { party_id, business_unit_user_id, business_unit_id } = accountState;
+  const { account_id, business_unit_user_id, business_unit_id } = accountState;
 
-  if (!party_id || !business_unit_user_id || !business_unit_id) {
+  if (!account_id || !business_unit_user_id || !business_unit_id) {
     throw new Error('Account state is not properly initialized');
   }
 
@@ -34,6 +34,6 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
    * @throws Error if the account ID is invalid or if the data cannot be fetched.
    */
   return opalFinesService
-    .getDefendantAccountAtAGlanceTabData(business_unit_user_id, business_unit_id, party_id)
+    .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
     .pipe(map((atAGlanceData) => payloadService.transformAtAGlanceDataToCommentsForm(atAGlanceData)));
 };
