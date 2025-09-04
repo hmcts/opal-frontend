@@ -36,6 +36,7 @@ describe('Search Account Component - Company', () => {
           useFactory: () => {
             const store = new FinesSaStore();
             store.setSearchAccount(companySearchMock);
+            store.setActiveTab('companies');
 
             return store;
           },
