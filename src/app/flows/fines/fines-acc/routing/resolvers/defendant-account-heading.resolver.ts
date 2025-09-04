@@ -28,8 +28,10 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
     tap((headingData) => {
       // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
       headingData.debtor_type = headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
-      headingData.is_youth = headingData.party_details?.individual_details?.date_of_birth ? dateService.getAgeObject(headingData.party_details.individual_details.date_of_birth)?.group === 'Youth' : false;
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
+      headingData.is_youth = headingData.party_details?.individual_details?.date_of_birth
+        ? dateService.getAgeObject(headingData.party_details.individual_details.date_of_birth)?.group === 'Youth'
+        : false;
+      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
     }),
   );
 };
