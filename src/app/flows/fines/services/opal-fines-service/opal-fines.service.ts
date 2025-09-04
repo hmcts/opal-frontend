@@ -414,16 +414,16 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves a list of creditor accounts based on the provided search parameters.
+   * Retrieves a list of minor creditor accounts based on the provided search parameters.
    *
-   * @param searchParams - The parameters used to search for creditor accounts.
-   * @returns An Observable emitting a response containing the creditor accounts and the search parameters used (for debugging purposes).
+   * @param searchParams - The parameters used to search for minor creditor accounts.
+   * @returns An Observable emitting a response containing the minor creditor accounts and the search parameters used (for debugging purposes).
    */
-  public getCreditorAccounts(
+  public getMinorCreditorAccounts(
     searchParams: IOpalFinesCreditorAccountsSearchParams,
   ): Observable<IOpalFinesMinorCreditorAccountsResponse> {
     return this.http.post<IOpalFinesMinorCreditorAccountsResponse>(
-      `${OPAL_FINES_PATHS.searchCreditorAccounts}`,
+      `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`,
       searchParams,
     );
   }

@@ -595,9 +595,9 @@ describe('OpalFines', () => {
   it('should send a POST request to search creditor accounts API with correct body', () => {
     const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
     const expectedResponse = OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.searchCreditorAccounts}`;
+    const apiUrl = `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`;
 
-    service.getCreditorAccounts(filters).subscribe((response) => {
+    service.getMinorCreditorAccounts(filters).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
@@ -610,10 +610,10 @@ describe('OpalFines', () => {
 
   it('should handle errors when search offences API fails', () => {
     const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.searchCreditorAccounts}`;
+    const apiUrl = `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`;
     const errorMessage = 'Failed to search creditor accounts';
 
-    service.getCreditorAccounts(filters).subscribe({
+    service.getMinorCreditorAccounts(filters).subscribe({
       next: () => fail('Expected an error, but got a response'),
       error: (error) => {
         expect(error).toBeTruthy();

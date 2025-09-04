@@ -53,7 +53,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
   }
 
   if (hasAccountNumber) {
-    return opalFinesService.getCreditorAccounts({
+    return opalFinesService.getMinorCreditorAccounts({
       ...baseSearchParams,
       account_number: state.fsa_search_account_number,
     });
@@ -62,7 +62,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
   // Minor creditor search
   const minorCreditorCriteria = state.fsa_search_account_minor_creditors_search_criteria!;
   if (minorCreditorCriteria.fsa_search_account_minor_creditors_minor_creditor_type === 'individual') {
-    return opalFinesService.getCreditorAccounts({
+    return opalFinesService.getMinorCreditorAccounts({
       ...baseSearchParams,
       creditor: {
         ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
@@ -88,7 +88,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
       },
     });
   } else {
-    return opalFinesService.getCreditorAccounts({
+    return opalFinesService.getMinorCreditorAccounts({
       ...baseSearchParams,
       creditor: {
         ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,

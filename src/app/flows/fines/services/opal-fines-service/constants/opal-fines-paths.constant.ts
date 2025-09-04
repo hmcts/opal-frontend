@@ -11,7 +11,7 @@ const majorCreditor = 'major-creditors';
 const draftAccounts = 'draft-accounts';
 const prosecutors = 'prosecutors';
 const defendantAccounts = 'defendant-accounts';
-const creditorAccounts = 'minor-creditor-accounts';
+const minorCreditorAccounts = 'minor-creditor-accounts';
 const searchAccounts = '/search';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
@@ -25,5 +25,5 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   searchOffences: `${baseUrl}${offences}${searchOffences}`,
   prosecutorRefData: `${baseUrl}${prosecutors}`,
   searchDefendantAccounts: `${baseUrl}${defendantAccounts}${searchAccounts}`,
-  searchCreditorAccounts: `${baseUrl}${creditorAccounts}${searchAccounts}`,
+  searchMinorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}${searchAccounts}`,
 };
