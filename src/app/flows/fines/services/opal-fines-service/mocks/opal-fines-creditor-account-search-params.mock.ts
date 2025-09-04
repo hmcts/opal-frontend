@@ -1,9 +1,11 @@
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT } from '../constants/opal-fines-creditor-account-search-params-defaults.constant';
 import { IOpalFinesCreditorAccountsSearchParams } from '../interfaces/opal-fines-creditor-accounts-search-params.interface';
 export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK: IOpalFinesCreditorAccountsSearchParams = {
   business_unit_ids: [1],
   active_accounts_only: true,
   account_number: 'ACC123',
   creditor: {
+    ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
     organisation: true,
     organisation_name: 'Test Creditor',
     exact_match_organisation_name: true,
@@ -17,6 +19,7 @@ export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK: IOpalFin
   active_accounts_only: true,
   account_number: 'ACC123',
   creditor: {
+    ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
     organisation: false,
     surname: 'Test Surname',
     exact_match_surname: true,
