@@ -399,10 +399,12 @@ export class OpalFines {
     return this.prosecutorDataCache$[business_unit];
   }
 
+  
   /**
-   * Retrieves the defendant accounts related to fines.
+   * Retrieves defendant account information based on the provided search parameters.
    *
-   * @returns An Observable emitting a mock response of type {@link IOpalFinesDefendantAccountResponse}.
+   * @param searchParams - The parameters used to search for defendant accounts.
+   * @returns An Observable that emits the response containing defendant account details.
    */
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
@@ -416,8 +418,8 @@ export class OpalFines {
   /**
    * Retrieves a list of minor creditor accounts based on the provided search parameters.
    *
-   * @param searchParams - The parameters used to search for minor creditor accounts.
-   * @returns An Observable emitting a response containing the minor creditor accounts and the search parameters used (for debugging purposes).
+   * @param searchParams - The parameters used to filter and search for minor creditor accounts.
+   * @returns An Observable that emits the response containing the minor creditor accounts.
    */
   public getMinorCreditorAccounts(
     searchParams: IOpalFinesCreditorAccountsSearchParams,
