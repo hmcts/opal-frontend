@@ -52,7 +52,7 @@ import { TransformationService } from '@hmcts/opal-frontend-common/services/tran
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
-
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -74,6 +74,7 @@ import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fi
     MojDatePickerComponent,
     CapitalisationDirective,
     AlphagovAccessibleAutocompleteComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-fixed-penalty-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -246,6 +247,11 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     } else {
       this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].clearValidators();
       this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].clearValidators();
+      // Clear vehicle related values if the offence type is not 'vehicle'
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_driving_licence_number`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_date_nto_issued`].setValue(null);
+      this.form.controls[`${this.fixedPenaltyPrefix}offence_details_nto_nth`].setValue(null);
     }
     this.form.controls[
       `${this.fixedPenaltyPrefix}offence_details_vehicle_registration_number`
@@ -322,30 +328,12 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
     if (prosecutor && typeof prosecutor.name === 'string') {
       // Remove any parenthesis and content inside, and trim whitespace
-      const prosecutorName = this.stripFirstParenthesesBlock(prosecutor.name);
+      const prosecutorName = this.utilsService.stripFirstParenthesesBlock(prosecutor.name);
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue(prosecutorName);
     } else {
       // Optionally clear the name if not found
       this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_name`].setValue('');
     }
-  }
-
-  /**
-   * Strips out the first parentheses block from the given text.
-   * This method looks for the first occurrence of parentheses in the text,
-   * removes the content within them, and returns the modified text.
-   * @param {string} text - The text from which to strip the first parentheses block.
-   * @returns {string} - The modified text with the first parentheses block removed.
-   */
-  private stripFirstParenthesesBlock(text: string): string {
-    const open = text.indexOf('(');
-    const close = text.indexOf(')', open);
-    if (open !== -1 && close !== -1 && close > open) {
-      const before = text.slice(0, open);
-      const after = text.slice(close + 1);
-      return (before + after).trim();
-    }
-    return text.trim();
   }
 
   /**

@@ -9,6 +9,7 @@ export interface IFinesMacAddAccountPayload {
   account: IFinesMacPayloadAccount; // Replace 'any' with the actual type of accountPayload if known
   account_type: string | null;
   account_status: string | null;
+  account_status_message: string | null;
   timeline_data: IFinesMacAccountTimelineData[];
   draft_account_id: number | null;
   created_at: string | null;

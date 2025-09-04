@@ -18,7 +18,8 @@ import { requiredMinorCreditorDataValidator } from './validators/fines-sa-search
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import {
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  LETTERS_WITH_SPACES_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
@@ -30,10 +31,11 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
   'alphanumericWithHyphensSpacesApostrophesDotPattern',
 );
-const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  'lettersSpacesHyphensApostrophesDotPattern',
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericWithSpacesPattern',
 );
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 
 /**
  * Nested Minor Creditors sub-form for Search Account.
@@ -108,36 +110,36 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
       ]),
       fsa_search_account_minor_creditors_individual: new FormGroup({
         fsa_search_account_minor_creditors_last_name: new FormControl<string | null>(null, [
-          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_last_name_exact_match: new FormControl<boolean | null>(null),
         fsa_search_account_minor_creditors_first_names: new FormControl<string | null>(null, [
-          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(20),
         ]),
         fsa_search_account_minor_creditors_first_names_exact_match: new FormControl<boolean | null>(null),
         fsa_search_account_minor_creditors_individual_address_line_1: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_individual_post_code: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(8),
         ]),
       }),
       fsa_search_account_minor_creditors_company: new FormGroup({
         fsa_search_account_minor_creditors_company_name: new FormControl<string | null>(null, [
-          LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
           Validators.maxLength(50),
         ]),
         fsa_search_account_minor_creditors_company_name_exact_match: new FormControl<boolean | null>(null),
         fsa_search_account_minor_creditors_company_address_line_1: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(30),
         ]),
         fsa_search_account_minor_creditors_company_post_code: new FormControl<string | null>(null, [
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
           Validators.maxLength(8),
         ]),
       }),

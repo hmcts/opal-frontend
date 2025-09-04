@@ -102,13 +102,13 @@ Feature: Manual account creation - Contact Details
     Then I clear the "Primary email address" field
     And I enter "PEMAIL.COM" into the "Primary email address" field
     And I click the "Return to account details" button
-    Then I see the error message "Enter primary email address in the correct format like, name@example.com" above the "Primary email address" field
+    Then I see the error message "Enter primary email address in the correct format, like name@example.com" above the "Primary email address" field
 
     When I click Cancel, a window pops up and I click Cancel
 
     Then I see "Defendant contact details" on the page header
     And I see "PEMAIL.COM" in the "Primary email address" field
-    And I see the error message "Enter primary email address in the correct format like, name@example.com" above the "Primary email address" field
+    And I see the error message "Enter primary email address in the correct format, like name@example.com" above the "Primary email address" field
 
   Scenario: Contact Details - Axe Core
     Then I check accessibility

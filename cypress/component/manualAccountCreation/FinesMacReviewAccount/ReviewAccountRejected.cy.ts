@@ -149,4 +149,70 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
       });
     },
   );
+
+  it(
+    'should send PUT request with correct Fixed Penalty account data and timeline when rejected account is resubmitted',
+    { tags: ['@PO-1809'] },
+    () => {
+      cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
+
+      setupComponent(false);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+
+      cy.wait('@putDraftAccount').then(({ request }) => {
+        expect(request.body).to.exist;
+        //AC4 - Check the request URL and method are of type PUT and the URL is correct
+        expect(request.url).to.include('/opal-fines-service/draft-accounts/123');
+        expect(request.method).to.equal('PUT');
+
+        // AC4a
+        expect(request.body).to.have.property('business_unit_id', 61);
+
+        // AC4b
+        expect(request.body).to.have.property('submitted_by', 'L017KG');
+
+        // AC4c
+        expect(request.body).to.have.property('submitted_by_name', 'Timmy Tester');
+
+        // AC4d
+        expect(request.body).to.have.property('account');
+        expect(request.body.account).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
+        expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
+        expect(request.body.account.defendant).to.have.property('title', 'Mr');
+        expect(request.body.account.defendant).to.have.property('surname', 'Doe');
+        expect(request.body.account.defendant).to.have.property('forenames', 'John');
+        expect(request.body.account.defendant).to.have.property('dob', '2000-01-01');
+        expect(request.body.account.defendant).to.have.property('address_line_1', '123 Fake Street');
+        expect(request.body.account.defendant).to.have.property('address_line_2', 'Fake Town');
+        expect(request.body.account.defendant).to.have.property('address_line_3', 'Fake City');
+        expect(request.body.account.defendant).to.have.property('post_code', 'AB12 3CD');
+
+        // AC4e - account_type = 'Fixed Penalty'
+        expect(request.body).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
+
+        // AC4f - account_status_message = null
+        expect(request.body).to.have.property('account_status_message', null);
+
+        // Account status should be 'Resubmitted' when resubmitting
+        expect(request.body).to.have.property('account_status', 'Resubmitted');
+
+        // AC4g - timeline_data with specific structure
+        expect(request.body).to.have.property('timeline_data');
+
+        //This timeline data was already present (existing rejected entry)
+        expect(request.body.timeline_data[0]).to.have.property('username', 'Test User 1');
+        expect(request.body.timeline_data[0]).to.have.property('status', 'Rejected');
+        expect(request.body.timeline_data[0]).to.have.property('status_date', '2025-01-01');
+        expect(request.body.timeline_data[0]).to.have.property('reason_text', '');
+
+        //AC4g - New timeline data added as result of resubmission
+        expect(request.body.timeline_data[1]).to.have.property('username', 'Timmy Tester');
+        expect(request.body.timeline_data[1]).to.have.property('status', 'Resubmitted');
+        expect(request.body.timeline_data[1]).to.have.property('status_date', getToday());
+        expect(request.body.timeline_data[1]).to.have.property('reason_text', null);
+      });
+    },
+  );
 });

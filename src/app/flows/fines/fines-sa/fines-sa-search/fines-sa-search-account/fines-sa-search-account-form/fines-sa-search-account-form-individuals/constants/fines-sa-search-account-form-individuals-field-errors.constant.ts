@@ -6,8 +6,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter last name',
       priority: 1,
     },
-    lettersSpacesHyphensApostrophesDotPattern: {
-      message: 'Last name must only include letters a to z, hyphens, spaces and apostrophes',
+    lettersWithSpacesPattern: {
+      message: 'Last name must only contain letters',
       priority: 2,
     },
     maxlength: {
@@ -21,8 +21,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter first name',
       priority: 1,
     },
-    lettersSpacesHyphensApostrophesDotPattern: {
-      message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
+    lettersWithSpacesPattern: {
+      message: 'First names must only contain letters',
       priority: 1,
     },
     maxlength: {
@@ -47,8 +47,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_national_insurance_number: {
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'National Insurance number must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -57,8 +57,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_address_line_1: {
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Address line 1 must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -67,8 +67,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_post_code: {
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
