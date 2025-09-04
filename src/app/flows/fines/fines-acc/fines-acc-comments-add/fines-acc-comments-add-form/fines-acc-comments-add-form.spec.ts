@@ -10,6 +10,7 @@ import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-
 describe('FinesAccCommentsAddFormComponent', () => {
   let component: FinesAccCommentsAddFormComponent;
   let fixture: ComponentFixture<FinesAccCommentsAddFormComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccStore: any;
 
   const mockInitialFormData: IFinesAccAddCommentsFormState = {
@@ -73,8 +74,6 @@ describe('FinesAccCommentsAddFormComponent', () => {
   it('should apply correct validators to form controls', () => {
     const commentControl = component.form.get('facc_add_comment') as FormControl;
     const freeText1Control = component.form.get('facc_add_free_text_1') as FormControl;
-    const freeText2Control = component.form.get('facc_add_free_text_2') as FormControl;
-    const freeText3Control = component.form.get('facc_add_free_text_3') as FormControl;
 
     // Test maxLength validation for comment (30 characters)
     commentControl.setValue('a'.repeat(31));

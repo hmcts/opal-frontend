@@ -731,8 +731,8 @@ describe('OpalFines', () => {
     });
   });
 
-  it('should return a mock response with incremented version for patching defendant account', () => {
-    const accountId = '123456';
+  it('should return a mock response for patching defendant account', () => {
+    const accountId = 123456;
     const updatePayload = {
       version: 1,
       account_comments_notes: {
@@ -754,7 +754,7 @@ describe('OpalFines', () => {
   });
 
   it('should handle different payload values in mock response for patching defendant account', () => {
-    const accountId = '789012';
+    const accountId = 789012;
     const updatePayload = {
       version: 5,
       account_comments_notes: {

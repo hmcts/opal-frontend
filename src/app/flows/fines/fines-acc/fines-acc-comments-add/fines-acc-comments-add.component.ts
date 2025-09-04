@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form/fines-acc-comments-add-form';
 import { IFinesAccAddCommentsForm } from './interfaces/fines-acc-comments-add-form.interface';
 import { IFinesAccAddCommentsFormState } from './interfaces/fines-acc-comments-add-form-state.interface';
@@ -8,13 +8,15 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { catchError, EMPTY, Subject, takeUntil, tap } from 'rxjs';
 @Component({
   selector: 'app-acc-comments-add',
   imports: [FinesAccCommentsAddFormComponent],
   templateUrl: './fines-acc-comments-add.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponent {
+export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
   protected readonly opalFinesService = inject(OpalFines);
   protected readonly utilsService = inject(UtilsService);
@@ -35,17 +37,23 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
    * @param addNoteForm - The form data containing the note details.
    */
   public handleAddNoteSubmit(form: IFinesAccAddCommentsForm): void {
+    const payload = this.finesAccPayloadService.buildCommentsFormPayload(
+      form.formData,
+      this.finesAccStore.base_version()!,
+    );
     this.opalFinesService
-      .patchDefendantAccount(
-        this.finesAccStore.party_id()!,
-        this.finesAccPayloadService.buildCommentsFormPayload(form.formData, 1),
-      )
-      .subscribe({
-        next: () => {
+      .patchDefendantAccount(this.finesAccStore.account_id()!, payload)
+      .pipe(
+        tap(() => {
           this.routerNavigate(this.finesAccRoutingPaths.children.details);
-        },
-        error: () => this.utilsService.scrollToTop(),
-      });
+        }),
+        catchError(() => {
+          this.utilsService.scrollToTop();
+          return EMPTY;
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
   }
 
   /**
@@ -55,5 +63,10 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

@@ -38,12 +38,12 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 })
 export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesAccStore = inject(FinesAccountStore);
-  @Input() public initialFormData?: IFinesAccAddCommentsFormState;
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddCommentsForm>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddCommentsFieldErrors = FINES_ACC_ADD_COMMENTS_FIELD_ERRORS;
+  @Input() public initialFormData?: IFinesAccAddCommentsFormState;
 
   private setupAddCommentsForm(): void {
     this.form = new FormGroup({

@@ -619,7 +619,7 @@ export class OpalFines {
    * @returns An Observable that emits the updated defendant account response.
    */
   public patchDefendantAccount(
-    accountId: string,
+    accountId: number,
     payload: IOpalFinesUpdateDefendantAccountPayload,
   ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
     // TODO: Replace with actual HTTP call when API is implemented

@@ -18,6 +18,7 @@ describe('FinesAccCommentsAddComponent', () => {
   let fixture: ComponentFixture<FinesAccCommentsAddComponent>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccStore: any;
   let mockFinesAccPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
 
@@ -34,14 +35,19 @@ describe('FinesAccCommentsAddComponent', () => {
     mockFinesAccStore = {
       account_number: signal('123456'),
       party_name: signal('John Doe'),
-      party_id: signal('789'),
-      business_unit_user_id: signal('456'),
+      account_id: signal(789),
+      party_id: signal(789),
+      business_unit_user_id: signal(456),
+      base_version: signal(1),
+      business_unit_id: signal(1),
       getAccountNumber: jasmine.createSpy('getAccountNumber').and.returnValue(signal('123456')),
       unsavedChanges: jasmine.createSpy('unsavedChanges').and.returnValue(false),
       getAccountState: jasmine.createSpy('getAccountState').and.returnValue({
         account_number: '123456',
-        party_id: '789',
-        business_unit_user_id: '456',
+        account_id: 789,
+        party_id: 789,
+        business_unit_user_id: 456,
+        business_unit_id: 1,
         party_name: 'John Doe',
         party_type: 'Individual',
         base_version: 1,
@@ -166,13 +172,13 @@ describe('FinesAccCommentsAddComponent', () => {
 
     mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
     mockOpalFinesService.patchDefendantAccount.and.returnValue(
-      of({ version: 2, defendant_account_id: '789', message: 'Success' }),
+      of({ version: 2, defendant_account_id: 789, message: 'Success' }),
     );
 
     component.handleAddNoteSubmit(mockFormData);
 
     expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(mockFormData.formData, 1);
-    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith('789', mockPayload);
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload);
   });
 
   it('should have access to required services', () => {
@@ -215,13 +221,13 @@ describe('FinesAccCommentsAddComponent', () => {
 
     mockFinesAccPayloadService.buildCommentsFormPayload.and.returnValue(mockPayload);
     mockOpalFinesService.patchDefendantAccount.and.returnValue(
-      of({ version: 2, defendant_account_id: '789', message: 'Success' }),
+      of({ version: 2, defendant_account_id: 789, message: 'Success' }),
     );
 
     component.handleAddNoteSubmit(partialFormData);
 
     expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(partialFormData.formData, 1);
-    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith('789', mockPayload);
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload);
   });
 
   it('should have correct component selector', () => {
