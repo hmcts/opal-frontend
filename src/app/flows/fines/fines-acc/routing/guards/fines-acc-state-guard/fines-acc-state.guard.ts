@@ -23,7 +23,7 @@ import { FinesAccountStore } from '../../../stores/fines-acc.store';
 export const finesAccStateGuard = hasUrlStateMatchGuard(
   () => {
     const finesAccountStore = inject(FinesAccountStore);
-    return finesAccountStore.account_number();
+    return finesAccountStore.party_id();
   },
   (route) => !!route.params['accountId'], // Only process routes that have accountId parameter
   (storeAccountNumber, route) => {
