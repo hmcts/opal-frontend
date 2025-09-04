@@ -399,7 +399,6 @@ export class OpalFines {
     return this.prosecutorDataCache$[business_unit];
   }
 
-  
   /**
    * Retrieves defendant account information based on the provided search parameters.
    *
