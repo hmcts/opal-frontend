@@ -256,10 +256,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
 
     this.opalFinesService
-      .getDefendantAccountHeadingData(Number(this.accountStore.party_id()))
+      .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
       .pipe(
         tap((headingData) => {
-          this.accountStore.setAccountState(this.payloadService.transformAccountHeaderForStore(headingData));
+          this.accountStore.setAccountState(
+            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
+          );
         }),
       )
       .subscribe((res) => {
