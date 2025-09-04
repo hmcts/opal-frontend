@@ -7,6 +7,8 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { TestBed } from '@angular/core/testing';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -101,5 +103,85 @@ describe('FinesAccPayloadService', () => {
     );
     expect(result.base_version).toBe(Number(header.version));
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
+  });
+
+  it('should transform at-a-glance data to comments form state', () => {
+    const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
+
+    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
+
+    expect(result).toEqual({
+      facc_add_comment: atAGlanceData.comment_and_notes?.account_comment || '',
+      facc_add_free_text_1: atAGlanceData.comment_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: atAGlanceData.comment_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: atAGlanceData.comment_and_notes?.free_text_note_3 || '',
+    });
+  });
+
+  it('should handle null account notes gracefully', () => {
+    const atAGlanceData = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
+      comment_and_notes: {
+        account_comment: null,
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      },
+    };
+
+    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
+
+    expect(result).toEqual({
+      facc_add_comment: '',
+      facc_add_free_text_1: '',
+      facc_add_free_text_2: '',
+      facc_add_free_text_3: '',
+    });
+  });
+
+  describe('buildCommentsFormPayload', () => {
+    it('should transform form state to update payload correctly', () => {
+      const formState: IFinesAccAddCommentsFormState = {
+        facc_add_comment: 'Updated comment',
+        facc_add_free_text_1: 'Updated note 1',
+        facc_add_free_text_2: 'Updated note 2',
+        facc_add_free_text_3: 'Updated note 3',
+      };
+      const version = 2;
+
+      const result = service.buildCommentsFormPayload(formState, version);
+
+      expect(result).toEqual({
+        version: 2,
+        account_comments_notes: {
+          account_comment: 'Updated comment',
+          account_free_note_1: 'Updated note 1',
+          account_free_note_2: 'Updated note 2',
+          account_free_note_3: 'Updated note 3',
+        },
+      });
+    });
+
+    it('should handle null/empty values in form state', () => {
+      const formState: IFinesAccAddCommentsFormState = {
+        facc_add_comment: '',
+        facc_add_free_text_1: null,
+        facc_add_free_text_2: '',
+        facc_add_free_text_3: null,
+      };
+      const version = 1;
+
+      const result = service.buildCommentsFormPayload(formState, version);
+
+      expect(result).toEqual({
+        version: 1,
+        account_comments_notes: {
+          account_comment: null,
+          account_free_note_1: null,
+          account_free_note_2: null,
+          account_free_note_3: null,
+        },
+      });
+    });
   });
 });
