@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FinesAccNoteAddComponent } from './fines-acc-note-add.component';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -7,6 +7,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from './mocks/fines-acc-add-note-form.mock';
 import {
@@ -18,6 +19,7 @@ describe('FinesAccNoteAddComponent', () => {
   let component: FinesAccNoteAddComponent;
   let fixture: ComponentFixture<FinesAccNoteAddComponent>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockFinesAccPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
   let mockFinesAccountStore: {
     party_type: jasmine.Spy;
     party_id: jasmine.Spy;
@@ -28,7 +30,10 @@ describe('FinesAccNoteAddComponent', () => {
 
   beforeEach(async () => {
     // Create mock OpalFines service
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['postAddNotePayload']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['addNote']);
+
+    // Create mock FinesAccPayloadService
+    mockFinesAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['buildAddNotePayload']);
 
     // Create mock FinesAccountStore with signal methods
     mockFinesAccountStore = {
@@ -58,6 +63,10 @@ describe('FinesAccNoteAddComponent', () => {
         {
           provide: FinesAccountStore,
           useValue: mockFinesAccountStore,
+        },
+        {
+          provide: FinesAccPayloadService,
+          useValue: mockFinesAccPayloadService,
         },
       ],
     }).compileComponents();
@@ -91,16 +100,25 @@ describe('FinesAccNoteAddComponent', () => {
       created_by: 'test_user',
     };
 
-    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
+    mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
+    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
     spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
 
-    expect(mockOpalFinesService.postAddNotePayload).toHaveBeenCalledWith(expectedPayload);
+    expect(mockFinesAccPayloadService.buildAddNotePayload).toHaveBeenCalledWith(testForm);
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload);
   });
 
-  it('should navigate to details page on successful API call', () => {
+  it('should navigate to details page on successful API call', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const expectedPayload: IOpalFinesAddNotePayload = {
+      account_version: 1,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+    };
     const mockResponse: IOpalFinesAddNoteResponse = {
       note_id: 123,
       associated_record_type: 'PERSON',
@@ -111,23 +129,35 @@ describe('FinesAccNoteAddComponent', () => {
       created_by: 'test_user',
     };
 
-    mockOpalFinesService.postAddNotePayload.and.returnValue(of(mockResponse));
+    mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
+    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
     spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
+    tick(); // Wait for observable to complete
 
     expect(component['routerNavigate']).toHaveBeenCalledWith(component['finesAccRoutingPaths'].children.details);
-  });
+  }));
 
-  it('should not navigate on API call failure', () => {
+  it('should not navigate on API call failure', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
-    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
+    const expectedPayload: IOpalFinesAddNotePayload = {
+      account_version: 1,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+    };
+
+    mockOpalFinesService.addNote.and.returnValue(throwError(() => new Error('API Error')));
+    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
     spyOn(component, 'routerNavigate' as never);
 
     component.handleAddNoteSubmit(testForm);
+    tick(); // Wait for error to be handled
 
     expect(component['routerNavigate']).not.toHaveBeenCalled();
-  });
+  }));
 
   it('should set stateUnsavedChanges to true when passed true', () => {
     component.handleUnsavedChanges(true);
@@ -164,13 +194,33 @@ describe('FinesAccNoteAddComponent', () => {
     expect(component['finesAccStore']).toBeDefined();
   });
 
-  it('should call utilsService.scrollToTop on API call failure', () => {
+  it('should call utilsService.scrollToTop on API call failure', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+    const expectedPayload: IOpalFinesAddNotePayload = {
+      account_version: 1,
+      associated_record_type: 'PERSON',
+      associated_record_id: '12345',
+      note_type: 'AA',
+      note_text: testForm.formData.facc_add_notes!,
+    };
+
     spyOn(component['utilsService'], 'scrollToTop');
-    mockOpalFinesService.postAddNotePayload.and.returnValue(throwError(() => new Error('API Error')));
+    mockOpalFinesService.addNote.and.returnValue(throwError(() => new Error('API Error')));
+    mockFinesAccPayloadService.buildAddNotePayload.and.returnValue(expectedPayload);
 
     component.handleAddNoteSubmit(testForm);
+    tick(); // Wait for error to be handled
 
     expect(component['utilsService'].scrollToTop).toHaveBeenCalled();
+  }));
+
+  it('should call next and complete on ngUnsubscribe when ngOnDestroy is invoked', () => {
+    spyOn(component['ngUnsubscribe'], 'next');
+    spyOn(component['ngUnsubscribe'], 'complete');
+
+    component.ngOnDestroy();
+
+    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
 });

@@ -476,7 +476,7 @@ export class OpalFines {
    *                  note type, note text, and defendant account version for concurrency.
    * @returns An Observable that emits the created note data.
    */
-  public postAddNotePayload(payload: IOpalFinesAddNotePayload): Observable<IOpalFinesAddNoteResponse> {
+  public addNote(payload: IOpalFinesAddNotePayload): Observable<IOpalFinesAddNoteResponse> {
     // return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload);
 
     // Return payload data with additional response fields for realistic testing

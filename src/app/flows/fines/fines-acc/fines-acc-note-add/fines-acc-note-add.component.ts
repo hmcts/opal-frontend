@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -7,6 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { catchError, EMPTY, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-acc-note-add',
@@ -14,7 +15,8 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
   templateUrl: './fines-acc-note-add.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
+export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
   protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
   protected readonly opalFinesService = inject(OpalFines);
   protected readonly utilsService = inject(UtilsService);
@@ -26,13 +28,19 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
    * @param addNoteForm - The form data containing the note details.
    */
   public handleAddNoteSubmit(form: IFinesAccAddNoteForm): void {
+    const payload = this.finesAccPayloadService.buildAddNotePayload(form);
     // POST request api call to add a note
-    this.opalFinesService.postAddNotePayload(this.finesAccPayloadService.buildAddNotePayload(form)).subscribe({
-      next: () => {
-        this.routerNavigate(this.finesAccRoutingPaths.children.details);
-      },
-      error: () => this.utilsService.scrollToTop(),
-    });
+    this.opalFinesService
+      .addNote(payload)
+      .pipe(
+        tap(() => this.routerNavigate(this.finesAccRoutingPaths.children.details)),
+        catchError((err) => {
+          this.utilsService.scrollToTop();
+          return EMPTY;
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
   }
 
   /**
@@ -42,5 +50,10 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent {
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

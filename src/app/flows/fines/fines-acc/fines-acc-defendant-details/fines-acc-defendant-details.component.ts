@@ -30,7 +30,7 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
-import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';

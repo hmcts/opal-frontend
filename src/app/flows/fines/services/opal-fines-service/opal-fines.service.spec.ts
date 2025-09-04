@@ -685,7 +685,7 @@ describe('OpalFines', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
-    service.postAddNotePayload(payload).subscribe((response) => {
+    service.addNote(payload).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
       expect(response.note_id).toBeLessThanOrEqual(100000);
       expect(response.associated_record_type).toEqual(payload.associated_record_type);
@@ -721,7 +721,7 @@ describe('OpalFines', () => {
 
     const responses: number[] = [];
     for (let i = 0; i < 5; i++) {
-      service.postAddNotePayload(payload).subscribe((response) => {
+      service.addNote(payload).subscribe((response) => {
         responses.push(response.note_id);
         expect(response.note_id).toBeGreaterThan(0);
         expect(response.note_id).toBeLessThanOrEqual(100000);
@@ -746,7 +746,7 @@ describe('OpalFines', () => {
       note_text: 'Custom test note with special characters: áéíóú & symbols!',
     };
 
-    service.postAddNotePayload(payload).subscribe((response) => {
+    service.addNote(payload).subscribe((response) => {
       expect(response.associated_record_type).toEqual(payload.associated_record_type);
       expect(response.associated_record_id).toEqual(payload.associated_record_id);
       expect(response.note_type).toEqual(payload.note_type);
