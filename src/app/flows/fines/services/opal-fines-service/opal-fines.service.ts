@@ -444,18 +444,18 @@ export class OpalFines {
    * Retrieves the defendant account details at a glance for a specific tab.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountAtAGlanceTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {
-      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
       //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
       //   .pipe(
@@ -472,13 +472,13 @@ export class OpalFines {
    * Retrieves the defendant account details defendant tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountDefendantTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
@@ -492,13 +492,13 @@ export class OpalFines {
    * Retrieves the defendant account details enforcement tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountEnforcementTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
@@ -512,13 +512,13 @@ export class OpalFines {
    * Retrieves the defendant account details impositions tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountImpositionsTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
@@ -532,13 +532,13 @@ export class OpalFines {
    * Retrieves the defendant account details history and notes tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountHistoryAndNotesTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
@@ -554,13 +554,13 @@ export class OpalFines {
    * Retrieves the defendant account details payment terms tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param defendant_account_id - The ID of the defendant account.
+   * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountPaymentTermsTabData(
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {

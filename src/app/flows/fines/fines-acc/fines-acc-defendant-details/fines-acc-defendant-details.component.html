@@ -55,9 +55,9 @@
   </opal-lib-custom-page-header>
 </div>
 
-@if (accountData.parent_guardian_party_id || accountData.is_youth) {
+@if (accountData.debtor_type === 'Parent/Guardian' || accountData.is_youth) {
   <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
-    @if (accountData.parent_guardian_party_id) {
+    @if (accountData.debtor_type === 'Parent/Guardian') {
       <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--turquoise'" tagId="status"
         >Parent or Guardian to pay</opal-lib-govuk-tag
       >

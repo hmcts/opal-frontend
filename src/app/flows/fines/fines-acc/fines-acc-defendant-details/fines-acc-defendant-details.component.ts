@@ -125,14 +125,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
-    const { business_unit_user_id, business_unit_id, party_id } = this.accountStore.getAccountState();
+    const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountAtAGlanceTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -141,7 +141,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'defendant':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountDefendantTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -150,7 +150,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'payment-terms':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountPaymentTermsTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -159,7 +159,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'enforcement':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountEnforcementTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -168,7 +168,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'impositions':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountImpositionsTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -177,7 +177,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'history-and-notes':
           this.tabsData[tab] = this.fetchTabData(
             this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(
-              party_id,
+              account_id,
               business_unit_id,
               business_unit_user_id,
             ),
@@ -256,10 +256,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
 
     this.opalFinesService
-      .getDefendantAccountHeadingData(Number(this.accountStore.party_id()))
+      .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
       .pipe(
         tap((headingData) => {
-          this.accountStore.setAccountState(this.payloadService.transformAccountHeaderForStore(headingData));
+          this.accountStore.setAccountState(
+            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
+          );
         }),
       )
       .subscribe((res) => {

@@ -584,15 +584,15 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountAtAGlanceTabData', () => {
-    const defendant_account_id: string = '123456789';
+  it('should getDefendantAccountAtAGlance data', () => {
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
     service
-      .getDefendantAccountAtAGlanceTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
@@ -604,65 +604,65 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccounDefendantTabData', () => {
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountDefendantTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
   });
 
   it('should getDefendantAccountEnforcementTabData', () => {
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountEnforcementTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountEnforcementTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
   });
 
   it('should getDefendantAccountImpositionsTabData', () => {
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountImpositionsTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountImpositionsTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
   });
 
   it('should getDefendantAccountPaymentTermsTabData', () => {
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountPaymentTermsTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountPaymentTermsTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
   });
 
   it('should getDefendantAccountHistoryAndNotesTabData', () => {
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountHistoryAndNotesTabData(defendant_account_id, business_unit_id, business_unit_user_id)
+      .getDefendantAccountHistoryAndNotesTabData(account_id, business_unit_id, business_unit_user_id)
       .subscribe((response) => {
         expect(response).toEqual(expectedResponse);
       });
