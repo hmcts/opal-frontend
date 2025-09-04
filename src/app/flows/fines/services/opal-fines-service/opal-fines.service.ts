@@ -426,30 +426,29 @@ export class OpalFines {
    * Retrieves the defendant account details at a glance for a specific tab.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
-   * @param tab - The tab for which to retrieve the account details.
    * @param defendant_account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountAtAGlance(
-    tab: string,
-    party_id: string | null,
+    account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
-    if (!this.accountDetailsCache$[tab]) {
-      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${party_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+    console.log(account_id, business_unit_id, business_unit_user_id);
+    if (!this.accountDetailsCache$['at-a-glance']) {
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountid}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
       //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
       //   .pipe(
       //     map((response) => this.addVersionToBody(response)),
       //     shareReplay(1)
       //   );
-      this.accountDetailsCache$[tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
     }
 
-    return this.accountDetailsCache$[tab];
+    return this.accountDetailsCache$['at-a-glance'];
   }
 
   /**

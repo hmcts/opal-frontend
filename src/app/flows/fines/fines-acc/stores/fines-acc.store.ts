@@ -7,6 +7,7 @@ export const FinesAccountStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     account_number: null as string | null,
+    account_id: null as number | null,
     party_id: null as string | null,
     party_type: null as string | null,
     party_name: null as string | null,
@@ -42,6 +43,7 @@ export const FinesAccountStore = signalStore(
       getAccountState: () => {
         return {
           account_number: store.account_number(),
+          account_id: store.account_id(),
           party_id: store.party_id(),
           party_type: store.party_type(),
           party_name: store.party_name(),

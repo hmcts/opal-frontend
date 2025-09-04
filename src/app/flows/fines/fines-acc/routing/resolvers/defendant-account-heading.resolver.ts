@@ -24,12 +24,14 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
    * If the account ID is not provided, it returns an empty observable.
    * @throws Error if the account ID is invalid or if the data cannot be fetched.
    */
-   return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
+  return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
     tap((headingData) => {
       // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
       headingData.debtor_type = headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
-      headingData.is_youth = headingData.party_details?.individual_details?.date_of_birth ? dateService.getAgeObject(headingData.party_details.individual_details.date_of_birth)?.group === 'Youth' : false;
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(headingData));
+      headingData.is_youth = headingData.party_details?.individual_details?.date_of_birth
+        ? dateService.getAgeObject(headingData.party_details.individual_details.date_of_birth)?.group === 'Youth'
+        : false;
+      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
     }),
   );
 };

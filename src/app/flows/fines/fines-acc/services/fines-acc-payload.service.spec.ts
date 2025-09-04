@@ -34,11 +34,13 @@ describe('FinesAccPayloadService', () => {
 
   it('should transform account header for store for an individual', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.account_number,
+      account_id: account_id,
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name:
@@ -62,11 +64,13 @@ describe('FinesAccPayloadService', () => {
   it('should transform account header for store for a company', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     header.party_details.organisation_flag = true;
+    const account_id = 77;
 
-    const result: IFinesAccountState = service.transformAccountHeaderForStore(header);
+    const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
 
     expect(result).toEqual({
       account_number: header.account_number,
+      account_id: account_id,
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
@@ -84,8 +88,9 @@ describe('FinesAccPayloadService', () => {
 
   it('should handle missing surname gracefully', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const account_id = 77;
 
-    const result = service.transformAccountHeaderForStore(header);
+    const result = service.transformAccountHeaderForStore(account_id, header);
 
     expect(result.party_name).toBe(
       header.party_details.individual_details?.title +
