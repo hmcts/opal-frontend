@@ -6,6 +6,7 @@ import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.const
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_ACC_ROUTING_TITLES } from './constants/fines-acc-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -16,17 +17,47 @@ export const routing: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':accountId',
+    path: 'defendant/:accountId',
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
     children: [
       {
         path: FINES_ACC_ROUTING_PATHS.children.details,
 
         loadComponent: () =>
-          import('../fines-acc-details/fines-acc-details.component').then((c) => c.FinesAccDetailsComponent),
-        canActivate: [authGuard, routePermissionsGuard],
+          import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then(
+            (c) => c.FinesAccDefendantDetailsComponent,
+          ),
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_ROUTING_TITLES.children.details,
+        },
+        resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
+      },
+      {
+        path: `${FINES_ACC_ROUTING_PATHS.children.note}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
+        canActivate: [routePermissionsGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
+          title: FINES_ACC_ROUTING_TITLES.children.note,
+        },
+        resolve: { title: TitleResolver },
+      },
+      {
+        path: `${FINES_ACC_ROUTING_PATHS.children.comments}/add`,
+
+        loadComponent: () =>
+          import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
+            (c) => c.FinesAccCommentsAddComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
       },

@@ -1,0 +1,171 @@
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+
+@if (accountStore.hasVersionMismatch()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
+      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text
+          >Some information on this page may be out of date.
+          <a href="#" (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text
+        >
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+} @else if (accountStore.successMessage()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert
+      type="success"
+      ariaLabel="offenceCodeMessage"
+      [showDismiss]="true"
+      (dismissed)="accountStore.clearSuccessMessage()"
+    >
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+}
+
+<div class="govuk-grid-column-full">
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <opal-lib-govuk-heading-with-caption
+        [captionText]="accountData.account_number"
+        headingText="{{ accountStore.party_name() }}"
+      ></opal-lib-govuk-heading-with-caption>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      @if (hasPermission('add-account-activity-notes')) {
+        <button
+          opalLibGovukButton
+          buttonId="addAccountNote"
+          buttonClasses="govuk-button--secondary"
+          (click)="navigateToAddAccountNotePage()"
+        >
+          Add account note
+        </button>
+      }
+
+      <opal-lib-moj-button-menu menuButtonTitle="More options:"></opal-lib-moj-button-menu>
+    </ng-container>
+  </opal-lib-custom-page-header>
+</div>
+
+@if (accountData.debtor_type === 'Parent/Guardian' || accountData.is_youth) {
+  <div class="govuk-grid-column-full govuk-!-margin-bottom-3">
+    @if (accountData.debtor_type === 'Parent/Guardian') {
+      <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--turquoise'" tagId="status"
+        >Parent or Guardian to pay</opal-lib-govuk-tag
+      >
+    } @else if (accountData.is_youth) {
+      <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-tag--orange'" tagId="status">Youth Account</opal-lib-govuk-tag>
+    }
+  </div>
+}
+
+<div class="govuk-grid-column-three-quarters">
+  <opal-lib-custom-account-information>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>Account type:</h3>
+      <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
+    </opal-lib-custom-account-information-item>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
+      <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+    </opal-lib-custom-account-information-item>
+    <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
+      <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
+      <p opal-lib-custom-account-information-item-value>
+        {{ accountData.business_unit_summary.business_unit_name }} ({{
+          accountData.business_unit_summary.business_unit_id
+        }})
+      </p>
+    </opal-lib-custom-account-information-item>
+  </opal-lib-custom-account-information>
+</div>
+
+<div class="govuk-grid-column-full">
+  <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 govuk-!-margin-top-2" />
+
+  <opal-lib-custom-summary-metric-bar>
+    <opal-lib-custom-summary-metric-bar-item>
+      <p opal-lib-custom-summary-metric-bar-item-label>Imposed:</p>
+      <p opal-lib-custom-summary-metric-bar-item-value>
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.imposed_amount) }}
+      </p>
+    </opal-lib-custom-summary-metric-bar-item>
+    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Arrears:</p>
+      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.arrears_amount) }}
+      </p>
+    </opal-lib-custom-summary-metric-bar-item>
+    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-lighter-blue-background-colour">
+      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-dark-blue-text-colour">Paid/Written off:</p>
+      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-dark-blue-text-colour">
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.paid_amount) }}
+      </p>
+    </opal-lib-custom-summary-metric-bar-item>
+    <opal-lib-custom-summary-metric-bar-item backgroundColour="govuk-blue-background-colour">
+      <p opal-lib-custom-summary-metric-bar-item-label textColour="govuk-white-text-colour">Account Balance:</p>
+      <p opal-lib-custom-summary-metric-bar-item-value textColour="govuk-white-text-colour">
+        {{ utilsService.convertToMonetaryString(accountData.payment_state_summary.account_balance) }}
+      </p>
+    </opal-lib-custom-summary-metric-bar-item>
+  </opal-lib-custom-summary-metric-bar>
+</div>
+
+<div class="govuk-grid-column-full govuk-!-padding-top-2">
+  <opal-lib-moj-sub-navigation subNavId="account-details-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    @for (tab of tabs | keyvalue; track tab.key) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        [subNavItemId]="tab.key + '-tab'"
+        [activeSubNavItemFragment]="activeTab"
+        [subNavItemFragment]="tab.key"
+        [subNavItemText]="tab.value"
+      ></li>
+    }
+  </opal-lib-moj-sub-navigation>
+</div>
+
+@switch (activeTab) {
+  @case ('at-a-glance') {
+    <app-fines-acc-defendant-details-at-a-glance-tab
+      [tabData]="tabsData['at-a-glance'] | async"
+      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+      [isYouth]="accountData.is_youth"
+      (addComments)="navigateToAddCommentsPage($event)"
+      [style]="tabContentStyles"
+    ></app-fines-acc-defendant-details-at-a-glance-tab>
+  }
+  @case ('defendant') {
+    <div class="govuk-grid-column-full">
+      <p>Account Version: {{ (tabsData['defendant'] | async)?.version }}</p>
+    </div>
+  }
+  @case ('payment-terms') {
+    <div class="govuk-grid-column-full">
+      <p>Account Terms Version: {{ (tabsData['payment-terms'] | async)?.version }}</p>
+    </div>
+  }
+  @case ('enforcement') {
+    <div class="govuk-grid-column-full">
+      <p>Account Enforcement Version: {{ (tabsData['enforcement'] | async)?.version }}</p>
+    </div>
+  }
+  @case ('impositions') {
+    <div class="govuk-grid-column-full">
+      <p>Account Impositions Version: {{ (tabsData['impositions'] | async)?.version }}</p>
+    </div>
+  }
+  @case ('history-and-notes') {
+    <div class="govuk-grid-column-full">
+      <p>Account Version: {{ (tabsData['history-and-notes'] | async)?.version }}</p>
+    </div>
+  }
+}
