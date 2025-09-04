@@ -64,6 +64,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
           commentsFormData: defendantAccountAtAGlanceResolver,
         },
       },

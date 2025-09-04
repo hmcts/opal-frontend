@@ -35,7 +35,17 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
    * @param addNoteForm - The form data containing the note details.
    */
   public handleAddNoteSubmit(form: IFinesAccAddCommentsForm): void {
-    console.log('Form submitted:', form);
+    this.opalFinesService
+      .patchDefendantAccount(
+        this.finesAccStore.party_id()!,
+        this.finesAccPayloadService.buildCommentsFormPayload(form.formData, 1),
+      )
+      .subscribe({
+        next: () => {
+          this.routerNavigate(this.finesAccRoutingPaths.children.details);
+        },
+        error: () => this.utilsService.scrollToTop(),
+      });
   }
 
   /**

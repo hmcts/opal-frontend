@@ -133,4 +133,50 @@ describe('FinesAccPayloadService', () => {
       facc_add_free_text_3: '',
     });
   });
+
+  describe('buildCommentsFormPayload', () => {
+    it('should transform form state to update payload correctly', () => {
+      const formState: IFinesAccAddCommentsFormState = {
+        facc_add_comment: 'Updated comment',
+        facc_add_free_text_1: 'Updated note 1',
+        facc_add_free_text_2: 'Updated note 2',
+        facc_add_free_text_3: 'Updated note 3',
+      };
+      const version = 2;
+
+      const result = service.buildCommentsFormPayload(formState, version);
+
+      expect(result).toEqual({
+        version: 2,
+        account_comments_notes: {
+          account_comment: 'Updated comment',
+          account_free_note_1: 'Updated note 1',
+          account_free_note_2: 'Updated note 2',
+          account_free_note_3: 'Updated note 3',
+        },
+      });
+    });
+
+    it('should handle null/empty values in form state', () => {
+      const formState: IFinesAccAddCommentsFormState = {
+        facc_add_comment: '',
+        facc_add_free_text_1: null,
+        facc_add_free_text_2: '',
+        facc_add_free_text_3: null,
+      };
+      const version = 1;
+
+      const result = service.buildCommentsFormPayload(formState, version);
+
+      expect(result).toEqual({
+        version: 1,
+        account_comments_notes: {
+          account_comment: null,
+          account_free_note_1: null,
+          account_free_note_2: null,
+          account_free_note_3: null,
+        },
+      });
+    });
+  });
 });

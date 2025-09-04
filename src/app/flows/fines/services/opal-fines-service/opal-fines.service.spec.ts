@@ -730,4 +730,48 @@ describe('OpalFines', () => {
       expect(response._debug_searchParams).toEqual(searchParams);
     });
   });
+
+  it('should return a mock response with incremented version for patching defendant account', () => {
+    const accountId = '123456';
+    const updatePayload = {
+      version: 1,
+      account_comments_notes: {
+        account_comment: 'Updated comment',
+        account_free_note_1: 'Updated note 1',
+        account_free_note_2: 'Updated note 2',
+        account_free_note_3: 'Updated note 3',
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.version).toBe(2); // Should be incremented from 1 to 2
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account notes updated successfully');
+    });
+
+    // Since this is a mock, no HTTP request should be made
+    httpMock.expectNone(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+  });
+
+  it('should handle different payload values in mock response for patching defendant account', () => {
+    const accountId = '789012';
+    const updatePayload = {
+      version: 5,
+      account_comments_notes: {
+        account_comment: 'Different comment',
+        account_free_note_1: null,
+        account_free_note_2: null,
+        account_free_note_3: null,
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.version).toBe(6); // Should be incremented from 5 to 6
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account notes updated successfully');
+    });
+
+    // Since this is a mock, no HTTP request should be made
+    httpMock.expectNone(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+  });
 });
