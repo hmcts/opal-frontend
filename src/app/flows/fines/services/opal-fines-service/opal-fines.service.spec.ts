@@ -582,18 +582,15 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    const tab = 'at-a-glance';
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
-    service
-      .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
 
     // const req = httpMock.expectOne(apiUrl);
     // expect(req.request.method).toBe('GET');
@@ -643,18 +640,15 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    const tab = 'at-a-glance';
-    const defendant_account_id: string = '123456789';
+    const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
-    service
-      .getDefendantAccountAtAGlance(tab, defendant_account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
 
     // const req = httpMock.expectOne(apiUrl);
     // expect(req.request.method).toBe('GET');

@@ -52,10 +52,12 @@ describe('FinesAccountStore', () => {
 
     expect(snapshot).toEqual({
       account_number: payload.account_number,
+      account_id: payload.account_id,
       party_id: payload.party_id,
       party_type: payload.party_type,
       party_name: payload.party_name,
       base_version: payload.base_version,
+      business_unit_id: payload.business_unit_id,
       business_unit_user_id: payload.business_unit_user_id,
     });
   });
@@ -70,10 +72,12 @@ describe('FinesAccountStore', () => {
     const current = store.getAccountState();
     expect(current).toEqual({
       account_number: initialState.account_number,
+      account_id: initialState.account_id,
       party_id: initialState.party_id,
       party_type: initialState.party_type,
       party_name: initialState.party_name,
       base_version: initialState.base_version,
+      business_unit_id: initialState.business_unit_id,
       business_unit_user_id: initialState.business_unit_user_id,
     });
   });

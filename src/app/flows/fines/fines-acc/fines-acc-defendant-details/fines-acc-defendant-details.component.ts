@@ -97,12 +97,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
       this.opalFinesService.clearAccountDetailsCache(),
     );
-
-    const {
-      defendant_party_id,
-      business_unit_summary: { business_unit_id },
-    } = this.accountData;
-    const business_unit_user_id = this.accountStore.getAccountState().business_unit_user_id;
+    const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
 
     this.tabData$ = this.createTabDataStream<
       IOpalFinesAccountDetailsAtAGlanceTabRefData,
@@ -110,13 +105,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     >(
       fragment$,
       (tab) => tab,
-      (tab) =>
-        this.opalFinesService.getDefendantAccountAtAGlance(
-          tab,
-          defendant_party_id,
-          business_unit_id,
-          business_unit_user_id,
-        ),
+      () => this.opalFinesService.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id),
       (res) => res,
     );
   }

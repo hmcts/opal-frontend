@@ -42,10 +42,13 @@ export class FinesAccPayloadService {
    * @param headingData - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  public transformAccountHeaderForStore(headingData: IOpalFinesAccountDefendantDetailsHeader): IFinesAccountState {
+  public transformAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountDefendantDetailsHeader,
+  ): IFinesAccountState {
     let party_name = '';
     if (headingData.party_details.organisation_flag) {
-      party_name = headingData.party_details.organisation_details?.organisation_name!;
+      party_name = headingData.party_details.organisation_details?.organisation_name ?? '';
     } else {
       party_name = `${headingData.party_details.individual_details?.title} ${headingData.party_details.individual_details?.forenames} ${headingData.party_details.individual_details?.surname?.toUpperCase()}`;
     }
@@ -56,10 +59,12 @@ export class FinesAccPayloadService {
 
     return {
       account_number: headingData.account_number,
+      account_id: Number(account_id),
       party_id: headingData.defendant_party_id,
       party_type: headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name: party_name,
       base_version: Number(headingData.version),
+      business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,
     };
   }
