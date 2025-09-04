@@ -41,4 +41,5 @@ export interface IOpalFinesAccountDefendantDetailsHeader {
     } | null;
   };
   is_youth: boolean; // not in response
+  debtor_type: 'Defendant' | 'Parent/Guardian';
 }
