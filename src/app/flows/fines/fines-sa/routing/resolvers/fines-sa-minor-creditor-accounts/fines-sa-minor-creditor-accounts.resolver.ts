@@ -48,6 +48,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
     return opalFinesService.getCreditorAccounts({
       ...baseSearchParams,
       account_number: state.fsa_search_account_number,
+      active_accounts_only: false,
     });
   }
 
