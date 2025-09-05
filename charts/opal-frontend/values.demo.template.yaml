@@ -1,0 +1,4 @@
+nodejs:
+  environment:
+    FEATURES_SSO_ENABLED: false
+  
