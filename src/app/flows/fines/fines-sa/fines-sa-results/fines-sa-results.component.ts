@@ -59,6 +59,30 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public minorCreditorsData = [] as IFinesSaResultsMinorCreditorTableWrapperTableData[];
 
   /**
+   * Computes the default fragment based on the sizes of the results buckets.
+   * Rules:
+   * - If any bucket has >= 100 results → ''.
+   * - If all buckets are 0 → ''.
+   * - Otherwise pick the first bucket with 1–99 results in the order: individuals → companies → minorCreditors.
+   */
+  private computeDefaultFragment(): FinesSaSearchAccountTab {
+    const individualsDataLen = this.individualsData.length;
+    const companiesDataLen = this.companiesData.length;
+    const minorCreditorsDataLen = this.minorCreditorsData.length;
+
+    const anyOversize = individualsDataLen >= 100 || companiesDataLen >= 100 || minorCreditorsDataLen >= 100;
+    const allZero = individualsDataLen === 0 && companiesDataLen === 0 && minorCreditorsDataLen === 0;
+
+    if (anyOversize || allZero) return '' as FinesSaSearchAccountTab;
+    if (individualsDataLen >= 1 && individualsDataLen <= 99) return 'individuals';
+    if (companiesDataLen >= 1 && companiesDataLen <= 99) return 'companies';
+    if (minorCreditorsDataLen >= 1 && minorCreditorsDataLen <= 99) return 'minorCreditors';
+
+    // Fallback safety - should not be reached
+    return '' as FinesSaSearchAccountTab;
+  }
+
+  /**
    * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
    * This method is used to update the view based on the selected search type.
    *
@@ -286,17 +310,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private setupFragmentListener(): void {
     if (this.resultView === 'referenceCaseNumber' || this.resultView === 'accountNumber') {
       this.activatedRoute.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-        let defaultedFragment: FinesSaSearchAccountTab = 'individuals';
-        if (this.individualsData.length === 0) {
-          if (this.companiesData.length === 0) {
-            defaultedFragment = 'minorCreditors';
-          } else {
-            defaultedFragment = 'companies';
-          }
-        }
-        const resolvedFragment = fragment ?? defaultedFragment;
+        const resolvedFragment = fragment ?? this.computeDefaultFragment();
 
-        if (!fragment) {
+        if (!fragment && resolvedFragment !== '') {
           this['router'].navigate([], {
             relativeTo: this['activatedRoute'],
             fragment: resolvedFragment,

@@ -40,6 +40,7 @@ export const finesSaDefendantAccountsResolver: ResolveFn<IOpalFinesDefendantAcco
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       account_number: state.fsa_search_account_number,
+      active_accounts_only: false,
     });
   }
 
@@ -48,6 +49,7 @@ export const finesSaDefendantAccountsResolver: ResolveFn<IOpalFinesDefendantAcco
     return opalFinesService.getDefendantAccounts({
       ...baseSearchParams,
       pcr: state.fsa_search_account_reference_case_number,
+      active_accounts_only: false,
     });
   }
 
