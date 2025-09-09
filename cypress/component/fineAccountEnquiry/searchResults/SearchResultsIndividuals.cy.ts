@@ -350,16 +350,17 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.parentGuardianCell).first().should('contain', 'BROWN, Michael');
     cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('contain', 'DOE, Jane');
     cy.get(DOM_ELEMENTS.parentGuardianCell).eq(2).should('contain', 'TAYLOR, Susan');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(3).should('contain', 'null, null');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(4).should('contain', 'null, null');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(3).should('contain', '—');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(4).should('contain', '—');
 
     cy.get(DOM_ELEMENTS.parentGuardianHeader).click();
 
-    cy.get(DOM_ELEMENTS.parentGuardianCell).first().should('contain', 'null, null');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('contain', 'null, null');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(2).should('contain', 'TAYLOR, Susan');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(3).should('contain', 'DOE, Jane');
-    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(4).should('contain', 'BROWN, Michael');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).first().should('contain', 'TAYLOR, Susan');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(1).should('contain', 'DOE, Jane');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(2).should('contain', 'BROWN, Michael');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(3).should('contain', '—');
+    cy.get(DOM_ELEMENTS.parentGuardianCell).eq(4).should('contain', '—');
+    
 
     // Business unit column sorting
     cy.get(DOM_ELEMENTS.businessUnitHeader).click();
