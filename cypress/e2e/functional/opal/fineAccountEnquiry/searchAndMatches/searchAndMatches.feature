@@ -447,4 +447,15 @@ Feature: Account Search and Matches
     When I click the "ORG1001" link and handle new window navigation
     Then I see "Account Details" on the page header
 
-# PO-708 AC3b & AC2b Will be covered once API integration is complete
+  # PO-708 AC3b & AC2b Will be covered once API integration is complete
+
+  # PO-706  AC7 Back Button navigates to Search Page
+  @only @PO-706
+  Scenario: Search results back button preserves tab state and form data
+    When I enter "12345678A" into the "Account number" field
+    And I click the "Search" button
+    Then I see "Search results" on the page header
+    When I click on the "Back" link
+    Then I see "12345678A" in the "Account number" field
+    Then I see "Individuals" on the page header
+
