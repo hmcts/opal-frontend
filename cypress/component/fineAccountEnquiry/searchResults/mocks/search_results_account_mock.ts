@@ -51,6 +51,13 @@ export const UNIFIED_SEARCH_RESULTS_MOCK = {
     companies: CompaniesMocks.EMPTY_SEARCH_RESULTS_MOCK,
     minorCreditors: MinorCreditorsMocks.EMPTY_SEARCH_RESULTS_MOCK,
   },
+
+  //Minor creditor only results scenario
+  MINOR_CREDITOR_ONLY_RESULTS: {
+    individuals: IndividualsMocks.EMPTY_SEARCH_RESULTS_MOCK,
+    companies: CompaniesMocks.EMPTY_SEARCH_RESULTS_MOCK,
+    minorCreditors: MinorCreditorsMocks.INDIVIDUAL_SEARCH_RESULTS_MOCK,
+  },
 };
 
 // Helper function to get all account types for a specific scenario

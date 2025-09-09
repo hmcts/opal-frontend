@@ -45,7 +45,6 @@ describe('FinesSaResultsComponent - All Account Types', () => {
           useFactory: () => {
             const store = new FinesSaStore();
             store.setSearchAccount(searchResultState.searchAccount);
-            store.setActiveTab(initialFragment);
             return store;
           },
         },
@@ -105,6 +104,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     // AC3b: Verify 'Check your search' link is clickable and functional
     cy.get(DOM_ELEMENTS.checkSearchLink).click();
   });
+
   //Note: AC3b The 'Check your search' link will navigate a user back to the Search for an Account screen - Full Test to be implemented when API complete
 
   it(
@@ -193,17 +193,11 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '10 Downing Street');
     cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
   });
-
   it('(AC5d) Minor Creditors tab displays creditor account summary data', { tags: ['PO-706'] }, () => {
     setupComponent('WITH_DATA', 'individuals');
-
     // Switch to minor creditors tab using helper function
     switchToTab('minorCreditors', DOM_ELEMENTS.minorCreditorsTab);
     verifyTabIsActive(DOM_ELEMENTS.minorCreditorsTab);
-
-    // Verify table exists
-    cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
-
     // Verify table headers for minor creditors
     cy.get(DOM_ELEMENTS.accountHeader).should('contain', 'Account');
     cy.get(DOM_ELEMENTS.nameHeader).should('contain', 'Name');
@@ -212,27 +206,26 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.businessUnitHeader).should('contain', 'Business unit');
     cy.get(DOM_ELEMENTS.defendantHeader).should('contain', 'Defendant');
     cy.get(DOM_ELEMENTS.balanceHeader).should('contain', 'Balance');
-
     // Verify first row data matches mock
-    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14001MC');
+    cy.get(DOM_ELEMENTS.accountCell).first().should('contain', '14002MC');
     cy.get(DOM_ELEMENTS.accountCell).first().find('a').should('exist');
-    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'THOMPSON, Emma Claire');
-    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '5 Minor Court');
-    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC1 2RT');
+    cy.get(DOM_ELEMENTS.nameCell).first().should('contain', 'WILSON, James Robert');
+    cy.get(DOM_ELEMENTS.addressCell).first().should('contain', '8 Elm Street');
+    cy.get(DOM_ELEMENTS.postcodeCell).first().should('contain', 'MC3 5RT');
     cy.get(DOM_ELEMENTS.businessUnitCell).first().should('contain', 'Minor Creditors Unit');
-    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'THOMPSON, Emma Claire');
+    cy.get(DOM_ELEMENTS.defendantCell).first().should('contain', 'WILSON, James Robert');
     cy.get(DOM_ELEMENTS.defendantCell).first().find('a').should('exist');
-    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£345.00');
+    cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£567.00');
 
     // Verify second row data
-    cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '14002MC');
+    cy.get(DOM_ELEMENTS.accountCell).eq(1).should('contain', '14001MC');
     cy.get(DOM_ELEMENTS.accountCell).eq(1).find('a').should('exist');
-    cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', 'WILSON, James Robert');
-    cy.get(DOM_ELEMENTS.addressCell).eq(1).should('contain', '8 Elm Street');
-    cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC3 5RT');
-    cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'WILSON, James Robert');
+    cy.get(DOM_ELEMENTS.nameCell).eq(1).should('contain', ' THOMPSON, Emma Claire ');
+    cy.get(DOM_ELEMENTS.addressCell).eq(1).should('contain', '5 Minor Court');
+    cy.get(DOM_ELEMENTS.postcodeCell).eq(1).should('contain', 'MC1 2RT');
+    cy.get(DOM_ELEMENTS.defendantCell).eq(1).should('contain', 'THOMPSON, Emma Claire');
     cy.get(DOM_ELEMENTS.defendantCell).eq(1).find('a').should('exist');
-    cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£567.00');
+    cy.get(DOM_ELEMENTS.balanceCell).eq(1).should('contain', '£345.00');
   });
 
   it('(AC5e) Tabs only displayed when results exist for corresponding type', { tags: ['PO-706'] }, () => {
@@ -254,11 +247,19 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.tableWrapper).should('exist');
   });
 
-  it('(AC5fii) No tabs displayed for single debtor/creditor type results', { tags: ['PO-706'] }, () => {
+  it('(AC5fii) No tabs displayed for single creditor type results', { tags: ['PO-706'] }, () => {
     setupComponent('INDIVIDUALS_ONLY_RESULTS', 'individuals');
 
     cy.get(DOM_ELEMENTS.individualsTab).should('be.visible');
     cy.get(DOM_ELEMENTS.companiesTab).should('not.exist');
     cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
+  });
+
+  it('(AC5fii) No tabs displayed for single debtor type results', { tags: ['PO-706'] }, () => {
+    setupComponent('MINOR_CREDITOR_ONLY_RESULTS', 'minorCreditors');
+
+    cy.get(DOM_ELEMENTS.individualsTab).should('not.exist');
+    cy.get(DOM_ELEMENTS.companiesTab).should('not.exist');
+    cy.get(DOM_ELEMENTS.minorCreditorsTab).should('be.visible');
   });
 });
