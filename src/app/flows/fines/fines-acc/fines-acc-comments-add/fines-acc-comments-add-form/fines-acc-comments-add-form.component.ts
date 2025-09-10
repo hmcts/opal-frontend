@@ -48,7 +48,7 @@ export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent 
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddCommentsFieldErrors = FINES_ACC_ADD_COMMENTS_FIELD_ERRORS;
-  @Input() public initialFormData!: IFinesAccAddCommentsFormState;
+  @Input({ required: true }) public initialFormData!: IFinesAccAddCommentsFormState;
 
   /**
    * Sets up the form for adding comments.
