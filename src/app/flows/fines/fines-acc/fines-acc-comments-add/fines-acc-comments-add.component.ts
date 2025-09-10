@@ -9,6 +9,8 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { catchError, EMPTY, Subject, takeUntil, tap } from 'rxjs';
+import { FINES_ACC_ADD_COMMENTS_STATE } from './constants/fines-acc-comments-add-form-state.constant';
+
 @Component({
   selector: 'app-acc-comments-add',
   imports: [FinesAccCommentsAddFormComponent],
@@ -23,14 +25,8 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
   protected readonly finesAccStore = inject(FinesAccountStore);
   protected readonly finesAccPayloadService = inject(FinesAccPayloadService);
 
-  protected readonly prefilledFormData: IFinesAccAddCommentsFormState = this['activatedRoute'].snapshot.data[
-    'commentsFormData'
-  ] || {
-    facc_add_comment: null,
-    facc_add_free_text_1: null,
-    facc_add_free_text_2: null,
-    facc_add_free_text_3: null,
-  };
+  protected readonly prefilledFormData: IFinesAccAddCommentsFormState =
+    this['activatedRoute'].snapshot.data['commentsFormData'] || FINES_ACC_ADD_COMMENTS_STATE;
 
   /**
    * Handles the form submission for adding a note.
