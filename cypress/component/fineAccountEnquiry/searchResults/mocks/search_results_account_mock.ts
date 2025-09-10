@@ -24,10 +24,10 @@ export const UNIFIED_SEARCH_RESULTS_MOCK = {
     minorCreditors: MinorCreditorsMocks.INDIVIDUAL_SEARCH_RESULTS_MOCK,
   },
 
-  // Large results scenarios (more than 100 results)
+  // Large results scenarios (more than 100 for minor creditor and 99 for individual and company)
   LARGE_RESULTS: {
-    individuals: IndividualsMocks.LARGE_SEARCH_RESULTS_MOCK,
-    companies: CompaniesMocks.LARGE_SEARCH_RESULTS_MOCK,
+    individuals: IndividualsMocks.SEARCH_RESULTS_MOCK,
+    companies: CompaniesMocks.SEARCH_RESULTS_MOCK,
     minorCreditors: MinorCreditorsMocks.LARGE_SEARCH_RESULTS_MOCK,
   },
 

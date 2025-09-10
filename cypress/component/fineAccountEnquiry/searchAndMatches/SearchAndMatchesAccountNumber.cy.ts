@@ -114,10 +114,6 @@ describe('Search Account Component - Multiple account types', () => {
       // Verify the account number field has the correct value
       cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '12345678A');
       cy.get(DOM_ELEMENTS.searchButton).click();
-
-      // Wait for all API calls to complete
-      cy.wait(500);
-
       cy.get('@consoleLog').should('have.been.called');
       cy.get('@consoleLog').then((stub: any) => {
         verifyApiCalls(stub);
@@ -144,10 +140,6 @@ describe('Search Account Component - Multiple account types', () => {
       // Verify the account number field has the correct value
       cy.get(DOM_ELEMENTS.accountNumberInput).should('have.value', '12345678A');
       cy.get(DOM_ELEMENTS.searchButton).click();
-
-      // Wait for all API calls to complete
-      cy.wait(500);
-
       cy.get('@consoleLog').should('have.been.called');
       cy.get('@consoleLog').then((stub: any) => {
         verifyApiCalls(stub);

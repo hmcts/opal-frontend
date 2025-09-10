@@ -219,3 +219,29 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
     },
   ],
 };
+
+// Mock for exactly 99 search results (pagination)
+export const SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
+  count: 99,
+  defendant_accounts: Array.from({ length: 99 }, (_, index) => ({
+    defendant_account_id: (index + 1).toString(),
+    account_number: `23${String(index + 1000)}BU`,
+    organisation_flag: true,
+    aliases: null,
+    address_line_1: `${index + 1} Commerce Street`,
+    postcode: `XY${(index % 50) + 10} 2ZZ`,
+    business_unit_name: 'Corporate Unit',
+    business_unit_id: 'CU001',
+    prosecutor_case_reference: `PCRCOMP${index + 1000}`,
+    last_enforcement_action: index % 2 === 0 ? 'ENFORCEMENT' : 'WARRANT',
+    account_balance: 500.0 + index * 50,
+    organisation_name: `COMPANY${index + 1} LTD`,
+    defendant_title: null,
+    defendant_first_names: null,
+    defendant_surname: null,
+    birth_date: null,
+    national_insurance_number: null,
+    parent_guardian_surname: null,
+    parent_guardian_first_names: null,
+  })),
+};
