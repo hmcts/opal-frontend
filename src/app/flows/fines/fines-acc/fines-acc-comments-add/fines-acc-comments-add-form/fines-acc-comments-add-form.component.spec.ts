@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form';
+import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form.component';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-add-form-state.interface';
+import { FINES_ACC_ADD_COMMENTS_STATE } from '../constants/fines-acc-comments-add-form-state.constant';
 
 describe('FinesAccCommentsAddFormComponent', () => {
   let component: FinesAccCommentsAddFormComponent;
@@ -46,6 +47,10 @@ describe('FinesAccCommentsAddFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccCommentsAddFormComponent);
     component = fixture.componentInstance;
+
+    // Set the required input before detectChanges
+    component.initialFormData = FINES_ACC_ADD_COMMENTS_STATE;
+
     fixture.detectChanges();
   });
 

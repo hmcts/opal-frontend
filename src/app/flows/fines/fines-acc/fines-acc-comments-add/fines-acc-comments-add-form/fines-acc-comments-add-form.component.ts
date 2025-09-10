@@ -23,6 +23,11 @@ import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
+
 @Component({
   selector: 'app-fines-acc-comments-add-form',
   imports: [
@@ -33,7 +38,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
     FormsModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './fines-acc-comments-add-form.html',
+  templateUrl: './fines-acc-comments-add-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
@@ -43,46 +48,54 @@ export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent 
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddCommentsFieldErrors = FINES_ACC_ADD_COMMENTS_FIELD_ERRORS;
-  @Input() public initialFormData?: IFinesAccAddCommentsFormState;
+  @Input() public initialFormData!: IFinesAccAddCommentsFormState;
 
+  /**
+   * Sets up the form for adding comments.
+   *
+   * This method initializes a new FormGroup with four FormControls:
+   * - facc_add_comment: Accepts a value from initial form data and is validated with a maximum length of 30 characters alongside a custom validator allowing alphanumeric characters, hyphens, spaces, apostrophes, and dots.
+   * - facc_add_free_text_1, facc_add_free_text_2, facc_add_free_text_3: These are also initialized with values from the initial form data and constrained to a maximum of 76 characters, using the same custom validator as above.
+   *
+   * The method ensures that each form control is correctly initialized whether or not initial data is provided.
+   *
+   * @private
+   */
   private setupAddCommentsForm(): void {
     this.form = new FormGroup({
-      facc_add_comment: new FormControl(this.initialFormData?.facc_add_comment || null, [
+      facc_add_comment: new FormControl(this.initialFormData.facc_add_comment, [
         Validators.maxLength(30),
-        patternValidator(
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-          'alphanumericWithHyphensSpacesApostrophesDotPattern',
-        ),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
       ]),
-      facc_add_free_text_1: new FormControl(this.initialFormData?.facc_add_free_text_1 || null, [
+      facc_add_free_text_1: new FormControl(this.initialFormData.facc_add_free_text_1, [
         Validators.maxLength(76),
-        patternValidator(
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-          'alphanumericWithHyphensSpacesApostrophesDotPattern',
-        ),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
       ]),
-      facc_add_free_text_2: new FormControl(this.initialFormData?.facc_add_free_text_2 || null, [
+      facc_add_free_text_2: new FormControl(this.initialFormData.facc_add_free_text_2, [
         Validators.maxLength(76),
-        patternValidator(
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-          'alphanumericWithHyphensSpacesApostrophesDotPattern',
-        ),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
       ]),
-      facc_add_free_text_3: new FormControl(this.initialFormData?.facc_add_free_text_3 || null, [
+      facc_add_free_text_3: new FormControl(this.initialFormData.facc_add_free_text_3, [
         Validators.maxLength(76),
-        patternValidator(
-          ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-          'alphanumericWithHyphensSpacesApostrophesDotPattern',
-        ),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR,
       ]),
     });
   }
 
+  /**
+   * Initializes the add comments feature by setting up the comments form and configuring the initial error messages.
+   */
   private initialAddCommentsSetup(): void {
     this.setupAddCommentsForm();
     this.setInitialErrorMessages();
   }
 
+  /**
+   * Initializes the comment addition form component.
+   *
+   * This method sets up the initial configuration by invoking `initialAddCommentsSetup()`
+   * and then delegates further initialization to the parent class by calling `super.ngOnInit()`.
+   */
   public override ngOnInit(): void {
     this.initialAddCommentsSetup();
     super.ngOnInit();

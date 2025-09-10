@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
-import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form/fines-acc-comments-add-form';
+import { FinesAccCommentsAddFormComponent } from './fines-acc-comments-add-form/fines-acc-comments-add-form.component';
 import { IFinesAccAddCommentsForm } from './interfaces/fines-acc-comments-add-form.interface';
 import { IFinesAccAddCommentsFormState } from './interfaces/fines-acc-comments-add-form-state.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -9,6 +9,7 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { catchError, EMPTY, Subject, takeUntil, tap } from 'rxjs';
+import { FINES_ACC_ADD_COMMENTS_STATE } from './constants/fines-acc-comments-add-form-state.constant';
 @Component({
   selector: 'app-acc-comments-add',
   imports: [FinesAccCommentsAddFormComponent],
@@ -25,12 +26,7 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
 
   protected readonly prefilledFormData: IFinesAccAddCommentsFormState = this['activatedRoute'].snapshot.data[
     'commentsFormData'
-  ] || {
-    facc_add_comment: null,
-    facc_add_free_text_1: null,
-    facc_add_free_text_2: null,
-    facc_add_free_text_3: null,
-  };
+  ] || FINES_ACC_ADD_COMMENTS_STATE;
 
   /**
    * Handles the form submission for adding a note.
@@ -65,6 +61,13 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
     this.stateUnsavedChanges = unsavedChanges;
   }
 
+  /**
+   * Lifecycle hook that is called just before the component is destroyed.
+   *
+   * This method ensures that any subscriptions tied to the component lifecycle are properly terminated.
+   * It does so by emitting a value on the `ngUnsubscribe` subject, signaling any active subscriptions to complete,
+   * and then it completes the subject to free up resources.
+   */
   public ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

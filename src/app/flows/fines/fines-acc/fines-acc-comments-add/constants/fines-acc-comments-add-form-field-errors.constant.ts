@@ -4,11 +4,11 @@ export const FINES_ACC_ADD_COMMENTS_FIELD_ERRORS: IFinesAccAddCommentsFieldError
   facc_add_comment: {
     maxlength: {
       message: `Account note must be 30 characters or fewer`,
-      priority: 2,
+      priority: 1,
     },
     alphanumericWithHyphensSpacesApostrophesDotPattern: {
       message: `Account comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
-      priority: 3,
+      priority: 2,
     },
   },
   facc_add_free_text_1: {
