@@ -450,7 +450,7 @@ Feature: Account Search and Matches
   # PO-708 AC3b & AC2b Will be covered once API integration is complete
   # PO-706 AC6 will be covered once API integration is complete
 
-  PO-706  AC7 Back Button navigates to Search Page
+  # PO-706  AC7 Back Button navigates to Search Page
   @PO-706
   Scenario: Search results back button preserves tab state and form data
     When I enter "12345678A" into the "Account number" field
