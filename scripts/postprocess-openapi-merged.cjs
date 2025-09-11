@@ -19,6 +19,7 @@ for (const input of mergeConfig.inputs) {
 // --- Step 2: Parse merged YAML and rewrite $refs ---
 const yamlContent = fs.readFileSync(MERGED_FILE, 'utf8');
 const parsed = yaml.load(yamlContent);
+parsed.openapi = '3.1.0';
 
 // Recursively walk the object to rewrite $refs
 function rewriteRefs(obj) {

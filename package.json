@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "merge:openapi": "openapi-merge-cli -c ./openapi/openapi-merge-config.json && yarn postprocess:openapi",
-    "postprocess:openapi": "node scripts/postprocess-refs.cjs",
+    "postprocess:openapi": "node scripts/postprocess-openapi-merged.cjs",
     "generate:openapi": "yarn merge:openapi && node scripts/generate-openapi.cjs",
     "ng": "ng",
     "start": "ng serve",
