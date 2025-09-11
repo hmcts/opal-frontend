@@ -1,0 +1,26 @@
+{
+  "inputs": [
+    {
+      "inputFile": "./common.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "Common"
+      }
+    },
+    {
+      "inputFile": "./MinorCreditor.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "MinorCreditor"
+      }
+    },
+    {
+      "inputFile": "./types.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "Types"
+      }
+    }
+  ],
+  "output": "./opal-merged.yaml"
+}
