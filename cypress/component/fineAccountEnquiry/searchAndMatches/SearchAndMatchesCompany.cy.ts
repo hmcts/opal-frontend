@@ -7,7 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_company_elements';
 import { COMPANY_SEARCH_STATE_MOCK } from './mocks/search_and_matches_company_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSaCompanyAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-company-accounts.resolver';
+import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 
 describe('Search Account Component - Company', () => {
   let companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
@@ -21,7 +21,7 @@ describe('Search Account Component - Company', () => {
             path: 'fines/search-accounts/results',
             component: FinesSaSearchAccountComponent,
             resolve: {
-              companyAccounts: finesSaCompanyAccountsResolver,
+              companyAccounts: finesSaDefendantAccountsResolver,
             },
             runGuardsAndResolvers: 'always',
           },
