@@ -360,7 +360,6 @@ describe('FinesSaResultsComponent - Individuals', () => {
     cy.get(DOM_ELEMENTS.parentGuardianCell).eq(2).should('contain', 'BROWN, Michael');
     cy.get(DOM_ELEMENTS.parentGuardianCell).eq(3).should('contain', '—');
     cy.get(DOM_ELEMENTS.parentGuardianCell).eq(4).should('contain', '—');
-    
 
     // Business unit column sorting
     cy.get(DOM_ELEMENTS.businessUnitHeader).click();
