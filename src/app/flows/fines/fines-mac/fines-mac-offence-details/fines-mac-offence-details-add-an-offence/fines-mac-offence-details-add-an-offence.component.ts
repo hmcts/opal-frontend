@@ -35,7 +35,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public resultsCodeData!: IAlphagovAccessibleAutocompleteItem[];
-  public majorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
+  public fcompMajorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
+  public fcostMajorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
   public offenceIndex!: number;
   public showOffenceDetailsForm: boolean = true;
 
@@ -66,17 +67,41 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     });
   }
 
+  /**
+   * Generates an array of autocomplete items for major creditors based on the provided reference data.
+   *
+   * @param response - The reference data containing major creditor information.
+   * @param isFcomp - Determines which set of major creditors to include:
+   *   - If `true`, includes all major creditors.
+   *   - If `false`, filters out major creditors where `prosecution_service` is `true`.
+   * @returns An array of objects suitable for use with Alphagov's accessible autocomplete component,
+   *          each containing a `value` (major creditor ID) and a `name` (pretty name).
+   */
   private createAutoCompleteItemsMajorCreditors(
     response: IOpalFinesMajorCreditorRefData,
+    isFcomp: boolean,
   ): IAlphagovAccessibleAutocompleteItem[] {
     const results = response.refData;
 
-    return results.map((item) => {
-      return {
-        value: item.major_creditor_id,
-        name: this.opalFinesService.getMajorCreditorPrettyName(item),
-      };
-    });
+    if (isFcomp) {
+      const fcompData = results.map((item) => {
+        return {
+          value: item.major_creditor_id!,
+          name: this.opalFinesService.getMajorCreditorPrettyName(item),
+        };
+      });
+      return fcompData;
+    } else {
+      const fcostData = results
+        .filter((majorCreditor) => majorCreditor.prosecution_service === false)
+        .map((item) => {
+          return {
+            value: item.major_creditor_id!,
+            name: this.opalFinesService.getMajorCreditorPrettyName(item),
+          };
+        });
+      return fcostData;
+    }
   }
 
   /**
@@ -236,7 +261,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.results = this['activatedRoute'].snapshot.data['results'];
     this.majorCreditors = this['activatedRoute'].snapshot.data['majorCreditors'];
     this.resultsCodeData = this.createAutoCompleteItemsResults(this.results);
-    this.majorCreditorData = this.createAutoCompleteItemsMajorCreditors(this.majorCreditors);
+    this.fcostMajorCreditorData = this.createAutoCompleteItemsMajorCreditors(this.majorCreditors, false);
+    this.fcompMajorCreditorData = this.createAutoCompleteItemsMajorCreditors(this.majorCreditors, true);
     this.retrieveFormData();
   }
 

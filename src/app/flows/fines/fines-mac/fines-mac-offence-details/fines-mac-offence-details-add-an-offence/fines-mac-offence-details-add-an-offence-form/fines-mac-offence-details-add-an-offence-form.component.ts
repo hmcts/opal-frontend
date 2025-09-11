@@ -111,7 +111,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public fcompMajorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public fcostMajorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public offenceIndex!: number;
   public selectedOffenceConfirmation!: boolean;
   public selectedOffenceSuccessful!: boolean;
