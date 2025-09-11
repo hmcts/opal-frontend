@@ -91,13 +91,13 @@ When('I intercept the {string} account search API call', (accountType) => {
   cy.intercept('POST', urlPattern, (req) => {
     req.reply({
       statusCode: 200,
-      body: mockResponse
+      body: mockResponse,
     });
   }).as(aliasName);
 });
 
-
-Then('the intercepted {string} account search API call contains the following parameters:',
+Then(
+  'the intercepted {string} account search API call contains the following parameters:',
   (accountType: string, table: DataTable) => {
     const expectedParams = table.rowsHash();
     const type = accountType.toLowerCase();
@@ -165,5 +165,5 @@ Then('the intercepted {string} account search API call contains the following pa
         }
       });
     });
-  }
+  },
 );

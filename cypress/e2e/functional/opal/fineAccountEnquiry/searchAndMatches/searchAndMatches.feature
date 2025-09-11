@@ -407,21 +407,21 @@ Feature: Account Search and Matches
   @PO-707
   Scenario: Successful Search For company defendant accounts
     When I click on the "Companies" link
-    And I enter "test company" into the "Company name" field
+    And I enter "TechCorp Solutions Ltd" into the "Company name" field
     And I click the "Search" button
 
     # PO-707 - AC5. Back Button navigates to Search Page
     Then I see "Search results" on the page header
 
     When I click on the "Back" link
-    And I see "test company" in the "Company name" field
+    And I see "TechCorp Solutions Ltd" in the "Company name" field
     Then I see "Companies" on the page header
 
 
     # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "230001BU" link and handle new window navigation
+    When I click the "555O" link and handle new window navigation
     Then I see "Account Details" on the page header
 
   #PO-707 AC3b & AC2b Will be covered once API integration is complete
@@ -432,7 +432,7 @@ Feature: Account Search and Matches
   Scenario: Successful Search For Minor Creditor Accounts
     When I click on the "Minor creditors" link
     When I select the 'Individual' radio button
-    Then I enter "Test" into the "Last name" field
+    Then I enter "Graham" into the "Last name" field
     And I click the "Search" button
 
     Then I see "Search results" on the page header
@@ -444,7 +444,7 @@ Feature: Account Search and Matches
     # AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "ORG1001" link and handle new window navigation
+    When I click the "100A" link and handle new window navigation
     Then I see "Account Details" on the page header
 
   # PO-708 AC3b & AC2b Will be covered once API integration is complete
@@ -512,7 +512,7 @@ Feature: Account Search and Matches
       | companyNameExact        | null  |
 
 
-  @PO-717
+  @PO-717 @only
   Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
     When I enter "Smith" into the "Last name" field
     And I unselect the Active accounts only checkbox
@@ -520,7 +520,7 @@ Feature: Account Search and Matches
     When I intercept the "defendant" account search API call
     And I click the "Search" button
 
-    Then the intercepted API call for search account contains the following parameters:
+    Then the intercepted "defendant" account search API call contains the following parameters:
       | lastName                | Smith |
       | lastNameExact           | false |
       | firstNames              | null  |
