@@ -512,7 +512,7 @@ Feature: Account Search and Matches
       | companyNameExact        | null  |
 
 
-  @PO-717 @only
+  @PO-717
   Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
     When I enter "Smith" into the "Last name" field
     And I unselect the Active accounts only checkbox
