@@ -16,6 +16,11 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
+import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -23,6 +28,7 @@ describe('FinesMacPayloadService', () => {
   let finesMacState: IFinesMacState | null;
   let sessionUserState: ISessionUserState | null;
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
+  let finesMacPayloadAddAccountFixedPenalty: IFinesMacAddAccountPayload;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -32,6 +38,7 @@ describe('FinesMacPayloadService', () => {
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     sessionUserState = structuredClone(SESSION_USER_STATE_MOCK);
     finesMacPayloadAddAccount = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    finesMacPayloadAddAccountFixedPenalty = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK);
   });
 
   afterAll(() => {
@@ -74,6 +81,22 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(finesMacPayloadAddAccount);
   });
 
+  it('should create an add account payload for fixed penalty', () => {
+    if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+    finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
+    finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
+
+    spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
+    const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+
+    expect(result).toEqual(finesMacPayloadAddAccountFixedPenalty);
+  });
+
   it('should create a replace account payload', () => {
     if (!finesMacState || !sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
       fail('Required mock states are not properly initialised');
@@ -103,6 +126,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.fixedPenaltyDetails.formData = FINES_MAC_STATE.fixedPenaltyDetails.formData;
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
     finesMacState.deleteAccountConfirmation.formData = FINES_MAC_STATE.deleteAccountConfirmation.formData;
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
@@ -194,6 +218,7 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.fixedPenaltyDetails.formData = { ...FINES_MAC_STATE.fixedPenaltyDetails.formData };
     finesMacState.deleteAccountConfirmation.formData = { ...FINES_MAC_STATE.deleteAccountConfirmation.formData };
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
@@ -291,7 +316,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'adultOrYouthOnly',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
         defendant: {
           forenames: 'John',
           surname: 'Doe',
@@ -302,7 +327,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('John Doe');
   });
 
-  it('should return forenames and surname when defendant_type is "parentOrGuardianToPay"', () => {
+  it('should return forenames and surname when defendant_type is "pgToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;
@@ -310,7 +335,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'parentOrGuardianToPay',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
         defendant: {
           forenames: 'Jane',
           surname: 'Smith',
@@ -321,7 +346,7 @@ describe('FinesMacPayloadService', () => {
     expect(service.getDefendantName(payload)).toBe('Jane Smith');
   });
 
-  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "parentOrGuardianToPay"', () => {
+  it('should return company_name when defendant_type is not "adultOrYouthOnly" or "pgToPay"', () => {
     if (!service) {
       fail('Service is not properly initialised');
       return;
@@ -329,7 +354,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'company',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
         defendant: {
           forenames: 'N/A',
           surname: 'N/A',
@@ -348,7 +373,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'adultOrYouthOnly',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
         defendant: {
           forenames: undefined,
           surname: null,
@@ -367,7 +392,7 @@ describe('FinesMacPayloadService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const payload: any = {
       account: {
-        defendant_type: 'company',
+        defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
         defendant: {
           forenames: 'N/A',
           surname: 'N/A',

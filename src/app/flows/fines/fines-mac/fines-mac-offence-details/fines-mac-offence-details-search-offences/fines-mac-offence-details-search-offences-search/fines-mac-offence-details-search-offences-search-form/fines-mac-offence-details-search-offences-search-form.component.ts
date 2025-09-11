@@ -10,8 +10,22 @@ import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/componen
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS } from '../../constants/fines-mac-offence-details-search-offences-errors.constant';
 import { FinesMacOffenceDetailsSearchOffencesStore } from '../../stores/fines-mac-offence-details-search-offences.store';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences-search-form',
@@ -31,9 +45,9 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
   extends AbstractFormBaseComponent
   implements OnInit, OnDestroy
 {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsSearchOffencesForm>();
-
   private readonly finesMacOffenceDetailsSearchOffencesStore = inject(FinesMacOffenceDetailsSearchOffencesStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsSearchOffencesForm>();
 
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS;
 
@@ -56,18 +70,15 @@ export class FinesMacOffenceDetailsSearchOffencesSearchFormComponent
     this.form = new FormGroup({
       fm_offence_details_search_offences_code: new FormControl(null, [
         Validators.maxLength(8),
-        alphabeticalTextValidator(),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_short_title: new FormControl(null, [
         Validators.maxLength(120),
-        alphabeticalTextValidator(),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_act_section: new FormControl(null, [
         Validators.maxLength(4000),
-        alphabeticalTextValidator(),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_offence_details_search_offences_inactive: new FormControl(false),
     });

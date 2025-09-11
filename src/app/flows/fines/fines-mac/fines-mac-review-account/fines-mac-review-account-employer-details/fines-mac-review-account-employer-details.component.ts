@@ -7,8 +7,8 @@ import {
 import { IFinesMacEmployerDetailsState } from '../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
-import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-employer-details',
@@ -23,13 +23,12 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountEmployerDetailsComponent implements OnInit {
+  private readonly utilsService = inject(UtilsService);
+
   @Input({ required: true }) public employerDetails!: IFinesMacEmployerDetailsState;
   @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeEmployerDetails = new EventEmitter<void>();
-
-  private readonly utilsService = inject(UtilsService);
-
-  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
+  public readonly defaultValues = FINES_DEFAULT_VALUES;
   public employerAddress!: string[];
 
   /**

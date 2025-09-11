@@ -35,7 +35,8 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
-
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { IFinesMacAccountTypeDefendantTypes } from '../../interfaces/fines-mac-account-type-defendant-types.interface';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -55,33 +56,38 @@ import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
-  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly accountTypeSubject = new Subject<void>();
-
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = PAGES_ROUTING_PATHS;
-
-  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
-    ([key, value]) => ({
-      key,
-      value,
-    }),
-  );
-  public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
-  ).map(([key, value]) => ({ key, value }));
-  public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
-  ).map(([key, value]) => ({ key, value }));
-  public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
-  ).map(([key, value]) => ({ key, value }));
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly routingPath = PAGES_ROUTING_PATHS;
+
+  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
+    ([key, value]) => ({
+      key: key.replace(/\s+/g, ''),
+      value,
+    }),
+  );
+  public readonly accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
+  public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[
+      FINES_MAC_ACCOUNT_TYPES.Fine as keyof IFinesMacAccountTypeDefendantTypes
+    ],
+  ).map(([key, value]) => ({ key, value }));
+  public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[
+      FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'] as keyof IFinesMacAccountTypeDefendantTypes
+    ],
+  ).map(([key, value]) => ({ key, value }));
+  public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE[
+      FINES_MAC_ACCOUNT_TYPES['Conditional Caution'] as keyof IFinesMacAccountTypeDefendantTypes
+    ],
+  ).map(([key, value]) => ({ key, value }));
   override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
 
   /**
@@ -118,7 +124,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       this.removeControl(field);
     });
 
-    if (fieldName && accountType !== 'conditionalCaution') {
+    if (fieldName && accountType !== FINES_MAC_ACCOUNT_TYPES['Conditional Caution']) {
       this.createControl(fieldName, validators);
     }
   }
@@ -132,9 +138,9 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     const fieldValue = this.form.get(fieldName)?.value;
 
     const defendantTypeMap: IFinesMacAccountTypes = {
-      fine: fieldValue,
-      fixedPenalty: fieldValue,
-      conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
+      Fine: fieldValue,
+      'Fixed Penalty': fieldValue,
+      'Conditional Caution': this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
     this.form

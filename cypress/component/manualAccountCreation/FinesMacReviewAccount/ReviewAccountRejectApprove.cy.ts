@@ -22,6 +22,8 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -102,6 +104,9 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     });
   };
   beforeEach(() => {
+    interceptOffences();
+  });
+  beforeEach(() => {
     cy.intercept('POST', '**/opal-fines-service/draft-accounts/**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -110,22 +115,6 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
@@ -187,7 +176,9 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Adult or youth only');
 
     cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
@@ -248,7 +239,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
 
   it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-594'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
     cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -302,10 +293,12 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('exist');
     cy.get(DOM_ELEMENTS.PGregistrationNumber).should('exist');
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -419,7 +412,9 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
     cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
@@ -462,7 +457,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     { tags: ['@PO-594'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
-      const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
+      const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
@@ -533,7 +528,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get('p').should(
         'contain',
-        'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
     },
   );

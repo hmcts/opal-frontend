@@ -24,8 +24,14 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patterns.constant';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 
+//regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 @Component({
   selector: 'app-fines-mac-court-details-form',
   imports: [
@@ -42,16 +48,16 @@ import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '../../../constants/fines-patte
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+  private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
   @Input() public defendantType!: string;
   @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
-
-  private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 
   /**
@@ -63,7 +69,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
       fm_court_details_prosecutor_case_reference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        Validators.pattern(ALPHANUMERIC_WITH_SPACES_PATTERN),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
       fm_court_details_originator_name: new FormControl(),

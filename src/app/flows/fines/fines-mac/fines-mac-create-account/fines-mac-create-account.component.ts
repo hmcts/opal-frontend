@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -11,10 +10,11 @@ import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-mac-create-account',
-  imports: [CommonModule, RouterModule, FinesMacCreateAccountFormComponent],
+  imports: [RouterModule, FinesMacCreateAccountFormComponent],
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -85,7 +85,12 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     // Update the state with the form data
     this.finesMacStore.setAccountDetails(form, businessUnit, languagePreferenceForm);
 
-    this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
+    // Navigate to next screen, based on the account type
+    if (form.formData.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails);
+    } else {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
+    }
   }
 
   /**

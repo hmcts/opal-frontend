@@ -40,18 +40,27 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
 
     const finesMacState = finesMacPayloadService.mapAccountPayload(draftAccount, businessUnit, offencesData);
 
-    // Fetch courts, major creditors, local justice areas, and results data
-    const [courts, majorCreditors, localJusticeAreas, results] = await firstValueFrom(
+    // Fetch courts, major creditors, local justice areas, results, and prosecutors data
+    const [courts, majorCreditors, localJusticeAreas, results, prosecutors] = await firstValueFrom(
       forkJoin([
         opalFinesService.getCourts(businessUnitId),
         opalFinesService.getMajorCreditors(businessUnitId),
         opalFinesService.getLocalJusticeAreas(),
         opalFinesService.getResults(Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES)),
+        opalFinesService.getProsecutors(businessUnitId),
       ]),
     );
 
     // Return all fetched data as an object
-    return { finesMacState, finesMacDraft: draftAccount, courts, majorCreditors, localJusticeAreas, results };
+    return {
+      finesMacState,
+      finesMacDraft: draftAccount,
+      courts,
+      majorCreditors,
+      localJusticeAreas,
+      results,
+      prosecutors,
+    };
   } catch (error) {
     // Log and rethrow the error
     globalStore.setError({

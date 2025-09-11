@@ -4,8 +4,6 @@ import { IFinesMacReviewAccountDecisionForm } from '../interfaces/fines-mac-revi
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS } from '../constants/fines-mac-review-account-decision-options.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
@@ -14,14 +12,21 @@ import {
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
-import { CommonModule } from '@angular/common';
+
 import { IFinesMacReviewAccountDecisionFieldErrors } from '../interfaces/fines-mac-review-account-decision-field-errors.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fines-mac-review-account-decision-field-errors.constant';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+
+// regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-review-account-decision-form',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukRadioComponent,
@@ -34,12 +39,11 @@ import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fin
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBaseComponent implements OnInit {
-  @Input({ required: true }) public accountId!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacReviewAccountDecisionForm>();
 
+  @Input({ required: true }) public accountId!: number;
   public readonly DECISION_OPTIONS = FINES_MAC_REVIEW_ACCOUNT_DECISION_OPTIONS;
   public readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-
   override fieldErrors: IFinesMacReviewAccountDecisionFieldErrors = FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS;
 
   /**
@@ -48,7 +52,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
    * The form contains two controls:
    * - `fm_review_account_decision`: A required field for the account decision.
    * - `fm_review_account_rejection_reason`: An optional field for the rejection reason,
-   *   validated by `specialCharactersValidator` and `alphabeticalTextValidator`.
+   *   validated by `patternValidator`.
    *
    * This method assigns the constructed `FormGroup` to the `form` property.
    *
@@ -58,8 +62,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl(null, [
-        specialCharactersValidator(),
-        alphabeticalTextValidator(),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
     });
   }

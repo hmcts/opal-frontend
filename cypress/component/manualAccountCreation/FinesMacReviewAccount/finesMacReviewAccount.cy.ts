@@ -20,6 +20,8 @@ import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { REVIEW_HISTORY } from './constants/fines_draft_cav_tableConstants';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -39,7 +41,13 @@ describe('FinesMacReviewAccountComponent', () => {
         OpalFines,
         UtilsService,
         FinesMacPayloadService,
-        Router,
+        {
+          provide: Router,
+          useValue: {
+            navigate: cy.stub().as('routerNavigate'),
+            navigateByUrl: cy.stub().as('routerNavigateByUrl'),
+          },
+        },
         {
           provide: GlobalStore,
           useFactory: () => {
@@ -100,34 +108,21 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   };
   beforeEach(() => {
+    interceptOffences();
     cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
-    });
+    }).as('postDraftAccount');
     cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     });
-    cy.intercept(
-      {
-        method: 'GET',
-        pathname: '/opal-fines-service/offences',
-      },
-      (req) => {
-        const requestedCjsCode = req.query['q'];
-        const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
-          (offence) => offence.get_cjs_code === requestedCjsCode,
-        );
-        req.reply({
-          count: matchedOffences.length,
-          refData: matchedOffences,
-        });
-      },
-    ).as('getOffenceByCjsCode');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     }).as('getDraftAccounts');
+  });
+  beforeEach(() => {
     cy.then(() => {
       finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
       finesDraftState = structuredClone(FINES_DRAFT_STATE);
@@ -299,7 +294,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.accountTypeData)
+        .should('contain', 'Account type')
+        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData)
         .should('contain', 'Defendant type')
         .should('contain', 'Adult or youth only');
@@ -439,7 +436,7 @@ describe('FinesMacReviewAccountComponent', () => {
     () => {
       setupComponent();
 
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
       cy.get(DOM_ELEMENTS.heading).should('exist');
       cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -500,12 +497,14 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('(AC.3,AC.5) should load all data into elements for AYPG', { tags: ['@PO-662', '@PO-344', '@PO-657'] }, () => {
     setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -588,7 +587,7 @@ describe('FinesMacReviewAccountComponent', () => {
     { tags: ['@PO-662', '@PO-344', '@PO-657'] },
     () => {
       setupComponent();
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Defendant details').should('contain', 'Change');
       cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
@@ -604,7 +603,7 @@ describe('FinesMacReviewAccountComponent', () => {
     { tags: ['@PO-662', '@PO-344'] },
     () => {
       setupComponent();
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
@@ -660,7 +659,7 @@ describe('FinesMacReviewAccountComponent', () => {
     { tags: ['@PO-662', '@PO-344', '@PO-657'] },
     () => {
       setupComponent();
-      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
 
@@ -719,7 +718,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.accountTypeData)
+        .should('contain', 'Account type')
+        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
@@ -906,7 +907,9 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Adult or youth only');
 
     cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
@@ -963,7 +966,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('(AC.5) should render all elements on the screen for AYPG', { tags: ['@PO-610', '@PO-584'] }, () => {
     setupComponent(finesAccountPayload, finesAccountPayload);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
     cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.backLink).should('exist');
 
@@ -1017,10 +1020,12 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('exist');
     cy.get(DOM_ELEMENTS.PGregistrationNumber).should('exist');
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+    cy.get(DOM_ELEMENTS.accountTypeData)
+      .should('contain', 'Account type')
+      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -1133,7 +1138,9 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-      cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.accountTypeData)
+        .should('contain', 'Account type')
+        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
@@ -1177,7 +1184,7 @@ describe('FinesMacReviewAccountComponent', () => {
     { tags: ['@PO-610', '@PO-584'] },
     () => {
       setupComponent(finesAccountPayload, finesAccountPayload);
-      const defendantTypes = ['adultOrYouthOnly', 'parentOrGuardianToPay', 'company'];
+      const defendantTypes = ['adultOrYouthOnly', 'pgToPay', 'company'];
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
@@ -1248,8 +1255,235 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
       cy.get('p').should(
         'contain',
-        'Reason for rejection must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Reason for rejection must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       );
+    },
+  );
+  it(
+    'COLLO should not be sent in draft account payload when payment terms are not applicable',
+    { tags: ['PO-2093'] },
+    () => {
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+      Object.assign(finesMacState.paymentTerms.formData, {
+        fm_payment_terms_collection_order_made: false,
+
+        fm_payment_terms_collection_order_date: '',
+        fm_payment_terms_collection_order_made_today: false,
+      });
+
+      setupComponent(finesDraftState, null, false, false);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.payment_terms).to.have.property('enforcements', null);
+        });
+    },
+  );
+  it(
+    'COLLO should be sent in draft account payload when collection order is made previously',
+    { tags: ['PO-2093'] },
+    () => {
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+      Object.assign(finesMacState.paymentTerms.formData, {
+        fm_payment_terms_collection_order_made: true,
+
+        fm_payment_terms_collection_order_date: '01/01/2027',
+        fm_payment_terms_collection_order_made_today: false,
+      });
+
+      setupComponent(finesDraftState, null, false, false);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.payment_terms)
+            .to.have.property('enforcements')
+            .and.to.be.an('array')
+            .that.has.lengthOf(1)
+            .which.has.deep.members([
+              {
+                result_id: 'COLLO',
+                enforcement_result_responses: null,
+              },
+            ]);
+        });
+    },
+  );
+  it('COLLO should be sent in draft account payload when collection order is made today', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: false,
+
+      fm_payment_terms_collection_order_date: '',
+      fm_payment_terms_collection_order_made_today: true,
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(1)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+          ]);
+      });
+  });
+  it('enforcements should be correct when COLLO and NOENF are selected', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: true,
+
+      fm_payment_terms_collection_order_date: '01/01/2027',
+      fm_payment_terms_collection_order_made_today: false,
+
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_hold_enforcement_on_account: true,
+      fm_payment_terms_reason_account_is_on_noenf: 'test3',
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(2)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+            {
+              result_id: 'NOENF',
+              enforcement_result_responses: [
+                {
+                  parameter_name: 'reason',
+                  response: 'test3',
+                },
+              ],
+            },
+          ]);
+      });
+  });
+  it('enforcements should be correct when COLLO and PRIS are selected', { tags: ['PO-2093'] }, () => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+    Object.assign(finesMacState.paymentTerms.formData, {
+      fm_payment_terms_collection_order_made: true,
+
+      fm_payment_terms_collection_order_date: '01/01/2027',
+      fm_payment_terms_collection_order_made_today: false,
+
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_earliest_release_date: 'test1',
+      fm_payment_terms_prison_and_prison_number: 'test2',
+      fm_payment_terms_enforcement_action: 'PRIS',
+    });
+
+    setupComponent(finesDraftState, null, false, false);
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+    cy.wait('@postDraftAccount')
+      .its('request.body')
+      .then((body) => {
+        expect(body.account.payment_terms)
+          .to.have.property('enforcements')
+          .and.to.be.an('array')
+          .that.has.lengthOf(2)
+          .which.has.deep.members([
+            {
+              result_id: 'COLLO',
+              enforcement_result_responses: null,
+            },
+            {
+              result_id: 'PRIS',
+              enforcement_result_responses: [
+                {
+                  parameter_name: 'earliestreleasedate',
+                  response: 'test1',
+                },
+                {
+                  parameter_name: 'prisonandprisonnumber',
+                  response: 'test2',
+                },
+              ],
+            },
+          ]);
+      });
+  });
+  it(
+    'minor creditor bank account number is correct and is against the correct imposition',
+    { tags: ['PO-1988', 'PO-2092'] },
+    () => {
+      //PO-1988 Verify bank account type is sent as '1' for minor creditor when bank account details are provided
+      //PO-2092 Verify minor creditor details are sent against the correct imposition
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
+
+      finesMacState.offenceDetails[0].formData.fm_offence_details_impositions[1] = {
+        fm_offence_details_imposition_id: 1,
+        fm_offence_details_result_id: 'FCOST',
+        fm_offence_details_amount_imposed: 200,
+        fm_offence_details_amount_paid: 50,
+        fm_offence_details_balance_remaining: 150,
+        fm_offence_details_needs_creditor: true,
+        fm_offence_details_creditor: 'minor',
+        fm_offence_details_major_creditor_id: null,
+      };
+      finesMacState.offenceDetails[0].childFormData ??= [];
+      finesMacState.offenceDetails[0].childFormData[0] = {
+        formData: {
+          fm_offence_details_imposition_position: 1,
+          fm_offence_details_minor_creditor_creditor_type: 'individual',
+          fm_offence_details_minor_creditor_title: 'Mr',
+          fm_offence_details_minor_creditor_forenames: 'james',
+          fm_offence_details_minor_creditor_surname: 'BOND',
+          fm_offence_details_minor_creditor_company_name: null,
+          fm_offence_details_minor_creditor_address_line_1: 'Addr1',
+          fm_offence_details_minor_creditor_address_line_2: 'Addr2',
+          fm_offence_details_minor_creditor_address_line_3: 'Addr3',
+          fm_offence_details_minor_creditor_post_code: 'TE12 3ST',
+          fm_offence_details_minor_creditor_pay_by_bacs: true,
+          fm_offence_details_minor_creditor_bank_account_name: 'testAccountName',
+          fm_offence_details_minor_creditor_bank_sort_code: '123456',
+          fm_offence_details_minor_creditor_bank_account_number: '12345678',
+          fm_offence_details_minor_creditor_bank_account_ref: 'accountRef',
+        },
+        nestedFlow: false,
+      };
+
+      setupComponent(finesDraftState, null, false, false);
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
+
+      cy.wait('@postDraftAccount')
+        .its('request.body')
+        .then((body) => {
+          expect(body.account.offences[0].impositions).to.be.an('array').that.has.lengthOf(2);
+          expect(body.account.offences[0].impositions[1]).to.have.property('minor_creditor');
+          expect(body.account.offences[0].impositions[1].minor_creditor).to.have.property('bank_account_type', '1');
+        });
     },
   );
 });

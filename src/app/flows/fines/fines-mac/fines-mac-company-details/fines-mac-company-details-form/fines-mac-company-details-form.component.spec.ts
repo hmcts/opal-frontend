@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacCompanyDetailsFormComponent', () => {
   let component: FinesMacCompanyDetailsFormComponent;
@@ -33,7 +34,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacCompanyDetailsFormComponent);
     component = fixture.componentInstance;
 
-    component.defendantType = 'adultOrYouthOnly';
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
@@ -76,6 +77,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
+    console.log(component.formControlErrorMessages);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
       jasmine.objectContaining({

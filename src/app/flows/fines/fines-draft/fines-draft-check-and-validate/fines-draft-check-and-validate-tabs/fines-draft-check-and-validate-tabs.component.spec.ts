@@ -44,6 +44,10 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       'getFromFormatToFormat',
       'getDateRange',
     ]);
+    mockDateService.getDateRange.and.returnValue({
+      from: '2023-01-01',
+      to: '2023-01-07',
+    });
 
     await TestBed.configureTestingModule({
       imports: [FinesDraftCheckAndValidateTabsComponent],
@@ -94,10 +98,6 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   });
 
   it('should pass additional params for historicWindowInDays if set on this tab', async () => {
-    mockDateService.getDateRange.and.returnValue({
-      from: '2023-01-01',
-      to: '2023-01-07',
-    });
     finesDraftService.populateTableData.and.returnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
     component.activatedRoute.fragment = of('deleted');
     component.activatedRoute.snapshot.data = {
@@ -128,11 +128,14 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
   it('should test onDefendantClick and set fragment and checker and call onDefendantClick with PATH_REVIEW_ACCOUNT when activeTab is "to-review"', () => {
     component.activeTab = 'to-review';
 
-    component.onDefendantClick(456);
+    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
 
     expect(finesDraftStore.fragment()).toEqual('to-review');
     expect(finesDraftStore.checker()).toBeTruthy();
-    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(456, finesDraftService.PATH_REVIEW_ACCOUNT);
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
+      finesDraftService.PATH_REVIEW_ACCOUNT,
+    );
   });
 
   it('should show "0" when getDraftAccounts returns count 0', async () => {

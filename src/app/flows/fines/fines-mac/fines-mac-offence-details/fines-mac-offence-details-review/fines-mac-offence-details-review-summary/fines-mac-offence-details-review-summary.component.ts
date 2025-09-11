@@ -22,6 +22,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-defendant-types-keys';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -42,20 +43,19 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
   styleUrl: './fines-mac-offence-details-review-summary.component.scss',
 })
 export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly finesMacStore = inject(FinesMacStore);
+
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
   @Input({ required: false }) public isReadOnly = false;
-
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-
   public readonly finesMacStatus = FINES_MAC_STATUS;
-  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-
   public offencesHidden!: IFinesMacOffenceDetailsReviewSummaryDetailsHidden;
 
   /**
@@ -93,7 +93,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @returns {boolean} Returns true if the defendant type is 'adultOrYouthOnly', otherwise returns false.
    */
   private isAdultOrYouthOnly(): boolean {
-    return this.finesMacStore.getDefendantType() === 'adultOrYouthOnly';
+    return this.finesMacStore.getDefendantType() === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
   }
 
   /**

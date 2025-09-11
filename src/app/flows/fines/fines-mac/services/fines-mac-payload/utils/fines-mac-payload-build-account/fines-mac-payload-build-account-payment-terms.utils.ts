@@ -2,6 +2,7 @@ import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 import { IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement-result-response.interface';
 import { IFinesMacPayloadAccountPaymentTerms } from '../interfaces/fines-mac-payload-account-payment-terms.interface';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
 
 /**
  * Builds an enforcement response object for fines MAC payment terms.
@@ -53,7 +54,7 @@ const buildPaymentTermEnforcements = (
 
   const enforcements = [];
 
-  if (!hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday) {
+  if (hasCollectionOrderBeenMade || hasCollectionOrderBeenMadeToday) {
     enforcements.push(buildEnforcement('COLLO', null));
   }
 
@@ -87,6 +88,7 @@ const buildPaymentTermEnforcements = (
  */
 export const finesMacPayloadBuildAccountPaymentTerms = (
   paymentTermsState: IFinesMacPaymentTermsState,
+  accountType: string | null,
 ): IFinesMacPayloadAccountPaymentTerms => {
   const {
     fm_payment_terms_payment_terms,
@@ -104,6 +106,10 @@ export const finesMacPayloadBuildAccountPaymentTerms = (
   if (fm_payment_terms_payment_terms) {
     paymentTermsTypeCode = fm_payment_terms_payment_terms === 'payInFull' ? 'B' : 'I';
     effectiveDate = paymentTermsTypeCode === 'B' ? fm_payment_terms_pay_by_date : fm_payment_terms_start_date;
+  }
+
+  if (accountType === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
+    paymentTermsTypeCode = 'B';
   }
 
   return {

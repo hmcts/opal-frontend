@@ -7,4 +7,6 @@ export interface IOpalFinesPaths {
   majorCreditorRefData: string;
   draftAccounts: string;
   searchOffences: string;
+  prosecutorRefData: string;
+  searchDefendantAccounts: string;
 }

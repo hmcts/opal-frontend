@@ -25,7 +25,7 @@
     inputId="fsa_search_account_number"
     inputName="fsa_search_account_number"
     inputClasses="govuk-input--width-10"
-    [control]="form.controls['fsa_search_account_number']"
+    [control]="form.get('fsa_search_account_number')"
     [errors]="formControlErrorMessages['fsa_search_account_number']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -34,7 +34,7 @@
     inputId="fsa_search_account_reference_case_number"
     inputName="fsa_search_account_reference_case_number"
     inputClasses="govuk-input--width-10"
-    [control]="form.controls['fsa_search_account_reference_case_number']"
+    [control]="form.get('fsa_search_account_reference_case_number')"
     [errors]="formControlErrorMessages['fsa_search_account_reference_case_number']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-tabs tabId="defendantTabs">
@@ -94,13 +94,14 @@
           <opal-lib-govuk-tabs-panel id="minor-creditors">
             <app-fines-sa-search-account-form-minor-creditors
               [form]="searchCriteriaForm"
+              [formControlErrorMessages]="formControlErrorMessages"
             ></app-fines-sa-search-account-form-minor-creditors>
           </opal-lib-govuk-tabs-panel>
         }
         @case ('majorCreditors') {
           <opal-lib-govuk-tabs-panel id="major-creditors">
             <app-fines-sa-search-account-form-major-creditors
-              [form]="searchCriteriaForm"
+              [form]="form"
             ></app-fines-sa-search-account-form-major-creditors>
           </opal-lib-govuk-tabs-panel>
         }
@@ -114,7 +115,7 @@
       inputId="fsa_search_account_active_accounts_only"
       inputName="fsa_search_account_active_accounts_only"
       class="govuk-checkboxes--small"
-      [control]="form.controls['fsa_search_account_active_accounts_only']"
+      [control]="form.get('fsa_search_account_active_accounts_only')"
     ></div>
   </opal-lib-govuk-checkboxes>
   <div class="govuk-grid-row">

@@ -30,6 +30,10 @@ import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformat
 import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
+import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 
 @Injectable({
   providedIn: 'root',
@@ -91,9 +95,11 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
+    const { formData: fixedPenaltyDetails } = finesMacState.fixedPenaltyDetails;
 
     const offenceDetailsForms = finesMacState.offenceDetails;
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
+    const accountType = accountDetailsState['fm_create_account_account_type'];
 
     // Build the parts of our payload...
     const initialPayload = finesMacPayloadBuildAccountBase(
@@ -101,6 +107,7 @@ export class FinesMacPayloadService {
       courtDetailsState,
       paymentTermsState,
       offenceDetailsState,
+      fixedPenaltyDetails,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -111,16 +118,26 @@ export class FinesMacPayloadService {
       companyDetailsState,
       parentGuardianDetailsState,
     );
-    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    let fp_ticket_detail = null;
+    if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
+      fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails);
+    }
+    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
+    const offences = finesMacPayloadBuildAccountOffences(
+      offenceDetailsForms,
+      courtDetailsState,
+
+      fixedPenaltyDetails,
+      accountType,
+    );
 
     // Return our payload object
     return {
       ...initialPayload,
       defendant: defendant,
       offences: offences,
-      fp_ticket_detail: null,
+      fp_ticket_detail: fp_ticket_detail,
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };
@@ -170,12 +187,54 @@ export class FinesMacPayloadService {
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
+      account_status_message: null,
       timeline_data: timeLineData,
       version: draftAccountPayload ? draftAccountPayload.version : 0,
     };
 
-    // Transform the payload, format the dates to the correct format
+    // Transform the payload, format the dates and times to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
+  private hasNonEmptyValue(value: unknown): boolean {
+    // If it's an array, check if it has any elements
+    // This is for the aliases
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== null;
+  }
+
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
+  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Check if any of the values are not empty
+    Object.entries(formData).forEach(([, value]) => {
+      const hasValue = this.hasNonEmptyValue(value);
+      // If we have a value and the status is not provided, set it to provided
+      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+        newStatus = FINES_MAC_STATUS.PROVIDED;
+      }
+    });
+
+    return newStatus;
   }
 
   /**
@@ -240,51 +299,10 @@ export class FinesMacPayloadService {
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id!, sessionUserState)!,
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, sessionUserState)!,
       validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
       version: draftAccountPayload.version!,
     };
-  }
-
-  /**
-   * Checks if the given value is non-empty.
-   *
-   * This method determines if the provided value is non-empty by:
-   * - Checking if the value is an array and has any elements.
-   * - Checking if the value is not null.
-   *
-   * @param value - The value to check.
-   * @returns `true` if the value is non-empty, `false` otherwise.
-   */
-  private hasNonEmptyValue(value: unknown): boolean {
-    // If it's an array, check if it has any elements
-    // This is for the aliases
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== null;
-  }
-
-  /**
-   * Determines the status of the fines MAC state form based on the provided form data.
-   *
-   * @template T - The type of the form data object.
-   * @param {T} formData - The form data object to evaluate.
-   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
-   */
-  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-
-    // Check if any of the values are not empty
-    Object.entries(formData).forEach(([, value]) => {
-      const hasValue = this.hasNonEmptyValue(value);
-      // If we have a value and the status is not provided, set it to provided
-      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-        newStatus = FINES_MAC_STATUS.PROVIDED;
-      }
-    });
-
-    return newStatus;
   }
 
   /**
@@ -312,6 +330,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+    finesMacState = finesMacPayloadMapAccountFixedPenalty(finesMacState, transformedPayload, offencesRefData);
 
     if (businessUnitRefData) {
       finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
@@ -323,7 +342,7 @@ export class FinesMacPayloadService {
   /**
    * Returns the defendant's name based on the defendant type in the provided payload.
    *
-   * - If the defendant type is 'adultOrYouthOnly' or 'parentOrGuardianToPay', the name is constructed
+   * - If the defendant type is 'adultOrYouthOnly' or 'pgToPay', the name is constructed
    *   from the defendant's forenames and surname.
    * - Otherwise, the company name is returned.
    *
@@ -332,8 +351,8 @@ export class FinesMacPayloadService {
    */
   public getDefendantName(payload: IFinesMacAddAccountPayload): string {
     if (
-      payload.account.defendant_type === 'adultOrYouthOnly' ||
-      payload.account.defendant_type === 'parentOrGuardianToPay'
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly ||
+      payload.account.defendant_type === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay
     ) {
       return `${payload.account.defendant.forenames} ${payload.account.defendant.surname}`;
     } else {

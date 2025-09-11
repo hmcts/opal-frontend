@@ -5,7 +5,7 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <opal-lib-alphagov-accessible-autocomplete
-    [control]="form.controls['fm_court_details_originator_id']"
+    [control]="form.get('fm_court_details_originator_id')"
     labelText="Sending area or Local Justice Area (LJA)"
     labelClasses="govuk-fieldset__legend--s"
     inputId="fm_court_details_originator_id"
@@ -22,13 +22,13 @@
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="Enter the prosecutor's reference number or original account number"
-    [control]="form.controls['fm_court_details_prosecutor_case_reference']"
+    [control]="form.get('fm_court_details_prosecutor_case_reference')"
     [errors]="formControlErrorMessages['fm_court_details_prosecutor_case_reference']"
-    [opalLibCapitaliseAllCharacters]="form.controls['fm_court_details_prosecutor_case_reference']"
+    [opalLibCapitaliseAllCharacters]="form.get('fm_court_details_prosecutor_case_reference')!"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <opal-lib-alphagov-accessible-autocomplete
-    [control]="form.controls['fm_court_details_imposing_court_id']"
+    [control]="form.get('fm_court_details_imposing_court_id')"
     labelText="Enforcement court"
     labelClasses="govuk-fieldset__legend--s"
     inputId="fm_court_details_imposing_court_id"

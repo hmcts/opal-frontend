@@ -26,7 +26,7 @@ function convertDataTableToNestedObject(dataTable: DataTable): Record<string, an
   return overrides;
 }
 
-type DefendantType = 'company' | 'adultOrYouthOnly' | 'parentOrGuardianToPay';
+type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
 
 /**
  * Get the appropriate payload file name based on the account type
@@ -35,7 +35,7 @@ function getPayloadFileForAccountType(accountType: DefendantType): string {
   const payloadFiles = {
     company: 'companyPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
-    parentOrGuardianToPay: 'parentOrGuardianPayload.json',
+    pgToPay: 'parentOrGuardianPayload.json',
   };
   return payloadFiles[accountType];
 }
@@ -67,7 +67,7 @@ When('I update the last created draft account with status {string}', (status: st
         const business_unit_id = account.business_unit_id;
         const version = account.version;
         const validated_by = account.submitted_by || 'opal-test';
-        const now = new Date().toISOString();
+        const now = new Date().toISOString().split('T')[0];
         const updateBody = {
           business_unit_id,
           account_status: status,

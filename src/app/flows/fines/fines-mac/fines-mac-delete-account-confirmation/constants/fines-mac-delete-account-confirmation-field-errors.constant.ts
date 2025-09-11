@@ -6,9 +6,8 @@ export const FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FIELD_ERRORS: IFinesMacDelete
       message: 'Enter reason for deletion',
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message:
-        'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Reason must only contain letters or numbers',
       priority: 2,
     },
   },

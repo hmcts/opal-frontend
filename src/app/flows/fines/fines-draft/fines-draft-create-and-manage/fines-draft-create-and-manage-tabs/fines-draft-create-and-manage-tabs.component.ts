@@ -18,7 +18,7 @@ import {
   MojSubNavigationItemComponent,
   MojSubNavigationComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
+import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { Observable, Subject } from 'rxjs';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
@@ -33,6 +33,7 @@ import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -44,8 +45,8 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
     MojAlertIconComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
-    MojBadgeComponent,
     FinesDraftTableWrapperComponent,
+    MojNotificationBadgeComponent,
   ],
   templateUrl: './fines-draft-create-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,8 +55,6 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly destroy$ = new Subject<void>();
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesDraftStore = inject(FinesDraftStore);
-  public readonly finesDraftService = inject(FinesDraftService);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
   private readonly businessUnitIds = this.userState.business_unit_user.map(
@@ -64,14 +63,15 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
   private readonly businessUnitUserIds = this.userState.business_unit_user.map(
     (business_unit_user) => business_unit_user.business_unit_user_id,
   );
+  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
 
   protected readonly finesDraftCreateAndManageRoutingPaths = FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS;
+  protected readonly finesDraftStore = inject(FinesDraftStore);
 
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public rejectedCount$!: Observable<string>;
-
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
-  private readonly BASE_PATH = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/`;
+  public readonly finesDraftService = inject(FinesDraftService);
   public readonly PATH_REVIEW_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`;
   public readonly PATH_AMEND_ACCOUNT = `${this.BASE_PATH}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
 
@@ -162,16 +162,18 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * then triggers the defendant click logic in the fines draft service,
    * navigating to the appropriate path depending on whether the draft is being amended or reviewed.
    *
-   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   * @param row - The draft account row associated with the defendant.
    */
-  public onDefendantClick(draftAccountId: number): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    const { 'Account type': accountType, 'Defendant id': defendantId } = row;
     this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
-    this.finesDraftService.onDefendantClick(
-      draftAccountId,
-      this.finesDraftStore.amend()
+
+    const route =
+      this.finesDraftStore.amend() && accountType !== FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']
         ? this.finesDraftService.PATH_AMEND_ACCOUNT
-        : this.finesDraftService.PATH_REVIEW_ACCOUNT,
-    );
+        : this.finesDraftService.PATH_REVIEW_ACCOUNT;
+
+    this.finesDraftService.onDefendantClick(defendantId, route);
   }
 
   /**

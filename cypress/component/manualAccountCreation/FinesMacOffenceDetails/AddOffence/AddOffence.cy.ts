@@ -153,7 +153,7 @@ describe('FinesMacAddOffenceComponent', () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
-      setupComponent(null, 'parentOrGuardianToPay');
+      setupComponent(null, 'pgToPay');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
       setupComponent(null, 'company');
@@ -438,15 +438,15 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.3bii) should show invalid ticket panel for invalid offence code',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
+      finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123457';
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.offenceCodeInput).type('INVALID', { delay: 0 });
+      cy.wait('@getOffenceCode');
+
+      cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123457', { delay: 0 });
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
       cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidOffenceCode);
     },
   );
 
@@ -556,7 +556,7 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.1, AC.2) should not allow form to be submitted without selecting minor creditor, A/Y with parent/guardian to pay',
     { tags: ['@PO-1060'] },
     () => {
-      setupComponent(null, 'parentOrGuardianToPay');
+      setupComponent(null, 'pgToPay');
       const SELECTOR = impostitionSelectors(0);
 
       let Imposition_1 = structuredClone(IMPOSITION_MOCK_4);

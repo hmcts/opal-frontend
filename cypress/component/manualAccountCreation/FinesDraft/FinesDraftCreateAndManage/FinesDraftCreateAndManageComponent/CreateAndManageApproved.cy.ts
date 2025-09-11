@@ -13,6 +13,7 @@ import { DOM_ELEMENTS } from './constants/fines_draft_cam_inputter_elements';
 import { NAVIGATION_LINKS } from './constants/fines_draft_cam_tableConstants';
 import { OPAL_FINES_OVER_25_DRAFT_ACCOUNTS_MOCK } from './mocks/fines_draft_over_25_account_mock';
 import { interceptGetApprovedAccounts, interceptGetRejectedAccounts } from './mocks/create-and-manage-intercepts';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesDraftCreateAndManageApprovedComponent', () => {
   const setupComponent = () => {
@@ -67,7 +68,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('DOE, John');
         cy.get(DOM_ELEMENTS.dob).contains('15 May 1990');
         cy.get(DOM_ELEMENTS.created).contains('Today');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fine');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES.Fine);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit A');
       });
 
@@ -78,7 +79,7 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
         cy.get(DOM_ELEMENTS.defendant).contains('SMITH, Jane');
         cy.get(DOM_ELEMENTS.dob).contains('—');
         cy.get(DOM_ELEMENTS.created).contains('4 days ago');
-        cy.get(DOM_ELEMENTS.accountType).contains('Fixed Penalty');
+        cy.get(DOM_ELEMENTS.accountType).contains(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
         cy.get(DOM_ELEMENTS.businessUnit).contains('Business Unit B');
       });
   });
@@ -96,15 +97,15 @@ describe('FinesDraftCreateAndManageApprovedComponent', () => {
 
       cy.get(DOM_ELEMENTS.navigationLinks).contains('Approved').click();
 
-      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 - 25 of 50 accounts').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('1').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('2').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').should('exist');
+      cy.get(DOM_ELEMENTS.tableCaption).contains('Showing 1 to 25 of 50 results').should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(1)).should('exist');
+      cy.get(DOM_ELEMENTS.paginationPageNumber(2)).should('exist');
+      cy.get(DOM_ELEMENTS.nextPageButton).contains('Next').should('exist');
       cy.get(DOM_ELEMENTS.defendant).contains('Robert Brown').should('exist');
 
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Next').click({ force: true });
+      cy.get(DOM_ELEMENTS.nextPageButton).click();
       cy.get(DOM_ELEMENTS.defendant).contains('Emma Gonzalez').should('exist');
-      cy.get(DOM_ELEMENTS.paginationLinks).contains('Previous').should('exist');
+      cy.get(DOM_ELEMENTS.previousPageButton).should('exist');
 
       cy.get(DOM_ELEMENTS.defendant)
         .its('length')

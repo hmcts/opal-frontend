@@ -3,44 +3,34 @@ import { IFinesMacOffenceDetailsSearchOffencesErrors } from '../interfaces/fines
 export const FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ERRORS: IFinesMacOffenceDetailsSearchOffencesErrors = {
   fm_offence_details_search_offences_code: {
     maxlength: {
-      message: 'Offence Code must be 8 characters or fewer',
+      message: 'Offence code must be 8 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Offence code must only contain letters or numbers',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Offence Code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
   fm_offence_details_search_offences_short_title: {
     maxlength: {
-      message: 'Short Title must be 120 characters or fewer',
+      message: 'Short title must be 120 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message:
+        'Short title must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Short Title must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
   fm_offence_details_search_offences_act_section: {
     maxlength: {
-      message: 'Act & Section must be 4000 characters or fewer',
+      message: 'Act and section must be 4,000 characters or fewer',
       priority: 1,
     },
-    alphabeticalTextPattern: {
-      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message:
+        'Act and section must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
       priority: 2,
-    },
-    specialCharactersPattern: {
-      message: 'Act & Section must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 3,
     },
   },
 };

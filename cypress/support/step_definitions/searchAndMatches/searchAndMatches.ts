@@ -6,6 +6,22 @@ Then('I navigate to Search For An Account', () => {
   cy.contains('h1', 'Search for an account').should('be.visible');
 });
 
+Then('I see the {string} radio button is selected', (radioName: string) => {
+  cy.contains('label', radioName.trim())
+    .invoke('attr', 'for')
+    .then((inputId) => {
+      cy.get(`#${inputId}`).should('be.checked');
+    });
+});
+
+Then('I see the {string} radio button is unselected', (radioName: string) => {
+  cy.contains('label', radioName.trim())
+    .invoke('attr', 'for')
+    .then((inputId) => {
+      cy.get(`#${inputId}`).should('not.be.checked');
+    });
+});
+
 Then('I see the {string} checkbox is checked', (checkboxName: string) => {
   cy.get('input[type="checkbox"]').next().contains('label', checkboxName).prev().should('be.checked');
 });
@@ -60,4 +76,15 @@ Then('I verify the include alias checkbox is checked', () => {
 
 Then('I verify the include alias checkbox is not checked', () => {
   cy.get('#fsa_search_account_companies_company_name_exact_match').should('not.be.checked');
+});
+
+When('I click the {string} link and handle new window navigation', (linkText: string) => {
+  // Intercept window.open calls to prevent opening new tabs/windows
+  cy.window().then((win) => {
+    cy.stub(win, 'open').callsFake((url) => {
+      win.location.href = url;
+    });
+  });
+
+  cy.contains('a', linkText).click();
 });

@@ -3,7 +3,7 @@
   @if (finesDraftStore.amend()) {
     <app-fines-mac-review-account-history
       [defendantName]="
-        finesMacStore.getDefendantType() === 'company'
+        finesMacStore.getDefendantType() === defendantTypesKeys.company
           ? finesMacStore.getCompanyDetailsName()
           : finesMacStore.getPersonalDetailsName()
       "
@@ -84,7 +84,7 @@
   <h2 class="govuk-heading-m">Court details</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
   @switch (defendantType) {
-    @case (defendantTypes['adultOrYouthOnly']) {
+    @case (defendantTypes[defendantTypesKeys.adultOrYouthOnly]) {
       <h2 class="govuk-heading-m">Defendant details</h2>
       <opal-lib-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
@@ -92,7 +92,7 @@
         <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
       </opal-lib-govuk-task-list>
     }
-    @case (defendantTypes['parentOrGuardianToPay']) {
+    @case (defendantTypes[defendantTypesKeys.pgToPay]) {
       <h2 class="govuk-heading-m">Parent or guardian details</h2>
       <opal-lib-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
@@ -104,7 +104,7 @@
         <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
       </opal-lib-govuk-task-list>
     }
-    @case (defendantTypes['company']) {
+    @case (defendantTypes[defendantTypesKeys.company]) {
       <h2 class="govuk-heading-m">Defendant details</h2>
       <opal-lib-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
         <ng-container *ngTemplateOutlet="companyDetails"></ng-container>

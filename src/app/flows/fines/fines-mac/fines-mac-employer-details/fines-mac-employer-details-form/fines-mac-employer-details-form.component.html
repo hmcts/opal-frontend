@@ -9,7 +9,7 @@
     inputId="fm_employer_details_employer_company_name"
     inputName="fm_employer_details_employer_company_name"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_employer_details_employer_company_name']"
+    [control]="form.get('fm_employer_details_employer_company_name')"
     [errors]="formControlErrorMessages['fm_employer_details_employer_company_name']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -19,16 +19,16 @@
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="If employee reference not known, add National Insurance number"
-    [control]="form.controls['fm_employer_details_employer_reference']"
+    [control]="form.get('fm_employer_details_employer_reference')"
     [errors]="formControlErrorMessages['fm_employer_details_employer_reference']"
-    [opalLibCapitaliseAllCharacters]="form.controls['fm_employer_details_employer_reference']"
+    [opalLibCapitaliseAllCharacters]="form.get('fm_employer_details_employer_reference')!"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
     labelText="Employer email address"
     inputId="fm_employer_details_employer_email_address"
     inputName="fm_employer_details_employer_email_address"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_employer_details_employer_email_address']"
+    [control]="form.get('fm_employer_details_employer_email_address')"
     [errors]="formControlErrorMessages['fm_employer_details_employer_email_address']"
   ></opal-lib-govuk-text-input>
   <opal-lib-govuk-text-input
@@ -37,7 +37,7 @@
     inputName="fm_employer_details_employer_telephone_number"
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_employer_details_employer_telephone_number']"
+    [control]="form.get('fm_employer_details_employer_telephone_number')"
     [errors]="formControlErrorMessages['fm_employer_details_employer_telephone_number']"
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
@@ -47,36 +47,35 @@
       labelText="Address line 1"
       inputId="fm_employer_details_employer_address_line_1"
       inputName="fm_employer_details_employer_address_line_1"
-      [control]="form.controls['fm_employer_details_employer_address_line_1']"
-      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_1']"
+      [control]="form.get('fm_employer_details_employer_address_line_1')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_1']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 2"
       inputId="fm_employer_details_employer_address_line_2"
       inputName="fm_employer_details_employer_address_line_2"
-      [control]="form.controls['fm_employer_details_employer_address_line_2']"
+      [control]="form.get('fm_employer_details_employer_address_line_2')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_2']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 3"
       inputId="fm_employer_details_employer_address_line_3"
       inputName="fm_employer_details_employer_address_line_3"
-      [control]="form.controls['fm_employer_details_employer_address_line_3']"
+      [control]="form.get('fm_employer_details_employer_address_line_3')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_3']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 4"
       inputId="fm_employer_details_employer_address_line_4"
       inputName="fm_employer_details_employer_address_line_4"
-      [control]="form.controls['fm_employer_details_employer_address_line_4']"
+      [control]="form.get('fm_employer_details_employer_address_line_4')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_4']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
       labelText="Address line 5"
       inputId="fm_employer_details_employer_address_line_5"
       inputName="fm_employer_details_employer_address_line_5"
-      [control]="form.controls['fm_employer_details_employer_address_line_5']"
+      [control]="form.get('fm_employer_details_employer_address_line_5')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_5']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -84,9 +83,9 @@
       inputId="fm_employer_details_employer_post_code"
       inputName="fm_employer_details_employer_post_code"
       inputClasses="govuk-input--width-10"
-      [control]="form.controls['fm_employer_details_employer_post_code']"
+      [control]="form.get('fm_employer_details_employer_post_code')"
       [errors]="formControlErrorMessages['fm_employer_details_employer_post_code']"
-      [opalLibCapitaliseAllCharacters]="form.controls['fm_employer_details_employer_post_code']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_employer_details_employer_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
   <div class="govuk-grid-row">

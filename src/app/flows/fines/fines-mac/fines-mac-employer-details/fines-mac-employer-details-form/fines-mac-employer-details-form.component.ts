@@ -20,11 +20,27 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import {
+  EMAIL_ADDRESS_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
+
+//regex pattern validators for the form controls
+const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
+
 @Component({
   selector: 'app-fines-mac-employer-details-form',
   imports: [
@@ -41,13 +57,13 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
 
   /**
@@ -55,11 +71,19 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    */
   private setupEmployerDetailsForm(): void {
     this.form = new FormGroup({
-      fm_employer_details_employer_company_name: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
-      fm_employer_details_employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
+      fm_employer_details_employer_company_name: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(35),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
+      fm_employer_details_employer_reference: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(20),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
       fm_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
-        optionalEmailAddressValidator(),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_telephone_number: new FormControl(null, [
         optionalMaxLengthValidator(20),
@@ -68,23 +92,23 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
       fm_employer_details_employer_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });

@@ -26,6 +26,8 @@ import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/se
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -372,6 +374,30 @@ describe('FinesMacReviewAccountComponent', () => {
       ]);
     });
 
+    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
+      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
+    it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute').and.stub();
+      component.accountStatus = 'Rejected';
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.isReadOnly = false;
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(
+        component['getBackPath'](),
+        false,
+        undefined,
+        component['finesDraftStore'].fragment(),
+      );
+    });
+
     it('should submit payload on submitForReview', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
@@ -409,6 +435,32 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
+    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is 0', () => {
+      spyOn(component, 'handleRoute').and.stub();
+      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
+      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      component.accountId = 0; // Set accountId to 0 to simulate the condition
+
+      component.handleDeleteAccount(mockEvent);
+
+      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is > 0', () => {
+      spyOn(component, 'handleRoute').and.stub();
+      spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
+      const route = component['finesMacRoutes'].children.deleteAccountConfirmation + `/${component.accountId}`;
+      const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
+      component.accountId = 1; // Set accountId to 1 to simulate the condition
+
+      component.handleDeleteAccount(mockEvent);
+
+      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
+    });
+
     it('should navigate on handleRoute to delete account', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -417,7 +469,6 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
         relativeTo: component['activatedRoute'].parent,
       });
-      expect(finesMacStore.deleteFromCheckAccount()).toBeTrue();
     });
 
     it('should scroll to top and return null on handleRequestError', () => {
@@ -425,12 +476,30 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
       expect(result).toBeNull();
     });
+
+    it('should route to the account details page when change() is called from a fine account', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
+
+      component.change();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.accountDetails);
+    });
+
+    it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+
+      component.change();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
   });
 
   describe('when snapshot has localJusticeAreas, courts, results, major creditors and reviewAccountFetchMap', () => {
     let component: FinesMacReviewAccountComponent;
 
-    beforeEach(async () => {
+    it('should test reviewAccountFetchedMappedPayload', () => {
       const snapshotData: IFetchMapFinesMacPayload = {
         finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
         finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
@@ -438,14 +507,34 @@ describe('FinesMacReviewAccountComponent', () => {
         localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
         majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
         results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
       };
       const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
       component = setup.component;
-    });
-
-    it('should test reviewAccountFetchedMappedPayload', () => {
       component['reviewAccountFetchedMappedPayload']();
       expect(component.isReadOnly).toBeTrue();
+    });
+
+    it('should set correct flags when  reviewAccountFetchedMappedPayload is called for a fixed penalty account', () => {
+      const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+      const finesMacDraft = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      finesMacDraft.account_status = 'Rejected';
+      const snapshotData: IFetchMapFinesMacPayload = {
+        finesMacState,
+        finesMacDraft,
+        courts: OPAL_FINES_COURT_REF_DATA_MOCK,
+        localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+        majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
+        results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+        prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
+      };
+      const setup = createTestModule({ reviewAccountFetchMap: snapshotData });
+      component = setup.component;
+      component['finesDraftStore'].setChecker(false);
+
+      component['reviewAccountFetchedMappedPayload']();
+      expect(component.isReadOnly).toBeFalse();
     });
   });
 

@@ -25,6 +25,9 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-servi
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -156,8 +159,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
-      fm_create_account_defendant_type: 'adultOrYouthOnly',
-      fm_create_account_account_type: 'conditionalCaution',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
     };
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -165,7 +168,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['setAccountType']();
 
     expect(component.defendantType).toEqual('Adult or youth only');
-    expect(component.accountType).toEqual('Conditional Caution');
+    expect(component.accountType).toEqual(FINES_MAC_ACCOUNT_TYPES['Conditional Caution']);
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
@@ -264,18 +267,18 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call canDeactivate ', () => {
     component['pageNavigation'] = true;
-    expect(component.canDeactivate()).toBeTruthy();
+    expect(component['canDeactivate']()).toBeTruthy();
 
     component['pageNavigation'] = false;
-    expect(component.canDeactivate()).toBeFalsy();
+    expect(component['canDeactivate']()).toBeFalsy();
   });
 
   it('should return true if personalDetails is true', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
-      fm_create_account_defendant_type: 'parentOrGuardianToPay',
-      fm_create_account_account_type: 'fine',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
       fm_create_account_business_unit_id: 1,
     };
     finesMacState.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
@@ -290,8 +293,11 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
-    component.defendantType = 'parentOrGuardianToPay';
-    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    component.paymentTermsBypassDefendantTypes = [
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.company,
+    ];
 
     const result = component['canAccessPaymentTerms']();
 
@@ -301,7 +307,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
     finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
     component.defendantType = 'test';
-    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    component.paymentTermsBypassDefendantTypes = [
+      FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
+      FINES_MAC_DEFENDANT_TYPES_KEYS.company,
+    ];
 
     const result = component['canAccessPaymentTerms']();
 
@@ -312,7 +321,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const adultOrYouthOnly = structuredClone(FINES_MAC_STATE);
     adultOrYouthOnly.accountDetails.formData = {
       ...adultOrYouthOnly.accountDetails.formData,
-      fm_create_account_defendant_type: 'adultOrYouthOnly',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
     };
     finesMacStore.setFinesMacStore(adultOrYouthOnly);
     component['checkMandatorySections']();
@@ -321,7 +330,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
     parentOrGuardianToPay.accountDetails.formData = {
       ...parentOrGuardianToPay.accountDetails.formData,
-      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
     };
     finesMacStore.setFinesMacStore(parentOrGuardianToPay);
     component['checkMandatorySections']();
@@ -330,7 +339,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const company = structuredClone(parentOrGuardianToPay);
     company.accountDetails.formData = {
       ...company.accountDetails.formData,
-      fm_create_account_defendant_type: 'company',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.company,
     };
     finesMacStore.setFinesMacStore(company);
     component['checkMandatorySections']();
@@ -356,6 +365,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {
@@ -383,6 +393,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
       majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
       results: OPAL_FINES_RESULTS_REF_DATA_MOCK,
+      prosecutors: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK,
     };
     component['activatedRoute'].snapshot = {
       data: {

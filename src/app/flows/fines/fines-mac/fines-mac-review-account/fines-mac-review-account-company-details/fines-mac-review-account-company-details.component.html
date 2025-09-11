@@ -16,24 +16,26 @@
         <ng-container value>{{ companyDetails.fm_company_details_company_name }}</ng-container>
       </div>
 
-      <div
-        opal-lib-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="companyDetails"
-        summaryListRowId="aliases"
-      >
-        <ng-container name>Aliases</ng-container>
-        <ng-container value>
-          @if (aliases.length > 0) {
-            @for (alias of aliases; track alias) {
-              {{ alias }}
-              <br />
+      @if (accountType !== accountTypesKeys['Fixed Penalty']) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="companyDetails"
+          summaryListRowId="aliases"
+        >
+          <ng-container name>Aliases</ng-container>
+          <ng-container value>
+            @if (aliases.length > 0) {
+              @for (alias of aliases; track alias) {
+                {{ alias }}
+                <br />
+              }
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
             }
-          } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
-          }
-        </ng-container>
-      </div>
+          </ng-container>
+        </div>
+      }
       <div
         opal-lib-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"

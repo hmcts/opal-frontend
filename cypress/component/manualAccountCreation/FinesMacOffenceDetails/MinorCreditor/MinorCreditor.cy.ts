@@ -166,7 +166,7 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (const [, value] of Object.entries(LENGTH_CHECK)) {
-        if (value != 'The company name must be 50 characters or fewer') {
+        if (value != 'Company name must be 50 characters or fewer') {
           cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
         }
       }
@@ -192,8 +192,9 @@ describe('FinesMacMinorCreditor', () => {
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
       if (
-        value != 'The company name must only contain alphabetical text' &&
-        value != "Enter minor creditor's last name"
+        value !=
+          'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)' &&
+        value != 'Enter last name'
       ) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
       }
@@ -373,7 +374,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+    setupComponent(mockFormSubmit, 'pgToPay');
 
     formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
     formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';

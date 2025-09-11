@@ -14,6 +14,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../../../../../src/app/flows/fi
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
+import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
   accountDetails: {
@@ -22,7 +23,7 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_business_unit_id: 61,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
-      fm_create_account_account_type: 'fine',
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
     },
   },
   employerDetails: {
@@ -183,6 +184,23 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
   deleteAccountConfirmation: {
     formData: {
       fm_delete_account_confirmation_reason: null,
+    },
+    nestedFlow: false,
+  },
+  fixedPenaltyDetails: {
+    formData: {
+      fm_offence_details_notice_number: null,
+      fm_offence_details_offence_type: null,
+      fm_offence_details_date_of_offence: null,
+      fm_offence_details_offence_id: null,
+      fm_offence_details_offence_cjs_code: null,
+      fm_offence_details_time_of_offence: null,
+      fm_offence_details_place_of_offence: null,
+      fm_offence_details_amount_imposed: null,
+      fm_offence_details_vehicle_registration_number: null,
+      fm_offence_details_driving_licence_number: null,
+      fm_offence_details_nto_nth: null,
+      fm_offence_details_date_nto_issued: null,
     },
     nestedFlow: false,
   },

@@ -29,9 +29,9 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
-import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -44,7 +44,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
     MojAlertContentComponent,
     MojAlertIconComponent,
     MojAlertTextComponent,
-    MojBadgeComponent,
+    MojNotificationBadgeComponent,
   ],
   templateUrl: './fines-draft-check-and-validate-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,9 +54,6 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
-  protected readonly finesDraftStore = inject(FinesDraftStore);
-  public readonly finesDraftService = inject(FinesDraftService);
-
   private readonly userState = this.globalStore.userState();
   private readonly businessUnitIds = this.userState.business_unit_user.map(
     (business_unit_user) => business_unit_user.business_unit_id,
@@ -65,8 +62,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
     (business_unit_user) => business_unit_user.business_unit_user_id,
   );
 
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly finesDraftCheckAndValidateRoutingPaths = FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS;
 
+  public readonly finesDraftService = inject(FinesDraftService);
   public tabData$!: Observable<IFinesDraftTableWrapperTableData[]>;
   public failedCount$!: Observable<string>;
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
@@ -150,9 +149,10 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    * then triggers the defendant click logic in the fines draft service,
    * navigating to the review account path.
    *
-   * @param draftAccountId - The unique identifier of the draft account associated with the defendant.
+   * @param row - The draft account row associated with the defendant.
    */
-  public onDefendantClick(draftAccountId: number): void {
+  public onDefendantClick(row: IFinesDraftTableWrapperTableData): void {
+    const draftAccountId = +row['Defendant id'];
     this.finesDraftStore.setFragmentAndChecker(this.activeTab, true);
     this.finesDraftService.onDefendantClick(draftAccountId, this.finesDraftService.PATH_REVIEW_ACCOUNT);
   }

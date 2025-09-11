@@ -6,8 +6,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
       message: 'Enter last name',
       priority: 1,
     },
-    invalidNamePattern: {
-      message: 'Last name must only include letters a to z, hyphens, spaces and apostrophes',
+    lettersWithSpacesPattern: {
+      message: 'Last name must only contain letters',
       priority: 2,
     },
     maxlength: {
@@ -17,8 +17,12 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
   },
   fsa_search_account_individuals_last_name_exact_match: {},
   fsa_search_account_individuals_first_names: {
-    invalidNamePattern: {
-      message: 'First names must only include letters a to z, hyphens, spaces and apostrophes',
+    required: {
+      message: 'Enter first name',
+      priority: 1,
+    },
+    lettersWithSpacesPattern: {
+      message: 'First names must only contain letters',
       priority: 1,
     },
     maxlength: {
@@ -43,8 +47,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_national_insurance_number: {
-    invalidCharacterPattern: {
-      message: 'National Insurance number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'National Insurance number must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -53,8 +57,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_address_line_1: {
-    invalidCharacterPattern: {
-      message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Address line 1 must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {
@@ -63,8 +67,8 @@ export const FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS: IFinesSaSear
     },
   },
   fsa_search_account_individuals_post_code: {
-    invalidCharacterPattern: {
-      message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
       priority: 1,
     },
     maxlength: {

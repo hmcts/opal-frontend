@@ -8,6 +8,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
@@ -38,7 +39,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);

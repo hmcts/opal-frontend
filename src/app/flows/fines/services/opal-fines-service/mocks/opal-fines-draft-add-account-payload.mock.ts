@@ -7,7 +7,7 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
   submitted_by: 'L077JG',
   submitted_by_name: 'opal-test',
   account: {
-    account_type: 'fine',
+    account_type: 'Fine',
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Asylum & Immigration Tribunal',
     originator_id: '3865',
@@ -136,13 +136,14 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
     defendant_name: 'Test, Test',
     date_of_birth: '1990-01-01',
     created_date: '2024-12-06T14:24:55.717962377Z',
-    account_type: 'fine',
+    account_type: 'Fine',
     submitted_by: 'L077JG',
     submitted_by_name: 'opal-test',
     business_unit_name: 'Camberwell Green',
   },
-  account_type: 'fine',
+  account_type: 'Fine',
   account_status: 'Submitted',
+  account_status_message: null,
   account_status_date: '2024-12-06T14:24:55.723011211Z',
   timeline_data: [
     {

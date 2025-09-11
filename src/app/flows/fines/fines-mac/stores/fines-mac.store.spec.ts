@@ -31,6 +31,9 @@ import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM } from '../fines-mac-delete-account-confirmation/constants/fines-mac-delete-account-confirmation-form';
+import { FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK } from '../fines-mac-fixed-penalty-details/mocks/fines-mac-fixed-penalty-details-store-form.mock';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 
 describe('FinesMacStore', () => {
   let store: FinesMacStoreType;
@@ -92,9 +95,9 @@ describe('FinesMacStore', () => {
     const accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_FORM);
     accountDetails.formData = {
       ...accountDetails.formData,
-      fm_create_account_account_type: 'fine',
+      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES['Fine'],
       fm_create_account_business_unit_id: businessUnit.business_unit_id,
-      fm_create_account_defendant_type: 'adultOrYouthOnly',
+      fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
     };
 
     store.setAccountDetails(accountDetails, businessUnit, languagePreferences);
@@ -114,6 +117,7 @@ describe('FinesMacStore', () => {
     store.setDeleteFromCheckAccount(false);
     store.setBusinessUnitId(businessUnit.business_unit_id);
     store.setDeleteAccountConfirmation(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK);
+    store.setFixedPenaltyDetails(FINES_MAC_FIXED_PENALTY_DETAILS_STORE_FORM_MOCK);
 
     expect(store.accountDetails()).toEqual(accountDetails);
     expect(store.businessUnit()).toEqual(businessUnit);
@@ -191,6 +195,7 @@ describe('FinesMacStore', () => {
     expect(store.adultOrYouthSectionsCompleted()).toEqual(true);
     expect(store.parentGuardianSectionsCompleted()).toEqual(true);
     expect(store.companySectionsCompleted()).toEqual(true);
+    expect(store.fixedPenaltyDetailsStatus()).toEqual(FINES_MAC_STATUS.PROVIDED);
   });
 
   it('should test payment term status changing', () => {

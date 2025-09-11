@@ -69,7 +69,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get('button[type="submit"]').should('contain', 'Add personal details');
   });
   it('should render the component correctly for AYPG', { tags: ['@PO-344', '@PO-527', '@PO-1449'] }, () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+    setupComponent(null, 'pgToPay');
     cy.get('app-fines-mac-court-details-form').should('exist');
 
     cy.get('button[type="submit"]').should('contain', 'Add parent or guardian details');
@@ -322,7 +322,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
+    setupComponent(mockFormSubmit, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
     cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();
@@ -343,4 +343,35 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'ABCD1234');
   });
+
+  it(
+    'Should show all values in LJA and Enforcement Court auto-complete dropdown when selected',
+    { tags: ['@PO-1990'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+
+      //Verify autocomplete fields display all values when selected
+      cy.get(DOM_ELEMENTS.ljaInput).focus().click();
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Avon & Somerset Magistrates' Court (5735)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Bedfordshire Magistrates' Court (4165)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').should('contain', "Berkshire Magistrates' Court (4125)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete)
+        .find('li')
+        .should('contain', "Birmingham and Solihull Magistrates' Court (5004)");
+      cy.get(DOM_ELEMENTS.ljaAutocomplete)
+        .find('li')
+        .contains("Birmingham and Solihull Magistrates' Court (5004)")
+        .click();
+
+      cy.get(DOM_ELEMENTS.enforcementCourt).focus().click();
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete)
+        .find('li')
+        .should('contain', 'Port Talbot Justice Centre (999)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (101)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'Historic Debt Database (998)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').should('contain', 'HISTORIC DEBT LODGE COURT (102)');
+      cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').contains('HISTORIC DEBT LODGE COURT (102)').click();
+    },
+  );
 });

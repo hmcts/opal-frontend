@@ -9,7 +9,7 @@
     <p>The account will be created in {{ autoCompleteItems[0].name }}</p>
   } @else {
     <opal-lib-alphagov-accessible-autocomplete
-      [control]="form.controls['fm_create_account_business_unit_id']"
+      [control]="form.get('fm_create_account_business_unit_id')"
       labelText="Business unit"
       labelClasses="govuk-fieldset__legend--m"
       inputId="fm_create_account_business_unit_id"
@@ -33,14 +33,14 @@
         [labelText]="accountType.value"
         [inputId]="accountType.key"
         inputName="fm_create_account_account_type"
-        [inputValue]="accountType.key"
+        [inputValue]="accountType.value"
         [control]="form.get('fm_create_account_account_type')"
-        [inputValueHint]="accountType.key === 'conditionalCaution' ? 'Adult or youth only' : ''"
+        [inputValueHint]="accountType.value === accountTypesKeys['Conditional Caution'] ? 'Adult or youth only' : ''"
       ></div>
 
-      @switch (accountType.key) {
-        @case ('fine') {
-          @if (form.get('fm_create_account_account_type')?.value === 'fine') {
+      @switch (accountType.value) {
+        @case (accountTypesKeys.Fine) {
+          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.Fine) {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;
@@ -49,8 +49,8 @@
             ></ng-container>
           }
         }
-        @case ('fixedPenalty') {
-          @if (form.get('fm_create_account_account_type')?.value === 'fixedPenalty') {
+        @case (accountTypesKeys['Fixed Penalty']) {
+          @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys['Fixed Penalty']) {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;

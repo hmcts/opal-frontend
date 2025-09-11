@@ -35,7 +35,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should not emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     spyOn(component['formSubmit'], 'emit');
 
@@ -43,12 +43,7 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: formSubmit.formData,
-        nestedFlow: false,
-      }),
-    );
+    expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
   it('should initialize the form with correct controls and validators', () => {

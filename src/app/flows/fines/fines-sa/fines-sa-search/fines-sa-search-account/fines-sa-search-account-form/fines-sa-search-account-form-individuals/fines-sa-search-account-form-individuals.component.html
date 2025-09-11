@@ -6,7 +6,7 @@
     inputId="fsa_search_account_individuals_last_name"
     inputName="fsa_search_account_individuals_last_name"
     inputClasses="govuk-input--width-20"
-    [control]="form.controls['fsa_search_account_individuals_last_name']"
+    [control]="form.get('fsa_search_account_individuals_last_name')"
     [errors]="formControlErrorMessages['fsa_search_account_individuals_last_name']"
   ></opal-lib-govuk-text-input>
 </div>
@@ -27,7 +27,7 @@
     inputId="fsa_search_account_individuals_first_names"
     inputName="fsa_search_account_individuals_first_names"
     inputClasses="govuk-input--width-20"
-    [control]="form.controls['fsa_search_account_individuals_first_names']"
+    [control]="form.get('fsa_search_account_individuals_first_names')"
     [errors]="formControlErrorMessages['fsa_search_account_individuals_first_names']"
   ></opal-lib-govuk-text-input>
 </div>
@@ -58,9 +58,10 @@
   inputName="fsa_search_account_individuals_date_of_birth"
   inputClasses="govuk-input--width-10"
   hintText="For example, 31/01/2023"
-  [control]="form.controls['fsa_search_account_individuals_date_of_birth']"
+  [control]="form.get('fsa_search_account_individuals_date_of_birth')!"
   [maxDate]="yesterday"
   [errors]="formControlErrorMessages['fsa_search_account_individuals_date_of_birth']"
+  (dateChange)="setInputValue($event, 'fsa_search_account_individuals_date_of_birth')"
 ></opal-lib-moj-date-picker>
 <opal-lib-govuk-text-input
   labelText="National Insurance number"
@@ -69,7 +70,7 @@
   hintText="For example, QQ123456C"
   inputClasses="govuk-input--width-10"
   labelClasses="govuk-label--s"
-  [control]="form.controls['fsa_search_account_individuals_national_insurance_number']"
+  [control]="form.get('fsa_search_account_individuals_national_insurance_number')"
   [errors]="formControlErrorMessages['fsa_search_account_individuals_national_insurance_number']"
 ></opal-lib-govuk-text-input>
 <opal-lib-govuk-text-input
@@ -78,7 +79,7 @@
   inputId="fsa_search_account_individuals_address_line_1"
   inputName="fsa_search_account_individuals_address_line_1"
   inputClasses="govuk-!-width-three-quarters"
-  [control]="form.controls['fsa_search_account_individuals_address_line_1']"
+  [control]="form.get('fsa_search_account_individuals_address_line_1')"
   [errors]="formControlErrorMessages['fsa_search_account_individuals_address_line_1']"
 ></opal-lib-govuk-text-input>
 <opal-lib-govuk-text-input
@@ -87,6 +88,6 @@
   inputId="fsa_search_account_individuals_post_code"
   inputName="fsa_search_account_individuals_post_code"
   inputClasses="govuk-input--width-10"
-  [control]="form.controls['fsa_search_account_individuals_post_code']"
+  [control]="form.get('fsa_search_account_individuals_post_code')"
   [errors]="formControlErrorMessages['fsa_search_account_individuals_post_code']"
 ></opal-lib-govuk-text-input>

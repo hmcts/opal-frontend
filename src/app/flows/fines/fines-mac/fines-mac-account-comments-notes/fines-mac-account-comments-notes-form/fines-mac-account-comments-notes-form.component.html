@@ -1,4 +1,8 @@
 <h1 class="govuk-heading-l">Account comments and notes</h1>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <opal-lib-govuk-text-area
     labelText="Add comment"
@@ -6,10 +10,11 @@
     hintText="For example, a warning, which will appear on the account summary"
     inputId="fm_account_comments_notes_comments"
     inputName="fm_account_comments_notes_comments"
-    [control]="form.controls['fm_account_comments_notes_comments']"
+    [control]="form.get('fm_account_comments_notes_comments')"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="30"
     [rows]="1"
+    [errors]="formControlErrorMessages['fm_account_comments_notes_comments']"
   ></opal-lib-govuk-text-area>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <opal-lib-govuk-text-area
@@ -18,9 +23,10 @@
     hintText="You can view notes in account history after the account is published"
     inputId="fm_account_comments_notes_notes"
     inputName="fm_account_comments_notes_notes"
-    [control]="form.controls['fm_account_comments_notes_notes']"
+    [control]="form.get('fm_account_comments_notes_notes')"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="1000"
+    [errors]="formControlErrorMessages['fm_account_comments_notes_notes']"
   ></opal-lib-govuk-text-area>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -39,7 +45,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails)"
       ></opal-lib-govuk-cancel-link>
     </div>
   </div>

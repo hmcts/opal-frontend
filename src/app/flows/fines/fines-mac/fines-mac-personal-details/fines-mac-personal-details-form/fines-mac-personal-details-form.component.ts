@@ -33,16 +33,25 @@ import {
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+
+// regex pattern validators for the form controls
+const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
+
 @Component({
   selector: 'app-fines-mac-personal-details-form',
   imports: [
@@ -64,23 +73,22 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   };
-
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
-
   public age!: number;
   public ageLabel!: string;
+  public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
   /**
    * Sets up the personal details form.
@@ -91,12 +99,12 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
-        alphabeticalTextValidator(),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        alphabeticalTextValidator(),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),
@@ -105,15 +113,15 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
@@ -185,7 +193,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       [...Array(formData.fm_personal_details_aliases.length).keys()],
       'fm_personal_details_aliases',
     );
-    if (key === 'adultOrYouthOnly') {
+    if (key === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly) {
       this.addVehicleDetailsControls();
     }
     this.setInitialErrorMessages();

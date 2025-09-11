@@ -34,6 +34,13 @@ import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from './mocks/opal-fines-search-offen
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
+import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import {
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
+} from './mocks/opal-fines-defendant-account-search-params.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -525,5 +532,51 @@ describe('OpalFines', () => {
     expect(req.request.body).toEqual(body);
 
     req.flush(expectedResponse);
+  });
+
+  it('should getProsecutors', () => {
+    const businessUnitId = 1;
+    const expectedResponse = OPAL_FINES_PROSECUTOR_REF_DATA_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=${businessUnitId}`;
+
+    service.getProsecutors(businessUnitId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
+  });
+
+  it('should get prosecutorPrettyName', () => {
+    const prosecutor = OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0];
+    const expectedPrettyName = `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
+
+    const result = service.getProsecutorPrettyName(prosecutor);
+
+    expect(result).toEqual(expectedPrettyName);
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - individual', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
+  });
+
+  it('should return the mocked defendant accounts response with search params injected - company', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
+      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
+      expect(response._debug_searchParams).toEqual(searchParams);
+    });
   });
 });

@@ -1,1 +1,140 @@
 <h1 class="govuk-heading-l">Minor creditors</h1>
+<opal-lib-govuk-radio
+  fieldSetId="fsa_search_account_minor_creditors_minor_creditor_type"
+  [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_minor_creditor_type']"
+>
+  @for (minorCreditorType of minorCreditorTypes; track minorCreditorType.key) {
+    <div
+      opal-lib-govuk-radios-item
+      [labelText]="minorCreditorType.value"
+      [inputId]="minorCreditorType.key"
+      inputName="fsa_search_account_minor_creditors_minor_creditor_type"
+      [inputValue]="minorCreditorType.key"
+      [control]="form.get('fsa_search_account_minor_creditors_minor_creditor_type')"
+    ></div>
+    @if (minorCreditorType.key === 'individual') {
+      @if (form.get('fsa_search_account_minor_creditors_minor_creditor_type')!.value === minorCreditorType.key) {
+        <div opal-lib-govuk-radios-conditional conditionalId="fsa_search_account_minor_creditors_minor_creditor_type">
+          <div class="govuk-form-group">
+            <div class="no-margin-bottom">
+              <opal-lib-govuk-text-input
+                labelText="Last name"
+                labelClasses="govuk-label--s"
+                inputId="fsa_search_account_minor_creditors_last_name"
+                inputName="fsa_search_account_minor_creditors_last_name"
+                inputClasses="govuk-input--width-20"
+                [control]="individualGroup.get('fsa_search_account_minor_creditors_last_name')"
+                [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_last_name']"
+              ></opal-lib-govuk-text-input>
+            </div>
+            <opal-lib-govuk-checkboxes fieldSetId="lastNameExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_minor_creditors_last_name_exact_match"
+                inputName="fsa_search_account_minor_creditors_last_name_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="individualGroup.get('fsa_search_account_minor_creditors_last_name_exact_match')"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </div>
+          <div class="govuk-form-group">
+            <div class="no-margin-bottom">
+              <opal-lib-govuk-text-input
+                labelText="First names"
+                labelClasses="govuk-label--s"
+                inputId="fsa_search_account_minor_creditors_first_names"
+                inputName="fsa_search_account_minor_creditors_first_names"
+                inputClasses="govuk-input--width-20"
+                [control]="individualGroup.get('fsa_search_account_minor_creditors_first_names')"
+                [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_first_names']"
+              ></opal-lib-govuk-text-input>
+            </div>
+            <opal-lib-govuk-checkboxes fieldSetId="firstNamesExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_minor_creditors_first_names_exact_match"
+                inputName="fsa_search_account_minor_creditors_first_names_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="individualGroup.get('fsa_search_account_minor_creditors_first_names_exact_match')"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Address line 1"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_individual_address_line_1"
+              inputName="fsa_search_account_minor_creditors_individual_address_line_1"
+              inputClasses="govuk-!-width-three-quarters"
+              [control]="individualGroup.get('fsa_search_account_minor_creditors_individual_address_line_1')"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_individual_address_line_1']"
+            ></opal-lib-govuk-text-input>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Postcode"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_individual_post_code"
+              inputName="fsa_search_account_minor_creditors_individual_post_code"
+              inputClasses="govuk-input--width-10"
+              [control]="individualGroup.get('fsa_search_account_minor_creditors_individual_post_code')"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_individual_post_code']"
+            ></opal-lib-govuk-text-input>
+          </div>
+        </div>
+      }
+    } @else if (minorCreditorType.key === 'company') {
+      @if (form.get('fsa_search_account_minor_creditors_minor_creditor_type')!.value === minorCreditorType.key) {
+        <div opal-lib-govuk-radios-conditional conditionalId="fsa_search_account_minor_creditors_minor_creditor_type">
+          <div class="govuk-form-group">
+            <div class="no-margin-bottom">
+              <opal-lib-govuk-text-input
+                labelText="Company name"
+                labelClasses="govuk-label--s"
+                inputId="fsa_search_account_minor_creditors_company_name"
+                inputName="fsa_search_account_minor_creditors_company_name"
+                inputClasses="govuk-!-width-three-quarters"
+                [control]="companyGroup.get('fsa_search_account_minor_creditors_company_name')"
+                [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_name']"
+              ></opal-lib-govuk-text-input>
+            </div>
+            <opal-lib-govuk-checkboxes fieldSetId="companyNameExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_minor_creditors_company_name_exact_match"
+                inputName="fsa_search_account_minor_creditors_company_name_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="companyGroup.get('fsa_search_account_minor_creditors_company_name_exact_match')"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Address line 1"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_company_address_line_1"
+              inputName="fsa_search_account_minor_creditors_company_address_line_1"
+              inputClasses="govuk-!-width-three-quarters"
+              [control]="companyGroup.get('fsa_search_account_minor_creditors_company_address_line_1')"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_address_line_1']"
+            ></opal-lib-govuk-text-input>
+          </div>
+          <div class="govuk-form-group">
+            <opal-lib-govuk-text-input
+              labelText="Postcode"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_minor_creditors_company_post_code"
+              inputName="fsa_search_account_minor_creditors_company_post_code"
+              inputClasses="govuk-input--width-10"
+              [control]="companyGroup.get('fsa_search_account_minor_creditors_company_post_code')"
+              [errors]="formControlErrorMessages['fsa_search_account_minor_creditors_company_post_code']"
+            ></opal-lib-govuk-text-input>
+          </div>
+        </div>
+      }
+    }
+  }
+</opal-lib-govuk-radio>

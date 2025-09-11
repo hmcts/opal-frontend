@@ -20,9 +20,14 @@ import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/gov
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { optionalEmailAddressValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-email-address';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-telephone';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { EMAIL_ADDRESS_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+
+//regex pattern validators for the form controls
+const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 'emailPattern');
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -38,13 +43,14 @@ import { optionalPhoneNumberValidator } from '@hmcts/opal-frontend-common/valida
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacContactDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  public readonly defendantTypeKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IFinesMacContactDetailsFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
 
   /**
@@ -54,11 +60,11 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
     this.form = new FormGroup({
       fm_contact_details_email_address_1: new FormControl(null, [
         optionalMaxLengthValidator(76),
-        optionalEmailAddressValidator(),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
       fm_contact_details_email_address_2: new FormControl(null, [
         optionalMaxLengthValidator(76),
-        optionalEmailAddressValidator(),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
       fm_contact_details_telephone_number_mobile: new FormControl(null, [
         optionalMaxLengthValidator(35),

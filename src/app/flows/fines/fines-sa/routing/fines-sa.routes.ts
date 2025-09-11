@@ -5,6 +5,9 @@ import { FINES_SA_ROUTING_TITLES } from './constants/fines-sa-routing-titles.con
 import { routing as searchRouting } from '../fines-sa-search/routing/fines-sa-search.routes';
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { finesSaIndividualAccountsResolver } from './resolvers/fines-sa-individual-accounts.resolver';
+import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
+import { finesSaCompanyAccountsResolver } from './resolvers/fines-sa-company-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -16,6 +19,9 @@ export const routing: Routes = [
     data: {
       title: FINES_SA_ROUTING_TITLES.children.search,
     },
+    resolve: {
+      title: TitleResolver,
+    },
   },
   {
     path: FINES_SA_ROUTING_PATHS.children.results,
@@ -24,6 +30,11 @@ export const routing: Routes = [
     canActivate: [authGuard, finesSaFlowStateGuard],
     data: {
       title: FINES_SA_ROUTING_TITLES.children.results,
+    },
+    resolve: {
+      title: TitleResolver,
+      individualAccounts: finesSaIndividualAccountsResolver,
+      companyAccounts: finesSaCompanyAccountsResolver,
     },
   },
   {

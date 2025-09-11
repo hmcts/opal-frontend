@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
-import { CommonModule } from '@angular/common';
+
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -28,17 +28,25 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
-import { FinesSaSearchAccountTabs } from '../types/fines-sa-search-account-tabs.type';
+import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-controls.constant';
-import { FinesSaService } from '../../../services/fines-sa.service';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-controls.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-controls.constant';
+
+import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Component({
   selector: 'app-fines-sa-search-account-form',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
@@ -61,47 +69,49 @@ import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './fines-sa-sear
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
-  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
-
-  public readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
-  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTabs, Partial<IFinesSaSearchAccountFieldErrors>> = {
+  private readonly tabFieldErrorMap: Record<FinesSaSearchAccountTab, Partial<IFinesSaSearchAccountFieldErrors>> = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
-    minorCreditors: {},
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
     majorCreditors: {},
   };
   private readonly tabControlsMap = {
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_CONTROLS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS,
-    minorCreditors: {},
+    minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_CONTROLS,
     majorCreditors: {},
   };
-  private readonly finesSaService = inject(FinesSaService);
 
+  @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+
+  public readonly finesSaStore = inject(FinesSaStore);
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
 
   /**
    * Sets up the base structure of the form, including all static and tab-specific search criteria controls.
    */
   private setupBaseSearchAccountForm(): void {
-    this.form = new FormGroup({
-      fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
-      fsa_search_account_number: new FormControl<string | null>(null, [
-        patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
-        patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
-        Validators.maxLength(9),
-      ]),
-      fsa_search_account_reference_case_number: new FormControl<string | null>(null, [
-        patternValidator(/^[a-zA-Z0-9\s'-]+$/, 'invalidCharacterPattern'),
-        Validators.maxLength(30),
-      ]),
-      fsa_search_account_individual_search_criteria: new FormGroup({}),
-      fsa_search_account_companies_search_criteria: new FormGroup({}),
-      fsa_search_account_minor_creditor_search_criteria: new FormGroup({}),
-      fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
-      fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
-    });
+    this.form = new FormGroup(
+      {
+        fsa_search_account_business_unit_ids: new FormControl<number[] | null>(null),
+        fsa_search_account_number: new FormControl<string | null>(null, [
+          patternValidator(/^\d{8}([A-Z])?$/, 'invalidFormat'),
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          Validators.maxLength(9),
+        ]),
+        fsa_search_account_reference_case_number: new FormControl<string | null>(null, [
+          ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          Validators.maxLength(30),
+        ]),
+        fsa_search_account_individuals_search_criteria: new FormGroup({}),
+        fsa_search_account_companies_search_criteria: new FormGroup({}),
+        fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
+        fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
+        fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
+      },
+      { validators: atLeastOneCriteriaValidator },
+    );
   }
 
   /**
@@ -121,7 +131,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         });
       }
 
-      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTabs);
+      this.finesSaStore.setActiveTab(resolvedFragment as FinesSaSearchAccountTab);
       this.switchTab(this.finesSaStore.activeTab());
     });
   }
@@ -137,25 +147,31 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
 
   /**
    * Replaces the controls inside the currently active tab's search criteria FormGroup.
-   * @param controls An object containing control names and their FormControl instances.
+   * Accepts either a Record of controls or a FormGroup instance.
+   * @param controls An object containing control names and their AbstractControl instances, or a FormGroup.
    */
-  private setControls(controls: Record<string, FormControl>): void {
+  private setControls(controls: Record<string, AbstractControl> | FormGroup): void {
     const group = this.searchCriteriaForm;
 
-    // Clear existing
+    // Clear existing controls
     Object.keys(group.controls).forEach((key) => group.removeControl(key));
 
-    // Add new
-    Object.entries(controls).forEach(([key, control]) => group.addControl(key, control));
+    if (controls instanceof FormGroup) {
+      Object.entries(controls.controls).forEach(([key, control]) => group.addControl(key, control));
+    } else {
+      Object.entries(controls).forEach(([key, control]) => group.addControl(key, control));
+    }
   }
 
   /**
    * Clears all controls in all tab-specific search criteria form groups.
+   * Clears all error messages.
    */
   private clearSearchForm(): void {
-    ['individual', 'companies', 'minor_creditor', 'major_creditor'].forEach((key) =>
+    ['individuals', 'companies', 'minor_creditors', 'major_creditor'].forEach((key) =>
       this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
     );
+    this.clearAllErrorMessages();
   }
 
   /**
@@ -166,15 +182,40 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private switchTab(tab: string | Event): void {
     this.fieldErrors = {
       ...FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS,
-      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTabs],
+      ...this.tabFieldErrorMap[tab as FinesSaSearchAccountTab],
     } as IFinesSaSearchAccountFieldErrors;
 
     this.clearSearchForm();
 
-    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTabs] ?? {});
+    this.setControls(this.tabControlsMap[tab as FinesSaSearchAccountTab] ?? {});
 
     this.rePopulateForm(this.finesSaStore.searchAccount());
     this.finesSaStore.resetSearchAccount();
+  }
+
+  /**
+   * Handles the internal validation and navigation logic for form submission.
+   *
+   * - If the form has the 'atLeastOneCriteriaRequired' error, it temporarily stores the form value
+   *   in the FinesSaStore and navigates to the problem route, preventing further processing.
+   * - If the form has the 'formEmpty' error, it simply returns and does not proceed.
+   * - Otherwise, allows the submission to continue (handled by the parent class).
+   *
+   * This method is intended to be called before the main form submission logic to ensure
+   * that the form meets minimum criteria and to provide user feedback or navigation if not.
+   */
+  private handleFormSubmission(): void {
+    if (this.form.errors?.['atLeastOneCriteriaRequired']) {
+      this.finesSaStore.setSearchAccountTemporary(this.form.value);
+      this['router'].navigate([this.finesSaSearchRoutingPaths.children.problem], {
+        relativeTo: this['activatedRoute'].parent,
+      });
+      return;
+    }
+
+    if (this.form.errors?.['formEmpty']) {
+      return;
+    }
   }
 
   /**
@@ -183,11 +224,11 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   public get searchCriteriaForm(): FormGroup {
     switch (this.finesSaStore.activeTab()) {
       case 'individuals':
-        return this.form.get('fsa_search_account_individual_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_individuals_search_criteria') as FormGroup;
       case 'companies':
         return this.form.get('fsa_search_account_companies_search_criteria') as FormGroup;
       case 'minorCreditors':
-        return this.form.get('fsa_search_account_minor_creditor_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
       case 'majorCreditors':
         return this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
       default:
@@ -206,27 +247,17 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Handles the form submission logic including AC6 enforcement:
-   * If multiple criteria are used (account number + reference number + tab data), redirect to error.
-   * Otherwise, proceed with base class submission.
-   * @param event The SubmitEvent triggered by the form.
+   * Handles the form submission event for the fines search account form.
+   *
+   * - If the form has the 'atLeastOneCriteriaRequired' error, it temporarily stores the form value
+   *   and navigates to the problem route.
+   * - If the form has the 'formEmpty' error, it prevents further processing.
+   * - Otherwise, it delegates the handling to the parent class implementation.
+   *
+   * @param event - The submit event triggered by the form submission.
    */
-  override handleFormSubmit(event: SubmitEvent): void {
-    const accountNumber = this.form.get('fsa_search_account_number')?.value?.trim();
-    const referenceNumber = this.form.get('fsa_search_account_reference_case_number')?.value?.trim();
-
-    const hasTabData = this.finesSaService.hasAnySearchCriteriaPopulated(this.form.value);
-
-    const criteriaUsed = [!!accountNumber, !!referenceNumber, hasTabData].filter(Boolean).length;
-
-    if (criteriaUsed > 1) {
-      this.finesSaStore.setSearchAccountTemporary(this.form.value);
-      this['router'].navigate([this.finesSaSearchRoutingPaths.children.problem], {
-        relativeTo: this['activatedRoute'].parent,
-      });
-      return;
-    }
-
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.handleFormSubmission();
     super.handleFormSubmit(event);
   }
 

@@ -26,10 +26,23 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { alphabeticalTextValidator } from '@hmcts/opal-frontend-common/validators/alphabetical-text';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
-import { specialCharactersValidator } from '@hmcts/opal-frontend-common/validators/special-characters';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import {
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+} from '@hmcts/opal-frontend-common/constants';
+
+//regex pattern validators for the form controls
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -49,14 +62,14 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
-  @Input() public defendantType!: string;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
-
   private readonly finesMacStore = inject(FinesMacStore);
+
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
+  @Input() public defendantType!: string;
   override fieldErrors: IFinesMacCompanyDetailsFieldErrors = FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS;
 
   /**
@@ -67,24 +80,27 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
       fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
-        alphabeticalTextValidator(),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
       ]),
       fm_company_details_add_alias: new FormControl(null),
       fm_company_details_aliases: new FormArray([]),
       fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_company_details_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
-        specialCharactersValidator(),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_company_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_company_details_postcode: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
     });
   }
 

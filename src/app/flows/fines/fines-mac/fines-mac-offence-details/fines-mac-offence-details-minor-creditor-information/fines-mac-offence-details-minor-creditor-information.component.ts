@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
 import {
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
@@ -16,7 +15,6 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
   imports: [
-    CommonModule,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukSummaryCardListComponent,
@@ -26,13 +24,12 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements OnInit {
+  private readonly utilsService = inject(UtilsService);
+
   @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: true }) public isDetailsHidden!: boolean;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
-
-  private readonly utilsService = inject(UtilsService);
-
   public name!: string;
   public address!: string;
   public paymentMethod!: string;

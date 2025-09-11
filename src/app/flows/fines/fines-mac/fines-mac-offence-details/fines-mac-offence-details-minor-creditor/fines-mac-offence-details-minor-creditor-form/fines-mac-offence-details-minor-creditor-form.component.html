@@ -17,7 +17,7 @@
         [inputId]="creditorType.key"
         inputName="fm_offence_details_minor_creditor_creditor_type"
         [inputValue]="creditorType.key"
-        [control]="form.controls['fm_offence_details_minor_creditor_creditor_type']"
+        [control]="form.get('fm_offence_details_minor_creditor_creditor_type')"
       ></div>
 
       @if (creditorType.key === 'individual') {
@@ -30,7 +30,7 @@
                 selectName="fm_offence_details_minor_creditor_title"
                 selectClasses="govuk-!-width-one-third"
                 [options]="titleOptions"
-                [control]="form.controls['fm_offence_details_minor_creditor_title']"
+                [control]="form.get('fm_offence_details_minor_creditor_title')!"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_title']"
               ></opal-lib-govuk-select>
             </div>
@@ -41,7 +41,7 @@
                 inputName="fm_offence_details_minor_creditor_forenames"
                 inputClasses="govuk-!-width-two-thirds"
                 hintText="Include their middle names"
-                [control]="form.controls['fm_offence_details_minor_creditor_forenames']"
+                [control]="form.get('fm_offence_details_minor_creditor_forenames')"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_forenames']"
               ></opal-lib-govuk-text-input>
             </div>
@@ -51,9 +51,9 @@
                 inputId="fm_offence_details_minor_creditor_surname"
                 inputName="fm_offence_details_minor_creditor_surname"
                 inputClasses="govuk-!-width-two-thirds"
-                [control]="form.controls['fm_offence_details_minor_creditor_surname']"
+                [control]="form.get('fm_offence_details_minor_creditor_surname')"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_surname']"
-                [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_surname']"
+                [opalLibCapitaliseAllCharacters]="form.get('fm_offence_details_minor_creditor_surname')!"
               ></opal-lib-govuk-text-input>
             </div>
           </div>
@@ -67,7 +67,7 @@
                 inputId="fm_offence_details_minor_creditor_company_name"
                 inputName="fm_offence_details_minor_creditor_company_name"
                 inputClasses="govuk-!-width-two-thirds"
-                [control]="form.controls['fm_offence_details_minor_creditor_company_name']"
+                [control]="form.get('fm_offence_details_minor_creditor_company_name')"
                 [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_company_name']"
               ></opal-lib-govuk-text-input>
             </div>
@@ -83,7 +83,7 @@
       inputId="fm_offence_details_minor_creditor_address_line_1"
       inputName="fm_offence_details_minor_creditor_address_line_1"
       inputClasses="govuk-!-width-three-quarters"
-      [control]="form.controls['fm_offence_details_minor_creditor_address_line_1']"
+      [control]="form.get('fm_offence_details_minor_creditor_address_line_1')"
       [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_address_line_1']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -91,7 +91,7 @@
       inputId="fm_offence_details_minor_creditor_address_line_2"
       inputName="fm_offence_details_minor_creditor_address_line_2"
       inputClasses="govuk-!-width-two-thirds"
-      [control]="form.controls['fm_offence_details_minor_creditor_address_line_2']"
+      [control]="form.get('fm_offence_details_minor_creditor_address_line_2')"
       [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_address_line_2']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -99,7 +99,7 @@
       inputId="fm_offence_details_minor_creditor_address_line_3"
       inputName="fm_offence_details_minor_creditor_address_line_3"
       inputClasses="govuk-!-width-one-third"
-      [control]="form.controls['fm_offence_details_minor_creditor_address_line_3']"
+      [control]="form.get('fm_offence_details_minor_creditor_address_line_3')"
       [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_address_line_3']"
     ></opal-lib-govuk-text-input>
     <opal-lib-govuk-text-input
@@ -107,9 +107,9 @@
       inputId="fm_offence_details_minor_creditor_post_code"
       inputName="fm_offence_details_minor_creditor_post_code"
       inputClasses="govuk-!-width-one-third"
-      [control]="form.controls['fm_offence_details_minor_creditor_post_code']"
+      [control]="form.get('fm_offence_details_minor_creditor_post_code')"
       [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_post_code']"
-      [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_post_code']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_offence_details_minor_creditor_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
   <fieldset class="govuk-fieldset">
@@ -130,7 +130,7 @@
           inputId="fm_offence_details_minor_creditor_bank_account_name"
           inputName="fm_offence_details_minor_creditor_bank_account_name"
           inputClasses="govuk-!-width-two-thirds"
-          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_name']"
+          [control]="form.get('fm_offence_details_minor_creditor_bank_account_name')"
           [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_name']"
         ></opal-lib-govuk-text-input>
         <opal-lib-govuk-text-input
@@ -138,7 +138,7 @@
           inputId="fm_offence_details_minor_creditor_bank_sort_code"
           inputName="fm_offence_details_minor_creditor_bank_sort_code"
           inputClasses="govuk-!-width-one-third"
-          [control]="form.controls['fm_offence_details_minor_creditor_bank_sort_code']"
+          [control]="form.get('fm_offence_details_minor_creditor_bank_sort_code')"
           [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_sort_code']"
         ></opal-lib-govuk-text-input>
         <opal-lib-govuk-text-input
@@ -146,7 +146,7 @@
           inputId="fm_offence_details_minor_creditor_bank_account_number"
           inputName="fm_offence_details_minor_creditor_bank_account_number"
           inputClasses="govuk-!-width-one-third"
-          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_number']"
+          [control]="form.get('fm_offence_details_minor_creditor_bank_account_number')"
           [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_number']"
         ></opal-lib-govuk-text-input>
         <opal-lib-govuk-text-input
@@ -154,9 +154,9 @@
           inputId="fm_offence_details_minor_creditor_bank_account_ref"
           inputName="fm_offence_details_minor_creditor_bank_account_ref"
           inputClasses="govuk-!-width-two-thirds"
-          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_ref']"
+          [control]="form.get('fm_offence_details_minor_creditor_bank_account_ref')"
           [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_ref']"
-          [opalLibCapitaliseAllCharacters]="form.controls['fm_offence_details_minor_creditor_bank_account_ref']"
+          [opalLibCapitaliseAllCharacters]="form.get('fm_offence_details_minor_creditor_bank_account_ref')!"
         ></opal-lib-govuk-text-input>
       </div>
     }
