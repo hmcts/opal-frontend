@@ -79,7 +79,8 @@
             <app-fines-sa-search-account-form-individuals
               [form]="searchCriteriaForm"
               [formControlErrorMessages]="formControlErrorMessages"
-            ></app-fines-sa-search-account-form-individuals>
+            >
+            </app-fines-sa-search-account-form-individuals>
           </opal-lib-govuk-tabs-panel>
         }
         @case ('companies') {
@@ -95,6 +96,7 @@
             <app-fines-sa-search-account-form-minor-creditors
               [form]="searchCriteriaForm"
               [formControlErrorMessages]="formControlErrorMessages"
+              (formErrorSummaryMessagesChange)="updateFormErrorSummaryMessages($event)"
             ></app-fines-sa-search-account-form-minor-creditors>
           </opal-lib-govuk-tabs-panel>
         }
