@@ -385,21 +385,21 @@ Feature: Account Search and Matches
 
   @PO-717
   Scenario: Successful Search For Individual Defendant Accounts
-    When I enter "12345678" into the "Account number" field
+    When I enter "Graham" into the "Last name" field
     And I click the "Search" button
 
     # PO-717 - AC5. Back Button navigates to Search Page
     Then I see "Search results" on the page header
 
     When I click on the "Back" link
-    Then I see "12345678" in the "Account number" field
+    Then I see "Graham" in the "Last name" field
     Then I see "Individuals" on the page header
 
 
     # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
     # Handles window.open navigation
     When I click the "Search" button
-    When I click the "230001BU" link and handle new window navigation
+    When I click the "100A" link and handle new window navigation
     Then I see "Account Details" on the page header
 
 
@@ -460,3 +460,214 @@ Feature: Account Search and Matches
     Then I see "12345678A" in the "Account number" field
     Then I see "Individuals" on the page header
 
+
+  # PO-708 AC3b & AC2b Will be covered once API integration is complete
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search
+    When I enter "Smith" into the "Last name" field
+    And I select the last name exact match checkbox
+    And I enter "John" into the "First names" field
+    And I select the first names exact match checkbox
+    And I select the "Include aliases" checkbox
+    And I enter "15/05/1980" into the Date of birth field
+    And I enter "AB123456C" into the "National Insurance number" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | lastName                | Smith           |
+      | lastNameExact           | true            |
+      | firstNames              | John            |
+      | firstNamesExact         | true            |
+      | includeAliases          | true            |
+      | dateOfBirth             | 15/05/1980      |
+      | nationalInsuranceNumber | AB123456C       |
+      | addressLine1            | 123 Test Street |
+      | postcode                | SW1A 1AA        |
+      | companyName             | null            |
+      | companyNameExact        | null            |
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search with only last name populated
+    When I enter "Smith" into the "Last name" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | lastName                | Smith |
+      | lastNameExact           | false |
+      | firstNames              | null  |
+      | firstNamesExact         | false |
+      | includeAliases          | false |
+      | dateOfBirth             | null  |
+      | nationalInsuranceNumber | null  |
+      | addressLine1            | null  |
+      | postcode                | null  |
+      | companyName             | null  |
+      | companyNameExact        | null  |
+
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
+    When I enter "Smith" into the "Last name" field
+    And I unselect the Active accounts only checkbox
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted API call for search account contains the following parameters:
+      | lastName                | Smith |
+      | lastNameExact           | false |
+      | firstNames              | null  |
+      | firstNamesExact         | false |
+      | includeAliases          | false |
+      | dateOfBirth             | null  |
+      | nationalInsuranceNumber | null  |
+      | addressLine1            | null  |
+      | postcode                | null  |
+      | companyName             | null  |
+      | companyNameExact        | null  |
+      | activeAccountsOnly      | false |
+
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+    And I select the company name exact match checkbox
+    And I select the include alias checkbox
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne      |
+      | companyNameExact        | true            |
+      | includeAliases          | true            |
+      | addressLine1            | 123 Test Street |
+      | postcode                | SW1A 1AA        |
+      | lastName                | null            |
+      | lastNameExact           | null            |
+      | firstNames              | null            |
+      | firstNamesExact         | null            |
+      | dateOfBirth             | null            |
+      | nationalInsuranceNumber | null            |
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search with only company name populated
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne |
+      | companyNameExact        | false      |
+      | includeAliases          | false      |
+      | addressLine1            | null       |
+      | postcode                | null       |
+      | lastName                | null       |
+      | lastNameExact           | null       |
+      | firstNames              | null       |
+      | firstNamesExact         | null       |
+      | dateOfBirth             | null       |
+      | nationalInsuranceNumber | null       |
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search with "Active accounts only" checkbox unchecked
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+    And I unselect the Active accounts only checkbox
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne |
+      | companyNameExact        | false      |
+      | includeAliases          | false      |
+      | addressLine1            | null       |
+      | postcode                | null       |
+      | lastName                | null       |
+      | lastNameExact           | null       |
+      | firstNames              | null       |
+      | firstNamesExact         | null       |
+      | dateOfBirth             | null       |
+      | nationalInsuranceNumber | null       |
+      | activeAccountsOnly      | false      |
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Individual
+    When I click on the "Minor creditors" link
+    And I select the "Individual" radio button
+    And I enter "FirstName" into the "First names" field
+    And I enter "LastName" into the "Last name" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | FirstName       |
+      | lastName              | LastName        |
+      | addressLine1          | 123 Test Street |
+      | postcode              | SW1A 1AA        |
+      | organisationName      | null            |
+      | organisationNameExact | null            |
+      | organisation          | false           |
+      | exactLastName         | null            |
+      | exactFirstNames       | null            |
+
+
+
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Individual with only last name populated
+    When I click on the "Minor creditors" link
+    And I select the "Individual" radio button
+    And I enter "LastName" into the "Last name" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | null     |
+      | lastName              | LastName |
+      | addressLine1          | null     |
+      | postcode              | null     |
+      | organisationName      | null     |
+      | organisationNameExact | null     |
+      | organisation          | false    |
+      | exactLastName         | null     |
+      | exactFirstNames       | null     |
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Company
+    When I click on the "Minor creditors" link
+    And I select the "Company" radio button
+    And I enter "CompanyOne" into the "Company name" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | null            |
+      | lastName              | null            |
+      | addressLine1          | 123 Test Street |
+      | postcode              | SW1A 1AA        |
+      | organisationName      | CompanyOne      |
+      | organisationNameExact | null            |
+      | organisation          | true            |
+      | exactLastName         | null            |
+      | exactFirstNames       | null            |
