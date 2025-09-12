@@ -396,11 +396,11 @@ Feature: Account Search and Matches
     Then I see "Individuals" on the page header
 
 
-    # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "100A" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # PO-717 - AC4g. Click on Account Number link and verify navigation to template page - to be completed once API integration is complete - test data needs discussed
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "100A" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
 
   # PO-707
@@ -418,11 +418,11 @@ Feature: Account Search and Matches
     Then I see "Companies" on the page header
 
 
-    # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "555O" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # PO-707 - AC4g. Click on Account Number link and verify navigation to template page - to be completed once API integration is complete - test data needs discussed
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "555O" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
   #PO-707 AC3b & AC2b Will be covered once API integration is complete
 
@@ -441,11 +441,11 @@ Feature: Account Search and Matches
     When I click on the "Back" link
     Then I see "Search for an account" on the page header
 
-    # AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "100A" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # AC4g. Click on Account Number link and verify navigation to template page - To be fixed once API integration is complete
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "100A" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
   # PO-708 AC3b & AC2b Will be covered once API integration is complete
   # PO-706 AC6 will be covered once API integration is complete
@@ -465,6 +465,7 @@ Feature: Account Search and Matches
 
   @PO-717
   Scenario: Verify API call parameters for Individual search
+    #AC1
     When I enter "Smith" into the "Last name" field
     And I select the last name exact match checkbox
     And I enter "John" into the "First names" field
@@ -493,6 +494,7 @@ Feature: Account Search and Matches
 
   @PO-717
   Scenario: Verify API call parameters for Individual search with only last name populated
+    #AC1
     When I enter "Smith" into the "Last name" field
 
     When I intercept the "defendant" account search API call
@@ -514,6 +516,7 @@ Feature: Account Search and Matches
 
   @PO-717
   Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
+    #AC1
     When I enter "Smith" into the "Last name" field
     And I unselect the Active accounts only checkbox
 
@@ -537,6 +540,7 @@ Feature: Account Search and Matches
 
   @PO-707
   Scenario: Verify API call parameters for Company search
+    #AC1
     When I click on the "Companies" link
     And I enter "CompanyOne" into the "Company name" field
     And I select the company name exact match checkbox
@@ -562,6 +566,7 @@ Feature: Account Search and Matches
 
   @PO-707
   Scenario: Verify API call parameters for Company search with only company name populated
+    #AC1
     When I click on the "Companies" link
     And I enter "CompanyOne" into the "Company name" field
 
@@ -583,6 +588,7 @@ Feature: Account Search and Matches
 
   @PO-707
   Scenario: Verify API call parameters for Company search with "Active accounts only" checkbox unchecked
+    #AC1
     When I click on the "Companies" link
     And I enter "CompanyOne" into the "Company name" field
     And I unselect the Active accounts only checkbox
@@ -606,6 +612,7 @@ Feature: Account Search and Matches
 
   @PO-708
   Scenario: Verify API call parameters for Minor Creditor search - Individual
+    #AC1
     When I click on the "Minor creditors" link
     And I select the "Individual" radio button
     And I enter "FirstName" into the "First names" field
@@ -632,6 +639,7 @@ Feature: Account Search and Matches
 
   @PO-708
   Scenario: Verify API call parameters for Minor Creditor search - Individual with only last name populated
+    #AC1
     When I click on the "Minor creditors" link
     And I select the "Individual" radio button
     And I enter "LastName" into the "Last name" field
@@ -652,6 +660,7 @@ Feature: Account Search and Matches
 
   @PO-708
   Scenario: Verify API call parameters for Minor Creditor search - Company
+    #AC1
     When I click on the "Minor creditors" link
     And I select the "Company" radio button
     And I enter "CompanyOne" into the "Company name" field
