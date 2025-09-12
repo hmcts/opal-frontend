@@ -65,3 +65,105 @@ When('I click the clear button', () => {
 When('I click the search button', () => {
   cy.get('#submitForm').click();
 });
+
+When('I intercept the {string} account search API call', (accountType) => {
+  let urlPattern;
+  let aliasName;
+  let mockResponse;
+
+  switch (accountType) {
+    case 'defendant':
+      urlPattern = '**/opal-fines-service/defendant-accounts/search';
+      aliasName = 'getDefendantAccounts';
+      mockResponse = {};
+      break;
+
+    case 'minor creditor':
+      urlPattern = '**/opal-fines-service/minor-creditor-accounts/search';
+      aliasName = 'getMinorCreditorAccounts';
+      mockResponse = { minorCreditorType: null };
+      break;
+
+    default:
+      throw new Error(`Unknown account type: ${accountType}`);
+  }
+
+  cy.intercept('POST', urlPattern, (req) => {
+    req.reply({
+      statusCode: 200,
+      body: mockResponse,
+    });
+  }).as(aliasName);
+});
+
+Then(
+  'the intercepted {string} account search API call contains the following parameters:',
+  (accountType: string, table: DataTable) => {
+    const expectedParams = table.rowsHash();
+    const type = accountType.toLowerCase();
+
+    // Define request mappings per account type
+    const mappings: Record<string, Record<string, { key: string; topLevel?: boolean }>> = {
+      defendant: {
+        addressLine1: { key: 'address_line_1' },
+        dateOfBirth: { key: 'birth_date' },
+        firstNamesExact: { key: 'exact_match_forenames' },
+        organisationName: { key: 'organisation_name' },
+        lastNameExact: { key: 'exact_match_surname' },
+        includeAliases: { key: 'include_aliases' },
+        nationalInsuranceNumber: { key: 'national_insurance_number' },
+        companyName: { key: 'organisation_name' },
+        companyNameExact: { key: 'exact_match_organisation_name' },
+        lastName: { key: 'surname' },
+        firstNames: { key: 'forenames' },
+        postcode: { key: 'postcode' },
+        activeAccountsOnly: { key: 'active_accounts_only', topLevel: true },
+      },
+      'minor creditor': {
+        activeAccountsOnly: { key: 'active_accounts_only', topLevel: true },
+        accountNumber: { key: 'account_number', topLevel: true },
+        businessUnitIds: { key: 'business_unit_ids', topLevel: true },
+        organisation: { key: 'organisation' },
+        organisationName: { key: 'organisation_name' },
+        organisationNameExact: { key: 'exact_match_organisation_name' },
+        lastName: { key: 'surname' },
+        firstNames: { key: 'forenames' },
+        exactFirstNames: { key: 'exact_match_forenames' },
+        exactLastName: { key: 'exact_match_surname' },
+        addressLine1: { key: 'address_line_1' },
+        postcode: { key: 'postcode' },
+      },
+    };
+
+    const alias = type === 'defendant' ? '@getDefendantAccounts' : '@getMinorCreditorAccounts';
+    const entityKey = type === 'defendant' ? 'defendant' : 'creditor';
+
+    cy.wait(alias).then((interception) => {
+      const body = interception.request.body;
+      const entity = body[entityKey] || {};
+
+      console.log(`Intercepted ${accountType} body:`, JSON.stringify(body, null, 2));
+
+      const requestMapping = mappings[type];
+      Object.entries(expectedParams).forEach(([gherkinKey, expectedValue]) => {
+        const mapping = requestMapping[gherkinKey];
+        if (!mapping) {
+          throw new Error(`No mapping found for feature key: ${gherkinKey}`);
+        }
+
+        const actualValue = mapping.topLevel ? body[mapping.key] : entity[mapping.key];
+        const expected = expectedValue === 'null' ? null : expectedValue;
+
+        if (expected !== null && expected !== undefined) {
+          if (Array.isArray(actualValue) && typeof expectedValue === 'string') {
+            expect(actualValue).to.deep.equal(JSON.parse(expectedValue));
+          } else {
+            expect(String(actualValue)).to.equal(String(expected));
+          }
+        } else {
+          expect(actualValue).to.be.null;
+        }
+      });
+    });
+  },
+);

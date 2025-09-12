@@ -271,12 +271,12 @@ describe('FinesSaResultsComponent', () => {
           business_unit_id: 'BU001',
           account_number: 'ACC123',
           defendant_title: null,
-          defendant_first_names: 'John',
+          defendant_firstnames: 'John',
           defendant_surname: 'Smith',
-          aliases: [{ alias_number: 1, alias_surname: 'Jones', alias_forenames: 'J', organisation_name: null }],
+          aliases: [{ alias_number: 1, surname: 'Jones', forenames: 'J', organisation_name: null }],
           birth_date: '1990-01-01',
           national_insurance_number: 'QQ123456C',
-          parent_guardian_first_names: 'Anna',
+          parent_guardian_firstnames: 'Anna',
           parent_guardian_surname: 'Smith',
           organisation_name: null,
           address_line_1: '1 Main St',
@@ -328,15 +328,13 @@ describe('FinesSaResultsComponent', () => {
           business_unit_id: 'BU001',
           account_number: 'ACC999',
           organisation_name: 'Acme Corp',
-          aliases: [
-            { alias_number: 1, alias_forenames: null, alias_surname: null, organisation_name: 'Acme Subsidiary' },
-          ],
+          aliases: [{ alias_number: 1, forenames: null, surname: null, organisation_name: 'Acme Subsidiary' }],
           defendant_title: null,
-          defendant_first_names: null,
+          defendant_firstnames: null,
           defendant_surname: null,
           birth_date: null,
           national_insurance_number: null,
-          parent_guardian_first_names: null,
+          parent_guardian_firstnames: null,
           parent_guardian_surname: null,
           address_line_1: '99 Corp Way',
           postcode: 'XY9 8ZT',
@@ -453,5 +451,185 @@ describe('FinesSaResultsComponent', () => {
     };
     const result = component['mapCreditorAccounts'](mockData);
     expect(result).toEqual([]);
+  });
+
+  it('maps minor creditor Defendant using only surname (no comma, no nulls)', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 1,
+      creditor_accounts: [
+        {
+          organisation: false,
+          creditor_account_id: 'C1',
+          business_unit_id: 'BU1',
+          account_number: 'ACC-SUR',
+          defendant_account_id: 'D1',
+          defendant: { firstnames: null, surname: 'Solo', organisation_name: null },
+          organisation_name: null,
+          firstnames: null,
+          surname: 'Solo',
+          address_line_1: '1 Lane',
+          postcode: 'AA1 1AA',
+          business_unit_name: 'Unit X',
+          account_balance: 1,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapCreditorAccounts'](mockData);
+    expect(row.Defendant).toBe('Solo');
+  });
+
+  it('maps minor creditor Defendant using only firstnames (no comma, no nulls)', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 1,
+      creditor_accounts: [
+        {
+          organisation: false,
+          creditor_account_id: 'C2',
+          business_unit_id: 'BU1',
+          account_number: 'ACC-FN',
+          defendant_account_id: 'D2',
+          defendant: { firstnames: 'Mono', surname: null, organisation_name: null },
+          organisation_name: null,
+          firstnames: 'Mono',
+          surname: null,
+          address_line_1: '2 Lane',
+          postcode: 'BB2 2BB',
+          business_unit_name: 'Unit Y',
+          account_balance: 2,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapCreditorAccounts'](mockData);
+    expect(row.Defendant).toBe('Mono');
+  });
+
+  it('maps minor creditor Defendant to null when both surname and firstnames missing', () => {
+    const mockData: IOpalFinesCreditorAccountResponse = {
+      count: 1,
+      creditor_accounts: [
+        {
+          organisation: false,
+          creditor_account_id: 'C3',
+          business_unit_id: 'BU1',
+          account_number: 'ACC-NULL',
+          defendant_account_id: 'D3',
+          defendant: { firstnames: null, surname: null, organisation_name: null },
+          organisation_name: null,
+          firstnames: null,
+          surname: null,
+          address_line_1: '3 Lane',
+          postcode: 'CC3 3CC',
+          business_unit_name: 'Unit Z',
+          account_balance: 3,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapCreditorAccounts'](mockData);
+    expect(row.Defendant).toBeNull();
+  });
+
+  it('maps Parent or guardian with only surname present', () => {
+    const mockData: IOpalFinesDefendantAccountResponse = {
+      count: 1,
+      defendant_accounts: [
+        {
+          organisation_flag: false,
+          defendant_account_id: '1',
+          business_unit_id: 'BU001',
+          account_number: 'ACC-PGS',
+          defendant_title: null,
+          defendant_firstnames: 'John',
+          defendant_surname: 'Smith',
+          aliases: [],
+          birth_date: null,
+          national_insurance_number: null,
+          parent_guardian_firstnames: null,
+          parent_guardian_surname: 'Guardian',
+          organisation_name: null,
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          business_unit_name: 'Unit A',
+          prosecutor_case_reference: null,
+          last_enforcement_action: null,
+          account_balance: 0,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapDefendantAccounts'](mockData, 'individual');
+    expect(row['Parent or guardian']).toBe('Guardian');
+  });
+
+  it('maps Parent or guardian with only firstnames present', () => {
+    const mockData: IOpalFinesDefendantAccountResponse = {
+      count: 1,
+      defendant_accounts: [
+        {
+          organisation_flag: false,
+          defendant_account_id: '2',
+          business_unit_id: 'BU001',
+          account_number: 'ACC-PGF',
+          defendant_title: null,
+          defendant_firstnames: 'John',
+          defendant_surname: 'Smith',
+          aliases: [],
+          birth_date: null,
+          national_insurance_number: null,
+          parent_guardian_firstnames: 'Grace',
+          parent_guardian_surname: null,
+          organisation_name: null,
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          business_unit_name: 'Unit A',
+          prosecutor_case_reference: null,
+          last_enforcement_action: null,
+          account_balance: 0,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapDefendantAccounts'](mockData, 'individual');
+    expect(row['Parent or guardian']).toBe('Grace');
+  });
+
+  it('maps Parent or guardian to null when neither part is present', () => {
+    const mockData: IOpalFinesDefendantAccountResponse = {
+      count: 1,
+      defendant_accounts: [
+        {
+          organisation_flag: false,
+          defendant_account_id: '3',
+          business_unit_id: 'BU001',
+          account_number: 'ACC-PGN',
+          defendant_title: null,
+          defendant_firstnames: 'John',
+          defendant_surname: 'Smith',
+          aliases: [],
+          birth_date: null,
+          national_insurance_number: null,
+          parent_guardian_firstnames: null,
+          parent_guardian_surname: null,
+          organisation_name: null,
+          address_line_1: '1 Main St',
+          postcode: 'AB1 2CD',
+          business_unit_name: 'Unit A',
+          prosecutor_case_reference: null,
+          last_enforcement_action: null,
+          account_balance: 0,
+        },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [row] = (component as any)['mapDefendantAccounts'](mockData, 'individual');
+    expect(row['Parent or guardian']).toBeNull();
   });
 });

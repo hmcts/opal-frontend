@@ -157,7 +157,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       Defendant: account.defendant
         ? account.defendant.organisation_name
           ? `${account.defendant.organisation_name}`
-          : `${account.defendant.surname}, ${account.defendant.firstnames}`
+          : account.defendant.surname || account.defendant.firstnames
+            ? `${account.defendant.surname ?? ''}${account.defendant.surname && account.defendant.firstnames ? ', ' : ''}${account.defendant.firstnames ?? ''}`
+            : null
         : null,
       Balance: account.account_balance,
     };
@@ -233,15 +235,18 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   ): IFinesSaResultsDefendantTableWrapperTableData {
     return {
       ...commonFields,
-      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_firstnames}`,
       Aliases: defendantAccount.aliases
         ? defendantAccount.aliases
-            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.alias_surname}, ${alias.alias_forenames}`)
+            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.surname}, ${alias.forenames}`)
             .join('\n')
         : null,
       'Date of birth': defendantAccount.birth_date,
       'NI number': defendantAccount.national_insurance_number,
-      'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+      'Parent or guardian':
+        defendantAccount.parent_guardian_surname || defendantAccount.parent_guardian_firstnames
+          ? `${defendantAccount.parent_guardian_surname ?? ''}${defendantAccount.parent_guardian_surname && defendantAccount.parent_guardian_firstnames ? ', ' : ''}${defendantAccount.parent_guardian_firstnames ?? ''}`
+          : null,
     };
   }
 

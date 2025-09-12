@@ -9,8 +9,8 @@ const BASE_COMPANY_ACCOUNT = {
   defendant_title: null,
   national_insurance_number: null,
   parent_guardian_surname: null,
-  parent_guardian_first_names: null,
-  defendant_first_names: null,
+  parent_guardian_firstnames: null,
+  defendant_firstnames: null,
   defendant_surname: null,
   birth_date: null,
 };
