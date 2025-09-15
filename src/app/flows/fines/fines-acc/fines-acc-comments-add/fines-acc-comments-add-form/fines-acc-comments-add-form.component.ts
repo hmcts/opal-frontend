@@ -22,6 +22,7 @@ import { FINES_ACC_ADD_COMMENTS_FIELD_ERRORS } from '../constants/fines-acc-comm
 import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -35,6 +36,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValida
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukTextAreaComponent,
+    GovukErrorSummaryComponent,
     FormsModule,
     ReactiveFormsModule,
   ],

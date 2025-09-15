@@ -1,4 +1,8 @@
 <div class="govuk-grid-column-three-quarters">
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
   <opal-lib-govuk-heading-with-caption
     captionText="{{ accountNumber }} - {{ defendantName }}"
     headingText="Comments"
