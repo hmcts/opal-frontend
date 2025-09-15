@@ -4,6 +4,7 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.interface';
@@ -13,6 +14,7 @@ import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 
+
 @Component({
   selector: 'app-fines-acc-note-add-form',
   imports: [
@@ -20,6 +22,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
     GovukTextAreaComponent,
     GovukButtonComponent,
     GovukCancelLinkComponent,
+    GovukErrorSummaryComponent,
     FormsModule,
     ReactiveFormsModule,
   ],
