@@ -3,6 +3,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const OPENAPI_SPEC = path.resolve(__dirname, '../openapi/opal-merged.yaml');
+const OPENAPI_TEMPLATES = path.resolve(__dirname, '../openapi/templates');
 const OUTPUT_DIR = path.resolve(__dirname, '../src/app/generated/api-client');
 const GENERATOR_CLI = 'npx';
 
@@ -21,8 +22,10 @@ const result = spawnSync(
     '-i', OPENAPI_SPEC,
     '-g', 'typescript-fetch',
     '-o', OUTPUT_DIR,
+    '-t', OPENAPI_TEMPLATES,
     '--skip-validate-spec',
-    '--additional-properties=supportsES6=true,modelPropertyNaming=original'
+    '--additional-properties=supportsES6=true,modelPropertyNaming=original',
+    '--global-property debugModels=true'
   ],
   {
     stdio: 'inherit'
