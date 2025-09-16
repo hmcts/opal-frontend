@@ -4,7 +4,7 @@
   "scripts": {
     "merge:openapi": "openapi-merge-cli -c ./openapi/openapi-merge-config.json && yarn postprocess:openapi",
     "postprocess:openapi": "node scripts/postprocess-openapi-merged.cjs",
-    "generate:openapi": "yarn merge:openapi && node scripts/generate-openapi.cjs && node scripts/fix-optional-to-nullable.cjs",
+    "generate:openapi": "yarn merge:openapi && node scripts/generate-openapi.cjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
