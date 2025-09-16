@@ -24,8 +24,7 @@ const result = spawnSync(
     '-o', OUTPUT_DIR,
     '-t', OPENAPI_TEMPLATES,
     '--skip-validate-spec',
-    '--additional-properties=supportsES6=true,modelPropertyNaming=original',
-    '--global-property debugModels=true'
+    '--additional-properties=supportsES6=true,modelPropertyNaming=original'
   ],
   {
     stdio: 'inherit'
