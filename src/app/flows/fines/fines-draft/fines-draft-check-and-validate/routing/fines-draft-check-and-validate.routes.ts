@@ -6,7 +6,7 @@ import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from './constants/fines-draft-check-and-validate-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_TITLES } from './constants/fines-draft-check-and-validate-routing-titles.constant';
 import { finesDraftTabResolver } from '../../routing/resolvers/fines-draft-tab.resolver';
-import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constant';
 
 const draftRootPermissionIds = FINES_PERMISSIONS;
 

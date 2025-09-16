@@ -16,7 +16,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
-import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
