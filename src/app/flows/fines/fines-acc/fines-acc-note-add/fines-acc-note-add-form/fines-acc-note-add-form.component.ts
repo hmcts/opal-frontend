@@ -14,7 +14,6 @@ import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 
-
 @Component({
   selector: 'app-fines-acc-note-add-form',
   imports: [
