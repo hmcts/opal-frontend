@@ -6,9 +6,9 @@ import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/inte
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
@@ -32,10 +32,10 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setUserState(USER_STATE_MOCK);
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setUserState(USER_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -162,11 +162,11 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasBusinessUnitPermissionAccess');
-    globalStore.setUserState({} as ISessionUserState);
+    globalStore.setUserState({} as IUserState);
 
     component['setupPermissions']();
 
     expect(component['hasBusinessUnitPermissionAccess']).not.toHaveBeenCalled();
-    expect(component['userStateRoles']).toEqual([]);
+    expect(component['userState']).toEqual({} as IUserState);
   });
 });

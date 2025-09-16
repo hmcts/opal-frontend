@@ -3,7 +3,7 @@ import { lastValueFrom, of, Observable } from 'rxjs';
 import { finesDraftCreateAndManageViewAllRejectedResolver } from './fines-draft-create-and-manage-view-all-rejected.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
@@ -32,7 +32,7 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);
-    globalStoreMock.setUserState(SESSION_USER_STATE_MOCK);
+    globalStoreMock.setUserState(USER_STATE_MOCK);
   });
 
   const originalStatuses = [...FINES_DRAFT_TAB_STATUSES];
@@ -50,9 +50,9 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
     const result = await lastValueFrom(executeResolver(mockRoute, {} as any) as Observable<any>);
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: ['Rejected'],
-      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      notSubmittedBy: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });

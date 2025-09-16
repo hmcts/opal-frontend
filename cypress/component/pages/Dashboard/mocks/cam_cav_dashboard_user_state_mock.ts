@@ -1,10 +1,12 @@
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
 
-export const CAM_CAV_DASHBOARD_USER_STATE_MOCK: ISessionUserState = {
-  user_id: 'gl.testUser',
-  user_name: 'testUserCAM_CAV@HMCTS.NET',
+export const CAM_CAV_DASHBOARD_USER_STATE_MOCK: IUserState = {
+  user_id: 50000000,
+  username: 'testUserCAM_CAV@HMCTS.NET',
   name: 'Test User',
-  business_unit_user: [
+  status: 'active',
+  version: 1,
+  business_unit_users: [
     {
       business_unit_user_id: 'L017KG',
       business_unit_id: 17,

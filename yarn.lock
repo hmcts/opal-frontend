@@ -978,11 +978,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^4.11.0":
-  version: 4.11.0
-  resolution: "@azure/msal-browser@npm:4.11.0"
+  version: 4.22.1
+  resolution: "@azure/msal-browser@npm:4.22.1"
   dependencies:
-    "@azure/msal-common": "npm:15.5.1"
-  checksum: 10/8bbf3e5eb02ef0a2b0cf72c34a43c31c0cbc040f2cd4abb29fa0a3e4c7a7e75b20ab7c45c466ff14186a48cf77f806b6f7c7442acc7405a182c8189ba0a385c8
+    "@azure/msal-common": "npm:15.12.0"
+  checksum: 10/3f76f8024648540b8ba07c14f5a2a8a0408014eafaa26c829129544753bfcbfd7bfe22c55535ae3ffe9225ef9dd6fb43fb27ac300e20bc8998a2c46fc278db78
   languageName: node
   linkType: hard
 
@@ -993,10 +993,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:15.5.1":
-  version: 15.5.1
-  resolution: "@azure/msal-common@npm:15.5.1"
-  checksum: 10/caa187c73190a3f8a7820099401672cd986a1df24426a606aa84ab529e1338ec73c2dd0d277e6d0b40987815d3702b468a49800b1a2a62113ea0defc8e18bc78
+"@azure/msal-common@npm:15.12.0":
+  version: 15.12.0
+  resolution: "@azure/msal-common@npm:15.12.0"
+  checksum: 10/0105b1ba5b751c713545000abd1cf3d9300bdd9d803d3f9795876fb1a1aebde9050d7a9378dcef15ec04080550389edea360a7a717d43788dc7650ea03879456
   languageName: node
   linkType: hard
 
@@ -3601,9 +3601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.12":
-  version: 0.0.12
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.12"
+"@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.13
+  resolution: "@hmcts/opal-frontend-common-node@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist::hash=bf4545&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@azure/msal-browser": "npm:^4.11.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3626,19 +3626,19 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/81a14185a633c567047f5f237fa286ca65abf5b2e94690dd1070e7584ace1270fdc984aa10c7a69536e6fe930c80bdcdd4dc805355a23e3f3a8504a1b9512e5b
+  checksum: 10/21d12f6902470538056adc22660fa5e590d4947b3a64677d1bd096ea3079354f8fe64ac418b6dfd730b323f6686e167ce23d59d9b28b3c845a6087da8f7ad639
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.37":
-  version: 0.0.37
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.37"
+"@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.39
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=72e7df&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/01e18904b978f4a8464e6b8211d9439b30488a79151a2f818ed5e9a322c803df781b92e949739dddbe36657e432a2162d15ef27904c6bedef607289ed88e9258
+  checksum: 10/3b7505f5cc50c153e8ee8806413ad6c7e580745d99ea91ad3d01b13358a67114dbc84421ae4b9da1281c5d15bd810ad515d8dd5174e146f70150817c824d8c53
   languageName: node
   linkType: hard
 
@@ -14145,8 +14145,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.37"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.12"
+    "@hmcts/opal-frontend-common": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common"
+    "@hmcts/opal-frontend-common-node": "file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-node-lib/dist"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^5.0.0"
@@ -14556,9 +14556,9 @@ __metadata:
   linkType: hard
 
 "path-to-regexp@npm:^8.0.0":
-  version: 8.2.0
-  resolution: "path-to-regexp@npm:8.2.0"
-  checksum: 10/23378276a172b8ba5f5fb824475d1818ca5ccee7bbdb4674701616470f23a14e536c1db11da9c9e6d82b82c556a817bbf4eee6e41b9ed20090ef9427cbb38e13
+  version: 8.3.0
+  resolution: "path-to-regexp@npm:8.3.0"
+  checksum: 10/568f148fc64f5fd1ecebf44d531383b28df924214eabf5f2570dce9587a228e36c37882805ff02d71c6209b080ea3ee6a4d2b712b5df09741b67f1f3cf91e55a
   languageName: node
   linkType: hard
 

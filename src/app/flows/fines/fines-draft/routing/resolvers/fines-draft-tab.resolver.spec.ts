@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/rou
 import { isObservable, lastValueFrom, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { finesDraftTabResolver } from './fines-draft-tab.resolver';
@@ -46,7 +46,7 @@ describe('finesDraftTabResolver', () => {
     });
 
     globalStoreMock = TestBed.inject(GlobalStore);
-    globalStoreMock.setUserState(SESSION_USER_STATE_MOCK);
+    globalStoreMock.setUserState(USER_STATE_MOCK);
   });
 
   it('should return result with `submittedBy` when includeSubmittedBy is true', async () => {
@@ -56,9 +56,9 @@ describe('finesDraftTabResolver', () => {
     const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeSubmittedBy: true }, tab.tab);
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
-      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      submittedBy: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
@@ -70,9 +70,9 @@ describe('finesDraftTabResolver', () => {
     const result = await runResolverWithOptions({ useFragmentForStatuses: true, includeNotSubmittedBy: true }, tab.tab);
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
-      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      notSubmittedBy: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
@@ -105,7 +105,7 @@ describe('finesDraftTabResolver', () => {
     const result = await runResolverWithOptions({ defaultStatuses }, null);
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: defaultStatuses,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
@@ -128,9 +128,9 @@ describe('finesDraftTabResolver', () => {
 
     expect(dateServiceMock.getDateRange).toHaveBeenCalledWith(7, 0);
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
-      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      submittedBy: USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: [dateFrom],
       accountStatusDateTo: [dateTo],
     });
