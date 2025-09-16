@@ -1,21 +1,21 @@
 {
   "inputs": [
     {
-      "inputFile": "./common.yaml",
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/PO-2024-and-PO-2025/src/main/resources/openapi/common.yaml",
       "dispute": {
         "alwaysApply": true,
         "suffix": "Common"
       }
     },
     {
-      "inputFile": "./MinorCreditor.yaml",
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/PO-2024-and-PO-2025/src/main/resources/openapi/MinorCreditor.yaml",
       "dispute": {
         "alwaysApply": true,
         "suffix": "MinorCreditor"
       }
     },
     {
-      "inputFile": "./types.yaml",
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/PO-2024-and-PO-2025/src/main/resources/openapi/types.yaml",
       "dispute": {
         "alwaysApply": true,
         "suffix": "Types"

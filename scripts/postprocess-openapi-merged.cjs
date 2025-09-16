@@ -12,8 +12,8 @@ const mergeConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
 // Build a map: { 'filename.yaml': 'suffix' }
 const FILE_SUFFIX_MAP = {};
 for (const input of mergeConfig.inputs) {
-  const inputFile = path.basename(input.inputFile);
-  FILE_SUFFIX_MAP[inputFile] = input.dispute.suffix || '';
+  const inputURL = path.basename(input.inputURL);
+  FILE_SUFFIX_MAP[inputURL] = input.dispute.suffix || '';
 }
 
 // --- Step 2: Parse merged YAML and rewrite $refs ---
@@ -29,7 +29,6 @@ function rewriteRefs(obj) {
     const val = obj[key];
 
     if (key === '$ref' && typeof val === 'string') {
-      // Match $ref: ./types.yaml#/components/schemas/Foo
       const match = val.match(/^\.\/([^/]+)#\/components\/(\w+)\/(.+)$/);
       if (match) {
         const [ , fileName, componentType, originalName ] = match;
