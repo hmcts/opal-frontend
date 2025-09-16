@@ -34,6 +34,42 @@ if (result.status !== 0) {
   process.exit(result.status || 1);
 }
 
+// --- Post-process helpers ---
+function fixNullAndImports(filePath) {
+  let code = fs.readFileSync(filePath, 'utf8');
+
+  // 1. Fix Null → null
+  code = code.replace(/\bNull\b/g, 'null');
+
+  // 2. Ensure imports for alias refs
+  // Matches: export type Foo = Bar | null;
+  const aliasRegex = /export type (\w+) = (\w+) \| null;/g;
+  let match;
+  while ((match = aliasRegex.exec(code)) !== null) {
+    const refType = match[2];
+    // If file does not already import refType, add it
+    if (!code.includes(`import { ${refType} }`)) {
+      code = `import { ${refType} } from './${refType}';\n` + code;
+      console.log(`➕ Added import for ${refType} in ${path.basename(filePath)}`);
+    }
+  }
+
+  fs.writeFileSync(filePath, code, 'utf8');
+}
+
+function processDir(dir) {
+  if (fs.existsSync(dir)) {
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.ts'));
+    for (const file of files) {
+      fixNullAndImports(path.join(dir, file));
+    }
+  }
+}
+
+// --- Run post-processing ---
+processDir(path.join(OUTPUT_DIR, 'models'));
+processDir(path.join(OUTPUT_DIR, 'apis'));
+
 // Create index.ts exports
 const modelsDir = path.join(OUTPUT_DIR, 'models');
 const apisDir = path.join(OUTPUT_DIR, 'apis');

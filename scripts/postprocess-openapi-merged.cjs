@@ -51,7 +51,69 @@ function rewriteRefs(obj) {
   }
 }
 
+function hasNullUnion(s) {
+  const u = s.oneOf || s.anyOf || [];
+  return Array.isArray(u) && u.some(x => x && x.type === 'null');
+}
+
+function addNullToUnion(s) {
+  if (s.oneOf) {
+    if (!hasNullUnion(s)) s.oneOf.push({ type: 'null' });
+  } else if (s.anyOf) {
+    if (!hasNullUnion(s)) s.anyOf.push({ type: 'null' });
+  } else {
+    s.oneOf = [ { ...s }, { type: 'null' } ];
+    // remove duplicated keywords from the wrapper arm
+    for (const k of Object.keys(s.oneOf[0])) delete s[k];
+  }
+}
+
+function makeOptionalRequiredAndNullable(schema) {
+  if (!schema || typeof schema !== 'object') return;
+
+  if (schema.type === 'object' && schema.properties) {
+    schema.required = schema.required || [];
+    const req = new Set(schema.required);
+
+    for (const [prop, def] of Object.entries(schema.properties)) {
+      if (!req.has(prop)) {
+        // make required
+        schema.required.push(prop);
+        req.add(prop);
+
+        // make nullable (3.1-valid)
+        if (def.$ref) {
+          const { $ref, ...rest } = def;
+          // replace schema with oneOf [$ref, null] and keep metadata
+          Object.assign(def, rest);
+          delete def.$ref;
+          delete def.type;
+          def.oneOf = [ { $ref }, { type: 'null' } ];
+        } else if (def.oneOf || def.anyOf) {
+          addNullToUnion(def);
+        } else if (def.type !== undefined) {
+          if (Array.isArray(def.type)) {
+            if (!def.type.includes('null')) def.type.push('null');
+          } else {
+            def.type = [def.type, 'null'];
+          }
+        } else {
+          // no $ref, no type → wrap as union with null
+          const copy = JSON.parse(JSON.stringify(def));
+          for (const k of Object.keys(def)) delete def[k];
+          def.oneOf = [ copy, { type: 'null' } ];
+        }
+      }
+
+      makeOptionalRequiredAndNullable(def);
+    }
+  } else {
+    for (const k in schema) makeOptionalRequiredAndNullable(schema[k]);
+  }
+}
+
 rewriteRefs(parsed);
+makeOptionalRequiredAndNullable(parsed.components);
 
 // Dump back to YAML
 const updatedYaml = yaml.dump(parsed, { noRefs: true });
