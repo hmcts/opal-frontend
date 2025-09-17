@@ -50,12 +50,14 @@ import { IOpalFinesAccountDefendantDetailsTabsData } from '@services/fines/opal-
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
+import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
   imports: [
     AsyncPipe,
     FinesAccDefendantDetailsAtAGlanceTabComponent,
+    FinesAccDefendantDetailsDefendantTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     GovukBackLinkComponent,
@@ -290,5 +292,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  public navigateToChangeDefendantDetailsPage(event: Event): void {
+    event.preventDefault();
+    // Navigate to the change defendant details page
+  }
+
+  public navigateToConvertAccountPage(event: Event): void {
+    event.preventDefault();
+    // Navigate to the convert account page
   }
 }

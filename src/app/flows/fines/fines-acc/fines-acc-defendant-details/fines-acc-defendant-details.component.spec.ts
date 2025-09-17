@@ -179,4 +179,18 @@ describe('FinesAccDefendantDetailsComponent', () => {
       Number(MOCK_FINES_ACCOUNT_STATE.account_id),
     );
   });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called', () => {
+    const event: Event = new Event('click');
+    spyOn(event, 'preventDefault');
+    component.navigateToChangeDefendantDetailsPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should navigate to convert account page when navigateToConvertAccountPage is called', () => {
+    const event: Event = new Event('click');
+    spyOn(event, 'preventDefault');
+    component.navigateToConvertAccountPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
 });

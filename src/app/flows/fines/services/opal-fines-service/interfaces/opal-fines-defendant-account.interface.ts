@@ -39,8 +39,8 @@ export interface IOpalFinesDefendantAccountOrganisationAlias {
 }
 
 export interface IOpalFinesDefendantAccountIndividualAlias {
-  alias_number: number;
-  organisation_name: string;
+  alias_number: string;
+  sequence_number: number;
   alias_surname: string;
   alias_forenames: string | null;
 }

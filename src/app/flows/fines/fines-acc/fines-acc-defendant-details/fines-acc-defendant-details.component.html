@@ -144,9 +144,15 @@
     ></app-fines-acc-defendant-details-at-a-glance-tab>
   }
   @case ('defendant') {
-    <div class="govuk-grid-column-full">
-      <p>Account Version: {{ (tabsData['defendant'] | async)?.version }}</p>
-    </div>
+    <app-fines-acc-defendant-details-defendant-tab
+      [tabData]="tabsData['defendant'] | async"
+      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+      [isYouth]="accountData.is_youth"
+      (addComments)="navigateToAddCommentsPage($event)"
+      [style]="tabContentStyles"
+      (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
+      (convertAccount)="navigateToConvertAccountPage($event)"
+    ></app-fines-acc-defendant-details-defendant-tab>
   }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full">
