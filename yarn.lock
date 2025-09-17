@@ -765,9 +765,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/ssr@npm:^20.0.0":
-  version: 20.2.2
-  resolution: "@angular/ssr@npm:20.2.2"
+"@angular/ssr@npm:^20.3.0":
+  version: 20.3.1
+  resolution: "@angular/ssr@npm:20.3.1"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
@@ -778,7 +778,7 @@ __metadata:
   peerDependenciesMeta:
     "@angular/platform-server":
       optional: true
-  checksum: 10/1697795b3a6e6ed7c927dbf5296d1b47162852d43a9b41b35e81c8d323a5af80563313100e3cbdee7ccdb842f89901e766527f73cda8efdb3f2d6b461bff9379
+  checksum: 10/3edfa80d6a9d3fcc92b1fb60e198043430a60b9872547f52de931275106e5ac2e9581adbdc7f6bb4f57e1baed459f83da5c71c03d0e1e8ee7bc2446c4c651ffb
   languageName: node
   linkType: hard
 
@@ -14155,7 +14155,7 @@ __metadata:
     "@angular/platform-browser-dynamic": "npm:^20.1.3"
     "@angular/platform-server": "npm:^20.1.3"
     "@angular/router": "npm:^20.1.3"
-    "@angular/ssr": "npm:^20.0.0"
+    "@angular/ssr": "npm:^20.3.0"
     "@badeball/cypress-cucumber-preprocessor": "npm:^22.0.0"
     "@cypress/grep": "npm:^4.1.0"
     "@cypress/webpack-preprocessor": "npm:^7.0.0"
