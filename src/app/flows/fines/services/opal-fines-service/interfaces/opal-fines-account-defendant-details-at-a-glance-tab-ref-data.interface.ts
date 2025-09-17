@@ -1,4 +1,11 @@
-import { IOpalFinesDefendantAccountAddress, IOpalFinesDefendantAccountEnforcementStatus, IOpalFinesDefendantAccountLanguagePreferences, IOpalFinesDefendantAccountNotes, IOpalFinesDefendantAccountPartyDetails, IOpalFinesDefendantAccountPaymentTermsSummary } from "./opal-fines-defendant-account.interface";
+import {
+  IOpalFinesDefendantAccountAddress,
+  IOpalFinesDefendantAccountEnforcementStatus,
+  IOpalFinesDefendantAccountLanguagePreferences,
+  IOpalFinesDefendantAccountNotes,
+  IOpalFinesDefendantAccountPartyDetails,
+  IOpalFinesDefendantAccountPaymentTermsSummary,
+} from './opal-fines-defendant-account.interface';
 
 export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
   version: number;
