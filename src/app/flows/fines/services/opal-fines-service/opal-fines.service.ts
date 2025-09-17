@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -95,6 +95,37 @@ export class OpalFines {
       submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
       notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
     });
+  }
+
+  /**
+   * Extracts the ETag version from the provided HTTP response headers.
+   *
+   * Attempts to retrieve the value of the 'ETag' or 'Etag' header from the given headers object.
+   * Returns the ETag value as a string if present, or `null` if the header is not found.
+   *
+   * @param headers - The HTTP response headers from which to extract the ETag.
+   * @returns The ETag value as a string, or `null` if not present.
+   */
+  private extractEtagVersion(headers: HttpResponse<unknown>['headers']): string | null {
+    const etag = headers.get('ETag') ?? headers.get('Etag');
+    if (!etag) return null;
+
+    return etag;
+  }
+
+  /**
+   * Builds an HTTP headers object containing the `If-Match` header if a version is provided.
+   *
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An object with a `headers` property containing the `If-Match` header if the version is defined; otherwise, an empty object.
+   */
+  private buildIfMatchHeader(version: string): {
+    headers?: { [header: string]: string };
+  } {
+    if (version !== undefined && version !== null) {
+      return { headers: { 'If-Match': version } };
+    }
+    return {};
   }
 
   /**
@@ -320,7 +351,20 @@ export class OpalFines {
    * @returns An Observable that emits the draft account summary.
    */
   public getDraftAccountById(draftAccountId: number): Observable<IFinesMacAddAccountPayload> {
-    return this.http.get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`);
+    return this.http
+      .get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, {
+        observe: 'response',
+      })
+      .pipe(
+        map((response: HttpResponse<IFinesMacAddAccountPayload>) => {
+          const payload = response.body as IFinesMacAddAccountPayload;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -355,6 +399,7 @@ export class OpalFines {
     return this.http.put<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
+      this.buildIfMatchHeader(body.version!),
     );
   }
 
@@ -380,7 +425,11 @@ export class OpalFines {
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchPayload,
   ): Observable<IFinesMacAddAccountPayload> {
-    return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, payload);
+    return this.http.patch<IFinesMacAddAccountPayload>(
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
+      payload,
+      this.buildIfMatchHeader(payload.version),
+    );
   }
 
   /**

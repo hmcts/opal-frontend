@@ -189,7 +189,7 @@ export class FinesMacPayloadService {
       account_status: accountStatus,
       account_status_message: null,
       timeline_data: timeLineData,
-      version: draftAccountPayload ? draftAccountPayload.version : 0,
+      version: draftAccountPayload ? draftAccountPayload.version : '0',
     };
 
     // Transform the payload, format the dates and times to the correct format
