@@ -1,17 +1,8 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { ApplicationRef } from '@angular/core';
+import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
 
-export function render(context: any): Promise<ApplicationRef> {
-  return bootstrapApplication(
-    AppComponent,
-    {
-      ...config,
-      providers: config.providers || [],
-    },
-    context,
-  );
-}
+const bootstrap = (context: BootstrapContext) =>
+  bootstrapApplication(AppComponent, config, context);
 
-export default render;
+export default bootstrap;
