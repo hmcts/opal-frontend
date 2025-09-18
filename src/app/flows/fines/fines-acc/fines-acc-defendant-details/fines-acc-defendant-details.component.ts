@@ -38,6 +38,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -127,7 +128,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Navigates to the add account note page.
    */
   public navigateToAddAccountNotePage(): void {
-    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
   }
 
   /**

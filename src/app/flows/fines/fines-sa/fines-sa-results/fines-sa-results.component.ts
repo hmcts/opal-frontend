@@ -21,6 +21,7 @@ import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -235,8 +236,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       this.router.createUrlTree([
         FINES_ROUTING_PATHS.root,
         FINES_ACC_ROUTING_PATHS.root,
+        FINES_ACC_ROUTING_PATHS.children.defendant,
         accountNumber,
-        FINES_ACC_ROUTING_PATHS.children.details,
+        FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
       ]),
     );
     window.open(url, '_blank');
