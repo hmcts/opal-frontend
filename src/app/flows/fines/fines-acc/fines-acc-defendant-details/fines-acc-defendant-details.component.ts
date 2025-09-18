@@ -6,6 +6,7 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 // Components
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -33,7 +34,7 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -230,7 +231,47 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Navigates to the add account note page.
    */
   public navigateToAddAccountNotePage(): void {
-    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * Navigates to the add comments page.
+   * @param event The click event that triggered the navigation.
+   */
+  public navigateToAddCommentsPage(event: Event): void {
+    event.preventDefault();
+    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /**
+   * Handles the page refresh action.
+   * Sets the version mismatch state to false.
+   * Sets the is refreshed state to true.
+   * Refreshes the page.
+   * @param event The click event that triggered the refresh.
+   */
+  public refreshPage(event: Event): void {
+    event.preventDefault();
+    this.accountStore.setHasVersionMismatch(false);
+
+    this.opalFinesService
+      .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
+      .pipe(
+        tap((headingData) => {
+          this.accountStore.setAccountState(
+            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
+          );
+        }),
+      )
+      .subscribe((res) => {
+        this.accountStore.setSuccessMessage('Information is up to date');
+        this.accountData = res;
+        this.refreshFragment$.next(this.activeTab);
+      });
   }
 
   /**

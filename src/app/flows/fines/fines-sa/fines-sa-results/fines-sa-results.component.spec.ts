@@ -95,7 +95,7 @@ describe('FinesSaResultsComponent', () => {
     router.serializeUrl.and.returnValue(mockUrl);
 
     spyOn(window, 'open');
-    component.onAccountNumberClick('ACC123');
+    component.onAccountIdClick(1);
 
     expect(router.serializeUrl).toHaveBeenCalled();
     expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank');
@@ -141,7 +141,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC123',
           defendant_title: null,
@@ -198,7 +198,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC999',
           organisation_name: 'Acme Corp',

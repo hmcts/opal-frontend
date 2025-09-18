@@ -90,7 +90,7 @@
     <app-fines-sa-results-defendant-table-wrapper
       [tableData]="individualsData"
       [existingSortState]="defendantsSort"
-      (accountNumberClicked)="onAccountNumberClick($event)"
+      (accountIdClicked)="onAccountIdClick($event)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
   } @else if (individualsData.length === 0) {
@@ -105,7 +105,7 @@
       [tableData]="companiesData"
       [existingSortState]="defendantsSort"
       [isCompany]="true"
-      (accountNumberClicked)="onAccountNumberClick($event)"
+      (accountIdClicked)="onAccountIdClick($event)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
   } @else if (companiesData.length === 0) {
