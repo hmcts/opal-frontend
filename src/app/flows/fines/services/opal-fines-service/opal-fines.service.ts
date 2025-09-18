@@ -479,7 +479,15 @@ export class OpalFines {
     business_unit_user_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
-      this.accountDetailsCache$['defendant'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
+      // TODO: Pass through party_id
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/77?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      this.accountDetailsCache$['defendant'] = this.http
+        .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
+        .pipe(
+          map((response) => this.addVersionToBody(response)),
+          shareReplay(1)
+        );
+      // this.accountDetailsCache$['defendant'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
     }
     return this.accountDetailsCache$['defendant'];
   }
