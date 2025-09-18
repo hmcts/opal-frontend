@@ -121,13 +121,17 @@
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
+              @if (row['Account ID']) {
               <a
                 class="govuk-link govuk-link--no-visited-state"
                 tabindex="0"
-                (click)="goToAccount(row['Account'])"
-                (keyup.enter)="goToAccount(row['Account'])"
-                >{{ row['Account'] }}</a
+                (click)="goToAccount(row['Account ID'])"
+                (keyup.enter)="goToAccount(row['Account ID'])"
+                >{{ row['Account']! }}</a
               >
+              } @else {
+                {{ row['Account'] }}
+              }
             }
           </td>
           <td opal-lib-moj-sortable-table-row-data id="name">
