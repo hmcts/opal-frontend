@@ -30,6 +30,9 @@ nodejs:
     FEATURES_APP_INSIGHTS_ENABLED: true
 redis:
   enabled: false
+  image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/redis
 
 opal-fines-service:
   enabled: false
@@ -37,4 +40,10 @@ opal-fines-service:
 postgresql:
   enabled: false
   image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/postgresql
     tag: '17.5.0'
+
+global:
+  security:
+    allowInsecureImages: true
