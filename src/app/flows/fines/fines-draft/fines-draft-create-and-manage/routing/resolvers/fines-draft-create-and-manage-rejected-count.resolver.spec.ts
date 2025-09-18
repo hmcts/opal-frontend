@@ -4,7 +4,7 @@ import { finesDraftCreateAndManageRejectedCountResolver } from './fines-draft-cr
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, RouterStateSnapshot } from '@angular/router';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';

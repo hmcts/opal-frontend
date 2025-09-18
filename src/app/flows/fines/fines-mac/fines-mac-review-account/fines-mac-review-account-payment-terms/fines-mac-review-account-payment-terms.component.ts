@@ -22,7 +22,7 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
-import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -40,7 +40,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
-  private userState!: IUserState;
+  private userState!: IOpalUserState;
   private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
 
   protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;

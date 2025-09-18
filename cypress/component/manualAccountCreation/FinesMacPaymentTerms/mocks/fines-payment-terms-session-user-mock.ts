@@ -1,6 +1,6 @@
-import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
-export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IUserState = {
+export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
   user_id: 50000000,
   username: 'timmyTest@HMCTS.NET',
   name: 'Timmy Test',

@@ -54,7 +54,7 @@ import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
-import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -84,7 +84,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
   private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
-  private userState!: IUserState;
+  private userState!: IOpalUserState;
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 

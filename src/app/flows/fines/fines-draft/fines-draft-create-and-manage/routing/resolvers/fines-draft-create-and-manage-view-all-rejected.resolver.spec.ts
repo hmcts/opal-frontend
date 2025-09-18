@@ -3,7 +3,7 @@ import { lastValueFrom, of, Observable } from 'rxjs';
 import { finesDraftCreateAndManageViewAllRejectedResolver } from './fines-draft-create-and-manage-view-all-rejected.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';

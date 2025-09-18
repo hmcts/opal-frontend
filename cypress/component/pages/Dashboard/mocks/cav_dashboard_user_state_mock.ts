@@ -1,6 +1,6 @@
-import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
-export const CAV_DASHBOARD_USER_STATE_MOCK: IUserState = {
+export const CAV_DASHBOARD_USER_STATE_MOCK: IOpalUserState = {
   user_id: 50000000,
   username: 'testUserCAV@HMCTS.NET',
   name: 'Test User',

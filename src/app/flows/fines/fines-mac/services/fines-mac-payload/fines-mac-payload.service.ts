@@ -33,7 +33,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
-import { IUserState } from '@hmcts/opal-frontend-common/services/user-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -63,7 +63,7 @@ export class FinesMacPayloadService {
    * @param userState - The current session user state containing business unit user information.
    * @returns The business unit user ID if found, otherwise null.
    */
-  private getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IUserState): string | null {
+  private getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
     const businessUnitUserId = userState.business_unit_users.find(
       (businessUnitUsers) => businessUnitUsers.business_unit_id === businessUnitId,
     );
@@ -151,7 +151,7 @@ export class FinesMacPayloadService {
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload | null,
-    userState: IUserState,
+    userState: IOpalUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
@@ -241,7 +241,7 @@ export class FinesMacPayloadService {
    * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add an account in the fines MAC system.
    */
-  public buildAddAccountPayload(finesMacState: IFinesMacState, userState: IUserState): IFinesMacAddAccountPayload {
+  public buildAddAccountPayload(finesMacState: IFinesMacState, userState: IOpalUserState): IFinesMacAddAccountPayload {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, userState, true);
   }
 
@@ -255,7 +255,7 @@ export class FinesMacPayloadService {
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload,
-    userState: IUserState,
+    userState: IOpalUserState,
   ): IFinesMacAddAccountPayload {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, userState, false);
   }
@@ -272,7 +272,7 @@ export class FinesMacPayloadService {
     draftAccountPayload: IFinesMacAddAccountPayload,
     status: string,
     reasonText: string | null,
-    userState: IUserState,
+    userState: IOpalUserState,
   ): IOpalFinesDraftAccountPatchPayload {
     return {
       account_status: status,

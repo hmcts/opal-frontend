@@ -30,7 +30,7 @@ import {
   configureMonitoring,
 } from './server-setup';
 
-import { SessionConfiguration, SsoConfiguration, UserRoutesConfig } from '@hmcts/opal-frontend-common-node/interfaces';
+import { SessionConfiguration, SsoConfiguration } from '@hmcts/opal-frontend-common-node/interfaces';
 import { HealthCheck } from '@hmcts/opal-frontend-common-node/health';
 import { PropertiesVolume } from '@hmcts/opal-frontend-common-node/properties-volume';
 import { Routes } from '@hmcts/opal-frontend-common-node/routes';
@@ -41,7 +41,6 @@ const indexHtml = existsSync(join(distFolder, 'index.original.html'))
 
 const sessionConfiguration: SessionConfiguration = {
   sessionExpiryUrl: '/session/expiry',
-  userStateUrl: '/session/user-state',
 };
 
 const ssoConfiguration: SsoConfiguration = {
@@ -50,10 +49,6 @@ const ssoConfiguration: SsoConfiguration = {
   logout: '/sso/logout',
   logoutCallback: '/sso/logout-callback',
   authenticated: '/sso/authenticated',
-};
-
-const userRoutesConfig: UserRoutesConfig = {
-  getUserStateUrl: '/user/user-state',
 };
 
 function app(): express.Express {
@@ -85,7 +80,6 @@ function app(): express.Express {
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
-    userRoutesConfig,
   );
 
   const serverTransferState = configureMonitoring();

@@ -14,7 +14,7 @@ import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;

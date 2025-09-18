@@ -21,7 +21,7 @@ import {
   FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
   FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;

@@ -1,4 +1,4 @@
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/user-service/mocks';
+import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../constants/fines-mac-account-types';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
