@@ -1,102 +1,268 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
-import _ from 'lodash';
+// Steps for Draft Account API flows using strong ETag / If-Match concurrency.
 
-let createdAccounts: string[] = [];
+import { DataTable, When, Then, After } from '@badeball/cypress-cucumber-preprocessor';
+import merge from 'lodash/merge';
+import set from 'lodash/set';
 
-function convertDataTableToNestedObject(dataTable: DataTable): Record<string, any> {
-  const overrides: Record<string, any> = {};
+// ────────────────────────────────────────────────────────────────────────────────
+// Config & shared state
+// ────────────────────────────────────────────────────────────────────────────────
 
-  // Convert DataTable to an array of hashes
+/** Keep track of created account IDs to tidy up after scenarios. */
+let createdAccounts: number[] = [];
+
+/** Build Authorization header from env (set CYPRESS_TOKEN or in cypress.env.json). */
+const auth = () =>
+  Cypress.env('TOKEN') ? { Authorization: `Bearer ${Cypress.env('TOKEN')}` } : {};
+
+/** Build path for a draft account, with safe segment encoding. */
+const pathForAccount = (id: number | string) =>
+  `/opal-fines-service/draft-accounts/${encodeURIComponent(String(id))}`;
+
+// ────────────────────────────────────────────────────────────────────────────────
+/** Convert a Cucumber data table (dot-path keys) to a nested object. */
+function convertDataTableToNestedObject(dataTable: DataTable): Record<string, unknown> {
+  const overrides: Record<string, unknown> = {};
   const rows = dataTable.rowsHash();
-
-  // Iterate over each key-value pair
   for (const [path, value] of Object.entries(rows)) {
-    let parsedValue: any = value;
-
-    // Attempt to parse JSON strings (e.g., arrays or objects)
+    let parsed: unknown = value;
     try {
-      parsedValue = JSON.parse(value);
-    } catch (e) {
-      // If parsing fails, keep the value as a string
+      parsed = JSON.parse(value);
+    } catch {
+      /* keep as string */
     }
-
-    // Use Lodash's set method to assign the value at the specified path
-    _.set(overrides, path, parsedValue);
+    set(overrides, path, parsed);
   }
   return overrides;
 }
 
 type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
 
-/**
- * Get the appropriate payload file name based on the account type
- */
+/** Resolve payload fixture name for a given account type. */
 function getPayloadFileForAccountType(accountType: DefendantType): string {
-  const payloadFiles = {
+  return {
     company: 'companyPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
     pgToPay: 'parentOrGuardianPayload.json',
-  };
-  return payloadFiles[accountType];
+  }[accountType];
 }
 
-When('I create a {string} draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
-  const overrides = convertDataTableToNestedObject(data);
-
-  // Load the appropriate base payload for this account type
-  const payloadFile = getPayloadFileForAccountType(accountType);
-  cy.fixture(`draftAccounts/${payloadFile}`).then((draftAccount) => {
-    const requestBody = _.merge({}, draftAccount, overrides);
-
-    cy.request('POST', 'opal-fines-service/draft-accounts', requestBody).then((response) => {
-      expect(response.status).to.eq(201);
-      const draftAccountId = response.body.draft_account_id;
-      expect(draftAccountId).to.exist;
-      createdAccounts.push(draftAccountId);
+/**
+ * GET an account and return its strong ETag + body.
+ * Fails fast if the ETag is weak (W/...) to enforce concurrency semantics.
+ */
+function getAccountAndStrongEtag(id: number | string) {
+  return cy
+    .request({
+      method: 'GET',
+      url: pathForAccount(id),
+      headers: auth(),
+    })
+    .then((resp) => {
+      const etag = resp.headers['etag'] as string | undefined;
+      expect(etag, 'ETag header').to.exist;
+      expect(etag!.startsWith('W/'), 'ETag must be strong (no W/) for If-Match').to.be.false;
+      expect(/^".+"$/.test(etag!), 'ETag should be quoted').to.be.true;
+      return { etag: etag!, body: resp.body};
     });
-  });
-});
+}
+
+/** Build a basic timeline entry. */
+function timeline(username: string, status: string) {
+  return [
+    {
+      username,
+      status,
+      status_date: new Date().toISOString(),
+      reason_text: 'Test reason',
+    },
+  ];
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Step: create a draft account (API)
+// ────────────────────────────────────────────────────────────────────────────────
+
+When(
+  'I create a {string} draft account with the following details:',
+  (accountType: DefendantType, data: DataTable) => {
+    const overrides = convertDataTableToNestedObject(data);
+    const payloadFile = getPayloadFileForAccountType(accountType);
+
+    return cy.fixture(`draftAccounts/${payloadFile}`).then((base) => {
+      const requestBody = merge({}, base, overrides);
+
+      return cy
+        .request({
+          method: 'POST',
+          url: '/opal-fines-service/draft-accounts',
+          headers: auth(),
+          body: requestBody,
+          failOnStatusCode: false,
+        })
+        .then((response) => {
+          expect(response.status).to.eq(201);
+          const draftAccountId = Number((response.body).draft_account_id);
+          expect(draftAccountId, 'draft_account_id').to.be.a('number');
+          createdAccounts.push(draftAccountId);
+        });
+    });
+  }
+);
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Step: Update last created with status — store before/after
+// ────────────────────────────────────────────────────────────────────────────────
+
+/** Type stored in @etagUpdate alias*/
+type EtagUpdate = {
+  status: number;
+  etagBefore: string;
+  etagAfter: string | null;
+  accountId: number;
+};
 
 When('I update the last created draft account with status {string}', (status: string) => {
-  cy.wrap(createdAccounts)
-    .its(createdAccounts.length - 1)
-    .then((accountId) => {
-      // Fetch the current draft account to get required fields
-      cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
-        const account = getResp.body;
-        const business_unit_id = account.business_unit_id;
-        const version = account.version;
-        const validated_by = account.submitted_by || 'opal-test';
-        const now = new Date().toISOString().split('T')[0];
+  return cy
+    .wrap(createdAccounts, { log: false })
+    .then((arr: number[]) => {
+      expect(arr.length, 'at least one created account').to.be.greaterThan(0);
+      return arr[arr.length - 1];
+    })
+    .then((accountId: number) => {
+      return getAccountAndStrongEtag(accountId).then(({ etag, body }) => {
         const updateBody = {
-          business_unit_id,
+          business_unit_id: body.business_unit_id,
           account_status: status,
-          validated_by,
-          version,
-          timeline_data: [
-            {
-              username: validated_by,
-              status,
-              status_date: now,
-              reason_text: 'Test reason',
-            },
-          ],
+          validated_by: body.submitted_by || 'opal-test',
+          timeline_data: timeline(body.submitted_by || 'opal-test', status),
         };
-        cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
-          expect(response.status).to.eq(200);
-        });
+
+        return cy
+          .request({
+            method: 'PATCH',
+            url: pathForAccount(accountId),
+            headers: { ...auth(), 'If-Match': etag }, // quoted strong ETag
+            body: updateBody,
+            failOnStatusCode: false, // assert in Then
+          })
+          .then((resp) => {
+            const etagAfter = (resp.headers['etag'] as string | undefined) ?? null;
+            cy.wrap<EtagUpdate>(
+              { status: resp.status, etagBefore: etag, etagAfter, accountId },
+              { log: false }
+            ).as('etagUpdate');
+          });
       });
     });
 });
 
-afterEach(() => {
-  cy.log('Createdaccount length: ' + createdAccounts.length);
+// ────────────────────────────────────────────────────────────────────────────────
+// Then: assert the update succeeded and ETag changed
+// ────────────────────────────────────────────────────────────────────────────────
 
-  if (createdAccounts.length > 0) {
-    cy.log('Cleaning up accounts: ' + createdAccounts.join(', '));
-    createdAccounts.forEach((accountId) => {
-      cy.request('DELETE', `/opal-fines-service/draft-accounts/${accountId}?ignoreMissing=true`);
-      createdAccounts = createdAccounts.filter((id) => id !== accountId);
-    });
-  }
+Then('the update should succeed and return a new strong ETag', () => {
+  return cy.get<EtagUpdate>('@etagUpdate').then(({ status, etagBefore, etagAfter }) => {
+    expect(status, 'PATCH success status').to.eq(200);
+    expect(etagAfter, 'new ETag present').to.not.be.null;
+
+    const after = etagAfter as string;
+    expect(after.startsWith('W/'), 'Updated ETag must be strong (no W/)').to.be.false;
+    expect(after, 'ETag should change after update').not.to.eq(etagBefore);
+  });
+});
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Negative: stale ETag → 409 Conflict
+// ────────────────────────────────────────────────────────────────────────────────
+
+When('I try to update the last created draft account with a stale ETag I should get a conflict', () => {
+  cy.wrap(createdAccounts).its('length').should('be.gt', 0);
+  const lastId = () => createdAccounts[createdAccounts.length - 1];
+
+  return getAccountAndStrongEtag(lastId()).then(({ etag: etag1, body }) => {
+    const updateBody = {
+      business_unit_id: body.business_unit_id,
+      account_status: 'QA-Bump',
+      validated_by: 'opal-test',
+      timeline_data: timeline('opal-test', 'QA-Bump'),
+    };
+
+    return cy
+      .request({
+        method: 'PATCH',
+        url: pathForAccount(lastId()),
+        headers: { ...auth(), 'If-Match': etag1 },
+        body: updateBody,
+        failOnStatusCode: false,
+      })
+      .its('status')
+      .should('eq', 200)
+      .then(() => {
+        return cy
+          .request({
+            method: 'PATCH',
+            url: pathForAccount(lastId()),
+            headers: { ...auth(), 'If-Match': etag1 }, // stale on purpose
+            body: updateBody,
+            failOnStatusCode: false,
+          })
+          .then((resp) => {
+            expect(resp.status, 'stale If-Match should conflict').to.eq(409);
+          });
+      });
+  });
+});
+
+// ────────────────────────────────────────────────────────────────────────────────
+/** Cleanup: DELETE each created account using strong If-Match. */
+// ────────────────────────────────────────────────────────────────────────────────
+
+After(() => {
+  const ids = [...createdAccounts];
+  createdAccounts = [];
+
+  return cy.wrap(ids, { log: false }).each((id: number) => {
+    return cy
+      .request({
+        method: 'GET',
+        url: pathForAccount(id),
+        headers: auth(),
+        failOnStatusCode: false,
+      })
+      .then((getResp) => {
+        if (getResp.status === 404) {
+          // already gone
+          return cy.request({
+            method: 'DELETE',
+            url: `${pathForAccount(id)}?ignoreMissing=true`,
+            headers: auth(),
+            failOnStatusCode: false,
+          });
+        }
+
+        const etag = getResp.headers['etag'] as string | undefined;
+
+        if (!etag || etag.startsWith('W/')) {
+          // fallback path if ETag missing/weak
+          return cy.request({
+            method: 'DELETE',
+            url: `${pathForAccount(id)}?ignoreMissing=true`,
+            headers: auth(),
+            failOnStatusCode: false,
+          });
+        }
+
+        return cy
+          .request({
+            method: 'DELETE',
+            url: pathForAccount(id),
+            headers: { ...auth(), 'If-Match': etag },
+            failOnStatusCode: false,
+          })
+          .then((resp) => {
+            expect([200, 204, 404, 409]).to.include(resp.status);
+          });
+      });
+  });
 });
