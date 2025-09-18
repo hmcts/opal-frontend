@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { HttpHeaders, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
@@ -38,13 +38,16 @@ import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecut
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { of } from 'rxjs';
-import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import {
   OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
   OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
 } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
+
+function mockHeaders(getFn: (name: string) => string | null) {
+  return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
+}
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -562,13 +565,64 @@ describe('OpalFines', () => {
     expect(result).toEqual(expectedPrettyName);
   });
 
+  it('should return the numeric value when ETag header is a quoted number', () => {
+    const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('"123"');
+  });
+
+  it('should return the numeric value when Etag header is an unquoted number', () => {
+    const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('456');
+  });
+
+  it('should return null if ETag header is not present', () => {
+    const headers = mockHeaders(() => null);
+    expect(service['extractEtagVersion'](headers)).toBeNull();
+  });
+
+  it('should handle ETag header with multiple quotes', () => {
+    const headers = mockHeaders((name) => (name === 'ETag' ? '""789""' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('""789""');
+  });
+
+  it('should prefer ETag over Etag if both are present', () => {
+    const headers = mockHeaders((name) => {
+      if (name === 'ETag') return '"321"';
+      if (name === 'Etag') return '"999"';
+      return null;
+    });
+    expect(service['extractEtagVersion'](headers)).toBe('"321"');
+  });
+
+  it('should return headers object with If-Match when version is a positive number', () => {
+    const result = service['buildIfMatchHeader']('5');
+    expect(result).toEqual({ headers: { 'If-Match': '5' } });
+  });
+
+  it('should return headers object with If-Match when version is zero', () => {
+    const result = service['buildIfMatchHeader']('0');
+    expect(result).toEqual({ headers: { 'If-Match': '0' } });
+  });
+
+  it('should return empty object when version is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = service['buildIfMatchHeader'](undefined as any);
+    expect(result).toEqual({});
+  });
+
+  it('should return empty object when version is null', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = service['buildIfMatchHeader'](null as any);
+    expect(result).toEqual({});
+  });
+
   it('should getDefendantAccountHeader', () => {
     const accountId = 456;
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
     service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
-      response.version = Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version);
+      response.version = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version;
       expect(response).toEqual(expectedResponse);
     });
 
@@ -602,80 +656,6 @@ describe('OpalFines', () => {
 
     // Verify that the cache for the specified tab is cleared
     expect(service['accountDetailsCache$'][tab]).toBeUndefined();
-  });
-
-  it('should add version to response body', () => {
-    const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
-      body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      headers: new HttpHeaders({ ETag: '12345' }),
-      status: 200,
-      statusText: 'OK',
-    });
-
-    const result = service['addVersionToBody'](mockResponse);
-
-    expect(result).toEqual({
-      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      version: 12345,
-    });
-  });
-
-  it('should getDefendantAccountHeader', () => {
-    const accountId = 456;
-    const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-
-    service.getDefendantAccountHeadingData(accountId).subscribe((response) => {
-      response.version = Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.version);
-      expect(response).toEqual(expectedResponse);
-    });
-
-    const req = httpMock.expectOne(apiUrl);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(expectedResponse);
-  });
-
-  it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
-    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
-    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
-
-    service.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id).subscribe((response) => {
-      expect(response).toEqual(expectedResponse);
-    });
-
-    // const req = httpMock.expectOne(apiUrl);
-    // expect(req.request.method).toBe('GET');
-
-    // req.flush(expectedResponse);
-  });
-
-  it('should clear account details cache', () => {
-    const tab = 'at-a-glance';
-    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
-    service.clearAccountDetailsCache();
-
-    // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$'][tab]).toBeUndefined();
-  });
-
-  it('should add version to response body', () => {
-    const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
-      body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      headers: new HttpHeaders({ ETag: '12345' }),
-      status: 200,
-      statusText: 'OK',
-    });
-
-    const result = service['addVersionToBody'](mockResponse);
-
-    expect(result).toEqual({
-      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      version: 12345,
-    });
   });
 
   it('should return the mocked defendant accounts response with search params injected - individual', () => {

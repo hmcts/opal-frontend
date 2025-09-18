@@ -102,13 +102,34 @@ export class OpalFines {
   }
 
   /**
-   * Adds the version information from the response headers to the response body.
-   * @param response - The HTTP response containing the body and headers.
-   * @returns The updated response body including the version information.
+   * Extracts the ETag version from the provided HTTP response headers.
+   *
+   * Attempts to retrieve the value of the 'ETag' or 'Etag' header from the given headers object.
+   * Returns the ETag value as a string if present, or `null` if the header is not found.
+   *
+   * @param headers - The HTTP response headers from which to extract the ETag.
+   * @returns The ETag value as a string, or `null` if not present.
    */
-  private addVersionToBody<T>(response: HttpResponse<T>): T {
-    const etag = response.headers.get('ETag') || undefined;
-    return { ...response.body, version: Number(etag) } as T;
+  private extractEtagVersion(headers: HttpResponse<unknown>['headers']): string | null {
+    const etag = headers.get('ETag') ?? headers.get('Etag');
+    if (!etag) return null;
+
+    return etag;
+  }
+
+  /**
+   * Builds an HTTP headers object containing the `If-Match` header if a version is provided.
+   *
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An object with a `headers` property containing the `If-Match` header if the version is defined; otherwise, an empty object.
+   */
+  private buildIfMatchHeader(version: string): {
+    headers?: { [header: string]: string };
+  } {
+    if (version !== undefined && version !== null) {
+      return { headers: { 'If-Match': version } };
+    }
+    return {};
   }
 
   /**
@@ -442,7 +463,14 @@ export class OpalFines {
       // this.accountDetailsCache$[tab] = this.http
       //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
       //   .pipe(
-      //     map((response) => this.addVersionToBody(response)),
+      //     map((response: HttpResponse<IOpalFinesAccountDetailsAtAGlanceTabRefData>) => {
+      //       const payload = response.body as IOpalFinesAccountDetailsAtAGlanceTabRefData;
+      //       const version = this.extractEtagVersion(response.headers);
+      //       return {
+      //         ...payload,
+      //         version,
+      //       };
+      //     }),
       //     shareReplay(1)
       //   );
       this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
@@ -460,9 +488,16 @@ export class OpalFines {
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-    return this.http
-      .get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' })
-      .pipe(map((response) => this.addVersionToBody(response)));
+    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 
   /**
