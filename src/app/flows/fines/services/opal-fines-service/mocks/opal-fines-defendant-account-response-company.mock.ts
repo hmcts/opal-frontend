@@ -22,7 +22,7 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK: IOpalFinesDefen
     return {
       ...BASE_COMPANY_ACCOUNT,
       account_number: `23000${idx}BU`,
-      defendant_account_id: Number(`${idx}`) ,
+      defendant_account_id: Number(`${idx}`),
       organisation_name: `COMPANY_${idx}`,
       aliases:
         idx % 2 === 0

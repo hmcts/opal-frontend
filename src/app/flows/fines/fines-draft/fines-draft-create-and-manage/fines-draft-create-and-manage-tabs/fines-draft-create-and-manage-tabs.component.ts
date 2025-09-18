@@ -34,7 +34,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
-import { FINES_ACC_DEFENDANT_ACCOUNT_TABS } from '../../../fines-acc/fines-acc-defendant-details/constants/fines-acc-defendant-account-tabs.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({

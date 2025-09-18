@@ -6,6 +6,7 @@ import { PermissionsService } from '@hmcts/opal-frontend-common/services/permiss
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 // Components
 import { AbstractTabData } from '@hmcts/opal-frontend-common/components/abstract/abstract-tab-data';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
@@ -33,12 +34,10 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-details-tab-ref-data.interface';
-import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -128,7 +127,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Navigates to the add account note page.
    */
   public navigateToAddAccountNotePage(): void {
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], { relativeTo: this.activatedRoute });
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   /**

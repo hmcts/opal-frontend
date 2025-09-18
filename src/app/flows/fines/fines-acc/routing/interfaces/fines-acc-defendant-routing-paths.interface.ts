@@ -1,7 +1,7 @@
 import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/interfaces';
 
 export interface IFinesAccDefendantRoutingPaths extends IChildRoutingPaths {
-  root: string
+  root: string;
   children: {
     details: string;
     note: string;
