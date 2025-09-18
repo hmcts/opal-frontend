@@ -4,7 +4,6 @@ import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-s
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { FinesSaStore } from '../../stores/fines-sa.store';
-import { FinesSaService } from '../../services/fines-sa.service';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 
 /**
@@ -24,53 +23,50 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/f
  */
 export const finesSaIndividualAccountsResolver: ResolveFn<IOpalFinesDefendantAccountResponse> = () => {
   const opalFinesService = inject(OpalFines);
-  const finesSaService = inject(FinesSaService);
   const finesSaStore = inject(FinesSaStore);
   const state = finesSaStore.searchAccount();
 
-  const common = {
+  // Create base object with defaults, search type, and common fields
+  const baseSearchParams = {
+    ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
+    search_type: 'individual' as const,
     business_unit_ids: state.fsa_search_account_business_unit_ids,
     active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
   };
 
   const hasAccountNumber = !!state.fsa_search_account_number;
   const hasReference = !!state.fsa_search_account_reference_case_number;
-  const ind = state.fsa_search_account_individual_search_criteria;
-  const searchType = 'individual';
+  const individualCriteria = state.fsa_search_account_individuals_search_criteria;
 
-  if (!hasAccountNumber && !hasReference && !(ind && finesSaService.hasTabPopulated(ind))) {
+  if (!hasAccountNumber && !hasReference && !individualCriteria) {
     return of({ count: 0, defendant_accounts: [] } as IOpalFinesDefendantAccountResponse);
   }
 
   if (hasAccountNumber) {
     return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
+      ...baseSearchParams,
       account_number: state.fsa_search_account_number,
-      ...common,
-    });
-  } else if (hasReference) {
-    return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
-      pcr: state.fsa_search_account_reference_case_number,
-      ...common,
-    });
-  } else {
-    const individualCriteria = ind!;
-    return opalFinesService.getDefendantAccounts({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      search_type: searchType,
-      surname: individualCriteria.fsa_search_account_individuals_last_name,
-      exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match,
-      forename: individualCriteria.fsa_search_account_individuals_first_names,
-      exact_match_forenames: individualCriteria.fsa_search_account_individuals_first_names_exact_match,
-      date_of_birth: individualCriteria.fsa_search_account_individuals_date_of_birth,
-      ni_number: individualCriteria.fsa_search_account_individuals_national_insurance_number,
-      address_line: individualCriteria.fsa_search_account_individuals_address_line_1,
-      postcode: individualCriteria.fsa_search_account_individuals_post_code,
-      include_aliases: individualCriteria.fsa_search_account_individuals_include_aliases,
-      ...common,
     });
   }
+
+  if (hasReference) {
+    return opalFinesService.getDefendantAccounts({
+      ...baseSearchParams,
+      pcr: state.fsa_search_account_reference_case_number,
+    });
+  }
+
+  // Individual criteria search
+  return opalFinesService.getDefendantAccounts({
+    ...baseSearchParams,
+    surname: individualCriteria!.fsa_search_account_individuals_last_name,
+    exact_match_surname: individualCriteria!.fsa_search_account_individuals_last_name_exact_match,
+    forename: individualCriteria!.fsa_search_account_individuals_first_names,
+    exact_match_forenames: individualCriteria!.fsa_search_account_individuals_first_names_exact_match,
+    date_of_birth: individualCriteria!.fsa_search_account_individuals_date_of_birth,
+    ni_number: individualCriteria!.fsa_search_account_individuals_national_insurance_number,
+    address_line: individualCriteria!.fsa_search_account_individuals_address_line_1,
+    postcode: individualCriteria!.fsa_search_account_individuals_post_code,
+    include_aliases: individualCriteria!.fsa_search_account_individuals_include_aliases,
+  });
 };

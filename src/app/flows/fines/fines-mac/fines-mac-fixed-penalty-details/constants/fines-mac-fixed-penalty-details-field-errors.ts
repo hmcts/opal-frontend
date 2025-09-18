@@ -1,3 +1,4 @@
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-field-errors.constant';
 import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
@@ -16,7 +17,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_post_code,
     alphanumericTextPattern: {
       priority: 2,
-      message: `Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Postcode must only contain letters or numbers`,
     },
   },
   fm_fp_court_details_imposing_court_id: FINES_MAC_COURT_DETAILS_FIELD_ERRORS.fm_court_details_imposing_court_id,
@@ -27,26 +28,9 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
     },
   },
   fm_fp_court_details_originator_name: {},
-  fm_fp_account_comments_notes_comments: {
-    maxlength: {
-      message: `Add comment must be 30 characters or fewer`,
-      priority: 1,
-    },
-    alphanumericTextPattern: {
-      message: `Add comment must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
-      priority: 2,
-    },
-  },
-  fm_fp_account_comments_notes_notes: {
-    maxlength: {
-      message: `Add account note must be 1000 characters or fewer`,
-      priority: 1,
-    },
-    alphanumericTextPattern: {
-      message: `Add account note must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
-      priority: 2,
-    },
-  },
+  fm_fp_account_comments_notes_comments:
+    FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_comments,
+  fm_fp_account_comments_notes_notes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_notes,
   fm_fp_account_comments_notes_system_notes: {},
   fm_fp_language_preferences_document_language: {},
   fm_fp_language_preferences_hearing_language: {},
@@ -60,7 +44,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Notice number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Notice number must only contain letters or numbers`,
       priority: 3,
     },
   },
@@ -101,8 +85,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: `Place of offence must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
@@ -116,7 +100,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 2,
     },
     invalidAmount: {
-      message: `Amount too long. Enter an amount that is less than 18 numbers before the decimal and 2 or less after`,
+      message: `Enter an amount with no more than 18 digits before the decimal and 2 or fewer after`,
       priority: 3,
     },
   },
@@ -130,7 +114,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Registration number must only contain letters or numbers`,
       priority: 3,
     },
   },
@@ -139,9 +123,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter Driving licence number`,
       priority: 1,
     },
-    invalidDrivingLicenceNumber: {
-      message: `Driving licence number must be in a valid format (I.e. first 5 characters are the surname, second 6 are the DOB, 2 characters for the initials and 3 random characters)`,
+    maxlength: {
+      message: `Driving licence number must be 16 characters or fewer`,
       priority: 2,
+    },
+    alphanumericTextPattern: {
+      message: `Driving licence number must only contain letters or numbers`,
+      priority: 3,
+    },
+    drivingLicenceNumberPattern: {
+      message: `Enter Driving licence number in the correct format, like ABCDE123456AA1B1`,
+      priority: 4,
     },
   },
   fm_fp_offence_details_nto_nth: {
@@ -150,7 +142,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: `Notice to owner or hirer number (NTO/NTH) must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+      message: `Notice to owner or hirer number (NTO/NTH) must only contain letters or numbers`,
       priority: 2,
     },
   },

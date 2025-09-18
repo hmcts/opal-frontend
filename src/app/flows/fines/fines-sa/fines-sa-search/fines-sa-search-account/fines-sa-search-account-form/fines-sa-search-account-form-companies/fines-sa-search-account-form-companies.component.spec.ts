@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FinesSaSearchAccountFormCompaniesComponent } from './fines-sa-search-account-form-companies.component';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_CONTROLS } from './constants/fines-sa-search-account-form-companies-controls.constant';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   let component: FinesSaSearchAccountFormCompaniesComponent;
@@ -10,6 +12,7 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormCompaniesComponent, ReactiveFormsModule],
+      providers: [{ provide: ActivatedRoute, useValue: { fragment: of('companies'), parent: 'search' } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesSaSearchAccountFormCompaniesComponent);

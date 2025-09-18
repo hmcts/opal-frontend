@@ -42,6 +42,9 @@ export const DOM_ELEMENTS = {
   dobLabel: '[for="fsa_search_account_individuals_date_of_birth"]',
   dobInput: '#fsa_search_account_individuals_date_of_birth',
   dobError: '#fsa_search_account_individuals_date_of_birth-date-error',
+  dobDatePickerToggle: '.moj-datepicker__toggle',
+  dobDatePicker: '#datepicker-fsa_search_account_individuals_date_of_birth',
+  dobDatePickerPrevMonth: '.moj-datepicker__button.moj-js-datepicker-prev-month',
 
   niNumberLabel: '[for="fsa_search_account_individuals_national_insurance_number"]',
   niNumberInput: '#fsa_search_account_individuals_national_insurance_number',

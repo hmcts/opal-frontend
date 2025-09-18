@@ -59,7 +59,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     fp_ticket_detail: {
       notice_number: '12345',
       date_of_issue: '2024-12-12',
-      time_of_issue: '10:12:00Z',
+      time_of_issue: '10:12',
       place_of_offence: 'High Street, Aberystwyth',
       fp_registration_number: 'AB12 CJP',
       fp_driving_licence_number: 'AB123456CDE',
@@ -89,6 +89,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
   },
   account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
   account_status: 'Submitted',
+  account_status_message: null,
   timeline_data: [
     {
       username: 'Timmy Test',

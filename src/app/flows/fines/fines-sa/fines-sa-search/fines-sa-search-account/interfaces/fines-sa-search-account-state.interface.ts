@@ -7,7 +7,7 @@ export interface IFinesSaSearchAccountState {
   fsa_search_account_business_unit_ids: number[] | null;
   fsa_search_account_number: string | null;
   fsa_search_account_reference_case_number: string | null;
-  fsa_search_account_individual_search_criteria: IFinesSaSearchAccountFormIndividualsState | null;
+  fsa_search_account_individuals_search_criteria: IFinesSaSearchAccountFormIndividualsState | null;
   fsa_search_account_companies_search_criteria: IFinesSaSearchAccountFormCompaniesState | null;
   fsa_search_account_minor_creditors_search_criteria: IFinesSaSearchAccountFormMinorCreditorsState | null;
   fsa_search_account_major_creditor_search_criteria: IFinesSaSearchAccountFormMajorCreditorState | null;
