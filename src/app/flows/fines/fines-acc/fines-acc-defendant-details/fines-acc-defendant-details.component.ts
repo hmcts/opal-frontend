@@ -35,11 +35,10 @@ import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
-import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
-import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -242,45 +241,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    */
   public navigateToAddCommentsPage(event: Event): void {
     event.preventDefault();
-    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
-      relativeTo: this.activatedRoute,
-    });
-  }
-
-  /**
-   * Handles the page refresh action.
-   * Sets the version mismatch state to false.
-   * Sets the is refreshed state to true.
-   * Refreshes the page.
-   * @param event The click event that triggered the refresh.
-   */
-  public refreshPage(event: Event): void {
-    event.preventDefault();
-    this.accountStore.setHasVersionMismatch(false);
-
-    this.opalFinesService
-      .getDefendantAccountHeadingData(Number(this.accountStore.account_id()))
-      .pipe(
-        tap((headingData) => {
-          this.accountStore.setAccountState(
-            this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
-          );
-        }),
-      )
-      .subscribe((res) => {
-        this.accountStore.setSuccessMessage('Information is up to date');
-        this.accountData = res;
-        this.refreshFragment$.next(this.activeTab);
-      });
-  }
-
-  /**
-   * Navigates to the add comments page.
-   * @param event The click event that triggered the navigation.
-   */
-  public navigateToAddCommentsPage(event: Event): void {
-    event.preventDefault();
-    this['router'].navigate([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
       relativeTo: this.activatedRoute,
     });
   }
