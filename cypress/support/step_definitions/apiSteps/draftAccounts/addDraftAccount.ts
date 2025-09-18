@@ -8,19 +8,19 @@ import set from 'lodash/set';
 // Config & shared state
 // ────────────────────────────────────────────────────────────────────────────────
 
-/** Keep track of created account IDs to tidy up after scenarios. */
+/** Track created account IDs to tidy up after scenarios. */
 let createdAccounts: number[] = [];
 
 /** Build Authorization header from env (set CYPRESS_TOKEN or in cypress.env.json). */
 const auth = () =>
   Cypress.env('TOKEN') ? { Authorization: `Bearer ${Cypress.env('TOKEN')}` } : {};
 
-/** Build path for a draft account, with safe segment encoding. */
+/** Build path for a draft account */
 const pathForAccount = (id: number | string) =>
   `/opal-fines-service/draft-accounts/${encodeURIComponent(String(id))}`;
 
 // ────────────────────────────────────────────────────────────────────────────────
-/** Convert a Cucumber data table (dot-path keys) to a nested object. */
+/** Convert the Cucumber data table (dot-path keys) to a nested object. */
 function convertDataTableToNestedObject(dataTable: DataTable): Record<string, unknown> {
   const overrides: Record<string, unknown> = {};
   const rows = dataTable.rowsHash();
@@ -48,24 +48,38 @@ function getPayloadFileForAccountType(accountType: DefendantType): string {
 }
 
 /**
- * GET an account and return its strong ETag + body.
- * Fails fast if the ETag is weak (W/...) to enforce concurrency semantics.
+ * GET an account and return its ETag + body.
  */
 function getAccountAndStrongEtag(id: number | string) {
   return cy
     .request({
       method: 'GET',
       url: pathForAccount(id),
-      headers: auth(),
+      headers: { ...auth(), Accept: 'application/json' },
+      failOnStatusCode: false,
     })
     .then((resp) => {
+      // Useful breadcrumbs in the Cypress runner
+      cy.log(`GET ${pathForAccount(id)} → ${resp.status}`);
+      cy.log(`content-type: ${resp.headers['content-type'] || '<none>'}`);
+      cy.log(`all headers: ${JSON.stringify(resp.headers, null, 2)}`);
+
+      // Sanity check we actually got JSON
+      expect(resp.status, 'GET status').to.be.oneOf([200, 304]);
+      expect(String(resp.headers['content-type'] || '')).to.include('application/json');
+
+      // ETag (header keys are lowercased in Node)
       const etag = resp.headers['etag'] as string | undefined;
-      expect(etag, 'ETag header').to.exist;
+      expect(etag, `ETag header missing for ${pathForAccount(id)}; headers were: ${JSON.stringify(resp.headers, null, 2)}`).to.exist;
+
+      // Strong + quoted
       expect(etag!.startsWith('W/'), 'ETag must be strong (no W/) for If-Match').to.be.false;
       expect(/^".+"$/.test(etag!), 'ETag should be quoted').to.be.true;
+
       return { etag: etag!, body: resp.body};
     });
 }
+
 
 /** Build a basic timeline entry. */
 function timeline(username: string, status: string) {
