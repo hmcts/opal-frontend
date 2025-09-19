@@ -242,10 +242,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should create autocomplete items for major creditors', () => {
     const response = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    const result = component['createAutoCompleteItemsMajorCreditors'](response);
-    expect(result.length).toBe(response.refData.length);
-    expect(result[0].value).toBe(response.refData[0].major_creditor_id);
-    expect(result[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
+    const fcompResults = component['createAutoCompleteItemsMajorCreditors'](response, true);
+    const fcostResults = component['createAutoCompleteItemsMajorCreditors'](response, false);
+    expect(fcompResults.length).toBe(response.refData.length);
+    expect(fcompResults[0].value).toBe(response.refData[0].major_creditor_id!);
+    expect(fcompResults[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
+    expect(fcostResults.length).toBe(response.refData.filter((x) => x.prosecution_service === false).length);
+    expect(fcostResults[0].value).toBe(response.refData[1].major_creditor_id!);
+    expect(fcostResults[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
   });
 
   it('should update offence details index when form exists in the state', () => {
