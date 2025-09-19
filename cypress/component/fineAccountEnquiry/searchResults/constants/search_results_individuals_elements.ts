@@ -25,6 +25,7 @@ export const DOM_ELEMENTS = {
   niNumberHeader: 'th[columnkey="NI number"]',
   parentGuardianHeader: 'th[columnkey="Parent or guardian"]',
   businessUnitHeader: 'th[columnkey="Business unit"]',
+  defendantHeader: 'th[columnkey="Defendant"]',
   refHeader: 'th[columnkey="Ref"]',
   enfHeader: 'th[columnkey="Enf"]',
   balanceHeader: 'th[columnkey="Balance"]',
@@ -41,6 +42,7 @@ export const DOM_ELEMENTS = {
   refCell: 'td[id="ref"]',
   enfCell: 'td[id="enf"]',
   balanceCell: 'td[id="balance"]',
+  defendantCell: 'td[id="defendant"]',
 
   tabs: 'opal-lib-govuk-tabs',
   tabsList: '.govuk-tabs__list',

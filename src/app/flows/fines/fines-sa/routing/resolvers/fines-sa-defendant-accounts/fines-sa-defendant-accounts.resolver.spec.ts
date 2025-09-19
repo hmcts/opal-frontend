@@ -8,8 +8,11 @@ import { ResolveFn } from '@angular/router';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../../../fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const exec: ResolveFn<any> = (...params) =>
-  TestBed.runInInjectionContext(() => finesSaDefendantAccountsResolver(...params));
+const execIndividuals: ResolveFn<any> = (...params) =>
+  TestBed.runInInjectionContext(() => finesSaDefendantAccountsResolver(false)(...params));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const execCompanies: ResolveFn<any> = (...params) =>
+  TestBed.runInInjectionContext(() => finesSaDefendantAccountsResolver(true)(...params));
 
 describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   let opalFines: jasmine.SpyObj<OpalFines>;
@@ -31,7 +34,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     finesSaStore.setActiveTab('individuals');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    const result = await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
@@ -47,9 +50,16 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    const result = await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
 
-    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(jasmine.objectContaining({ account_number: 'ACC-1' }));
+    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        active_accounts_only: false,
+        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        reference_number: Object({ account_number: 'ACC-1', prosecutor_case_reference: null, organisation: true }),
+        defendant: null,
+      }),
+    );
     expect(result).toEqual({ count: 1, defendant_accounts: [] });
   });
 
@@ -59,13 +69,20 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
       fsa_search_account_reference_case_number: 'PCR-9',
     });
     finesSaStore.setActiveTab('individuals');
-    opalFines.getDefendantAccounts.and.returnValue(of({ count: 2, defendant_accounts: [] }));
+    opalFines.getDefendantAccounts.and.returnValue(of({ count: 0, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    const result = await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
-    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(jasmine.objectContaining({ pcr: 'PCR-9' }));
-    expect(result).toEqual({ count: 2, defendant_accounts: [] });
+    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        active_accounts_only: false,
+        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        reference_number: Object({ account_number: null, prosecutor_case_reference: 'PCR-9', organisation: false }),
+        defendant: null,
+      }),
+    );
+    expect(result).toEqual({ count: 0, defendant_accounts: [] });
   });
 
   it('builds individual payload when activeTab = individuals and criteria present', async () => {
@@ -87,19 +104,27 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     opalFines.getDefendantAccounts.and.returnValue(of({ count: 3, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        surname: 'Doe',
-        exact_match_surname: true,
-        forename: 'Jane',
-        exact_match_forenames: false,
-        date_of_birth: '1980-01-02',
-        ni_number: 'QQ123456C',
-        address_line: '10 Lane',
-        postcode: 'AB1 2CD',
-        include_aliases: true,
+        active_accounts_only: true,
+        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        reference_number: null,
+        defendant: Object({
+          include_aliases: true,
+          organisation: false,
+          address_line_1: '10 Lane',
+          postcode: 'AB1 2CD',
+          organisation_name: null,
+          exact_match_organisation_name: null,
+          surname: 'Doe',
+          exact_match_surname: true,
+          forenames: 'Jane',
+          exact_match_forenames: false,
+          birth_date: '1980-01-02',
+          national_insurance_number: 'QQ123456C',
+        }),
       }),
     );
   });
@@ -119,15 +144,27 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     opalFines.getDefendantAccounts.and.returnValue(of({ count: 4, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        organisation_name: 'ACME Ltd',
-        exact_match_organisation_name: true,
-        include_aliases: false,
-        address_line: '2 Road',
-        postcode: 'XY1 9ZZ',
+        active_accounts_only: true,
+        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        reference_number: null,
+        defendant: Object({
+          include_aliases: false,
+          organisation: true,
+          address_line_1: '2 Road',
+          postcode: 'XY1 9ZZ',
+          organisation_name: 'ACME Ltd',
+          exact_match_organisation_name: true,
+          surname: null,
+          exact_match_surname: null,
+          forenames: null,
+          exact_match_forenames: null,
+          birth_date: null,
+          national_insurance_number: null,
+        }),
       }),
     );
   });
@@ -146,7 +183,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    await lastValueFrom(execIndividuals(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       jasmine.objectContaining({ active_accounts_only: true }),
@@ -164,9 +201,63 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     finesSaStore.setActiveTab('companies');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await lastValueFrom(exec(undefined as any, undefined as any) as Observable<any>);
+    const result = await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
 
     expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
     expect(result).toEqual({ count: 0, defendant_accounts: [] });
+  });
+
+  it('hits the final fallback when company criteria exist but activeTab = individuals (execCompanies)', async () => {
+    // Arrange: company criteria present (so guard passes), but active tab is individuals to miss the company branch
+    finesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_companies_search_criteria: {
+        fsa_search_account_companies_company_name: 'Fallback Co',
+      } as never,
+    });
+    finesSaStore.setActiveTab('individuals');
+
+    // Act
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
+
+    // Assert: service not called, resolver returns empty via final fallback
+    expect(opalFines.getDefendantAccounts).not.toHaveBeenCalled();
+    expect(result).toEqual({ count: 0, defendant_accounts: [] });
+  });
+
+  it('defaults company flags when undefined (include_aliases/exact_match_organisation_name and active_accounts_only)', async () => {
+    // Arrange: omit boolean flags so resolver applies `?? false`, and omit active flag so `?? true` kicks in
+    finesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_active_accounts_only: null,
+      fsa_search_account_companies_search_criteria: {
+        fsa_search_account_companies_company_name: 'Flagless PLC',
+        // no exact_match/company include_aliases provided
+        fsa_search_account_companies_address_line_1: '1 Street',
+        fsa_search_account_companies_post_code: 'ZZ1 1ZZ',
+      } as never,
+    });
+    finesSaStore.setActiveTab('companies');
+    opalFines.getDefendantAccounts.and.returnValue(of({ count: 1, defendant_accounts: [] }));
+
+    // Act
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await lastValueFrom(execCompanies(undefined as any, undefined as any) as Observable<any>);
+
+    // Assert: defaults applied
+    expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        active_accounts_only: true,
+        defendant: jasmine.objectContaining({
+          organisation_name: 'Flagless PLC',
+          exact_match_organisation_name: false,
+          include_aliases: false,
+          address_line_1: '1 Street',
+          postcode: 'ZZ1 1ZZ',
+          organisation: true,
+        }),
+      }),
+    );
   });
 });

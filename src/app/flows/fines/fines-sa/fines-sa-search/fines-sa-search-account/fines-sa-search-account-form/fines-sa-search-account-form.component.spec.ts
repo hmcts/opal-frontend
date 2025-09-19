@@ -37,38 +37,6 @@ describe('FinesSaSearchAccountFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should switch to individual tab, reset temporary state when changing from another tab, and set activeTab', () => {
-    // start on a different tab to exercise the reset path
-    component.finesSaStore.setActiveTab('companies');
-    const resetSpy = spyOn(component.finesSaStore, 'resetSearchAccount').and.callThrough();
-
-    component['switchTab']('individuals');
-
-    expect(component['fieldErrors']).toBeDefined();
-    expect(component.finesSaStore.activeTab()).toBe('individuals');
-    expect(resetSpy).toHaveBeenCalled();
-  });
-
-  it('should switch to companies tab, resetting when changing from another tab', () => {
-    component.finesSaStore.setActiveTab('individuals');
-    const resetSpy = spyOn(component.finesSaStore, 'resetSearchAccount').and.callThrough();
-
-    component['switchTab']('companies');
-
-    expect(component.finesSaStore.activeTab()).toBe('companies');
-    expect(resetSpy).toHaveBeenCalled();
-  });
-
-  it('should switch to minorCreditors tab, resetting when changing from another tab', () => {
-    component.finesSaStore.setActiveTab('companies');
-    const resetSpy = spyOn(component.finesSaStore, 'resetSearchAccount').and.callThrough();
-
-    component['switchTab']('minorCreditors');
-
-    expect(component.finesSaStore.activeTab()).toBe('minorCreditors');
-    expect(resetSpy).toHaveBeenCalled();
-  });
-
   it('should call router with correct args when handleFormSubmit detects conflicting inputs (AC6)', () => {
     const expectedValue = {
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
