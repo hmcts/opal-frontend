@@ -2,6 +2,7 @@ import { IFinesSaResultsDefendantTableWrapperTableSort } from '../interfaces/fin
 
 export const FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT: IFinesSaResultsDefendantTableWrapperTableSort =
   {
+    'Account ID': 'none',
     Account: 'none',
     Name: 'none',
     Aliases: 'none',

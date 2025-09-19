@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,6 +36,9 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
@@ -54,6 +57,7 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
+  private accountDetailsCache$: { [key: string]: Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -95,6 +99,37 @@ export class OpalFines {
       submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
       notSubmittedBy: [...(filters.notSubmittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
     });
+  }
+
+  /**
+   * Extracts the ETag version from the provided HTTP response headers.
+   *
+   * Attempts to retrieve the value of the 'ETag' or 'Etag' header from the given headers object.
+   * Returns the ETag value as a string if present, or `null` if the header is not found.
+   *
+   * @param headers - The HTTP response headers from which to extract the ETag.
+   * @returns The ETag value as a string, or `null` if not present.
+   */
+  private extractEtagVersion(headers: HttpResponse<unknown>['headers']): string | null {
+    const etag = headers.get('ETag') ?? headers.get('Etag');
+    if (!etag) return null;
+
+    return etag;
+  }
+
+  /**
+   * Builds an HTTP headers object containing the `If-Match` header if a version is provided.
+   *
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An object with a `headers` property containing the `If-Match` header if the version is defined; otherwise, an empty object.
+   */
+  private buildIfMatchHeader(version: string): {
+    headers?: { [header: string]: string };
+  } {
+    if (version !== undefined && version !== null) {
+      return { headers: { 'If-Match': version } };
+    }
+    return {};
   }
 
   /**
@@ -314,6 +349,15 @@ export class OpalFines {
   }
 
   /**
+   * Clears the cache of account details by resetting the `accountDetailsCache$` property to an empty object.
+   * This method is typically used to remove all cached account details data, ensuring that subsequent operations
+   * fetch fresh data or start with a clean state.
+   */
+  public clearAccountDetailsCache(): void {
+    this.accountDetailsCache$ = {};
+  }
+
+  /**
    * Retrieves a draft account summary by its ID.
    *
    * @param draftAccountId - The ID of the draft account to retrieve.
@@ -397,6 +441,63 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param defendant_account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountAtAGlance(
+    account_id: number | null,
+    business_unit_id: string | null,
+    business_unit_user_id: string | null,
+  ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+    console.log(account_id, business_unit_id, business_unit_user_id);
+    if (!this.accountDetailsCache$['at-a-glance']) {
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountid}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      // this.accountDetailsCache$[tab] = this.http
+      //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
+      //   .pipe(
+      //     map((response: HttpResponse<IOpalFinesAccountDetailsAtAGlanceTabRefData>) => {
+      //       const payload = response.body as IOpalFinesAccountDetailsAtAGlanceTabRefData;
+      //       const version = this.extractEtagVersion(response.headers);
+      //       return {
+      //         ...payload,
+      //         version,
+      //       };
+      //     }),
+      //     shareReplay(1)
+      //   );
+      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    }
+
+    return this.accountDetailsCache$['at-a-glance'];
+  }
+
+  /**
+   * Retrieves the defendant account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
+   *
+   * @param accountId - The unique identifier of the defendant account.
+   * @returns An Observable that emits the defendant account header data.
+   */
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 
   /**
