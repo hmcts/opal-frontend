@@ -22,7 +22,7 @@ import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -111,7 +111,7 @@ function createTestModule(snapshotData?: any) {
   const fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
   const component = fixture.componentInstance;
   const globalStore = TestBed.inject(GlobalStore);
-  globalStore.setUserState(USER_STATE_MOCK);
+  globalStore.setUserState(OPAL_USER_STATE_MOCK);
   globalStore.setError({
     error: false,
     message: '',

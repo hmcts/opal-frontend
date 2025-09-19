@@ -6,7 +6,7 @@ import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/inte
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
@@ -32,10 +32,10 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(USER_STATE_MOCK);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(USER_STATE_MOCK);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
 
     fixture.detectChanges();
   });
