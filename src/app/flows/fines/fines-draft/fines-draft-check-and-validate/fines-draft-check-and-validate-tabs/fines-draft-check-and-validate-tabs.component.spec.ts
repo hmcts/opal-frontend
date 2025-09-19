@@ -8,13 +8,13 @@ import { FinesDraftService } from '../../services/fines-draft.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
   let component: FinesDraftCheckAndValidateTabsComponent;
@@ -69,7 +69,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
     }).compileComponents();
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
     finesDraftStore = TestBed.inject(FinesDraftStore);
 
     fixture = TestBed.createComponent(FinesDraftCheckAndValidateTabsComponent);
@@ -115,9 +115,9 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
     const tabData = await firstValueFrom(component.tabData$);
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: ['Deleted'],
-      notSubmittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
     });

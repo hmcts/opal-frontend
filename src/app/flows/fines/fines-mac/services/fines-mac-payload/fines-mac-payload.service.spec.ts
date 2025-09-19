@@ -13,8 +13,8 @@ import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-status
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offence-data-non-snake-case.mock';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-mac-payload-add-account-fixed-penalty.mock';
@@ -26,7 +26,7 @@ describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
   let dateService: DateService | null;
   let finesMacState: IFinesMacState | null;
-  let sessionUserState: ISessionUserState | null;
+  let sessionUserState: IOpalUserState | null;
   let finesMacPayloadAddAccount: IFinesMacAddAccountPayload | null;
   let finesMacPayloadAddAccountFixedPenalty: IFinesMacAddAccountPayload;
 
@@ -36,7 +36,7 @@ describe('FinesMacPayloadService', () => {
     dateService = TestBed.inject(DateService);
 
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    sessionUserState = structuredClone(SESSION_USER_STATE_MOCK);
+    sessionUserState = structuredClone(OPAL_USER_STATE_MOCK);
     finesMacPayloadAddAccount = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     finesMacPayloadAddAccountFixedPenalty = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK);
   });
