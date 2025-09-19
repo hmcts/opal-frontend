@@ -1,4 +1,4 @@
-import { USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../constants/fines-mac-account-types';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
@@ -12,7 +12,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   account_status_date: null,
   business_unit_id: 61,
   submitted_by: null,
-  submitted_by_name: USER_STATE_MOCK.name,
+  submitted_by_name: OPAL_USER_STATE_MOCK.name,
   account: {
     account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
     defendant_type: 'adultOrYouthOnly',
@@ -106,7 +106,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   account_status_message: null,
   timeline_data: [
     {
-      username: USER_STATE_MOCK.name,
+      username: OPAL_USER_STATE_MOCK.name,
       status: 'Submitted',
       status_date: '2023-07-03',
       reason_text: null,

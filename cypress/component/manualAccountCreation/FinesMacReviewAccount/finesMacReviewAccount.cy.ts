@@ -13,7 +13,7 @@ import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/f
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
@@ -52,7 +52,7 @@ describe('FinesMacReviewAccountComponent', () => {
           provide: GlobalStore,
           useFactory: () => {
             let store = new GlobalStore();
-            store.setUserState(SESSION_USER_STATE_MOCK);
+            store.setUserState(OPAL_USER_STATE_MOCK);
             store.setError({
               error: false,
               message: '',
