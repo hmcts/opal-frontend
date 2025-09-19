@@ -22,6 +22,7 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
+      "@app/api-client/*": ["src/app/api-client/*"],
       "@constants/*": ["./src/app/constants/*.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@routing/pages/*": ["./src/app/pages/routing/*.ts"],
