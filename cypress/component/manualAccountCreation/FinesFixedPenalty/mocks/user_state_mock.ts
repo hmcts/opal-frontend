@@ -1,20 +1,18 @@
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
-export const ACCOUNT_SESSION_USER_STATE_MOCK: ISessionUserState = {
-  user_id: 'gl.testUserTimmy',
-  user_name: 'timmyTest@HMCTS.NET',
-  name: 'Timmy Tester',
-  business_unit_user: [
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+export const ACCOUNT_SESSION_USER_STATE_MOCK: IOpalUserState = {
+  user_id: 50000000,
+  username: 'timmyTest@HMCTS.NET',
+  name: 'Timmy Test',
+  status: 'active',
+  version: 1,
+  business_unit_users: [
     {
-      business_unit_user_id: 'L017KG',
-      business_unit_id: 61,
+      business_unit_user_id: 'L077JG',
+      business_unit_id: 77,
       permissions: [
         {
           permission_id: 3,
           permission_name: 'Account Enquiry',
-        },
-        {
-          permission_id: 500,
-          permission_name: 'Collection Order',
         },
         {
           permission_id: 2,

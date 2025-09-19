@@ -165,8 +165,8 @@ describe('FinesDraftCheckAndValidateFailedComponent', () => {
     interceptCAVGetFailedAccounts(200, failedMockData);
 
     //Get the test user and business unit from the mock data
-    const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id;
-    const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_id;
+    const testUser = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id;
+    const businessUnitId = DRAFT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_id;
 
     setupComponent();
     cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
