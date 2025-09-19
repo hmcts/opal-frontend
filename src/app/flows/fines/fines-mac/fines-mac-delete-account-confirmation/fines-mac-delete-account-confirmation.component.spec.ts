@@ -172,7 +172,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
       account_status: 'Deleted',
       validated_by_name: null,
       business_unit_id: finesMacStore.getBusinessUnitId(),
-      version: finesDraftStore.getFinesDraftState().version || 0,
+      version: finesDraftStore.getFinesDraftState().version || '0',
       timeline_data: [
         {
           username: 'Test User',

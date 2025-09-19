@@ -20,5 +20,5 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD: IOpalFinesDraftAccountPatc
   ],
   validated_by: 'testUser',
   validated_by_name: 'Test User',
-  version: 1,
+  version: '1',
 };

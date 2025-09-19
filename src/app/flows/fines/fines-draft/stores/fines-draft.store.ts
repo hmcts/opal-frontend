@@ -20,7 +20,7 @@ export const FinesDraftStore = signalStore(
     account_status: '' as string | null,
     account_status_message: '' as string | null,
     timeline_data: [{}] as IFinesMacAccountTimelineData[],
-    version: 0 as number | null,
+    version: '0' as string | null,
     draft_account_id: 0 as number | null,
     created_at: '' as string | null,
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,

@@ -99,5 +99,5 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
       reason_text: null,
     },
   ],
-  version: 0,
+  version: '0',
 };

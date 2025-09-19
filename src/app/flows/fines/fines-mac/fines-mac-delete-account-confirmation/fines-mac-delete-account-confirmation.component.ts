@@ -65,7 +65,7 @@ export class FinesMacDeleteAccountConfirmationComponent extends AbstractFormPare
       account_status: status,
       validated_by_name: null,
       business_unit_id,
-      version: version ?? 0,
+      version: version ?? '0',
       timeline_data: [...timeline_data, { username, status, status_date, reason_text }],
       reason_text,
     };
