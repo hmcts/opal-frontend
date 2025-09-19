@@ -1,1 +1,163 @@
-<p>fines-sa-results-minor-creditor-table-wrapper works!</p>
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table>
+    <ng-container head>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Account"
+        [sortDirection]="sortStateSignal()['Account']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
+      >
+        Account
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Name"
+        [sortDirection]="sortStateSignal()['Name']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="1"
+      >
+        Name
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Address line 1"
+        [sortDirection]="sortStateSignal()['Address line 1']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="2"
+      >
+        Address line 1
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Postcode"
+        [sortDirection]="sortStateSignal()['Postcode']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="3"
+      >
+        Postcode
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Business unit"
+        [sortDirection]="sortStateSignal()['Business unit']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="4"
+      >
+        Business unit
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Defendant"
+        [sortDirection]="sortStateSignal()['Defendant']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="5"
+      >
+        Defendant
+      </th>
+      <th
+        opal-lib-moj-sortable-table-header
+        columnKey="Balance"
+        [sortDirection]="sortStateSignal()['Balance']"
+        (sortChange)="onSortChange($event)"
+        [dataIndex]="6"
+      >
+        Balance
+      </th>
+    </ng-container>
+    <ng-container row>
+      @for (row of paginatedTableDataComputed(); track row['Account']) {
+        <tr opal-lib-moj-sortable-table-row>
+          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
+            @if (row['Account'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              @if (row['Creditor account id'] !== null) {
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  tabindex="0"
+                  (click)="goToAccount(row['Creditor account id'])"
+                  (keyup.enter)="goToAccount(row['Creditor account id'])"
+                  >{{ row['Account'] }}</a
+                >
+              } @else {
+                {{ row['Account'] }}
+              }
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="name">
+            @if (row['Name'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Name'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
+            @if (row['Address line 1'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Address line 1'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="postcode">
+            @if (row['Postcode'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Postcode'] }}
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
+            {{ row['Business unit'] }}
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="defendant">
+            @if (row['Defendant'] !== null) {
+              @if (row['Defendant account id'] !== null) {
+                <a
+                  class="govuk-link govuk-link--no-visited-state"
+                  tabindex="0"
+                  (click)="goToAccount(row['Defendant account id'])"
+                  (keyup.enter)="goToAccount(row['Defendant account id'])"
+                  >{{ row['Defendant'] }}</a
+                >
+              } @else {
+                {{ row['Defendant'] }}
+              }
+            } @else {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            }
+          </td>
+          <td opal-lib-moj-sortable-table-row-data id="balance">
+            @if (row['Balance'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
+              {{ row['Balance'] | currency: 'GBP' }}
+            }
+          </td>
+        </tr>
+      }
+    </ng-container>
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="fines-draft-table-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
+
+<ng-template #noData>
+  <p
+    class="govuk-!-margin-0"
+    [innerHTML]="finesDefaultValues.notProvidedLabel"
+    [ariaLabel]="finesDefaultValues.notProvidedAriaLabel"
+  ></p>
+</ng-template>
