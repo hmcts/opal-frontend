@@ -5,7 +5,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
 
 describe('FinesAccPayloadService', () => {
@@ -20,7 +20,7 @@ describe('FinesAccPayloadService', () => {
     mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
       FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
-    mockGlobalStore.userState.and.returnValue(SESSION_USER_STATE_MOCK);
+    mockGlobalStore.userState.and.returnValue(OPAL_USER_STATE_MOCK);
 
     TestBed.configureTestingModule({
       providers: [
@@ -56,7 +56,7 @@ describe('FinesAccPayloadService', () => {
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
       Number(header.business_unit_summary.business_unit_id),
-      SESSION_USER_STATE_MOCK,
+      OPAL_USER_STATE_MOCK,
     );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });
@@ -81,7 +81,7 @@ describe('FinesAccPayloadService', () => {
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
       Number(header.business_unit_summary.business_unit_id),
-      SESSION_USER_STATE_MOCK,
+      OPAL_USER_STATE_MOCK,
     );
     expect(mockGlobalStore.userState).toHaveBeenCalled();
   });

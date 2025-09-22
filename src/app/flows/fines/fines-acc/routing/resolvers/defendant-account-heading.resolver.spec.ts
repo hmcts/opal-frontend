@@ -8,7 +8,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MOCK_FINES_ACCOUNT_STATE } from '../../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 
@@ -23,7 +23,7 @@ describe('defendantAccountHeadingResolver', () => {
     mockFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
 
     mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
-    mockGlobalStore.userState.and.returnValue(SESSION_USER_STATE_MOCK);
+    mockGlobalStore.userState.and.returnValue(OPAL_USER_STATE_MOCK);
 
     mockAccountStore = jasmine.createSpyObj('FinesAccountStore', ['setAccountState']);
 
