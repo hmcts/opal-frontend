@@ -48,9 +48,9 @@
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",
       "app-insights-connection-string": "supersecret",
-      "azure-ad-client-id": "supersecret",
-      "azure-ad-client-secret": "supersecret",
-      "azure-ad-tenant-id": "supersecret"
+      "AzureADClientId": "supersecret",
+      "AzureADClientSecret": "supersecret",
+      "AzureADTenantId": "supersecret"
     }
   },
   "expiry": {

@@ -12,9 +12,9 @@ nodejs:
         - opal-frontend-cookie-secret
         - opal-frontend-csrf-secret
         - launch-darkly-client-id
-        - azure-ad-client-id
-        - azure-ad-client-secret
-        - azure-ad-tenant-id
+        - AzureADClientId
+        - AzureADClientSecret
+        - AzureADTenantId
   environment:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: true
