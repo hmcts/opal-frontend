@@ -21,7 +21,7 @@ export const FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK: IFinesMacState = {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
-      fm_create_account_business_unit_id: 61,
+      fm_create_account_business_unit_id: 77,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
       fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
     },
@@ -177,7 +177,7 @@ export const FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK: IFinesMacState = {
       fm_language_preferences_hearing_language: 'english',
     },
   },
-  businessUnit: { ...FINES_MAC_BUSINESS_UNIT_STATE, business_unit_id: 61, business_unit_name: 'Test Business Unit' },
+  businessUnit: { ...FINES_MAC_BUSINESS_UNIT_STATE, business_unit_id: 77, business_unit_name: 'Test Business Unit' },
   unsavedChanges: false,
   stateChanges: false,
   deleteFromCheckAccount: false,

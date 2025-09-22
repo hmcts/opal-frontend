@@ -11,8 +11,8 @@ export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFi
   const globalStore = inject(GlobalStore);
 
   const userState = globalStore.userState();
-  const businessUnitIds = userState.business_unit_user.map((u) => u.business_unit_id);
-  const businessUnitUserIds = userState.business_unit_user.map((u) => u.business_unit_user_id);
+  const businessUnitIds = userState.business_unit_users.map((u) => u.business_unit_id);
+  const businessUnitUserIds = userState.business_unit_users.map((u) => u.business_unit_user_id);
 
   const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === 'rejected')?.statuses ?? null;
   if (!statuses) {

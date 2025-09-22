@@ -1,12 +1,14 @@
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
-export const DRAFT_SESSION_USER_STATE_MOCK: ISessionUserState = {
-  user_id: 'gl.timTest',
-  user_name: 'timmyTest@HMCTS.NET',
+export const DRAFT_SESSION_USER_STATE_MOCK: IOpalUserState = {
+  user_id: 50000000,
+  username: 'timmyTest@HMCTS.NET',
   name: 'Timmy Test',
-  business_unit_user: [
+  status: 'active',
+  version: 1,
+  business_unit_users: [
     {
-      business_unit_user_id: 'L073JG',
+      business_unit_user_id: 'L077JG',
       business_unit_id: 77,
       permissions: [
         {
