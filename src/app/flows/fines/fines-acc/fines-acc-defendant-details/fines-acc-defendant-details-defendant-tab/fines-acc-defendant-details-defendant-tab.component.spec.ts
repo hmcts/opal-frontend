@@ -21,4 +21,16 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should handle convert account click', () => {
+    spyOn(component.convertAccount, 'emit');
+    component.handleConvertAccount(new Event('click'));
+    expect(component.convertAccount.emit).toHaveBeenCalled();
+  });
+
+  it('should handle change defendant details click', () => {
+    spyOn(component.changeDefendantDetails, 'emit');
+    component.handleChangeDefendantDetails(new Event('click'));
+    expect(component.changeDefendantDetails.emit).toHaveBeenCalled();
+  });
 });
