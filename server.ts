@@ -41,7 +41,6 @@ const indexHtml = existsSync(join(distFolder, 'index.original.html'))
 
 const sessionConfiguration: SessionConfiguration = {
   sessionExpiryUrl: '/session/expiry',
-  userStateUrl: '/session/user-state',
 };
 
 const ssoConfiguration: SsoConfiguration = {

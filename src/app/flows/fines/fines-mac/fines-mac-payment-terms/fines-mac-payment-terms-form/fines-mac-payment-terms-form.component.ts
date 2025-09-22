@@ -36,7 +36,6 @@ import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.co
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { ISessionUserStateRole } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -55,6 +54,7 @@ import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -84,7 +84,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
   private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
-  private userStateRoles: ISessionUserStateRole[] = [];
+  private userState!: IOpalUserState;
   private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
@@ -135,12 +135,12 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It checks if the user has permission access for the collection order based on the business unit ID and user roles.
    */
   private setupPermissions(): void {
-    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
-    if (this.userStateRoles && this.userStateRoles.length > 0) {
+    this.userState = this.globalStore.userState();
+    if (this.userState.business_unit_users && this.userState.business_unit_users.length > 0) {
       this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
         this.permissionsMap['collection-order'],
         this.finesMacStore.getBusinessUnitId(),
-        this.userStateRoles,
+        this.userState.business_unit_users,
       );
     }
   }
