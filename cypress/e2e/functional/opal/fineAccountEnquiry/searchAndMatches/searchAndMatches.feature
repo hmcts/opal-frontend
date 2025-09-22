@@ -449,7 +449,6 @@ Feature: Account Search and Matches
 
   # PO-708 AC3b & AC2b Will be covered once API integration is complete
 
-  # PO-706 AC6 will be covered once API integration is complete
 
   # PO-706  AC7 Back Button navigates to Search Page
   @PO-706
@@ -468,23 +467,13 @@ Feature: Account Search and Matches
     When I enter "12345678A" into the "Account number" field
     When I intercept the "account number" account search API call
     And I click the "Search" button
-
-    Then the intercepted defendant search call #1 contains
+    Then the intercepted defendant search calls contain expected parameters
       | defendant                 | null                     |
       | account_number            | 12345678A                |
       | business_unit_ids         | [65, 66, 73, 77, 80, 78] |
       | active_accounts_only      | false                    |
       | organisation              | false                    |
       | prosecutor_case_reference | null                     |
-
-    And the intercepted defendant search call #2 contains
-      | defendant                 | null                     |
-      | account_number            | 12345678A                |
-      | business_unit_ids         | [65, 66, 73, 77, 80, 78] |
-      | active_accounts_only      | false                    |
-      | organisation              | true                     |
-      | prosecutor_case_reference | null                     |
-
     And the intercepted minor creditor search call contains
       | account_number       | 12345678A                |
       | business_unit_ids    | [65, 66, 73, 77, 80, 78] |

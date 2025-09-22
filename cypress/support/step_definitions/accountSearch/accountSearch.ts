@@ -195,10 +195,11 @@ Then(
   },
 );
 
+//Helper method
 const parseVal = (v: unknown) => {
-  if (v == null) return v; // null/undefined as-is
-  if (Array.isArray(v)) return v; // already array
-  if (typeof v !== 'string') return v; // numbers/booleans as-is
+  if (v == null) return v;
+  if (Array.isArray(v)) return v;
+  if (typeof v !== 'string') return v;
 
   const t = v.trim();
   if (t === 'null') return null;
@@ -237,11 +238,8 @@ const expectCommonTop = (body: any, expected: Record<string, any>) => {
 };
 
 const verifyDefendantBody = (body: any, expected: Record<string, any>, expectedOrganisation: boolean) => {
-  // top-level
   expectCommonTop(body, expected);
   expect(body.defendant, 'defendant').to.equal(parseVal(expected['defendant']));
-
-  // nested reference_number
   expect(body.reference_number, 'reference_number').to.be.an('object');
   expect(body.reference_number.account_number, 'reference_number.account_number').to.equal(
     String(expected['account_number']),
@@ -253,46 +251,43 @@ const verifyDefendantBody = (body: any, expected: Record<string, any>, expectedO
 };
 
 const verifyMinorCreditorBody = (body: any, expected: Record<string, any>) => {
-  // top-level
   expectCommonTop(body, expected);
   expect(body.account_number, 'account_number').to.equal(String(expected['account_number']));
-  if ('prosecutor_case_reference' in expected) {
-    // check only if you list it in the table and API returns it
-    if ('prosecutor_case_reference' in body) {
-      expect(body.prosecutor_case_reference, 'prosecutor_case_reference').to.equal(
-        parseVal(expected['prosecutor_case_reference']),
-      );
-    }
+  if ('prosecutor_case_reference' in expected && 'prosecutor_case_reference' in body) {
+    expect(body.prosecutor_case_reference, 'prosecutor_case_reference').to.equal(
+      parseVal(expected['prosecutor_case_reference']),
+    );
   }
   if ('creditor' in expected) {
     expect(body.creditor, 'creditor').to.equal(parseVal(expected['creditor']));
   }
 };
 
-Then('the intercepted defendant search call #1 contains', (table: DataTable) => {
+/**
+ * grabs both defendant calls
+ * and asserts one has org=false, the other org=true
+ */
+Then('the intercepted defendant search calls contain expected parameters', (table: DataTable) => {
   const expected = table.rowsHash();
 
-  cy.wait('@defendantSearch').should((def1) => {
-    const b = def1.request.body;
-    console.log('defendant #1 body:', JSON.stringify(b));
-    //organisation false for first call
-    verifyDefendantBody(b, expected, false);
+  cy.wait(['@defendantSearch', '@defendantSearch']).then((defs: any[]) => {
+    const bodies = defs.map((d) => d.request.body);
+    console.log('Defendant bodies:', JSON.stringify(bodies, null, 2));
+
+    expect(bodies, 'Should have 2 defendant calls').to.have.length(2);
+
+    const orgFalse = bodies.find((b) => b.reference_number?.organisation === false);
+    const orgTrue = bodies.find((b) => b.reference_number?.organisation === true);
+
+    expect(orgFalse, 'Expected a defendant call with organisation=false').to.exist;
+    expect(orgTrue, 'Expected a defendant call with organisation=true').to.exist;
+
+    verifyDefendantBody(orgFalse, expected, false);
+    verifyDefendantBody(orgTrue, expected, true);
   });
 });
 
-// Second defendant call
-Then('the intercepted defendant search call #2 contains', (table: DataTable) => {
-  const expected = table.rowsHash();
-
-  cy.wait('@defendantSearch').should((def2) => {
-    const b = def2.request.body;
-    console.log('defendant #2 body:', JSON.stringify(b));
-    //organisation true for second call
-    verifyDefendantBody(b, expected, true);
-  });
-});
-
-//Minor creditor call
+// Verify minor creditor body
 Then('the intercepted minor creditor search call contains', (table: DataTable) => {
   const expected = table.rowsHash();
 
