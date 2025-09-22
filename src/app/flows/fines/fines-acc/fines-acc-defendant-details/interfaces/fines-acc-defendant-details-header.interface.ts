@@ -1,7 +1,7 @@
 import { IOpalFinesDefendantAccountAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 
 export interface IOpalFinesAccountDefendantDetailsHeader {
-  version: number | undefined;
+  version: string | null;
   account_number: string;
   defendant_party_id: string;
   parent_guardian_party_id: string | null;

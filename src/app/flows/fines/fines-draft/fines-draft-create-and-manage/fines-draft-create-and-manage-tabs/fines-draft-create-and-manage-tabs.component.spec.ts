@@ -22,6 +22,7 @@ import {
   FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
   FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -235,13 +236,14 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should route to account details page onAccountClick', () => {
-    const accountNumber = 'ACC123';
-    component.onAccountClick(accountNumber);
+    const accountId = 77;
+    component.onAccountClick(accountId);
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
-      accountNumber,
-      FINES_ACC_ROUTING_PATHS.children.details,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountId,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
   });
 

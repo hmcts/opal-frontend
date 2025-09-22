@@ -97,8 +97,8 @@
           <td opal-lib-moj-sortable-table-row-data id="account">
             <a
               class="govuk-link govuk-link--no-visited-state"
-              (click)="onAccountClick(row.Account)"
-              (keydown.enter)="onAccountClick(row.Account)"
+              (click)="onAccountClick(row['Defendant id'])"
+              (keydown.enter)="onAccountClick(row['Defendant id'])"
               tabindex="0"
               >{{ row['Account'] }}</a
             >
