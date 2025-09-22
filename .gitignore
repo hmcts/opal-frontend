@@ -47,6 +47,7 @@ testem.log
 /typings
 package-lock.json
 .nx
+config/local.json
 
 # System files
 .DS_Store
@@ -63,3 +64,6 @@ runner-results
 cypress/parallel/weights
 multi-reporter-config.json
 multi-reporter-config.json
+
+# Local Config File
+config/local.json
