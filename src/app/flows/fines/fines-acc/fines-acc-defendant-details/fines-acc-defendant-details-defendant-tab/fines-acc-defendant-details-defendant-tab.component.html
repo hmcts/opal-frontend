@@ -45,7 +45,7 @@
               summaryListRowId="aliases"
             >
               <ng-container name>Aliases</ng-container>
-              @if (individualDetails.individual_aliases && individualDetails.individual_aliases?.length ?? 0 > 0) {
+              @if (individualDetails.individual_aliases?.length ?? 0 > 0) {
                 <ng-container value>
                   @for (alias of individualDetails.individual_aliases; track alias.alias_number) {
                     {{ alias.alias_forenames }} {{ alias.alias_surname | uppercase }}<br />

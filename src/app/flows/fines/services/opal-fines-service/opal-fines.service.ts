@@ -54,8 +54,7 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './inter
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
-import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
-import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
 import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 
 @Injectable({
@@ -508,10 +507,11 @@ export class OpalFines {
     account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
+    defendant_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
       // TODO: Pass through party_id
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/77?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       this.accountDetailsCache$['defendant'] = this.http
         .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
         .pipe(
@@ -519,16 +519,7 @@ export class OpalFines {
             let payload = response.body as IOpalFinesAccountDefendantDetailsDefendantTabRefData;
             const version = this.extractEtagVersion(response.headers);
             // Transform the payload, format the dates and times to the correct format
-            console.log(
-              'dob - before transform',
-              payload.defendant_account_party.party_details.individual_details?.date_of_birth,
-            );
-            console.log('Dconfig', FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             payload = this.payloadService.transformPayload(payload, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
-            console.log(
-              'dob - after transform',
-              payload.defendant_account_party.party_details.individual_details?.date_of_birth,
-            );
             return {
               ...payload,
               version,
