@@ -1,3 +1,4 @@
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../constants/fines-mac-account-types';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
@@ -10,7 +11,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
   account_status_date: null,
   business_unit_id: 61,
   submitted_by: null,
-  submitted_by_name: 'Timmy Test',
+  submitted_by_name: OPAL_USER_STATE_MOCK.name,
   account: {
     account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
     defendant_type: 'adultOrYouthOnly',
@@ -59,7 +60,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     fp_ticket_detail: {
       notice_number: '12345',
       date_of_issue: '2024-12-12',
-      time_of_issue: '10:12:00Z',
+      time_of_issue: '10:12',
       place_of_offence: 'High Street, Aberystwyth',
       fp_registration_number: 'AB12 CJP',
       fp_driving_licence_number: 'AB123456CDE',
@@ -92,7 +93,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
   account_status_message: null,
   timeline_data: [
     {
-      username: 'Timmy Test',
+      username: OPAL_USER_STATE_MOCK.name,
       status: 'Submitted',
       status_date: '2023-07-03',
       reason_text: null,

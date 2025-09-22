@@ -2,7 +2,7 @@
   <h1 class="govuk-heading-m">Dashboard</h1>
   <ul class="govuk-list">
     <li>
-      <span>{{ globalStore.userState().user_name }}</span>
+      <span>{{ globalStore.userState().username }}</span>
     </li>
     <li>
       <a
@@ -74,26 +74,6 @@
           fragment="individuals"
           id="finesSaSearchLink"
           >Search for an account</a
-        >
-      </li>
-      <li>
-        <a
-          class="govuk-link"
-          [routerLink]="
-            '/' +
-            finesRoutingPaths.root +
-            '/' +
-            finesRoutingPaths.children.acc.root +
-            '/' +
-            'defendant' +
-            '/' +
-            '77' +
-            '/' +
-            finesRoutingPaths.children.acc.children['details']
-          "
-          fragment="at-a-glance"
-          id="finesAccLink"
-          >View Defendant Account Details</a
         >
       </li>
     }

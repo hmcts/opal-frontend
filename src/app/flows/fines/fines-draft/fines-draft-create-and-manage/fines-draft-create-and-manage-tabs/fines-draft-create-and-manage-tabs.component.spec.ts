@@ -4,7 +4,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of, firstValueFrom, Subject } from 'rxjs';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
@@ -22,6 +21,8 @@ import {
   FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT,
   FINES_DRAFT_TABLE_WRAPPER_SORT_DELETED,
 } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort.constants';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 
 describe('FinesDraftCreateAndManageTabsComponent', () => {
   let component: FinesDraftCreateAndManageTabsComponent;
@@ -86,7 +87,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     }).compileComponents();
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
 
@@ -224,9 +225,9 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
 
     const tabData = await firstValueFrom(component.tabData$);
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith({
-      businessUnitIds: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_id),
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: ['Deleted'],
-      submittedBy: SESSION_USER_STATE_MOCK.business_unit_user.map((u) => u.business_unit_user_id),
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
     });
@@ -235,13 +236,14 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
   });
 
   it('should route to account details page onAccountClick', () => {
-    const accountNumber = 'ACC123';
-    component.onAccountClick(accountNumber);
+    const accountId = 77;
+    component.onAccountClick(accountId);
     expect(mockRouter.navigate).toHaveBeenCalledWith([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
-      accountNumber,
-      FINES_ACC_ROUTING_PATHS.children.details,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountId,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
   });
 

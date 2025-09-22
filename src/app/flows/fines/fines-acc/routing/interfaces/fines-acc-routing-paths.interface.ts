@@ -2,8 +2,6 @@ import { IChildRoutingPaths } from '@hmcts/opal-frontend-common/pages/routing/in
 
 export interface IFinesAccRoutingPaths extends IChildRoutingPaths {
   children: {
-    details: string;
-    note: string;
-    comments: string;
+    defendant: string;
   };
 }

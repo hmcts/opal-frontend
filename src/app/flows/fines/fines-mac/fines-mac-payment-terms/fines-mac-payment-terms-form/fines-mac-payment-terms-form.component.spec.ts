@@ -15,7 +15,7 @@ import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.co
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
@@ -60,7 +60,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setUserState(OPAL_USER_STATE_MOCK);
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);

@@ -76,7 +76,7 @@ There are two ways to run the Angular SSR application depending on whether you a
   yarn dev:ssr
   ```
 
-  This will import the latest published versions of `@hmcts/opal-frontend-common` and `@hmcts/opal-frontend-common-node`, then start the SSR dev server.
+  This starts the SSR dev server using the versions pinned in your `package.json`/`yarn.lock`. No packages are reinstalled.
 
 - To use **local** versions of the libraries:
 
@@ -112,8 +112,7 @@ There are two options depending on whether you're working with local or publishe
   ```
 
   This will:
-  - Import the published versions of `@hmcts/opal-frontend-common` and `@hmcts/opal-frontend-common-node`
-  - Build the application for production
+  - Build the application for production using the versions pinned in your `package.json`/`yarn.lock`
   - Serve it on **http://localhost:4000**
 
 - To build and serve the application using **local** libraries:
@@ -284,14 +283,16 @@ These commands will remove the published versions and install the local builds f
 
 ### Switching to Published Versions
 
-To restore the published packages from npm:
+To reinstall the published packages **at the exact versions declared in `package.json`** (not the latest):
 
 ```bash
 yarn import:published:common-ui-lib
 yarn import:published:common-node-lib
 ```
 
-This is useful when you're no longer working on the libraries directly or want to verify against the published version.
+This is useful when you're no longer working on the libraries directly or want to verify against the published versions that your project is pinned to.
+
+**Note:** Version upgrades should come via Renovate PRs. These commands do **not** upgrade to the latest; they reinstall the exact versions specified in `package.json`. For extra safety in CI, consider using `yarn install --immutable` to prevent lockfile drift.
 
 ## Angular code scaffolding
 

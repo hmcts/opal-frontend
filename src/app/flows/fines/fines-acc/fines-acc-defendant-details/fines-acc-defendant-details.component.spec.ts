@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
 import { FinesAccDefendantDetailsAtAGlanceTabComponent } from './fines-acc-defendant-details-at-a-glance-tab/fines-acc-defendant-details-at-a-glance-tab.component';
 import {
   MojSubNavigationComponent,
@@ -21,6 +20,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOC
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -126,7 +126,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
     component.navigateToAddAccountNotePage();
-    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_ROUTING_PATHS.children.note}/add`], {
+    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
       relativeTo: component['activatedRoute'],
     });
   });
@@ -134,7 +134,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should call router.navigate when navigateToAddCommentsPage is called', () => {
     const event: Event = new Event('click');
     component.navigateToAddCommentsPage(event);
-    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_ROUTING_PATHS.children.comments}/add`], {
+    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
       relativeTo: component['activatedRoute'],
     });
   });
