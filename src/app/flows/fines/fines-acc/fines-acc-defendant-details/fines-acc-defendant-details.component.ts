@@ -222,7 +222,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public hasPermission(permissionKey: string): boolean {
     return this.permissionsService.hasPermissionAccess(
       FINES_PERMISSIONS[permissionKey],
-      this.userState.business_unit_user,
+      this.userState.business_unit_users,
     );
   }
 

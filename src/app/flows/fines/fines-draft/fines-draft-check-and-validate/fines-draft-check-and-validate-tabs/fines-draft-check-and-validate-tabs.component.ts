@@ -56,11 +56,11 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
-  private readonly businessUnitIds = this.userState.business_unit_user.map(
-    (business_unit_user) => business_unit_user.business_unit_id,
+  private readonly businessUnitIds = this.userState.business_unit_users.map(
+    (business_unit_users) => business_unit_users.business_unit_id,
   );
-  private readonly businessUnitUserIds = this.userState.business_unit_user.map(
-    (business_unit_user) => business_unit_user.business_unit_user_id,
+  private readonly businessUnitUserIds = this.userState.business_unit_users.map(
+    (business_unit_users) => business_unit_users.business_unit_user_id,
   );
 
   protected readonly finesDraftStore = inject(FinesDraftStore);

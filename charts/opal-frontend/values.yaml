@@ -17,6 +17,7 @@ nodejs:
     FEATURES_REDIS_ENABLED: true
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     OPAL_FINES_SERVICE_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
+    OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
     SESSION_SECURE_ENABLED: true
     CSRF_SECURE_ENABLED: true
@@ -30,6 +31,9 @@ nodejs:
     FEATURES_APP_INSIGHTS_ENABLED: true
 redis:
   enabled: false
+  image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/redis
 
 opal-fines-service:
   enabled: false
@@ -37,4 +41,10 @@ opal-fines-service:
 postgresql:
   enabled: false
   image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/postgresql
     tag: '17.5.0'
+
+global:
+  security:
+    allowInsecureImages: true

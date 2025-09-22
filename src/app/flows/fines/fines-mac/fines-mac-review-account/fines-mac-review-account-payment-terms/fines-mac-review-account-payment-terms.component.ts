@@ -20,9 +20,9 @@ import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.co
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { ISessionUserStateRole } from '@hmcts/opal-frontend-common//services/session-service/interfaces';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -40,7 +40,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
-  private userStateRoles: ISessionUserStateRole[] = [];
+  private userState!: IOpalUserState;
   private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
 
   protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
@@ -77,13 +77,13 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    * @private
    */
   private setupPermissions(): void {
-    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
+    this.userState = this.globalStore.userState();
     const { business_unit_id: businessUnitId } = this.businessUnit;
-    if (this.userStateRoles && this.userStateRoles.length > 0) {
+    if (this.userState.business_unit_users && this.userState.business_unit_users.length > 0) {
       this.permissions[this.permissionsMap['collection-order']] = this.hasBusinessUnitPermissionAccess(
         this.permissionsMap['collection-order'],
         businessUnitId,
-        this.userStateRoles,
+        this.userState.business_unit_users,
       );
     }
   }

@@ -27,13 +27,13 @@ import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-ac
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { ISessionUserState } from '@hmcts/opal-frontend-common/services/session-service/interfaces';
 import { IOpalFinesDraftAccountPatchPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account.interface';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -132,7 +132,7 @@ export class FinesMacPayloadService {
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload | null,
-    sessionUserState: ISessionUserState,
+    userState: IOpalUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
@@ -143,7 +143,7 @@ export class FinesMacPayloadService {
     const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
     const timeLineData = finesMacPayloadBuildAccountTimelineData(
-      sessionUserState['name'],
+      userState['name'],
       accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
       null,
@@ -159,9 +159,9 @@ export class FinesMacPayloadService {
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
       submitted_by: this.getBusinessUnitBusinessUserId(
         accountDetailsState['fm_create_account_business_unit_id'],
-        sessionUserState,
+        userState,
       ),
-      submitted_by_name: sessionUserState['name'],
+      submitted_by_name: userState['name'],
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
@@ -219,15 +219,12 @@ export class FinesMacPayloadService {
    * Retrieves the business unit user ID associated with a given business unit ID.
    *
    * @param businessUnitId - The ID of the business unit to search for. Can be null.
-   * @param sessionUserState - The current session user state containing business unit user information.
+   * @param userState - The current session user state containing business unit user information.
    * @returns The business unit user ID if found, otherwise null.
    */
-  public getBusinessUnitBusinessUserId(
-    businessUnitId: number | null,
-    sessionUserState: ISessionUserState,
-  ): string | null {
-    const businessUnitUserId = sessionUserState.business_unit_user.find(
-      (businessUnit) => businessUnit.business_unit_id === businessUnitId,
+  public getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
+    const businessUnitUserId = userState.business_unit_users.find(
+      (businessUnitUsers) => businessUnitUsers.business_unit_id === businessUnitId,
     );
 
     if (businessUnitUserId) {
@@ -244,11 +241,8 @@ export class FinesMacPayloadService {
    * @param sessionUserState - The current state of the session user.
    * @returns The payload required to add an account in the fines MAC system.
    */
-  public buildAddAccountPayload(
-    finesMacState: IFinesMacState,
-    sessionUserState: ISessionUserState,
-  ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, sessionUserState, true);
+  public buildAddAccountPayload(finesMacState: IFinesMacState, userState: IOpalUserState): IFinesMacAddAccountPayload {
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, userState, true);
   }
 
   /**
@@ -261,14 +255,9 @@ export class FinesMacPayloadService {
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     draftAccountPayload: IFinesMacAddAccountPayload,
-    sessionUserState: ISessionUserState,
+    userState: IOpalUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(
-      structuredClone(finesMacState),
-      draftAccountPayload,
-      sessionUserState,
-      false,
-    );
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), draftAccountPayload, userState, false);
   }
 
   /**
@@ -283,14 +272,14 @@ export class FinesMacPayloadService {
     draftAccountPayload: IFinesMacAddAccountPayload,
     status: string,
     reasonText: string | null,
-    sessionUserState: ISessionUserState,
+    userState: IOpalUserState,
   ): IOpalFinesDraftAccountPatchPayload {
     return {
       account_status: status,
       business_unit_id: draftAccountPayload.business_unit_id!,
       reason_text: reasonText,
       timeline_data: finesMacPayloadBuildAccountTimelineData(
-        sessionUserState['name'],
+        userState['name'],
         status,
         this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
         reasonText,
@@ -299,8 +288,8 @@ export class FinesMacPayloadService {
       validated_by:
         status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected
           ? null
-          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, sessionUserState)!,
-      validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : sessionUserState['name'],
+          : this.getBusinessUnitBusinessUserId(draftAccountPayload.business_unit_id, userState)!,
+      validated_by_name: status === OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected ? null : userState['name'],
       version: draftAccountPayload.version!,
     };
   }
