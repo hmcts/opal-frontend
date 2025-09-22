@@ -39,7 +39,6 @@ import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draf
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -512,10 +511,16 @@ export class OpalFines {
       this.accountDetailsCache$['defendant'] = this.http
         .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
         .pipe(
-          map((response) => this.addVersionToBody(response)),
-          shareReplay(1)
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsDefendantTabRefData>) => {
+            const payload = response.body as IOpalFinesAccountDefendantDetailsDefendantTabRefData;
+            const version = this.extractEtagVersion(response.headers);
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
         );
-      // this.accountDetailsCache$['defendant'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
     }
     return this.accountDetailsCache$['defendant'];
   }

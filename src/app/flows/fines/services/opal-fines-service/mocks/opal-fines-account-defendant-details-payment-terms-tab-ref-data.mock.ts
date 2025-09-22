@@ -2,5 +2,5 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '../inte
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData =
   {
-    version: 1,
+    version: '1',
   };

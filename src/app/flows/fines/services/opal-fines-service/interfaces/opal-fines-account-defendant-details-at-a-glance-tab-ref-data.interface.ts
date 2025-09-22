@@ -8,7 +8,7 @@ import {
 } from './opal-fines-defendant-account.interface';
 
 export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
-  version: number;
+  version: string;
   defendant_account_id: string;
   account_number: string;
   debtor_type: string;
