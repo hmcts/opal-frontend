@@ -43,9 +43,7 @@ export const routing: Routes = [
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
         canActivate: [routePermissionsGuard],
         data: {
-          routePermissionId: [
-            accRootPermissionIds['add-account-activity-notes'],
-          ],
+          routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.note,
         },
         resolve: { title: TitleResolver },
