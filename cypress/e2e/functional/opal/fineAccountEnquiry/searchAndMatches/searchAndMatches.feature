@@ -405,7 +405,7 @@ Feature: Account Search and Matches
 
 
   # PO-707
-  @PO-707 @only
+  @PO-707
   Scenario: Successful Search For company defendant accounts
     When I click on the "Companies" link
     And I enter "test company" into the "Company name" field
