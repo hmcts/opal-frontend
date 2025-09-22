@@ -54,11 +54,15 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './inter
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
+import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
+  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly http = inject(HttpClient);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
@@ -512,8 +516,19 @@ export class OpalFines {
         .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsDefendantTabRefData>) => {
-            const payload = response.body as IOpalFinesAccountDefendantDetailsDefendantTabRefData;
+            let payload = response.body as IOpalFinesAccountDefendantDetailsDefendantTabRefData;
             const version = this.extractEtagVersion(response.headers);
+            // Transform the payload, format the dates and times to the correct format
+            console.log(
+              'dob - before transform',
+              payload.defendant_account_party.party_details.individual_details?.date_of_birth,
+            );
+            console.log('Dconfig', FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+            payload = this.payloadService.transformPayload(payload, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+            console.log(
+              'dob - after transform',
+              payload.defendant_account_party.party_details.individual_details?.date_of_birth,
+            );
             return {
               ...payload,
               version,
