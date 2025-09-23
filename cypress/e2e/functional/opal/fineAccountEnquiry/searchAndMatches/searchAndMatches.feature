@@ -385,44 +385,44 @@ Feature: Account Search and Matches
 
   @PO-717
   Scenario: Successful Search For Individual Defendant Accounts
-    When I enter "12345678" into the "Account number" field
+    When I enter "Graham" into the "Last name" field
     And I click the "Search" button
 
     # PO-717 - AC5. Back Button navigates to Search Page
     Then I see "Search results" on the page header
 
     When I click on the "Back" link
-    Then I see "12345678" in the "Account number" field
+    Then I see "Graham" in the "Last name" field
     Then I see "Individuals" on the page header
 
 
-    # PO-717 - AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "230001BU" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # PO-717 - AC4g. Click on Account Number link and verify navigation to template page - to be completed once API integration is complete - test data needs discussed
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "100A" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
 
   # PO-707
   @PO-707
   Scenario: Successful Search For company defendant accounts
     When I click on the "Companies" link
-    And I enter "test company" into the "Company name" field
+    And I enter "TechCorp Solutions Ltd" into the "Company name" field
     And I click the "Search" button
 
     # PO-707 - AC5. Back Button navigates to Search Page
     Then I see "Search results" on the page header
 
     When I click on the "Back" link
-    And I see "test company" in the "Company name" field
+    And I see "TechCorp Solutions Ltd" in the "Company name" field
     Then I see "Companies" on the page header
 
 
-    # PO-707 - AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "230001BU" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # PO-707 - AC4g. Click on Account Number link and verify navigation to template page - to be completed once API integration is complete - test data needs discussed
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "555O" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
   #PO-707 AC3b & AC2b Will be covered once API integration is complete
 
@@ -432,7 +432,7 @@ Feature: Account Search and Matches
   Scenario: Successful Search For Minor Creditor Accounts
     When I click on the "Minor creditors" link
     When I select the 'Individual' radio button
-    Then I enter "Test" into the "Last name" field
+    Then I enter "Graham" into the "Last name" field
     And I click the "Search" button
 
     Then I see "Search results" on the page header
@@ -441,10 +441,284 @@ Feature: Account Search and Matches
     When I click on the "Back" link
     Then I see "Search for an account" on the page header
 
-    # AC4g. Click on Account Number link and verify navigation to template page
-    # Handles window.open navigation
-    When I click the "Search" button
-    When I click the "ORG1001" link and handle new window navigation
-    Then I see "Account Details" on the page header
+  # AC4g. Click on Account Number link and verify navigation to template page - To be fixed once API integration is complete
+  # Handles window.open navigation
+  # When I click the "Search" button
+  # When I click the "100A" link and handle new window navigation
+  # Then I see "Account Details" on the page header
 
-# PO-708 AC3b & AC2b Will be covered once API integration is complete
+  # PO-708 AC3b & AC2b Will be covered once API integration is complete
+
+
+  # PO-706  AC7 Back Button navigates to Search Page
+  @PO-706
+  Scenario: Search results back button preserves tab state and form data
+    When I enter "12345678A" into the "Account number" field
+    And I click the "Search" button
+    Then I see "Search results" on the page header
+    When I click on the "Back" link
+    Then I see "12345678A" in the "Account number" field
+    Then I see "Individuals" on the page header
+
+
+  @PO-706
+  Scenario: Verify API call parameters for Defenders and Creditor search using Account number
+    # AC1a, AC1b, AC1c
+    When I enter "12345678A" into the "Account number" field
+    When I intercept the "account number" account search API call
+    And I click the "Search" button
+    Then the intercepted defendant search calls contain expected parameters
+      | defendant                 | null                     |
+      | account_number            | 12345678A                |
+      | business_unit_ids         | [65, 66, 73, 77, 80, 78] |
+      | active_accounts_only      | false                    |
+      | organisation              | false                    |
+      | prosecutor_case_reference | null                     |
+    And the intercepted minor creditor search call contains
+      | account_number       | 12345678A                |
+      | business_unit_ids    | [65, 66, 73, 77, 80, 78] |
+      | active_accounts_only | false                    |
+      | creditor             | null                     |
+
+  # PO-708 AC3b & AC2b Will be covered once API integration is complete
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search
+    #AC1
+    When I enter "Smith" into the "Last name" field
+    And I select the last name exact match checkbox
+    And I enter "John" into the "First names" field
+    And I select the first names exact match checkbox
+    And I select the "Include aliases" checkbox
+    And I enter "15/05/1980" into the Date of birth field
+    And I enter "AB123456C" into the "National Insurance number" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | lastName                | Smith           |
+      | lastNameExact           | true            |
+      | firstNames              | John            |
+      | firstNamesExact         | true            |
+      | includeAliases          | true            |
+      | dateOfBirth             | 15/05/1980      |
+      | nationalInsuranceNumber | AB123456C       |
+      | addressLine1            | 123 Test Street |
+      | postcode                | SW1A 1AA        |
+      | companyName             | null            |
+      | companyNameExact        | null            |
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search with only last name populated
+    #AC1
+    When I enter "Smith" into the "Last name" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | lastName                | Smith |
+      | lastNameExact           | false |
+      | firstNames              | null  |
+      | firstNamesExact         | false |
+      | includeAliases          | false |
+      | dateOfBirth             | null  |
+      | nationalInsuranceNumber | null  |
+      | addressLine1            | null  |
+      | postcode                | null  |
+      | companyName             | null  |
+      | companyNameExact        | null  |
+
+
+  @PO-717
+  Scenario: Verify API call parameters for Individual search with "Active accounts only" checkbox unchecked
+    #AC1
+    When I enter "Smith" into the "Last name" field
+    And I unselect the Active accounts only checkbox
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | lastName                | Smith |
+      | lastNameExact           | false |
+      | firstNames              | null  |
+      | firstNamesExact         | false |
+      | includeAliases          | false |
+      | dateOfBirth             | null  |
+      | nationalInsuranceNumber | null  |
+      | addressLine1            | null  |
+      | postcode                | null  |
+      | companyName             | null  |
+      | companyNameExact        | null  |
+      | activeAccountsOnly      | false |
+
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search
+    #AC1
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+    And I select the company name exact match checkbox
+    And I select the include alias checkbox
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne      |
+      | companyNameExact        | true            |
+      | includeAliases          | true            |
+      | addressLine1            | 123 Test Street |
+      | postcode                | SW1A 1AA        |
+      | lastName                | null            |
+      | lastNameExact           | null            |
+      | firstNames              | null            |
+      | firstNamesExact         | null            |
+      | dateOfBirth             | null            |
+      | nationalInsuranceNumber | null            |
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search with only company name populated
+    #AC1
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne |
+      | companyNameExact        | false      |
+      | includeAliases          | false      |
+      | addressLine1            | null       |
+      | postcode                | null       |
+      | lastName                | null       |
+      | lastNameExact           | null       |
+      | firstNames              | null       |
+      | firstNamesExact         | null       |
+      | dateOfBirth             | null       |
+      | nationalInsuranceNumber | null       |
+
+  @PO-707
+  Scenario: Verify API call parameters for Company search with "Active accounts only" checkbox unchecked
+    #AC1
+    When I click on the "Companies" link
+    And I enter "CompanyOne" into the "Company name" field
+    And I unselect the Active accounts only checkbox
+
+    When I intercept the "defendant" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "defendant" account search API call contains the following parameters:
+      | companyName             | CompanyOne |
+      | companyNameExact        | false      |
+      | includeAliases          | false      |
+      | addressLine1            | null       |
+      | postcode                | null       |
+      | lastName                | null       |
+      | lastNameExact           | null       |
+      | firstNames              | null       |
+      | firstNamesExact         | null       |
+      | dateOfBirth             | null       |
+      | nationalInsuranceNumber | null       |
+      | activeAccountsOnly      | false      |
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Individual
+    #AC1
+    When I click on the "Minor creditors" link
+    And I select the "Individual" radio button
+    And I enter "FirstName" into the "First names" field
+    And I enter "LastName" into the "Last name" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | FirstName       |
+      | lastName              | LastName        |
+      | addressLine1          | 123 Test Street |
+      | postcode              | SW1A 1AA        |
+      | organisationName      | null            |
+      | organisationNameExact | null            |
+      | organisation          | false           |
+      | exactLastName         | null            |
+      | exactFirstNames       | null            |
+
+
+
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Individual with only last name populated
+    #AC1
+    When I click on the "Minor creditors" link
+    And I select the "Individual" radio button
+    And I enter "LastName" into the "Last name" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | null     |
+      | lastName              | LastName |
+      | addressLine1          | null     |
+      | postcode              | null     |
+      | organisationName      | null     |
+      | organisationNameExact | null     |
+      | organisation          | false    |
+      | exactLastName         | null     |
+      | exactFirstNames       | null     |
+
+  @PO-708
+  Scenario: Verify API call parameters for Minor Creditor search - Company
+    #AC1
+    When I click on the "Minor creditors" link
+    And I select the "Company" radio button
+    And I enter "CompanyOne" into the "Company name" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+
+    When I intercept the "minor creditor" account search API call
+    And I click the "Search" button
+
+    Then the intercepted "minor creditor" account search API call contains the following parameters:
+      | firstNames            | null            |
+      | lastName              | null            |
+      | addressLine1          | 123 Test Street |
+      | postcode              | SW1A 1AA        |
+      | organisationName      | CompanyOne      |
+      | organisationNameExact | null            |
+      | organisation          | true            |
+      | exactLastName         | null            |
+      | exactFirstNames       | null            |
+
+  @PO-2075
+  Scenario: Data is wiped after navigating to homepage and going back to search page
+    When I enter "12345678" into the "Account number" field
+    And I enter "12345" into the "Reference or case number" field
+    And I enter "Smith" into the "Last name" field
+    And I enter "John" into the "First names" field
+    And I enter "15/05/1980" into the Date of birth field
+    And I enter "AB123456C" into the "National Insurance number" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+    And I click on the "HMCTS" link
+    Then I am on the dashboard
+
+    When I navigate to Search For An Account
+    Then I see "" in the "Account number" field
+    And I see "" in the "Reference or case number" field
+    Then I see "" in the "Last name" field
+    And I see "" in the "First names" field
+    And I see "" in the Date of birth field
+    And I see "" in the "National Insurance number" field
+    And I see "" in the "Address line 1" field
+    And I see "" in the "Postcode" field

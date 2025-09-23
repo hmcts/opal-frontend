@@ -7,7 +7,10 @@ import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-fl
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { finesSaMinorCreditorAccountsResolver } from './resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
-import { finesSaDefendantAccountsResolver } from './resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
+import {
+  finesSaCompanyDefendantAccountsResolver,
+  finesSaIndividualDefendantAccountsResolver,
+} from './resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -33,8 +36,8 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
-      individualAccounts: finesSaDefendantAccountsResolver,
-      companyAccounts: finesSaDefendantAccountsResolver,
+      individualAccounts: finesSaIndividualDefendantAccountsResolver,
+      companyAccounts: finesSaCompanyDefendantAccountsResolver,
       minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
     },
   },

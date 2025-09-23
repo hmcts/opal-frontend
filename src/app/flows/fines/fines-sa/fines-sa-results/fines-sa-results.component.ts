@@ -59,6 +59,30 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public minorCreditorsData = [] as IFinesSaResultsMinorCreditorTableWrapperTableData[];
 
   /**
+   * Computes the default fragment based on the sizes of the results buckets.
+   * Rules:
+   * - If any bucket has >= 100 results → ''.
+   * - If all buckets are 0 → ''.
+   * - Otherwise pick the first bucket with 1–99 results in the order: individuals → companies → minorCreditors.
+   */
+  private computeDefaultFragment(): FinesSaSearchAccountTab {
+    const individualsDataLen = this.individualsData.length;
+    const companiesDataLen = this.companiesData.length;
+    const minorCreditorsDataLen = this.minorCreditorsData.length;
+
+    const anyOversize = individualsDataLen >= 100 || companiesDataLen >= 100 || minorCreditorsDataLen >= 100;
+    const allZero = individualsDataLen === 0 && companiesDataLen === 0 && minorCreditorsDataLen === 0;
+
+    if (anyOversize || allZero) return '' as FinesSaSearchAccountTab;
+    if (individualsDataLen >= 1 && individualsDataLen <= 99) return 'individuals';
+    if (companiesDataLen >= 1 && companiesDataLen <= 99) return 'companies';
+    if (minorCreditorsDataLen >= 1 && minorCreditorsDataLen <= 99) return 'minorCreditors';
+
+    // Fallback safety - should not be reached
+    return '' as FinesSaSearchAccountTab;
+  }
+
+  /**
    * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
    * This method is used to update the view based on the selected search type.
    *
@@ -133,7 +157,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       Defendant: account.defendant
         ? account.defendant.organisation_name
           ? `${account.defendant.organisation_name}`
-          : `${account.defendant.surname}, ${account.defendant.firstnames}`
+          : account.defendant.surname || account.defendant.firstnames
+            ? `${account.defendant.surname ?? ''}${account.defendant.surname && account.defendant.firstnames ? ', ' : ''}${account.defendant.firstnames ?? ''}`
+            : null
         : null,
       Balance: account.account_balance,
     };
@@ -209,15 +235,18 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   ): IFinesSaResultsDefendantTableWrapperTableData {
     return {
       ...commonFields,
-      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_firstnames}`,
       Aliases: defendantAccount.aliases
         ? defendantAccount.aliases
-            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.alias_surname}, ${alias.alias_forenames}`)
+            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.surname}, ${alias.forenames}`)
             .join('\n')
         : null,
       'Date of birth': defendantAccount.birth_date,
       'NI number': defendantAccount.national_insurance_number,
-      'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+      'Parent or guardian':
+        defendantAccount.parent_guardian_surname || defendantAccount.parent_guardian_firstnames
+          ? `${defendantAccount.parent_guardian_surname ?? ''}${defendantAccount.parent_guardian_surname && defendantAccount.parent_guardian_firstnames ? ', ' : ''}${defendantAccount.parent_guardian_firstnames ?? ''}`
+          : null,
     };
   }
 
@@ -286,17 +315,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private setupFragmentListener(): void {
     if (this.resultView === 'referenceCaseNumber' || this.resultView === 'accountNumber') {
       this.activatedRoute.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-        let defaultedFragment: FinesSaSearchAccountTab = 'individuals';
-        if (this.individualsData.length === 0) {
-          if (this.companiesData.length === 0) {
-            defaultedFragment = 'minorCreditors';
-          } else {
-            defaultedFragment = 'companies';
-          }
-        }
-        const resolvedFragment = fragment ?? defaultedFragment;
+        const resolvedFragment = fragment ?? this.computeDefaultFragment();
 
-        if (!fragment) {
+        if (!fragment && resolvedFragment !== '') {
           this['router'].navigate([], {
             relativeTo: this['activatedRoute'],
             fragment: resolvedFragment,
