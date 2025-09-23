@@ -46,6 +46,10 @@ When('I select the include alias checkbox', () => {
   cy.get('#fsa_search_account_companies_include_aliases').check({ force: true });
 });
 
+When('I unselect the Active accounts only checkbox', () => {
+  cy.get('#fsa_search_account_active_accounts_only').uncheck({ force: true });
+});
+
 Then('I verify the last name exact match checkbox is checked', () => {
   cy.get('#fsa_search_account_individuals_last_name_exact_match').should('be.checked');
 });
