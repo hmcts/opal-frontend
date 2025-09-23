@@ -699,3 +699,26 @@ Feature: Account Search and Matches
       | organisation          | true            |
       | exactLastName         | null            |
       | exactFirstNames       | null            |
+
+  @PO-2075
+  Scenario: Data is wiped after navigating to homepage and going back to search page
+    When I enter "12345678" into the "Account number" field
+    And I enter "12345" into the "Reference or case number" field
+    And I enter "Smith" into the "Last name" field
+    And I enter "John" into the "First names" field
+    And I enter "15/05/1980" into the Date of birth field
+    And I enter "AB123456C" into the "National Insurance number" field
+    And I enter "123 Test Street" into the "Address line 1" field
+    And I enter "SW1A 1AA" into the "Postcode" field
+    And I click on the "HMCTS" link
+    Then I am on the dashboard
+
+    When I navigate to Search For An Account
+    Then I see "" in the "Account number" field
+    And I see "" in the "Reference or case number" field
+    Then I see "" in the "Last name" field
+    And I see "" in the "First names" field
+    And I see "" in the Date of birth field
+    And I see "" in the "National Insurance number" field
+    And I see "" in the "Address line 1" field
+    And I see "" in the "Postcode" field
