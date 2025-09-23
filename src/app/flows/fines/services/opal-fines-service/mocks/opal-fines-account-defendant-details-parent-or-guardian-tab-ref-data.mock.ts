@@ -1,14 +1,14 @@
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '../interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 
-export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsDefendantTabRefData =
+export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsDefendantTabRefData =
   {
     version: '0',
     defendant_account_party: {
       defendant_account_party_type: 'PRIMARY',
-      is_debtor: true,
+      is_debtor: false,
       party_details: {
         party_id: 'PTY-1001',
-        organisation_flag: true,
+        organisation_flag: false,
         organisation_details: {
           organisation_name: 'Acme Corporation',
           organisation_aliases: [
@@ -23,7 +23,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK: I
           title: 'Ms',
           forenames: 'Sarah Jane',
           surname: 'Thompson',
-          date_of_birth: '12/04/1988',
+          date_of_birth: '12/04/2010',
           age: '36',
           national_insurance_number: 'QQ123456C',
           individual_aliases: [

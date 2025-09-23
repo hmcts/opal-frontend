@@ -507,11 +507,11 @@ export class OpalFines {
     account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
-    defendant_account_id: string | null,
+    party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
       // TODO: Pass through party_id
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       this.accountDetailsCache$['defendant'] = this.http
         .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
         .pipe(

@@ -54,7 +54,7 @@ export class FinesAccPayloadService {
    * @param finesAccPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  public transformPayload<T extends { [key: string]: any }>(
+  public transformPayload<T extends { [key: string]: unknown }>(
     finesAccPayload: T,
     transformItemsConfig: ITransformItem[],
   ): T {

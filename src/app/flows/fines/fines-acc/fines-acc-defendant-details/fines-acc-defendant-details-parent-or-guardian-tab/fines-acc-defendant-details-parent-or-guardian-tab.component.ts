@@ -14,7 +14,7 @@ import { FinesAccNotProvidedComponent } from '../../fines-acc-not-provided/fines
 import { UpperCasePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-fines-acc-defendant-details-defendant-tab',
+  selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
   imports: [
     UpperCasePipe,
     GovukSummaryCardListComponent,
@@ -22,27 +22,27 @@ import { UpperCasePipe } from '@angular/common';
     GovukSummaryListRowComponent,
     FinesAccNotProvidedComponent,
   ],
-  templateUrl: './fines-acc-defendant-details-defendant-tab.component.html',
+  templateUrl: './fines-acc-defendant-details-parent-or-guardian-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantDetailsDefendantTabComponent {
+export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsDefendantTabRefData | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changeDefendantDetails = new EventEmitter<Event>();
-  @Output() convertAccount = new EventEmitter<Event>();
+  @Output() changeParentOrGuardianDetails = new EventEmitter<Event>();
+  @Output() removeParentOrGuardianDetails = new EventEmitter<Event>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
-  public handleConvertAccount(event: Event): void {
+  public handleRemoveParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.convertAccount.emit(event);
+    this.removeParentOrGuardianDetails.emit(event);
   }
 
-  public handleChangeDefendantDetails(event: Event): void {
+  public handleChangeParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.changeDefendantDetails.emit(event);
+    this.changeParentOrGuardianDetails.emit(event);
   }
 }

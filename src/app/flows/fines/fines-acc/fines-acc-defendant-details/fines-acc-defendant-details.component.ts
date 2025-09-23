@@ -4,6 +4,7 @@ import { distinctUntilChanged, merge, Observable, Subject, takeUntil, tap } from
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -28,7 +29,7 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 // Pipes & Directives
-import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
@@ -51,6 +52,8 @@ import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
+import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -58,6 +61,7 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
     AsyncPipe,
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     FinesAccDefendantDetailsDefendantTabComponent,
+    FinesAccDefendantDetailsParentOrGuardianTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     GovukBackLinkComponent,
@@ -75,7 +79,6 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
     CustomPageHeaderComponent,
     UpperCasePipe,
     GovukButtonDirective,
-    KeyValuePipe,
     MojAlertComponent,
     MojAlertContentComponent,
     MojAlertTextComponent,
@@ -87,6 +90,7 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
 export class FinesAccDefendantDetailsComponent extends AbstractTabData implements OnInit, OnDestroy {
   private readonly opalFinesService = inject(OpalFines);
   private readonly permissionsService = inject(PermissionsService);
+  private readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
   private readonly payloadService = inject(FinesAccPayloadService);
@@ -146,7 +150,17 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
               account_id,
               business_unit_id,
               business_unit_user_id,
-              this.accountData.defendant_party_id
+              this.accountData.defendant_party_id,
+            ),
+          );
+          break;
+        case 'parent-or-guardian':
+          this.tabsData[tab] = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountDefendantTabData(
+              account_id,
+              business_unit_id,
+              business_unit_user_id,
+              this.accountData.parent_guardian_party_id,
             ),
           );
           break;
@@ -272,6 +286,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       .subscribe((res) => {
         this.accountStore.setSuccessMessage('Information is up to date');
         this.accountData = res;
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        this.accountData.debtor_type = this.accountData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        this.accountData.is_youth = this.accountData.party_details?.individual_details?.date_of_birth
+          ? this.dateService.getAgeObject(this.accountData.party_details.individual_details.date_of_birth)?.group ===
+            'Youth'
+          : false;
         this.refreshFragment$.next(this.activeTab);
       });
   }
@@ -305,5 +325,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public navigateToConvertAccountPage(event: Event): void {
     event.preventDefault();
     // Navigate to the convert account page
+  }
+
+  public navigateToChangeParentOrGuardianDetailsPage(event: Event): void {
+    event.preventDefault();
+    // Navigate to the change parent or guardian details page
+  }
+
+  public navigateToRemoveParentOrGuardianDetailsPage(event: Event): void {
+    event.preventDefault();
+    // Navigate to the remove parent or guardian details page
   }
 }

@@ -121,15 +121,57 @@
 
 <div class="govuk-grid-column-full govuk-!-padding-top-2">
   <opal-lib-moj-sub-navigation subNavId="account-details-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-    @for (tab of tabs | keyvalue; track tab.key) {
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="at-a-glance-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="at-a-glance"
+      [subNavItemText]="tabs['at-a-glance']"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="defendant-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="defendant"
+      [subNavItemText]="tabs['defendant']"
+    ></li>
+    @if (accountData.debtor_type === 'Parent/Guardian') {
       <li
         opal-lib-moj-sub-navigation-item
-        [subNavItemId]="tab.key + '-tab'"
+        subNavItemId="parent-or-guardian-tab"
         [activeSubNavItemFragment]="activeTab"
-        [subNavItemFragment]="tab.key"
-        [subNavItemText]="tab.value"
+        subNavItemFragment="parent-or-guardian"
+        [subNavItemText]="tabs['parent-or-guardian']"
       ></li>
     }
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="payment-terms-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="payment-terms"
+      [subNavItemText]="tabs['payment-terms']"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="enforcement-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="enforcement"
+      [subNavItemText]="tabs['enforcement']"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="impositions-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="impositions"
+      [subNavItemText]="tabs['impositions']"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="history-and-notes-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="history-and-notes"
+      [subNavItemText]="tabs['history-and-notes']"
+    ></li>
   </opal-lib-moj-sub-navigation>
 </div>
 
@@ -154,24 +196,27 @@
       (convertAccount)="navigateToConvertAccountPage($event)"
     ></app-fines-acc-defendant-details-defendant-tab>
   }
+  @case ('parent-or-guardian') {
+    <app-fines-acc-defendant-details-parent-or-guardian-tab
+      [tabData]="tabsData['parent-or-guardian'] | async"
+      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+      [isYouth]="accountData.is_youth"
+      (addComments)="navigateToAddCommentsPage($event)"
+      [style]="tabContentStyles"
+      (changeParentOrGuardianDetails)="navigateToChangeParentOrGuardianDetailsPage($event)"
+      (removeParentOrGuardianDetails)="navigateToRemoveParentOrGuardianDetailsPage($event)"
+    ></app-fines-acc-defendant-details-parent-or-guardian-tab>
+  }
   @case ('payment-terms') {
-    <div class="govuk-grid-column-full">
-      <p>Account Terms Version: {{ (tabsData['payment-terms'] | async)?.version }}</p>
-    </div>
+    <div class="govuk-grid-column-full"></div>
   }
   @case ('enforcement') {
-    <div class="govuk-grid-column-full">
-      <p>Account Enforcement Version: {{ (tabsData['enforcement'] | async)?.version }}</p>
-    </div>
+    <div class="govuk-grid-column-full"></div>
   }
   @case ('impositions') {
-    <div class="govuk-grid-column-full">
-      <p>Account Impositions Version: {{ (tabsData['impositions'] | async)?.version }}</p>
-    </div>
+    <div class="govuk-grid-column-full"></div>
   }
   @case ('history-and-notes') {
-    <div class="govuk-grid-column-full">
-      <p>Account Version: {{ (tabsData['history-and-notes'] | async)?.version }}</p>
-    </div>
+    <div class="govuk-grid-column-full"></div>
   }
 }

@@ -9,7 +9,6 @@ import {
 
 export interface IOpalFinesAccountDefendantDetailsDefendantTabRefData {
   version: string | null;
-  defendant_account_id: string;
   defendant_account_party: {
     defendant_account_party_type: string;
     is_debtor: boolean;

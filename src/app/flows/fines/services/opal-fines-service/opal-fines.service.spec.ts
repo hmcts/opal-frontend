@@ -653,7 +653,6 @@ describe('OpalFines', () => {
 
     // const req = httpMock.expectOne(apiUrl);
     // expect(req.request.method).toBe('GET');
-
     // req.flush(expectedResponse);
   });
 
@@ -661,11 +660,16 @@ describe('OpalFines', () => {
     const account_id: number = 77;
     const business_unit_id: string = '12';
     const business_unit_user_id: string | null = '12';
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id)
+      .getDefendantAccountDefendantTabData(
+        account_id,
+        business_unit_id,
+        business_unit_user_id,
+        FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id,
+      )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.version;
         expect(response).toEqual(expectedResponse);

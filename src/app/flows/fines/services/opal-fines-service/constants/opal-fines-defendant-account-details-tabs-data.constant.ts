@@ -3,6 +3,7 @@ import { IOpalFinesAccountDefendantDetailsTabsData } from '../interfaces/opal-fi
 export const OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY: IOpalFinesAccountDefendantDetailsTabsData = {
   'at-a-glance': null,
   defendant: null,
+  'parent-or-guardian': null,
   'payment-terms': null,
   enforcement: null,
   impositions: null,

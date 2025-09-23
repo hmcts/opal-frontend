@@ -151,6 +151,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockOpalFinesService.getDefendantAccountDefendantTabData).toHaveBeenCalled();
   });
 
+  it('should fetch the parent or guardian tab data when fragment is changed to parent-or-guardian', () => {
+    component['refreshFragment$'].next('parent-or-guardian');
+    expect(mockOpalFinesService.getDefendantAccountDefendantTabData).toHaveBeenCalled();
+  });
+
   it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
     component['refreshFragment$'].next('enforcement');
     expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
@@ -191,6 +196,20 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const event: Event = new Event('click');
     spyOn(event, 'preventDefault');
     component.navigateToConvertAccountPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should navigate to remove parent or guardian page when navigateToRemoveParentOrGuardianPage is called', () => {
+    const event: Event = new Event('click');
+    spyOn(event, 'preventDefault');
+    component.navigateToRemoveParentOrGuardianDetailsPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should navigate to change parent or guardian details page when navigateToChangeParentOrGuardianDetailsPage is called', () => {
+    const event: Event = new Event('click');
+    spyOn(event, 'preventDefault');
+    component.navigateToChangeParentOrGuardianDetailsPage(event);
     expect(event.preventDefault).toHaveBeenCalled();
   });
 });
