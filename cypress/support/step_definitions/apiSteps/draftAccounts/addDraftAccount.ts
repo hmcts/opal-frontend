@@ -29,12 +29,10 @@ function clearCreatedIds(): void {
 }
 
 /** Build Authorization header from env (set CYPRESS_TOKEN or in cypress.env.json). */
-const auth = () =>
-  Cypress.env('TOKEN') ? { Authorization: `Bearer ${Cypress.env('TOKEN')}` } : {};
+const auth = () => (Cypress.env('TOKEN') ? { Authorization: `Bearer ${Cypress.env('TOKEN')}` } : {});
 
 /** Build path for a draft account */
-const pathForAccount = (id: number | string) =>
-  `/opal-fines-service/draft-accounts/${encodeURIComponent(String(id))}`;
+const pathForAccount = (id: number | string) => `/opal-fines-service/draft-accounts/${encodeURIComponent(String(id))}`;
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -84,18 +82,13 @@ function getAccountAndStrongEtag(id: number | string) {
 
       // Status + content-type
       expect(resp.status, 'GET status').to.be.oneOf([200, 304]);
-      expect(String(resp.headers['content-type'] || ''), 'content-type')
-        .to.include('application/json');
+      expect(String(resp.headers['content-type'] || ''), 'content-type').to.include('application/json');
 
       // ETag (header keys are lowercased in Node/Cypress)
       const etag = resp.headers['etag'] as string | undefined;
       expect(
         etag,
-        `ETag header missing for ${pathForAccount(id)}; headers were: ${JSON.stringify(
-          resp.headers,
-          null,
-          2
-        )}`
+        `ETag header missing for ${pathForAccount(id)}; headers were: ${JSON.stringify(resp.headers, null, 2)}`,
       ).to.exist;
 
       // Strong + quoted
@@ -125,36 +118,33 @@ function timeline(username: string, status: string) {
 // Step: create a draft account (API)
 // ────────────────────────────────────────────────────────────────────────────────
 
-When(
-  'I create a {string} draft account with the following details:',
-  (accountType: DefendantType, data: DataTable) => {
-    const overrides = convertDataTableToNestedObject(data);
-    const payloadFile = getPayloadFileForAccountType(accountType);
+When('I create a {string} draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
+  const overrides = convertDataTableToNestedObject(data);
+  const payloadFile = getPayloadFileForAccountType(accountType);
 
-    return cy.fixture(`draftAccounts/${payloadFile}`).then((base) => {
-      const requestBody = merge({}, base, overrides);
+  return cy.fixture(`draftAccounts/${payloadFile}`).then((base) => {
+    const requestBody = merge({}, base, overrides);
 
-      return cy
-        .request({
-          method: 'POST',
-          url: '/opal-fines-service/draft-accounts',
-          headers: { ...auth(), Accept: 'application/json' },
-          body: requestBody,
-          failOnStatusCode: false,
-        })
-        .then((response) => {
-          expect(response.status, 'POST /draft-accounts').to.eq(201);
+    return cy
+      .request({
+        method: 'POST',
+        url: '/opal-fines-service/draft-accounts',
+        headers: { ...auth(), Accept: 'application/json' },
+        body: requestBody,
+        failOnStatusCode: false,
+      })
+      .then((response) => {
+        expect(response.status, 'POST /draft-accounts').to.eq(201);
 
-          const draftAccountId = Number(response.body?.draft_account_id);
-          expect(draftAccountId, 'draft_account_id').to.be.a('number');
+        const draftAccountId = Number(response.body?.draft_account_id);
+        expect(draftAccountId, 'draft_account_id').to.be.a('number');
 
-          // record locally
-          recordCreatedId(draftAccountId);
-          cy.log(`Created draft_account_id=${draftAccountId}`);
-        });
-    });
-  }
-);
+        // record locally
+        recordCreatedId(draftAccountId);
+        cy.log(`Created draft_account_id=${draftAccountId}`);
+      });
+  });
+});
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Step: Update last created with status — store before/after in @etagUpdate
@@ -175,44 +165,46 @@ When('I update the last created draft account with status {string}', (newStatus:
     const patchBody: any = {
       account_status: newStatus,
       business_unit_id: body.business_unit_id,
-      timeline_data: Array.isArray(body.timeline_data) && body.timeline_data.length
-        ? body.timeline_data
-        : timeline('opal-test', newStatus),
+      timeline_data:
+        Array.isArray(body.timeline_data) && body.timeline_data.length
+          ? body.timeline_data
+          : timeline('opal-test', newStatus),
       validated_by: body.validated_by || 'opal-test',
     };
 
-    return cy.request({
-      method: 'PATCH',
-      url: pathForAccount(id),
-      headers: {
-        ...auth(),
-        'If-Match': beforeEtag,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: patchBody,
-      failOnStatusCode: false,
-    })
-    .then((patchResp) => {
-      cy.log(`PATCH ${pathForAccount(id)} → ${patchResp.status}`);
-      cy.log(`PATCH response body: ${JSON.stringify(patchResp.body || {}, null, 2)}`);
-      cy.log(`PATCH response headers: ${JSON.stringify(patchResp.headers || {}, null, 2)}`);
+    return cy
+      .request({
+        method: 'PATCH',
+        url: pathForAccount(id),
+        headers: {
+          ...auth(),
+          'If-Match': beforeEtag,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: patchBody,
+        failOnStatusCode: false,
+      })
+      .then((patchResp) => {
+        cy.log(`PATCH ${pathForAccount(id)} → ${patchResp.status}`);
+        cy.log(`PATCH response body: ${JSON.stringify(patchResp.body || {}, null, 2)}`);
+        cy.log(`PATCH response headers: ${JSON.stringify(patchResp.headers || {}, null, 2)}`);
 
-      expect(patchResp.status, 'PATCH status').to.be.oneOf([200, 204]);
+        expect(patchResp.status, 'PATCH status').to.be.oneOf([200, 204]);
 
-      const afterEtag = patchResp.headers['etag'] as string | undefined;
-      expect(afterEtag, 'PATCH must return an ETag').to.exist;
-      expect(afterEtag!.startsWith('W/'), 'ETag must be strong post-PATCH').to.be.false;
-      expect(/^".+"$/.test(afterEtag!), 'ETag should be quoted post-PATCH').to.be.true;
+        const afterEtag = patchResp.headers['etag'] as string | undefined;
+        expect(afterEtag, 'PATCH must return an ETag').to.exist;
+        expect(afterEtag!.startsWith('W/'), 'ETag must be strong post-PATCH').to.be.false;
+        expect(/^".+"$/.test(afterEtag!), 'ETag should be quoted post-PATCH').to.be.true;
 
-      // Require the ETag to change
-      expect(afterEtag, 'ETag should change after update').to.not.equal(beforeEtag);
+        // Require the ETag to change
+        expect(afterEtag, 'ETag should change after update').to.not.equal(beforeEtag);
 
-      cy.wrap(
-        { status: patchResp.status, etagBefore: beforeEtag, etagAfter: afterEtag!, accountId: id },
-        { log: false }
-      ).as('etagUpdate');
-    });
+        cy.wrap(
+          { status: patchResp.status, etagBefore: beforeEtag, etagAfter: afterEtag!, accountId: id },
+          { log: false },
+        ).as('etagUpdate');
+      });
   });
 });
 
@@ -223,7 +215,9 @@ When('I update the last created draft account with status {string}', (newStatus:
 Then('the update should succeed and return a new strong ETag', () => {
   return cy.get('@etagUpdate').then((raw: any) => {
     const { status, etagBefore, etagAfter } = raw as {
-      status: number; etagBefore: string; etagAfter: string;
+      status: number;
+      etagBefore: string;
+      etagAfter: string;
     };
 
     expect([200, 204], 'PATCH success status').to.include(status);
@@ -233,7 +227,6 @@ Then('the update should succeed and return a new strong ETag', () => {
     expect(etagAfter, 'ETag should change after update').not.to.eq(etagBefore);
   });
 });
-
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Negative: stale ETag → 409 Conflict
@@ -248,52 +241,55 @@ When('I try to update the last created draft account with a stale ETag I should 
       account_status: 'Publishing Pending',
       business_unit_id: body.business_unit_id,
       validated_by: body.validated_by || 'opal-test',
-      timeline_data: Array.isArray(body.timeline_data) && body.timeline_data.length
-        ? body.timeline_data
-        : timeline('opal-test', 'Publishing Pending'),
+      timeline_data:
+        Array.isArray(body.timeline_data) && body.timeline_data.length
+          ? body.timeline_data
+          : timeline('opal-test', 'Publishing Pending'),
     };
 
     // PATCH #1 with a fresh ETag – should succeed (200/204)
-    return cy.request({
-      method: 'PATCH',
-      url: pathForAccount(id),
-      headers: {
-        ...auth(),
-        'If-Match': etag1,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: patchBody,
-      failOnStatusCode: false,
-    })
-    .then((first) => {
-      cy.log(`PATCH#1 ${pathForAccount(id)} → ${first.status}`);
-      cy.log(`PATCH#1 headers: ${JSON.stringify(first.headers || {}, null, 2)}`);
-      cy.log(`PATCH#1 body: ${JSON.stringify(first.body || {}, null, 2)}`);
-
-      expect([200, 204], 'first PATCH should succeed').to.include(first.status);
-
-      // PATCH #2 reusing the *stale* ETag – should now conflict
-      return cy.request({
+    return cy
+      .request({
         method: 'PATCH',
         url: pathForAccount(id),
         headers: {
           ...auth(),
-          'If-Match': etag1, // stale on purpose
+          'If-Match': etag1,
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
         body: patchBody,
         failOnStatusCode: false,
       })
-      .then((second) => {
-        cy.log(`PATCH#2 ${pathForAccount(id)} → ${second.status}`);
-        cy.log(`PATCH#2 headers: ${JSON.stringify(second.headers || {}, null, 2)}`);
-        cy.log(`PATCH#2 body: ${JSON.stringify(second.body || {}, null, 2)}`);
+      .then((first) => {
+        cy.log(`PATCH#1 ${pathForAccount(id)} → ${first.status}`);
+        cy.log(`PATCH#1 headers: ${JSON.stringify(first.headers || {}, null, 2)}`);
+        cy.log(`PATCH#1 body: ${JSON.stringify(first.body || {}, null, 2)}`);
 
-        expect(second.status, 'stale If-Match should conflict').to.eq(409);
+        expect([200, 204], 'first PATCH should succeed').to.include(first.status);
+
+        // PATCH #2 reusing the *stale* ETag – should now conflict
+        return cy
+          .request({
+            method: 'PATCH',
+            url: pathForAccount(id),
+            headers: {
+              ...auth(),
+              'If-Match': etag1, // stale on purpose
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: patchBody,
+            failOnStatusCode: false,
+          })
+          .then((second) => {
+            cy.log(`PATCH#2 ${pathForAccount(id)} → ${second.status}`);
+            cy.log(`PATCH#2 headers: ${JSON.stringify(second.headers || {}, null, 2)}`);
+            cy.log(`PATCH#2 body: ${JSON.stringify(second.body || {}, null, 2)}`);
+
+            expect(second.status, 'stale If-Match should conflict').to.eq(409);
+          });
       });
-    });
   });
 });
 
