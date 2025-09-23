@@ -43,6 +43,8 @@ opal-fines-service:
       OPAL_FINES_DB_OPTIONS: "?stringtype=unspecified"
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
+      OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
+      OPAL_LEGACY_GATEWAY_URL: https://opal-legacy-db-stub.staging.platform.hmcts.net/opal
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
       FLYWAY_LOCATIONS: classpath:db/migration/allEnvs, classpath:db/migration/devOnly
       FEATURES_APP_INSIGHTS_ENABLED: false
