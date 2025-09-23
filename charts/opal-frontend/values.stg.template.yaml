@@ -6,6 +6,7 @@ nodejs:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
     OPAL_API_URL: http://${SERVICE_NAME}-opal-fines-service
     OPAL_FINES_SERVICE_API_URL: http://${SERVICE_NAME}-opal-fines-service
+    OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
     FEATURES_LAUNCH_DARKLY_ENABLED: false
     FEATURES_SSO_ENABLED: true
     SESSION_SAME_SITE: 'none'
