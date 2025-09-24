@@ -12956,29 +12956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mochawesome-report-generator@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "mochawesome-report-generator@npm:6.2.0"
-  dependencies:
-    chalk: "npm:^4.1.2"
-    dateformat: "npm:^4.5.1"
-    escape-html: "npm:^1.0.3"
-    fs-extra: "npm:^10.0.0"
-    fsu: "npm:^1.1.1"
-    lodash.isfunction: "npm:^3.0.9"
-    opener: "npm:^1.5.2"
-    prop-types: "npm:^15.7.2"
-    tcomb: "npm:^3.2.17"
-    tcomb-validation: "npm:^3.3.0"
-    validator: "npm:^13.6.0"
-    yargs: "npm:^17.2.1"
-  bin:
-    marge: bin/cli.js
-  checksum: 10/94ed8a862ff610172ad8429ee0cda2137e1f90580866cd911e9d4c80f87e24fcdba60d07c3bd8b4d27b9a71a10df58fd1cad40e8de022ccd6a3732cb318c3d2a
-  languageName: node
-  linkType: hard
-
-"mochawesome-report-generator@npm:^6.3.0":
+"mochawesome-report-generator@npm:^6.2.0, mochawesome-report-generator@npm:^6.3.0":
   version: 6.3.0
   resolution: "mochawesome-report-generator@npm:6.3.0"
   dependencies:
