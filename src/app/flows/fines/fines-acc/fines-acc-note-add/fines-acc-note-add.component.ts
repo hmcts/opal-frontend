@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/
 import { FinesAccNoteAddFormComponent } from './fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { IFinesAccAddNoteForm } from './interfaces/fines-acc-note-add-form.interface';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
-import { FINES_ACC_ROUTING_PATHS } from '../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -17,7 +17,7 @@ import { catchError, EMPTY, Subject, takeUntil, tap } from 'rxjs';
 })
 export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent implements OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
+  protected readonly defendantAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly opalFinesService = inject(OpalFines);
   protected readonly utilsService = inject(UtilsService);
   protected readonly finesAccStore = inject(FinesAccountStore);
@@ -33,7 +33,7 @@ export class FinesAccNoteAddComponent extends AbstractFormParentBaseComponent im
     this.opalFinesService
       .addNote(payload)
       .pipe(
-        tap(() => this.routerNavigate(this.finesAccRoutingPaths.children.details)),
+        tap(() => this.routerNavigate(this.defendantAccRoutingPaths.children.details)),
         catchError(() => {
           this.utilsService.scrollToTop();
           return EMPTY;

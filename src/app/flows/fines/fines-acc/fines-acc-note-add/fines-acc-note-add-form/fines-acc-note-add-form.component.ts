@@ -5,7 +5,7 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccAddNoteForm } from '../interfaces/fines-acc-note-add-form.interface';
 import { IFinesAccAddNoteFieldErrors } from '../interfaces/fines-acc-note-add-form-field-errors.interface';
@@ -31,7 +31,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 export class FinesAccNoteAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesAccStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddNoteForm>();
-  protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
+  protected readonly defendantAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddNoteFieldErrors = FINES_ACC_ADD_NOTE_FIELD_ERRORS;
