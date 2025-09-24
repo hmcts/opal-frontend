@@ -21,6 +21,14 @@ import { FinesSaResultsTabsType } from './types/fines-sa-results-tabs.type';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-defendant-table-wrapper/constants/fines-sa-result-default-table-wrapper-table-data-empty.constant';
+import {
+  IOpalFinesCreditorAccountResponse,
+  IOpalFinesCreditorAccount,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
+import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-results-minor-creditor-table-wrapper/interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
+import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
+import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-sort-default.constant';
+import { FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fines-sa-results-minor-creditor-table-wrapper/constants/fines-sa-result-minor-creditor-table-wrapper-table-data-empty.constant';
 
 @Component({
   selector: 'app-fines-sa-results',
@@ -31,6 +39,7 @@ import { FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_DATA_EMPTY } from './fin
     GovukTabsListItemComponent,
     GovukTabsPanelComponent,
     FinesSaResultsDefendantTableWrapperComponent,
+    FinesSaResultsMinorCreditorTableWrapperComponent,
   ],
   templateUrl: './fines-sa-results.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,10 +53,34 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   public resultView!: FinesSaResultsTabsType;
 
   public readonly defendantsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
-  public readonly minorCreditorsSort = FINES_SA_RESULTS_DEFENDANT_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  public readonly minorCreditorsSort = FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   public individualsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
   public companiesData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
-  public minorCreditorsData = [] as IFinesSaResultsDefendantTableWrapperTableData[];
+  public minorCreditorsData = [] as IFinesSaResultsMinorCreditorTableWrapperTableData[];
+
+  /**
+   * Computes the default fragment based on the sizes of the results buckets.
+   * Rules:
+   * - If any bucket has >= 100 results → ''.
+   * - If all buckets are 0 → ''.
+   * - Otherwise pick the first bucket with 1–99 results in the order: individuals → companies → minorCreditors.
+   */
+  private computeDefaultFragment(): FinesSaSearchAccountTab {
+    const individualsDataLen = this.individualsData.length;
+    const companiesDataLen = this.companiesData.length;
+    const minorCreditorsDataLen = this.minorCreditorsData.length;
+
+    const anyOversize = individualsDataLen >= 100 || companiesDataLen >= 100 || minorCreditorsDataLen >= 100;
+    const allZero = individualsDataLen === 0 && companiesDataLen === 0 && minorCreditorsDataLen === 0;
+
+    if (anyOversize || allZero) return '' as FinesSaSearchAccountTab;
+    if (individualsDataLen >= 1 && individualsDataLen <= 99) return 'individuals';
+    if (companiesDataLen >= 1 && companiesDataLen <= 99) return 'companies';
+    if (minorCreditorsDataLen >= 1 && minorCreditorsDataLen <= 99) return 'minorCreditors';
+
+    // Fallback safety - should not be reached
+    return '' as FinesSaSearchAccountTab;
+  }
 
   /**
    * Retrieves the current search type from the finesSaStore and assigns it to the `resultView` property.
@@ -79,6 +112,93 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
         ? this.buildIndividualFields(commonFields, defendantAccount)
         : this.buildCompanyFields(commonFields, defendantAccount);
     });
+  }
+
+  /**
+   * Maps the creditor accounts response data to an array of table data objects for display.
+   *
+   * @param data - The response object containing creditor account information.
+   * @returns An array of table data objects formatted for the minor creditor table.
+   *
+   * If the response contains no creditor accounts (`count === 0`), an empty array is returned.
+   * For each creditor account, common fields are built and then extended with either
+   * organisation-specific or individual-specific fields based on the presence of `organisation_name`.
+   */
+  private mapCreditorAccounts(
+    data: IOpalFinesCreditorAccountResponse,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData[] {
+    if (data.count === 0) return [];
+
+    return data.creditor_accounts.map((account) => {
+      const commonFields = this.buildCommonCreditorFields(account);
+      return account.organisation_name
+        ? this.buildOrganisationCreditorFields(commonFields, account)
+        : this.buildIndividualCreditorFields(commonFields, account);
+    });
+  }
+
+  /**
+   * Builds a table data object containing common creditor fields for a given creditor account.
+   *
+   * @param account - The creditor account object containing account and defendant details.
+   * @returns An object representing the table data for the minor creditor, populated with fields such as account ID, account number, address, business unit, defendant information, and balance.
+   */
+  private buildCommonCreditorFields(
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      ...FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY,
+      'Creditor account id': account.creditor_account_id,
+      Account: account.account_number,
+      'Address line 1': account.address_line_1,
+      Postcode: account.postcode,
+      'Business unit': account.business_unit_name,
+      'Defendant account id': account.defendant_account_id,
+      Defendant: account.defendant
+        ? account.defendant.organisation_name
+          ? `${account.defendant.organisation_name}`
+          : account.defendant.surname || account.defendant.firstnames
+            ? `${account.defendant.surname ?? ''}${account.defendant.surname && account.defendant.firstnames ? ', ' : ''}${account.defendant.firstnames ?? ''}`
+            : null
+        : null,
+      Balance: account.account_balance,
+    };
+  }
+
+  /**
+   * Builds a new `IFinesSaResultsMinorCreditorTableWrapperTableData` object by merging the provided
+   * `common` data with the creditor organisation's name from the given account.
+   *
+   * @param common - The base table data to be extended.
+   * @param account - The creditor account containing the organisation name.
+   * @returns A new table data object with the organisation name set in the `Name` field.
+   */
+  private buildOrganisationCreditorFields(
+    common: IFinesSaResultsMinorCreditorTableWrapperTableData,
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      ...common,
+      Name: `${account.organisation_name}`,
+    };
+  }
+
+  /**
+   * Builds and returns a new `IFinesSaResultsMinorCreditorTableWrapperTableData` object
+   * by merging the provided `common` data with the creditor's name, formatted as "surname, firstnames".
+   *
+   * @param common - The base table data to be extended.
+   * @param account - The creditor account containing name details.
+   * @returns A new table data object with the creditor's name field populated.
+   */
+  private buildIndividualCreditorFields(
+    common: IFinesSaResultsMinorCreditorTableWrapperTableData,
+    account: IOpalFinesCreditorAccount,
+  ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    return {
+      ...common,
+      Name: `${account.surname}, ${account.firstnames}`,
+    };
   }
 
   /**
@@ -115,15 +235,18 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   ): IFinesSaResultsDefendantTableWrapperTableData {
     return {
       ...commonFields,
-      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_first_names}`,
+      Name: `${defendantAccount.defendant_surname}, ${defendantAccount.defendant_firstnames}`,
       Aliases: defendantAccount.aliases
         ? defendantAccount.aliases
-            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.alias_surname}, ${alias.alias_forenames}`)
+            .map((alias: IOpalFinesDefendantAccountAlias) => `${alias.surname}, ${alias.forenames}`)
             .join('\n')
         : null,
       'Date of birth': defendantAccount.birth_date,
       'NI number': defendantAccount.national_insurance_number,
-      'Parent or guardian': `${defendantAccount.parent_guardian_surname}, ${defendantAccount.parent_guardian_first_names}`,
+      'Parent or guardian':
+        defendantAccount.parent_guardian_surname || defendantAccount.parent_guardian_firstnames
+          ? `${defendantAccount.parent_guardian_surname ?? ''}${defendantAccount.parent_guardian_surname && defendantAccount.parent_guardian_firstnames ? ', ' : ''}${defendantAccount.parent_guardian_firstnames ?? ''}`
+          : null,
     };
   }
 
@@ -148,7 +271,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Loads individual and company defendant data from the activated route snapshot if available.
+   * Loads individual and company defendant data and minor creditor data from the activated route snapshot if available.
    * Transforms the raw data using the fines service mapper before assigning to component state.
    *
    * @private
@@ -160,6 +283,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
     const companyAccounts = this.activatedRoute.snapshot.data[
       'companyAccounts'
     ] as IOpalFinesDefendantAccountResponse | null;
+    const minorCreditorAccounts = this.activatedRoute.snapshot.data[
+      'minorCreditorAccounts'
+    ] as IOpalFinesCreditorAccountResponse | null;
 
     if (individualAccounts && individualAccounts.count > 0) {
       this.individualsData = this.mapDefendantAccounts(individualAccounts, 'individual');
@@ -167,6 +293,10 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
 
     if (companyAccounts && companyAccounts.count > 0) {
       this.companiesData = this.mapDefendantAccounts(companyAccounts, 'company');
+    }
+
+    if (minorCreditorAccounts && minorCreditorAccounts.count > 0) {
+      this.minorCreditorsData = this.mapCreditorAccounts(minorCreditorAccounts);
     }
   }
 
@@ -185,17 +315,9 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private setupFragmentListener(): void {
     if (this.resultView === 'referenceCaseNumber' || this.resultView === 'accountNumber') {
       this.activatedRoute.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
-        let defaultedFragment: FinesSaSearchAccountTab = 'individuals';
-        if (this.individualsData.length === 0) {
-          if (this.companiesData.length === 0) {
-            defaultedFragment = 'minorCreditors';
-          } else {
-            defaultedFragment = 'companies';
-          }
-        }
-        const resolvedFragment = fragment ?? defaultedFragment;
+        const resolvedFragment = fragment ?? this.computeDefaultFragment();
 
-        if (!fragment) {
+        if (!fragment && resolvedFragment !== '') {
           this['router'].navigate([], {
             relativeTo: this['activatedRoute'],
             fragment: resolvedFragment,

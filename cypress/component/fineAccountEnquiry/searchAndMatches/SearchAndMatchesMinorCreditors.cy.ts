@@ -4,16 +4,39 @@ import { FinesSaStore } from '../../../../src/app/flows/fines/fines-sa/stores/fi
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { DOM_ELEMENTS } from './constants/search_and_matches_minor_creditors_elements';
 import { MINOR_CREDITORS_SEARCH_STATE_MOCK } from './mocks/search_and_matches_minor_creditors_mock';
+import { finesSaMinorCreditorAccountsResolver } from '../../../../src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-minor-creditor-accounts/fines-sa-minor-creditor-accounts.resolver';
+import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 
 describe('Search Account Component - Minor Creditors', () => {
   let minorCreditorsSearchMock = structuredClone(MINOR_CREDITORS_SEARCH_STATE_MOCK);
 
   const setupComponent = (formSubmit: any = null) => {
+    const componentProperties: any = {};
+    if (formSubmit) {
+      componentProperties.handleSearchAccountSubmit = formSubmit;
+    }
+
     mount(FinesSaSearchAccountComponent, {
       providers: [
         provideHttpClient(),
+        provideRouter([
+          {
+            path: 'fines/search-accounts/results',
+            component: FinesSaSearchAccountComponent,
+            resolve: {
+              minorCreditorAccounts: finesSaMinorCreditorAccountsResolver,
+            },
+            runGuardsAndResolvers: 'always',
+          },
+          {
+            path: 'fines/search-accounts',
+            component: FinesSaSearchAccountComponent,
+          },
+        ]),
+        OpalFines,
         {
           provide: FinesSaStore,
           useFactory: () => {
@@ -35,9 +58,7 @@ describe('Search Account Component - Minor Creditors', () => {
           },
         },
       ],
-      componentProperties: {
-        handleSearchAccountSubmit: formSubmit,
-      },
+      componentProperties,
     });
   };
   beforeEach(() => {
