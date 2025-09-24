@@ -1,4 +1,5 @@
 nodejs:
   environment:
     FEATURES_SSO_ENABLED: false
+    OPAL_USER_SERVICE_API_URL: https://opal-user-service.staging.platform.hmcts.net
   
