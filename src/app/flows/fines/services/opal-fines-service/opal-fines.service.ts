@@ -43,12 +43,14 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/o
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
@@ -492,6 +494,11 @@ export class OpalFines {
       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
+        ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+        : false;
         return {
           ...payload,
           version,
