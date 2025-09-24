@@ -47,7 +47,8 @@ import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-
 export class OpalFines {
   private readonly http = inject(HttpClient);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
-  private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
+  private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
+  private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
@@ -132,23 +133,43 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the business units based on the specified permission.
-   * Business units are cached to prevent multiple requests for the same data.
-   * Multiple permission types can be provided, and they will be cached separately.
-   * @param permission The permission type for which to retrieve the business units.
-   * @returns An Observable that emits the business units.
+   * Fetches business unit reference data, with caching to avoid duplicate HTTP requests.
+   *
+   * If no permission is provided, a single shared request/Observable is used for all callers
+   * (cached in `businessUnitsCache$`). If a permission string is provided, results are cached
+   * per-permission in `businessUnitsPermissionCache$` keyed by the permission value.
+   *
+   * The HTTP request targets OPAL_FINES_PATHS.businessUnitRefData. When a permission is supplied
+   * it is included as a query parameter ({ params: { permission } }).
+   *
+   * Caching is implemented by storing the Observable returned by HttpClient and applying `shareReplay(1)`,
+   * so subsequent subscribers reuse the same response without triggering new network requests.
+   *
+   * @param permission - Optional permission type used to scope the returned business units
+   *                     (e.g. "ACCOUNT_ENQUIRY", "ACCOUNT_ENQUIRY_NOTES", "CREATE_MANAGE_DRAFT_ACCOUNTS").
+   * @returns An Observable emitting the business unit reference data (IOpalFinesBusinessUnitRefData).
    */
-  public getBusinessUnits(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
-    // Business units are cached to prevent multiple requests for the same data.
-    // We can have multiple permission types so we need to cache them separately.
-    // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
-    if (!this.businessUnitsCache$[permission]) {
-      this.businessUnitsCache$[permission] = this.http
-        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
-        .pipe(shareReplay(1));
-    }
+  public getBusinessUnits(permission?: string): Observable<IOpalFinesBusinessUnitRefData> {
+    if (!permission) {
+      if (!this.businessUnitsCache$) {
+        this.businessUnitsCache$ = this.http
+          .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+          .pipe(shareReplay(1));
+      }
 
-    return this.businessUnitsCache$[permission];
+      return this.businessUnitsCache$;
+    } else {
+      // Business units are cached to prevent multiple requests for the same data.
+      // We can have multiple permission types so we need to cache them separately.
+      // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
+      if (!this.businessUnitsPermissionCache$[permission]) {
+        this.businessUnitsPermissionCache$[permission] = this.http
+          .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
+          .pipe(shareReplay(1));
+      }
+
+      return this.businessUnitsPermissionCache$[permission];
+    }
   }
 
   /**

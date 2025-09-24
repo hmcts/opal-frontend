@@ -197,7 +197,7 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
     this.setupConditionalValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_individuals_search_criteria);
-    this.finesSaStore.resetSearchAccount();
+    this.finesSaStore.resetDefendantSearchCriteria();
     this.handleConditionalValidation();
   }
 
