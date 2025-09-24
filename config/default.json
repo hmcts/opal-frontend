@@ -4,7 +4,6 @@
     "dev": "http://localhost:4200",
     "prod": "http://localhost:4000"
   },
-
   "opal-api": {
     "url": "http://localhost:4550",
     "opal-fines-service": "http://localhost:4550",
