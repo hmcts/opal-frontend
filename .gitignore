@@ -47,7 +47,6 @@ testem.log
 /typings
 package-lock.json
 .nx
-config/local.json
 
 # System files
 .DS_Store
