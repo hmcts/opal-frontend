@@ -2,7 +2,8 @@
   "node-env": "NODE_ENV",
   "opal-api": {
     "url": "OPAL_API_URL",
-    "opal-fines-service": "OPAL_FINES_SERVICE_API_URL"
+    "opal-fines-service": "OPAL_FINES_SERVICE_API_URL",
+    "opal-user-service": "OPAL_USER_SERVICE_API_URL"
   },
   "frontend-hostname": {
     "prod": "FRONTEND_HOSTNAME"
@@ -58,7 +59,10 @@
       "redis-connection-string": "REDIS_CONNECTION_STRING",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
       "opal-frontend-session-secret": "FRONTEND_SESSION_SECRET",
-      "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET"
+      "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET",
+      "AzureADClientId": "AZURE_AD_CLIENT_ID",
+      "AzureADClientSecret": "AZURE_AD_CLIENT_SECRET",
+      "AzureADTenantId": "AZURE_AD_TENANT_ID"
     }
   }
 }

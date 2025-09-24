@@ -10,7 +10,7 @@ const BASE_ACCOUNT = {
   defendant_title: 'Mr',
   national_insurance_number: 'JK567890C',
   parent_guardian_surname: 'DOE',
-  parent_guardian_first_names: 'Jane',
+  parent_guardian_firstnames: 'Jane',
 };
 
 export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK: IOpalFinesDefendantAccountResponse = {
@@ -20,9 +20,9 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK: IOpalFinesDe
     return {
       ...BASE_ACCOUNT,
       account_number: `13000${idx}BU`,
-      defendant_account_id: `${idx}`,
+      defendant_account_id: Number(`${idx}`),
       defendant_surname: `SMITH_${idx}`,
-      defendant_first_names: `John Michael_${idx}`,
+      defendant_firstnames: `John Michael_${idx}`,
       birth_date: `1985-06-${String(idx).padStart(2, '0')}`,
       aliases:
         idx % 2 === 0
@@ -30,14 +30,14 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK: IOpalFinesDe
               {
                 alias_number: 1,
                 organisation_name: null,
-                alias_surname: `SMITH_${idx}`,
-                alias_forenames: `John Michael_${idx}`,
+                surname: `SMITH_${idx}`,
+                forenames: `John Michael_${idx}`,
               },
               {
                 alias_number: 2,
                 organisation_name: null,
-                alias_surname: `SMYTHE_${idx}`,
-                alias_forenames: `Jon M._${idx}`,
+                surname: `SMYTHE_${idx}`,
+                forenames: `Jon M._${idx}`,
               },
             ]
           : [],
@@ -55,9 +55,9 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK_101: IOpalFin
     return {
       ...BASE_ACCOUNT,
       account_number: `13000${idx}BU`,
-      defendant_account_id: `${idx}`,
+      defendant_account_id: Number(`${idx}`),
       defendant_surname: `SMITH_${idx}`,
-      defendant_first_names: `John Michael_${idx}`,
+      defendant_firstnames: `John Michael_${idx}`,
       birth_date: `1985-06-${String(idx).padStart(2, '0')}`,
       aliases:
         idx % 2 === 0
@@ -65,14 +65,14 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK_101: IOpalFin
               {
                 alias_number: 1,
                 organisation_name: null,
-                alias_surname: `SMITH_${idx}`,
-                alias_forenames: `John Michael_${idx}`,
+                surname: `SMITH_${idx}`,
+                forenames: `John Michael_${idx}`,
               },
               {
                 alias_number: 2,
                 organisation_name: null,
-                alias_surname: `SMYTHE_${idx}`,
-                alias_forenames: `Jon M._${idx}`,
+                surname: `SMYTHE_${idx}`,
+                forenames: `Jon M._${idx}`,
               },
             ]
           : [],

@@ -32,6 +32,7 @@ import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-reject
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojNotificationBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-notification-badge';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-check-and-validate-tabs',
@@ -55,11 +56,11 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   private readonly opalFinesService = inject(OpalFines);
   private readonly dateService = inject(DateService);
   private readonly userState = this.globalStore.userState();
-  private readonly businessUnitIds = this.userState.business_unit_user.map(
-    (business_unit_user) => business_unit_user.business_unit_id,
+  private readonly businessUnitIds = this.userState.business_unit_users.map(
+    (business_unit_users) => business_unit_users.business_unit_id,
   );
-  private readonly businessUnitUserIds = this.userState.business_unit_user.map(
-    (business_unit_user) => business_unit_user.business_unit_user_id,
+  private readonly businessUnitUserIds = this.userState.business_unit_users.map(
+    (business_unit_users) => business_unit_users.business_unit_user_id,
   );
 
   protected readonly finesDraftStore = inject(FinesDraftStore);
@@ -160,16 +161,17 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   /**
    * Handles the click event for an account.
    *
-   * Navigates to the Account Details page for the specified account number.
+   * Navigates to the Account Details page for the specified account id.
    *
-   * @param accountNumber - The account number of the clicked account.
+   * @param accountID - The account id of the clicked account.
    */
-  public onAccountClick(accountNumber: string): void {
+  public onAccountClick(accountID: number): void {
     this['router'].navigate([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
-      accountNumber,
-      FINES_ACC_ROUTING_PATHS.children.details,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountID,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
   }
 

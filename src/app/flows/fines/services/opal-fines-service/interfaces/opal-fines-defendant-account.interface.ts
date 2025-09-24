@@ -1,12 +1,12 @@
 export interface IOpalFinesDefendantAccountAlias {
   alias_number: number | null;
   organisation_name: string | null;
-  alias_surname: string | null;
-  alias_forenames: string | null;
+  surname: string | null;
+  forenames: string | null;
 }
 
 export interface IOpalFinesDefendantAccount {
-  defendant_account_id: string | null;
+  defendant_account_id: number | null;
   account_number: string | null;
   organisation_flag: boolean | null;
   aliases: IOpalFinesDefendantAccountAlias[] | null;
@@ -19,12 +19,12 @@ export interface IOpalFinesDefendantAccount {
   account_balance: number | null;
   organisation_name: string | null;
   defendant_title: string | null;
-  defendant_first_names: string | null;
+  defendant_firstnames: string | null;
   defendant_surname: string | null;
   birth_date: string | null;
   national_insurance_number: string | null;
   parent_guardian_surname: string | null;
-  parent_guardian_first_names: string | null;
+  parent_guardian_firstnames: string | null;
 }
 
 export interface IOpalFinesDefendantAccountResponse {

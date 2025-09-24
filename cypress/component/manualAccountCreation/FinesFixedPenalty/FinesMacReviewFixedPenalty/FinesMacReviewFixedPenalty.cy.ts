@@ -11,7 +11,7 @@ import { FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK } from './mocks/fines_mac_revi
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
@@ -421,7 +421,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
         );
         expect(request.request.body.submitted_by).to.equal(
-          ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id,
+          ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
         );
         expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 
@@ -484,7 +484,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
         FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK.businessUnit.business_unit_id,
       );
       expect(request.request.body.submitted_by).to.equal(
-        ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_user[0].business_unit_user_id,
+        ACCOUNT_SESSION_USER_STATE_MOCK.business_unit_users[0].business_unit_user_id,
       );
       expect(request.request.body.submitted_by_name).to.equal(ACCOUNT_SESSION_USER_STATE_MOCK.name);
 

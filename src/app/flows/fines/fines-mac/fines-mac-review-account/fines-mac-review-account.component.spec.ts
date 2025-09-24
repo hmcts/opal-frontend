@@ -22,7 +22,7 @@ import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { SESSION_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/session-service/mocks';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -111,7 +111,7 @@ function createTestModule(snapshotData?: any) {
   const fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
   const component = fixture.componentInstance;
   const globalStore = TestBed.inject(GlobalStore);
-  globalStore.setUserState(SESSION_USER_STATE_MOCK);
+  globalStore.setUserState(OPAL_USER_STATE_MOCK);
   globalStore.setError({
     error: false,
     message: '',
@@ -390,6 +390,23 @@ describe('FinesMacReviewAccountComponent', () => {
     it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
       spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
       const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
+    it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      // Ensure we do NOT hit the early return branch at the start of navigateBack
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue('Some Other Type' as any);
+
+      // Drive execution into the later else-branch under !isReadOnly
+      component.isReadOnly = false;
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountStatus = 'In Review'; // anything other than 'Rejected'
 
       component.navigateBack();
 

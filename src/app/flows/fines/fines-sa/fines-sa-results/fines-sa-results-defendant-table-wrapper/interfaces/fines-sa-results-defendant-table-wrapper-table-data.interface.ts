@@ -2,6 +2,7 @@ import { IAbstractTableData } from '@hmcts/opal-frontend-common/components/abstr
 import { SortableValuesType } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table/types';
 
 export interface IFinesSaResultsDefendantTableWrapperTableData extends IAbstractTableData<SortableValuesType> {
+  'Account ID': number | null;
   Account: string | null;
   Name: string | null;
   Aliases: string | null;

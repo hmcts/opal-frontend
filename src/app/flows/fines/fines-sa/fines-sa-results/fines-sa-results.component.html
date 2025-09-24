@@ -21,65 +21,69 @@
 
 <ng-template #multipleTypes>
   @if (individualsData.length > 0 || companiesData.length > 0 || minorCreditorsData.length > 0) {
-    <opal-lib-govuk-tabs tabId="resultTypes">
-      <ng-container tab-list-items>
-        @if (individualsData.length > 0) {
-          <li
-            opal-lib-govuk-tabs-list-item
-            tabItemFragment="individuals"
-            tabItemId="tab-individuals"
-            [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
-          >
-            <ng-content [linkText]>Individuals</ng-content>
-          </li>
-        }
-        @if (companiesData.length > 0) {
-          <li
-            opal-lib-govuk-tabs-list-item
-            tabItemFragment="companies"
-            tabItemId="tab-companies"
-            [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
-          >
-            <ng-content [linkText]>Companies</ng-content>
-          </li>
-        }
-        @if (minorCreditorsData.length > 0) {
-          <li
-            opal-lib-govuk-tabs-list-item
-            tabItemFragment="minorCreditors"
-            tabItemId="tab-minor-creditors"
-            [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
-          >
-            <ng-content [linkText]>Minor creditors</ng-content>
-          </li>
-        }
-      </ng-container>
-      <ng-container tab-panels>
-        @switch (finesSaStore.resultsActiveTab()) {
-          @case ('individuals') {
-            @if (individualsData.length > 0) {
-              <opal-lib-govuk-tabs-panel id="individuals">
-                <ng-container *ngTemplateOutlet="individuals"></ng-container
-              ></opal-lib-govuk-tabs-panel>
+    @if (individualsData.length > 100 || companiesData.length > 100 || minorCreditorsData.length > 100) {
+      <ng-container *ngTemplateOutlet="tooManyResults"></ng-container>
+    } @else {
+      <opal-lib-govuk-tabs tabId="resultTypes">
+        <ng-container tab-list-items>
+          @if (individualsData.length > 0) {
+            <li
+              opal-lib-govuk-tabs-list-item
+              tabItemFragment="individuals"
+              tabItemId="tab-individuals"
+              [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
+            >
+              <ng-content [linkText]>Individuals</ng-content>
+            </li>
+          }
+          @if (companiesData.length > 0) {
+            <li
+              opal-lib-govuk-tabs-list-item
+              tabItemFragment="companies"
+              tabItemId="tab-companies"
+              [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
+            >
+              <ng-content [linkText]>Companies</ng-content>
+            </li>
+          }
+          @if (minorCreditorsData.length > 0) {
+            <li
+              opal-lib-govuk-tabs-list-item
+              tabItemFragment="minorCreditors"
+              tabItemId="tab-minor-creditors"
+              [activeTabItemFragment]="finesSaStore.resultsActiveTab()"
+            >
+              <ng-content [linkText]>Minor creditors</ng-content>
+            </li>
+          }
+        </ng-container>
+        <ng-container tab-panels>
+          @switch (finesSaStore.resultsActiveTab()) {
+            @case ('individuals') {
+              @if (individualsData.length > 0) {
+                <opal-lib-govuk-tabs-panel id="individuals">
+                  <ng-container *ngTemplateOutlet="individuals"></ng-container
+                ></opal-lib-govuk-tabs-panel>
+              }
+            }
+            @case ('companies') {
+              @if (companiesData.length > 0) {
+                <opal-lib-govuk-tabs-panel id="companies">
+                  <ng-container *ngTemplateOutlet="companies"></ng-container
+                ></opal-lib-govuk-tabs-panel>
+              }
+            }
+            @case ('minorCreditors') {
+              @if (minorCreditorsData.length > 0) {
+                <opal-lib-govuk-tabs-panel id="minorCreditors">
+                  <ng-container *ngTemplateOutlet="minorCreditors"></ng-container
+                ></opal-lib-govuk-tabs-panel>
+              }
             }
           }
-          @case ('companies') {
-            @if (companiesData.length > 0) {
-              <opal-lib-govuk-tabs-panel id="companies">
-                <ng-container *ngTemplateOutlet="companies"></ng-container
-              ></opal-lib-govuk-tabs-panel>
-            }
-          }
-          @case ('minorCreditors') {
-            @if (minorCreditorsData.length > 0) {
-              <opal-lib-govuk-tabs-panel id="minorCreditors">
-                <ng-container *ngTemplateOutlet="minorCreditors"></ng-container
-              ></opal-lib-govuk-tabs-panel>
-            }
-          }
-        }
-      </ng-container>
-    </opal-lib-govuk-tabs>
+        </ng-container>
+      </opal-lib-govuk-tabs>
+    }
   } @else {
     <ng-container *ngTemplateOutlet="noResults"></ng-container>
   }
@@ -90,7 +94,7 @@
     <app-fines-sa-results-defendant-table-wrapper
       [tableData]="individualsData"
       [existingSortState]="defendantsSort"
-      (accountNumberClicked)="onAccountNumberClick($event)"
+      (accountIdClicked)="onAccountIdClick($event)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
   } @else if (individualsData.length === 0) {
@@ -105,7 +109,7 @@
       [tableData]="companiesData"
       [existingSortState]="defendantsSort"
       [isCompany]="true"
-      (accountNumberClicked)="onAccountNumberClick($event)"
+      (accountIdClicked)="onAccountIdClick($event)"
     >
     </app-fines-sa-results-defendant-table-wrapper>
   } @else if (companiesData.length === 0) {
@@ -115,7 +119,18 @@
   }
 </ng-template>
 <ng-template #minorCreditors>
-  <p>Minor creditors Results</p>
+  @if (minorCreditorsData.length > 0 && minorCreditorsData.length <= 100) {
+    <app-fines-sa-results-minor-creditor-table-wrapper
+      [tableData]="minorCreditorsData"
+      [existingSortState]="minorCreditorsSort"
+      (accountIdClicked)="onAccountIdClick($event)"
+    >
+    </app-fines-sa-results-minor-creditor-table-wrapper>
+  } @else if (minorCreditorsData.length === 0) {
+    <ng-container *ngTemplateOutlet="noResults"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="tooManyResults"></ng-container>
+  }
 </ng-template>
 
 <ng-template #noResults>
