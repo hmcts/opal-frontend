@@ -36,7 +36,7 @@ export class FinesAccPayloadService {
       account_number: headingData.account_number,
       account_id: Number(account_id),
       party_id: headingData.defendant_party_id,
-      party_type: headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
+      party_type: headingData.debtor_type,
       party_name: party_name,
       base_version: Number(headingData.version),
       business_unit_id: headingData.business_unit_summary.business_unit_id,

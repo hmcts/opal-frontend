@@ -70,12 +70,16 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
 
     fixture = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
     component = fixture.componentInstance;
-    component.form = buildForm();
-    // error messages aren’t used by any logic under test; use empty object
+
+    // Provide empty parent FormGroup; subcomponent installs its controls in ngOnInit via detectChanges
+    component.form = new FormGroup({});
+    // Provide required inputs expected by the abstract base
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     component.formControlErrorMessages = {} as any;
+    component.formErrorSummaryMessage = [];
 
-    component.ngOnInit();
+    // Trigger ngOnInit/OnChanges and let the component install/register/subscribe
+    fixture.detectChanges();
   });
 
   it('should not require anything by default', () => {
@@ -83,6 +87,15 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     expect(firstNames.hasValidator(Validators.required)).toBeFalse();
     expect(lastName.hasValidator(Validators.required)).toBeFalse();
     expect(companyName.hasValidator(Validators.required)).toBeFalse();
+  });
+
+  it('should install its controls into the provided FormGroup on init', () => {
+    const names = [
+      'fsa_search_account_minor_creditors_minor_creditor_type',
+      'fsa_search_account_minor_creditors_individual',
+      'fsa_search_account_minor_creditors_company',
+    ];
+    names.forEach((n) => expect(component.form.get(n)).withContext(n).toBeTruthy());
   });
 
   describe('Individual conditional validation', () => {
@@ -133,6 +146,19 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       firstNames.setValue('Alex');
       expect(firstNames.hasValidator(Validators.required)).toBeFalse();
     });
+
+    it('treats non-string FIRST NAMES as present and requires LAST NAME when empty', () => {
+      const { firstNames, lastName } = getControls(component.form);
+      // Force a non-string value to hit the `: true` branch in hasValue
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      firstNames.setValue(0 as any);
+      lastName.setValue('');
+
+      // Subscription will call handleIndividualConditionalValidation
+      lastName.updateValueAndValidity();
+
+      expect(lastName.hasValidator(Validators.required)).toBeTrue();
+    });
   });
 
   describe('Company conditional validation', () => {
@@ -154,10 +180,21 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     it('removes COMPANY NAME requirement when name is provided', () => {
       const { companyName, companyNameExact } = getControls(component.form);
       companyNameExact.setValue(true);
-      companyName.setValue('HM Courts & Tribunals Service');
+      companyName.setValue('HM Courts and Tribunals Service');
       expect(companyName.hasValidator(Validators.required)).toBeFalse();
       companyName.updateValueAndValidity();
       expect(companyName.errors).toBeNull();
+    });
+
+    it('treats non-string COMPANY NAME as present and does NOT require when exact match is true', () => {
+      const { companyName, companyNameExact } = getControls(component.form);
+      // Force a non-string value to hit the `: true` branch in hasValue
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      companyName.setValue(0 as any);
+      companyNameExact.setValue(true);
+      companyName.updateValueAndValidity();
+
+      expect(companyName.hasValidator(Validators.required)).toBeFalse();
     });
   });
 
@@ -209,15 +246,28 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
     });
   });
 
-  // Helper to create a fresh component instance with a custom form shape
+  // Helper to create a fresh component instance with a custom form shape and run detectChanges
   const createComponentWithForm = (form: FormGroup) => {
     const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
-    const cmp = fx.componentInstance;
-    cmp.form = form;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cmp.formControlErrorMessages = {} as any;
-    cmp.ngOnInit();
-    return { fx, cmp };
+    const cmp = fx.componentInstance as any;
+    cmp.form = form;
+    cmp.formControlErrorMessages = {};
+    cmp.formErrorSummaryMessage = [];
+    fx.detectChanges();
+    return { fx, cmp: fx.componentInstance } as { fx: typeof fx; cmp: FinesSaSearchAccountFormMinorCreditorsComponent };
+  };
+
+  // Helper to create a fresh component instance with a custom form shape but DO NOT run detectChanges/ngOnInit
+  const createComponentWithFormNoInit = (form: FormGroup) => {
+    const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cmp = fx.componentInstance as any;
+    cmp.form = form;
+    cmp.formControlErrorMessages = {};
+    cmp.formErrorSummaryMessage = [];
+    // Intentionally DO NOT call detectChanges/ngOnInit
+    return { fx, cmp: fx.componentInstance } as { fx: typeof fx; cmp: FinesSaSearchAccountFormMinorCreditorsComponent };
   };
 
   describe('Guard clauses / missing control coverage', () => {
@@ -309,7 +359,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(true).toBeTrue();
     });
 
-    it('early-returns in handleCompanyConditionalValidation when company controls are missing (no toggleRequired call)', () => {
+    it('early-returns in handleCompanyConditionalValidation when company controls are missing (no setValidatorPresence call)', () => {
       // Build a form missing BOTH company controls to hit areMissingCompanyControls guard
       const badForm = new FormGroup({
         fsa_search_account_minor_creditors_minor_creditor_type: new FormControl<string | null>(null),
@@ -329,7 +379,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
 
       // Spy on the private helper; if the guard triggers, this must NOT run
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'toggleRequired').and.callThrough();
+      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
 
       // Call the private method directly to exercise the guard branch
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -338,7 +388,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
-    it('early-returns in handleIndividualConditionalValidation when type is not individual (no toggleRequired call)', () => {
+    it('early-returns in handleIndividualConditionalValidation when type is not individual (no setValidatorPresence call)', () => {
       const { cmp } = createComponentWithForm(buildForm());
       const typeCtrl = cmp.form.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       // Set an explicit non-individual type
@@ -346,7 +396,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
 
       // Spy on the private helper; should NOT be invoked if early-return triggers
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'toggleRequired').and.callThrough();
+      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
 
       // Invoke the private method directly
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -376,7 +426,7 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       typeCtrl.setValue('individual');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp as any, 'toggleRequired').and.callThrough();
+      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cmp as any).handleIndividualConditionalValidation();
@@ -395,21 +445,15 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
         }),
       });
 
-      // Create via TestBed to satisfy DI, but DO NOT run ngOnInit or detectChanges
-      const fx = TestBed.createComponent(FinesSaSearchAccountFormMinorCreditorsComponent);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const cmp = fx.componentInstance as any;
-      cmp.form = badForm;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cmp.formControlErrorMessages = {} as any;
-
+      const { cmp } = createComponentWithFormNoInit(badForm);
       const typeCtrl = badForm.get('fsa_search_account_minor_creditors_minor_creditor_type') as FormControl;
       typeCtrl.setValue('individual');
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const spy = spyOn<any>(cmp, 'toggleRequired').and.callThrough();
+      const spy = spyOn<any>(cmp as any, 'setValidatorPresence').and.callThrough();
 
-      cmp.handleIndividualConditionalValidation();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (cmp as any).handleIndividualConditionalValidation();
 
       expect(spy).not.toHaveBeenCalled();
     });
@@ -489,5 +533,28 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       expect(company.pristine).toBeTrue();
       expect(company.untouched).toBeTrue();
     });
+  });
+
+  it('should remove its installed controls on destroy when nested in a parent group', () => {
+    // Create a fresh instance so we can control parent/child relationship
+    const child = new FormGroup({});
+    const parent = new FormGroup({ fsa_search_account_minor_creditors_search_criteria: child });
+
+    const { fx, cmp } = createComponentWithFormNoInit(child);
+    // Provide required input
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cmp.formControlErrorMessages = {} as any;
+    // Now trigger ngOnInit via detectChanges to install controls
+    fx.detectChanges();
+
+    // Sanity check: type control present
+    expect(child.get('fsa_search_account_minor_creditors_minor_creditor_type')).toBeTruthy();
+
+    // Destroy and ensure controls are removed from the child group
+    cmp.ngOnDestroy();
+
+    expect(Object.keys(child.controls)).withContext('expected no controls after destroy').toEqual([]);
+    // parent still holds the (now empty) child group reference
+    expect(parent.get('fsa_search_account_minor_creditors_search_criteria')).toBe(child);
   });
 });
