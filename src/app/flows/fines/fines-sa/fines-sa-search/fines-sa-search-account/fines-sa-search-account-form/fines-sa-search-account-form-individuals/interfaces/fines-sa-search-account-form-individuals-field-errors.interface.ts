@@ -1,7 +1,9 @@
-import { IAbstractFormBaseFieldError } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
-import { IFinesSaSearchAccountFieldErrors } from '../../../interfaces/fines-sa-search-account-field-errors.interface';
+import {
+  IAbstractFormBaseFieldError,
+  IAbstractFormBaseFieldErrors,
+} from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
-export interface IFinesSaSearchAccountFormIndividualsFieldErrors extends Partial<IFinesSaSearchAccountFieldErrors> {
+export interface IFinesSaSearchAccountFormIndividualsFieldErrors extends IAbstractFormBaseFieldErrors {
   fsa_search_account_individuals_last_name: IAbstractFormBaseFieldError;
   fsa_search_account_individuals_last_name_exact_match: IAbstractFormBaseFieldError;
   fsa_search_account_individuals_first_names: IAbstractFormBaseFieldError;

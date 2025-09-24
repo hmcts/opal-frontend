@@ -44,12 +44,16 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/o
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
+import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
@@ -493,6 +497,11 @@ export class OpalFines {
       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
+          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+          : false;
         return {
           ...payload,
           version,
@@ -529,26 +538,32 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the defendant accounts related to fines.
+   * Retrieves defendant account information based on the provided search parameters.
    *
-   * @returns An Observable emitting a mock response of type {@link IOpalFinesDefendantAccountResponse}.
+   * @param searchParams - The parameters used to search for defendant accounts.
+   * @returns An Observable that emits the response containing defendant account details.
    */
   public getDefendantAccounts(
     searchParams: IOpalFinesDefendantAccountSearchParams,
   ): Observable<IOpalFinesDefendantAccountResponse> {
-    console.info(searchParams);
-    let mock: IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    if (searchParams.search_type === 'individual') {
-      mock = structuredClone(
-        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
-      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    } else {
-      mock = structuredClone(
-        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK,
-      ) as IOpalFinesDefendantAccountResponse & { _debug_searchParams?: unknown };
-    }
+    return this.http.post<IOpalFinesDefendantAccountResponse>(
+      `${OPAL_FINES_PATHS.searchDefendantAccounts}`,
+      searchParams,
+    );
+  }
 
-    mock._debug_searchParams = searchParams;
-    return of(mock);
+  /**
+   * Retrieves a list of minor creditor accounts based on the provided search parameters.
+   *
+   * @param searchParams - The parameters used to filter and search for minor creditor accounts.
+   * @returns An Observable that emits the response containing the minor creditor accounts.
+   */
+  public getMinorCreditorAccounts(
+    searchParams: IOpalFinesCreditorAccountsSearchParams,
+  ): Observable<IOpalFinesMinorCreditorAccountsResponse> {
+    return this.http.post<IOpalFinesMinorCreditorAccountsResponse>(
+      `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`,
+      searchParams,
+    );
   }
 }
