@@ -396,6 +396,23 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
     });
 
+    it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
+      const handleRouteSpy = spyOn(component, 'handleRoute');
+
+      // Ensure we do NOT hit the early return branch at the start of navigateBack
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue('Some Other Type' as any);
+
+      // Drive execution into the later else-branch under !isReadOnly
+      component.isReadOnly = false;
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountStatus = 'In Review'; // anything other than 'Rejected'
+
+      component.navigateBack();
+
+      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+    });
+
     it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
       const handleRouteSpy = spyOn(component, 'handleRoute').and.stub();
       component.accountStatus = 'Rejected';

@@ -60,9 +60,9 @@
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
       "opal-frontend-session-secret": "FRONTEND_SESSION_SECRET",
       "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET",
-      "azure-ad-client-id": "AzureADClientId",
-      "azure-ad-client-secret": "AzureADClientSecret",
-      "azure-ad-tenant-id": "AzureADTenantId"
+      "AzureADClientId": "AzureADClientId",
+      "AzureADClientSecret": "AzureADClientSecret",
+      "AzureADTenantId": "AzureADTenantId"
     }
   }
 }

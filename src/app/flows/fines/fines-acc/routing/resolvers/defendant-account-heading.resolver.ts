@@ -5,7 +5,6 @@ import { tap } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 
 export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefendantDetailsHeader> = (
   route: ActivatedRouteSnapshot,
@@ -15,7 +14,6 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
   const opalFinesService = inject(OpalFines);
   const accountStore = inject(FinesAccountStore);
   const payloadService = inject(FinesAccPayloadService);
-  const dateService = inject(DateService);
 
   /**
    * Fetches the defendant account heading data, transforms it and passes it to the account store.

@@ -7,7 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/search_and_matches_company_elements';
 import { COMPANY_SEARCH_STATE_MOCK } from './mocks/search_and_matches_company_mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSaCompanyAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-company-accounts.resolver';
+import { finesSaDefendantAccountsResolver } from 'src/app/flows/fines/fines-sa/routing/resolvers/fines-sa-defendant-accounts/fines-sa-defendant-accounts.resolver';
 
 describe('Search Account Component - Company', () => {
   let companySearchMock = structuredClone(COMPANY_SEARCH_STATE_MOCK);
@@ -21,7 +21,7 @@ describe('Search Account Component - Company', () => {
             path: 'fines/search-accounts/results',
             component: FinesSaSearchAccountComponent,
             resolve: {
-              companyAccounts: finesSaCompanyAccountsResolver,
+              companyAccounts: finesSaDefendantAccountsResolver,
             },
             runGuardsAndResolvers: 'always',
           },
@@ -36,6 +36,7 @@ describe('Search Account Component - Company', () => {
           useFactory: () => {
             const store = new FinesSaStore();
             store.setSearchAccount(companySearchMock);
+            store.setActiveTab('companies');
 
             return store;
           },
@@ -196,114 +197,6 @@ describe('Search Account Component - Company', () => {
       cy.get(DOM_ELEMENTS.searchButton).click();
 
       cy.get(DOM_ELEMENTS.companyNameError).should('exist').and('contain', 'Enter company name');
-    },
-  );
-
-  it(
-    'AC1, should send correct API parameters when search is triggered from Companies tab',
-    { tags: ['PO-707'] },
-    () => {
-      companySearchMock.fsa_search_account_business_unit_ids = [1, 2, 3];
-      companySearchMock.fsa_search_account_active_accounts_only = true;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
-        'Tech Solutions';
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name_exact_match = true;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_include_aliases = true;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 =
-        '456 Business Rd';
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code =
-        'EC1A 1BB';
-
-      setupComponent(null);
-
-      cy.window().then((win) => {
-        cy.stub(win.console, 'info').as('consoleLog');
-      });
-
-      cy.get(DOM_ELEMENTS.companyNameInput).should('have.value', 'Tech Solutions');
-      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('be.checked');
-      cy.get(DOM_ELEMENTS.includeAliasCheckbox).should('be.checked');
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '456 Business Rd');
-      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'EC1A 1BB');
-
-      cy.get(DOM_ELEMENTS.searchButton).click();
-
-      cy.get('@consoleLog').should('have.been.calledOnce');
-
-      cy.get('@consoleLog').then((stub: any) => {
-        const apiParams = stub.getCall(0).args[0];
-
-        // AC1a: Verify all required parameters are present and correctly mapped
-
-        expect(apiParams).to.have.property('organisation_name');
-        expect(apiParams.organisation_name).to.equal('Tech Solutions');
-        expect(apiParams).to.have.property('exact_match_organisation_name', true);
-        expect(apiParams).to.have.property('include_aliases', true);
-        expect(apiParams).to.have.property('address_line', '456 Business Rd');
-        expect(apiParams).to.have.property('postcode', 'EC1A 1BB');
-        expect(apiParams).to.have.property('business_unit_ids');
-        expect(apiParams.business_unit_ids).to.deep.equal([1, 2, 3]);
-        expect(apiParams).to.have.property('active_accounts_only', true);
-        expect(apiParams).to.have.property('search_type', 'company');
-        expect(apiParams.surname).to.be.null;
-        expect(apiParams.forename).to.be.null;
-        expect(apiParams.date_of_birth).to.be.null;
-        expect(apiParams.ni_number).to.be.null;
-      });
-    },
-  );
-
-  it(
-    'AC1, should send correct API parameters when search is triggered from Companies tab with minimal fields',
-    { tags: ['PO-707'] },
-    () => {
-      companySearchMock.fsa_search_account_business_unit_ids = [1];
-      companySearchMock.fsa_search_account_active_accounts_only = false;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name =
-        'Tech';
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_company_name_exact_match = false;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_include_aliases = false;
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_address_line_1 = '';
-      companySearchMock.fsa_search_account_companies_search_criteria!.fsa_search_account_companies_post_code = '';
-
-      setupComponent(null);
-
-      cy.window().then((win) => {
-        cy.stub(win.console, 'info').as('consoleLog');
-      });
-
-      cy.get(DOM_ELEMENTS.companyNameInput).should('have.value', 'Tech');
-      cy.get(DOM_ELEMENTS.companyNameExactMatchCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.includeAliasCheckbox).should('not.be.checked');
-      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
-      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', '');
-
-      cy.get(DOM_ELEMENTS.activeAccountsOnlyCheckbox).uncheck().should('not.be.checked');
-
-      cy.get(DOM_ELEMENTS.searchButton).click();
-
-      cy.get('@consoleLog').should('have.been.calledOnce');
-
-      cy.get('@consoleLog').then((stub: any) => {
-        const apiParams = stub.getCall(0).args[0];
-
-        // AC1a: Verify all required parameters are present and correctly mapped
-
-        expect(apiParams).to.have.property('organisation_name');
-        expect(apiParams.organisation_name).to.equal('Tech');
-        expect(apiParams).to.have.property('exact_match_organisation_name', false);
-        expect(apiParams).to.have.property('include_aliases', false);
-        expect(apiParams).to.have.property('address_line', '');
-        expect(apiParams).to.have.property('postcode', '');
-        expect(apiParams).to.have.property('business_unit_ids');
-        expect(apiParams.business_unit_ids).to.deep.equal([1]);
-        expect(apiParams).to.have.property('active_accounts_only', false);
-        expect(apiParams).to.have.property('search_type', 'company');
-        expect(apiParams.surname).to.be.null;
-        expect(apiParams.forename).to.be.null;
-        expect(apiParams.date_of_birth).to.be.null;
-        expect(apiParams.ni_number).to.be.null;
-      });
     },
   );
 });
