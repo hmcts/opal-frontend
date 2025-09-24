@@ -4,7 +4,6 @@
     "dev": "http://localhost:4200",
     "prod": "http://localhost:4000"
   },
-
   "opal-api": {
     "url": "http://localhost:4550",
     "opal-fines-service": "http://localhost:4550",
@@ -48,9 +47,9 @@
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret",
       "app-insights-connection-string": "supersecret",
-      "azure-ad-client-id": "supersecret",
-      "azure-ad-client-secret": "supersecret",
-      "azure-ad-tenant-id": "supersecret"
+      "AzureADClientId": "supersecret",
+      "AzureADClientSecret": "supersecret",
+      "AzureADTenantId": "supersecret"
     }
   },
   "expiry": {

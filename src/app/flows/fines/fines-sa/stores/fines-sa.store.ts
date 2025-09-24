@@ -22,7 +22,7 @@ export const FinesSaStore = signalStore(
     return {
       onDestroy() {
         patchState(store, {
-          searchAccount: {} as IFinesSaSearchAccountState,
+          searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
           activeTab: 'individuals' as FinesSaSearchAccountTab,
           stateChanges: false,
           unsavedChanges: false,
@@ -125,7 +125,7 @@ export const FinesSaStore = signalStore(
     },
     resetSearchAccount: () => {
       patchState(store, {
-        searchAccount: {} as IFinesSaSearchAccountState,
+        searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
       });
     },
     resetStateChangesUnsavedChanges: () => {
@@ -133,7 +133,7 @@ export const FinesSaStore = signalStore(
     },
     resetStore: () =>
       patchState(store, {
-        searchAccount: {} as IFinesSaSearchAccountState,
+        searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
         activeTab: 'individuals' as FinesSaSearchAccountTab,
         stateChanges: false,
         unsavedChanges: false,
