@@ -36,6 +36,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
+import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -299,7 +300,19 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   public navigateToChangeDefendantDetailsPage(event: Event): void {
     event.preventDefault();
-    // Navigate to the change defendant details page
+    let partyType: string;
+
+    if (this.accountData.debtor_type === 'Parent/Guardian') {
+      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
+    } else if (this.accountData.party_details.organisation_flag) {
+      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
+    } else {
+      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
+    }
+
+    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   public navigateToConvertAccountPage(event: Event): void {

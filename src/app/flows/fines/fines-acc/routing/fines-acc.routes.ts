@@ -8,6 +8,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -61,6 +62,21 @@ export const routing: Routes = [
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/:partyType/amend`,
+
+        loadComponent: () =>
+          import('../fines-acc-debtor-add-amend/fines-acc-debtor-add-amend').then((c) => c.FinesAccDebtorAddAmend),
+        canActivate: [routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.debtor,
+        },
+        resolve: {
+          title: TitleResolver
+        },
       },
     ],
   },
