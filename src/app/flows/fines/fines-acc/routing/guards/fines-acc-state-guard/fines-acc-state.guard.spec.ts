@@ -2,7 +2,7 @@ import { TestBed, fakeAsync } from '@angular/core/testing';
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree, ActivatedRouteSnapshot } from '@angular/router';
 import { finesAccStateGuard } from './fines-acc-state.guard';
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
-import { FINES_ACC_ROUTING_PATHS } from '../../constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { runFinesAccEmptyFlowGuardWithContext } from '../helpers/run-fines-acc-empty-flow-guard-with-context';
 
@@ -12,7 +12,7 @@ describe('finesAccStateGuard', () => {
   let mockFinesAccountStore: any;
 
   const testAccountNumber = '123456789';
-  const expectedUrlWithAccount = `${FINES_ROUTING_PATHS.root}/defendant/${testAccountNumber}/${FINES_ACC_ROUTING_PATHS.children.details}`;
+  const expectedUrlWithAccount = `${FINES_ROUTING_PATHS.root}/defendant/${testAccountNumber}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
 
   // Helper function to create a mock ActivatedRouteSnapshot with proper params
   function createMockRoute(params: Record<string, string> = {}): ActivatedRouteSnapshot {

@@ -535,23 +535,11 @@ export class OpalFines {
    *
    * @param payload - The payload containing note details including associated record information,
    *                  note type, note text, and defendant account version for concurrency.
+   * @param version - The version string to be used as the value for the `If-Match` header.
    * @returns An Observable that emits the created note data.
    */
-  public addNote(payload: IOpalFinesAddNotePayload): Observable<IOpalFinesAddNoteResponse> {
-    // return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload);
-
-    // Return payload data with additional response fields for realistic testing
-    const response: IOpalFinesAddNoteResponse = {
-      note_id: Math.floor(Math.random() * 100000) + 1, // Generate random note ID
-      associated_record_type: payload.associated_record_type,
-      associated_record_id: payload.associated_record_id,
-      note_type: payload.note_type,
-      note_text: payload.note_text,
-      created_date: new Date().toISOString(), // Current timestamp
-      created_by: 'test.user@hmcts.net', // Mock user for testing
-    };
-
-    return of(response);
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**

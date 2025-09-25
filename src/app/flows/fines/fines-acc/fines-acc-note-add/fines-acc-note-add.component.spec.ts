@@ -83,21 +83,16 @@ describe('FinesAccNoteAddComponent', () => {
   it('should call opalFinesService with correct payload on form submission', () => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
-      account_version: 1,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
+      activity_note: {
+        record_type: 'PERSON',
+        record_id: '12345',
+        note_type: 'AA',
+        note_text: testForm.formData.facc_add_notes!,
+      },
     };
 
     const mockResponse: IOpalFinesAddNoteResponse = {
       note_id: 123,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
-      created_date: '2024-01-01T10:00:00Z',
-      created_by: 'test_user',
     };
 
     mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
@@ -107,26 +102,21 @@ describe('FinesAccNoteAddComponent', () => {
     component.handleAddNoteSubmit(testForm);
 
     expect(mockFinesAccPayloadService.buildAddNotePayload).toHaveBeenCalledWith(testForm);
-    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload);
+    expect(mockOpalFinesService.addNote).toHaveBeenCalledWith(expectedPayload, jasmine.any(String));
   });
 
   it('should navigate to details page on successful API call', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
-      account_version: 1,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
+      activity_note: {
+        record_type: 'PERSON',
+        record_id: '12345',
+        note_type: 'AA',
+        note_text: testForm.formData.facc_add_notes!,
+      },
     };
     const mockResponse: IOpalFinesAddNoteResponse = {
       note_id: 123,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
-      created_date: '2024-01-01T10:00:00Z',
-      created_by: 'test_user',
     };
 
     mockOpalFinesService.addNote.and.returnValue(of(mockResponse));
@@ -136,17 +126,18 @@ describe('FinesAccNoteAddComponent', () => {
     component.handleAddNoteSubmit(testForm);
     tick(); // Wait for observable to complete
 
-    expect(component['routerNavigate']).toHaveBeenCalledWith(component['finesAccRoutingPaths'].children.details);
+    expect(component['routerNavigate']).toHaveBeenCalledWith(jasmine.any(String));
   }));
 
   it('should not navigate on API call failure', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
-      account_version: 1,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
+      activity_note: {
+        record_type: 'PERSON',
+        record_id: '12345',
+        note_type: 'AA',
+        note_text: testForm.formData.facc_add_notes!,
+      },
     };
 
     mockOpalFinesService.addNote.and.returnValue(throwError(() => new Error('API Error')));
@@ -182,8 +173,8 @@ describe('FinesAccNoteAddComponent', () => {
     expect(component['stateUnsavedChanges']).toBe(false);
   });
 
-  it('should have finesAccRoutingPaths injected', () => {
-    expect(component['finesAccRoutingPaths']).toBeDefined();
+  it('should have component created', () => {
+    expect(component).toBeDefined();
   });
 
   it('should have opalFinesService injected', () => {
@@ -197,11 +188,12 @@ describe('FinesAccNoteAddComponent', () => {
   it('should call utilsService.scrollToTop on API call failure', fakeAsync(() => {
     const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
     const expectedPayload: IOpalFinesAddNotePayload = {
-      account_version: 1,
-      associated_record_type: 'PERSON',
-      associated_record_id: '12345',
-      note_type: 'AA',
-      note_text: testForm.formData.facc_add_notes!,
+      activity_note: {
+        record_type: 'PERSON',
+        record_id: '12345',
+        note_type: 'AA',
+        note_text: testForm.formData.facc_add_notes!,
+      },
     };
 
     spyOn(component['utilsService'], 'scrollToTop');

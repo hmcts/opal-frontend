@@ -26,13 +26,13 @@ export class FinesAccPayloadService {
    * @returns The payload object conforming to the IOpalFinesAddNotePayload interface.
    */
   public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
-    // construct the payload for adding a note
     return {
-      account_version: this.finesAccStore.base_version()!,
-      associated_record_type: this.finesAccStore.party_type()!,
-      associated_record_id: this.finesAccStore.party_id()!,
-      note_type: 'AA',
-      note_text: form.formData.facc_add_notes!,
+      activity_note: {
+        record_type: 'DEFENDANT_ACCOUNTS',
+        record_id: this.finesAccStore.party_id()!,
+        note_text: form.formData.facc_add_notes!,
+        note_type: 'AA',
+      },
     };
   }
 

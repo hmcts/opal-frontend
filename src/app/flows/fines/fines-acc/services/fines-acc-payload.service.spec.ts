@@ -70,11 +70,12 @@ describe('FinesAccPayloadService', () => {
       const result = service.buildAddNotePayload(testForm);
 
       expect(result).toEqual({
-        account_version: 5,
-        associated_record_type: 'PERSON',
-        associated_record_id: '12345',
-        note_type: 'AA',
-        note_text: 'Test note content',
+        activity_note: {
+          record_type: 'DEFENDANT_ACCOUNTS',
+          record_id: '12345',
+          note_type: 'AA',
+          note_text: 'Test note content',
+        },
       });
     });
 
@@ -88,8 +89,6 @@ describe('FinesAccPayloadService', () => {
 
       service.buildAddNotePayload(testForm);
 
-      expect(mockFinesAccountStore.base_version).toHaveBeenCalled();
-      expect(mockFinesAccountStore.party_type).toHaveBeenCalled();
       expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
     });
 
@@ -101,8 +100,8 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.buildAddNotePayload(FINES_ACC_ADD_NOTE_FORM_MOCK);
 
-      expect(result.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
-      expect(result.note_type).toBe('AA');
+      expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
+      expect(result.activity_note.note_type).toBe('AA');
     });
 
     it('should handle null note text from form', () => {
@@ -120,8 +119,8 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.buildAddNotePayload(testForm);
 
-      expect(result.note_text).toBeNull();
-      expect(result.note_type).toBe('AA');
+      expect(result.activity_note.note_text).toBeNull();
+      expect(result.activity_note.note_type).toBe('AA');
     });
   });
 

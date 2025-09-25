@@ -190,8 +190,8 @@ describe('FinesAccNoteAddFormComponent', () => {
     expect(noteControl?.hasError('alphanumericWithHyphensSpacesApostrophesDotPattern')).toBeTruthy();
   });
 
-  it('should have correct routing paths', () => {
-    expect(component['finesAccRoutingPaths']).toBeDefined();
+  it('should have component created', () => {
+    expect(component).toBeDefined();
   });
 
   it('should have finesAccStore injected', () => {

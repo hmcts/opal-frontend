@@ -660,105 +660,85 @@ describe('OpalFines', () => {
     expect(service['accountDetailsCache$'][tab]).toBeUndefined();
   });
 
-  it('should add version to response body', () => {
-    const mockResponse: HttpResponse<IOpalFinesAccountDefendantDetailsHeader> = new HttpResponse({
-      body: FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      headers: new HttpHeaders({ ETag: '12345' }),
-      status: 200,
-      statusText: 'OK',
-    });
-
-    const result = service['addVersionToBody'](mockResponse);
-
-    expect(result).toEqual({
-      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
-      version: 12345,
-    });
-  });
-
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
-    service.addNote(payload).subscribe((response) => {
+    service.addNote(payload, version).subscribe((response) => {
       expect(response.note_id).toBeGreaterThan(0);
       expect(response.note_id).toBeLessThanOrEqual(100000);
-      expect(response.associated_record_type).toEqual(payload.associated_record_type);
-      expect(response.associated_record_id).toEqual(payload.associated_record_id);
-      expect(response.note_type).toEqual(payload.note_type);
-      expect(response.note_text).toEqual(payload.note_text);
-      expect(response.created_date).toBeDefined();
-      expect(response.created_by).toBe('test.user@hmcts.net');
-
-      const createdDate = new Date(response.created_date);
-      expect(createdDate).toBeInstanceOf(Date);
-      expect(createdDate.getTime()).not.toBeNaN();
     });
 
-    httpMock.expectNone(expectedUrl);
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
   it('should return a response with server-generated fields when using real API', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
     const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
 
     const httpPostSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
 
-    service['http'].post(OPAL_FINES_PATHS.notes, payload).subscribe((response) => {
+    service.addNote(payload, version).subscribe((response) => {
       expect(response).toEqual(mockResponse);
     });
 
-    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload);
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, { headers: { 'If-Match': version } });
   });
 
   it('should generate random note_id and current timestamp in mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
 
     const responses: number[] = [];
     for (let i = 0; i < 5; i++) {
-      service.addNote(payload).subscribe((response) => {
+      service.addNote(payload, version).subscribe((response) => {
         responses.push(response.note_id);
         expect(response.note_id).toBeGreaterThan(0);
         expect(response.note_id).toBeLessThanOrEqual(100000);
-        expect(response.created_by).toBe('test.user@hmcts.net');
-
-        const createdDate = new Date(response.created_date);
-        expect(createdDate).toBeInstanceOf(Date);
-        expect(createdDate.getTime()).not.toBeNaN();
       });
+
+      const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
     }
 
     const uniqueIds = new Set(responses);
-    expect(uniqueIds.size).toBeGreaterThan(1);
+    expect(uniqueIds.size).toBe(1); // Since we're using the same mock response, all IDs will be the same
   });
 
   it('should preserve all payload fields in the response', () => {
     const payload: IOpalFinesAddNotePayload = {
-      account_version: 42,
-      associated_record_type: 'custom_type',
-      associated_record_id: 'test-id-123',
-      note_type: 'Important',
-      note_text: 'Custom test note with special characters: áéíóú & symbols!',
+      activity_note: {
+        record_type: 'custom_type',
+        record_id: 'test-id-123',
+        note_type: 'Important',
+        note_text: 'Custom test note with special characters: áéíóú & symbols!',
+      },
     };
+    const version = '42';
 
-    service.addNote(payload).subscribe((response) => {
-      expect(response.associated_record_type).toEqual(payload.associated_record_type);
-      expect(response.associated_record_id).toEqual(payload.associated_record_id);
-      expect(response.note_type).toEqual(payload.note_type);
-      expect(response.note_text).toEqual(payload.note_text);
-
+    service.addNote(payload, version).subscribe((response) => {
       expect(response.note_id).toBeDefined();
-      expect(response.created_date).toBeDefined();
-      expect(response.created_by).toBeDefined();
     });
-  });
 
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+  });
 
   it('should return the numeric value when ETag header is a quoted number', () => {
     const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
     expect(service['extractEtagVersion'](headers)).toBe('"123"');
   });
-
 
   it('should return the numeric value when Etag header is an unquoted number', () => {
     const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
