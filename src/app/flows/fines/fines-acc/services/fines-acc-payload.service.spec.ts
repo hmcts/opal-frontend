@@ -34,6 +34,7 @@ describe('FinesAccPayloadService', () => {
 
   it('should transform account header for store for an individual', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    header.party_details.organisation_flag = false;
     const account_id = 77;
 
     const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
@@ -88,6 +89,7 @@ describe('FinesAccPayloadService', () => {
 
   it('should handle missing surname gracefully', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    header.party_details.organisation_flag = false;
     const account_id = 77;
 
     const result = service.transformAccountHeaderForStore(account_id, header);

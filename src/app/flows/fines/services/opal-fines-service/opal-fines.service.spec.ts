@@ -49,13 +49,13 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mo
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 
-function mockHeaders(getFn: (name: string) => string | null) {
-  return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
-}
-
 describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
+
+  function mockHeaders(getFn: (name: string) => string | null) {
+    return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -408,7 +408,7 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
     service.getDraftAccountById(draftAccountId).subscribe((draftAccount) => {
-      expect(draftAccount).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      expect(draftAccount).toEqual({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT, version: null });
     });
 
     const req = httpMock.expectOne(apiUrl);
@@ -896,5 +896,56 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should return the numeric value when ETag header is a quoted number', () => {
+    const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('"123"');
+  });
+
+  it('should return the numeric value when Etag header is an unquoted number', () => {
+    const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('456');
+  });
+
+  it('should return null if ETag header is not present', () => {
+    const headers = mockHeaders(() => null);
+    expect(service['extractEtagVersion'](headers)).toBeNull();
+  });
+
+  it('should handle ETag header with multiple quotes', () => {
+    const headers = mockHeaders((name) => (name === 'ETag' ? '""789""' : null));
+    expect(service['extractEtagVersion'](headers)).toBe('""789""');
+  });
+
+  it('should prefer ETag over Etag if both are present', () => {
+    const headers = mockHeaders((name) => {
+      if (name === 'ETag') return '"321"';
+      if (name === 'Etag') return '"999"';
+      return null;
+    });
+    expect(service['extractEtagVersion'](headers)).toBe('"321"');
+  });
+
+  it('should return headers object with If-Match when version is a positive number', () => {
+    const result = service['buildIfMatchHeader']('5');
+    expect(result).toEqual({ headers: { 'If-Match': '5' } });
+  });
+
+  it('should return headers object with If-Match when version is zero', () => {
+    const result = service['buildIfMatchHeader']('0');
+    expect(result).toEqual({ headers: { 'If-Match': '0' } });
+  });
+
+  it('should return empty object when version is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = service['buildIfMatchHeader'](undefined as any);
+    expect(result).toEqual({});
+  });
+
+  it('should return empty object when version is null', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = service['buildIfMatchHeader'](null as any);
+    expect(result).toEqual({});
   });
 });
