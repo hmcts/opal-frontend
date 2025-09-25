@@ -111,7 +111,7 @@ export const ADD_COMMENTS_API_RESPONSE_MOCK = {
       old_value: null,
       new_value: 'Test comment added',
       case_reference: null,
-      function_code: 'AE'
+      function_code: 'AE',
     },
     {
       amendment_id: 'AME002',
@@ -124,7 +124,7 @@ export const ADD_COMMENTS_API_RESPONSE_MOCK = {
       old_value: null,
       new_value: 'Free text 1 content',
       case_reference: null,
-      function_code: 'AE'
-    }
-  ]
+      function_code: 'AE',
+    },
+  ],
 };
