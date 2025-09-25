@@ -75,7 +75,7 @@ export const routing: Routes = [
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.debtor,
         },
         resolve: {
-          title: TitleResolver
+          title: TitleResolver,
         },
       },
     ],

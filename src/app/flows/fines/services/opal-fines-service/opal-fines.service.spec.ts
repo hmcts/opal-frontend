@@ -663,7 +663,12 @@ describe('OpalFines', () => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id)
+      .getDefendantAccountDefendantTabData(
+        account_id,
+        business_unit_id,
+        business_unit_user_id,
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id,
+      )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.version;
         expect(response).toEqual(expectedResponse);

@@ -5,9 +5,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
-import {
-  GovukSummaryCardListComponent,
-} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -22,7 +20,7 @@ import { UpperCasePipe } from '@angular/common';
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    FinesAccNotProvidedComponent
+    FinesAccNotProvidedComponent,
   ],
   templateUrl: './fines-acc-defendant-details-defendant-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

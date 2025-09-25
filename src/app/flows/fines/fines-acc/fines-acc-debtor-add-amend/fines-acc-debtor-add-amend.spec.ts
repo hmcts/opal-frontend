@@ -8,9 +8,8 @@ describe('FinesAccDebtorAddAmend', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccDebtorAddAmend]
-    })
-    .compileComponents();
+      imports: [FinesAccDebtorAddAmend],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FinesAccDebtorAddAmend);
     component = fixture.componentInstance;

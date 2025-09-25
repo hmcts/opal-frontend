@@ -147,7 +147,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
               account_id,
               business_unit_id,
               business_unit_user_id,
-              this.accountData.defendant_party_id
+              this.accountData.defendant_party_id,
             ),
           );
           break;
@@ -313,10 +313,5 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
       relativeTo: this.activatedRoute,
     });
-  }
-
-  public navigateToConvertAccountPage(event: Event): void {
-    event.preventDefault();
-    // Navigate to the convert account page
   }
 }
