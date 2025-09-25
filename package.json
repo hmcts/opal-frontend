@@ -138,6 +138,7 @@
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.17.10",
     "@types/jasmine": "^5.1.4",
+    "@types/lodash": "^4.17.20",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.0.0",
     "@types/session-file-store": "^1.2.5",
