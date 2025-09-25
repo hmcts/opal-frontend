@@ -62,6 +62,7 @@ When('I update the last created draft account with status {string}', (status: st
     .its(createdAccounts.length - 1)
     .then((accountId) => {
       // Fetch the current draft account to get required fields
+      cy.log('Updating account ID: ' + accountId);
       cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
         const account = getResp.body;
         const business_unit_id = account.business_unit_id;
@@ -84,9 +85,24 @@ When('I update the last created draft account with status {string}', (status: st
         };
         cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
           expect(response.status).to.eq(200);
+
+          const body = response.body || {};
+          const accNum = body.account_number ?? body.accountNumber;
+          Cypress.env('lastAccountNumber', accNum);
         });
       });
     });
+});
+
+Then('I click the published account link', () => {
+  const num = Cypress.env('lastAccountNumber');
+  expect(num, 'lastAccountNumber').to.be.a('string'); 
+  cy.window().then((win) => {
+    cy.stub(win, 'open').callsFake((url) => {
+      win.location.href = url;
+    });
+  });
+  cy.contains('a.govuk-link', String(num)).click();
 });
 
 afterEach(() => {
