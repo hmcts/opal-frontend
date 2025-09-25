@@ -62,7 +62,3 @@ smoke-output
 runner-results
 cypress/parallel/weights
 multi-reporter-config.json
-multi-reporter-config.json
-
-# Local Config File
-config/local.json
