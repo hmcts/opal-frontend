@@ -54,7 +54,8 @@ export class FinesAccPayloadService {
    * @param finesAccPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  public transformPayload<T extends { [key: string]: unknown }>(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  public transformPayload<T extends { [key: string]: any }>(
     finesAccPayload: T,
     transformItemsConfig: ITransformItem[],
   ): T {
