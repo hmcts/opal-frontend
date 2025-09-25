@@ -7,5 +7,5 @@ export interface IOpalFinesDraftAccountPatchPayload {
   timeline_data: IFinesMacAccountTimelineData[];
   validated_by: string | null;
   validated_by_name: string | null;
-  version: number;
+  version: string;
 }
