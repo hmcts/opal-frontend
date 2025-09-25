@@ -41,5 +41,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
     },
   },
   is_youth: false,
-  debtor_type: 'Defendant',
+  debtor_type: 'Parent/Guardian',
 };
