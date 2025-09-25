@@ -104,5 +104,5 @@ export const MOCK_FINES_DRAFT_STATE_DELETE: IFinesMacAddAccountPayload = {
       reason_text: '',
     },
   ],
-  version: 0,
+  version: '0',
 };
