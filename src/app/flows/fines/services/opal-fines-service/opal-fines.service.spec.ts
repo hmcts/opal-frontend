@@ -43,10 +43,6 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mo
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 
-function mockHeaders(getFn: (name: string) => string | null) {
-  return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
-}
-
 describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
