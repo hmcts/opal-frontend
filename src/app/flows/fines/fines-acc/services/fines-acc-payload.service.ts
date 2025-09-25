@@ -41,6 +41,7 @@ export class FinesAccPayloadService {
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,
+      welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
   }
 }
