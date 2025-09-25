@@ -102,7 +102,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   public age!: number;
   public ageLabel!: string;
   public readonly partyTypes = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES;
-  public showLanguagePreferences: boolean = false; // Will be set based on business unit
+  public showLanguagePreferences: boolean = false;
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
@@ -269,8 +269,6 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    * Sets up the initial debtor add/amend form.
    */
   private initialDebtorAddAmendSetup(): void {
-    console.log('Initial Form Data:', this.initialFormData);
-    console.log('Form Data Structure:', this.initialFormData?.formData);
     this.setupDebtorAddAmendForm();
     this.setupAliasConfiguration();
     const existingAliases = this.initialFormData?.formData?.facc_debtor_add_amend_aliases || [];
