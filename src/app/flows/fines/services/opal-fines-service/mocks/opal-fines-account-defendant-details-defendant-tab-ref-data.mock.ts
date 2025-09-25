@@ -2,7 +2,7 @@ import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '../interfa
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsDefendantTabRefData =
   {
-    version: '0',
+    version: null,
     defendant_account_party: {
       defendant_account_party_type: 'PRIMARY',
       is_debtor: true,
