@@ -192,7 +192,7 @@
       (addComments)="navigateToAddCommentsPage($event)"
       [style]="tabContentStyles"
       (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
-      (convertAccount)="navigateToConvertAccountPage($event)"
+      (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
     ></app-fines-acc-defendant-details-defendant-tab>
   }
   @case ('parent-or-guardian') {
@@ -202,8 +202,8 @@
       [isYouth]="accountData.is_youth"
       (addComments)="navigateToAddCommentsPage($event)"
       [style]="tabContentStyles"
-      (changeParentOrGuardianDetails)="navigateToChangeParentOrGuardianDetailsPage($event)"
-      (removeParentOrGuardianDetails)="navigateToRemoveParentOrGuardianDetailsPage($event)"
+      (changeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
+      (removeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
     ></app-fines-acc-defendant-details-parent-or-guardian-tab>
   }
   @case ('payment-terms') {

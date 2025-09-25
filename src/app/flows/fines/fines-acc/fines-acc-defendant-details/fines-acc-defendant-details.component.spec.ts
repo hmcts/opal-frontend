@@ -21,6 +21,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -185,31 +186,53 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
-  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called', () => {
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a parent/guardian', () => {
     const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Parent/Guardian';
     spyOn(event, 'preventDefault');
     component.navigateToChangeDefendantDetailsPage(event);
     expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
-  it('should navigate to convert account page when navigateToConvertAccountPage is called', () => {
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
     const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Defendant';
+    component.accountData.party_details.organisation_flag = true;
     spyOn(event, 'preventDefault');
-    component.navigateToConvertAccountPage(event);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
-  it('should navigate to remove parent or guardian page when navigateToRemoveParentOrGuardianPage is called', () => {
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
     const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Defendant';
+    component.accountData.party_details.organisation_flag = false;
     spyOn(event, 'preventDefault');
-    component.navigateToRemoveParentOrGuardianDetailsPage(event);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(event.preventDefault).toHaveBeenCalled();
-  });
-
-  it('should navigate to change parent or guardian details page when navigateToChangeParentOrGuardianDetailsPage is called', () => {
-    const event: Event = new Event('click');
-    spyOn(event, 'preventDefault');
-    component.navigateToChangeParentOrGuardianDetailsPage(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 });

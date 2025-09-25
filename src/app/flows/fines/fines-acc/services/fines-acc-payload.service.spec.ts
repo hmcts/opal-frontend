@@ -33,7 +33,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should transform account header for store for an individual', () => {
-    const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     const account_id = 77;
 
     const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
