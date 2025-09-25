@@ -193,7 +193,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * @param serviceCall the service function that retrieves the tab data
    * @returns an observable of the tab data
    */
-  private fetchTabData<T extends { version: number | undefined }>(serviceCall: Observable<T>): Observable<T> {
+  private fetchTabData<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
     return serviceCall.pipe(
       tap((data) => {
         this.compareVersion(data.version);
@@ -208,7 +208,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * If there is a mismatch, it triggers a warning banner
    * @param version the version of the fetched data
    */
-  private compareVersion(version: number | undefined): void {
+  private compareVersion(version: string | null): void {
     if (version !== this.accountStore.base_version()) {
       this.accountStore.setHasVersionMismatch(true);
     }

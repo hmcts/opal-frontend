@@ -179,4 +179,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
       Number(MOCK_FINES_ACCOUNT_STATE.account_id),
     );
   });
+
+  it('should compare versions and if they are different, set hasVersionMismatch to true', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    component['compareVersion']('different-version');
+    expect(component.accountStore.hasVersionMismatch()).toBeTrue();
+  });
 });

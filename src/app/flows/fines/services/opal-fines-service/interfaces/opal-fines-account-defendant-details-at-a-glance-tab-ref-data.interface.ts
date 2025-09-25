@@ -112,7 +112,7 @@ interface IOpalFinesDefendantAccountPaymentTermsSummary {
 }
 
 export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
-  version: number;
+  version: string | null;
   defendant_account_id: string;
   account_number: string;
   debtor_type: string;
