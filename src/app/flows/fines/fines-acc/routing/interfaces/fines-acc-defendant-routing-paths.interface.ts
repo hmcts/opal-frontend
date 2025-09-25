@@ -6,5 +6,6 @@ export interface IFinesAccDefendantRoutingPaths extends IChildRoutingPaths {
     details: string;
     note: string;
     comments: string;
+    debtor: string;
   };
 }
