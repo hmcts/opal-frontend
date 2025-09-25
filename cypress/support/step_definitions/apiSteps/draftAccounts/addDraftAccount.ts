@@ -197,7 +197,9 @@ When('I update the last created draft account with status {string}', (newStatus:
       account_status: newStatus,
       business_unit_id,
       timeline_data:
-        existingTimeline && existingTimeline.length > 0 ? existingTimeline : timeline('opal-test', newStatus),
+        existingTimeline && existingTimeline.length > 0
+          ? existingTimeline.concat(timeline('opal-test', newStatus))
+          : timeline('opal-test', newStatus),
       validated_by,
     };
 
@@ -213,6 +215,7 @@ When('I update the last created draft account with status {string}', (newStatus:
         body: patchBody,
         failOnStatusCode: false,
       })
+      .as('patchRequest')
       .then((patchResp) => {
         expect([200, 204], 'PATCH success').to.include(patchResp.status);
 
