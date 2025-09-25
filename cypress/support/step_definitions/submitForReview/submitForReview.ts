@@ -1,4 +1,4 @@
-import { defineStep} from '@badeball/cypress-cucumber-preprocessor';
+import { defineStep } from '@badeball/cypress-cucumber-preprocessor';
 import { installDraftAccountCleanup, recordCreatedId, readDraftIdFromBody } from '../../../support/draftAccounts';
 
 installDraftAccountCleanup();
