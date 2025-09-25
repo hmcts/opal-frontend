@@ -237,4 +237,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.navigateToChangeDefendantDetailsPage(event);
     expect(event.preventDefault).toHaveBeenCalled();
   });
+
+  it('should compare versions and if they are different, set hasVersionMismatch to true', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    component['compareVersion']('different-version');
+    expect(component.accountStore.hasVersionMismatch()).toBeTrue();
+  });
 });
