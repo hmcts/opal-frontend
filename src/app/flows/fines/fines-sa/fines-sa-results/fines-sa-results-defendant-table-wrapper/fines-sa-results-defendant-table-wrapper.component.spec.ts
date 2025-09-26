@@ -40,10 +40,10 @@ describe('FinesSaResultsDefendantTableWrapperComponent', () => {
   });
 
   it('should emit account number when goToAccount is called', () => {
-    spyOn(component.accountNumberClicked, 'emit');
+    spyOn(component.accountIdClicked, 'emit');
 
-    component.goToAccount('ACC123');
+    component.goToAccount(77);
 
-    expect(component.accountNumberClicked.emit).toHaveBeenCalledWith('ACC123');
+    expect(component.accountIdClicked.emit).toHaveBeenCalledWith(77);
   });
 });

@@ -20,7 +20,7 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK: IOpalFinesDe
     return {
       ...BASE_ACCOUNT,
       account_number: `13000${idx}BU`,
-      defendant_account_id: `${idx}`,
+      defendant_account_id: Number(`${idx}`),
       defendant_surname: `SMITH_${idx}`,
       defendant_firstnames: `John Michael_${idx}`,
       birth_date: `1985-06-${String(idx).padStart(2, '0')}`,
@@ -55,7 +55,7 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK_101: IOpalFin
     return {
       ...BASE_ACCOUNT,
       account_number: `13000${idx}BU`,
-      defendant_account_id: `${idx}`,
+      defendant_account_id: Number(`${idx}`),
       defendant_surname: `SMITH_${idx}`,
       defendant_firstnames: `John Michael_${idx}`,
       birth_date: `1985-06-${String(idx).padStart(2, '0')}`,

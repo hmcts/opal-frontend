@@ -34,6 +34,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_DRAFT_MAX_REJECTED } from '../../constants/fines-draft-max-rejected.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-create-and-manage-tabs',
@@ -183,12 +184,13 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    *
    * @param accountNumber - The account number of the clicked account.
    */
-  public onAccountClick(accountNumber: string): void {
+  public onAccountClick(accountNumber: number): void {
     this['router'].navigate([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
       accountNumber,
-      FINES_ACC_ROUTING_PATHS.children.details,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
   }
 

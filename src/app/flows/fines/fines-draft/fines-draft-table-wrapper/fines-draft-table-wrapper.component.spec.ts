@@ -55,9 +55,9 @@ describe('FinesDraftTableWrapperComponent', () => {
   it('should emit accountClicked event with the correct account number when onAccountClick is called', () => {
     spyOn(component.accountClicked, 'emit');
 
-    const testAccountNumber = 'ACC123';
-    component.onAccountClick(testAccountNumber);
+    const testAccountId = 77;
+    component.onAccountClick(testAccountId);
 
-    expect(component.accountClicked.emit).toHaveBeenCalledWith(testAccountNumber);
+    expect(component.accountClicked.emit).toHaveBeenCalledWith(testAccountId);
   });
 });
