@@ -54,14 +54,14 @@ export class FinesSaResultsDefendantTableWrapperComponent extends AbstractSortab
   public override itemsPerPageSignal = signal(25);
   public readonly finesDefaultValues = FINES_DEFAULT_VALUES;
 
-  @Output() public accountNumberClicked = new EventEmitter<string>();
+  @Output() public accountIdClicked = new EventEmitter<number>();
 
   /**
-   * Emits an event when an account number is clicked, passing the selected account number.
+   * Emits an event when an account ID is clicked, passing the selected account ID.
    *
-   * @param accountNumber - The account number that was clicked.
+   * @param accountID - The account ID that was clicked.
    */
-  public goToAccount(accountNumber: string): void {
-    this.accountNumberClicked.emit(accountNumber);
+  public goToAccount(accountID: number): void {
+    this.accountIdClicked.emit(accountID);
   }
 }

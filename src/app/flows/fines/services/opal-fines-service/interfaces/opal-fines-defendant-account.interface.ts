@@ -6,7 +6,7 @@ export interface IOpalFinesDefendantAccountAlias {
 }
 
 export interface IOpalFinesDefendantAccount {
-  defendant_account_id: string | null;
+  defendant_account_id: number | null;
   account_number: string | null;
   organisation_flag: boolean | null;
   aliases: IOpalFinesDefendantAccountAlias[] | null;
