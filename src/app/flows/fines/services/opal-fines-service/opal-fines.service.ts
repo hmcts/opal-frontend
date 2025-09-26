@@ -472,11 +472,7 @@ export class OpalFines {
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlance(
-    account_id: number | null,
-    business_unit_id: string | null,
-    business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+  public getDefendantAccountAtAGlance(): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {
       // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountid}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http
