@@ -6,8 +6,8 @@ import {
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-account-comments-and-notes',
@@ -16,7 +16,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
-    FinesMacReviewAccountNotProvidedComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-account-comments-and-notes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,8 +36,25 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from './interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
+import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 
@@ -45,7 +62,9 @@ import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-
   providedIn: 'root',
 })
 export class OpalFines {
+  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly http = inject(HttpClient);
+  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
@@ -54,6 +73,9 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
+    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
+  );
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -345,6 +367,15 @@ export class OpalFines {
   }
 
   /**
+   * Clears the cache of account details by resetting the `accountDetailsCache$` property to an empty object.
+   * This method is typically used to remove all cached account details data, ensuring that subsequent operations
+   * fetch fresh data or start with a clean state.
+   */
+  public clearAccountDetailsCache(): void {
+    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
+  }
+
+  /**
    * Retrieves a draft account summary by its ID.
    *
    * @param draftAccountId - The ID of the draft account to retrieve.
@@ -446,6 +477,168 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountAtAGlanceTabData(): Observable<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData> {
+    if (!this.accountDetailsCache$['at-a-glance']) {
+      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      // this.accountDetailsCache$[tab] = this.http
+      //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
+      //   .pipe(
+      //     map((response: HttpResponse<IOpalFinesAccountDetailsAtAGlanceTabRefData>) => {
+      //       const payload = response.body as IOpalFinesAccountDetailsAtAGlanceTabRefData;
+      //       const version = this.extractEtagVersion(response.headers);
+      //       return {
+      //         ...payload,
+      //         version,
+      //       };
+      //     }),
+      //     shareReplay(1)
+      //   );
+      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    }
+
+    return this.accountDetailsCache$['at-a-glance'];
+  }
+
+  /**
+   * Retrieves the defendant account details defendant tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountDefendantTabData(
+    account_id: number | null,
+    business_unit_id: string | null,
+    business_unit_user_id: string | null,
+    party_account_id: string | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
+    if (!this.accountDetailsCache$['defendant']) {
+      // TODO: Pass through party_id
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      this.accountDetailsCache$['defendant'] = this.http
+        .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsDefendantTabRefData>) => {
+            let payload = response.body as IOpalFinesAccountDefendantDetailsDefendantTabRefData;
+            const version = this.extractEtagVersion(response.headers);
+            // Transform the payload, format the dates and times to the correct format
+            payload = this.payloadService.transformPayload(payload, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.accountDetailsCache$['defendant'];
+  }
+
+  /**
+   * Retrieves the defendant account details enforcement tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountEnforcementTabData(): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
+    if (!this.accountDetailsCache$['enforcement']) {
+      this.accountDetailsCache$['enforcement'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    }
+    return this.accountDetailsCache$['enforcement'];
+  }
+
+  /**
+   * Retrieves the defendant account details impositions tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountImpositionsTabData(): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
+    if (!this.accountDetailsCache$['impositions']) {
+      this.accountDetailsCache$['impositions'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
+    }
+    return this.accountDetailsCache$['impositions'];
+  }
+
+  /**
+   * Retrieves the defendant account details history and notes tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountHistoryAndNotesTabData(): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
+    if (!this.accountDetailsCache$['history-and-notes']) {
+      this.accountDetailsCache$['history-and-notes'] = of(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
+      );
+    }
+    return this.accountDetailsCache$['history-and-notes'];
+  }
+
+  /**
+   * Retrieves the defendant account details payment terms tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountPaymentTermsTabData(): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {
+    if (!this.accountDetailsCache$['payment-terms']) {
+      this.accountDetailsCache$['payment-terms'] = of(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK,
+      );
+    }
+    return this.accountDetailsCache$['payment-terms'];
+  }
+
+  /**
+   * Retrieves the defendant account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
+   *
+   * @param accountId - The unique identifier of the defendant account.
+   * @returns An Observable that emits the defendant account header data.
+   */
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
+          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+          : false;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
   }
 
   /**
