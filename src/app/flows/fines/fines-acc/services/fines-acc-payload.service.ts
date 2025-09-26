@@ -3,6 +3,9 @@ import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-paylo
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
+import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
+import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +45,48 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+    };
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData into IFinesAccAddCommentsFormState for the Comments Add form
+   *
+   * @param atAGlanceData - The at-a-glance data from the API.
+   * @returns The transformed form state object for comments add form.
+   */
+  public transformAtAGlanceDataToCommentsForm(
+    atAGlanceData: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData,
+  ): IFinesAccAddCommentsFormState {
+    const { comment_and_notes } = atAGlanceData;
+
+    return {
+      facc_add_comment: comment_and_notes?.account_comment || '',
+      facc_add_free_text_1: comment_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: comment_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: comment_and_notes?.free_text_note_3 || '',
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccAddCommentsFormState and account version into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the comment and note data
+   * @param version - The current version of the defendant account for concurrency control
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildCommentsFormPayload(
+    formState: IFinesAccAddCommentsFormState,
+    version: number,
+  ): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      version,
+      account_comments_notes: {
+        account_comment: formState.facc_add_comment || null,
+        account_free_note_1: formState.facc_add_free_text_1 || null,
+        account_free_note_2: formState.facc_add_free_text_2 || null,
+        account_free_note_3: formState.facc_add_free_text_3 || null,
+      },
     };
   }
 }

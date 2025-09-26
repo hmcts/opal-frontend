@@ -44,6 +44,14 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
+import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
+import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import {
+  IOpalFinesUpdateDefendantAccountPayload,
+  IOpalFinesUpdateDefendantAccountResponse,
+} from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from './interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
@@ -646,5 +654,35 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`,
       searchParams,
     );
+  }
+
+  /**
+   * Updates a defendant account with new account notes and comments.
+   * Currently returns a mock response since the API is not yet developed.
+   *
+   * @param accountId - The unique identifier of the defendant account to update.
+   * @param payload - The payload containing the updated account notes and version for concurrency control.
+   * @returns An Observable that emits the updated defendant account response.
+   */
+  public patchDefendantAccount(
+    accountId: number,
+    payload: IOpalFinesUpdateDefendantAccountPayload,
+  ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
+    // TODO: Replace with actual HTTP call when API is implemented
+    // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
+    // return this.http
+    //   .patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { observe: 'response' })
+    //   .pipe(map((response) => this.addVersionToBody(response)));
+
+    // Mock response for development purposes
+    const mockResponse: IOpalFinesUpdateDefendantAccountResponse = {
+      version: payload.version + 1, // Increment version to simulate successful update
+      defendant_account_id: accountId,
+      message: 'Account comments notes updated successfully',
+    };
+
+    console.info('Mock updateDefendantAccount called with:', { accountId, payload });
+
+    return of(mockResponse);
   }
 }
