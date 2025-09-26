@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FINES_DEFAULT_VALUES } from '../../constants/fines-default-values.constant';
 
 @Component({
-  selector: 'app-fines-acc-not-provided',
+  selector: 'app-fines-not-provided',
   imports: [],
-  templateUrl: './fines-acc-not-provided.component.html',
+  templateUrl: './fines-not-provided.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccNotProvidedComponent {
+export class FinesNotProvidedComponent {
   public readonly defaultValues = FINES_DEFAULT_VALUES;
 }
