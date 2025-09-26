@@ -26,14 +26,11 @@ import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/
 import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 // Pipes & Directives
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
@@ -46,7 +43,6 @@ import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from '@services/fines/opa
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
-    GovukBackLinkComponent,
     CustomSummaryMetricBarComponent,
     CustomSummaryMetricBarItemComponent,
     CustomSummaryMetricBarItemLabelComponent,
@@ -130,15 +126,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
       relativeTo: this.activatedRoute,
     });
-  }
-
-  /**
-   * Navigates back to the account search results page.
-   */
-  public navigateBack(): void {
-    this['router'].navigate([
-      `/${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`,
-    ]);
   }
 
   public ngOnInit(): void {
