@@ -1,234 +1,131 @@
 import { mount } from 'cypress/angular';
-import { FinesMacAccountCommentsNotesComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-comments-notes/fines-mac-account-comments-notes.component';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { DOM_ELEMENTS } from './constants/fines-mac-account-notes-and-comments-elements';
-import { IFinesMacState } from 'src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
-import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_AY_mandatory_completed_mock';
-import { FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_AY_mandatory_missing_mock';
-import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_PG_mandatory_completed_mock';
-import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_completed_mock';
-import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_missing_mock';
-import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_PG_mandatory_missing_mock';
-import { FinesAccNoteAddFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccNoteAddComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add.component';
-import { IFinesAccAddNoteForm } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
-import { FINES_ACC_ADD_NOTE_FORM_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
+import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
+import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import { IFinesAccountState } from 'src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
 
 describe('FinesAccNoteAddFormComponent', () => {
-  const setupComponent = (formSubmit: any, defendantTypeMock: string = '', finesMacStateMock: IFinesAccAddNoteForm) => {
+  let mockFinesAccountStore: IFinesAccountState = {
+    party_type: 'PERSON',
+    party_id: '12345',
+    account_number: '123456789A',
+    party_name: 'Mr John, Peter DOE',
+    base_version: '1',
+    account_id: 12345,
+    business_unit_id: '77',
+    business_unit_user_id: 'test.user',
+  };
+
+  const setupComponent = (formSubmit: any) => {
     mount(FinesAccNoteAddComponent, {
       providers: [
-        {
-          provide: OpalFines,
-          useFactory: () => {
-            const store = new FinesMacStore();
-            store.setFinesMacStore(finesMacStateMock);
-            return store;
-          },
-        },
+        provideHttpClient(),
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('details'),
+          },
+        },
+        {
+          provide: OpalFines,
+        },
+        {
+          provide: FinesAccPayloadService,
+        },
+        {
+          provide: FinesAccountStore,
+          useFactory: () => {
+            const store = new FinesAccountStore();
+            store.setAccountState(mockFinesAccountStore);
+            return store;
           },
         },
       ],
       componentProperties: {
-        handleAccountCommentsNoteSubmit: formSubmit,
-        defendantType: defendantTypeMock,
+        handleAddNoteSubmit: formSubmit,
       },
     });
   };
 
   it('should render the component', () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
+    setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.app).should('exist');
+    cy.get(DOM_ELEMENTS.addNoteApp).should('exist');
   });
 
-  it('(AC.1) should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-469'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
+  it('(AC.2) should load all elements on the screen correctly', { tags: ['@PO-771'] }, () => {
+    setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Account comments and notes');
-    cy.get(DOM_ELEMENTS.commentLabel).should('contain', 'Add comment');
-    cy.get(DOM_ELEMENTS.commentHint).should(
-      'contain',
-      'For example, a warning, which will appear on the account summary',
-    );
-    cy.get(DOM_ELEMENTS.commentInput).should('exist');
-    cy.get(DOM_ELEMENTS.noteLabel).should('contain', 'Add account notes');
-    cy.get(DOM_ELEMENTS.noteHint).should(
-      'contain',
-      'You can view notes in account history after the account is published',
-    );
-    cy.get(DOM_ELEMENTS.noteInput).should('exist');
-
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Return to account details');
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add account note');
+    cy.get(DOM_ELEMENTS.addAccountNoteLabel).should('contain', '123456789A - Mr John, Peter DOE');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('exist');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
+    cy.get(DOM_ELEMENTS.saveNoteButton).should('contain', 'Save note');
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('(AC.2) should have character limits for account comments', { tags: ['@PO-272', '@PO-469'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
+  it('(AC2a,2b) should have character limits for account notes', { tags: ['@PO-771'] }, () => {
+    setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.commentInput).should('have.attr', 'maxlength', '30');
-    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(30), { delay: 0 });
-    cy.get(DOM_ELEMENTS.commentInput).should('have.value', 'a'.repeat(30));
-    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 0 characters remaining');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1000), { delay: 0 });
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
+    cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
 
-    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(31), { delay: 0 });
-    cy.get(DOM_ELEMENTS.commentInput).should('have.value', 'a'.repeat(30));
-    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 0 characters remaining');
-
-    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(29), { delay: 0 });
-    cy.get(DOM_ELEMENTS.commentInput).should('have.value', 'a'.repeat(29));
-    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 1 character remaining');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(10));
+    cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 990 characters remaining');
   });
 
-  it('(AC.3) should have character limits for account notes', { tags: ['@PO-272', '@PO-469'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
+  //Note: For AC3a, AC3ai, AC3aii the maximum character limit is 1000. So, entering 1000 characters should show 0 characters remaining.more than 1000 characters doesn't allow to type.
 
-    cy.get(DOM_ELEMENTS.noteInput).should('have.attr', 'maxlength', '1000');
-    cy.get(DOM_ELEMENTS.noteInput).clear().type('a'.repeat(1000), { delay: 0 });
-    cy.get(DOM_ELEMENTS.noteInput).should('have.value', 'a'.repeat(1000));
-    cy.get(DOM_ELEMENTS.noteCharHint).should('contain', 'You have 0 characters remaining');
-
-    cy.get(DOM_ELEMENTS.noteInput).clear().type('a'.repeat(1001), { delay: 0 });
-    cy.get(DOM_ELEMENTS.noteInput).should('have.value', 'a'.repeat(1000));
-    cy.get(DOM_ELEMENTS.noteCharHint).should('contain', 'You have 0 characters remaining');
-
-    cy.get(DOM_ELEMENTS.noteInput).clear().type('a'.repeat(999), { delay: 0 });
-    cy.get(DOM_ELEMENTS.noteInput).should('have.value', 'a'.repeat(999));
-    cy.get(DOM_ELEMENTS.noteCharHint).should('contain', 'You have 1 character remaining');
+  it('(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit', { tags: ['@PO-771'] }, () => {
+    setupComponent(null);
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1001), { delay: 0 });
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
+    cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
+    cy.get(DOM_ELEMENTS.saveNoteButton).click();
   });
 
-  it('(AC.1) should allow users to fill in data and submit with no errors', { tags: ['@PO-272', '@PO-469'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+  it(
+    '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
+    { tags: ['@PO-771'] },
+    () => {
+      setupComponent(null);
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('Test @#$%^&*()');
+      cy.get(DOM_ELEMENTS.saveNoteButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'contain',
+        'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      );
+      cy.get(DOM_ELEMENTS.errorMessage)
+        .find('a')
+        .should(
+          'contain',
+          'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        );
+    },
+  );
 
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
+  it('(AC.3c, 3ci, 3cii)click submit without entering data shows an error', { tags: ['@PO-771'] }, () => {
+    setupComponent(null);
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear();
+    cy.get(DOM_ELEMENTS.saveNoteButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Add account note or click cancel to return');
+    cy.get(DOM_ELEMENTS.errorMessage).find('a').should('contain', 'Add account note or click cancel to return');
+  });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-    cy.get('.errorSummary').should('not.exist');
+  it('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: ['@PO-771'] }, () => {
+    const formSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(formSubmit);
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
+    cy.get(DOM_ELEMENTS.saveNoteButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it('(AC.1) should allow users to submit without entering data', { tags: ['@PO-272', '@PO-469'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly', FINES_ACC_ADD_NOTE_FORM_MOCK);
-
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-    cy.get('.errorSummary').should('not.exist');
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Adult or youth only',
-    { tags: ['@PO-272', '@PO-469'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian',
-    { tags: ['@PO-344', '@PO-499'] },
-    () => {
-      setupComponent(null, 'pgToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Company',
-    { tags: ['@PO-345', '@PO-500'] },
-    () => {
-      setupComponent(null, 'company', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Adult or youth only',
-    { tags: ['@PO-272', '@PO-469'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Parent or guardian',
-    { tags: ['@PO-272', '@PO-469'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-  it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Company',
-    { tags: ['@PO-272', '@PO-469'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK);
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-
-      cy.get(DOM_ELEMENTS.submitButton).should('exist');
-      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('not.exist');
-      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
-    },
-  );
-
-  it('(AC.1) should update character count hint for account comments', { tags: ['@PO-545', '@PO-773'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
-    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(1), { delay: 0 });
-    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 29 characters remaining');
-
-    cy.get(DOM_ELEMENTS.commentInput).clear().type('a'.repeat(10), { delay: 0 });
-    cy.get(DOM_ELEMENTS.commentCharHint).should('contain', 'You have 20 characters remaining');
-  });
-  it('(AC.1) should update character count hint for account notes', { tags: ['@PO-545', '@PO-773'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
-    cy.get(DOM_ELEMENTS.noteInput).clear().type('a'.repeat(1), { delay: 0 });
-    cy.get(DOM_ELEMENTS.noteCharHint).should('contain', 'You have 999 characters remaining');
-
-    cy.get(DOM_ELEMENTS.noteInput).clear().type('a'.repeat(100), { delay: 0 });
-    cy.get(DOM_ELEMENTS.noteCharHint).should('contain', 'You have 900 characters remaining');
   });
 });
