@@ -2769,15 +2769,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/messages@npm:^28.0.0":
-  version: 28.1.0
-  resolution: "@cucumber/messages@npm:28.1.0"
+"@cucumber/messages@npm:^29.0.0":
+  version: 29.0.1
+  resolution: "@cucumber/messages@npm:29.0.1"
   dependencies:
-    "@types/uuid": "npm:10.0.0"
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-    uuid: "npm:11.1.0"
-  checksum: 10/563620f57e4da9c6680b4bc0d37a3e97624117ca52eea3f2be7c1fccb54c0825b94c541285437de33715b0c62a32702d147b21a72b20065aea6e3a23e7df396d
+  checksum: 10/b8e10c4bb5adb6109cdae3034fc38656a89328a455b00894a24de70f2f1491bb00ce6eba6305e0e3ff6e3d3e3ec0142799a0b97ada4eb5b9cb4d4bdbb868a85f
   languageName: node
   linkType: hard
 
@@ -5544,13 +5542,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/b4b5381122465d80ea8b158537c00bc82317222d3fb31fd7229ff25b31fa89134abfbab969118da55622236bf3d8fee75759f3959908b5688991f492008f29bc
-  languageName: node
-  linkType: hard
-
-"@types/uuid@npm:10.0.0":
-  version: 10.0.0
-  resolution: "@types/uuid@npm:10.0.0"
-  checksum: 10/e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
@@ -17093,15 +17084,6 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
-  languageName: node
-  linkType: hard
-
-"uuid@npm:11.1.0":
-  version: 11.1.0
-  resolution: "uuid@npm:11.1.0"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/d2da43b49b154d154574891ced66d0c83fc70caaad87e043400cf644423b067542d6f3eb641b7c819224a7cd3b4c2f21906acbedd6ec9c6a05887aa9115a9cf5
   languageName: node
   linkType: hard
 
