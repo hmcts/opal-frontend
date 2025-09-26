@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesAccDebtorAddAmend } from './fines-acc-debtor-add-amend';
+import { FinesAccDebtorAddAmend } from './fines-acc-debtor-add-amend.component';
 
 describe('FinesAccDebtorAddAmend', () => {
   let component: FinesAccDebtorAddAmend;
