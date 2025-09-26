@@ -26,14 +26,11 @@ import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/
 import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/moj/moj-button-menu';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 // Pipes & Directives
 import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
@@ -61,7 +58,6 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
     FinesAccDefendantDetailsDefendantTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
-    GovukBackLinkComponent,
     CustomSummaryMetricBarComponent,
     CustomSummaryMetricBarItemComponent,
     CustomSummaryMetricBarItemLabelComponent,
@@ -133,13 +129,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlanceTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
-          );
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlanceTabData());
           break;
         case 'defendant':
           this.tabsData[tab] = this.fetchTabData(
@@ -152,40 +142,16 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'payment-terms':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountPaymentTermsTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
-          );
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
           break;
         case 'enforcement':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountEnforcementTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
-          );
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
           break;
         case 'impositions':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountImpositionsTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
-          );
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());
           break;
         case 'history-and-notes':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
-          );
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountHistoryAndNotesTabData());
           break;
       }
     });
@@ -275,15 +241,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.accountData = res;
         this.refreshFragment$.next(this.activeTab);
       });
-  }
-
-  /**
-   * Navigates back to the account search results page.
-   */
-  public navigateBack(): void {
-    this['router'].navigate([
-      `/${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`,
-    ]);
   }
 
   public ngOnInit(): void {
