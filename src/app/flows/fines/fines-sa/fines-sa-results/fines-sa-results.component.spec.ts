@@ -107,7 +107,7 @@ describe('FinesSaResultsComponent', () => {
     router.serializeUrl.and.returnValue(mockUrl);
 
     spyOn(window, 'open');
-    component.onAccountNumberClick('ACC123');
+    component.onAccountIdClick(1);
 
     expect(router.serializeUrl).toHaveBeenCalled();
     expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank');
@@ -267,7 +267,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC123',
           defendant_title: null,
@@ -324,7 +324,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC999',
           organisation_name: 'Acme Corp',
@@ -368,10 +368,10 @@ describe('FinesSaResultsComponent', () => {
       creditor_accounts: [
         {
           organisation: false,
-          creditor_account_id: '1',
+          creditor_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC123',
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           defendant: {
             firstnames: 'John',
             surname: 'Smith',
@@ -409,10 +409,10 @@ describe('FinesSaResultsComponent', () => {
       creditor_accounts: [
         {
           organisation: true,
-          creditor_account_id: '1',
+          creditor_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC123',
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           defendant: {
             firstnames: null,
             surname: null,
@@ -459,10 +459,10 @@ describe('FinesSaResultsComponent', () => {
       creditor_accounts: [
         {
           organisation: false,
-          creditor_account_id: 'C1',
+          creditor_account_id: 1,
           business_unit_id: 'BU1',
           account_number: 'ACC-SUR',
-          defendant_account_id: 'D1',
+          defendant_account_id: 1,
           defendant: { firstnames: null, surname: 'Solo', organisation_name: null },
           organisation_name: null,
           firstnames: null,
@@ -486,10 +486,10 @@ describe('FinesSaResultsComponent', () => {
       creditor_accounts: [
         {
           organisation: false,
-          creditor_account_id: 'C2',
+          creditor_account_id: 2,
           business_unit_id: 'BU1',
           account_number: 'ACC-FN',
-          defendant_account_id: 'D2',
+          defendant_account_id: 2,
           defendant: { firstnames: 'Mono', surname: null, organisation_name: null },
           organisation_name: null,
           firstnames: 'Mono',
@@ -513,10 +513,10 @@ describe('FinesSaResultsComponent', () => {
       creditor_accounts: [
         {
           organisation: false,
-          creditor_account_id: 'C3',
+          creditor_account_id: 3,
           business_unit_id: 'BU1',
           account_number: 'ACC-NULL',
-          defendant_account_id: 'D3',
+          defendant_account_id: 3,
           defendant: { firstnames: null, surname: null, organisation_name: null },
           organisation_name: null,
           firstnames: null,
@@ -540,7 +540,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '1',
+          defendant_account_id: 1,
           business_unit_id: 'BU001',
           account_number: 'ACC-PGS',
           defendant_title: null,
@@ -573,7 +573,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '2',
+          defendant_account_id: 2,
           business_unit_id: 'BU001',
           account_number: 'ACC-PGF',
           defendant_title: null,
@@ -606,7 +606,7 @@ describe('FinesSaResultsComponent', () => {
       defendant_accounts: [
         {
           organisation_flag: false,
-          defendant_account_id: '3',
+          defendant_account_id: 3,
           business_unit_id: 'BU001',
           account_number: 'ACC-PGN',
           defendant_title: null,

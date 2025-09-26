@@ -1,0 +1,271 @@
+@if (tabData) {
+  <div class="govuk-grid-column-full">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="style.heading">Defendant</h2>
+        <hr [class]="style.hr" />
+
+        @if (
+          tabData.language_preferences?.document_language?.language_code === languages.CY ||
+          tabData.language_preferences?.hearing_language?.language_code === languages.CY
+        ) {
+          <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-!-margin-bottom-2'" tagId="enforcement_status">{{
+            languages.CY
+          }}</opal-lib-govuk-tag>
+        }
+
+        @if (tabData.party_details.organisation_flag) {
+          <h3 [class]="style.key">Company Name</h3>
+          <p [class]="style.value">
+            {{ tabData.party_details.organisation_details?.organisation_name }}
+          </p>
+
+          @if (tabData.party_details.organisation_details?.organisation_aliases) {
+            <h3 [class]="style.key">Aliases</h3>
+            <p [class]="style.value">
+              @for (alias of tabData.party_details.organisation_details?.organisation_aliases; track alias) {
+                {{ alias.organisation_name }}<br />
+              }
+            </p>
+          }
+        } @else {
+          <h3 [class]="style.key">Name</h3>
+          <p [class]="style.value">
+            {{ tabData.party_details.individual_details?.title }}
+            {{ tabData.party_details.individual_details?.forenames }}
+            {{ tabData.party_details.individual_details?.surname | uppercase }}
+          </p>
+
+          @if (tabData.party_details.individual_details?.individual_aliases) {
+            <h3 [class]="style.key">Aliases</h3>
+            <p [class]="style.value">
+              @for (alias of tabData.party_details.individual_details?.individual_aliases; track alias) {
+                {{ alias.alias_forenames }} {{ alias.alias_surname | uppercase }}<br />
+              }
+            </p>
+          }
+
+          @if (tabData.party_details.individual_details && tabData.party_details.individual_details.date_of_birth) {
+            <h3 [class]="style.key">Date of birth</h3>
+            <p [class]="style.value">
+              {{
+                tabData.party_details.individual_details.date_of_birth !== null
+                  ? dateService.getFromFormatToFormat(
+                      tabData.party_details.individual_details.date_of_birth,
+                      'dd/MM/yyyy',
+                      'dd MMMM yyyy'
+                    )
+                  : '&mdash;'
+              }}
+            </p>
+          }
+        }
+
+        <h3 [class]="style.key">Address</h3>
+        <p [class]="style.value">
+          {{ tabData.address.address_line_1 }}
+          @if (tabData.address.address_line_2) {
+            <br />
+            {{ tabData.address.address_line_2 }}
+          }
+          @if (tabData.address.address_line_3) {
+            <br />
+            {{ tabData.address.address_line_3 }}
+          }
+          @if (tabData.address.address_line_4) {
+            <br />
+            {{ tabData.address.address_line_4 }}
+          }
+          @if (tabData.address.address_line_5) {
+            <br />
+            {{ tabData.address.address_line_5 }}
+          }
+          <br />
+          {{ tabData.address.post_code | uppercase }}
+        </p>
+
+        @if (!tabData.party_details.organisation_flag) {
+          <h3 [class]="style.key">National Insurance Number</h3>
+          <p [class]="style.value">
+            {{
+              tabData.party_details.individual_details?.national_insurance_number
+                ? (tabData.party_details.individual_details?.national_insurance_number | uppercase)
+                : '&mdash;'
+            }}
+          </p>
+        }
+
+        @if (
+          tabData.language_preferences?.document_language?.language_code === languages.CY ||
+          tabData.language_preferences?.hearing_language?.language_code === languages.CY
+        ) {
+          <h2 [class]="style.heading">Language preferences</h2>
+          <hr [class]="style.hr" />
+          <h3 [class]="style.key">Document language</h3>
+          <p [class]="style.value">{{ tabData.language_preferences?.document_language?.language_display_name }}</p>
+          <h3 [class]="style.key">Court hearing language</h3>
+          <p [class]="style.value">{{ tabData.language_preferences?.hearing_language?.language_display_name }}</p>
+        }
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="style.heading">Payment terms</h2>
+        <hr [class]="style.hr" />
+
+        @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
+          <h3 [class]="style.key">Payment terms</h3>
+          <p [class]="style.value">Pay by date</p>
+          @if (tabData.payment_terms.effective_date) {
+            <h3 [class]="style.key">By date</h3>
+            <p [class]="style.value">
+              {{
+                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}
+            </p>
+          }
+        } @else if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
+          <h3 [class]="style.key">Payment terms</h3>
+          @if (tabData.payment_terms.lump_sum_amount) {
+            <p [class]="style.value">Lump sum plus instalments</p>
+          } @else {
+            <p [class]="style.value">Instalments only</p>
+          }
+
+          <h3 [class]="style.key">Frequency</h3>
+          <p [class]="style.value">{{ tabData.payment_terms.instalment_period }}</p>
+          @if (tabData.payment_terms.instalment_amount) {
+            <h3 [class]="style.key">Instalments</h3>
+            <p [class]="style.value">
+              {{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}
+            </p>
+          }
+          @if (tabData.payment_terms.effective_date) {
+            <h3 [class]="style.key">Start date</h3>
+            <p [class]="style.value">
+              {{
+                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}
+            </p>
+          }
+        }
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 [class]="style.heading">Enforcement status</h2>
+        <hr [class]="style.hr" />
+        <opal-lib-govuk-tag
+          [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
+          tagId="enforcement_status"
+          >{{ tabData.enforcement_status.last_enforcement_action?.enforcement_action_id }} ({{
+            tabData.enforcement_status.last_enforcement_action?.enforcement_action_title
+          }})</opal-lib-govuk-tag
+        >
+        @if (tabData.enforcement_status.collection_order_made) {
+          @if (!isYouth) {
+            <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
+              >Collection Order</opal-lib-moj-badge
+            >
+          } @else {
+            <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
+              >No collection Order</opal-lib-moj-badge
+            >
+          }
+        } @else if (!isYouth) {
+          <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
+            >No collection Order</opal-lib-moj-badge
+          >
+        }
+        @if (tabData.enforcement_status.default_days_in_jail) {
+          <h3 [class]="style.key">Days in default</h3>
+          <p [class]="style.value">
+            {{ tabData.enforcement_status.default_days_in_jail }}
+            {{ tabData.enforcement_status.default_days_in_jail > 1 ? 'days' : 'day' }}
+          </p>
+        }
+        @if (
+          tabData.enforcement_status.enforcement_override?.enforcement_override_result?.enforcement_override_result_id
+        ) {
+          <h3 [class]="style.key">Enforcement override</h3>
+          <p [class]="style.value">
+            {{
+              tabData.enforcement_status.enforcement_override?.enforcement_override_result
+                ?.enforcement_override_result_title
+            }}
+            {{
+              tabData.enforcement_status.enforcement_override?.enforcement_override_result
+                ?.enforcement_override_result_id
+            }}
+          </p>
+        }
+        <hr />
+        @if (tabData.enforcement_status.last_movement_date) {
+          <h3 [class]="style.key">Date of last movement</h3>
+          <p [class]="style.value">
+            {{
+              dateService.getFromFormatToFormat(
+                tabData.enforcement_status.last_movement_date,
+                'dd/MM/yyyy',
+                'dd MMMM yyyy'
+              )
+            }}
+          </p>
+        }
+
+        <h2 [class]="style.heading">Comments</h2>
+        <hr [class]="style.hr" />
+        @if (
+          tabData.comment_and_notes?.account_comment ||
+          tabData.comment_and_notes?.free_text_note_1 ||
+          tabData.comment_and_notes?.free_text_note_2 ||
+          tabData.comment_and_notes?.free_text_note_3
+        ) {
+          <h3 [class]="style.key">Comment</h3>
+          <p [class]="style.value">{{ tabData.comment_and_notes?.account_comment ?? '-' }}</p>
+          <h3 [class]="style.key">Free text notes</h3>
+          @if (
+            tabData.comment_and_notes?.free_text_note_1 ||
+            tabData.comment_and_notes?.free_text_note_2 ||
+            tabData.comment_and_notes?.free_text_note_3
+          ) {
+            <p [class]="style.value">
+              @if (tabData.comment_and_notes?.free_text_note_1) {
+                {{ tabData.comment_and_notes?.free_text_note_1 }}
+                <br />
+              }
+              @if (tabData.comment_and_notes?.free_text_note_2) {
+                {{ tabData.comment_and_notes?.free_text_note_2 }}
+                <br />
+              }
+              @if (tabData.comment_and_notes?.free_text_note_3) {
+                {{ tabData.comment_and_notes?.free_text_note_3 }}
+              }
+            </p>
+          } @else {
+            <p [class]="style.value">&mdash;</p>
+          }
+          @if (hasAccountMaintenencePermission) {
+            <p [class]="style.value">
+              <a
+                class="govuk-link govuk-link--no-visited-state"
+                href="#"
+                (click)="addComments.emit($event)"
+                (keyup.enter)="addComments.emit($event)"
+                >Change</a
+              >
+            </p>
+          }
+        } @else if (hasAccountMaintenencePermission) {
+          <p [class]="style.value">
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              href="#"
+              (click)="addComments.emit($event)"
+              (keyup.enter)="addComments.emit($event)"
+              >Add comments</a
+            >
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+}

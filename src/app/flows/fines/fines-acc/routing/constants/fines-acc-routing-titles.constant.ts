@@ -3,6 +3,6 @@ import { IFinesAccRoutingPaths } from '../interfaces/fines-acc-routing-paths.int
 export const FINES_ACC_ROUTING_TITLES: IFinesAccRoutingPaths = {
   root: 'Accounts',
   children: {
-    details: 'Account details',
+    defendant: 'Defendant',
   },
 };
