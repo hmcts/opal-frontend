@@ -111,7 +111,16 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
+
+  @Input({ required: true })
+  set fcompMajorCreditorItems(value: IAlphagovAccessibleAutocompleteItem[]) {
+    this.majorCreditorItemsByCode[FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation] = value;
+  }
+
+  @Input({ required: true })
+  set fcostMajorCreditorItems(value: IAlphagovAccessibleAutocompleteItem[]) {
+    this.majorCreditorItemsByCode[FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs] = value;
+  }
   @Input({ required: true }) public offenceIndex!: number;
   public selectedOffenceConfirmation!: boolean;
   public selectedOffenceSuccessful!: boolean;
@@ -125,6 +134,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
+  public majorCreditorItemsByCode: Record<string, IAlphagovAccessibleAutocompleteItem[]> = {};
+  public currentResultCodeByRow: Record<number, string> = {};
 
   /**
    * Sets up the form for adding an offence.
@@ -318,6 +329,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       index,
     );
 
+    // Seed: keep only the current code; items are looked up by code
+    this.currentResultCodeByRow[index] = resultCodeControl.value;
+    this.changeDetector.markForCheck();
+
     if (needsCreditorControl.value) {
       this.creditorListener(index);
     }
@@ -325,6 +340,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     resultCodeControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
       .subscribe((result_code: string) => {
+        this.currentResultCodeByRow[index] = result_code;
+        this.changeDetector.markForCheck();
         creditorControl.reset();
         const needsCreditor =
           result_code &&
