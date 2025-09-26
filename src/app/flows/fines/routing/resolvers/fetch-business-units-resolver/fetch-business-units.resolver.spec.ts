@@ -41,4 +41,25 @@ describe('fetchBusinessUnitsResolver', () => {
     );
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
   });
+
+  it('should call getBusinessUnits without args when no permission is provided', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} }; // no permission
+    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+
+    await executeResolver(route, mockRouterStateSnapshot);
+
+    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
+  });
+
+  it('should resolve business units data when no permission is provided', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} }; // no permission
+    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+
+    const result = await firstValueFrom(
+      executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>,
+    );
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  });
 });

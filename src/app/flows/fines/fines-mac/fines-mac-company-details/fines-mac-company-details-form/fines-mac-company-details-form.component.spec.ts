@@ -77,7 +77,6 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
-    console.log(component.formControlErrorMessages);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(
       jasmine.objectContaining({

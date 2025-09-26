@@ -8,7 +8,7 @@ import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { fetchBusinessUnitsResolver } from './resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { fetchEnforcementCourtsResolver } from './resolvers/fetch-enforcement-courts-resolver/fetch-enforcement-courts.resolver';
 import { fetchSendingCourtsResolver } from './resolvers/fetch-sending-courts-resolver/fetch-sending-courts.resolver';
 import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-results-resolver/fetch-results.resolver';

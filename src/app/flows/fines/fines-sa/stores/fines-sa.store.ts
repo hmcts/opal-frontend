@@ -115,11 +115,25 @@ export const FinesSaStore = signalStore(
         unsavedChanges,
       });
     },
+    setBusinessUnitIds: (businessUnitIds: number[]) => {
+      const currentStore = store.searchAccount();
+      patchState(store, {
+        searchAccount: {
+          ...currentStore,
+          fsa_search_account_business_unit_ids: businessUnitIds,
+        } as IFinesSaSearchAccountState,
+        stateChanges: true,
+        unsavedChanges: true,
+      });
+    },
     resetDefendantSearchCriteria: () => {
       patchState(store, {
         searchAccount: {
           ...store.searchAccount(),
-          fsa_search_account_defendant_search_criteria: {},
+          fsa_search_account_companies_search_criteria: null,
+          fsa_search_account_individuals_search_criteria: null,
+          fsa_search_account_minor_creditors_search_criteria: null,
+          fsa_search_account_major_creditors_search_criteria: null,
         } as IFinesSaSearchAccountState,
       });
     },

@@ -7,6 +7,7 @@ import { FinesSaStoreType } from '../../../stores/types/fines-sa.type';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from './fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../constants/fines-sa-search-account-state.constant';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
@@ -28,6 +29,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     fixture = TestBed.createComponent(FinesSaSearchAccountFormComponent);
     component = fixture.componentInstance;
 
+    component.businessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
     mockFinesSaStore = TestBed.inject(FinesSaStore);
 
     fixture.detectChanges();
@@ -185,6 +187,34 @@ describe('FinesSaSearchAccountFormComponent', () => {
     component.handleFormSubmit(new SubmitEvent('submit'));
 
     expect(superSubmitSpy).toHaveBeenCalled();
+  });
+
+  it('businessUnitText should return "All business units" when all ids are selected', () => {
+    const allIds = component.businessUnitRefData.map((bu) => bu.business_unit_id);
+
+    mockFinesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: allIds,
+    });
+
+    expect(component.businessUnitText).toBe('All business units');
+  });
+
+  it('businessUnitText should return a comma-separated list of selected business unit names when a subset is selected', () => {
+    const allIds = component.businessUnitRefData.map((bu) => bu.business_unit_id);
+    const subset = allIds.slice(0, 2);
+
+    mockFinesSaStore.setSearchAccount({
+      ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: subset,
+    });
+
+    const expected = component.businessUnitRefData
+      .filter((bu) => subset.includes(bu.business_unit_id))
+      .map((bu) => bu.business_unit_name)
+      .join(', ');
+
+    expect(component.businessUnitText).toBe(expected);
   });
 
   describe('updateFormErrorSummaryMessages', () => {
