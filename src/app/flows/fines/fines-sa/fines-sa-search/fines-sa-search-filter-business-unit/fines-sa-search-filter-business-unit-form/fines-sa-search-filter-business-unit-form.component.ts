@@ -65,18 +65,18 @@ import { FINES_SA_SEARCH_FILTER_BUSINESS_UNIT_STATE } from '../constants/fines-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseComponent {
-  private static readonly RECORD_CTRL = 'fsa_search_account_business_unit_ids';
-  private static readonly FINES_ALL_CTRL = 'fsa_search_account_business_unit_ids_fines_select_all';
-  private static readonly CONF_ALL_CTRL = 'fsa_search_account_business_unit_ids_confiscation_select_all';
+  private readonly RECORD_CTRL = 'fsa_search_account_business_unit_ids';
+  private readonly FINES_ALL_CTRL = 'fsa_search_account_business_unit_ids_fines_select_all';
+  private readonly CONF_ALL_CTRL = 'fsa_search_account_business_unit_ids_confiscation_select_all';
 
   private get record(): FormRecord<FormControl<boolean>> {
-    return this.form.get(FinesSaSearchFilterBusinessUnitForm.RECORD_CTRL) as FormRecord<FormControl<boolean>>;
+    return this.form.get(this.RECORD_CTRL) as FormRecord<FormControl<boolean>>;
   }
   private get finesAllCtrl(): FormControl<boolean> {
-    return this.form.get(FinesSaSearchFilterBusinessUnitForm.FINES_ALL_CTRL) as FormControl<boolean>;
+    return this.form.get(this.FINES_ALL_CTRL) as FormControl<boolean>;
   }
   private get confAllCtrl(): FormControl<boolean> {
-    return this.form.get(FinesSaSearchFilterBusinessUnitForm.CONF_ALL_CTRL) as FormControl<boolean>;
+    return this.form.get(this.CONF_ALL_CTRL) as FormControl<boolean>;
   }
   private businessUnitSelections = signal<Record<number, boolean>>({});
   private readonly finesSaStore = inject(FinesSaStore);
@@ -93,12 +93,18 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
 
   public selectedFines = computed(() => {
     const selections = this.businessUnitSelections();
-    return this.finesBusinessUnits.reduce((acc, u) => acc + (selections[u.business_unit_id] ? 1 : 0), 0);
+    return this.finesBusinessUnits.reduce(
+      (count, businessUnit) => count + (selections[businessUnit.business_unit_id] ? 1 : 0),
+      0,
+    );
   });
 
   public selectedConfiscation = computed(() => {
     const selections = this.businessUnitSelections();
-    return this.confiscationBusinessUnits.reduce((acc, u) => acc + (selections[u.business_unit_id] ? 1 : 0), 0);
+    return this.confiscationBusinessUnits.reduce(
+      (count, businessUnit) => count + (selections[businessUnit.business_unit_id] ? 1 : 0),
+      0,
+    );
   });
 
   public selectedTotal = computed(() => {
@@ -107,12 +113,102 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
   });
 
   /**
-   * Builds a complete mapping of business_unit_id -> boolean for every business unit.
-   * Values are set to true if the id is present in the store’s selected ids, false otherwise.
+   * Creates a FormRecord keyed by business_unit_id with boolean controls.
+   * Each control starts with false and is non-nullable. The record has a validator
+   * that ensures at least one business unit is selected.
+   */
+  private createBusinessUnitControlsRecord(): FormRecord<FormControl<boolean>> {
+    const controls = this.businessUnits.reduce<Record<number, FormControl<boolean>>>((acc, unit) => {
+      acc[unit.business_unit_id] = new FormControl<boolean>(false, { nonNullable: true });
+      return acc;
+    }, {});
+    if (this.businessUnits.length === 0) {
+      // No units: return an empty record without the validator to avoid a permanently invalid form
+      return new FormRecord<FormControl<boolean>>({});
+    }
+    return new FormRecord<FormControl<boolean>>(controls, {
+      validators: atLeastOneBusinessUnitSelectedRecordValidator,
+    });
+  }
+
+  /**
+   * Builds the main FormGroup for this component. It includes the FormRecord of
+   * business unit controls and two header select-all checkboxes. A root validator
+   * ensures header and child states remain consistent.
+   *
+   * @param record - The FormRecord of business unit controls.
+   */
+  private buildBusinessUnitForm(record: FormRecord<FormControl<boolean>>): void {
+    this.form = new FormGroup(
+      {
+        [this.RECORD_CTRL]: record,
+        [this.FINES_ALL_CTRL]: new FormControl(false, { nonNullable: true }),
+        [this.CONF_ALL_CTRL]: new FormControl(false, { nonNullable: true }),
+      },
+      { validators: businessUnitSelectionRootMirrorValidator(this.RECORD_CTRL) },
+    );
+  }
+
+  /**
+   * Populates finesBusinessUnits and confiscationBusinessUnits arrays by splitting
+   * the input businessUnits by their opal_domain value.
+   */
+  private groupBusinessUnitsByDomain(): void {
+    this.finesBusinessUnits = this.businessUnits.filter((u) => u.opal_domain === 'Fines');
+    this.confiscationBusinessUnits = this.businessUnits.filter((u) => u.opal_domain === 'Confiscation');
+  }
+
+  /**
+   * Sets the initial selection state from the given FormRecord into the signal
+   * and triggers validation without emitting events.
+   *
+   * @param record - The FormRecord containing business unit controls.
+   */
+  private initialiseBusinessUnitSelections(record: FormRecord<FormControl<boolean>>): void {
+    this.businessUnitSelections.set(
+      this.objectFromFormRecord<boolean, boolean, number>(record, {
+        mapKey: Number,
+        mapValue: (v) => !!v,
+      }),
+    );
+    record.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
+   * Synchronises selections from the record, updates validity without emitting,
+   * and mirrors the header select-all checkboxes.
+   */
+  private refreshSelectionsValidityAndHeaders(record: FormRecord<FormControl<boolean>>): void {
+    this.businessUnitSelections.set(
+      this.objectFromFormRecord<boolean, boolean, number>(record, {
+        mapKey: Number,
+        mapValue: (v) => !!v,
+      }),
+    );
+    record.updateValueAndValidity({ emitEvent: false });
+    this.updateHeaderSelectAllFromRecord(record);
+  }
+
+  /**
+   * Subscribes to changes in the FormRecord to keep selections and validity
+   * up to date. Also ensures the header select-all checkboxes reflect the current state.
+   *
+   * @param record - The FormRecord containing business unit controls.
+   */
+  private subscribeToBusinessUnitChanges(record: FormRecord<FormControl<boolean>>): void {
+    record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.refreshSelectionsValidityAndHeaders(record);
+    });
+  }
+
+  /**
+   * Reads the store's selected business unit ids and returns a full
+   * business_unit_id -> boolean map for all available units.
+   * Values are true when the id exists in the store; otherwise false.
    *
    * @returns Record<string, boolean> with stringified business_unit_id keys.
    */
-  private buildSelectionRecordFromStore(): Record<string, boolean> {
+  private readSelectionRecordFromStore(): Record<string, boolean> {
     const storeSelectedIds = this.finesSaStore.searchAccount().fsa_search_account_business_unit_ids ?? [];
     const selected = new Set<number>(storeSelectedIds);
     return this.businessUnits.reduce<Record<string, boolean>>((acc, u) => {
@@ -122,100 +218,76 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
   }
 
   /**
-   * Updates the two header select-all controls (fines/confiscation)
+   * Updates the two header select-all controls (Fines/Confiscation)
    * based on the current state of their child business unit controls.
    *
    * @param record - The FormRecord containing child controls.
    */
-  private syncHeaderSelectAllFrom(record: FormRecord<FormControl<boolean>>): void {
-    const current = record.getRawValue() as Record<string, boolean>;
+  private updateHeaderSelectAllFromRecord(record: FormRecord<FormControl<boolean>>): void {
+    const currentSelections = this.objectFromFormRecord<boolean, boolean, number>(record, {
+      mapKey: Number,
+      mapValue: (v) => !!v,
+    });
     const allFines =
-      this.finesBusinessUnits.length > 0 && this.finesBusinessUnits.every((u) => !!current[u.business_unit_id]);
-    const allConf =
+      this.finesBusinessUnits.length > 0 &&
+      this.finesBusinessUnits.every((u) => !!currentSelections[u.business_unit_id]);
+    const allConfiscation =
       this.confiscationBusinessUnits.length > 0 &&
-      this.confiscationBusinessUnits.every((u) => !!current[u.business_unit_id]);
+      this.confiscationBusinessUnits.every((u) => !!currentSelections[u.business_unit_id]);
     this.finesAllCtrl.setValue(allFines, { emitEvent: false });
-    this.confAllCtrl.setValue(allConf, { emitEvent: false });
+    this.confAllCtrl.setValue(allConfiscation, { emitEvent: false });
   }
 
   /**
-   * Initializes the business unit selection reactive form.
-   * - Creates a FormRecord keyed by business_unit_id.
-   * - Adds header select-all controls.
-   * - Applies validators.
-   * - Sets up subscriptions for counts and header mirroring.
+   * Initialises the business unit selection form.
+   * Breaks down into smaller steps for readability & testability.
    */
-  private setupFilterBusinessUnitForm(): void {
-    const controls = this.businessUnits.reduce<Record<number, FormControl<boolean>>>((acc, unit) => {
-      acc[unit.business_unit_id] = new FormControl<boolean>(false, { nonNullable: true });
-      return acc;
-    }, {});
+  private initialiseBusinessUnitForm(): void {
+    const record = this.createBusinessUnitControlsRecord();
+    this.buildBusinessUnitForm(record);
+    this.groupBusinessUnitsByDomain();
 
-    const recordControlName = FinesSaSearchFilterBusinessUnitForm.RECORD_CTRL;
+    if (this.businessUnits.length === 0) {
+      // Ensure derived state and headers are consistent for an empty dataset
+      this.businessUnitSelections.set({});
+      this.finesAllCtrl.setValue(false, { emitEvent: false });
+      this.confAllCtrl.setValue(false, { emitEvent: false });
+      return; // nothing else to wire up
+    }
 
-    const record = new FormRecord<FormControl<boolean>>(controls, {
-      validators: atLeastOneBusinessUnitSelectedRecordValidator,
-    });
-
-    this.form = new FormGroup(
-      {
-        [FinesSaSearchFilterBusinessUnitForm.RECORD_CTRL]: record,
-        [FinesSaSearchFilterBusinessUnitForm.FINES_ALL_CTRL]: new FormControl(false),
-        [FinesSaSearchFilterBusinessUnitForm.CONF_ALL_CTRL]: new FormControl(false),
-      },
-      { validators: businessUnitSelectionRootMirrorValidator(recordControlName) },
-    );
-
-    this.finesBusinessUnits = this.businessUnits.filter((u) => u.opal_domain === 'Fines');
-    this.confiscationBusinessUnits = this.businessUnits.filter((u) => u.opal_domain === 'Confiscation');
-
-    // Initial snapshot + validation
-    this.businessUnitSelections.set(
-      this.normaliseRecord<boolean, boolean, number>(record, {
-        keyCoerce: Number,
-        valueCoerce: (v) => !!v, // coerce null/undefined to false
-      }),
-    );
-    record.updateValueAndValidity({ emitEvent: false });
-
-    record.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.businessUnitSelections.set(
-        this.normaliseRecord<boolean, boolean, number>(record, {
-          keyCoerce: Number,
-          valueCoerce: (v) => !!v,
-        }),
-      );
-      record.updateValueAndValidity({ emitEvent: false });
-      this.syncHeaderSelectAllFrom(record);
-    });
-
-    this.setupSelectAllSync(record);
+    this.initialiseBusinessUnitSelections(record);
+    this.subscribeToBusinessUnitChanges(record);
+    this.initialiseSelectAllControls(record);
   }
 
   /**
-   * Wires header select-all checkboxes to update their respective child controls.
-   * (Child → header mirroring is handled in the main subscription.)
+   * Initialises the header select‑all controls (Fines/Confiscation) so they update
+   * their respective child controls. (Child → header mirroring is handled by
+   * the valueChanges subscription.)
    *
    * @param record - The FormRecord containing business unit controls.
    */
-  private setupSelectAllSync(record: FormRecord<FormControl<boolean>>): void {
+  private initialiseSelectAllControls(record: FormRecord<FormControl<boolean>>): void {
     const finesSelectAll = this.finesAllCtrl;
     const confiscationSelectAll = this.confAllCtrl;
 
-    const setDomain = (domain: 'Fines' | 'Confiscation', value: boolean) => {
-      const list = domain === 'Fines' ? this.finesBusinessUnits : this.confiscationBusinessUnits;
-      list.forEach((u) => {
-        const ctrl = record.get(u.business_unit_id.toString()) as FormControl<boolean>;
-        if (ctrl.value !== value) {
+    const setAllInDomain = (domain: 'Fines' | 'Confiscation', value: boolean) => {
+      const businessUnitsInDomain = domain === 'Fines' ? this.finesBusinessUnits : this.confiscationBusinessUnits;
+      businessUnitsInDomain.forEach((businessUnit) => {
+        const ctrl = record.get(businessUnit.business_unit_id.toString()) as FormControl<boolean> | null;
+        if (ctrl && ctrl.value !== value) {
           ctrl.setValue(value, { emitEvent: true }); // propagate
         }
       });
+      record.updateValueAndValidity({ emitEvent: true });
     };
 
-    finesSelectAll.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((val) => setDomain('Fines', !!val));
+    finesSelectAll.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((value) => setAllInDomain('Fines', !!value));
     confiscationSelectAll.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((val) => setDomain('Confiscation', !!val));
+      .subscribe((value) => setAllInDomain('Confiscation', !!value));
   }
 
   /**
@@ -225,23 +297,16 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
    * - Loads selection state from the store.
    * - Updates header select-all checkboxes.
    */
-  private initialFormSetup(): void {
-    this.setupFilterBusinessUnitForm();
+  private initialiseForm(): void {
+    this.initialiseBusinessUnitForm();
     this.setInitialErrorMessages();
 
     // Reset to base, then apply store selection without event storms
     this.rePopulateForm({ ...FINES_SA_SEARCH_FILTER_BUSINESS_UNIT_STATE });
 
-    const map = this.buildSelectionRecordFromStore();
-    this.writeRecord<boolean, string>(this.record, map, { emitEvent: false });
-    this.businessUnitSelections.set(
-      this.normaliseRecord<boolean, boolean, number>(this.record, {
-        keyCoerce: Number,
-        valueCoerce: (v) => !!v,
-      }),
-    );
-    this.record.updateValueAndValidity({ emitEvent: false });
-    this.syncHeaderSelectAllFrom(this.record);
+    const map = this.readSelectionRecordFromStore();
+    this.patchFormRecordFromObject<boolean, string>(this.record, map, { emitEvent: false });
+    this.refreshSelectionsValidityAndHeaders(this.record);
   }
 
   /**
@@ -250,7 +315,7 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
    * @param tab - Target tab, either 'fines' or 'confiscation'.
    */
   public handleTabSwitch(tab: string): void {
-    this.tab.set(tab as 'fines' | 'confiscation');
+    this.tab.set(tab as Domain);
   }
 
   /**
@@ -260,7 +325,7 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
    * @returns The FormControl<boolean> for that id.
    */
   public getBusinessUnitControl(businessUnitId: string) {
-    return this.form.get(['fsa_search_account_business_unit_ids', businessUnitId]) as FormControl<boolean>;
+    return this.form.get([this.RECORD_CTRL, businessUnitId]) as FormControl<boolean>;
   }
 
   /**
@@ -277,7 +342,7 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
   }
 
   public override ngOnInit(): void {
-    this.initialFormSetup();
+    this.initialiseForm();
     super.ngOnInit();
   }
 }

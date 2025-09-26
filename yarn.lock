@@ -978,11 +978,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^4.11.0":
-  version: 4.23.0
-  resolution: "@azure/msal-browser@npm:4.23.0"
+  version: 4.24.0
+  resolution: "@azure/msal-browser@npm:4.24.0"
   dependencies:
-    "@azure/msal-common": "npm:15.12.0"
-  checksum: 10/be6dd52821cedc4aeb60e38ca7514d4be4af855694cf9d85b7cca1dcd5f4172fdefb4465332d54cc29074ecbacd91ecb916df5181d0588c6428dae7219db8f5d
+    "@azure/msal-common": "npm:15.13.0"
+  checksum: 10/db35c3b4ed12b42d6aa553bdedc646de8d9a3f40483c5049ba7c26f44121a2da124bf13c8cdb4fa52ed7f8b536c03c5b8baa2be304905aadcdef520e1cd9e885
   languageName: node
   linkType: hard
 
@@ -993,10 +993,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:15.12.0":
-  version: 15.12.0
-  resolution: "@azure/msal-common@npm:15.12.0"
-  checksum: 10/0105b1ba5b751c713545000abd1cf3d9300bdd9d803d3f9795876fb1a1aebde9050d7a9378dcef15ec04080550389edea360a7a717d43788dc7650ea03879456
+"@azure/msal-common@npm:15.13.0":
+  version: 15.13.0
+  resolution: "@azure/msal-common@npm:15.13.0"
+  checksum: 10/e1e55fd2533ab2ab6ceaf19bb69f3cd2c3bb8227efc0b96b1a4877a60d7ad43ca4024e4651655d8e6b2df42dcaada71880754295c41a28f5c20e62ef2b46f685
   languageName: node
   linkType: hard
 
@@ -3281,13 +3281,13 @@ __metadata:
 
 "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::locator=opal-frontend%40workspace%3A.":
   version: 0.0.40
-  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=b845a9&locator=opal-frontend%40workspace%3A."
+  resolution: "@hmcts/opal-frontend-common@file:/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common#/Users/iamfrankiemoran/Documents/GitHub/opal-frontend-common-ui-lib/dist/opal-frontend-common::hash=500382&locator=opal-frontend%40workspace%3A."
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/9ba1ac71a0ea71beb3eb6af77a616b430c75d1e1c6d15379713725c6248bcee955722e39a08f77dd719ffb110391ef19a285ad10eb852cfab4116306ef7472a0
+  checksum: 10/db76596b825349c4df413b4f223a7590f6f083bea3cd05ede9ab9a8385d166c3076a73b16fa0b3ff7631d3e0b4cba89cdaff7eb3632e97e513af9dae8f454832
   languageName: node
   linkType: hard
 

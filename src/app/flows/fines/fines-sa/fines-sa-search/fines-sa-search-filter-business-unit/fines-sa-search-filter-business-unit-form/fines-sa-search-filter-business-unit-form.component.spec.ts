@@ -41,6 +41,12 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     expect(component).toBeTruthy();
   });
 
+  it('handleTabSwitch - should switch tab', () => {
+    const initial = component.tab();
+    component['handleTabSwitch']('confiscation');
+    expect(component.tab()).not.toBe(initial);
+  });
+
   it('initialises selection and counts from the store ids', () => {
     const record = component['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
 
@@ -68,7 +74,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     expect(ctrl.value).toBeFalse();
   });
 
-  it('toggling the fines select-all header checks all fines children and updates counts', () => {
+  it('toggling the fines select-all header control checks all fines children and updates counts', () => {
     const finesAll = component['form'].get(
       'fsa_search_account_business_unit_ids_fines_select_all',
     ) as FormControl<boolean>;
@@ -90,7 +96,7 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     expect(component.selectedTotal()).toBe(6);
   });
 
-  it('toggling the confiscation select-all header checks all confiscation children and updates counts', () => {
+  it('toggling the confiscation select-all header control checks all confiscation children and updates counts', () => {
     const confAll = component['form'].get(
       'fsa_search_account_business_unit_ids_confiscation_select_all',
     ) as FormControl<boolean>;
@@ -153,6 +159,31 @@ describe('FinesSaSearchFilterBusinessUnitForm', () => {
     ['61', '67', '68', '69', '70', '71', '73'].forEach((id) => {
       expect(record.get(id)?.value).toBeFalse();
     });
+    expect(cmp.selectedTotal()).toBe(0);
+    expect(cmp.selectedFines()).toBe(0);
+    expect(cmp.selectedConfiscation()).toBe(0);
+  });
+
+  it('initialises a valid form with no header selections when there are no business units', () => {
+    // Fresh component with empty input
+    const fresh = TestBed.createComponent(FinesSaSearchFilterBusinessUnitForm);
+    const cmp = fresh.componentInstance;
+    cmp.businessUnits = [];
+    fresh.detectChanges();
+
+    // Form should be defined and valid
+    expect(cmp['form']).toBeTruthy();
+    expect(cmp['form'].valid).toBeTrue();
+
+    // No child controls in the record
+    const record = cmp['form'].get('fsa_search_account_business_unit_ids') as FormRecord<FormControl<boolean>>;
+    expect(Object.keys(record.controls).length).toBe(0);
+
+    // Header checkboxes should be false
+    expect(cmp['form'].get('fsa_search_account_business_unit_ids_fines_select_all')?.value).toBeFalse();
+    expect(cmp['form'].get('fsa_search_account_business_unit_ids_confiscation_select_all')?.value).toBeFalse();
+
+    // Counts should be zero
     expect(cmp.selectedTotal()).toBe(0);
     expect(cmp.selectedFines()).toBe(0);
     expect(cmp.selectedConfiscation()).toBe(0);
