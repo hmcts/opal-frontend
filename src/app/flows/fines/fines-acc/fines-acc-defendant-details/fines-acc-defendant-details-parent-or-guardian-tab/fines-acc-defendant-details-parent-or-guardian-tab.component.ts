@@ -10,8 +10,8 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { FinesAccNotProvidedComponent } from '../../fines-acc-not-provided/fines-acc-not-provided.component';
 import { UpperCasePipe } from '@angular/common';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
@@ -20,7 +20,7 @@ import { UpperCasePipe } from '@angular/common';
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    FinesAccNotProvidedComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-acc-defendant-details-parent-or-guardian-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

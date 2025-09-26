@@ -51,7 +51,7 @@
                   }
                 </ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -66,7 +66,7 @@
                   dateService.getFromFormatToFormat(dob!, 'dd/MM/yyyy', 'dd MMMM yyyy')
                 }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -79,7 +79,7 @@
               @if (individualDetails.national_insurance_number; as nationalInsuranceNumber) {
                 <ng-container value>{{ nationalInsuranceNumber | uppercase }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -112,7 +112,7 @@
                   {{ address.post_code | uppercase }}</ng-container
                 >
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
 
@@ -129,7 +129,7 @@
                     {{ vehicle.vehicle_make_and_model }}
                   </ng-container>
                 } @else {
-                  <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                 }
               </div>
               <div
@@ -144,7 +144,7 @@
                     {{ vehicle.vehicle_registration | uppercase }}
                   </ng-container>
                 } @else {
-                  <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                 }
               </div>
             }
@@ -184,7 +184,7 @@
                     }
                   </ng-container>
                 } @else {
-                  <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                 }
               </div>
               <div
@@ -217,7 +217,7 @@
                     {{ address.post_code | uppercase }}</ng-container
                   >
                 } @else {
-                  <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                 }
               </div>
               @if (party.vehicle_details; as vehicle) {
@@ -233,7 +233,7 @@
                       {{ vehicle.vehicle_make_and_model }}
                     </ng-container>
                   } @else {
-                    <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                    <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                   }
                 </div>
                 <div
@@ -248,7 +248,7 @@
                       {{ vehicle.vehicle_registration | uppercase }}
                     </ng-container>
                   } @else {
-                    <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                    <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                   }
                 </div>
               }
@@ -272,7 +272,7 @@
               @if (contact_details.primary_email_address) {
                 <ng-container value>{{ contact_details.primary_email_address }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -285,7 +285,7 @@
               @if (contact_details.secondary_email_address) {
                 <ng-container value>{{ contact_details.secondary_email_address }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -298,7 +298,7 @@
               @if (contact_details.mobile_telephone_number) {
                 <ng-container value>{{ contact_details.mobile_telephone_number }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -311,7 +311,7 @@
               @if (contact_details.home_telephone_number) {
                 <ng-container value>{{ contact_details.home_telephone_number }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -324,7 +324,7 @@
               @if (contact_details.work_telephone_number) {
                 <ng-container value>{{ contact_details.work_telephone_number }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
           </opal-lib-govuk-summary-list>
@@ -352,7 +352,7 @@
                   party.language_preferences?.document_language?.language_display_name
                 }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -367,7 +367,7 @@
                   party.language_preferences?.hearing_language?.language_display_name
                 }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
           </opal-lib-govuk-summary-list>
@@ -389,7 +389,7 @@
               @if (employer_details.employer_name) {
                 <ng-container value>{{ employer_details.employer_name }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -402,7 +402,7 @@
               @if (employer_details.employer_reference) {
                 <ng-container value>{{ employer_details.employer_reference }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -415,7 +415,7 @@
               @if (employer_details.employer_email_address) {
                 <ng-container value>{{ employer_details.employer_email_address }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -428,7 +428,7 @@
               @if (employer_details.employer_telephone_number) {
                 <ng-container value>{{ employer_details.employer_telephone_number }}</ng-container>
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
             <div
@@ -461,7 +461,7 @@
                   {{ address.post_code | uppercase }}</ng-container
                 >
               } @else {
-                <ng-container value><app-fines-acc-not-provided></app-fines-acc-not-provided></ng-container>
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
           </opal-lib-govuk-summary-list>
