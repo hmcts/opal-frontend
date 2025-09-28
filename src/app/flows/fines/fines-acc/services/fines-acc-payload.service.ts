@@ -38,9 +38,10 @@ export class FinesAccPayloadService {
       party_id: headingData.defendant_party_id,
       party_type: headingData.debtor_type,
       party_name: party_name,
-      base_version: Number(headingData.version),
+      base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,
+      welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
   }
 }

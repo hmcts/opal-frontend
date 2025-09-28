@@ -33,7 +33,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should transform account header for store for an individual', () => {
-    const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     const account_id = 77;
 
     const result: IFinesAccountState = service.transformAccountHeaderForStore(account_id, header);
@@ -49,9 +49,10 @@ describe('FinesAccPayloadService', () => {
         header.party_details.individual_details?.forenames +
         ' ' +
         header.party_details.individual_details?.surname?.toUpperCase(),
-      base_version: Number(header.version),
+      base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
+      welsh_speaking: header.business_unit_summary.welsh_speaking,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -74,9 +75,10 @@ describe('FinesAccPayloadService', () => {
       party_id: header.defendant_party_id,
       party_type: header.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
-      base_version: Number(header.version),
+      base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
+      welsh_speaking: header.business_unit_summary.welsh_speaking,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -87,7 +89,7 @@ describe('FinesAccPayloadService', () => {
   });
 
   it('should handle missing surname gracefully', () => {
-    const header: IOpalFinesAccountDefendantDetailsHeader = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
+    const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
     const account_id = 77;
 
     const result = service.transformAccountHeaderForStore(account_id, header);
@@ -99,7 +101,7 @@ describe('FinesAccPayloadService', () => {
         ' ' +
         header.party_details.individual_details?.surname?.toUpperCase(),
     );
-    expect(result.base_version).toBe(Number(header.version));
+    expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
 });

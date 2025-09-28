@@ -366,7 +366,20 @@ export class OpalFines {
    * @returns An Observable that emits the draft account summary.
    */
   public getDraftAccountById(draftAccountId: number): Observable<IFinesMacAddAccountPayload> {
-    return this.http.get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`);
+    return this.http
+      .get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, {
+        observe: 'response',
+      })
+      .pipe(
+        map((response: HttpResponse<IFinesMacAddAccountPayload>) => {
+          const payload = response.body as IFinesMacAddAccountPayload;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -401,6 +414,7 @@ export class OpalFines {
     return this.http.put<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
       body,
+      this.buildIfMatchHeader(body.version!),
     );
   }
 
@@ -426,7 +440,11 @@ export class OpalFines {
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchPayload,
   ): Observable<IFinesMacAddAccountPayload> {
-    return this.http.patch<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, payload);
+    return this.http.patch<IFinesMacAddAccountPayload>(
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
+      payload,
+      this.buildIfMatchHeader(payload.version),
+    );
   }
 
   /**
@@ -454,12 +472,7 @@ export class OpalFines {
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlance(
-    account_id: number | null,
-    business_unit_id: string | null,
-    business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
-    console.log(account_id, business_unit_id, business_unit_user_id);
+  public getDefendantAccountAtAGlance(): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {
       // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountid}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       // this.accountDetailsCache$[tab] = this.http

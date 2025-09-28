@@ -4,7 +4,8 @@ export interface IFinesAccountState {
   party_type: string | null;
   party_name: string | null;
   party_id: string | null;
-  base_version: number | null;
+  base_version: string | null;
   business_unit_id: string | null;
   business_unit_user_id: string | null;
+  welsh_speaking: string | null;
 }

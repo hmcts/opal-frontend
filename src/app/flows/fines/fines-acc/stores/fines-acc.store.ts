@@ -11,9 +11,10 @@ export const FinesAccountStore = signalStore(
     party_id: null as string | null,
     party_type: null as string | null,
     party_name: null as string | null,
-    base_version: null as number | null,
+    base_version: null as string | null,
     business_unit_id: null as string | null,
     business_unit_user_id: null as string | null,
+    welsh_speaking: null as string | null,
     hasVersionMismatch: false as boolean,
     successMessage: null as string | null,
   })),
@@ -50,6 +51,7 @@ export const FinesAccountStore = signalStore(
           base_version: store.base_version(),
           business_unit_id: store.business_unit_id(),
           business_unit_user_id: store.business_unit_user_id(),
+          welsh_speaking: store.welsh_speaking(),
         };
       },
       clearAccountState: () => {

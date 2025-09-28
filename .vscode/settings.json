@@ -1,7 +1,17 @@
 {
-    "editor.formatOnSave": true,
-    "sonarlint.connectedMode.project": {
-        "connectionId": "HMCTS SonarQube",
-        "projectKey": "opal-frontend"
-    }
+  "editor.formatOnSave": true,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "HMCTS SonarQube",
+    "projectKey": "opal-frontend"
+  },
+
+  "cucumberautocomplete.steps": [
+    "cypress/support/step_definitions/**/*.ts"
+  ],
+
+  "cucumberautocomplete.syncfeatures": "cypress/e2e/**/*.feature",  // <- string, not array
+
+  "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then|And|But)\\(",
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.smartSnippets": true
 }
