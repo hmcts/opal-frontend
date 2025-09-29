@@ -244,25 +244,15 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
-      this.updateAgeAndLabel(dobControl.value);
+      this.age = this.dateService.getAgeObject(dobControl.value)?.value!;
+      this.ageLabel = this.dateService.getAgeObject(dobControl.value)?.group!;
     }
 
     // Subscribe to changes in the date of birth control
     dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
-      this.updateAgeAndLabel(dateOfBirth);
+      this.age = this.dateService.getAgeObject(dateOfBirth)?.value!;
+      this.ageLabel = this.dateService.getAgeObject(dateOfBirth)?.group!;
     });
-  }
-
-  /**
-   * Updates the age and age label based on the provided date of birth.
-   *
-   * @param dateOfBirth - The date of birth in string format.
-   */
-  private updateAgeAndLabel(dateOfBirth: string): void {
-    if (this.dateService.isValidDate(dateOfBirth)) {
-      this.age = this.dateService.calculateAge(dateOfBirth);
-      this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
-    }
   }
 
   /**
