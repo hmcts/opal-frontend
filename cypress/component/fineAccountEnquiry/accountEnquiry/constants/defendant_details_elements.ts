@@ -2,7 +2,7 @@
 
 export const DOM_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
-  headingFullName: 'h1.govuk-heading-l',
+  headingName: 'h1.govuk-heading-l',
   pageHeader: 'opal-lib-custom-page-header',
 
   // Buttons

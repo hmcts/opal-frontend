@@ -19,6 +19,7 @@ import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
+  DEFENDANT_HEADER_ORG_MOCK,
   MOCK_ACCOUNT_STATE,
 } from './mocks/defendant_details_mock';
 import { snapshot } from 'node:test';
@@ -35,7 +36,17 @@ describe('Defendant Account Summary (Component)', () => {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            store.setAccountState(MOCK_ACCOUNT_STATE);
+            const mockState = structuredClone(MOCK_ACCOUNT_STATE);
+            if (prefilledData.party_details.organisation_flag) {
+              mockState.party_name = prefilledData.party_details.organisation_details?.organisation_name ?? '';
+              mockState.party_type = 'Organisation';
+            } else {
+              mockState.party_name =
+                `${prefilledData.party_details.individual_details?.forenames ?? ''} ${prefilledData.party_details.individual_details?.surname ?? ''}`.trim();
+              mockState.party_type = 'Individual';
+            }
+
+            store.setAccountState(mockState);
             return store;
           },
         },
@@ -80,14 +91,26 @@ describe('Defendant Account Summary (Component)', () => {
 
     cy.get(DOM.pageHeader).should('exist');
     cy.get(DOM.headingWithCaption).should('exist');
-    cy.get(DOM.headingFullName).should('exist').and('contain.text', 'Anna Graham');
+    cy.get(DOM.headingName).should('exist').and('contain.text', 'Anna Graham');
     cy.get(DOM.accountInfo).should('exist');
     cy.get(DOM.summaryMetricBar).should('exist');
     cy.get(DOM.subnav).should('exist');
     cy.get(DOM.atAGlanceTabComponent).should('exist');
   });
 
-  // Field rules (PCR uppercase, BU display, summary labels/currency present)
+  // Header renders
+  it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK);
+
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(DOM.headingName).should('exist').and('contain.text', 'Sainsco');
+    cy.get(DOM.accountInfo).should('exist');
+    cy.get(DOM.summaryMetricBar).should('exist');
+    cy.get(DOM.subnav).should('exist');
+    cy.get(DOM.atAGlanceTabComponent).should('exist');
+  });
+
   it(
     'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels)',
     { tags: ['PO-1593', 'PO-866'] },
@@ -117,7 +140,36 @@ describe('Defendant Account Summary (Component)', () => {
     },
   );
 
-  //  ONLY Youth tag when youth is the debtor and no P/G associated
+  it(
+    'AC1b: applies field rules (PCR uppercase, BU formatting, summary labels) - Company',
+    { tags: ['PO-1593', 'PO-866'] },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+      header.prosecutor_case_reference = 'ref123'; // UI should uppercase
+
+      setupComponent(header);
+
+      cy.get(DOM.accountInfo).within(() => {
+        cy.contains(DOM.labelAccountType).should('be.visible');
+        cy.contains(String(header.account_type)).should('be.visible');
+
+        cy.contains(DOM.labelCaseNumber).should('be.visible');
+        cy.contains('REF123').should('be.visible');
+
+        cy.contains(DOM.labelBusinessUnit).should('be.visible');
+        cy.contains(header.business_unit_summary.business_unit_name).should('be.visible');
+        cy.contains(`(${header.business_unit_summary.business_unit_id})`).should('be.visible');
+      });
+
+      cy.get(DOM.summaryMetricBar).within(() => {
+        cy.contains(DOM.labelImposed).should('be.visible');
+        cy.contains(DOM.labelArrears).should('be.visible');
+        cy.contains('£').should('exist'); // any currency value in the bar
+      });
+    },
+  );
+
+  // ONLY Youth tag when youth is the debtor and no P/G associated
   it(
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
     { tags: ['PO-1593'] },
@@ -182,13 +234,23 @@ describe('Defendant Account Summary (Component)', () => {
       .should('exist');
   });
 
-  it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC3: negative balance is prefixed with a minus - Company', { tags: ['PO-867'] }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+    header.payment_state_summary.account_balance = -4.5;
+
+    setupComponent(header);
+
+    cy.get(DOM.summaryMetricBar)
+      .contains(/-£\s*4\.50|−£\s*4\.50/)
+      .should('exist');
+  });
+
+  it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, true);
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
-  // Intent-only (navigation verified in E2E)
-  it('AC4 (intent): clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, true);
     cy.get(DOM.addNoteButton).click();
     cy.get('@routerNavigate').should('have.been.called');
@@ -196,6 +258,23 @@ describe('Defendant Account Summary (Component)', () => {
 
   it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, false);
+
+    cy.get('@hasPermissionAccess').should('have.been.called');
+    cy.get(DOM.addNoteButton).should('not.exist');
+  });
+
+  it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, true);
+    cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
+  });
+
+  it('AC3: clicking "Add account note" calls router.navigate - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, true);
+    cy.get(DOM.addNoteButton).click();
+    cy.get('@routerNavigate').should('have.been.called');
+  });
+  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, false);
 
     cy.get('@hasPermissionAccess').should('have.been.called');
     cy.get(DOM.addNoteButton).should('not.exist');
