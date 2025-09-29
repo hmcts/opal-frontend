@@ -39,25 +39,23 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-a
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
 import { of } from 'rxjs';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import {
-  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK,
-} from './mocks/opal-fines-defendant-account-search-params.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-
-function mockHeaders(getFn: (name: string) => string | null) {
-  return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
-}
+import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
+import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
+import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
+
+  function mockHeaders(getFn: (name: string) => string | null) {
+    return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -410,7 +408,7 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`;
 
     service.getDraftAccountById(draftAccountId).subscribe((draftAccount) => {
-      expect(draftAccount).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      expect(draftAccount).toEqual({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT, version: null });
     });
 
     const req = httpMock.expectOne(apiUrl);
@@ -639,17 +637,15 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
-    service
-      .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountAtAGlanceTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
 
     // const req = httpMock.expectOne(apiUrl);
     // expect(req.request.method).toBe('GET');
@@ -665,7 +661,12 @@ describe('OpalFines', () => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
 
     service
-      .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id)
+      .getDefendantAccountDefendantTabData(
+        account_id,
+        business_unit_id,
+        business_unit_user_id,
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.defendant_account_id,
+      )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK.version;
         expect(response).toEqual(expectedResponse);
@@ -678,55 +679,47 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountEnforcementTabData', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
 
-    service
-      .getDefendantAccountEnforcementTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountEnforcementTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
   });
 
   it('should getDefendantAccountImpositionsTabData', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
 
-    service
-      .getDefendantAccountImpositionsTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountImpositionsTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
   });
 
   it('should getDefendantAccountPaymentTermsTabData', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
 
-    service
-      .getDefendantAccountPaymentTermsTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountPaymentTermsTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
   });
 
   it('should getDefendantAccountHistoryAndNotesTabData', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
 
-    service
-      .getDefendantAccountHistoryAndNotesTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountHistoryAndNotesTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
   });
 
   it('should clear account details cache', () => {
@@ -738,25 +731,75 @@ describe('OpalFines', () => {
     expect(service['accountDetailsCache$']).toEqual(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
   });
 
-  it('should return the mocked defendant accounts response with search params injected - individual', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+  it('should send a POST request to search defendant accounts API with correct body', () => {
+    const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const expectedResponse = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchDefendantAccounts}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getDefendantAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
   });
 
-  it('should return the mocked defendant accounts response with search params injected - company', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchParams = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_COMPANY_MOCK;
+  it('should handle errors when search defendant accounts API fails', () => {
+    const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchDefendantAccounts}`;
+    const errorMessage = 'Failed to search defendant accounts';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    service.getDefendantAccounts(searchParams).subscribe((response: any) => {
-      expect(response).toEqual(jasmine.objectContaining(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK));
-      expect(response._debug_searchParams).toEqual(searchParams);
+    service.getDefendantAccounts(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should send a POST request to search creditor accounts API with correct body', () => {
+    const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const expectedResponse = OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`;
+
+    service.getMinorCreditorAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(filters);
+
+    req.flush(expectedResponse);
+  });
+
+  it('should handle errors when search creditor accounts API fails', () => {
+    const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`;
+    const errorMessage = 'Failed to search creditor accounts';
+
+    service.getMinorCreditorAccounts(filters).subscribe({
+      next: () => fail('Expected an error, but got a response'),
+      error: (error) => {
+        expect(error).toBeTruthy();
+        expect(error.status).toBe(500);
+        expect(error.statusText).toBe(errorMessage);
+      },
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 });

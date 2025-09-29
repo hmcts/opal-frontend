@@ -2,7 +2,7 @@ import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from '../interfa
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData =
   {
-    version: '0',
+    version: null,
     defendant_account_id: 'DEF-001',
     account_number: 'ACC-123456',
     debtor_type: 'PERSON',

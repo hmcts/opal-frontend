@@ -5,7 +5,6 @@ import {
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_MAC_FIXED_PENALTY_OFFENCE_TYPES } from '../../fines-mac-fixed-penalty-details/constants/fines-mac-fixed-penalty-offence-types';
@@ -13,6 +12,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-fixed-penalty-offence-details',
@@ -21,7 +21,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
-    FinesMacReviewAccountNotProvidedComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-fixed-penalty-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

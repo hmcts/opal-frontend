@@ -41,11 +41,12 @@ export class FinesAccPayloadService {
       account_number: headingData.account_number,
       account_id: Number(account_id),
       party_id: headingData.defendant_party_id,
-      party_type: headingData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant',
+      party_type: headingData.debtor_type,
       party_name: party_name,
       base_version: headingData.version,
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id: business_unit_user_id,
+      welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
   }
 
@@ -56,6 +57,7 @@ export class FinesAccPayloadService {
    * @param finesAccPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   public transformPayload<T extends { [key: string]: any }>(
     finesAccPayload: T,
     transformItemsConfig: ITransformItem[],

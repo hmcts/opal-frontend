@@ -2,5 +2,5 @@ import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '../inter
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsImpositionsTabRefData =
   {
-    version: '1',
+    version: null,
   };

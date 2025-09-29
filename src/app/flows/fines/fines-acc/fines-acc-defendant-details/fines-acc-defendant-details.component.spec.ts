@@ -11,8 +11,6 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from './mocks/fines-acc-defen
 import { of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_SA_ROUTING_PATHS } from '../../fines-sa/routing/constants/fines-sa-routing-paths.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -21,6 +19,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -139,13 +138,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
-  it('should navigate back to the search results page when navigateBack is called', () => {
-    component.navigateBack();
-    expect(routerSpy.navigate).toHaveBeenCalledWith([
-      `/${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`,
-    ]);
-  });
-
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
     expect(mockOpalFinesService.getDefendantAccountDefendantTabData).toHaveBeenCalled();
@@ -180,6 +172,56 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a parent/guardian', () => {
+    const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Parent/Guardian';
+    spyOn(event, 'preventDefault');
+    component.navigateToChangeDefendantDetailsPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
+    const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Defendant';
+    component.accountData.party_details.organisation_flag = true;
+    spyOn(event, 'preventDefault');
+    component.navigateToChangeDefendantDetailsPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
+    const event: Event = new Event('click');
+    component.accountData.debtor_type = 'Defendant';
+    component.accountData.party_details.organisation_flag = false;
+    spyOn(event, 'preventDefault');
+    component.navigateToChangeDefendantDetailsPage(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [
+        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL}/amend`,
+      ],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called', () => {
     const event: Event = new Event('click');
     spyOn(event, 'preventDefault');
@@ -187,10 +229,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(event.preventDefault).toHaveBeenCalled();
   });
 
-  it('should navigate to convert account page when navigateToConvertAccountPage is called', () => {
-    const event: Event = new Event('click');
-    spyOn(event, 'preventDefault');
-    component.navigateToConvertAccountPage(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+  it('should compare versions and if they are different, set hasVersionMismatch to true', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    component['compareVersion']('different-version');
+    expect(component.accountStore.hasVersionMismatch()).toBeTrue();
   });
 });
