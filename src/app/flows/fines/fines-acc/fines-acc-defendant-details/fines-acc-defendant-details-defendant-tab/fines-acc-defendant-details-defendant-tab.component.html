@@ -110,7 +110,7 @@
                     {{ address.address_line_5 }}
                   }
                   <br />
-                  {{ address.post_code | uppercase }}</ng-container
+                  {{ address.postcode | uppercase }}</ng-container
                 >
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -215,7 +215,7 @@
                       {{ address.address_line_5 }}
                     }
                     <br />
-                    {{ address.post_code | uppercase }}</ng-container
+                    {{ address.postcode | uppercase }}</ng-container
                   >
                 } @else {
                   <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -335,8 +335,8 @@
 
     @if (
       party.is_debtor &&
-      (party.language_preferences?.document_language?.language_display_name === languages.CY ||
-        party.language_preferences?.hearing_language?.language_display_name === languages.CY)
+      (party.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
+        party.language_preferences?.hearing_language_preference?.language_display_name === languages.CY)
     ) {
       <opal-lib-govuk-summary-card-list cardTitle="Language preferences" summaryCardListId="language">
         <ng-container content>
@@ -348,9 +348,9 @@
               summaryListRowId="document_language"
             >
               <ng-container name>Document language</ng-container>
-              @if (party.language_preferences?.document_language?.language_display_name) {
+              @if (party.language_preferences?.document_language_preference?.language_display_name) {
                 <ng-container value>{{
-                  party.language_preferences?.document_language?.language_display_name
+                  party.language_preferences?.document_language_preference?.language_display_name
                 }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -363,9 +363,9 @@
               summaryListRowId="hearing_language"
             >
               <ng-container name>Court hearing language</ng-container>
-              @if (party.language_preferences?.hearing_language?.language_display_name) {
+              @if (party.language_preferences?.hearing_language_preference?.language_display_name) {
                 <ng-container value>{{
-                  party.language_preferences?.hearing_language?.language_display_name
+                  party.language_preferences?.hearing_language_preference?.language_display_name
                 }}</ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -459,7 +459,7 @@
                     {{ address.address_line_5 }}
                   }
                   <br />
-                  {{ address.post_code | uppercase }}</ng-container
+                  {{ address.postcode | uppercase }}</ng-container
                 >
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
