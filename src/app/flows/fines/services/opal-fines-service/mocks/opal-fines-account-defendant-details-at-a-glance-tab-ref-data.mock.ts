@@ -49,8 +49,8 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
     },
     enforcement_status: {
       last_enforcement_action: {
-        enforcement_action_id: 'EA-001',
-        enforcement_action_title: 'Warrant Issued',
+        last_enforcement_action_id: 'EA-001',
+        last_enforcement_action_title: 'Warrant Issued',
       },
       collection_order_made: true,
       default_days_in_jail: 0,

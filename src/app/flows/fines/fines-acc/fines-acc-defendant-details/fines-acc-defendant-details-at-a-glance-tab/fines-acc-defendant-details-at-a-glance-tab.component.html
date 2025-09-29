@@ -160,8 +160,8 @@
         <opal-lib-govuk-tag
           [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
           tagId="enforcement_status"
-          >{{ tabData.enforcement_status.last_enforcement_action?.enforcement_action_id }} ({{
-            tabData.enforcement_status.last_enforcement_action?.enforcement_action_title
+          >{{ tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_id }} ({{
+            tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_title
           }})</opal-lib-govuk-tag
         >
         @if (tabData.enforcement_status.collection_order_made) {
