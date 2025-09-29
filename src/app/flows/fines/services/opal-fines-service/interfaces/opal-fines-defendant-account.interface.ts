@@ -66,12 +66,12 @@ export interface IOpalFinesDefendantAccountAddress {
   address_line_3: string | null;
   address_line_4: string | null;
   address_line_5: string | null;
-  post_code: string | null;
+  postcode: string | null;
 }
 
 export interface IOpalFinesDefendantAccountLanguagePreferences {
-  document_language: IOpalFinesDefendantAccountLanguagePreference | null;
-  hearing_language: IOpalFinesDefendantAccountLanguagePreference | null;
+  document_language_preference: IOpalFinesDefendantAccountLanguagePreference | null;
+  hearing_language_preference: IOpalFinesDefendantAccountLanguagePreference | null;
 }
 
 export interface IOpalFinesDefendantAccountLanguagePreference {
@@ -80,8 +80,8 @@ export interface IOpalFinesDefendantAccountLanguagePreference {
 }
 
 export interface IOpalFinesDefendantAccountInstalmentPeriod {
-  installment_period_code: 'W' | 'M' | 'F';
-  installment_period_display_name: 'Weekly' | 'Monthly' | 'Fortnightly';
+  instalment_period_code: 'W' | 'M' | 'F';
+  instalment_period_display_name: 'Weekly' | 'Monthly' | 'Fortnightly';
 }
 
 export interface IOpalFinesDefendantAccountEnforcer {

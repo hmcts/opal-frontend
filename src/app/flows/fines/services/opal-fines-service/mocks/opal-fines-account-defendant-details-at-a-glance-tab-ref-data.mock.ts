@@ -49,15 +49,15 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
     },
     enforcement_status: {
       last_enforcement_action: {
-        last_enforcement_action_id: 'EA-001',
-        last_enforcement_action_title: 'Warrant Issued',
+        enforcement_action_id: 'EA-001',
+        enforcement_action_title: 'Warrant Issued',
       },
       collection_order_made: true,
       default_days_in_jail: 0,
       enforcement_override: {
         enforcement_override_result: {
           enforcement_override_result_id: 'EOR-001',
-          enforcement_override_result_name: 'Override Approved',
+          enforcement_override_result_title: 'Override Approved',
         },
         enforcer: {
           enforcer_id: 10,
