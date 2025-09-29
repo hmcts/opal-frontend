@@ -4,11 +4,15 @@ import { FinesSaStore } from '../../stores/fines-sa.store';
 import { FINES_SA_ROUTING_PATHS } from '../../routing/constants/fines-sa-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesSaStoreType } from '../../stores/types/fines-sa.type';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MOCK } from './mocks/fines-sa-search-account-form.mock';
 import { of } from 'rxjs';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from './constants/fines-sa-search-account-state.constant';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -19,6 +23,9 @@ describe('FinesSaSearchAccountComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountComponent],
       providers: [
+        provideRouter([]),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -55,6 +62,31 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(
       [`${FINES_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.root}/${FINES_SA_ROUTING_PATHS.children.results}`],
       {},
+    );
+  });
+
+  it('should handle form submit when major creditor', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'navigateToMajorCreditor').and.callThrough();
+    const mockForm = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
+      formData: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
+        fsa_search_account_major_creditors_search_criteria: {
+          fsa_search_account_major_creditors_major_creditor_id: 1,
+        },
+      },
+    };
+    mockFinesSaStore.setActiveTab('majorCreditors');
+
+    component.handleSearchAccountSubmit(mockForm);
+    expect(mockFinesSaStore.searchAccount()).toEqual(mockForm.formData);
+    expect(routerSpy).not.toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(
+      mockForm.formData.fsa_search_account_major_creditors_search_criteria!
+        .fsa_search_account_major_creditors_major_creditor_id!,
     );
   });
 
@@ -141,7 +173,7 @@ describe('FinesSaSearchAccountComponent', () => {
     // Override the activated route snapshot with custom refData
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['activatedRoute'] = {
-      snapshot: { data: { businessUnits: { refData } } },
+      snapshot: { data: { businessUnits: { refData }, majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } },
       parent: 'search',
       fragment: of('individuals'),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -170,5 +202,25 @@ describe('FinesSaSearchAccountComponent', () => {
 
     expect(setSpy).not.toHaveBeenCalled();
     expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids).toEqual([123]);
+  });
+
+  it('getAccountEnquiryUrl should return the correct URL for account enquiry', () => {
+    const accountId = 123;
+    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_ROUTING_PATHS.children.details}`;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = (component as any).getAccountEnquiryUrl(accountId);
+    expect(result).toEqual(expectedUrl);
+  });
+
+  it('navigateToMajorCreditor should open a new tab with the correct URL', () => {
+    const accountId = 456;
+    const routerSpy = spyOn(component['router'], 'serializeUrl').and.returnValue('mockUrl');
+    const windowOpenSpy = spyOn(window, 'open');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).navigateToMajorCreditor(accountId);
+
+    expect(routerSpy).toHaveBeenCalled();
+    expect(windowOpenSpy).toHaveBeenCalledWith('mockUrl', '_blank');
   });
 });
