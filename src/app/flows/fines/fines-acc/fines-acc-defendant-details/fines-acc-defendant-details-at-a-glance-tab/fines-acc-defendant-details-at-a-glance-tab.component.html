@@ -6,8 +6,8 @@
         <hr [class]="style.hr" />
 
         @if (
-          tabData.language_preferences?.document_language?.language_code === languages.CY ||
-          tabData.language_preferences?.hearing_language?.language_code === languages.CY
+          tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
+          tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
         ) {
           <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-!-margin-bottom-2'" tagId="enforcement_status">{{
             languages.CY
@@ -81,7 +81,7 @@
             {{ tabData.address.address_line_5 }}
           }
           <br />
-          {{ tabData.address.post_code | uppercase }}
+          {{ tabData.address.postcode | uppercase }}
         </p>
 
         @if (!tabData.party_details.organisation_flag) {
@@ -96,15 +96,19 @@
         }
 
         @if (
-          tabData.language_preferences?.document_language?.language_code === languages.CY ||
-          tabData.language_preferences?.hearing_language?.language_code === languages.CY
+          tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
+          tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
         ) {
           <h2 [class]="style.heading">Language preferences</h2>
           <hr [class]="style.hr" />
           <h3 [class]="style.key">Document language</h3>
-          <p [class]="style.value">{{ tabData.language_preferences?.document_language?.language_display_name }}</p>
+          <p [class]="style.value">
+            {{ tabData.language_preferences?.document_language_preference?.language_display_name }}
+          </p>
           <h3 [class]="style.key">Court hearing language</h3>
-          <p [class]="style.value">{{ tabData.language_preferences?.hearing_language?.language_display_name }}</p>
+          <p [class]="style.value">
+            {{ tabData.language_preferences?.hearing_language_preference?.language_display_name }}
+          </p>
         }
       </div>
 
@@ -156,8 +160,8 @@
         <opal-lib-govuk-tag
           [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
           tagId="enforcement_status"
-          >{{ tabData.enforcement_status.last_enforcement_action?.enforcement_action_id }} ({{
-            tabData.enforcement_status.last_enforcement_action?.enforcement_action_title
+          >{{ tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_id }} ({{
+            tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_title
           }})</opal-lib-govuk-tag
         >
         @if (tabData.enforcement_status.collection_order_made) {
@@ -189,7 +193,7 @@
           <p [class]="style.value">
             {{
               tabData.enforcement_status.enforcement_override?.enforcement_override_result
-                ?.enforcement_override_result_title
+                ?.enforcement_override_result_name
             }}
             {{
               tabData.enforcement_status.enforcement_override?.enforcement_override_result
@@ -214,30 +218,30 @@
         <h2 [class]="style.heading">Comments</h2>
         <hr [class]="style.hr" />
         @if (
-          tabData.comment_and_notes?.account_comment ||
-          tabData.comment_and_notes?.free_text_note_1 ||
-          tabData.comment_and_notes?.free_text_note_2 ||
-          tabData.comment_and_notes?.free_text_note_3
+          tabData.comments_and_notes?.account_comment ||
+          tabData.comments_and_notes?.free_text_note_1 ||
+          tabData.comments_and_notes?.free_text_note_2 ||
+          tabData.comments_and_notes?.free_text_note_3
         ) {
           <h3 [class]="style.key">Comment</h3>
-          <p [class]="style.value">{{ tabData.comment_and_notes?.account_comment ?? '-' }}</p>
+          <p [class]="style.value">{{ tabData.comments_and_notes?.account_comment ?? '-' }}</p>
           <h3 [class]="style.key">Free text notes</h3>
           @if (
-            tabData.comment_and_notes?.free_text_note_1 ||
-            tabData.comment_and_notes?.free_text_note_2 ||
-            tabData.comment_and_notes?.free_text_note_3
+            tabData.comments_and_notes?.free_text_note_1 ||
+            tabData.comments_and_notes?.free_text_note_2 ||
+            tabData.comments_and_notes?.free_text_note_3
           ) {
             <p [class]="style.value">
-              @if (tabData.comment_and_notes?.free_text_note_1) {
-                {{ tabData.comment_and_notes?.free_text_note_1 }}
+              @if (tabData.comments_and_notes?.free_text_note_1) {
+                {{ tabData.comments_and_notes?.free_text_note_1 }}
                 <br />
               }
-              @if (tabData.comment_and_notes?.free_text_note_2) {
-                {{ tabData.comment_and_notes?.free_text_note_2 }}
+              @if (tabData.comments_and_notes?.free_text_note_2) {
+                {{ tabData.comments_and_notes?.free_text_note_2 }}
                 <br />
               }
-              @if (tabData.comment_and_notes?.free_text_note_3) {
-                {{ tabData.comment_and_notes?.free_text_note_3 }}
+              @if (tabData.comments_and_notes?.free_text_note_3) {
+                {{ tabData.comments_and_notes?.free_text_note_3 }}
               }
             </p>
           } @else {

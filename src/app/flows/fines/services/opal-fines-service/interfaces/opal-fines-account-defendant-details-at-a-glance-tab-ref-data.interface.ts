@@ -32,12 +32,12 @@ interface IOpalFinesDefendantAccountAddress {
   address_line_3: string | null;
   address_line_4: string | null;
   address_line_5: string | null;
-  post_code: string | null;
+  postcode: string | null;
 }
 
 interface IOpalFinesDefendantAccountLanguagePreferences {
-  document_language: IOpalFinesDefendantAccountLanguagePreference | null;
-  hearing_language: IOpalFinesDefendantAccountLanguagePreference | null;
+  document_language_preference: IOpalFinesDefendantAccountLanguagePreference | null;
+  hearing_language_preference: IOpalFinesDefendantAccountLanguagePreference | null;
 }
 
 interface IOpalFinesDefendantAccountLanguagePreference {
@@ -46,8 +46,8 @@ interface IOpalFinesDefendantAccountLanguagePreference {
 }
 
 interface IOpalFinesDefendantAccountInstalmentPeriod {
-  installment_period_code: 'W' | 'M' | 'F';
-  installment_period_display_name: 'Weekly' | 'Monthly' | 'Fortnightly';
+  instalment_period_code: 'W' | 'M' | 'F';
+  instalment_period_display_name: 'Weekly' | 'Monthly' | 'Fortnightly';
 }
 
 interface IOpalFinesDefendantAccountEnforcer {
@@ -62,7 +62,7 @@ interface IOpalFinesDefendantAccountLja {
 
 interface IOpalFinesDefendantAccountEnforcementOverrideResult {
   enforcement_override_result_id: string;
-  enforcement_override_result_title: string;
+  enforcement_override_result_name: string;
 }
 
 interface IOpalFinesDefendantAccountEnforcementOverride {
@@ -79,8 +79,8 @@ interface IOpalFinesDefendantAccountNotes {
 }
 
 interface IOpalFinesDefendantAccountEnforcementAction {
-  enforcement_action_id: string;
-  enforcement_action_title: string;
+  last_enforcement_action_id: string;
+  last_enforcement_action_title: string;
 }
 
 interface IOpalFinesDefendantAccountEnforcementStatus {
@@ -122,5 +122,5 @@ export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
   language_preferences: IOpalFinesDefendantAccountLanguagePreferences | null;
   payment_terms: IOpalFinesDefendantAccountPaymentTermsSummary;
   enforcement_status: IOpalFinesDefendantAccountEnforcementStatus;
-  comment_and_notes: IOpalFinesDefendantAccountNotes | null;
+  comments_and_notes: IOpalFinesDefendantAccountNotes | null;
 }

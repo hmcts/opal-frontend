@@ -6,11 +6,14 @@ import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
+import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesAccPayloadService {
+  private readonly transformationService = inject(TransformationService);
   private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
 
@@ -88,5 +91,18 @@ export class FinesAccPayloadService {
         account_free_note_3: formState.facc_add_free_text_3 || null,
       },
     };
+
+   * Transforms the given finesMacPayload object by applying the transformations
+   * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
+   *
+   * @param finesAccPayload - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  public transformPayload<T extends { [key: string]: any }>(
+    finesAccPayload: T,
+    transformItemsConfig: ITransformItem[],
+  ): T {
+    return this.transformationService.transformObjectValues(finesAccPayload, transformItemsConfig);
   }
 }
