@@ -152,8 +152,8 @@
     "cypress-multi-reporters": "^2.0.0",
     "cypress-parallel": "^0.15.0",
     "eslint": "^9.0.0",
-    "jasmine-core": "~5.10.0",
-    "junit-report-merger": "^7.0.0",
+    "jasmine-core": "~5.11.0",
+    "junit-report-merger": "^8.0.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
@@ -171,8 +171,8 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "@cucumber/messages": "^28.0.0",
-    "cookie": "^0.7.0",
+    "@cucumber/messages": "^29.0.0",
+    "cookie": "^1.0.0",
     "on-headers": "^1.1.0",
     "brace-expansion": "^2.0.2",
     "tmp": "^0.2.4",
