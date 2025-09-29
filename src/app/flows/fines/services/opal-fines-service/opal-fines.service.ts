@@ -501,10 +501,7 @@ export class OpalFines {
         .get<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData>) => {
-            const payload = this.payloadService.transformPayload(
-              response.body!,
-              FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
-            ) as IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData;
+            const payload = this.payloadService.transformPayload(response.body!, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             const version = this.extractEtagVersion(response.headers);
             return {
               ...payload,
@@ -534,7 +531,6 @@ export class OpalFines {
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantDetailsDefendantTabRefData> {
     if (!this.accountDetailsCache$['defendant']) {
-      // TODO: Pass through party_id
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       this.accountDetailsCache$['defendant'] = this.http
         .get<IOpalFinesAccountDefendantDetailsDefendantTabRefData>(url, { observe: 'response' })
@@ -565,10 +561,9 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountEnforcementTabData(): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
-    if (!this.accountDetailsCache$['enforcement']) {
-      this.accountDetailsCache$['enforcement'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-    }
-    return this.accountDetailsCache$['enforcement'];
+    return (
+      this.accountDetailsCache$['enforcement'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK)
+    );
   }
 
   /**
@@ -581,10 +576,9 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountImpositionsTabData(): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
-    if (!this.accountDetailsCache$['impositions']) {
-      this.accountDetailsCache$['impositions'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    }
-    return this.accountDetailsCache$['impositions'];
+    return (
+      this.accountDetailsCache$['impositions'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK)
+    );
   }
 
   /**
@@ -597,12 +591,10 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountHistoryAndNotesTabData(): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
-    if (!this.accountDetailsCache$['history-and-notes']) {
-      this.accountDetailsCache$['history-and-notes'] = of(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK,
-      );
-    }
-    return this.accountDetailsCache$['history-and-notes'];
+    return (
+      this.accountDetailsCache$['history-and-notes'] ??
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)
+    );
   }
 
   /**
@@ -615,12 +607,10 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountPaymentTermsTabData(): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {
-    if (!this.accountDetailsCache$['payment-terms']) {
-      this.accountDetailsCache$['payment-terms'] = of(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK,
-      );
-    }
-    return this.accountDetailsCache$['payment-terms'];
+    return (
+      this.accountDetailsCache$['payment-terms'] ??
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK)
+    );
   }
 
   /**
