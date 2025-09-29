@@ -3,11 +3,14 @@ import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-paylo
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
+import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesAccPayloadService {
+  private readonly transformationService = inject(TransformationService);
   private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
 
@@ -43,5 +46,20 @@ export class FinesAccPayloadService {
       business_unit_user_id: business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
+  }
+
+  /**
+   * Transforms the given finesMacPayload object by applying the transformations
+   * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
+   *
+   * @param finesAccPayload - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  public transformPayload<T extends { [key: string]: any }>(
+    finesAccPayload: T,
+    transformItemsConfig: ITransformItem[],
+  ): T {
+    return this.transformationService.transformObjectValues(finesAccPayload, transformItemsConfig);
   }
 }

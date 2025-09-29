@@ -102,9 +102,13 @@
           <h2 [class]="style.heading">Language preferences</h2>
           <hr [class]="style.hr" />
           <h3 [class]="style.key">Document language</h3>
-          <p [class]="style.value">{{ tabData.language_preferences?.document_language_preference?.language_display_name }}</p>
+          <p [class]="style.value">
+            {{ tabData.language_preferences?.document_language_preference?.language_display_name }}
+          </p>
           <h3 [class]="style.key">Court hearing language</h3>
-          <p [class]="style.value">{{ tabData.language_preferences?.hearing_language_preference?.language_display_name }}</p>
+          <p [class]="style.value">
+            {{ tabData.language_preferences?.hearing_language_preference?.language_display_name }}
+          </p>
         }
       </div>
 
