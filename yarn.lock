@@ -2769,15 +2769,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/messages@npm:^28.0.0":
-  version: 28.1.0
-  resolution: "@cucumber/messages@npm:28.1.0"
+"@cucumber/messages@npm:^29.0.0":
+  version: 29.0.1
+  resolution: "@cucumber/messages@npm:29.0.1"
   dependencies:
-    "@types/uuid": "npm:10.0.0"
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-    uuid: "npm:11.1.0"
-  checksum: 10/563620f57e4da9c6680b4bc0d37a3e97624117ca52eea3f2be7c1fccb54c0825b94c541285437de33715b0c62a32702d147b21a72b20065aea6e3a23e7df396d
+  checksum: 10/b8e10c4bb5adb6109cdae3034fc38656a89328a455b00894a24de70f2f1491bb00ce6eba6305e0e3ff6e3d3e3ec0142799a0b97ada4eb5b9cb4d4bdbb868a85f
   languageName: node
   linkType: hard
 
@@ -5547,13 +5545,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:10.0.0":
-  version: 10.0.0
-  resolution: "@types/uuid@npm:10.0.0"
-  checksum: 10/e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
-  languageName: node
-  linkType: hard
-
 "@types/ws@npm:^8.5.10":
   version: 8.5.11
   resolution: "@types/ws@npm:8.5.11"
@@ -7562,14 +7553,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^12.0.0, commander@npm:^12.1.0, commander@npm:~12.1.0":
+"commander@npm:^12.0.0, commander@npm:^12.1.0":
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
   languageName: node
   linkType: hard
 
-"commander@npm:^14.0.0":
+"commander@npm:^14.0.0, commander@npm:~14.0.0":
   version: 14.0.1
   resolution: "commander@npm:14.0.1"
   checksum: 10/783115e9403caeca29c0fcbd4e0358f70c67760e4e4933f3453fcdd5ddba2ec44173c8da5213d7ce5e404f51c7e71203a42c548164dbe27b668b32a8981577f1
@@ -7781,10 +7772,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:^0.7.0":
-  version: 0.7.2
-  resolution: "cookie@npm:0.7.2"
-  checksum: 10/24b286c556420d4ba4e9bc09120c9d3db7d28ace2bd0f8ccee82422ce42322f73c8312441271e5eefafbead725980e5996cc02766dbb89a90ac7f5636ede608f
+"cookie@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "cookie@npm:1.0.2"
+  checksum: 10/f5817cdc84d8977761b12549eba29435e675e65c7fef172bc31737788cd8adc83796bf8abe6d950554e7987325ad2d9ac2971c5bd8ff0c4f81c145f82e4ab1be
   languageName: node
   linkType: hard
 
@@ -9585,7 +9576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.3.2, fast-glob@npm:~3.3.0":
+"fast-glob@npm:^3.3.2":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -10407,9 +10398,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.11.2
-  resolution: "govuk-frontend@npm:5.11.2"
-  checksum: 10/e376ab5754ec5df38aedc8891a65f6758b9bf64f44ab1f84044a68dec1e6355c361f815e7a3044bcc8b8332f5a5afb239e855b5d890a82d53e9a1a9fc818d725
+  version: 5.12.0
+  resolution: "govuk-frontend@npm:5.12.0"
+  checksum: 10/966974213fc243327217112d6113cc07957dbd55496e8e3beecac74dc92b243b0fa7d5368a17ea6e4f3dd7066f3cb969f5891f278b3aada0541c37dde5aa8054
   languageName: node
   linkType: hard
 
@@ -11542,10 +11533,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.10.0":
-  version: 5.10.0
-  resolution: "jasmine-core@npm:5.10.0"
-  checksum: 10/6164ce33d6d8ebb298756cab263bf5c78410b0ed6a53893ce2b5b2f19d9a8f0901aaa491af3370e332f80854cf6b59061506772044433267dbc785a22c5373b3
+"jasmine-core@npm:~5.11.0":
+  version: 5.11.0
+  resolution: "jasmine-core@npm:5.11.0"
+  checksum: 10/9b247cca602f8ab08669b697ae057b2fafc8bd09101bca72ac251749f4c3200bc45e6de2b44b0fc1ea6c9a0b95cc474a358b0c8fca9a880512a5fe96480714a6
   languageName: node
   linkType: hard
 
@@ -11795,17 +11786,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"junit-report-merger@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "junit-report-merger@npm:7.0.1"
+"junit-report-merger@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "junit-report-merger@npm:8.0.0"
   dependencies:
-    commander: "npm:~12.1.0"
-    fast-glob: "npm:~3.3.0"
+    commander: "npm:~14.0.0"
+    tinyglobby: "npm:^0.2.15"
     xmlbuilder2: "npm:3.1.1"
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 10/b33e7c5a45b6a41dfb8725ce86573aefbbf530394965b6fe67aa8b2e4d7744ce9a640c53a989c36c60cea06e4f6a5011525534f55db1bb3fbfaf84ff8cf440cf
+  checksum: 10/25e467fb3fc71f16c6881fb5900221cd8de28bd49a024d14b3fdb4315a9531cf86d5e042e3977c5c63d914ed371c46de97d0145a6124b400666e6be37128697d
   languageName: node
   linkType: hard
 
@@ -13683,8 +13674,8 @@ __metadata:
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
-    jasmine-core: "npm:~5.10.0"
-    junit-report-merger: "npm:^7.0.0"
+    jasmine-core: "npm:~5.11.0"
+    junit-report-merger: "npm:^8.0.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.2.0"
     karma-coverage: "npm:~2.2.0"
@@ -17093,15 +17084,6 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
-  languageName: node
-  linkType: hard
-
-"uuid@npm:11.1.0":
-  version: 11.1.0
-  resolution: "uuid@npm:11.1.0"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/d2da43b49b154d154574891ced66d0c83fc70caaad87e043400cf644423b067542d6f3eb641b7c819224a7cd3b4c2f21906acbedd6ec9c6a05887aa9115a9cf5
   languageName: node
   linkType: hard
 
