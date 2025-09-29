@@ -22,14 +22,14 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
       address_line_3: null,
       address_line_4: null,
       address_line_5: null,
-      post_code: 'AB12 3CD',
+      postcode: 'AB12 3CD',
     },
     language_preferences: {
-      document_language: {
+      document_language_preference: {
         language_code: 'EN',
         language_display_name: 'English only',
       },
-      hearing_language: {
+      hearing_language_preference: {
         language_code: 'CY',
         language_display_name: 'Welsh and English',
       },
@@ -41,23 +41,23 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
       },
       effective_date: '01/01/2024',
       instalment_period: {
-        installment_period_code: 'M',
-        installment_period_display_name: 'Monthly',
+        instalment_period_code: 'M',
+        instalment_period_display_name: 'Monthly',
       },
       lump_sum_amount: 1000,
       instalment_amount: 100,
     },
     enforcement_status: {
       last_enforcement_action: {
-        enforcement_action_id: 'EA-001',
-        enforcement_action_title: 'Warrant Issued',
+        last_enforcement_action_id: 'EA-001',
+        last_enforcement_action_title: 'Warrant Issued',
       },
       collection_order_made: true,
       default_days_in_jail: 0,
       enforcement_override: {
         enforcement_override_result: {
           enforcement_override_result_id: 'EOR-001',
-          enforcement_override_result_title: 'Override Approved',
+          enforcement_override_result_name: 'Override Approved',
         },
         enforcer: {
           enforcer_id: 10,
@@ -70,7 +70,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
       },
       last_movement_date: '01/05/2024',
     },
-    comment_and_notes: {
+    comments_and_notes: {
       account_comment: 'Account reviewed.',
       free_text_note_1: 'First note.',
       free_text_note_2: 'Second note.',
