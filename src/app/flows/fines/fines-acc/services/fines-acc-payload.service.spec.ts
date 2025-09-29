@@ -144,6 +144,7 @@ describe('FinesAccPayloadService', () => {
       base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
+      welsh_speaking: header.business_unit_summary.welsh_speaking,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(
@@ -169,6 +170,7 @@ describe('FinesAccPayloadService', () => {
       base_version: header.version,
       business_unit_id: header.business_unit_summary.business_unit_id,
       business_unit_user_id: header.business_unit_summary.business_unit_id,
+      welsh_speaking: header.business_unit_summary.welsh_speaking,
     });
 
     expect(mockMacPayloadService.getBusinessUnitBusinessUserId).toHaveBeenCalledWith(

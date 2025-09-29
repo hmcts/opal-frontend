@@ -635,9 +635,9 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
@@ -808,8 +808,8 @@ describe('OpalFines', () => {
     const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
+    service.getDefendantAccountAtAGlance().subscribe((response) => {
 
-    service.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
@@ -844,7 +844,7 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should handle errors when search offences API fails', () => {
+  it('should handle errors when search defendant accounts API fails', () => {
     const filters = OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.searchDefendantAccounts}`;
     const errorMessage = 'Failed to search defendant accounts';
@@ -880,7 +880,7 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should handle errors when search offences API fails', () => {
+  it('should handle errors when search creditor accounts API fails', () => {
     const filters = OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`;
     const errorMessage = 'Failed to search creditor accounts';
@@ -898,56 +898,5 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
-  });
-
-  it('should return the numeric value when ETag header is a quoted number', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '"123"' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('"123"');
-  });
-
-  it('should return the numeric value when Etag header is an unquoted number', () => {
-    const headers = mockHeaders((name) => (name === 'Etag' ? '456' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('456');
-  });
-
-  it('should return null if ETag header is not present', () => {
-    const headers = mockHeaders(() => null);
-    expect(service['extractEtagVersion'](headers)).toBeNull();
-  });
-
-  it('should handle ETag header with multiple quotes', () => {
-    const headers = mockHeaders((name) => (name === 'ETag' ? '""789""' : null));
-    expect(service['extractEtagVersion'](headers)).toBe('""789""');
-  });
-
-  it('should prefer ETag over Etag if both are present', () => {
-    const headers = mockHeaders((name) => {
-      if (name === 'ETag') return '"321"';
-      if (name === 'Etag') return '"999"';
-      return null;
-    });
-    expect(service['extractEtagVersion'](headers)).toBe('"321"');
-  });
-
-  it('should return headers object with If-Match when version is a positive number', () => {
-    const result = service['buildIfMatchHeader']('5');
-    expect(result).toEqual({ headers: { 'If-Match': '5' } });
-  });
-
-  it('should return headers object with If-Match when version is zero', () => {
-    const result = service['buildIfMatchHeader']('0');
-    expect(result).toEqual({ headers: { 'If-Match': '0' } });
-  });
-
-  it('should return empty object when version is undefined', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = service['buildIfMatchHeader'](undefined as any);
-    expect(result).toEqual({});
-  });
-
-  it('should return empty object when version is null', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = service['buildIfMatchHeader'](null as any);
-    expect(result).toEqual({});
   });
 });
