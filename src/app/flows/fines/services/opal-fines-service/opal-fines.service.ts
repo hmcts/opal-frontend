@@ -474,20 +474,6 @@ export class OpalFines {
    */
   public getDefendantAccountAtAGlance(): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
     if (!this.accountDetailsCache$['at-a-glance']) {
-      // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountid}/${tab}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
-      // this.accountDetailsCache$[tab] = this.http
-      //   .get<IOpalFinesAccountDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
-      //   .pipe(
-      //     map((response: HttpResponse<IOpalFinesAccountDetailsAtAGlanceTabRefData>) => {
-      //       const payload = response.body as IOpalFinesAccountDetailsAtAGlanceTabRefData;
-      //       const version = this.extractEtagVersion(response.headers);
-      //       return {
-      //         ...payload,
-      //         version,
-      //       };
-      //     }),
-      //     shareReplay(1)
-      //   );
       this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
     }
 
