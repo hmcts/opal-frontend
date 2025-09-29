@@ -1,3 +1,3 @@
 export interface IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData {
-  version: number | undefined;
+  version: string | null;
 }
