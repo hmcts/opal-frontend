@@ -1,4 +1,4 @@
-Feature: Account Search and Matches
+Feature: Account Enquiries - View Account Details
 
     Background:
         Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
