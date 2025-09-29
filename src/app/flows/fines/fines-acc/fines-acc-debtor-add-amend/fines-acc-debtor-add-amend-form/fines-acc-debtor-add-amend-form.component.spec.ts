@@ -20,10 +20,10 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj('DateService', [
-      'isValidDate', 
-      'calculateAge', 
-      'getPreviousDate', 
-      'getAgeObject'
+      'isValidDate',
+      'calculateAge',
+      'getPreviousDate',
+      'getAgeObject',
     ]);
 
     // Create a mock store with signal methods
