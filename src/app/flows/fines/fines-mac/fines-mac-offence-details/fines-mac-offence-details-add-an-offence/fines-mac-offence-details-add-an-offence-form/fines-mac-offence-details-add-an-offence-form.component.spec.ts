@@ -81,7 +81,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
 
     component.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
-    component.majorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    component.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    component.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
 
     spyOn(AbstractFormArrayBaseComponent.prototype, 'handleFormSubmit').and.callThrough();
 
@@ -674,5 +675,71 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['updateOffenceDetailsDraft'](FINES_MAC_OFFENCE_DETAILS_STATE);
 
     expect(component['finesMacOffenceDetailsStore'].setOffenceDetailsDraft).toHaveBeenCalled();
+  });
+  it('should map major creditor items by result code when Inputs are set', () => {
+    // Arrange distinct lists so assertions are meaningful
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const compList = [{ text: 'COMP 1', value: 'COMP_1' } as any];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const costList = [{ text: 'COST 1', value: 'COST_1' } as any];
+
+    // Act: use the @Input() setters
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.fcompMajorCreditorItems = compList as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.fcostMajorCreditorItems = costList as any;
+
+    // Assert: the per-code cache is populated once per code
+    expect(component.majorCreditorItemsByCode[FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation]).toEqual(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      compList as any,
+    );
+    expect(component.majorCreditorItemsByCode[FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs]).toEqual(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      costList as any,
+    );
+  });
+
+  it('should seed and update currentResultCodeByRow, and resolve items via code map', () => {
+    // Fresh draft so listeners are wired for index 0
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
+    component.ngOnInit();
+
+    // Distinct arrays for clarity
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const compList = [{ text: 'COMP A', value: 'COMP_A' } as any];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const costList = [{ text: 'COST A', value: 'COST_A' } as any];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.fcompMajorCreditorItems = compList as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.fcostMajorCreditorItems = costList as any;
+
+    const index = 0;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`] as FormControl;
+
+    // Seed with FCOST (costs)
+    resultCodeControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).resultCodeListener(index);
+
+    // Expect seed stored the code
+    expect(component.currentResultCodeByRow[index]).toBe(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+    // And items can be resolved through the map
+    expect(component.majorCreditorItemsByCode[component.currentResultCodeByRow[index] as string]).toEqual(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      costList as any,
+    );
+
+    // Update to FCOMP (compensation)
+    resultCodeControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation);
+
+    expect(component.currentResultCodeByRow[index]).toBe(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation);
+    expect(component.majorCreditorItemsByCode[component.currentResultCodeByRow[index] as string]).toEqual(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      compList as any,
+    );
   });
 });
