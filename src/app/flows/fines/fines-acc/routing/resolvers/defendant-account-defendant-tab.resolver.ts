@@ -5,7 +5,6 @@ import { map } from 'rxjs';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import {
-  IFinesAccDebtorAddAmendForm,
   IFinesAccDebtorAddAmendFormData,
 } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-form.interface';
 

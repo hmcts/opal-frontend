@@ -7,6 +7,8 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
+import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -105,5 +107,185 @@ describe('FinesAccPayloadService', () => {
     );
     expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
+  });
+
+  describe('transformDefendantDataToDebtorForm', () => {
+    it('should transform complete defendant data to debtor form', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      );
+
+      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+
+      const { defendant_account_party } = mockDefendantData;
+      const { party_details, address, contact_details, vehicle_details, employer_details, language_preferences } =
+        defendant_account_party;
+      const individualDetails = party_details.individual_details;
+
+      expect(result.facc_debtor_add_amend_title).toBe(individualDetails?.title || null);
+      expect(result.facc_debtor_add_amend_forenames).toBe(individualDetails?.forenames || null);
+      expect(result.facc_debtor_add_amend_surname).toBe(individualDetails?.surname || null);
+      expect(result.facc_debtor_add_amend_dob).toBe(individualDetails?.date_of_birth || null);
+      expect(result.facc_debtor_add_amend_national_insurance_number).toBe(
+        individualDetails?.national_insurance_number || null,
+      );
+      expect(result.facc_debtor_add_amend_address_line_1).toBe(address?.address_line_1 || null);
+      expect(result.facc_debtor_add_amend_address_line_2).toBe(address?.address_line_2 || null);
+      expect(result.facc_debtor_add_amend_address_line_3).toBe(address?.address_line_3 || null);
+      expect(result.facc_debtor_add_amend_post_code).toBe(address?.post_code || null);
+      expect(result.facc_debtor_add_amend_contact_email_address_1).toBe(contact_details?.primary_email_address || null);
+      expect(result.facc_debtor_add_amend_contact_email_address_2).toBe(
+        contact_details?.secondary_email_address || null,
+      );
+      expect(result.facc_debtor_add_amend_contact_telephone_number_mobile).toBe(
+        contact_details?.mobile_telephone_number || null,
+      );
+      expect(result.facc_debtor_add_amend_contact_telephone_number_home).toBe(
+        contact_details?.home_telephone_number || null,
+      );
+      expect(result.facc_debtor_add_amend_contact_telephone_number_business).toBe(
+        contact_details?.work_telephone_number || null,
+      );
+      expect(result.facc_debtor_add_amend_vehicle_make).toBe(vehicle_details?.vehicle_make_and_model || null);
+      expect(result.facc_debtor_add_amend_vehicle_registration_mark).toBe(
+        vehicle_details?.vehicle_registration || null,
+      );
+    });
+
+    it('should handle aliases transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      );
+
+      // Add aliases to the mock data
+      if (mockDefendantData.defendant_account_party.party_details.individual_details) {
+        mockDefendantData.defendant_account_party.party_details.individual_details.individual_aliases = [
+          {
+            alias_number: '1',
+            sequence_number: 1,
+            alias_forenames: 'Johnny',
+            alias_surname: 'Smith',
+          },
+          {
+            alias_number: '2',
+            sequence_number: 2,
+            alias_forenames: 'Jon',
+            alias_surname: 'Doe',
+          },
+        ];
+      }
+
+      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+
+      expect(result.facc_debtor_add_amend_aliases).toEqual([
+        {
+          facc_debtor_add_amend_alias_forenames: 'Johnny',
+          facc_debtor_add_amend_alias_surname: 'Smith',
+        },
+        {
+          facc_debtor_add_amend_alias_forenames: 'Jon',
+          facc_debtor_add_amend_alias_surname: 'Doe',
+        },
+      ]);
+      expect(result.facc_debtor_add_amend_add_alias).toBe(false);
+    });
+
+    it('should handle employer details transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      );
+
+      // Add employer details to the mock data
+      mockDefendantData.defendant_account_party.employer_details = {
+        employer_name: 'Test Company Ltd',
+        employer_reference: 'EMP123',
+        employer_email_address: 'hr@testcompany.com',
+        employer_telephone_number: '01234567890',
+        employer_address: {
+          address_line_1: '123 Business Park',
+          address_line_2: 'Business District',
+          address_line_3: 'City Center',
+          address_line_4: 'County',
+          address_line_5: 'Region',
+          post_code: 'BU5 1NE',
+        },
+      };
+
+      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+
+      expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBe('Test Company Ltd');
+      expect(result.facc_debtor_add_amend_employer_details_employer_reference).toBe('EMP123');
+      expect(result.facc_debtor_add_amend_employer_details_employer_email_address).toBe('hr@testcompany.com');
+      expect(result.facc_debtor_add_amend_employer_details_employer_telephone_number).toBe('01234567890');
+      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_1).toBe('123 Business Park');
+      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_2).toBe('Business District');
+      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_3).toBe('City Center');
+      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_4).toBe('County');
+      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_5).toBe('Region');
+      expect(result.facc_debtor_add_amend_employer_details_employer_post_code).toBe('BU5 1NE');
+    });
+
+    it('should handle language preferences transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      );
+
+      // Add language preferences to the mock data
+      mockDefendantData.defendant_account_party.language_preferences = {
+        document_language: {
+          language_code: 'CY',
+          language_display_name: 'Welsh and English',
+        },
+        hearing_language: {
+          language_code: 'EN',
+          language_display_name: 'English only',
+        },
+      };
+
+      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+
+      expect(result.facc_debtor_add_amend_language_preferences_document_language).toBe('CY');
+      expect(result.facc_debtor_add_amend_language_preferences_hearing_language).toBe('EN');
+    });
+
+    it('should handle null and undefined values gracefully', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      );
+
+      // Set all optional fields to null
+      mockDefendantData.defendant_account_party.party_details.individual_details = null;
+      mockDefendantData.defendant_account_party.address = {
+        address_line_1: '',
+        address_line_2: null,
+        address_line_3: null,
+        address_line_4: null,
+        address_line_5: null,
+        post_code: '',
+      };
+      mockDefendantData.defendant_account_party.contact_details = {
+        primary_email_address: null,
+        secondary_email_address: null,
+        mobile_telephone_number: null,
+        home_telephone_number: null,
+        work_telephone_number: null,
+      };
+      mockDefendantData.defendant_account_party.vehicle_details = null;
+      mockDefendantData.defendant_account_party.employer_details = null;
+      mockDefendantData.defendant_account_party.language_preferences = null;
+
+      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+
+      expect(result.facc_debtor_add_amend_title).toBeNull();
+      expect(result.facc_debtor_add_amend_forenames).toBeNull();
+      expect(result.facc_debtor_add_amend_surname).toBeNull();
+      expect(result.facc_debtor_add_amend_aliases).toEqual([]);
+      expect(result.facc_debtor_add_amend_address_line_1).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_debtor_add_amend_address_line_2).toBeNull();
+      expect(result.facc_debtor_add_amend_post_code).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
+      expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBeNull();
+      expect(result.facc_debtor_add_amend_language_preferences_document_language).toBeNull();
+    });
   });
 });

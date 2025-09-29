@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  computed,
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,7 +14,6 @@ import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/comp
 import { IFinesAccDebtorAddAmendFieldErrors } from '../interfaces/fines-acc-debtor-add-amend-field-errors.interface';
 import {
   IFinesAccDebtorAddAmendFormData,
-  IFinesAccDebtorAddAmendForm,
   IFinesAccDebtorAddAmendAlias,
 } from '../interfaces/fines-acc-debtor-add-amend-form.interface';
 import { FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS } from '../constants/fines-acc-debtor-add-amend-field-errors.constant';
@@ -82,7 +82,7 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     MojTicketPanelComponent,
     CapitalisationDirective,
   ],
-  templateUrl: './fines-acc-debtor-add-amend-form.html',
+  templateUrl: './fines-acc-debtor-add-amend-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
@@ -102,7 +102,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   public age!: number;
   public ageLabel!: string;
   public readonly partyTypes = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES;
-  public showLanguagePreferences: boolean = false;
+  protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
@@ -278,17 +278,6 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-    this.setupLanguagePreferences();
-  }
-
-  /**
-   * Sets up language preferences visibility based on business unit.
-   * TODO: Enhance to fetch business unit data from store/service to check welsh_language property
-   */
-  private setupLanguagePreferences(): void {
-    // For now, set to false. This should be enhanced to check if business unit has welsh_language = true
-    // this.showLanguagePreferences = businessUnit.welsh_language;
-    this.showLanguagePreferences = false;
   }
 
   /**
