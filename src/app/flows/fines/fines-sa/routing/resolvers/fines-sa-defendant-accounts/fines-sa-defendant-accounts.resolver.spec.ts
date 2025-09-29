@@ -43,6 +43,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   it('prioritises account number', async () => {
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_number: 'ACC-1',
       fsa_search_account_reference_case_number: 'PCR-2',
     });
@@ -66,6 +67,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   it('uses PCR when account number is absent', async () => {
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_reference_case_number: 'PCR-9',
     });
     finesSaStore.setActiveTab('individuals');
@@ -88,6 +90,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   it('builds individual payload when activeTab = individuals and criteria present', async () => {
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_last_name: 'Doe',
         fsa_search_account_individuals_last_name_exact_match: true,
@@ -132,6 +135,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
   it('builds company payload when activeTab = companies and criteria present', async () => {
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_companies_search_criteria: {
         fsa_search_account_companies_company_name: 'ACME Ltd',
         fsa_search_account_companies_company_name_exact_match: true,
@@ -173,6 +177,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // active flag omitted -> resolver should send true by default
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_active_accounts_only: null,
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_last_name: 'Default',
@@ -194,6 +199,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // Only individual criteria present but active tab is companies -> falls through to final of({})
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_individuals_search_criteria: {
         fsa_search_account_individuals_last_name: 'X',
       } as never,
@@ -211,6 +217,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // Arrange: company criteria present (so guard passes), but active tab is individuals to miss the company branch
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_companies_search_criteria: {
         fsa_search_account_companies_company_name: 'Fallback Co',
       } as never,
@@ -230,6 +237,7 @@ describe('finesSaDefendantAccountsResolver (store-driven)', () => {
     // Arrange: omit boolean flags so resolver applies `?? false`, and omit active flag so `?? true` kicks in
     finesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
+      fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
       fsa_search_account_active_accounts_only: null,
       fsa_search_account_companies_search_criteria: {
         fsa_search_account_companies_company_name: 'Flagless PLC',
