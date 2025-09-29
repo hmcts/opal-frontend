@@ -49,7 +49,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK: I
         address_line_3: null,
         address_line_4: null,
         address_line_5: null,
-        post_code: 'AB1 2CD',
+        postcode: 'AB1 2CD',
       },
       contact_details: {
         primary_email_address: 'sarah.thompson@example.com',
@@ -73,15 +73,15 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK: I
           address_line_3: null,
           address_line_4: null,
           address_line_5: null,
-          post_code: 'CD3 4EF',
+          postcode: 'CD3 4EF',
         },
       },
       language_preferences: {
-        document_language: {
+        document_language_preference: {
           language_code: 'CY',
           language_display_name: 'Welsh and English',
         },
-        hearing_language: {
+        hearing_language_preference: {
           language_code: 'CY',
           language_display_name: 'Welsh and English',
         },
