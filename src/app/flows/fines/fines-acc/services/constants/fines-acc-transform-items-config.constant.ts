@@ -28,4 +28,6 @@ export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
 // Reverse transformation configuration
 export const FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_birth', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'effective_date', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'last_movement_date', ...MAP_PAYLOAD_DATE_FORMAT },
 ];
