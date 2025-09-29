@@ -637,20 +637,22 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
+    const account_id: number = 77;
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
-    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
 
-    service.getDefendantAccountAtAGlanceTabData().subscribe((response) => {
-      expect(response).toEqual(expectedResponse);
-    });
+    service
+      .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
 
-    // const req = httpMock.expectOne(apiUrl);
-    // expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
 
-    // req.flush(expectedResponse);
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccounDefendantTabData', () => {

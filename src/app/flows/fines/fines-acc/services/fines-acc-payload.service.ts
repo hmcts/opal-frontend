@@ -3,10 +3,11 @@ import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-paylo
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
-import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 import { IFinesAccDebtorAddAmendForm } from '../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-form.interface';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+
 
 @Injectable({
   providedIn: 'root',

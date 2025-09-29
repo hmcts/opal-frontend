@@ -129,7 +129,13 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlanceTabData());
+          this.tabsData[tab] = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountAtAGlanceTabData(
+              account_id,
+              business_unit_id,
+              business_unit_user_id,
+            ),
+          );
           break;
         case 'defendant':
           this.tabsData[tab] = this.fetchTabData(
