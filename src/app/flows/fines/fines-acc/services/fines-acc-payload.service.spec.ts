@@ -132,7 +132,7 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_debtor_add_amend_address_line_1).toBe(address?.address_line_1 || null);
       expect(result.facc_debtor_add_amend_address_line_2).toBe(address?.address_line_2 || null);
       expect(result.facc_debtor_add_amend_address_line_3).toBe(address?.address_line_3 || null);
-      expect(result.facc_debtor_add_amend_post_code).toBe(address?.post_code || null);
+      expect(result.facc_debtor_add_amend_post_code).toBe(address?.postcode || null);
       expect(result.facc_debtor_add_amend_contact_email_address_1).toBe(contact_details?.primary_email_address || null);
       expect(result.facc_debtor_add_amend_contact_email_address_2).toBe(
         contact_details?.secondary_email_address || null,
@@ -207,7 +207,7 @@ describe('FinesAccPayloadService', () => {
           address_line_3: 'City Center',
           address_line_4: 'County',
           address_line_5: 'Region',
-          post_code: 'BU5 1NE',
+          postcode: 'BU5 1NE',
         },
       };
 
@@ -232,11 +232,11 @@ describe('FinesAccPayloadService', () => {
 
       // Add language preferences to the mock data
       mockDefendantData.defendant_account_party.language_preferences = {
-        document_language: {
+        document_language_preference: {
           language_code: 'CY',
           language_display_name: 'Welsh and English',
         },
-        hearing_language: {
+        hearing_language_preference: {
           language_code: 'EN',
           language_display_name: 'English only',
         },
@@ -261,7 +261,7 @@ describe('FinesAccPayloadService', () => {
         address_line_3: null,
         address_line_4: null,
         address_line_5: null,
-        post_code: '',
+        postcode: '',
       };
       mockDefendantData.defendant_account_party.contact_details = {
         primary_email_address: null,

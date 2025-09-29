@@ -19,7 +19,12 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
   let mockFinesAccountStore: any;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj('DateService', ['isValidDate', 'calculateAge', 'getPreviousDate']);
+    mockDateService = jasmine.createSpyObj('DateService', [
+      'isValidDate', 
+      'calculateAge', 
+      'getPreviousDate', 
+      'getAgeObject'
+    ]);
 
     // Create a mock store with signal methods
     mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
@@ -44,6 +49,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       mockDateService.getPreviousDate.and.returnValue('2024-01-01');
       mockDateService.isValidDate.and.returnValue(true);
       mockDateService.calculateAge.and.returnValue(25);
+      mockDateService.getAgeObject.and.returnValue({ value: 25, group: 'Adult' });
     });
 
     it('should create', () => {
@@ -118,21 +124,18 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     });
 
     it('should calculate age when valid date of birth is provided', () => {
-      mockDateService.isValidDate.and.returnValue(true);
-      mockDateService.calculateAge.and.returnValue(30);
+      mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
 
       const dobControl = component.form.get('facc_debtor_add_amend_dob');
       dobControl?.setValue('1994-01-01');
 
-      expect(mockDateService.isValidDate).toHaveBeenCalledWith('1994-01-01');
-      expect(mockDateService.calculateAge).toHaveBeenCalledWith('1994-01-01');
+      expect(mockDateService.getAgeObject).toHaveBeenCalledWith('1994-01-01');
       expect(component.age).toBe(30);
       expect(component.ageLabel).toBe('Adult');
     });
 
     it('should set ageLabel to "Youth" for age under 18', () => {
-      mockDateService.isValidDate.and.returnValue(true);
-      mockDateService.calculateAge.and.returnValue(16);
+      mockDateService.getAgeObject.and.returnValue({ value: 16, group: 'Youth' });
 
       const dobControl = component.form.get('facc_debtor_add_amend_dob');
       dobControl?.setValue('2008-01-01');
@@ -142,13 +145,12 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     });
 
     it('should not calculate age for invalid date', () => {
-      mockDateService.isValidDate.and.returnValue(false);
+      mockDateService.getAgeObject.and.returnValue(null);
 
       const dobControl = component.form.get('facc_debtor_add_amend_dob');
       dobControl?.setValue('invalid-date');
 
-      expect(mockDateService.isValidDate).toHaveBeenCalledWith('invalid-date');
-      expect(mockDateService.calculateAge).not.toHaveBeenCalled();
+      expect(mockDateService.getAgeObject).toHaveBeenCalledWith('invalid-date');
     });
   });
 

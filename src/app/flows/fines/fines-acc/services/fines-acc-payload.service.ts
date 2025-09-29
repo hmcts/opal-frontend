@@ -96,7 +96,7 @@ export class FinesAccPayloadService {
       facc_debtor_add_amend_address_line_1: address?.address_line_1 || null,
       facc_debtor_add_amend_address_line_2: address?.address_line_2 || null,
       facc_debtor_add_amend_address_line_3: address?.address_line_3 || null,
-      facc_debtor_add_amend_post_code: address?.post_code || null,
+      facc_debtor_add_amend_post_code: address?.postcode || null,
       facc_debtor_add_amend_contact_email_address_1: contact_details?.primary_email_address || null,
       facc_debtor_add_amend_contact_email_address_2: contact_details?.secondary_email_address || null,
       facc_debtor_add_amend_contact_telephone_number_mobile: contact_details?.mobile_telephone_number || null,
@@ -105,9 +105,9 @@ export class FinesAccPayloadService {
       facc_debtor_add_amend_vehicle_make: vehicle_details?.vehicle_make_and_model || null,
       facc_debtor_add_amend_vehicle_registration_mark: vehicle_details?.vehicle_registration || null,
       facc_debtor_add_amend_language_preferences_document_language:
-        language_preferences?.document_language?.language_code || null,
+        language_preferences?.document_language_preference?.language_code || null,
       facc_debtor_add_amend_language_preferences_hearing_language:
-        language_preferences?.hearing_language?.language_code || null,
+        language_preferences?.hearing_language_preference?.language_code || null,
       facc_debtor_add_amend_employer_details_employer_company_name: employer_details?.employer_name || null,
       facc_debtor_add_amend_employer_details_employer_reference: employer_details?.employer_reference || null,
       facc_debtor_add_amend_employer_details_employer_email_address: employer_details?.employer_email_address || null,
@@ -123,7 +123,7 @@ export class FinesAccPayloadService {
         employer_details?.employer_address?.address_line_4 || null,
       facc_debtor_add_amend_employer_details_employer_address_line_5:
         employer_details?.employer_address?.address_line_5 || null,
-      facc_debtor_add_amend_employer_details_employer_post_code: employer_details?.employer_address?.post_code || null,
+      facc_debtor_add_amend_employer_details_employer_post_code: employer_details?.employer_address?.postcode || null,
     };
   }
 }
