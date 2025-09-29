@@ -1,5 +1,4 @@
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
-import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
@@ -115,15 +114,19 @@ const buildAccountOffencesImpositionsPayload = (
 };
 
 /**
- * Builds the payload for account offences based on the provided offence details and court details state.
+ * Builds the payload for account offences based on the provided offence details state,
+ * fixed penalty details, and account type.
  *
- * @param offenceDetailsState - An array of offence details form state objects.
- * @param courtDetailsState - The state object containing court details.
- * @returns An array of payload objects for account offences.
+ * @param offenceDetailsState - An array of offence details forms representing the state of offences.
+ * @param fixedPenaltyDetails - (Optional) The fixed penalty details store state, used to build a single offence payload.
+ * @param accountType - (Optional) The type of account, used to determine if fixed penalty details should be used.
+ *
+ * @returns An array of account offences payload objects. If fixed penalty details are provided and the account type
+ *          matches "Fixed Penalty", a single offence payload is returned. Otherwise, the payload is built from the
+ *          offence details state.
  */
 export const finesMacPayloadBuildAccountOffences = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
-  courtDetailsState: IFinesMacCourtDetailsState,
   fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
   accountType?: string | null,
 ): IFinesMacPayloadAccountOffences[] => {
@@ -132,7 +135,7 @@ export const finesMacPayloadBuildAccountOffences = (
     return [
       {
         date_of_sentence: fixedPenaltyDetails.fm_offence_details_date_of_offence,
-        imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id,
+        imposing_court_id: null,
         offence_id: fixedPenaltyDetails.fm_offence_details_offence_id,
         impositions: [
           {
@@ -157,7 +160,7 @@ export const finesMacPayloadBuildAccountOffences = (
     );
     return {
       date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,
-      imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id ?? null,
+      imposing_court_id: null,
       offence_id: offence.formData.fm_offence_details_offence_id ?? null,
       impositions: impositions.length ? impositions : null,
     };

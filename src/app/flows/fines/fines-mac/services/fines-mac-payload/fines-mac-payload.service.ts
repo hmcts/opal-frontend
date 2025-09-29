@@ -121,13 +121,7 @@ export class FinesMacPayloadService {
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(
-      offenceDetailsForms,
-      courtDetailsState,
-
-      fixedPenaltyDetails,
-      accountType,
-    );
+    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, fixedPenaltyDetails, accountType);
 
     // Return our payload object
     return {
