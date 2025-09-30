@@ -4,7 +4,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_STATE_MOCK: IFinesAccDebtorAddAmendState
   facc_debtor_add_amend_title: null,
   facc_debtor_add_amend_forenames: null,
   facc_debtor_add_amend_surname: null,
-  facc_debtor_add_amend_aliases: {},
+  facc_debtor_add_amend_aliases: [],
   facc_debtor_add_amend_add_alias: null,
   facc_debtor_add_amend_dob: null,
   facc_debtor_add_amend_national_insurance_number: null,

@@ -4,7 +4,7 @@ export interface IFinesAccDebtorAddAmendState {
   facc_debtor_add_amend_title: string | null;
   facc_debtor_add_amend_forenames: string | null;
   facc_debtor_add_amend_surname: string | null;
-  facc_debtor_add_amend_aliases: IFinesAccDebtorAddAmendAliasState;
+  facc_debtor_add_amend_aliases: IFinesAccDebtorAddAmendAliasState[];
   facc_debtor_add_amend_add_alias: boolean | null;
   facc_debtor_add_amend_dob: string | null;
   facc_debtor_add_amend_national_insurance_number: string | null;

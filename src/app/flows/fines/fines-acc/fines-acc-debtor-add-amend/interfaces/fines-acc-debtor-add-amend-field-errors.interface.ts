@@ -7,8 +7,16 @@ export interface IFinesAccDebtorAddAmendFieldErrors extends IAbstractFormBaseFie
   facc_debtor_add_amend_title: IAbstractFormBaseFieldError;
   facc_debtor_add_amend_forenames: IAbstractFormBaseFieldError;
   facc_debtor_add_amend_surname: IAbstractFormBaseFieldError;
-  facc_debtor_add_amend_alias_forenames: IAbstractFormBaseFieldError;
-  facc_debtor_add_amend_alias_surname: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_forenames_0: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_surname_0: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_forenames_1: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_surname_1: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_forenames_2: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_surname_2: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_forenames_3: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_surname_3: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_forenames_4: IAbstractFormBaseFieldError;
+  facc_debtor_add_amend_alias_surname_4: IAbstractFormBaseFieldError;
   facc_debtor_add_amend_dob: IAbstractFormBaseFieldError;
   facc_debtor_add_amend_national_insurance_number: IAbstractFormBaseFieldError;
   facc_debtor_add_amend_address_line_1: IAbstractFormBaseFieldError;

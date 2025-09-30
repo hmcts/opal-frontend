@@ -3,20 +3,21 @@ import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/i
 import { IFinesAccDebtorAddAmendAliasState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-alias-state.interface';
 
 /**
- * Maps an array of aliases to the indexed structure used by the debtor add/amend form
+ * Maps an array of aliases to the array structure used by the debtor add/amend form
  */
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapAliasesToIndexedStructure = (aliases: any[]): IFinesAccDebtorAddAmendAliasState => {
-  const result: IFinesAccDebtorAddAmendAliasState = {};
+const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAliasState[] => {
+  const result: IFinesAccDebtorAddAmendAliasState[] = [];
 
   aliases.forEach((alias, index) => {
     if (index < 5) {
-      // Only map up to 5 aliases
-      const forenamesKey = `facc_debtor_add_amend_alias_forenames_${index}` as keyof IFinesAccDebtorAddAmendAliasState;
-      const surnameKey = `facc_debtor_add_amend_alias_surname_${index}` as keyof IFinesAccDebtorAddAmendAliasState;
+      const aliasObject: IFinesAccDebtorAddAmendAliasState = {};
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (aliasObject as any)[`facc_debtor_add_amend_alias_forenames_${index}`] = alias.alias_forenames || null;
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (aliasObject as any)[`facc_debtor_add_amend_alias_surname_${index}`] = alias.alias_surname || null;
 
-      result[forenamesKey] = alias.alias_forenames || null;
-      result[surnameKey] = alias.alias_surname || null;
+      result.push(aliasObject);
     }
   });
 
@@ -37,13 +38,14 @@ export const finesAccPayloadTransformDefendantDataToDebtorForm = (
     defendant_account_party;
 
   const individualDetails = party_details.individual_details;
+  const aliases = individualDetails?.individual_aliases || [];
 
   return {
     facc_debtor_add_amend_title: individualDetails?.title || null,
     facc_debtor_add_amend_forenames: individualDetails?.forenames || null,
     facc_debtor_add_amend_surname: individualDetails?.surname || null,
-    facc_debtor_add_amend_aliases: mapAliasesToIndexedStructure(individualDetails?.individual_aliases || []),
-    facc_debtor_add_amend_add_alias: false,
+    facc_debtor_add_amend_aliases: mapAliasesToArrayStructure(aliases),
+    facc_debtor_add_amend_add_alias: aliases.length > 0,
     facc_debtor_add_amend_dob: individualDetails?.date_of_birth || null,
     facc_debtor_add_amend_national_insurance_number: individualDetails?.national_insurance_number || null,
     facc_debtor_add_amend_address_line_1: address?.address_line_1 || null,

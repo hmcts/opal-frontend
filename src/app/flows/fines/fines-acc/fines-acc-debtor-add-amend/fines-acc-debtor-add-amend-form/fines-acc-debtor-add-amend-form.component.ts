@@ -13,7 +13,6 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesAccDebtorAddAmendFieldErrors } from '../interfaces/fines-acc-debtor-add-amend-field-errors.interface';
 import { IFinesAccDebtorAddAmendForm } from '../interfaces/fines-acc-debtor-add-amend-form.interface';
-import { IFinesAccDebtorAddAmendAliasState } from '../interfaces/fines-acc-debtor-add-amend-alias-state.interface';
 import { FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS } from '../constants/fines-acc-debtor-add-amend-field-errors.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_ALIAS } from '../constants/fines-acc-debtor-add-amend-alias.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../constants/fines-acc-debtor-add-amend-party-types.constant';
@@ -206,22 +205,6 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   }
 
   /**
-   * Counts the number of aliases in the alias state
-   */
-  private countAliases(aliases: IFinesAccDebtorAddAmendAliasState): number {
-    let count = 0;
-    for (let i = 0; i < 5; i++) {
-      const forenamesKey = `facc_debtor_add_amend_alias_forenames_${i}` as keyof IFinesAccDebtorAddAmendAliasState;
-      const surnameKey = `facc_debtor_add_amend_alias_surname_${i}` as keyof IFinesAccDebtorAddAmendAliasState;
-
-      if (aliases[forenamesKey] || aliases[surnameKey]) {
-        count = i + 1; // Set count to include this index
-      }
-    }
-    return count;
-  }
-
-  /**
    * Sets up the alias configuration for the debtor add/amend form.
    */
   private setupAliasConfiguration(): void {
@@ -257,69 +240,17 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
     const { formData } = this.initialFormData || { formData: null };
     this.setupDebtorAddAmendForm();
     this.setupAliasConfiguration();
-
-    // Set up alias form controls if we have aliases
-    if (formData?.facc_debtor_add_amend_aliases) {
-      const aliasCount = this.countAliases(formData.facc_debtor_add_amend_aliases);
-      if (aliasCount > 0) {
-        this.setupAliasFormControls(
-          Array.from({ length: aliasCount }, (_, i) => i),
-          'facc_debtor_add_amend_aliases',
-        );
-      }
-    }
-
+    this.setupAliasFormControls(
+      [...Array(formData?.facc_debtor_add_amend_aliases?.length).keys()],
+      'facc_debtor_add_amend_aliases',
+    );
     this.setInitialErrorMessages();
-
     if (formData) {
       this.rePopulateForm(formData);
     }
-
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-  }
-
-  /**
-   * Populates the form with existing data.
-   * @param formData - The form data to populate the form with
-   */
-
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected override rePopulateForm(formData: any): void {
-    if (!formData) return;
-
-    // Create a flattened copy for form population, excluding nested aliases
-    const flattenedData = { ...formData };
-    delete flattenedData.facc_debtor_add_amend_aliases;
-
-    // Patch the main form with the flattened data
-    this.form.patchValue(flattenedData);
-
-    // Handle aliases separately - populate the FormArray controls
-    if (formData.facc_debtor_add_amend_aliases) {
-      const aliasFormArray = this.form.get('facc_debtor_add_amend_aliases') as FormArray;
-      const aliasCount = this.countAliases(formData.facc_debtor_add_amend_aliases);
-
-      // Set the add alias checkbox to true if we have aliases
-      if (aliasCount > 0) {
-        this.form.get('facc_debtor_add_amend_add_alias')?.setValue(true);
-      }
-
-      // Populate each alias FormGroup in the FormArray
-      for (let i = 0; i < aliasFormArray.length; i++) {
-        const aliasGroup = aliasFormArray.at(i) as FormGroup;
-        const forenamesKey = `facc_debtor_add_amend_alias_forenames_${i}`;
-        const surnameKey = `facc_debtor_add_amend_alias_surname_${i}`;
-
-        if (aliasGroup) {
-          aliasGroup.patchValue({
-            [forenamesKey]: formData.facc_debtor_add_amend_aliases[forenamesKey] || null,
-            [surnameKey]: formData.facc_debtor_add_amend_aliases[surnameKey] || null,
-          });
-        }
-      }
-    }
   }
 
   public override ngOnInit(): void {

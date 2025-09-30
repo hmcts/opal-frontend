@@ -6,7 +6,7 @@ export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccDebtorAddAmendF
     facc_debtor_add_amend_title: 'Mr',
     facc_debtor_add_amend_forenames: 'John',
     facc_debtor_add_amend_surname: 'Doe',
-    facc_debtor_add_amend_aliases: {},
+    facc_debtor_add_amend_aliases: [],
     facc_debtor_add_amend_add_alias: false,
     facc_debtor_add_amend_dob: '1990-01-01',
     facc_debtor_add_amend_national_insurance_number: 'AB123456C',
@@ -40,10 +40,13 @@ export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccDebtorAddAmendF
 export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES: IFinesAccDebtorAddAmendForm = {
   formData: {
     ...MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA.formData,
-    facc_debtor_add_amend_aliases: {
-      facc_debtor_add_amend_alias_forenames_0: 'Johnny',
-      facc_debtor_add_amend_alias_surname_0: 'Doe',
-    },
+    facc_debtor_add_amend_aliases: [
+      {
+        facc_debtor_add_amend_alias_forenames_0: 'Johnny',
+        facc_debtor_add_amend_alias_surname_0: 'Doe',
+      },
+    ],
+    facc_debtor_add_amend_add_alias: true, // Checkbox should be checked when aliases exist
   },
   nestedFlow: false,
 };

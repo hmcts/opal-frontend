@@ -176,13 +176,17 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_aliases).toEqual({
-        facc_debtor_add_amend_alias_forenames_0: 'Johnny',
-        facc_debtor_add_amend_alias_surname_0: 'Smith',
-        facc_debtor_add_amend_alias_forenames_1: 'Jon',
-        facc_debtor_add_amend_alias_surname_1: 'Doe',
-      });
-      expect(result.facc_debtor_add_amend_add_alias).toBe(false);
+      expect(result.facc_debtor_add_amend_aliases).toEqual([
+        {
+          facc_debtor_add_amend_alias_forenames_0: 'Johnny',
+          facc_debtor_add_amend_alias_surname_0: 'Smith',
+        },
+        {
+          facc_debtor_add_amend_alias_forenames_1: 'Jon',
+          facc_debtor_add_amend_alias_surname_1: 'Doe',
+        },
+      ]);
+      expect(result.facc_debtor_add_amend_add_alias).toBe(true); // Should be true when aliases exist
     });
 
     it('should handle employer details transformation', () => {
@@ -274,7 +278,7 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_debtor_add_amend_title).toBeNull();
       expect(result.facc_debtor_add_amend_forenames).toBeNull();
       expect(result.facc_debtor_add_amend_surname).toBeNull();
-      expect(result.facc_debtor_add_amend_aliases).toEqual({});
+      expect(result.facc_debtor_add_amend_aliases).toEqual([]);
       expect(result.facc_debtor_add_amend_address_line_1).toBeNull(); // Empty string becomes null due to || null
       expect(result.facc_debtor_add_amend_address_line_2).toBeNull();
       expect(result.facc_debtor_add_amend_post_code).toBeNull(); // Empty string becomes null due to || null

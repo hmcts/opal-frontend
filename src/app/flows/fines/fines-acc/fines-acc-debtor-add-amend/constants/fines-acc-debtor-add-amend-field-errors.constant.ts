@@ -35,31 +35,143 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames: {
+  facc_debtor_add_amend_alias_forenames_0: {
     required: {
-      message: `Enter alias first name(s)`,
+      message: `Enter alias 1 first name(s)`,
       priority: 1,
     },
     maxlength: {
-      message: `Alias first name(s) must be 20 characters or fewer`,
+      message: `Alias 1 first name(s) must be 20 characters or fewer`,
       priority: 2,
     },
     lettersWithSpacesPattern: {
-      message: `Alias first name(s) must only contain letters`,
+      message: `Alias 1 first name(s) must only contain letters`,
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname: {
+  facc_debtor_add_amend_alias_surname_0: {
     required: {
-      message: `Enter alias last name`,
+      message: `Enter alias 1 last name`,
       priority: 1,
     },
     maxlength: {
-      message: `Alias last name must be 30 characters or fewer`,
+      message: `Alias 1 last name must be 30 characters or fewer`,
       priority: 2,
     },
     lettersWithSpacesPattern: {
-      message: `Alias last name must only contain letters`,
+      message: `Alias 1 last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_forenames_1: {
+    required: {
+      message: `Enter alias 2 first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 2 first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 2 first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_surname_1: {
+    required: {
+      message: `Enter alias 2 last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 2 last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 2 last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_forenames_2: {
+    required: {
+      message: `Enter alias 3 first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 3 first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 3 first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_surname_2: {
+    required: {
+      message: `Enter alias 3 last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 3 last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 3 last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_forenames_3: {
+    required: {
+      message: `Enter alias 4 first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 4 first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 4 first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_surname_3: {
+    required: {
+      message: `Enter alias 4 last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 4 last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 4 last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_forenames_4: {
+    required: {
+      message: `Enter alias 5 first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 5 first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 5 first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_debtor_add_amend_alias_surname_4: {
+    required: {
+      message: `Enter alias 5 last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 5 last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Alias 5 last name must only contain letters`,
       priority: 3,
     },
   },

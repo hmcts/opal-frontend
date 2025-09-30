@@ -282,32 +282,6 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     });
   });
 
-  it('should return early when formData is null', () => {
-    component.partyType = 'INDIVIDUAL';
-    fixture.detectChanges();
-
-    const initialFormValue = component.form.value;
-    spyOn(component.form, 'patchValue').and.callThrough();
-
-    component['rePopulateForm'](null);
-
-    expect(component.form.patchValue).not.toHaveBeenCalled();
-    expect(component.form.value).toEqual(initialFormValue);
-  });
-
-  it('should return early when formData is undefined', () => {
-    component.partyType = 'INDIVIDUAL';
-    fixture.detectChanges();
-
-    const initialFormValue = component.form.value;
-    spyOn(component.form, 'patchValue').and.callThrough();
-
-    component['rePopulateForm'](undefined);
-
-    expect(component.form.patchValue).not.toHaveBeenCalled();
-    expect(component.form.value).toEqual(initialFormValue);
-  });
-
   it('should populate form when valid formData is provided', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
@@ -329,66 +303,22 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
   });
 
-  it('should handle formData with aliases by excluding them from main form patch', () => {
+  it('should handle formData with aliases by including them in form patch', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
     const mockFormData = {
       facc_debtor_add_amend_title: 'Mr',
       facc_debtor_add_amend_forenames: 'John',
-      facc_debtor_add_amend_aliases: {
-        alias_0: { facc_debtor_add_amend_alias_forenames: 'Johnny' },
-      },
+      facc_debtor_add_amend_aliases: [{ facc_debtor_add_amend_alias_forenames_0: 'Johnny' }],
     };
     spyOn(component.form, 'patchValue').and.callThrough();
 
     component['rePopulateForm'](mockFormData);
 
-    const expectedPatchData = {
-      facc_debtor_add_amend_title: 'Mr',
-      facc_debtor_add_amend_forenames: 'John',
-    };
-    expect(component.form.patchValue).toHaveBeenCalledWith(expectedPatchData);
+    // Expect the form to be patched with all data including aliases
+    expect(component.form.patchValue).toHaveBeenCalledWith(mockFormData);
     expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
     expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
-  });
-
-  it('should return early when formData is empty string', () => {
-    component.partyType = 'INDIVIDUAL';
-    fixture.detectChanges();
-
-    const initialFormValue = component.form.value;
-    spyOn(component.form, 'patchValue').and.callThrough();
-
-    component['rePopulateForm']('');
-
-    expect(component.form.patchValue).not.toHaveBeenCalled();
-    expect(component.form.value).toEqual(initialFormValue);
-  });
-
-  it('should return early when formData is false', () => {
-    component.partyType = 'INDIVIDUAL';
-    fixture.detectChanges();
-
-    const initialFormValue = component.form.value;
-    spyOn(component.form, 'patchValue').and.callThrough();
-
-    component['rePopulateForm'](false);
-
-    expect(component.form.patchValue).not.toHaveBeenCalled();
-    expect(component.form.value).toEqual(initialFormValue);
-  });
-
-  it('should return early when formData is 0', () => {
-    component.partyType = 'INDIVIDUAL';
-    fixture.detectChanges();
-
-    const initialFormValue = component.form.value;
-    spyOn(component.form, 'patchValue').and.callThrough();
-
-    component['rePopulateForm'](0);
-
-    expect(component.form.patchValue).not.toHaveBeenCalled();
-    expect(component.form.value).toEqual(initialFormValue);
   });
 });
