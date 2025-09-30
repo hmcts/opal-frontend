@@ -93,8 +93,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
       this.opalFinesService.clearAccountDetailsCache(),
     );
-    // const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
-
     this.tabData$ = this.createTabDataStream<
       IOpalFinesAccountDetailsAtAGlanceTabRefData,
       IOpalFinesAccountDetailsAtAGlanceTabRefData
