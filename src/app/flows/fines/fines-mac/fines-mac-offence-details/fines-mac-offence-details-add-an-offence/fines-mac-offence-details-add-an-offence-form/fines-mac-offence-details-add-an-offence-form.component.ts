@@ -191,7 +191,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
-    this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
+    this.setupFormArrayFormControls([...new Array(impositionsLength).keys()], impositionsKey);
     this.setInitialErrorMessages();
     this.getMinorCreditors();
     this.rePopulateForm(formData);

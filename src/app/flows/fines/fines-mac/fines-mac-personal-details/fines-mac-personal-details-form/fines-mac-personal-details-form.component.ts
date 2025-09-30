@@ -190,7 +190,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...Array(formData.fm_personal_details_aliases.length).keys()],
+      [...new Array(formData.fm_personal_details_aliases.length).keys()],
       'fm_personal_details_aliases',
     );
     if (key === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly) {
