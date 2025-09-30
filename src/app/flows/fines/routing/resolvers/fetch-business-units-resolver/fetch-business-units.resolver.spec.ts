@@ -13,8 +13,9 @@ describe('fetchBusinessUnitsResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnits']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnits', 'getBusinessUnitsByPermission']);
     mockOpalFinesService.getBusinessUnits.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
+    mockOpalFinesService.getBusinessUnitsByPermission.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
@@ -28,7 +29,7 @@ describe('fetchBusinessUnitsResolver', () => {
 
     await executeResolver(route, mockRouterStateSnapshot);
 
-    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith('PERMISSION_XYZ');
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith('PERMISSION_XYZ');
   });
 
   it('should resolve business units data from the service', async () => {

@@ -70,7 +70,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -85,7 +85,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -95,7 +95,7 @@ describe('OpalFines', () => {
     req.flush(mockBusinessUnits);
 
     // Make a second call to searchCourt with the same search body
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -134,35 +134,6 @@ describe('OpalFines', () => {
       expect(response).toEqual(mockBusinessUnits);
     });
     httpMock.expectNone(expectedUrl);
-  });
-
-  it('should maintain separate caches for permissioned and unpermissioned calls', () => {
-    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
-    const noPermUrl = `${OPAL_FINES_PATHS.businessUnitRefData}`;
-    const perm = 'ACCOUNT_ENQUIRY_NOTES';
-    const permUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${perm}`;
-
-    // Prime no-permission cache
-    service.getBusinessUnits().subscribe((response) => {
-      expect(response).toEqual(mockBusinessUnits);
-    });
-    const req1 = httpMock.expectOne((r) => r.url === noPermUrl && !r.params.has('permission'));
-    expect(req1.request.method).toBe('GET');
-    req1.flush(mockBusinessUnits);
-
-    // Call with permission should still issue a separate request
-    service.getBusinessUnits(perm).subscribe((response) => {
-      expect(response).toEqual(mockBusinessUnits);
-    });
-    const req2 = httpMock.expectOne(permUrl);
-    expect(req2.request.method).toBe('GET');
-    req2.flush(mockBusinessUnits);
-
-    // Verify subsequent calls hit their respective caches (no new requests)
-    service.getBusinessUnits().subscribe();
-    service.getBusinessUnits(perm).subscribe();
-    httpMock.expectNone(noPermUrl);
-    httpMock.expectNone(permUrl);
   });
 
   it('should send a GET request to court ref data API', () => {

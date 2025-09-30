@@ -164,43 +164,48 @@ export class OpalFines {
   }
 
   /**
-   * Fetches business unit reference data, with caching to avoid duplicate HTTP requests.
+   * Retrieves business unit reference data based on the specified permission.
    *
-   * If no permission is provided, a single shared request/Observable is used for all callers
-   * (cached in `businessUnitsCache$`). If a permission string is provided, results are cached
-   * per-permission in `businessUnitsPermissionCache$` keyed by the permission value.
+   * This method caches the business unit data for each permission type to avoid
+   * making multiple HTTP requests for the same data. Permissions are cached
+   * separately to account for different permission types such as
+   * `ACCOUNT_ENQUIRY`, `ACCOUNT_ENQUIRY_NOTES`, and `CREATE_MANAGE_DRAFT_ACCOUNTS`.
    *
-   * The HTTP request targets OPAL_FINES_PATHS.businessUnitRefData. When a permission is supplied
-   * it is included as a query parameter ({ params: { permission } }).
-   *
-   * Caching is implemented by storing the Observable returned by HttpClient and applying `shareReplay(1)`,
-   * so subsequent subscribers reuse the same response without triggering new network requests.
-   *
-   * @param permission - Optional permission type used to scope the returned business units
-   *                     (e.g. "ACCOUNT_ENQUIRY", "ACCOUNT_ENQUIRY_NOTES", "CREATE_MANAGE_DRAFT_ACCOUNTS").
-   * @returns An Observable emitting the business unit reference data (IOpalFinesBusinessUnitRefData).
+   * @param permission - The permission type for which to retrieve business unit data.
+   * @returns An `Observable` emitting the business unit reference data associated with the given permission.
    */
-  public getBusinessUnits(permission?: string): Observable<IOpalFinesBusinessUnitRefData> {
-    if (!permission) {
-      if (!this.businessUnitsCache$) {
-        this.businessUnitsCache$ = this.http
-          .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
-          .pipe(shareReplay(1));
-      }
-
-      return this.businessUnitsCache$;
-    } else {
-      // Business units are cached to prevent multiple requests for the same data.
-      // We can have multiple permission types so we need to cache them separately.
-      // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
-      if (!this.businessUnitsPermissionCache$[permission]) {
-        this.businessUnitsPermissionCache$[permission] = this.http
-          .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
-          .pipe(shareReplay(1));
-      }
-
-      return this.businessUnitsPermissionCache$[permission];
+  public getBusinessUnitsByPermission(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
+    // Business units are cached to prevent multiple requests for the same data.
+    // We can have multiple permission types so we need to cache them separately.
+    // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
+    if (!this.businessUnitsPermissionCache$[permission]) {
+      this.businessUnitsPermissionCache$[permission] = this.http
+        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
+        .pipe(shareReplay(1));
     }
+
+    return this.businessUnitsPermissionCache$[permission];
+  }
+
+  /**
+   * Retrieves the business unit reference data as an observable.
+   *
+   * This method caches the HTTP response to avoid redundant network requests.
+   * If the cache is empty, it performs an HTTP GET request to fetch the data
+   * from the `OPAL_FINES_PATHS.businessUnitRefData` endpoint and shares the
+   * result among subscribers using `shareReplay(1)`.
+   *
+   * @returns An observable of `IOpalFinesBusinessUnitRefData` containing the
+   *          business unit reference data.
+   */
+  public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
+    if (!this.businessUnitsCache$) {
+      this.businessUnitsCache$ = this.http
+        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.businessUnitsCache$;
   }
 
   /**
