@@ -82,7 +82,7 @@ export const MOCK_ACCOUNT_STATE = {
   party_type: 'Individual',
   party_name: 'Anna Graham',
   party_id: '77',
-  base_version: 1,
+  base_version: '1',
   business_unit_id: '78',
   business_unit_user_id: '10',
   welsh_speaking: 'No',
