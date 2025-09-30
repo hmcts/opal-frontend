@@ -11,6 +11,6 @@ export const fetchBusinessUnitsResolver: ResolveFn<IOpalFinesBusinessUnitRefData
   if (!permission) {
     return opalFinesService.getBusinessUnits().pipe(map((response) => response));
   } else {
-    return opalFinesService.getBusinessUnits(permission).pipe(map((response) => response));
+    return opalFinesService.getBusinessUnitsByPermission(permission).pipe(map((response) => response));
   }
 };
