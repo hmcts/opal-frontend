@@ -118,8 +118,7 @@ describe('FinesAccPayloadService', () => {
       const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
 
       const { defendant_account_party } = mockDefendantData;
-      const { party_details, address, contact_details, vehicle_details, employer_details, language_preferences } =
-        defendant_account_party;
+      const { party_details, address, contact_details, vehicle_details } = defendant_account_party;
       const individualDetails = party_details.individual_details;
 
       expect(result.facc_debtor_add_amend_title).toBe(individualDetails?.title || null);
@@ -177,16 +176,12 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_aliases).toEqual([
-        {
-          facc_debtor_add_amend_alias_forenames: 'Johnny',
-          facc_debtor_add_amend_alias_surname: 'Smith',
-        },
-        {
-          facc_debtor_add_amend_alias_forenames: 'Jon',
-          facc_debtor_add_amend_alias_surname: 'Doe',
-        },
-      ]);
+      expect(result.facc_debtor_add_amend_aliases).toEqual({
+        facc_debtor_add_amend_alias_forenames_0: 'Johnny',
+        facc_debtor_add_amend_alias_surname_0: 'Smith',
+        facc_debtor_add_amend_alias_forenames_1: 'Jon',
+        facc_debtor_add_amend_alias_surname_1: 'Doe',
+      });
       expect(result.facc_debtor_add_amend_add_alias).toBe(false);
     });
 
@@ -279,7 +274,7 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_debtor_add_amend_title).toBeNull();
       expect(result.facc_debtor_add_amend_forenames).toBeNull();
       expect(result.facc_debtor_add_amend_surname).toBeNull();
-      expect(result.facc_debtor_add_amend_aliases).toEqual([]);
+      expect(result.facc_debtor_add_amend_aliases).toEqual({});
       expect(result.facc_debtor_add_amend_address_line_1).toBeNull(); // Empty string becomes null due to || null
       expect(result.facc_debtor_add_amend_address_line_2).toBeNull();
       expect(result.facc_debtor_add_amend_post_code).toBeNull(); // Empty string becomes null due to || null

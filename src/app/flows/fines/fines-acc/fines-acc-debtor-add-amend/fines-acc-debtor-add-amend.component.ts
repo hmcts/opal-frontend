@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FinesAccDebtorAddAmendFormComponent } from './fines-acc-debtor-add-amend-form/fines-acc-debtor-add-amend-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
-import { IFinesAccDebtorAddAmendFormData } from './interfaces/fines-acc-debtor-add-amend-form.interface';
-import { FINES_ACC_DEBTOR_ADD_AMEND_STATE } from './constants/fines-acc-debtor-add-amend-state.constant';
+import { IFinesAccDebtorAddAmendForm } from './interfaces/fines-acc-debtor-add-amend-form.interface';
+import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from './constants/fines-acc-debtor-add-amend-form.constant';
 
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
@@ -10,17 +10,14 @@ import { FINES_ACC_DEBTOR_ADD_AMEND_STATE } from './constants/fines-acc-debtor-a
   templateUrl: './fines-acc-debtor-add-amend.component.html',
 })
 export class FinesAccDebtorAddAmend extends AbstractFormParentBaseComponent {
-  protected readonly prefilledFormData: IFinesAccDebtorAddAmendFormData = this['activatedRoute'].snapshot.data[
-    'debtorAmendFormData'
-  ] || {
-    formData: FINES_ACC_DEBTOR_ADD_AMEND_STATE,
-    nestedFlow: false,
-  };
+  protected readonly prefilledFormData: IFinesAccDebtorAddAmendForm =
+    this['activatedRoute'].snapshot.data['debtorAmendFormData'] || FINES_ACC_DEBTOR_ADD_AMEND_FORM;
+
   /**
    * Handles the form submission event from the child form component.
    * @param formData - The form data submitted from the child component
    */
-  public handleFormSubmit(formData: IFinesAccDebtorAddAmendFormData): void {
+  public handleFormSubmit(formData: IFinesAccDebtorAddAmendForm): void {
     console.log('Form submitted with data:', formData);
     // TODO: Implement actual form submission logic
   }

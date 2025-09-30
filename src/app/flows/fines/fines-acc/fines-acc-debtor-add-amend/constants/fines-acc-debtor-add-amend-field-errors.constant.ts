@@ -18,7 +18,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     },
     lettersWithSpacesPattern: {
       message: `Defendant's first name(s) must only contain letters`,
-      priority: 2,
+      priority: 3,
     },
   },
   facc_debtor_add_amend_surname: {
@@ -32,7 +32,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     },
     lettersWithSpacesPattern: {
       message: `Defendant's last name must only contain letters`,
-      priority: 2,
+      priority: 3,
     },
   },
   facc_debtor_add_amend_alias_forenames: {
@@ -190,19 +190,19 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
   facc_debtor_add_amend_employer_details_employer_company_name: {
     maxlength: {
       message: 'Employer name must be 50 characters or fewer',
-      priority: 2,
+      priority: 1,
     },
   },
   facc_debtor_add_amend_employer_details_employer_reference: {
     maxlength: {
       message: 'Employee reference must be 20 characters or fewer',
-      priority: 2,
+      priority: 1,
     },
   },
   facc_debtor_add_amend_employer_details_employer_email_address: {
     maxlength: {
       message: 'Employer email address must be 76 characters or fewer',
-      priority: 2,
+      priority: 1,
     },
     emailPattern: {
       message: 'Enter employer email address in the correct format, like name@example.com',
@@ -222,11 +222,11 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
   facc_debtor_add_amend_employer_details_employer_address_line_1: {
     maxlength: {
       message: 'Address line 1 must be 30 characters or fewer',
-      priority: 2,
+      priority: 1,
     },
     alphanumericTextPattern: {
       message: 'Address line 1 must only contain letters or numbers',
-      priority: 3,
+      priority: 2,
     },
   },
   facc_debtor_add_amend_employer_details_employer_address_line_2: {

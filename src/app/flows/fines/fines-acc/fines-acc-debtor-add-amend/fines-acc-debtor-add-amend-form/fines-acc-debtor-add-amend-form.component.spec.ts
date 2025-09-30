@@ -6,7 +6,6 @@ import { of } from 'rxjs';
 import { FinesAccDebtorAddAmendFormComponent } from './fines-acc-debtor-add-amend-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
-import { IFinesAccDebtorAddAmendFormData } from '../interfaces/fines-acc-debtor-add-amend-form.interface';
 import {
   MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
   MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES,
@@ -16,6 +15,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
   let component: FinesAccDebtorAddAmendFormComponent;
   let fixture: ComponentFixture<FinesAccDebtorAddAmendFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccountStore: any;
 
   beforeEach(async () => {
@@ -26,7 +26,6 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       'getAgeObject',
     ]);
 
-    // Create a mock store with signal methods
     mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
       welsh_speaking: signal('N'),
     });
@@ -42,240 +41,354 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesAccDebtorAddAmendFormComponent);
     component = fixture.componentInstance;
+
+    mockDateService.getPreviousDate.and.returnValue('2024-01-01');
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.calculateAge.and.returnValue(25);
+    mockDateService.getAgeObject.and.returnValue({ value: 25, group: 'Adult' });
   });
 
-  describe('Component Initialization', () => {
-    beforeEach(() => {
-      mockDateService.getPreviousDate.and.returnValue('2024-01-01');
-      mockDateService.isValidDate.and.returnValue(true);
-      mockDateService.calculateAge.and.returnValue(25);
-      mockDateService.getAgeObject.and.returnValue({ value: 25, group: 'Adult' });
+  it('should create', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  it('should initialize form with empty values when no initial data provided', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    expect(component.form).toBeDefined();
+    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBeNull();
+    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBeNull();
+    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBeNull();
+  });
+
+  it('should initialize form with provided initial data', () => {
+    component.partyType = 'INDIVIDUAL';
+    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA;
+    fixture.detectChanges();
+
+    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
+    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBe('Doe');
+    expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
+    expect(component.form.get('facc_debtor_add_amend_national_insurance_number')?.value).toBe('AB123456C');
+    expect(component.form.get('facc_debtor_add_amend_dob')?.value).toBe('1990-01-01');
+  });
+
+  it('should populate National Insurance number and other fields correctly', () => {
+    component.partyType = 'INDIVIDUAL';
+    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA;
+    fixture.detectChanges();
+
+    expect(component.form.get('facc_debtor_add_amend_national_insurance_number')?.value).toBe('AB123456C');
+    expect(component.form.get('facc_debtor_add_amend_contact_email_address_1')?.value).toBe('john@example.com');
+    expect(component.form.get('facc_debtor_add_amend_contact_telephone_number_mobile')?.value).toBe('07123456789');
+    expect(component.form.get('facc_debtor_add_amend_vehicle_make')?.value).toBe('Toyota Corolla');
+    expect(component.form.get('facc_debtor_add_amend_vehicle_registration_mark')?.value).toBe('ABC123');
+    expect(component.form.get('facc_debtor_add_amend_post_code')?.value).toBe('TE5T 1NG');
+  });
+
+  it('should set yesterday date on initialization', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
+    expect(component.yesterday).toBe('2024-01-01');
+  });
+
+  it('should show language preferences when welsh_speaking is Y', () => {
+    mockFinesAccountStore.welsh_speaking.set('Y');
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    expect(component['showLanguagePreferences']()).toBe(true);
+  });
+
+  it('should hide language preferences when welsh_speaking is N', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    expect(component['showLanguagePreferences']()).toBe(false);
+  });
+
+  it('should hide language preferences when welsh_speaking is undefined', () => {
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockFinesAccountStore.welsh_speaking.set(undefined as any);
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    expect(component['showLanguagePreferences']()).toBe(false);
+  });
+
+  it('should calculate age when valid date of birth is provided', () => {
+    mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    dobControl?.setValue('1994-01-01');
+
+    expect(mockDateService.getAgeObject).toHaveBeenCalledWith('1994-01-01');
+    expect(component.age).toBe(30);
+    expect(component.ageLabel).toBe('Adult');
+  });
+
+  it('should set ageLabel to "Youth" for age under 18', () => {
+    mockDateService.getAgeObject.and.returnValue({ value: 16, group: 'Youth' });
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    dobControl?.setValue('2008-01-01');
+
+    expect(component.age).toBe(16);
+    expect(component.ageLabel).toBe('Youth');
+  });
+
+  it('should not calculate age for invalid date', () => {
+    mockDateService.getAgeObject.and.returnValue(null);
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    dobControl?.setValue('invalid-date');
+
+    expect(mockDateService.getAgeObject).toHaveBeenCalledWith('invalid-date');
+  });
+
+  it('should require title field', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const titleControl = component.form.get('facc_debtor_add_amend_title');
+    expect(titleControl?.hasError('required')).toBe(true);
+
+    titleControl?.setValue('Mr');
+    expect(titleControl?.hasError('required')).toBe(false);
+  });
+
+  it('should require forenames field with max length validation', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const forenamesControl = component.form.get('facc_debtor_add_amend_forenames');
+    expect(forenamesControl?.hasError('required')).toBe(true);
+
+    forenamesControl?.setValue('John');
+    expect(forenamesControl?.hasError('required')).toBe(false);
+
+    forenamesControl?.setValue('a'.repeat(21));
+    expect(forenamesControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should require surname field with max length validation', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const surnameControl = component.form.get('facc_debtor_add_amend_surname');
+    expect(surnameControl?.hasError('required')).toBe(true);
+
+    surnameControl?.setValue('Doe');
+    expect(surnameControl?.hasError('required')).toBe(false);
+
+    surnameControl?.setValue('a'.repeat(31));
+    expect(surnameControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should require address line 1', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const addressControl = component.form.get('facc_debtor_add_amend_address_line_1');
+    expect(addressControl?.hasError('required')).toBe(true);
+
+    addressControl?.setValue('123 Test Street');
+    expect(addressControl?.hasError('required')).toBe(false);
+  });
+
+  it('should validate email addresses', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const emailControl = component.form.get('facc_debtor_add_amend_contact_email_address_1');
+
+    emailControl?.setValue('invalid-email');
+    expect(emailControl?.hasError('emailPattern')).toBe(true);
+
+    emailControl?.setValue('valid@email.com');
+    expect(emailControl?.hasError('emailPattern')).toBe(false);
+  });
+
+  it('should populate existing aliases on initialization', () => {
+    component.partyType = 'INDIVIDUAL';
+    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES;
+    fixture.detectChanges();
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const aliasArray = component.form.get('facc_debtor_add_amend_aliases') as any;
+    expect(aliasArray.length).toBe(1);
+
+    const addAliasControl = component.form.get('facc_debtor_add_amend_add_alias');
+    expect(addAliasControl?.value).toBe(true);
+  });
+
+  it('should have alias FormArray defined', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const aliasFormArray = component.form.get('facc_debtor_add_amend_aliases');
+    expect(aliasFormArray).toBeDefined();
+  });
+
+  it('should have form submission functionality', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    spyOn(component['formSubmit'], 'emit');
+
+    component.form.patchValue({
+      facc_debtor_add_amend_title: 'Mr',
+      facc_debtor_add_amend_forenames: 'John',
+      facc_debtor_add_amend_surname: 'Doe',
+      facc_debtor_add_amend_address_line_1: '123 Test Street',
     });
 
-    it('should create', () => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    });
+    expect(component.form.valid).toBe(true);
+    expect(component['formSubmit']).toBeDefined();
+  });
 
-    it('should initialize form with empty values when no initial data provided', () => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
+  it('should have correct readonly properties', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-      expect(component.form).toBeDefined();
-      expect(component.form.get('facc_debtor_add_amend_title')?.value).toBeNull();
-      expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBeNull();
-      expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBeNull();
-    });
+    expect(component.titleOptions).toBeDefined();
+    expect(component.partyTypes).toBeDefined();
+    expect(component.languageOptions).toBeDefined();
+    expect(component['finesAccRoutingPaths']).toBeDefined();
+  });
 
-    it('should initialize form with provided initial data', () => {
-      component.partyType = 'INDIVIDUAL';
-      component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA;
-      fixture.detectChanges();
+  it('should have language options derived from constants', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-      expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
-      expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
-      expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBe('Doe');
-      expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
-    });
+    expect(Array.isArray(component.languageOptions)).toBe(true);
+    expect(component.languageOptions.length).toBeGreaterThan(0);
 
-    it('should set yesterday date on initialization', () => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-
-      expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
-      expect(component.yesterday).toBe('2024-01-01');
+    component.languageOptions.forEach((option) => {
+      expect(option.key).toBeDefined();
+      expect(option.value).toBeDefined();
     });
   });
 
-  describe('Language Preferences Computed Signal', () => {
-    it('should show language preferences when welsh_speaking is Y', () => {
-      // Update the signal to return 'Y'
-      mockFinesAccountStore.welsh_speaking.set('Y');
+  it('should return early when formData is null', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
+    const initialFormValue = component.form.value;
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-      expect(component['showLanguagePreferences']()).toBe(true);
-    });
+    component['rePopulateForm'](null);
 
-    it('should hide language preferences when welsh_speaking is N', () => {
-      // Signal already set to 'N' in beforeEach
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-
-      expect(component['showLanguagePreferences']()).toBe(false);
-    });
-
-    it('should hide language preferences when welsh_speaking is undefined', () => {
-      mockFinesAccountStore.welsh_speaking.set(undefined as any);
-
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-
-      expect(component['showLanguagePreferences']()).toBe(false);
-    });
+    expect(component.form.patchValue).not.toHaveBeenCalled();
+    expect(component.form.value).toEqual(initialFormValue);
   });
 
-  describe('Date of Birth and Age Calculation', () => {
-    beforeEach(() => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-    });
+  it('should return early when formData is undefined', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-    it('should calculate age when valid date of birth is provided', () => {
-      mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
+    const initialFormValue = component.form.value;
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-      const dobControl = component.form.get('facc_debtor_add_amend_dob');
-      dobControl?.setValue('1994-01-01');
+    component['rePopulateForm'](undefined);
 
-      expect(mockDateService.getAgeObject).toHaveBeenCalledWith('1994-01-01');
-      expect(component.age).toBe(30);
-      expect(component.ageLabel).toBe('Adult');
-    });
-
-    it('should set ageLabel to "Youth" for age under 18', () => {
-      mockDateService.getAgeObject.and.returnValue({ value: 16, group: 'Youth' });
-
-      const dobControl = component.form.get('facc_debtor_add_amend_dob');
-      dobControl?.setValue('2008-01-01');
-
-      expect(component.age).toBe(16);
-      expect(component.ageLabel).toBe('Youth');
-    });
-
-    it('should not calculate age for invalid date', () => {
-      mockDateService.getAgeObject.and.returnValue(null);
-
-      const dobControl = component.form.get('facc_debtor_add_amend_dob');
-      dobControl?.setValue('invalid-date');
-
-      expect(mockDateService.getAgeObject).toHaveBeenCalledWith('invalid-date');
-    });
+    expect(component.form.patchValue).not.toHaveBeenCalled();
+    expect(component.form.value).toEqual(initialFormValue);
   });
 
-  describe('Form Validation', () => {
-    beforeEach(() => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-    });
+  it('should populate form when valid formData is provided', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-    it('should require title field', () => {
-      const titleControl = component.form.get('facc_debtor_add_amend_title');
-      expect(titleControl?.hasError('required')).toBe(true);
+    const mockFormData = {
+      facc_debtor_add_amend_title: 'Mr',
+      facc_debtor_add_amend_forenames: 'John',
+      facc_debtor_add_amend_surname: 'Doe',
+      facc_debtor_add_amend_address_line_1: '123 Test Street',
+    };
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-      titleControl?.setValue('Mr');
-      expect(titleControl?.hasError('required')).toBe(false);
-    });
+    component['rePopulateForm'](mockFormData);
 
-    it('should require forenames field with max length validation', () => {
-      const forenamesControl = component.form.get('facc_debtor_add_amend_forenames');
-      expect(forenamesControl?.hasError('required')).toBe(true);
-
-      forenamesControl?.setValue('John');
-      expect(forenamesControl?.hasError('required')).toBe(false);
-
-      // Test max length (20 characters)
-      forenamesControl?.setValue('a'.repeat(21));
-      expect(forenamesControl?.hasError('maxlength')).toBe(true);
-    });
-
-    it('should require surname field with max length validation', () => {
-      const surnameControl = component.form.get('facc_debtor_add_amend_surname');
-      expect(surnameControl?.hasError('required')).toBe(true);
-
-      surnameControl?.setValue('Doe');
-      expect(surnameControl?.hasError('required')).toBe(false);
-
-      // Test max length (30 characters)
-      surnameControl?.setValue('a'.repeat(31));
-      expect(surnameControl?.hasError('maxlength')).toBe(true);
-    });
-
-    it('should require address line 1', () => {
-      const addressControl = component.form.get('facc_debtor_add_amend_address_line_1');
-      expect(addressControl?.hasError('required')).toBe(true);
-
-      addressControl?.setValue('123 Test Street');
-      expect(addressControl?.hasError('required')).toBe(false);
-    });
-
-    it('should validate email addresses', () => {
-      const emailControl = component.form.get('facc_debtor_add_amend_contact_email_address_1');
-
-      emailControl?.setValue('invalid-email');
-      expect(emailControl?.hasError('emailPattern')).toBe(true);
-
-      emailControl?.setValue('valid@email.com');
-      expect(emailControl?.hasError('emailPattern')).toBe(false);
-    });
+    expect(component.form.patchValue).toHaveBeenCalledWith(mockFormData);
+    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
+    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBe('DOE');
+    expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
   });
 
-  describe('Alias Management', () => {
-    beforeEach(() => {
-      component.partyType = 'INDIVIDUAL';
-      component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES;
-      fixture.detectChanges();
-    });
+  it('should handle formData with aliases by excluding them from main form patch', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-    it('should populate existing aliases on initialization', () => {
-      const aliasArray = component.form.get('facc_debtor_add_amend_aliases') as any;
-      expect(aliasArray.length).toBe(1);
+    const mockFormData = {
+      facc_debtor_add_amend_title: 'Mr',
+      facc_debtor_add_amend_forenames: 'John',
+      facc_debtor_add_amend_aliases: {
+        alias_0: { facc_debtor_add_amend_alias_forenames: 'Johnny' },
+      },
+    };
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-      const addAliasControl = component.form.get('facc_debtor_add_amend_add_alias');
-      expect(addAliasControl?.value).toBe(true);
-    });
+    component['rePopulateForm'](mockFormData);
 
-    it('should have alias FormArray defined', () => {
-      const aliasFormArray = component.form.get('facc_debtor_add_amend_aliases');
-      expect(aliasFormArray).toBeDefined();
-    });
+    const expectedPatchData = {
+      facc_debtor_add_amend_title: 'Mr',
+      facc_debtor_add_amend_forenames: 'John',
+    };
+    expect(component.form.patchValue).toHaveBeenCalledWith(expectedPatchData);
+    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
   });
 
-  describe('Form Submission', () => {
-    beforeEach(() => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-    });
+  it('should return early when formData is empty string', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-    it('should have form submission functionality', () => {
-      spyOn(component['formSubmit'], 'emit');
+    const initialFormValue = component.form.value;
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-      // Fill required fields
-      component.form.patchValue({
-        facc_debtor_add_amend_title: 'Mr',
-        facc_debtor_add_amend_forenames: 'John',
-        facc_debtor_add_amend_surname: 'Doe',
-        facc_debtor_add_amend_address_line_1: '123 Test Street',
-      });
+    component['rePopulateForm']('');
 
-      expect(component.form.valid).toBe(true);
-      expect(component['formSubmit']).toBeDefined();
-    });
+    expect(component.form.patchValue).not.toHaveBeenCalled();
+    expect(component.form.value).toEqual(initialFormValue);
   });
 
-  describe('Component Properties', () => {
-    beforeEach(() => {
-      component.partyType = 'INDIVIDUAL';
-      fixture.detectChanges();
-    });
+  it('should return early when formData is false', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
 
-    it('should have correct readonly properties', () => {
-      expect(component.titleOptions).toBeDefined();
-      expect(component.partyTypes).toBeDefined();
-      expect(component.languageOptions).toBeDefined();
-      expect(component['finesAccRoutingPaths']).toBeDefined();
-    });
+    const initialFormValue = component.form.value;
+    spyOn(component.form, 'patchValue').and.callThrough();
 
-    it('should have language options derived from constants', () => {
-      expect(Array.isArray(component.languageOptions)).toBe(true);
-      expect(component.languageOptions.length).toBeGreaterThan(0);
+    component['rePopulateForm'](false);
 
-      // Check structure
-      component.languageOptions.forEach((option) => {
-        expect(option.key).toBeDefined();
-        expect(option.value).toBeDefined();
-      });
-    });
+    expect(component.form.patchValue).not.toHaveBeenCalled();
+    expect(component.form.value).toEqual(initialFormValue);
+  });
+
+  it('should return early when formData is 0', () => {
+    component.partyType = 'INDIVIDUAL';
+    fixture.detectChanges();
+
+    const initialFormValue = component.form.value;
+    spyOn(component.form, 'patchValue').and.callThrough();
+
+    component['rePopulateForm'](0);
+
+    expect(component.form.patchValue).not.toHaveBeenCalled();
+    expect(component.form.value).toEqual(initialFormValue);
   });
 });

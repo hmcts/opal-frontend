@@ -43,71 +43,73 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('facc_debtor_add_amend_add_alias')?.value === true) {
-  <div
-    opal-lib-govuk-checkboxes-conditional
-    conditionalId="facc_debtor_add_amend_add_alias"
-    formArrayName="facc_debtor_add_amend_aliases"
-  >
-    @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-      <opal-lib-govuk-text-input
-        labelText="First names"
-        [inputId]="aliasControl['facc_debtor_add_amend_alias_forenames'].inputId"
-        [inputName]="aliasControl['facc_debtor_add_amend_alias_forenames'].inputName"
-        inputClasses="govuk-input--width-20"
-        [control]="
+    <div
+      opal-lib-govuk-checkboxes-conditional
+      conditionalId="facc_debtor_add_amend_add_alias"
+      formArrayName="facc_debtor_add_amend_aliases"
+    >
+      @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <opal-lib-govuk-text-input
+            labelText="First names"
+            [inputId]="aliasControl['facc_debtor_add_amend_alias_forenames'].inputId"
+            [inputName]="aliasControl['facc_debtor_add_amend_alias_forenames'].inputName"
+            inputClasses="govuk-input--width-20"
+            [control]="
               form.get([
                 'facc_debtor_add_amend_aliases',
                 rowIndex,
                 aliasControl['facc_debtor_add_amend_alias_forenames'].controlName,
               ])
             "
-        [errors]="formControlErrorMessages[aliasControl['facc_debtor_add_amend_alias_forenames'].controlName]"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Last name"
-        [inputId]="aliasControl['facc_debtor_add_amend_alias_surname'].inputId"
-        [inputName]="aliasControl['facc_debtor_add_amend_alias_surname'].inputName"
-        inputClasses="govuk-input--width-20"
-        [control]="
+            [errors]="formControlErrorMessages[aliasControl['facc_debtor_add_amend_alias_forenames'].controlName]"
+          ></opal-lib-govuk-text-input>
+          <opal-lib-govuk-text-input
+            labelText="Last name"
+            [inputId]="aliasControl['facc_debtor_add_amend_alias_surname'].inputId"
+            [inputName]="aliasControl['facc_debtor_add_amend_alias_surname'].inputName"
+            inputClasses="govuk-input--width-20"
+            [control]="
               form.get([
                 'facc_debtor_add_amend_aliases',
                 rowIndex,
                 aliasControl['facc_debtor_add_amend_alias_surname'].controlName,
               ])
             "
-        [errors]="formControlErrorMessages[aliasControl['facc_debtor_add_amend_alias_surname'].controlName]"
-        [opalLibCapitaliseAllCharacters]="
+            [errors]="formControlErrorMessages[aliasControl['facc_debtor_add_amend_alias_surname'].controlName]"
+            [opalLibCapitaliseAllCharacters]="
               form.get([
                 'facc_debtor_add_amend_aliases',
                 rowIndex,
                 aliasControl['facc_debtor_add_amend_alias_surname'].controlName,
               ])!
             "
-      ></opal-lib-govuk-text-input>
-    </fieldset>
-    } @if (aliasControls.length > 1) {
-    <div class="govuk-!-margin-bottom-3">
-      <a
-        class="govuk-link govuk-link--no-visited-state"
-        (click)="removeAlias(aliasControls.length - 1, 'facc_debtor_add_amend_aliases')"
-        (keyup.enter)="removeAlias(aliasControls.length - 1, 'facc_debtor_add_amend_aliases')"
-        tabindex="0"
-      >
-        Remove
-      </a>
+          ></opal-lib-govuk-text-input>
+        </fieldset>
+      }
+      @if (aliasControls.length > 1) {
+        <div class="govuk-!-margin-bottom-3">
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            (click)="removeAlias(aliasControls.length - 1, 'facc_debtor_add_amend_aliases')"
+            (keyup.enter)="removeAlias(aliasControls.length - 1, 'facc_debtor_add_amend_aliases')"
+            tabindex="0"
+          >
+            Remove
+          </a>
+        </div>
+      }
+      @if (aliasControls.length < 5) {
+        <opal-lib-govuk-button
+          buttonId="addAlias"
+          buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+          type="button"
+          (buttonClickEvent)="addAlias(aliasControls.length, 'facc_debtor_add_amend_aliases')"
+          >Add another alias</opal-lib-govuk-button
+        >
+      }
     </div>
-    } @if (aliasControls.length < 5) {
-    <opal-lib-govuk-button
-      buttonId="addAlias"
-      buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-      type="button"
-      (buttonClickEvent)="addAlias(aliasControls.length, 'facc_debtor_add_amend_aliases')"
-      >Add another alias</opal-lib-govuk-button
-    >
-    }
-  </div>
   }
   <opal-lib-moj-date-picker
     labelText="Date of birth"
@@ -122,14 +124,14 @@
     [errors]="formControlErrorMessages['facc_debtor_add_amend_dob']"
   ></opal-lib-moj-date-picker>
   @if (age && ageLabel) {
-  <opal-lib-moj-ticket-panel
-    componentClasses="govuk-!-width-one-third"
-    sectionClasses="moj-ticket-panel__content--blue"
-    [alert]="true"
-  >
-    <strong>Age: {{ age }}</strong>
-    <p>{{ ageLabel }}</p>
-  </opal-lib-moj-ticket-panel>
+    <opal-lib-moj-ticket-panel
+      componentClasses="govuk-!-width-one-third"
+      sectionClasses="moj-ticket-panel__content--blue"
+      [alert]="true"
+    >
+      <strong>Age: {{ age }}</strong>
+      <p>{{ ageLabel }}</p>
+    </opal-lib-moj-ticket-panel>
   }
   <opal-lib-govuk-text-input
     labelText="National Insurance number"
@@ -224,44 +226,44 @@
   </fieldset>
 
   @if (showLanguagePreferences()) {
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-  <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language preferences</legend>
-    <opal-lib-govuk-radio
-      fieldSetId="facc_debtor_add_amend_language_preferences_document_language"
-      legendText="Documents"
-      legendClasses="govuk-fieldset__legend--s"
-    >
-      @for (languageOption of languageOptions; track languageOption.key) {
-      <div
-        opal-lib-govuk-radios-item
-        [labelText]="languageOption.value"
-        [inputId]="languageOption.key + 'DocumentRadioOption'"
-        inputName="facc_debtor_add_amend_language_preferences_document_language"
-        [inputValue]="languageOption.key"
-        [control]="form.get('facc_debtor_add_amend_language_preferences_document_language')"
-      ></div>
-      }
-    </opal-lib-govuk-radio>
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language preferences</legend>
+      <opal-lib-govuk-radio
+        fieldSetId="facc_debtor_add_amend_language_preferences_document_language"
+        legendText="Documents"
+        legendClasses="govuk-fieldset__legend--s"
+      >
+        @for (languageOption of languageOptions; track languageOption.key) {
+          <div
+            opal-lib-govuk-radios-item
+            [labelText]="languageOption.value"
+            [inputId]="languageOption.key + 'DocumentRadioOption'"
+            inputName="facc_debtor_add_amend_language_preferences_document_language"
+            [inputValue]="languageOption.key"
+            [control]="form.get('facc_debtor_add_amend_language_preferences_document_language')"
+          ></div>
+        }
+      </opal-lib-govuk-radio>
 
-    <opal-lib-govuk-radio
-      fieldSetId="facc_debtor_add_amend_language_preferences_hearing_language"
-      legendText="Court hearings"
-      legendClasses="govuk-fieldset__legend--s"
-    >
-      @for (languageOption of languageOptions; track languageOption.key) {
-      <div
-        opal-lib-govuk-radios-item
-        [labelText]="languageOption.value"
-        [inputId]="languageOption.key + 'CourtHearingRadioOption'"
-        inputName="facc_debtor_add_amend_language_preferences_hearing_language"
-        [inputValue]="languageOption.key"
-        [control]="form.get('facc_debtor_add_amend_language_preferences_hearing_language')"
-      ></div>
-      }
-    </opal-lib-govuk-radio>
-  </fieldset>
+      <opal-lib-govuk-radio
+        fieldSetId="facc_debtor_add_amend_language_preferences_hearing_language"
+        legendText="Court hearings"
+        legendClasses="govuk-fieldset__legend--s"
+      >
+        @for (languageOption of languageOptions; track languageOption.key) {
+          <div
+            opal-lib-govuk-radios-item
+            [labelText]="languageOption.value"
+            [inputId]="languageOption.key + 'CourtHearingRadioOption'"
+            inputName="facc_debtor_add_amend_language_preferences_hearing_language"
+            [inputValue]="languageOption.key"
+            [control]="form.get('facc_debtor_add_amend_language_preferences_hearing_language')"
+          ></div>
+        }
+      </opal-lib-govuk-radio>
+    </fieldset>
   }
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />

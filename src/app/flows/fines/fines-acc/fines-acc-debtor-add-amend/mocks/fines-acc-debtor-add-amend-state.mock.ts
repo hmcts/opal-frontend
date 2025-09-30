@@ -1,6 +1,6 @@
 import { IFinesAccDebtorAddAmendState } from '../interfaces/fines-acc-debtor-add-amend-state.interface';
 
-export const FINES_ACC_DEBTOR_ADD_AMEND_STATE: IFinesAccDebtorAddAmendState = {
+export const FINES_ACC_DEBTOR_ADD_AMEND_STATE_MOCK: IFinesAccDebtorAddAmendState = {
   facc_debtor_add_amend_title: null,
   facc_debtor_add_amend_forenames: null,
   facc_debtor_add_amend_surname: null,

@@ -11,7 +11,6 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defenda
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
 import { defendantAccountDefendantTabResolver } from './resolvers/defendant-account-defendant-tab.resolver';
 
-
 const accRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [

@@ -12,10 +12,8 @@ import {
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesAccDebtorAddAmendFieldErrors } from '../interfaces/fines-acc-debtor-add-amend-field-errors.interface';
-import {
-  IFinesAccDebtorAddAmendFormData,
-  IFinesAccDebtorAddAmendAlias,
-} from '../interfaces/fines-acc-debtor-add-amend-form.interface';
+import { IFinesAccDebtorAddAmendForm } from '../interfaces/fines-acc-debtor-add-amend-form.interface';
+import { IFinesAccDebtorAddAmendAliasState } from '../interfaces/fines-acc-debtor-add-amend-alias-state.interface';
 import { FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS } from '../constants/fines-acc-debtor-add-amend-field-errors.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_ALIAS } from '../constants/fines-acc-debtor-add-amend-alias.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../constants/fines-acc-debtor-add-amend-party-types.constant';
@@ -88,12 +86,13 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
 export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesAccountStore = inject(FinesAccountStore);
 
-  @Output() protected override formSubmit = new EventEmitter<IFinesAccDebtorAddAmendFormData>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesAccDebtorAddAmendForm>();
   protected readonly dateService = inject(DateService);
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
+  protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
 
   @Input() public partyType!: string;
-  @Input() public initialFormData?: IFinesAccDebtorAddAmendFormData;
+  @Input() public initialFormData?: IFinesAccDebtorAddAmendForm;
   override fieldErrors: IFinesAccDebtorAddAmendFieldErrors = {
     ...FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS,
   };
@@ -102,130 +101,124 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   public age!: number;
   public ageLabel!: string;
   public readonly partyTypes = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES;
-  protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
 
   /**
-   * Sets up the debtor add/amend form.
+   * Sets up the debtor add/amend form structure without populating data.
    */
   private setupDebtorAddAmendForm(): void {
-    const formData = this.initialFormData?.formData;
-
     this.form = new FormGroup({
-      facc_debtor_add_amend_title: new FormControl(formData?.facc_debtor_add_amend_title, [Validators.required]),
-      facc_debtor_add_amend_forenames: new FormControl(formData?.facc_debtor_add_amend_forenames, [
+      facc_debtor_add_amend_title: new FormControl(null, [Validators.required]),
+      facc_debtor_add_amend_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_surname: new FormControl(formData?.facc_debtor_add_amend_surname, [
+      facc_debtor_add_amend_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_aliases: new FormArray([]),
       facc_debtor_add_amend_add_alias: new FormControl(null),
-      facc_debtor_add_amend_dob: new FormControl(formData?.facc_debtor_add_amend_dob, [
-        optionalValidDateValidator(),
-        dateOfBirthValidator(),
-      ]),
-      facc_debtor_add_amend_national_insurance_number: new FormControl(
-        formData?.facc_debtor_add_amend_national_insurance_number,
-        [nationalInsuranceNumberValidator()],
-      ),
-      facc_debtor_add_amend_address_line_1: new FormControl(formData?.facc_debtor_add_amend_address_line_1, [
+      facc_debtor_add_amend_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      facc_debtor_add_amend_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      facc_debtor_add_amend_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_address_line_2: new FormControl(formData?.facc_debtor_add_amend_address_line_2, [
+      facc_debtor_add_amend_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_address_line_3: new FormControl(formData?.facc_debtor_add_amend_address_line_3, [
+      facc_debtor_add_amend_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_post_code: new FormControl(formData?.facc_debtor_add_amend_post_code, [
-        optionalMaxLengthValidator(8),
+      facc_debtor_add_amend_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      facc_debtor_add_amend_contact_email_address_1: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_contact_email_address_1: new FormControl(
-        formData?.facc_debtor_add_amend_contact_email_address_1,
-        [optionalMaxLengthValidator(76), EMAIL_ADDRESS_PATTERN_VALIDATOR],
-      ),
-      facc_debtor_add_amend_contact_email_address_2: new FormControl(
-        formData?.facc_debtor_add_amend_contact_email_address_2,
-        [optionalMaxLengthValidator(76), EMAIL_ADDRESS_PATTERN_VALIDATOR],
-      ),
-      facc_debtor_add_amend_contact_telephone_number_mobile: new FormControl(
-        formData?.facc_debtor_add_amend_contact_telephone_number_mobile,
-        [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()],
-      ),
-      facc_debtor_add_amend_contact_telephone_number_home: new FormControl(
-        formData?.facc_debtor_add_amend_contact_telephone_number_home,
-        [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()],
-      ),
-      facc_debtor_add_amend_contact_telephone_number_business: new FormControl(
-        formData?.facc_debtor_add_amend_contact_telephone_number_business,
-        [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()],
-      ),
-      facc_debtor_add_amend_vehicle_make: new FormControl(formData?.facc_debtor_add_amend_vehicle_make, [
+      facc_debtor_add_amend_contact_email_address_2: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
+      ]),
+      facc_debtor_add_amend_contact_telephone_number_mobile: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      facc_debtor_add_amend_contact_telephone_number_home: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      facc_debtor_add_amend_contact_telephone_number_business: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      facc_debtor_add_amend_vehicle_make: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_vehicle_registration_mark: new FormControl(
-        formData?.facc_debtor_add_amend_vehicle_registration_mark,
-        [optionalMaxLengthValidator(20), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-      ),
-      facc_debtor_add_amend_language_preferences_document_language: new FormControl(
-        formData?.facc_debtor_add_amend_language_preferences_document_language,
-      ),
-      facc_debtor_add_amend_language_preferences_hearing_language: new FormControl(
-        formData?.facc_debtor_add_amend_language_preferences_hearing_language,
-      ),
-      facc_debtor_add_amend_employer_details_employer_company_name: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_company_name,
-        [optionalMaxLengthValidator(50)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_reference: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_reference,
-        [optionalMaxLengthValidator(20)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_email_address: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_email_address,
-        [optionalMaxLengthValidator(76), EMAIL_ADDRESS_PATTERN_VALIDATOR],
-      ),
-      facc_debtor_add_amend_employer_details_employer_telephone_number: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_telephone_number,
-        [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()],
-      ),
-      facc_debtor_add_amend_employer_details_employer_address_line_1: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_address_line_1,
-        [optionalMaxLengthValidator(30)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_address_line_2: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_address_line_2,
-        [optionalMaxLengthValidator(30)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_address_line_3: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_address_line_3,
-        [optionalMaxLengthValidator(30)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_address_line_4: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_address_line_4,
-        [optionalMaxLengthValidator(30)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_address_line_5: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_address_line_5,
-        [optionalMaxLengthValidator(30)],
-      ),
-      facc_debtor_add_amend_employer_details_employer_post_code: new FormControl(
-        formData?.facc_debtor_add_amend_employer_details_employer_post_code,
-        [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-      ),
+      facc_debtor_add_amend_vehicle_registration_mark: new FormControl(null, [
+        optionalMaxLengthValidator(20),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
+      facc_debtor_add_amend_language_preferences_document_language: new FormControl(null),
+      facc_debtor_add_amend_language_preferences_hearing_language: new FormControl(null),
+      facc_debtor_add_amend_employer_details_employer_company_name: new FormControl(null, [
+        optionalMaxLengthValidator(50),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_reference: new FormControl(null, [
+        optionalMaxLengthValidator(20),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_email_address: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        EMAIL_ADDRESS_PATTERN_VALIDATOR,
+      ]),
+      facc_debtor_add_amend_employer_details_employer_telephone_number: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_address_line_1: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_address_line_2: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_address_line_3: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_address_line_4: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_address_line_5: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+      ]),
+      facc_debtor_add_amend_employer_details_employer_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
     });
+  }
+
+  /**
+   * Counts the number of aliases in the alias state
+   */
+  private countAliases(aliases: IFinesAccDebtorAddAmendAliasState): number {
+    let count = 0;
+    for (let i = 0; i < 5; i++) {
+      const forenamesKey = `facc_debtor_add_amend_alias_forenames_${i}` as keyof IFinesAccDebtorAddAmendAliasState;
+      const surnameKey = `facc_debtor_add_amend_alias_surname_${i}` as keyof IFinesAccDebtorAddAmendAliasState;
+
+      if (aliases[forenamesKey] || aliases[surnameKey]) {
+        count = i + 1; // Set count to include this index
+      }
+    }
+    return count;
   }
 
   /**
@@ -244,14 +237,16 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
-      this.age = this.dateService.getAgeObject(dobControl.value)?.value!;
-      this.ageLabel = this.dateService.getAgeObject(dobControl.value)?.group!;
+      const ageObject = this.dateService.getAgeObject(dobControl.value);
+      this.age = ageObject?.value || 0;
+      this.ageLabel = ageObject?.group || '';
     }
 
     // Subscribe to changes in the date of birth control
     dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
-      this.age = this.dateService.getAgeObject(dateOfBirth)?.value!;
-      this.ageLabel = this.dateService.getAgeObject(dateOfBirth)?.group!;
+      const ageObject = this.dateService.getAgeObject(dateOfBirth);
+      this.age = ageObject?.value || 0;
+      this.ageLabel = ageObject?.group || '';
     });
   }
 
@@ -259,36 +254,71 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    * Sets up the initial debtor add/amend form.
    */
   private initialDebtorAddAmendSetup(): void {
+    const { formData } = this.initialFormData || { formData: null };
     this.setupDebtorAddAmendForm();
     this.setupAliasConfiguration();
-    const existingAliases = this.initialFormData?.formData?.facc_debtor_add_amend_aliases || [];
-    this.setupAliasFormControls([...Array(existingAliases.length).keys()], 'facc_debtor_add_amend_aliases');
-    this.populateAliasFormArray(existingAliases);
+
+    // Set up alias form controls if we have aliases
+    if (formData?.facc_debtor_add_amend_aliases) {
+      const aliasCount = this.countAliases(formData.facc_debtor_add_amend_aliases);
+      if (aliasCount > 0) {
+        this.setupAliasFormControls(
+          Array.from({ length: aliasCount }, (_, i) => i),
+          'facc_debtor_add_amend_aliases',
+        );
+      }
+    }
+
     this.setInitialErrorMessages();
+
+    if (formData) {
+      this.rePopulateForm(formData);
+    }
+
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
   /**
-   * Populates the alias FormArray with existing alias data.
-   * @param aliases - Array of existing alias data to populate
+   * Populates the form with existing data.
+   * @param formData - The form data to populate the form with
    */
-  private populateAliasFormArray(aliases: IFinesAccDebtorAddAmendAlias[]): void {
-    const aliasFormArray = this.form.get('facc_debtor_add_amend_aliases') as FormArray;
 
-    aliases.forEach((alias, index) => {
-      const aliasFormGroup = aliasFormArray.at(index) as FormGroup;
-      if (aliasFormGroup) {
-        aliasFormGroup.patchValue({
-          [`facc_debtor_add_amend_alias_forenames_${index}`]: alias.facc_debtor_add_amend_alias_forenames,
-          [`facc_debtor_add_amend_alias_surname_${index}`]: alias.facc_debtor_add_amend_alias_surname,
-        });
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected override rePopulateForm(formData: any): void {
+    if (!formData) return;
+
+    // Create a flattened copy for form population, excluding nested aliases
+    const flattenedData = { ...formData };
+    delete flattenedData.facc_debtor_add_amend_aliases;
+
+    // Patch the main form with the flattened data
+    this.form.patchValue(flattenedData);
+
+    // Handle aliases separately - populate the FormArray controls
+    if (formData.facc_debtor_add_amend_aliases) {
+      const aliasFormArray = this.form.get('facc_debtor_add_amend_aliases') as FormArray;
+      const aliasCount = this.countAliases(formData.facc_debtor_add_amend_aliases);
+
+      // Set the add alias checkbox to true if we have aliases
+      if (aliasCount > 0) {
+        this.form.get('facc_debtor_add_amend_add_alias')?.setValue(true);
       }
-    });
 
-    if (aliases.length > 0) {
-      this.form.get('facc_debtor_add_amend_add_alias')?.setValue(true);
+      // Populate each alias FormGroup in the FormArray
+      for (let i = 0; i < aliasFormArray.length; i++) {
+        const aliasGroup = aliasFormArray.at(i) as FormGroup;
+        const forenamesKey = `facc_debtor_add_amend_alias_forenames_${i}`;
+        const surnameKey = `facc_debtor_add_amend_alias_surname_${i}`;
+
+        if (aliasGroup) {
+          aliasGroup.patchValue({
+            [forenamesKey]: formData.facc_debtor_add_amend_aliases[forenamesKey] || null,
+            [surnameKey]: formData.facc_debtor_add_amend_aliases[surnameKey] || null,
+          });
+        }
+      }
     }
   }
 
