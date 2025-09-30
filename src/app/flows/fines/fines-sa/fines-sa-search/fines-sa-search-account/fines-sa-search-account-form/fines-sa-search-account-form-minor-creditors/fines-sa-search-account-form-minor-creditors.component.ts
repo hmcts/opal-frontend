@@ -176,7 +176,7 @@ export class FinesSaSearchAccountFormMinorCreditorsComponent extends AbstractNes
     const type = this.minorCreditorType.value;
     if (type !== 'individual') return;
 
-    const individualGroup = this.individualGroup as FormGroup;
+    const individualGroup = this.individualGroup;
     if (!individualGroup) return;
 
     const firstNamesControl = individualGroup.get('fsa_search_account_minor_creditors_first_names');

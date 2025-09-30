@@ -120,9 +120,11 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     const { fieldName, validators, fieldsToRemove } =
       this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? {};
 
-    fieldsToRemove?.forEach((field) => {
-      this.removeControl(field);
-    });
+    if (fieldsToRemove) {
+      for (const field of fieldsToRemove) {
+        this.removeControl(field);
+      }
+    }
 
     if (fieldName && accountType !== FINES_MAC_ACCOUNT_TYPES['Conditional Caution']) {
       this.createControl(fieldName, validators);

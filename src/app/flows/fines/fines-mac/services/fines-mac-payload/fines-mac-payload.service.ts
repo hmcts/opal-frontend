@@ -223,13 +223,13 @@ export class FinesMacPayloadService {
     let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
 
     // Check if any of the values are not empty
-    Object.entries(formData).forEach(([, value]) => {
+    for (const [, value] of Object.entries(formData)) {
       const hasValue = this.hasNonEmptyValue(value);
       // If we have a value and the status is not provided, set it to provided
       if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
         newStatus = FINES_MAC_STATUS.PROVIDED;
       }
-    });
+    }
 
     return newStatus;
   }

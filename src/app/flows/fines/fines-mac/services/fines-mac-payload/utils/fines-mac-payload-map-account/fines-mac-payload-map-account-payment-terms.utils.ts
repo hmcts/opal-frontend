@@ -18,7 +18,7 @@ const mapEnforcementActions = (
     return mappedFinesMacState;
   }
 
-  enforcements.forEach(({ enforcement_result_responses: responses, result_id: resultId }) => {
+  for (const { enforcement_result_responses: responses, result_id: resultId } of enforcements) {
     if (resultId !== 'COLLO') {
       mappedFinesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = resultId;
       mappedFinesMacState.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account = resultId === 'NOENF';
@@ -26,7 +26,7 @@ const mapEnforcementActions = (
         responses && responses.length > 0;
 
       if (responses?.length) {
-        responses.forEach(({ parameter_name, response }) => {
+        for (const { parameter_name, response } of responses) {
           const formData = mappedFinesMacState.paymentTerms.formData;
 
           if (parameter_name === 'earliestreleasedate') {
@@ -36,10 +36,10 @@ const mapEnforcementActions = (
           } else if (parameter_name === 'reason') {
             formData.fm_payment_terms_reason_account_is_on_noenf = response;
           }
-        });
+        }
       }
     }
-  });
+  }
 
   return mappedFinesMacState;
 };
@@ -102,7 +102,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
 
   const isPayInFull = paymentTermsType === paymentTermOptions[0];
   const payByDate = isPayInFull ? paymentTerms.effective_date : null;
-  const startDate = !isPayInFull ? paymentTerms.effective_date : null;
+  const startDate = isPayInFull ? null : paymentTerms.effective_date;
 
   mappedFinesMacState.paymentTerms.formData = {
     ...mappedFinesMacState.paymentTerms.formData,

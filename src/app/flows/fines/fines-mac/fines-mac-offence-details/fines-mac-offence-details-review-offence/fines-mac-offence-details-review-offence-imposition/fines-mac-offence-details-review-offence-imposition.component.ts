@@ -230,9 +230,9 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       this.totalAmountPaid += amountPaid;
       this.totalBalanceRemaining += balanceRemaining;
 
-      const resultCodeImposition = this.impositionRefData.refData.filter(
+      const resultCodeImposition = this.impositionRefData.refData.find(
         (refData) => refData.result_id === imposition.fm_offence_details_result_id,
-      )[0];
+      )!;
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,

@@ -485,7 +485,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * @param controlsToAdd - An array of controls to add to the form.
    */
   private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
-    controlsToAdd.forEach((control) => {
+    for (const control of controlsToAdd) {
       this.updateControl(control.controlName, control.validators);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
@@ -493,7 +493,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       ) {
         this.dateListener(control.controlName);
       }
-    });
+    }
   }
 
   /**
@@ -502,7 +502,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * @param controlsToRemove - An array of `IAbstractFormArrayControlValidation` objects representing the controls to remove.
    */
   private removeControls(controlsToRemove: IAbstractFormArrayControlValidation[]): void {
-    controlsToRemove.forEach((control) => {
+    for (const control of controlsToRemove) {
       const formControl = this.form.get(control.controlName);
       if (formControl) {
         formControl.reset();
@@ -514,7 +514,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       ) {
         this.resetDateChecker();
       }
-    });
+    }
   }
 
   /**
