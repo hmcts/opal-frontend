@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 // Component under test
@@ -33,7 +33,6 @@ describe('Defendant Account Summary (Component)', () => {
     mount(FinesAccDefendantDetailsComponent, {
       providers: [
         provideHttpClient(),
-        provideRouter([]),
         OpalFines,
         {
           provide: FinesAccountStore,
@@ -75,7 +74,12 @@ describe('Defendant Account Summary (Component)', () => {
               return store;
             },
           },
-          
+          {
+          provide: Router,
+          useValue: {
+            navigate: cy.stub().as('routerNavigate'),
+          },
+        },
       ],
     });
   };
@@ -246,11 +250,11 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
 
-  it.only('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+  it('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
     cy.get(DOM.addNoteButton).click();
-    //cy.get('@routerNavigate').should('have.been.called')
-    //cy.get('@routerNavigate').its('lastCall.args.0').should('deep.equal', ['../note/add']);;
+    cy.get('@routerNavigate').should('have.been.called')
+    cy.get('@routerNavigate').its('lastCall.args.0').should('deep.equal', ['../note/add']);;
   });
 
   it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
@@ -263,11 +267,11 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
-  it('AC3: clicking "Add account note" calls router.navigate - Company', { tags: ['PO-867'] }, () => {
+  it.only('AC3: clicking "Add account note" calls router.navigate - Company', { tags: ['PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
     cy.get(DOM.addNoteButton).click();
-    //cy.get('@routerNavigate').should('have.been.called');
-   // cy.get('@routerNavigate').its('lastCall.args.0').then((arg0) => {const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0); expect(path).to.match(/no-?permission|lack-?permission/i); });    
+    cy.get('@routerNavigate').should('have.been.called');
+    cy.get('@routerNavigate').its('lastCall.args.0').then((arg0) => {const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0); expect(path).to.match(/no-?permission|lack-?permission/i); });    
   });
   
   it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
