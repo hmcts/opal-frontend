@@ -8,9 +8,9 @@ export const fetchBusinessUnitsResolver: ResolveFn<IOpalFinesBusinessUnitRefData
   const opalFinesService = inject(OpalFines);
   const permission = route.data['permission'];
 
-  if (!permission) {
-    return opalFinesService.getBusinessUnits().pipe(map((response) => response));
-  } else {
+  if (permission) {
     return opalFinesService.getBusinessUnitsByPermission(permission).pipe(map((response) => response));
+  } else {
+    return opalFinesService.getBusinessUnits().pipe(map((response) => response));
   }
 };
