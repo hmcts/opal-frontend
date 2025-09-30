@@ -1,5 +1,6 @@
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesDefendantAccountAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountAlias[] = [
   { alias_number: 1, organisation_name: null, surname: 'Graham', forenames: 'A.' },
@@ -77,14 +78,105 @@ export const DEFENDANT_HEADER_ORG_MOCK: IOpalFinesAccountDefendantDetailsHeader 
 
 export const MOCK_ACCOUNT_STATE = {
   account_number: '177A',
-  account_id: '141',
-  party_id: '77',
-  business_unit_user_id: '10',
-  business_unit_id: '78',
-  party_name: 'Anna Graham',
+  account_id: 141,
   party_type: 'Individual',
-  base_version: 1,
-  welsh_speaking: 'No',
-  hasVersionMismatch: false,
-  successMessage: null,
+  party_name: 'Anna Graham',
+  party_id: '77',
+  base_version: 1,  
+  business_unit_id: '78',
+  business_unit_user_id: '10',  
+  welsh_speaking: 'No'
+};
+
+export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
+  user_id: 50000000,
+  username: 'testUserNote@HMCTS.NET',
+  name: 'Test User',
+  status: 'active',
+  version: 1,
+  business_unit_users: [
+    {
+      business_unit_user_id: 'L077AO',
+      business_unit_id: 77,
+      permissions: [
+        {
+          permission_id: 3,
+          permission_name: 'Account Enquiry',
+        },
+        {
+          permission_id: 2,
+          permission_name: 'Account Enquiry - Account Notes',
+        },
+        {
+          permission_id: 5,
+          permission_name: 'Check and Validate Draft Accounts',
+        },        
+      ],
+    },
+  ],
+};
+
+export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
+  user_id: 50000000,
+  username: 'testUserNote@HMCTS.NET',
+  name: 'Test User',
+  status: 'active',
+  version: 1,
+  business_unit_users: [
+    {
+      business_unit_user_id: 'L017KG',
+      business_unit_id: 17,
+      permissions: [
+        {
+          permission_id: 3,
+          permission_name: 'Account Enquiry',
+        },
+        {
+          permission_id: 2,
+          permission_name: 'Account Enquiry - Account Notes',
+        },
+        {
+          permission_id: 5,
+          permission_name: 'Check and Validate Draft Accounts',
+        },
+        {
+          permission_id: 8,
+          permission_name: "Add Account Activity Notes"
+        },
+        
+      ],
+    },
+  ],
+};
+export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
+  user_id: 50000000,
+  username: 'testUserNote@HMCTS.NET',
+  name: 'Test User',
+  status: 'active',
+  version: 1,
+  business_unit_users: [
+    {
+      business_unit_user_id: 'L077AO',
+      business_unit_id: 77,
+      permissions: [
+        {
+          permission_id: 3,
+          permission_name: 'Account Enquiry',
+        },
+        {
+          permission_id: 2,
+          permission_name: 'Account Enquiry - Account Notes',
+        },
+        {
+          permission_id: 5,
+          permission_name: 'Check and Validate Draft Accounts',
+        },
+        {
+          permission_id: 8,
+          permission_name: "Add Account Activity Notes"
+        },
+        
+      ],
+    },
+  ],
 };

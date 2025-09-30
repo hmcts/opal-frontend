@@ -4,7 +4,6 @@
 import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 import merge from 'lodash/merge';
 import set from 'lodash/set';
-import _ from 'lodash';
 import {
   installDraftAccountCleanup,
   recordCreatedId,
@@ -184,6 +183,7 @@ type EtagUpdate = {
   etagBefore: string;
   etagAfter: string;
   accountId: number;
+  accountNumber?: string | null;
 };
 
 When('I update the last created draft account with status {string}', (newStatus: string) => {
@@ -228,6 +228,7 @@ When('I update the last created draft account with status {string}', (newStatus:
             etagBefore: beforeEtag,
             etagAfter: afterEtag,
             accountId: Number(id),
+            accountNumber: readString(patchResp.body, 'account_number'),
           } as EtagUpdate,
           { log: false },
         ).as('etagUpdate');
@@ -296,80 +297,18 @@ When('I try to update the last created draft account with a stale ETag I should 
   });
 });
 
-let createdAccounts: string[] = [];
+// ────────────────────────────────────────────────────────────────────────────────
+// Click the latest published account link
+// ────────────────────────────────────────────────────────────────────────────────
 
-When('I create a {string} draft account with the following detail:', (accountType: DefendantType, data: DataTable) => {
-  const overrides = convertDataTableToNestedObject(data);
-
-  // Load the appropriate base payload for this account type
-  const payloadFile = getPayloadFileForAccountType(accountType);
-  cy.fixture(`draftAccounts/${payloadFile}`).then((draftAccount) => {
-    const requestBody = _.merge({}, draftAccount, overrides);
-
-    cy.request('POST', 'opal-fines-service/draft-accounts', requestBody).then((response) => {
-      expect(response.status).to.eq(201);
-      const draftAccountId = response.body.draft_account_id;
-      expect(draftAccountId).to.exist;
-      createdAccounts.push(draftAccountId);
-    });
-  });
-});
-
-When('I update the last created draft account with the status {string}', (status: string) => {
-  cy.wrap(createdAccounts)
-    .its(createdAccounts.length - 1)
-    .then((accountId) => {
-      // Fetch the current draft account to get required fields
-      cy.request('GET', `opal-fines-service/draft-accounts/${accountId}`).then((getResp) => {
-        const account = getResp.body;
-        const business_unit_id = account.business_unit_id;
-        const version = account.version;
-        const validated_by = account.submitted_by || 'opal-test';
-        const now = new Date().toISOString().split('T')[0];
-        const updateBody = {
-          business_unit_id,
-          account_status: status,
-          validated_by,
-          version,
-          timeline_data: [
-            {
-              username: validated_by,
-              status,
-              status_date: now,
-              reason_text: 'Test reason',
-            },
-          ],
-        };
-        cy.request('PATCH', `opal-fines-service/draft-accounts/${accountId}`, updateBody).then((response) => {
-          expect(response.status).to.eq(200);
-
-          const body = response.body || {};
-          const accNum = body.account_number ?? body.accountNumber;
-          Cypress.env('lastAccountNumber', accNum);
-        });
+Then('I click the latest published account link', () => {
+  cy.get<EtagUpdate>('@etagUpdate').then(({ accountNumber }) => {
+    expect(accountNumber, 'accountNumber on @etagUpdate').to.be.a('string').and.not.be.empty;
+    cy.window().then((win) => {
+      cy.stub(win, 'open').callsFake((url) => {
+        win.location.href = url;
       });
     });
-});
-
-Then('I click the published account link', () => {
-  const num = Cypress.env('lastAccountNumber');
-  expect(num, 'lastAccountNumber').to.be.a('string');
-  cy.window().then((win) => {
-    cy.stub(win, 'open').callsFake((url) => {
-      win.location.href = url;
-    });
+    cy.contains('a.govuk-link', String(accountNumber)).click();
   });
-  cy.contains('a.govuk-link', String(num)).click();
-});
-
-afterEach(() => {
-  cy.log('Createdaccount length: ' + createdAccounts.length);
-
-  if (createdAccounts.length > 0) {
-    cy.log('Cleaning up accounts: ' + createdAccounts.join(', '));
-    createdAccounts.forEach((accountId) => {
-      cy.request('DELETE', `/opal-fines-service/draft-accounts/${accountId}?ignoreMissing=true`);
-      createdAccounts = createdAccounts.filter((id) => id !== accountId);
-    });
-  }
 });
