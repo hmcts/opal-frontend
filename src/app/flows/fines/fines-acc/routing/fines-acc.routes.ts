@@ -16,6 +16,10 @@ export const routing: Routes = [
     path: FINES_ACC_ROUTING_PATHS.root,
     redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
@@ -27,9 +31,8 @@ export const routing: Routes = [
           import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then(
             (c) => c.FinesAccDefendantDetailsComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.details,
         },
         resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
@@ -41,10 +44,7 @@ export const routing: Routes = [
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
         canActivate: [authGuard, routePermissionsGuard],
         data: {
-          routePermissionId: [
-            accRootPermissionIds['search-and-view-accounts'],
-            accRootPermissionIds['add-account-activity-notes'],
-          ],
+          routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.note,
         },
         resolve: { title: TitleResolver },
@@ -56,9 +56,8 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
