@@ -57,7 +57,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK:
       enforcement_override: {
         enforcement_override_result: {
           enforcement_override_result_id: 'EOR-001',
-          enforcement_override_result_name: 'Override Approved',
+          enforcement_override_result_title: 'Override Approved',
         },
         enforcer: {
           enforcer_id: 10,
