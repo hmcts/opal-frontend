@@ -119,11 +119,24 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Navigates to the add account note page.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddAccountNotePage(): void {
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
-      relativeTo: this.activatedRoute,
-    });
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['add-account-activity-notes'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
   }
 
   public ngOnInit(): void {

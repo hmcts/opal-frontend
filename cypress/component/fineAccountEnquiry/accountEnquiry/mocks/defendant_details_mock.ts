@@ -82,10 +82,10 @@ export const MOCK_ACCOUNT_STATE = {
   party_type: 'Individual',
   party_name: 'Anna Graham',
   party_id: '77',
-  base_version: 1,  
+  base_version: 1,
   business_unit_id: '78',
-  business_unit_user_id: '10',  
-  welsh_speaking: 'No'
+  business_unit_user_id: '10',
+  welsh_speaking: 'No',
 };
 
 export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
@@ -110,7 +110,7 @@ export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
         {
           permission_id: 5,
           permission_name: 'Check and Validate Draft Accounts',
-        },        
+        },
       ],
     },
   ],
@@ -141,9 +141,8 @@ export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
         },
         {
           permission_id: 8,
-          permission_name: "Add Account Activity Notes"
+          permission_name: 'Add Account Activity Notes',
         },
-        
       ],
     },
   ],
@@ -173,9 +172,8 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
         },
         {
           permission_id: 8,
-          permission_name: "Add Account Activity Notes"
+          permission_name: 'Add Account Activity Notes',
         },
-        
       ],
     },
   ],

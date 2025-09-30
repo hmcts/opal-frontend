@@ -87,8 +87,17 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks permission', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAddAccountNotePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
   });

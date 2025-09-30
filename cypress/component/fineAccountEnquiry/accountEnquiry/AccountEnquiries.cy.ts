@@ -68,14 +68,13 @@ describe('Defendant Account Summary (Component)', () => {
         },
         UtilsService,
         {
-            provide: GlobalStore,
-            useFactory: () => {
-              let store = new GlobalStore();
-              store.setUserState(user);
-              return store;
-            },
+          provide: GlobalStore,
+          useFactory: () => {
+            let store = new GlobalStore();
+            store.setUserState(user);
+            return store;
           },
-          
+        },
       ],
     });
   };
@@ -241,10 +240,9 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
   it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_MOCK,USER_STATE_MOCK_PERMISSION_BU77 );
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
-
 
   it.only('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
@@ -267,11 +265,11 @@ describe('Defendant Account Summary (Component)', () => {
     setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
     cy.get(DOM.addNoteButton).click();
     //cy.get('@routerNavigate').should('have.been.called');
-   // cy.get('@routerNavigate').its('lastCall.args.0').then((arg0) => {const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0); expect(path).to.match(/no-?permission|lack-?permission/i); });    
+    // cy.get('@routerNavigate').its('lastCall.args.0').then((arg0) => {const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0); expect(path).to.match(/no-?permission|lack-?permission/i); });
   });
-  
+
   it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION );
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION);
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 });
