@@ -60,13 +60,13 @@ export class FinesAccPayloadService {
   public transformAtAGlanceDataToCommentsForm(
     atAGlanceData: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData,
   ): IFinesAccAddCommentsFormState {
-    const { comment_and_notes } = atAGlanceData;
+    const { comments_and_notes } = atAGlanceData;
 
     return {
-      facc_add_comment: comment_and_notes?.account_comment || '',
-      facc_add_free_text_1: comment_and_notes?.free_text_note_1 || '',
-      facc_add_free_text_2: comment_and_notes?.free_text_note_2 || '',
-      facc_add_free_text_3: comment_and_notes?.free_text_note_3 || '',
+      facc_add_comment: comments_and_notes?.account_comment || '',
+      facc_add_free_text_1: comments_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: comments_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: comments_and_notes?.free_text_note_3 || '',
     };
   }
 
@@ -75,15 +75,10 @@ export class FinesAccPayloadService {
    * for the defendant account API.
    *
    * @param formState - The form state containing the comment and note data
-   * @param version - The current version of the defendant account for concurrency control
    * @returns The transformed payload for updating the defendant account
    */
-  public buildCommentsFormPayload(
-    formState: IFinesAccAddCommentsFormState,
-    version: number,
-  ): IOpalFinesUpdateDefendantAccountPayload {
+  public buildCommentsFormPayload(formState: IFinesAccAddCommentsFormState): IOpalFinesUpdateDefendantAccountPayload {
     return {
-      version,
       account_comments_notes: {
         account_comment: formState.facc_add_comment || null,
         account_free_note_1: formState.facc_add_free_text_1 || null,
@@ -91,7 +86,9 @@ export class FinesAccPayloadService {
         account_free_note_3: formState.facc_add_free_text_3 || null,
       },
     };
+  }
 
+  /**
    * Transforms the given finesMacPayload object by applying the transformations
    * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
    *

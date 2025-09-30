@@ -13,7 +13,6 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
-import { FINES_ACC_ROUTING_PATHS } from '../../routing/constants/fines-acc-routing-paths.constant';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesAccAddCommentsForm } from '../interfaces/fines-acc-comments-add-form.interface';
 import { IFinesAccAddCommentsFormState } from '../interfaces/fines-acc-comments-add-form-state.interface';
@@ -23,6 +22,7 @@ import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -46,7 +46,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_VALIDATOR = patternValida
 export class FinesAccCommentsAddFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesAccStore = inject(FinesAccountStore);
   @Output() protected override formSubmit = new EventEmitter<IFinesAccAddCommentsForm>();
-  protected readonly finesAccRoutingPaths = FINES_ACC_ROUTING_PATHS;
+  protected readonly finesAccDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly defendantName = this.finesAccStore.party_name();
   override fieldErrors: IFinesAccAddCommentsFieldErrors = FINES_ACC_ADD_COMMENTS_FIELD_ERRORS;

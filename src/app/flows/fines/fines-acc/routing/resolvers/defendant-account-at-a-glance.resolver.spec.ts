@@ -43,7 +43,8 @@ describe('defendantAccountAtAGlanceResolver', () => {
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',
-      base_version: 1,
+      base_version: '1',
+      welsh_speaking: 'N',
     };
 
     const expectedFormData: IFinesAccAddCommentsFormState = {
@@ -97,7 +98,8 @@ describe('defendantAccountAtAGlanceResolver', () => {
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',
-      base_version: 1,
+      base_version: '1',
+      welsh_speaking: 'N',
     };
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -122,7 +124,8 @@ describe('defendantAccountAtAGlanceResolver', () => {
       account_number: 'ACC123',
       party_type: 'Individual',
       party_name: 'John Doe',
-      base_version: 1,
+      base_version: '1',
+      welsh_speaking: 'N',
     };
 
     /* eslint-disable @typescript-eslint/no-explicit-any */

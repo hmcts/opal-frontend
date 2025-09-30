@@ -161,7 +161,6 @@ describe('FinesAccCommentsAddComponent', () => {
     };
 
     const mockPayload = {
-      version: 1,
       account_comments_notes: {
         account_comment: 'Test comment',
         account_free_note_1: 'Free text 1',
@@ -177,7 +176,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
     component.handleAddNoteSubmit(mockFormData);
 
-    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(mockFormData.formData, 1);
+    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(mockFormData.formData);
     expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload);
   });
 
@@ -189,7 +188,7 @@ describe('FinesAccCommentsAddComponent', () => {
   });
 
   it('should have routing paths defined', () => {
-    expect(component['finesAccRoutingPaths']).toBeDefined();
+    expect(component['finesDefendantRoutingPaths']).toBeDefined();
   });
 
   it('should extend AbstractFormParentBaseComponent', () => {
@@ -210,7 +209,6 @@ describe('FinesAccCommentsAddComponent', () => {
     };
 
     const mockPayload = {
-      version: 1,
       account_comments_notes: {
         account_comment: 'Only comment',
         account_free_note_1: null,
@@ -226,7 +224,7 @@ describe('FinesAccCommentsAddComponent', () => {
 
     component.handleAddNoteSubmit(partialFormData);
 
-    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(partialFormData.formData, 1);
+    expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(partialFormData.formData);
     expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload);
   });
 

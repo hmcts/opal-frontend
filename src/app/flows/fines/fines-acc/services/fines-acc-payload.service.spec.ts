@@ -113,17 +113,17 @@ describe('FinesAccPayloadService', () => {
     const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
     expect(result).toEqual({
-      facc_add_comment: atAGlanceData.comment_and_notes?.account_comment || '',
-      facc_add_free_text_1: atAGlanceData.comment_and_notes?.free_text_note_1 || '',
-      facc_add_free_text_2: atAGlanceData.comment_and_notes?.free_text_note_2 || '',
-      facc_add_free_text_3: atAGlanceData.comment_and_notes?.free_text_note_3 || '',
+      facc_add_comment: atAGlanceData.comments_and_notes?.account_comment || '',
+      facc_add_free_text_1: atAGlanceData.comments_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: atAGlanceData.comments_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: atAGlanceData.comments_and_notes?.free_text_note_3 || '',
     });
   });
 
   it('should handle null account notes gracefully', () => {
     const atAGlanceData = {
       ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
-      comment_and_notes: {
+      comments_and_notes: {
         account_comment: null,
         free_text_note_1: null,
         free_text_note_2: null,
@@ -149,12 +149,10 @@ describe('FinesAccPayloadService', () => {
         facc_add_free_text_2: 'Updated note 2',
         facc_add_free_text_3: 'Updated note 3',
       };
-      const version = 2;
 
-      const result = service.buildCommentsFormPayload(formState, version);
+      const result = service.buildCommentsFormPayload(formState);
 
       expect(result).toEqual({
-        version: 2,
         account_comments_notes: {
           account_comment: 'Updated comment',
           account_free_note_1: 'Updated note 1',
@@ -171,12 +169,10 @@ describe('FinesAccPayloadService', () => {
         facc_add_free_text_2: '',
         facc_add_free_text_3: null,
       };
-      const version = 1;
 
-      const result = service.buildCommentsFormPayload(formState, version);
+      const result = service.buildCommentsFormPayload(formState);
 
       expect(result).toEqual({
-        version: 1,
         account_comments_notes: {
           account_comment: null,
           account_free_note_1: null,

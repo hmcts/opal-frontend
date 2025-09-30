@@ -12,7 +12,6 @@ export interface IOpalFinesUpdateDefendantAccountCommentsNotes {
  * Interface for the payload to update a defendant account *Subject to change
  */
 export interface IOpalFinesUpdateDefendantAccountPayload {
-  version: number;
   account_comments_notes: IOpalFinesUpdateDefendantAccountCommentsNotes;
 }
 
@@ -20,7 +19,6 @@ export interface IOpalFinesUpdateDefendantAccountPayload {
  * Interface for the response when updating a defendant account *Subject to change
  */
 export interface IOpalFinesUpdateDefendantAccountResponse {
-  version: number;
   defendant_account_id: number;
   message?: string;
 }

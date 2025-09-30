@@ -804,7 +804,6 @@ describe('OpalFines', () => {
     };
 
     service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
-      expect(response.version).toBe(2); // Should be incremented from 1 to 2
       expect(response.defendant_account_id).toBe(accountId);
       expect(response.message).toBe('Account comments notes updated successfully');
     });
@@ -826,7 +825,6 @@ describe('OpalFines', () => {
     };
 
     service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
-      expect(response.version).toBe(6); // Should be incremented from 5 to 6
       expect(response.defendant_account_id).toBe(accountId);
       expect(response.message).toBe('Account comments notes updated successfully');
     });

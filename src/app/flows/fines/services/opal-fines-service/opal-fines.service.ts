@@ -43,8 +43,6 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from './mocks/opal-fines-defendant-account-response-company.mock';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import {
@@ -58,8 +56,6 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './inter
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
-import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
-import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
@@ -677,7 +673,6 @@ export class OpalFines {
 
     // Mock response for development purposes
     const mockResponse: IOpalFinesUpdateDefendantAccountResponse = {
-      version: payload.version + 1, // Increment version to simulate successful update
       defendant_account_id: accountId,
       message: 'Account comments notes updated successfully',
     };
