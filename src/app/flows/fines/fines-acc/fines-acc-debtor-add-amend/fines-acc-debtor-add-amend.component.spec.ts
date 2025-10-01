@@ -17,7 +17,7 @@ describe('FinesAccDebtorAddAmend', () => {
           useValue: {
             snapshot: {
               data: {
-                defendantAccountDefendantTabData: MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
+                debtorAmendFormData: MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
               },
               params: {
                 partyType: 'individual',

@@ -7,7 +7,7 @@ import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformat
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 import { IFinesAccDebtorAddAmendState } from '../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
-import { finesAccPayloadTransformDefendantDataToDebtorForm } from './utils/fines-acc-payload-transform-defendant-data.utils';
+import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -72,9 +72,9 @@ export class FinesAccPayloadService {
    * @param defendantData - The defendant tab data from the API.
    * @returns The transformed form state object for debtor add/amend form.
    */
-  public transformDefendantDataToDebtorForm(
+  public mapDebtorAccountPartyPayload(
     defendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData,
   ): IFinesAccDebtorAddAmendState {
-    return finesAccPayloadTransformDefendantDataToDebtorForm(defendantData);
+    return transformDefendantAccountPartyPayload(defendantData);
   }
 }

@@ -9,7 +9,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
-import { defendantAccountDefendantTabResolver } from './resolvers/defendant-account-party.resolver';
+import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -79,7 +79,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          debtorAmendFormData: defendantAccountDefendantTabResolver,
+          debtorAmendFormData: defendantAccountPartyResolver,
         },
       },
     ],

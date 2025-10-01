@@ -115,7 +115,7 @@ describe('FinesAccPayloadService', () => {
         OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
       );
 
-      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
       const { defendant_account_party } = mockDefendantData;
       const { party_details, address, contact_details, vehicle_details } = defendant_account_party;
@@ -174,7 +174,7 @@ describe('FinesAccPayloadService', () => {
         ];
       }
 
-      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
       expect(result.facc_debtor_add_amend_aliases).toEqual([
         {
@@ -210,7 +210,7 @@ describe('FinesAccPayloadService', () => {
         },
       };
 
-      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
       expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBe('Test Company Ltd');
       expect(result.facc_debtor_add_amend_employer_details_employer_reference).toBe('EMP123');
@@ -241,7 +241,7 @@ describe('FinesAccPayloadService', () => {
         },
       };
 
-      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
       expect(result.facc_debtor_add_amend_language_preferences_document_language).toBe('CY');
       expect(result.facc_debtor_add_amend_language_preferences_hearing_language).toBe('EN');
@@ -273,7 +273,7 @@ describe('FinesAccPayloadService', () => {
       mockDefendantData.defendant_account_party.employer_details = null;
       mockDefendantData.defendant_account_party.language_preferences = null;
 
-      const result = service.transformDefendantDataToDebtorForm(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
       expect(result.facc_debtor_add_amend_title).toBeNull();
       expect(result.facc_debtor_add_amend_forenames).toBeNull();

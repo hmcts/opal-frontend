@@ -6,7 +6,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccDebtorAddAmendForm } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-form.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
-export const defendantAccountDefendantTabResolver: ResolveFn<IFinesAccDebtorAddAmendForm | RedirectCommand> = (
+export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendForm | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
 ) => {
   const accountId = route.paramMap.get('accountId');
@@ -38,7 +38,7 @@ export const defendantAccountDefendantTabResolver: ResolveFn<IFinesAccDebtorAddA
     .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id, party_id)
     .pipe(
       map((defendantData) => ({
-        formData: payloadService.transformDefendantDataToDebtorForm(defendantData),
+        formData: payloadService.mapDebtorAccountPartyPayload(defendantData),
         nestedFlow: false,
       })),
       catchError(() => {

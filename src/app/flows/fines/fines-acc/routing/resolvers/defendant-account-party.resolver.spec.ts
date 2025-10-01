@@ -2,13 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { RedirectCommand, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { lastValueFrom } from 'rxjs';
-import { defendantAccountDefendantTabResolver } from './defendant-account-party.resolver';
+import { defendantAccountPartyResolver } from './defendant-account-party.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 
-describe('defendantAccountDefendantTabResolver', () => {
+describe('defendantAccountPartyResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAccountStore: any;
@@ -20,7 +20,7 @@ describe('defendantAccountDefendantTabResolver', () => {
     mockAccountStore = {
       getAccountState: jasmine.createSpy('getAccountState'),
     };
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['transformDefendantDataToDebtorForm']);
+    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['mapDebtorAccountPartyPayload']);
     mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
 
     TestBed.configureTestingModule({
@@ -46,7 +46,7 @@ describe('defendantAccountDefendantTabResolver', () => {
     mockRouter.createUrlTree.and.returnValue(mockUrlTree);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = TestBed.runInInjectionContext(() => defendantAccountDefendantTabResolver(route, {} as any));
+    const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
 
     expect(result).toBeInstanceOf(RedirectCommand);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
@@ -66,7 +66,7 @@ describe('defendantAccountDefendantTabResolver', () => {
     mockAccountStore.getAccountState.and.returnValue({ account_id: null });
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = TestBed.runInInjectionContext(() => defendantAccountDefendantTabResolver(route, {} as any));
+    const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
 
     expect(result).toBeInstanceOf(RedirectCommand);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
@@ -93,10 +93,10 @@ describe('defendantAccountDefendantTabResolver', () => {
 
     mockAccountStore.getAccountState.and.returnValue(mockAccountState);
     mockOpalFinesService.getDefendantAccountDefendantTabData.and.returnValue(of(mockDefendantData));
-    mockPayloadService.transformDefendantDataToDebtorForm.and.returnValue(mockTransformedData);
+    mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = TestBed.runInInjectionContext(() => defendantAccountDefendantTabResolver(route, {} as any));
+    const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
 
     // The result should be an observable
     expect(result && typeof result === 'object' && 'subscribe' in result).toBeTruthy();
@@ -111,7 +111,7 @@ describe('defendantAccountDefendantTabResolver', () => {
       '789',
       'PARTY123',
     );
-    expect(mockPayloadService.transformDefendantDataToDebtorForm).toHaveBeenCalledWith(mockDefendantData);
+    expect(mockPayloadService.mapDebtorAccountPartyPayload).toHaveBeenCalledWith(mockDefendantData);
     expect(emittedValue).toEqual({
       formData: mockTransformedData,
       nestedFlow: false,
@@ -140,7 +140,7 @@ describe('defendantAccountDefendantTabResolver', () => {
     mockOpalFinesService.getDefendantAccountDefendantTabData.and.returnValue(throwError(() => new Error('API Error')));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = TestBed.runInInjectionContext(() => defendantAccountDefendantTabResolver(route, {} as any));
+    const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
 
     // The result should be an observable that emits a RedirectCommand
     if (result && typeof result === 'object' && 'subscribe' in result) {

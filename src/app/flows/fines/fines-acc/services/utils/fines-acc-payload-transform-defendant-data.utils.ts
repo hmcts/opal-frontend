@@ -30,7 +30,7 @@ const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAlia
  * @param defendantData - The defendant tab data from the API
  * @returns The transformed form state object for debtor add/amend form
  */
-export const finesAccPayloadTransformDefendantDataToDebtorForm = (
+export const transformDefendantAccountPartyPayload = (
   defendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData,
 ): IFinesAccDebtorAddAmendState => {
   const { defendant_account_party } = defendantData;

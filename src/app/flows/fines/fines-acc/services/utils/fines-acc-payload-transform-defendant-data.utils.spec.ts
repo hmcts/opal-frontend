@@ -1,10 +1,10 @@
-import { finesAccPayloadTransformDefendantDataToDebtorForm } from './fines-acc-payload-transform-defendant-data.utils';
+import { transformDefendantAccountPartyPayload } from './fines-acc-payload-transform-defendant-data.utils';
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-details-null-data.mock';
 
-describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
+describe('transformDefendantAccountPartyPayload', () => {
   let mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData;
 
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   });
 
   it('should transform defendant data to debtor form state correctly', () => {
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDefendantData);
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(mockDefendantData);
 
     // Test basic personal details (using mock data values)
     expect(result.facc_debtor_add_amend_title).toBe('Ms');
@@ -58,7 +58,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   });
 
   it('should transform aliases correctly into array structure', () => {
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDefendantData);
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(mockDefendantData);
 
     expect(result.facc_debtor_add_amend_aliases.length).toBe(2);
 
@@ -76,7 +76,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   });
 
   it('should handle null or undefined values correctly', () => {
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(
       OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
     );
 
@@ -102,7 +102,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   it('should handle empty aliases array', () => {
     mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = [];
 
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDefendantData);
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(mockDefendantData);
 
     expect(result.facc_debtor_add_amend_aliases).toEqual([]);
   });
@@ -117,7 +117,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
 
     mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = manyAliases;
 
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDefendantData);
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(mockDefendantData);
 
     // Should only have 5 aliases
     expect(result.facc_debtor_add_amend_aliases.length).toBe(5);
@@ -137,7 +137,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   it('should handle missing individual_details', () => {
     mockDefendantData.defendant_account_party.party_details.individual_details = null;
 
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDefendantData);
+    const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(mockDefendantData);
 
     expect(result.facc_debtor_add_amend_title).toBeNull();
     expect(result.facc_debtor_add_amend_forenames).toBeNull();
@@ -169,7 +169,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
       },
     };
 
-    const result = finesAccPayloadTransformDefendantDataToDebtorForm(minimalData);
+    const result = transformDefendantAccountPartyPayload(minimalData);
 
     expect(result.facc_debtor_add_amend_title).toBe('Mr');
     expect(result.facc_debtor_add_amend_forenames).toBe('John');
@@ -213,7 +213,7 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
       },
     };
 
-    const result = finesAccPayloadTransformDefendantDataToDebtorForm(customizedMockData);
+    const result = transformDefendantAccountPartyPayload(customizedMockData);
 
     expect(result.facc_debtor_add_amend_title).toBe('Dr');
     expect(result.facc_debtor_add_amend_forenames).toBe('Jane');
