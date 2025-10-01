@@ -252,4 +252,13 @@ describe('FinesAccDefendantDetailsComponent', () => {
       relativeTo: component['activatedRoute'],
     });
   });
+
+  it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
+    const event: Event = new Event('click');
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToChangeDefendantDetailsPage(event);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
 });

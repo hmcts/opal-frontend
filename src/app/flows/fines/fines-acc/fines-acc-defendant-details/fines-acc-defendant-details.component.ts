@@ -288,18 +288,30 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   public navigateToChangeDefendantDetailsPage(event: Event): void {
     event.preventDefault();
-    let partyType: string;
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['account-maintenance'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      let partyType: string;
 
-    if (this.accountData.debtor_type === 'Parent/Guardian') {
-      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
-    } else if (this.accountData.party_details.organisation_flag) {
-      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
+      if (this.accountData.debtor_type === 'Parent/Guardian') {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
+      } else if (this.accountData.party_details.organisation_flag) {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
+      } else {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
+      }
+
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
     } else {
-      partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
     }
-
-    this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
-      relativeTo: this.activatedRoute,
-    });
   }
 }
