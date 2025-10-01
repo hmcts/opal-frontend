@@ -2,7 +2,7 @@ import { transformDefendantAccountPartyPayload } from './fines-acc-payload-trans
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-details-null-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-account-party-null-data.mock';
 
 describe('transformDefendantAccountPartyPayload', () => {
   let mockDefendantData: IOpalFinesAccountDefendantAccountParty;
@@ -77,7 +77,7 @@ describe('transformDefendantAccountPartyPayload', () => {
 
   it('should handle null or undefined values correctly', () => {
     const result: IFinesAccDebtorAddAmendState = transformDefendantAccountPartyPayload(
-      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
+      OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
     );
 
     // All fields should be null when the mock has empty strings or null values
@@ -148,13 +148,13 @@ describe('transformDefendantAccountPartyPayload', () => {
   it('should handle missing optional nested objects gracefully', () => {
     // Create a minimal version using the empty mock with spread operator
     const minimalData: IOpalFinesAccountDefendantAccountParty = {
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
       defendant_account_party: {
-        ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party,
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party,
         party_details: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details,
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details,
           individual_details: {
-            ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details
               .individual_details!,
             title: 'Mr',
             forenames: 'John',
@@ -162,7 +162,7 @@ describe('transformDefendantAccountPartyPayload', () => {
           },
         },
         address: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.address,
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.address,
           address_line_1: '123 Main St',
           postcode: 'AB12 3CD',
         },
@@ -188,17 +188,17 @@ describe('transformDefendantAccountPartyPayload', () => {
   it('should demonstrate spreading empty mock with specific values', () => {
     // Example of how to use the empty mock with spread operator to customize specific fields
     const customizedMockData: IOpalFinesAccountDefendantAccountParty = {
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
       defendant_account_id: 'DA-123',
       defendant_account_party: {
-        ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party,
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party,
         defendant_account_party_type: 'Individual',
         is_debtor: true,
         party_details: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details,
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details,
           party_id: 'PARTY-123',
           individual_details: {
-            ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.party_details
               .individual_details!,
             title: 'Dr',
             forenames: 'Jane',
@@ -206,7 +206,7 @@ describe('transformDefendantAccountPartyPayload', () => {
           },
         },
         address: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.address,
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party.address,
           address_line_1: '456 Test Street',
           postcode: 'TE5T 123',
         },

@@ -5,7 +5,7 @@ import { IOpalFinesAccountDefendantAccountParty } from '../../../services/opal-f
  * Useful for testing how the transformation handles completely empty/null values.
  * Can be spread with specific values to create targeted test scenarios.
  */
-export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK: IOpalFinesAccountDefendantAccountParty = {
+export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK: IOpalFinesAccountDefendantAccountParty = {
   version: null,
   defendant_account_id: '',
   defendant_account_party: {

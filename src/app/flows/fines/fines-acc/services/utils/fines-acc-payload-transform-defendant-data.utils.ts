@@ -25,9 +25,9 @@ const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAlia
 };
 
 /**
- * Transforms defendant tab data from the API into the debtor add/amend form state.
+ * Transforms defendant account party data from the API into the debtor add/amend form state.
  *
- * @param defendantData - The defendant tab data from the API
+ * @param defendantData - The defendant account party data from the API
  * @returns The transformed form state object for debtor add/amend form
  */
 export const transformDefendantAccountPartyPayload = (
