@@ -13,6 +13,8 @@ export class FinesAccDebtorAddAmend extends AbstractFormParentBaseComponent {
   protected readonly prefilledFormData: IFinesAccDebtorAddAmendForm =
     this['activatedRoute'].snapshot.data['debtorAmendFormData'] || FINES_ACC_DEBTOR_ADD_AMEND_FORM;
 
+  protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
+
   /**
    * Handles the form submission event from the child form component.
    * @param formData - The form data submitted from the child component

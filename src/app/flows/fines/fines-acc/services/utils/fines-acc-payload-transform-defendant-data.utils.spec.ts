@@ -2,6 +2,7 @@ import { finesAccPayloadTransformDefendantDataToDebtorForm } from './fines-acc-p
 import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
 import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-details-null-data.mock';
 
 describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   let mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData;
@@ -75,75 +76,18 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   });
 
   it('should handle null or undefined values correctly', () => {
-    const mockDataWithNulls: IOpalFinesAccountDefendantDetailsDefendantTabRefData = {
-      version: null,
-      defendant_account_id: 'DA-001',
-      defendant_account_party: {
-        defendant_account_party_type: 'Individual',
-        is_debtor: true,
-        party_details: {
-          party_id: 'PARTY-001',
-          organisation_flag: false,
-          organisation_details: null,
-          individual_details: {
-            title: null,
-            forenames: null,
-            surname: 'Unknown',
-            date_of_birth: null,
-            age: null,
-            national_insurance_number: null,
-            individual_aliases: [],
-          },
-        },
-        address: {
-          address_line_1: 'Unknown',
-          address_line_2: null,
-          address_line_3: null,
-          address_line_4: null,
-          address_line_5: null,
-          postcode: null,
-        },
-        contact_details: {
-          primary_email_address: null,
-          secondary_email_address: null,
-          mobile_telephone_number: null,
-          home_telephone_number: null,
-          work_telephone_number: null,
-        },
-        vehicle_details: {
-          vehicle_make_and_model: null,
-          vehicle_registration: null,
-        },
-        employer_details: {
-          employer_name: null,
-          employer_reference: null,
-          employer_email_address: null,
-          employer_telephone_number: null,
-          employer_address: {
-            address_line_1: 'Unknown',
-            address_line_2: null,
-            address_line_3: null,
-            address_line_4: null,
-            address_line_5: null,
-            postcode: null,
-          },
-        },
-        language_preferences: {
-          document_language_preference: null,
-          hearing_language_preference: null,
-        },
-      },
-    };
+    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
+    );
 
-    const result: IFinesAccDebtorAddAmendState = finesAccPayloadTransformDefendantDataToDebtorForm(mockDataWithNulls);
-
-    // All nullable fields should be null
+    // All fields should be null when the mock has empty strings or null values
+    // because the transformation function uses "|| null" which treats empty strings as falsy
     expect(result.facc_debtor_add_amend_title).toBeNull();
     expect(result.facc_debtor_add_amend_forenames).toBeNull();
-    expect(result.facc_debtor_add_amend_surname).toBe('Unknown');
+    expect(result.facc_debtor_add_amend_surname).toBeNull(); // Empty string becomes null
     expect(result.facc_debtor_add_amend_dob).toBeNull();
     expect(result.facc_debtor_add_amend_national_insurance_number).toBeNull();
-    expect(result.facc_debtor_add_amend_address_line_1).toBe('Unknown');
+    expect(result.facc_debtor_add_amend_address_line_1).toBeNull(); // Empty string becomes null
     expect(result.facc_debtor_add_amend_post_code).toBeNull();
     expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
     expect(result.facc_debtor_add_amend_vehicle_make).toBeNull();
@@ -202,59 +146,25 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
   });
 
   it('should handle missing optional nested objects gracefully', () => {
-    // Create a minimal version of the mock data
+    // Create a minimal version using the empty mock with spread operator
     const minimalData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = {
-      ...mockDefendantData,
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
       defendant_account_party: {
-        ...mockDefendantData.defendant_account_party,
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party,
         party_details: {
-          ...mockDefendantData.defendant_account_party.party_details,
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details,
           individual_details: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details
+              .individual_details!,
             title: 'Mr',
             forenames: 'John',
             surname: 'Doe',
-            date_of_birth: null,
-            age: null,
-            national_insurance_number: null,
-            individual_aliases: [],
           },
         },
         address: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.address,
           address_line_1: '123 Main St',
-          address_line_2: null,
-          address_line_3: null,
-          address_line_4: null,
-          address_line_5: null,
           postcode: 'AB12 3CD',
-        },
-        contact_details: {
-          primary_email_address: null,
-          secondary_email_address: null,
-          mobile_telephone_number: null,
-          home_telephone_number: null,
-          work_telephone_number: null,
-        },
-        vehicle_details: {
-          vehicle_make_and_model: null,
-          vehicle_registration: null,
-        },
-        employer_details: {
-          employer_name: null,
-          employer_reference: null,
-          employer_email_address: null,
-          employer_telephone_number: null,
-          employer_address: {
-            address_line_1: 'Unknown',
-            address_line_2: null,
-            address_line_3: null,
-            address_line_4: null,
-            address_line_5: null,
-            postcode: null,
-          },
-        },
-        language_preferences: {
-          document_language_preference: null,
-          hearing_language_preference: null,
         },
       },
     };
@@ -267,5 +177,53 @@ describe('finesAccPayloadTransformDefendantDataToDebtorForm', () => {
     expect(result.facc_debtor_add_amend_address_line_1).toBe('123 Main St');
     expect(result.facc_debtor_add_amend_post_code).toBe('AB12 3CD');
     expect(result.facc_debtor_add_amend_aliases).toEqual([]);
+
+    // Verify other fields are still null from the empty mock
+    expect(result.facc_debtor_add_amend_national_insurance_number).toBeNull();
+    expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
+    expect(result.facc_debtor_add_amend_vehicle_make).toBeNull();
+    expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBeNull();
+  });
+
+  it('should demonstrate spreading empty mock with specific values', () => {
+    // Example of how to use the empty mock with spread operator to customize specific fields
+    const customizedMockData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
+      defendant_account_id: 'DA-123',
+      defendant_account_party: {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party,
+        defendant_account_party_type: 'Individual',
+        is_debtor: true,
+        party_details: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details,
+          party_id: 'PARTY-123',
+          individual_details: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.party_details
+              .individual_details!,
+            title: 'Dr',
+            forenames: 'Jane',
+            surname: 'Smith',
+          },
+        },
+        address: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party.address,
+          address_line_1: '456 Test Street',
+          postcode: 'TE5T 123',
+        },
+      },
+    };
+
+    const result = finesAccPayloadTransformDefendantDataToDebtorForm(customizedMockData);
+
+    expect(result.facc_debtor_add_amend_title).toBe('Dr');
+    expect(result.facc_debtor_add_amend_forenames).toBe('Jane');
+    expect(result.facc_debtor_add_amend_surname).toBe('Smith');
+    expect(result.facc_debtor_add_amend_address_line_1).toBe('456 Test Street');
+    expect(result.facc_debtor_add_amend_post_code).toBe('TE5T 123');
+
+    // All other fields should still be null (from the empty mock)
+    expect(result.facc_debtor_add_amend_national_insurance_number).toBeNull();
+    expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
+    expect(result.facc_debtor_add_amend_vehicle_make).toBeNull();
   });
 });
