@@ -91,7 +91,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
 
   @Input({ required: true }) public partyType!: string;
-  @Input({ required: false }) public initialFormData!: IFinesAccDebtorAddAmendForm;
+  @Input({ required: true }) public initialFormData!: IFinesAccDebtorAddAmendForm;
   override fieldErrors: IFinesAccDebtorAddAmendFieldErrors = {
     ...FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS,
   };
@@ -237,15 +237,14 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    * Sets up the initial debtor add/amend form.
    */
   private initialDebtorAddAmendSetup(): void {
-    const { formData } = this.initialFormData || { formData: null };
     this.setupDebtorAddAmendForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...new Array(formData?.facc_debtor_add_amend_aliases?.length).keys()],
+      [...new Array(this.initialFormData.formData?.facc_debtor_add_amend_aliases?.length).keys()],
       'facc_debtor_add_amend_aliases',
     );
     this.setInitialErrorMessages();
-    this.rePopulateForm(formData);
+    this.rePopulateForm(this.initialFormData.formData);
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
