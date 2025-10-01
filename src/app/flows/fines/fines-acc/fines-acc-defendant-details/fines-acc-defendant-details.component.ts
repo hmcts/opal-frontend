@@ -127,15 +127,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       switch (tab) {
         case 'at-a-glance':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlanceTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
+            this.opalFinesService.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id),
           );
           break;
         case 'defendant':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountDefendantTabData());
+          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountParty());
           break;
         case 'payment-terms':
           this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
