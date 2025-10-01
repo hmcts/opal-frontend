@@ -51,6 +51,7 @@ import {
   EMAIL_ADDRESS_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from '../constants/fines-acc-debtor-add-amend-form.constant';
 
 // regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
@@ -91,7 +92,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
 
   @Input({ required: true }) public partyType!: string;
-  @Input({ required: true }) public initialFormData!: IFinesAccDebtorAddAmendForm;
+  @Input({ required: false }) public initialFormData: IFinesAccDebtorAddAmendForm = FINES_ACC_DEBTOR_ADD_AMEND_FORM;
   override fieldErrors: IFinesAccDebtorAddAmendFieldErrors = {
     ...FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS,
   };
