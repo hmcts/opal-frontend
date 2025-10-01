@@ -124,6 +124,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToAddAccountNotePage is called', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
     component.navigateToAddAccountNotePage();
     expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.note}/add`], {
       relativeTo: component['activatedRoute'],
@@ -233,5 +234,22 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     component['compareVersion']('different-version');
     expect(component.accountStore.hasVersionMismatch()).toBeTrue();
+  });
+
+  it('should navigate to access-denied if user lacks permission for the add account note page', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAddAccountNotePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks permission for the add comments page', () => {
+    const event: Event = new Event('click');
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAddCommentsPage(event);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
   });
 });
