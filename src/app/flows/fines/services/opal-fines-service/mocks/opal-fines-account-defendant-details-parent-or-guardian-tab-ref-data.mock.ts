@@ -1,6 +1,6 @@
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '../interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '../interfaces/opal-fines-account-defendant-account-party.interface';
 
-export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsDefendantTabRefData =
+export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantAccountParty =
   {
     version: '0',
     defendant_account_party: {

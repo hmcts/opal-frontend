@@ -134,16 +134,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       switch (tab) {
         case 'at-a-glance':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlanceTabData(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-            ),
+            this.opalFinesService.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id),
           );
           break;
         case 'defendant':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountDefendantTabData(
+            this.opalFinesService.getDefendantAccountParty(
               account_id,
               business_unit_id,
               business_unit_user_id,
@@ -153,7 +149,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'parent-or-guardian':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountDefendantTabData(
+            this.opalFinesService.getDefendantAccountParty(
               account_id,
               business_unit_id,
               business_unit_user_id,

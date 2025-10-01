@@ -7,7 +7,7 @@ import {
   IOpalFinesDefendantAccountVehicleDetails,
 } from './opal-fines-defendant-account.interface';
 
-export interface IOpalFinesAccountDefendantDetailsDefendantTabRefData {
+export interface IOpalFinesAccountDefendantAccountParty {
   version: string | null;
   defendant_account_party: {
     defendant_account_party_type: string;
