@@ -30,7 +30,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendFor
 
   /**
    * Fetches the defendant account Party data from cache, transforms it to debtor form structure.
-   * This data should already be cached from the "tDefendant" tab visit.
+   * This data should already be cached from the "Defendant" tab visit.
    * @param accountId - The ID of the defendant account.
    * @returns An observable that emits the transformed debtor form data or redirects to Account Enquiry on error.
    */
