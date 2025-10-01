@@ -1,0 +1,16 @@
+{
+    "cucumberautocomplete.steps": [
+      "cypress/support/step_definitions/**/*.ts"
+    ],
+    "cucumberautocomplete.syncfeatures": [
+      "cypress/e2e/**/*.feature"
+    ],
+    "cucumberautocomplete.strictGherkinCompletion": true,
+    "cucumberautocomplete.gherkinDialect": "en",
+    // Make the extension understand Badeball's Given/When/Then in TS
+    "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then|And|But)\\(",
+    "cucumberautocomplete.exclude": [
+      "**/node_modules/**",
+      "cypress/e2e/**/_archive/**"
+    ]
+  }

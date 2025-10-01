@@ -18,6 +18,10 @@ export const routing: Routes = [
     path: FINES_ACC_ROUTING_PATHS.root,
     redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
