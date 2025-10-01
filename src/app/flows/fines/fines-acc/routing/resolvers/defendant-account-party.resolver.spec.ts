@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { RedirectCommand, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { lastValueFrom } from 'rxjs';
-import { defendantAccountDefendantTabResolver } from './defendant-account-defendant-tab.resolver';
+import { defendantAccountDefendantTabResolver } from './defendant-account-party.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';

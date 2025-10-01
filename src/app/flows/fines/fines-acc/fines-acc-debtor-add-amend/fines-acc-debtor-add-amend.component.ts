@@ -11,7 +11,7 @@ import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from './constants/fines-acc-debtor-ad
 })
 export class FinesAccDebtorAddAmend extends AbstractFormParentBaseComponent {
   protected readonly prefilledFormData: IFinesAccDebtorAddAmendForm =
-    this['activatedRoute'].snapshot.data['debtorAmendFormData'] || FINES_ACC_DEBTOR_ADD_AMEND_FORM;
+    this['activatedRoute'].snapshot.data['debtorAmendFormData'];
 
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
 
