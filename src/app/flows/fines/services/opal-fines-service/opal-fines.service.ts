@@ -130,12 +130,7 @@ export class OpalFines {
    */
   private extractEtagVersion(headers: HttpResponse<unknown>['headers']): string | null {
     let etag = headers.get('ETag') ?? headers.get('Etag');
-    if (etag === '"null"') {
-      etag = null;
-    }
-
     if (!etag) return null;
-
     return etag;
   }
 
