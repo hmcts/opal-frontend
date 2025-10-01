@@ -7,7 +7,7 @@ import {
   IOpalFinesDefendantAccountPaymentTermsSummary,
 } from './opal-fines-defendant-account.interface';
 
-export interface IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData {
+export interface IOpalFinesAccountDefendantAtAGlance {
   version: string | null;
   defendant_account_id: string;
   account_number: string;
