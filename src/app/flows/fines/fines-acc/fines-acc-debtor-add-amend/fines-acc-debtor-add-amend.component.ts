@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FinesAccDebtorAddAmendFormComponent } from './fines-acc-debtor-add-amend-form/fines-acc-debtor-add-amend-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccDebtorAddAmendForm } from './interfaces/fines-acc-debtor-add-amend-form.interface';
-import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from './constants/fines-acc-debtor-add-amend-form.constant';
 
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
