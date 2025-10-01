@@ -1,4 +1,4 @@
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { IFinesAccDebtorAddAmendAliasState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-alias-state.interface';
 
@@ -31,7 +31,7 @@ const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAlia
  * @returns The transformed form state object for debtor add/amend form
  */
 export const transformDefendantAccountPartyPayload = (
-  defendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData,
+  defendantData: IOpalFinesAccountDefendantAccountParty,
 ): IFinesAccDebtorAddAmendState => {
   const { defendant_account_party } = defendantData;
   const { party_details, address, contact_details, vehicle_details, employer_details, language_preferences } =

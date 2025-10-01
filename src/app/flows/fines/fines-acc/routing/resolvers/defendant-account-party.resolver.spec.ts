@@ -16,7 +16,7 @@ describe('defendantAccountPartyResolver', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDefendantAccountDefendantTabData']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDefendantAccountParty']);
     mockAccountStore = {
       getAccountState: jasmine.createSpy('getAccountState'),
     };
@@ -92,7 +92,7 @@ describe('defendantAccountPartyResolver', () => {
     const mockTransformedData = {} as any;
 
     mockAccountStore.getAccountState.and.returnValue(mockAccountState);
-    mockOpalFinesService.getDefendantAccountDefendantTabData.and.returnValue(of(mockDefendantData));
+    mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,12 +105,7 @@ describe('defendantAccountPartyResolver', () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const emittedValue = await lastValueFrom(result as any);
 
-    expect(mockOpalFinesService.getDefendantAccountDefendantTabData).toHaveBeenCalledWith(
-      123,
-      '456',
-      '789',
-      'PARTY123',
-    );
+    expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalledWith(123, '456', '789', 'PARTY123');
     expect(mockPayloadService.mapDebtorAccountPartyPayload).toHaveBeenCalledWith(mockDefendantData);
     expect(emittedValue).toEqual({
       formData: mockTransformedData,
@@ -137,7 +132,7 @@ describe('defendantAccountPartyResolver', () => {
     const mockUrlTree = {} as any;
     mockRouter.createUrlTree.and.returnValue(mockUrlTree);
     mockAccountStore.getAccountState.and.returnValue(mockAccountState);
-    mockOpalFinesService.getDefendantAccountDefendantTabData.and.returnValue(throwError(() => new Error('API Error')));
+    mockOpalFinesService.getDefendantAccountParty.and.returnValue(throwError(() => new Error('API Error')));
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));

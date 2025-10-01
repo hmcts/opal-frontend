@@ -1,15 +1,15 @@
 import { transformDefendantAccountPartyPayload } from './fines-acc-payload-transform-defendant-data.utils';
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccDebtorAddAmendState } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-details-null-data.mock';
 
 describe('transformDefendantAccountPartyPayload', () => {
-  let mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData;
+  let mockDefendantData: IOpalFinesAccountDefendantAccountParty;
 
   beforeEach(() => {
     // Use the existing mock data from the opal-fines-service
-    mockDefendantData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK);
+    mockDefendantData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
   });
 
   it('should transform defendant data to debtor form state correctly', () => {
@@ -147,7 +147,7 @@ describe('transformDefendantAccountPartyPayload', () => {
 
   it('should handle missing optional nested objects gracefully', () => {
     // Create a minimal version using the empty mock with spread operator
-    const minimalData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = {
+    const minimalData: IOpalFinesAccountDefendantAccountParty = {
       ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
       defendant_account_party: {
         ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK.defendant_account_party,
@@ -187,7 +187,7 @@ describe('transformDefendantAccountPartyPayload', () => {
 
   it('should demonstrate spreading empty mock with specific values', () => {
     // Example of how to use the empty mock with spread operator to customize specific fields
-    const customizedMockData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = {
+    const customizedMockData: IOpalFinesAccountDefendantAccountParty = {
       ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_EMPTY_DATA_MOCK,
       defendant_account_id: 'DA-123',
       defendant_account_party: {

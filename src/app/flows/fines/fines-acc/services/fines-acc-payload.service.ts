@@ -4,7 +4,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccDebtorAddAmendState } from '../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
@@ -67,13 +67,13 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IOpalFinesAccountDefendantDetailsDefendantTabRefData into IFinesAccDebtorAddAmendState for the Debtor Add/Amend form
+   * Transforms the given IOpalFinesAccountDefendantAccountParty into IFinesAccDebtorAddAmendState for the Debtor Add/Amend form
    *
    * @param defendantData - The defendant tab data from the API.
    * @returns The transformed form state object for debtor add/amend form.
    */
   public mapDebtorAccountPartyPayload(
-    defendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData,
+    defendantData: IOpalFinesAccountDefendantAccountParty,
   ): IFinesAccDebtorAddAmendState {
     return transformDefendantAccountPartyPayload(defendantData);
   }

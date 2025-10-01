@@ -34,16 +34,14 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendFor
    * @param accountId - The ID of the defendant account.
    * @returns An observable that emits the transformed debtor form data or redirects to Account Enquiry on error.
    */
-  return opalFinesService
-    .getDefendantAccountDefendantTabData(account_id, business_unit_id, business_unit_user_id, party_id)
-    .pipe(
-      map((defendantData) => ({
-        formData: payloadService.mapDebtorAccountPartyPayload(defendantData),
-        nestedFlow: false,
-      })),
-      catchError(() => {
-        // If API call fails, redirect back to defendant details page
-        return of(new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details])));
-      }),
-    );
+  return opalFinesService.getDefendantAccountParty(account_id, business_unit_id, business_unit_user_id, party_id).pipe(
+    map((defendantData) => ({
+      formData: payloadService.mapDebtorAccountPartyPayload(defendantData),
+      nestedFlow: false,
+    })),
+    catchError(() => {
+      // If API call fails, redirect back to defendant details page
+      return of(new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details])));
+    }),
+  );
 };

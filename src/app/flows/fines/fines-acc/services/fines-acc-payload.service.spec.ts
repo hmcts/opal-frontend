@@ -7,8 +7,8 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
+import { IOpalFinesAccountDefendantAccountParty } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -111,8 +111,8 @@ describe('FinesAccPayloadService', () => {
 
   describe('transformDefendantDataToDebtorForm', () => {
     it('should transform complete defendant data to debtor form', () => {
-      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
@@ -152,8 +152,8 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should handle aliases transformation', () => {
-      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
       // Add aliases to the mock data
@@ -190,8 +190,8 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should handle employer details transformation', () => {
-      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
       // Add employer details to the mock data
@@ -225,8 +225,8 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should handle language preferences transformation', () => {
-      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
       // Add language preferences to the mock data
@@ -248,8 +248,8 @@ describe('FinesAccPayloadService', () => {
     });
 
     it('should handle null and undefined values gracefully', () => {
-      const mockDefendantData: IOpalFinesAccountDefendantDetailsDefendantTabRefData = structuredClone(
-        OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK,
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
       // Set all optional fields to null
