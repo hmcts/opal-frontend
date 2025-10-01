@@ -129,7 +129,7 @@ export class OpalFines {
    * @returns The ETag value as a string, or `null` if not present.
    */
   private extractEtagVersion(headers: HttpResponse<unknown>['headers']): string | null {
-    let etag = headers.get('ETag') ?? headers.get('Etag');    
+    let etag = headers.get('ETag') ?? headers.get('Etag');
     if (etag === '"null"') {
       etag = null;
     }
