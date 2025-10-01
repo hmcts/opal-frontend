@@ -23,7 +23,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',
   business_unit_summary: {
-    business_unit_id: '78',
+    business_unit_id: '77',
     business_unit_name: 'Central London',
     welsh_speaking: 'No',
   },
@@ -83,7 +83,7 @@ export const MOCK_ACCOUNT_STATE = {
   party_name: 'Anna Graham',
   party_id: '77',
   base_version: '1',
-  business_unit_id: '78',
+  business_unit_id: '77',
   business_unit_user_id: '10',
   welsh_speaking: 'No',
 };

@@ -3,7 +3,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 
-
 import { FinesAccDefendantDetailsComponent } from '../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details.component';
 import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
@@ -241,7 +240,17 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
-  it('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+  it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    cy.get(DOM.addNoteButton).click();
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
+
+  it('AC4a: Calls error path when user has no permission in this BU only in other BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
     cy.get(DOM.addNoteButton).click();
     cy.get('@routerNavigate')
@@ -261,8 +270,18 @@ describe('Defendant Account Summary (Component)', () => {
     setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
+  it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    cy.get(DOM.addNoteButton).click();
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
+  });
 
-  it('AC3: clicking "Add account note" calls router.navigate - Company', { tags: ['PO-867'] }, () => {
+  it('AC3a: Calls error path when user has no permission in this BU only in other BU - Company', { tags: ['PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
     cy.get(DOM.addNoteButton).click();
     cy.get('@routerNavigate')
