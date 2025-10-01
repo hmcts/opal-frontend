@@ -37,7 +37,7 @@ import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-o
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
-import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -132,6 +132,7 @@ export class OpalFines {
     if (etag === '"null"') {
       etag = null;
     }
+
     if (!etag) return null;
 
     return etag;
@@ -490,17 +491,17 @@ export class OpalFines {
    * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlanceTabData(
+  public getDefendantAccountAtAGlance(
     account_id: number | null,
     business_unit_id: string | null,
     business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData> {
+  ): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (!this.accountDetailsCache$['at-a-glance']) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
       this.accountDetailsCache$['at-a-glance'] = this.http
-        .get<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
-          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData>) => {
+          map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
             const payload = this.payloadService.transformPayload(response.body!, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             const version = this.extractEtagVersion(response.headers);
             return {

@@ -10,7 +10,7 @@ import {
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from './mocks/fines-acc-defendant-details-header.mock';
 import { of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -53,7 +53,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
     mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
       'getDefendantAccountHeadingData',
-      'getDefendantAccountAtAGlanceTabData',
+      'getDefendantAccountAtAGlance',
       'getDefendantAccountImpositionsTabData',
       'getDefendantAccountHistoryAndNotesTabData',
       'getDefendantAccountEnforcementTabData',
@@ -62,8 +62,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'clearAccountDetailsCache',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
-    mockOpalFinesService.getDefendantAccountAtAGlanceTabData.and.returnValue(
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK),
+    mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
     mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
