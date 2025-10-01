@@ -249,60 +249,60 @@ describe('Defendant Account Summary (Component)', () => {
         const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
         expect(path).to.match(/note\/add/);
       });
+  });
 
-    it(
-      'AC4a: Calls error path when user has no permission in this BU only in other BU',
-      { tags: ['PO-1593', 'PO-866', 'PO-867'] },
-      () => {
-        setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
-        cy.get(DOM.addNoteButton).click();
-        cy.get('@routerNavigate')
-          .its('lastCall.args.0')
-          .should((arg0) => {
-            const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-            expect(path).to.match(/access-denied/);
-          });
-      },
-    );
-
-    it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
-      setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_NO_PERMISSION);
-      cy.get(DOM.addNoteButton).should('not.exist');
-    });
-
-    it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
-      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
-      cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
-    });
-    it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
-      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+  it(
+    'AC4a: Calls error path when user has no permission in this BU only in other BU',
+    { tags: ['PO-1593', 'PO-866', 'PO-867'] },
+    () => {
+      setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
       cy.get(DOM.addNoteButton).click();
       cy.get('@routerNavigate')
         .its('lastCall.args.0')
         .should((arg0) => {
           const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-          expect(path).to.match(/note\/add/);
+          expect(path).to.match(/access-denied/);
         });
-    });
+    },
+  );
 
-    it(
-      'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
-      { tags: ['PO-867'] },
-      () => {
-        setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
-        cy.get(DOM.addNoteButton).click();
-        cy.get('@routerNavigate')
-          .its('lastCall.args.0')
-          .should((arg0) => {
-            const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
-            expect(path).to.match(/access-denied/);
-          });
-      },
-    );
+  it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_NO_PERMISSION);
+    cy.get(DOM.addNoteButton).should('not.exist');
+  });
 
-    it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
-      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION);
-      cy.get(DOM.addNoteButton).should('not.exist');
-    });
+  it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
+  });
+  it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    cy.get(DOM.addNoteButton).click();
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
+  });
+
+  it(
+    'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
+    { tags: ['PO-867'] },
+    () => {
+      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
+      cy.get(DOM.addNoteButton).click();
+      cy.get('@routerNavigate')
+        .its('lastCall.args.0')
+        .should((arg0) => {
+          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+          expect(path).to.match(/access-denied/);
+        });
+    },
+  );
+
+  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION);
+    cy.get(DOM.addNoteButton).should('not.exist');
   });
 });
