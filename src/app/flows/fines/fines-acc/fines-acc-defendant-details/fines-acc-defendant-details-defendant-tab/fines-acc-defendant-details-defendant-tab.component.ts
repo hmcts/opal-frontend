@@ -4,7 +4,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
-import { IOpalFinesAccountDefendantDetailsDefendantTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-defendant-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
   GovukSummaryListComponent,
@@ -26,7 +26,7 @@ import { UpperCasePipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsDefendantTabComponent {
-  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsDefendantTabRefData | null;
+  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;

@@ -139,7 +139,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'defendant':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountDefendantTabData(
+            this.opalFinesService.getDefendantAccountParty(
               account_id,
               business_unit_id,
               business_unit_user_id,
