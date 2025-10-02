@@ -56,7 +56,6 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -498,8 +497,8 @@ export class OpalFines {
         .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
-            const payload = this.payloadService.transformPayload(response.body!, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAtAGlance;
             return {
               ...payload,
               version,

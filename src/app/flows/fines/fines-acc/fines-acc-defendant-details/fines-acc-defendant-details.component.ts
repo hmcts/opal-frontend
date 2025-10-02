@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, map, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -47,6 +47,7 @@ import { IOpalFinesAccountDefendantDetailsTabsData } from '@services/fines/opal-
 import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -127,7 +128,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       switch (tab) {
         case 'at-a-glance':
           this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id),
+            this.opalFinesService
+              .getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id)
+              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'defendant':

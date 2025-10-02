@@ -43,9 +43,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
     };
 
     mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
-      'transformAccountHeaderForStore',
+      'transformAccountHeaderForStore', 'transformPayload',
     ]);
     mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformPayload.and.callFake((...args) => {
+      return args[0]; // returns the first argument = payload
+    });
 
     mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
     mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
