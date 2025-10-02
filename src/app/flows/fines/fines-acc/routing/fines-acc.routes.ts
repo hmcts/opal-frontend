@@ -11,7 +11,6 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
 
-
 const accRootPermissionIds = FINES_PERMISSIONS;
 
 export const routing: Routes = [
