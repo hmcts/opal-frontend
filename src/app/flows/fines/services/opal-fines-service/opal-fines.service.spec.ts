@@ -641,7 +641,7 @@ describe('OpalFines', () => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
 
-    service.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id).subscribe((response) => {
+    service.getDefendantAccountAtAGlance().subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
@@ -809,7 +809,6 @@ describe('OpalFines', () => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
     // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
     service.getDefendantAccountAtAGlance().subscribe((response) => {
-
       expect(response).toEqual(expectedResponse);
     });
 
