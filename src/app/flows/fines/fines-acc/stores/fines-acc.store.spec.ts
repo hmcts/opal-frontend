@@ -59,6 +59,7 @@ describe('FinesAccountStore', () => {
       base_version: payload.base_version,
       business_unit_id: payload.business_unit_id,
       business_unit_user_id: payload.business_unit_user_id,
+      welsh_speaking: payload.welsh_speaking,
     });
   });
 
@@ -79,6 +80,7 @@ describe('FinesAccountStore', () => {
       base_version: initialState.base_version,
       business_unit_id: initialState.business_unit_id,
       business_unit_user_id: initialState.business_unit_user_id,
+      welsh_speaking: initialState.welsh_speaking,
     });
   });
 

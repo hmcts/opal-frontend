@@ -7,4 +7,5 @@ export interface IFinesAccountState {
   base_version: string | null;
   business_unit_id: string | null;
   business_unit_user_id: string | null;
+  welsh_speaking: string | null;
 }
