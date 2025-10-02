@@ -252,6 +252,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
           );
         }),
+        takeUntil(this.destroy$),
       )
       .subscribe((res) => {
         this.accountStore.setSuccessMessage('Information is up to date');
