@@ -32,9 +32,14 @@ export function getRoutesConfig(): {
   const routesConfiguration: RoutesConfiguration = {
     opalApiTarget: config.get('opal-api.url'),
     opalFinesServiceTarget: config.get('opal-api.opal-fines-service'),
+    opalUserServiceTarget: config.get('opal-api.opal-user-service'),
     frontendHostname:
       env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod'),
     prefix: config.get('session.prefix'),
+    clientId: config.get('secrets.opal.AzureADClientId'),
+    clientSecret: config.get('secrets.opal.AzureADClientSecret'),
+    tenantId: config.get('secrets.opal.AzureADTenantId'),
+    microsoftUrl: config.get('microsoft.url'),
   };
 
   return { sessionExpiryConfiguration, routesConfiguration };
@@ -43,6 +48,7 @@ export function getRoutesConfig(): {
 export function configureApiProxyRoutes(app: express.Express): void {
   app.use('/api', OpalApiProxy(config.get('opal-api.url')));
   app.use('/opal-fines-service', OpalApiProxy(config.get('opal-api.opal-fines-service')));
+  app.use('/opal-user-service', OpalApiProxy(config.get('opal-api.opal-user-service')));
 }
 
 export function configureSession(server: express.Express): void {

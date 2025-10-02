@@ -26,8 +26,8 @@ export function finesDraftTabResolver(options: FinesDraftResolverOptions): Resol
     const globalStore = inject(GlobalStore);
     const userState = globalStore.userState();
     const dateService = inject(DateService);
-    const businessUnitIds = userState.business_unit_user.map((u) => u.business_unit_id);
-    const businessUnitUserIds = userState.business_unit_user.map((u) => u.business_unit_user_id);
+    const businessUnitIds = userState.business_unit_users.map((u) => u.business_unit_id);
+    const businessUnitUserIds = userState.business_unit_users.map((u) => u.business_unit_user_id);
 
     const params: IOpalFinesDraftAccountParams = {
       businessUnitIds,
