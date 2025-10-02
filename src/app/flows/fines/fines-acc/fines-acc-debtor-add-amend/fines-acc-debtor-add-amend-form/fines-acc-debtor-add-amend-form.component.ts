@@ -24,6 +24,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesConditionalComponent,
@@ -75,6 +76,7 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     GovukTextInputComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
+    GovukHeadingWithCaptionComponent,
     GovukCancelLinkComponent,
     MojDatePickerComponent,
     MojTicketPanelComponent,
@@ -90,6 +92,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   protected readonly dateService = inject(DateService);
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
+  protected readonly accountStore = this.finesAccountStore;
 
   @Input({ required: true }) public partyType!: string;
   @Input({ required: false }) public initialFormData: IFinesAccDebtorAddAmendForm = FINES_ACC_DEBTOR_ADD_AMEND_FORM;

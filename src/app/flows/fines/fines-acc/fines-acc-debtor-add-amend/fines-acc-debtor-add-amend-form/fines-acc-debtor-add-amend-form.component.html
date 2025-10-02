@@ -1,4 +1,7 @@
-<h1 class="govuk-heading-l">Defendant details</h1>
+<opal-lib-govuk-heading-with-caption
+  [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
+  headingText="Defendant details"
+></opal-lib-govuk-heading-with-caption>
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
@@ -143,7 +146,7 @@
     [errors]="formControlErrorMessages['facc_debtor_add_amend_national_insurance_number']"
     [opalLibCapitaliseAllCharacters]="form.get('facc_debtor_add_amend_national_insurance_number')!"
   ></opal-lib-govuk-text-input>
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
     <opal-lib-govuk-text-input
