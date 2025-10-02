@@ -28,6 +28,32 @@ export const ALIAS_PERSONAL_DETAILS = {
   missingAliasLastNameFive: 'Enter alias 5 last name',
 };
 
+export const ALIAS_LENGTH_VALIDATION = {
+  tooLongAliasOne: 'Alias 1 first name(s) must be 20 characters or fewer',
+  tooLongAliasTwo: 'Alias 2 first name(s) must be 20 characters or fewer',
+  tooLongAliasThree: 'Alias 3 first name(s) must be 20 characters or fewer',
+  tooLongAliasFour: 'Alias 4 first name(s) must be 20 characters or fewer',
+  tooLongAliasFive: 'Alias 5 first name(s) must be 20 characters or fewer',
+  tooLongAliasLastNameOne: 'Alias 1 last name must be 30 characters or fewer',
+  tooLongAliasLastNameTwo: 'Alias 2 last name must be 30 characters or fewer',
+  tooLongAliasLastNameThree: 'Alias 3 last name must be 30 characters or fewer',
+  tooLongAliasLastNameFour: 'Alias 4 last name must be 30 characters or fewer',
+  tooLongAliasLastNameFive: 'Alias 5 last name must be 30 characters or fewer',
+};
+
+export const ALIAS_ALPHABETIC_VALIDATION = {
+  nonAlphaAliasOne: 'Alias 1 first name(s) must only contain letters',
+  nonAlphaAliasTwo: 'Alias 2 first name(s) must only contain letters',
+  nonAlphaAliasThree: 'Alias 3 first name(s) must only contain letters',
+  nonAlphaAliasFour: 'Alias 4 first name(s) must only contain letters',
+  nonAlphaAliasFive: 'Alias 5 first name(s) must only contain letters',
+  nonAlphaAliasLastNameOne: 'Alias 1 last name must only contain letters',
+  nonAlphaAliasLastNameTwo: 'Alias 2 last name must only contain letters',
+  nonAlphaAliasLastNameThree: 'Alias 3 last name must only contain letters',
+  nonAlphaAliasLastNameFour: 'Alias 4 last name must only contain letters',
+  nonAlphaAliasLastNameFive: 'Alias 5 last name must only contain letters',
+};
+
 export const LENGTH_VALIDATION = {
   firstNameTooLong: "Parent or guardian's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "Parent or guardian's last name must be 30 characters or fewer",
