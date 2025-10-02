@@ -6,6 +6,11 @@ Then('I click on the {string} link', (linkText: string) => {
 When('{string} is clicked', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
+
+When('I click the {string} link in the {string} section', (linkText: string, _section: string) => {
+  cy.contains('a', linkText).first().click();
+});
+
 When('{string} is clicked, nothing happens', (linkText: string) => {
   let initialUrl: string;
   cy.url().then((url) => {

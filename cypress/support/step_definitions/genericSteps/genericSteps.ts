@@ -39,9 +39,6 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
     }
   }
 });
-Then('I click the {string} button', (buttonName: string) => {
-  cy.contains('button', buttonName).click();
-});
 
 Then('I go back in the browser', () => {
   cy.go('back');
