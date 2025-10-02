@@ -3,31 +3,26 @@ import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 
-// Component under test
 import { FinesAccDefendantDetailsComponent } from '../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details.component';
-
-// Injected services
 import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
-// Your constants + mocks
+// constants + mocks
 import { DOM_ELEMENTS as DOM } from './constants/defendant_details_elements';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
-  DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
+  USER_STATE_MOCK_NO_PERMISSION,
+  USER_STATE_MOCK_PERMISSION_BU77,
+  USER_STATE_MOCK_PERMISSION_BU17,
   DEFENDANT_HEADER_ORG_MOCK,
   MOCK_ACCOUNT_STATE,
 } from './mocks/defendant_details_mock';
-import { snapshot } from 'node:test';
-import { url } from 'node:inspector';
-import { contains } from 'cypress/types/jquery';
 
 describe('Defendant Account Summary (Component)', () => {
-  const setupComponent = (prefilledData = DEFENDANT_HEADER_MOCK, canAddNotes = true) => {
+  const setupComponent = (prefilledData = DEFENDANT_HEADER_MOCK, user = USER_STATE_MOCK_NO_PERMISSION) => {
     mount(FinesAccDefendantDetailsComponent, {
       providers: [
         provideHttpClient(),
@@ -66,13 +61,10 @@ describe('Defendant Account Summary (Component)', () => {
         UtilsService,
         {
           provide: GlobalStore,
-          useValue: { userState: () => ({ userName: 'opal-tester', business_unit_users: [] }) },
-        },
-        {
-          provide: PermissionsService,
-          useValue: {
-            hasPermissionAccess: cy.stub().as('hasPermissionAccess').returns(canAddNotes),
-            hasPermission: cy.stub().as('hasPermission').returns(canAddNotes),
+          useFactory: () => {
+            let store = new GlobalStore();
+            store.setUserState(user);
+            return store;
           },
         },
         {
@@ -85,7 +77,6 @@ describe('Defendant Account Summary (Component)', () => {
     });
   };
 
-  // Header renders
   it('AC1a: renders the Defendant Account Header Summary', { tags: ['PO-1593', 'PO-866'] }, () => {
     setupComponent(DEFENDANT_HEADER_YOUTH_MOCK);
 
@@ -98,7 +89,6 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get(DOM.atAGlanceTabComponent).should('exist');
   });
 
-  // Header renders
   it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867'] }, () => {
     setupComponent(DEFENDANT_HEADER_ORG_MOCK);
 
@@ -246,37 +236,73 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
   it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_MOCK, true);
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
-  it('AC4: clicking "Add account note" calls router.navigate', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_MOCK, true);
+  it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).click();
-    cy.get('@routerNavigate').should('have.been.called');
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
   });
 
-  it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
-    setupComponent(DEFENDANT_HEADER_MOCK, false);
+  it(
+    'AC4a: Calls error path when user has no permission in this BU only in other BU',
+    { tags: ['PO-1593', 'PO-866', 'PO-867'] },
+    () => {
+      setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
+      cy.get(DOM.addNoteButton).click();
+      cy.get('@routerNavigate')
+        .its('lastCall.args.0')
+        .should((arg0) => {
+          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+          expect(path).to.match(/access-denied/);
+        });
+    },
+  );
 
-    cy.get('@hasPermissionAccess').should('have.been.called');
+  it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
+    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_NO_PERMISSION);
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 
   it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, true);
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
-
-  it('AC3: clicking "Add account note" calls router.navigate - Company', { tags: ['PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, true);
+  it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.addNoteButton).click();
-    cy.get('@routerNavigate').should('have.been.called');
+    cy.get('@routerNavigate')
+      .its('lastCall.args.0')
+      .should((arg0) => {
+        const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+        expect(path).to.match(/note\/add/);
+      });
   });
-  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, false);
 
-    cy.get('@hasPermissionAccess').should('have.been.called');
+  it(
+    'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
+    { tags: ['PO-867'] },
+    () => {
+      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
+      cy.get(DOM.addNoteButton).click();
+      cy.get('@routerNavigate')
+        .its('lastCall.args.0')
+        .should((arg0) => {
+          const path = Array.isArray(arg0) ? arg0.join('/') : String(arg0);
+          expect(path).to.match(/access-denied/);
+        });
+    },
+  );
+
+  it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
+    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION);
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 });
