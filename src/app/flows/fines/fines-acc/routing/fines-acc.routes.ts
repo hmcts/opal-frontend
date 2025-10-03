@@ -33,7 +33,6 @@ export const routing: Routes = [
           import('../fines-acc-defendant-details/fines-acc-defendant-details.component').then(
             (c) => c.FinesAccDefendantDetailsComponent,
           ),
-        canActivate: [authGuard],
         data: {
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.details,
         },
@@ -44,7 +43,7 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
@@ -59,7 +58,7 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+        canActivate: [finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,

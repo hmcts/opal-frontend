@@ -19,8 +19,8 @@ import {
   IOpalFinesLocalJusticeArea,
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
-import { Observable, of, shareReplay } from 'rxjs';
-import { map } from 'rxjs/operators';
+
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
