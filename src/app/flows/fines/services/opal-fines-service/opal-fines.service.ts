@@ -48,7 +48,7 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interf
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
+import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -71,8 +71,8 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData =
-    {} as IOpalFinesAccountDefendantDetailsTabsData;
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsCache =
+    {} as IOpalFinesAccountDefendantDetailsTabsCache;
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -369,7 +369,7 @@ export class OpalFines {
    */
   public clearAccountDetailsCache(): void {
     //this.atAGlanceCache$ = {};
-    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsData;
+    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsCache;
   }
 
   /**

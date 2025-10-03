@@ -23,6 +23,8 @@ const MAP_PAYLOAD_DATE_FORMAT = {
 // Forward transformation configuration
 export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_birth', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'effective_date', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'last_movement_date', ...BUILD_PAYLOAD_DATE_FORMAT },
 ];
 
 // Reverse transformation configuration
