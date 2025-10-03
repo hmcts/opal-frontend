@@ -173,35 +173,41 @@
 
 @switch (activeTab) {
   @case ('at-a-glance') {
-    <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabsData['at-a-glance'] | async"
-      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-      [isYouth]="accountData.is_youth"
-      (addComments)="navigateToAddCommentsPage($event)"
-      [style]="tabContentStyles"
-    ></app-fines-acc-defendant-details-at-a-glance-tab>
+    @if (tabAtAGlance$ | async; as tabData) {
+      <app-fines-acc-defendant-details-at-a-glance-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [isYouth]="accountData.is_youth"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-at-a-glance-tab>
+    }
   }
   @case ('defendant') {
-    <app-fines-acc-defendant-details-defendant-tab
-      [tabData]="tabsData['defendant'] | async"
-      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-      [isYouth]="accountData.is_youth"
-      (addComments)="navigateToAddCommentsPage($event)"
-      [style]="tabContentStyles"
-      (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
-      (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
-    ></app-fines-acc-defendant-details-defendant-tab>
+    @if (tabDefendant$ | async; as tabData) {
+      <app-fines-acc-defendant-details-defendant-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [isYouth]="accountData.is_youth"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+        (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
+        (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
+      ></app-fines-acc-defendant-details-defendant-tab>
+    }
   }
   @case ('parent-or-guardian') {
-    <app-fines-acc-defendant-details-parent-or-guardian-tab
-      [tabData]="tabsData['parent-or-guardian'] | async"
-      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-      [isYouth]="accountData.is_youth"
-      (addComments)="navigateToAddCommentsPage($event)"
-      [style]="tabContentStyles"
-      (changeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
-      (removeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
-    ></app-fines-acc-defendant-details-parent-or-guardian-tab>
+    @if (tabParentOrGuardian$ | async; as tabData) {
+      <app-fines-acc-defendant-details-parent-or-guardian-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [isYouth]="accountData.is_youth"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+        (changeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
+        (removeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
+      ></app-fines-acc-defendant-details-parent-or-guardian-tab>
+    }
   }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full"></div>

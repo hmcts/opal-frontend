@@ -47,10 +47,7 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interf
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
-import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
+import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -61,7 +58,6 @@ import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-
   providedIn: 'root',
 })
 export class OpalFines {
-  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly http = inject(HttpClient);
   private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
@@ -72,9 +68,8 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
-    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
-  );
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsCache =
+    {} as IOpalFinesAccountDefendantDetailsTabsCache;
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -370,7 +365,8 @@ export class OpalFines {
    * fetch fresh data or start with a clean state.
    */
   public clearAccountDetailsCache(): void {
-    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
+    //this.atAGlanceCache$ = {};
+    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsCache;
   }
 
   /**
@@ -497,8 +493,8 @@ export class OpalFines {
         .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
-            const payload = this.payloadService.transformPayload(response.body!, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAtAGlance;
             return {
               ...payload,
               version,
@@ -533,10 +529,8 @@ export class OpalFines {
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
-            let payload = response.body as IOpalFinesAccountDefendantAccountParty;
             const version = this.extractEtagVersion(response.headers);
-            // Transform the payload, format the dates and times to the correct format
-            payload = this.payloadService.transformPayload(payload, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
             return {
               ...payload,
               version,

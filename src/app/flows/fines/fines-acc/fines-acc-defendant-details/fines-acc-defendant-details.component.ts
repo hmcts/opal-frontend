@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, EMPTY, map, merge, Observable, Subject, takeUntil, tap } from 'rxjs';
 // Services
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -45,13 +45,17 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
-import { IOpalFinesAccountDefendantDetailsTabsData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-tabs-data.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -87,7 +91,6 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 export class FinesAccDefendantDetailsComponent extends AbstractTabData implements OnInit, OnDestroy {
   private readonly opalFinesService = inject(OpalFines);
   private readonly permissionsService = inject(PermissionsService);
-  private readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
   private readonly userState = this.globalStore.userState();
   private readonly payloadService = inject(FinesAccPayloadService);
@@ -97,11 +100,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public readonly utilsService = inject(UtilsService);
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
-  public tabsData: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
-    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
-  );
   public accountData!: IOpalFinesAccountDefendantDetailsHeader;
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
+  public tabAtAGlance$: Observable<IOpalFinesAccountDefendantAtAGlance> = EMPTY;
+  public tabDefendant$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
+  public tabParentOrGuardian$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
+  public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> = EMPTY;
+  public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
+  public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
+  public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -129,45 +136,44 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     );
 
     const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
+    const { defendant_party_id, parent_guardian_party_id } = this.accountData;
 
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id),
+          this.tabAtAGlance$ = this.fetchTabData(
+            this.opalFinesService
+              .getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id)
+              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'defendant':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountParty(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-              this.accountData.defendant_party_id,
-            ),
+          this.tabDefendant$ = this.fetchTabData(
+            this.opalFinesService
+              .getDefendantAccountParty(account_id, business_unit_id, business_unit_user_id, defendant_party_id)
+              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'parent-or-guardian':
-          this.tabsData[tab] = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountParty(
-              account_id,
-              business_unit_id,
-              business_unit_user_id,
-              this.accountData.parent_guardian_party_id,
-            ),
+          this.tabParentOrGuardian$ = this.fetchTabData(
+            this.opalFinesService
+              .getDefendantAccountParty(account_id, business_unit_id, business_unit_user_id, parent_guardian_party_id)
+              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'payment-terms':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
+          this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
           break;
         case 'enforcement':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
+          this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
           break;
         case 'impositions':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());
+          this.tabImpositions$ = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());
           break;
         case 'history-and-notes':
-          this.tabsData[tab] = this.fetchTabData(this.opalFinesService.getDefendantAccountHistoryAndNotesTabData());
+          this.tabHistoryAndNotes$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountHistoryAndNotesTabData(),
+          );
           break;
       }
     });
@@ -276,16 +282,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
           );
         }),
+        takeUntil(this.destroy$),
       )
       .subscribe((res) => {
         this.accountStore.setSuccessMessage('Information is up to date');
         this.accountData = res;
-        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
-        this.accountData.debtor_type = this.accountData.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
-        this.accountData.is_youth = this.accountData.party_details?.individual_details?.date_of_birth
-          ? this.dateService.getAgeObject(this.accountData.party_details.individual_details.date_of_birth)?.group ===
-            'Youth'
-          : false;
         this.refreshFragment$.next(this.activeTab);
       });
   }

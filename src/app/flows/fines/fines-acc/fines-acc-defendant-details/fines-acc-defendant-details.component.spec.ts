@@ -45,8 +45,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
     mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
       'transformAccountHeaderForStore',
+      'transformPayload',
     ]);
     mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformPayload.and.callFake((...args) => {
+      return args[0]; // returns the first argument = payload
+    });
 
     mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
     mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
@@ -139,7 +143,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
+    // Subscribe to trigger the pipe execution
+    component.tabDefendant$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
   it('should fetch the parent or guardian tab data when fragment is changed to parent-or-guardian', () => {
