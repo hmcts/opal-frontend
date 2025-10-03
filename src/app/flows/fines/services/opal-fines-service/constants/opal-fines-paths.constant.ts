@@ -24,6 +24,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   draftAccounts: `${baseUrl}${draftAccounts}`,
   searchOffences: `${baseUrl}${offences}${searchOffences}`,
   prosecutorRefData: `${baseUrl}${prosecutors}`,
+  defendantAccounts: `${baseUrl}${defendantAccounts}`,
   searchDefendantAccounts: `${baseUrl}${defendantAccounts}${searchAccounts}`,
   searchMinorCreditorAccounts: `${baseUrl}${minorCreditorAccounts}${searchAccounts}`,
 };

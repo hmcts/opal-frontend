@@ -11,6 +11,19 @@ Then(
   (position: number, data: DataTable) => {
     const tableData = data.raw()[0];
     tableData.forEach((cellData: string, index: number) => {
+      cy.log('Cell data: ' + cellData);
+      cy.log('Index: ' + index);
+      cy.get('tr').eq(position).children('td').eq(index).contains(cellData);
+    });
+  },
+);
+Then(
+  'I see the following data in position {int} of the approved accounts table:',
+  (position: number, data: DataTable) => {
+    const tableData = data.raw()[0];
+    tableData.forEach((cellData: string, index: number) => {
+      cy.log('Cell data: ' + cellData);
+      cy.log('Index: ' + index);
       cy.get('tr').eq(position).children('td').eq(index).contains(cellData);
     });
   },
