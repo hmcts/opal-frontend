@@ -128,21 +128,17 @@ describe('FinesAccNoteAddFormComponent', () => {
     },
   );
 
-  it.only(
-    '(AC.4c, 4ci, 4cii)click submit button after entering valid data',
-    { tags: ['@PO-771', '@807', '@809'] },
-    () => {
-      //const formSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(null);
-      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
-      cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
-      cy.get(DOM_ELEMENTS.saveNoteButton).click();
-      cy.wait('@addNote').then((interception) => {
-        expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
-        expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
-        expect(interception.request.body).to.have.nested.property('activity_note.record_id', '12345');
-        expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
-      });
-    },
-  );
+  it('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: ['@PO-771', '@807', '@809'] }, () => {
+    //const formSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(null);
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
+    cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
+    cy.get(DOM_ELEMENTS.saveNoteButton).click();
+    cy.wait('@addNote').then((interception) => {
+      expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
+      expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
+      expect(interception.request.body).to.have.nested.property('activity_note.record_id', '12345');
+      expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
+    });
+  });
 });
