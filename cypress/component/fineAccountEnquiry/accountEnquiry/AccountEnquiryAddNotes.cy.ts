@@ -19,6 +19,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     account_id: 12345,
     business_unit_id: '77',
     business_unit_user_id: 'test.user',
+    welsh_speaking: null,
   };
 
   const setupComponent = (formSubmit: any) => {
@@ -46,9 +47,6 @@ describe('FinesAccNoteAddFormComponent', () => {
           },
         },
       ],
-      // componentProperties: {
-      //   handleAddNoteSubmit: formSubmit,
-      // },
     });
   };
 
@@ -58,18 +56,19 @@ describe('FinesAccNoteAddFormComponent', () => {
     cy.get(DOM_ELEMENTS.addNoteApp).should('exist');
   });
 
-  it('(AC.2) should load all elements on the screen correctly', { tags: ['@PO-771'] }, () => {
+  it('(AC.2) should load all elements on the screen correctly', { tags: ['@PO-771', '@807', '@809'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add account note');
     cy.get(DOM_ELEMENTS.addAccountNoteLabel).should('contain', '123456789A - Mr John, Peter DOE');
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('exist');
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('be.enabled');
     cy.get(DOM_ELEMENTS.saveNoteButton).should('contain', 'Save note');
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('(AC2a,2b) should have character limits for account notes', { tags: ['@PO-771'] }, () => {
+  it('(AC2a,2b) should have character limits for account notes', { tags: ['@PO-771', '@807', '@809'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
@@ -84,21 +83,26 @@ describe('FinesAccNoteAddFormComponent', () => {
 
   //Note: For AC3a, AC3ai, AC3aii the maximum character limit is 1000. So, entering 1000 characters should show 0 characters remaining.more than 1000 characters doesn't allow to type.
 
-  it('(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit', { tags: ['@PO-771'] }, () => {
-    setupComponent(null);
-    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1001), { delay: 0 });
-    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
-    cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
-    cy.get(DOM_ELEMENTS.saveNoteButton).click();
-  });
+  it(
+    '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
+    { tags: ['@PO-771', '@807', '@809'] },
+    () => {
+      setupComponent(null);
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1001), { delay: 0 });
+      cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
+      cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.saveNoteButton).click();
+    },
+  );
 
   it(
     '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
-    { tags: ['@PO-771'] },
+    { tags: ['@PO-771', '@807', '@809'] },
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('Test @#$%^&*()');
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
+      // page header error summary
       cy.get(DOM_ELEMENTS.errorSummary).should(
         'contain',
         'Account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
@@ -112,32 +116,33 @@ describe('FinesAccNoteAddFormComponent', () => {
     },
   );
 
-  it('(AC.3c, 3ci, 3cii)click submit without entering data shows an error', { tags: ['@PO-771'] }, () => {
-    setupComponent(null);
-    cy.get(DOM_ELEMENTS.addNoteTextBox).clear();
-    cy.get(DOM_ELEMENTS.saveNoteButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Add account note or click cancel to return');
-    cy.get(DOM_ELEMENTS.errorMessage).find('a').should('contain', 'Add account note or click cancel to return');
-  });
+  it(
+    '(AC.3c, 3ci, 3cii)click submit without entering data shows an error',
+    { tags: ['@PO-771', '@807', '@809'] },
+    () => {
+      setupComponent(null);
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear();
+      cy.get(DOM_ELEMENTS.saveNoteButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Add account note or click cancel to return');
+      cy.get(DOM_ELEMENTS.errorMessage).find('a').should('contain', 'Add account note or click cancel to return');
+    },
+  );
 
-  it.only('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: ['@PO-771'] }, () => {
-    const formSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(null);
-    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
-
-    //cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-    cy.intercept('POST', 'http://localhost:8090/opal-fines-service/notes/add', {
-      statusCode: 404,
-      body: {},
-    }).as('addNote');
-    cy.get(DOM_ELEMENTS.saveNoteButton).click();
-    // cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    cy.wait('@addNote').then((interception) => {
-      expect(interception.response?.statusCode).to.eq(404);
-      expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
-      expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
-      expect(interception.request.body).to.have.nested.property('activity_note.record_id', '12345');
-      expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
-    });
-  });
+  it.only(
+    '(AC.4c, 4ci, 4cii)click submit button after entering valid data',
+    { tags: ['@PO-771', '@807', '@809'] },
+    () => {
+      //const formSubmit = cy.spy().as('formSubmitSpy');
+      setupComponent(null);
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
+      cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
+      cy.get(DOM_ELEMENTS.saveNoteButton).click();
+      cy.wait('@addNote').then((interception) => {
+        expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
+        expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
+        expect(interception.request.body).to.have.nested.property('activity_note.record_id', '12345');
+        expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
+      });
+    },
+  );
 });
