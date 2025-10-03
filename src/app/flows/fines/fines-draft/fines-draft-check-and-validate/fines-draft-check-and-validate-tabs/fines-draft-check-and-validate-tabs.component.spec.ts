@@ -14,6 +14,7 @@ import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 
 describe('FinesDraftCheckAndValidateTabsComponent', () => {
@@ -162,13 +163,14 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
 
   it('should route to account details page onAccountClick', () => {
     spyOn(component['router'], 'navigate');
-    const accountNumber = 'ACC123';
-    component.onAccountClick(accountNumber);
+    const accountId = 77;
+    component.onAccountClick(accountId);
     expect(component['router'].navigate).toHaveBeenCalledWith([
       FINES_ROUTING_PATHS.root,
       FINES_ACC_ROUTING_PATHS.root,
-      accountNumber,
-      FINES_ACC_ROUTING_PATHS.children.details,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountId,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
     ]);
   });
 });

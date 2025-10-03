@@ -198,7 +198,7 @@
                             [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
                             [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
                             inputClasses="govuk-!-width-one-half"
-                            [autoCompleteItems]="majorCreditorItems"
+                            [autoCompleteItems]="majorCreditorItemsByCode[currentResultCodeByRow[rowIndex]]"
                             [errors]="
                               formControlErrorMessages[
                                 formArrayControl['fm_offence_details_major_creditor_id'].controlName
