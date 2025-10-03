@@ -7,10 +7,10 @@ import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './opal-f
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 
 export interface IOpalFinesAccountDefendantDetailsTabsData {
-  'at-a-glance': Observable<IOpalFinesAccountDefendantAtAGlance> | null;
-  defendant: Observable<IOpalFinesAccountDefendantAccountParty> | null;
-  'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> | null;
-  enforcement: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> | null;
-  impositions: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
-  'history-and-notes': Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
+  'at-a-glance': Observable<IOpalFinesAccountDefendantAtAGlance>;
+  defendant: Observable<IOpalFinesAccountDefendantAccountParty>;
+  'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData>;
+  enforcement: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>;
+  impositions: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>;
+  'history-and-notes': Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData>;
 }

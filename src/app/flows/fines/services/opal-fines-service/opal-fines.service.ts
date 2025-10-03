@@ -49,7 +49,6 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './in
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -72,9 +71,8 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
-    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
-  );
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData =
+    {} as IOpalFinesAccountDefendantDetailsTabsData;
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -370,7 +368,8 @@ export class OpalFines {
    * fetch fresh data or start with a clean state.
    */
   public clearAccountDetailsCache(): void {
-    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
+    //this.atAGlanceCache$ = {};
+    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsData;
   }
 
   /**
@@ -599,11 +598,6 @@ export class OpalFines {
       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
-        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
-        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
-        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
-          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
-          : false;
         return {
           ...payload,
           version,

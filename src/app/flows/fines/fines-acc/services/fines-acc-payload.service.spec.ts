@@ -7,6 +7,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
+import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -103,5 +104,20 @@ describe('FinesAccPayloadService', () => {
     );
     expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
+  });
+
+  it('should transform payload using the transformation service', () => {
+    spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+    const inputPayload = {
+      date_of_birth: '2000-09-09',
+    };
+
+    const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+    expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+      inputPayload,
+      FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+    );
+    expect(result).toEqual(inputPayload);
   });
 });
