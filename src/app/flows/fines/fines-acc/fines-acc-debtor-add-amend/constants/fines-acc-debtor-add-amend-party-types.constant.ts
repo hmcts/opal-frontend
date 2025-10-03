@@ -4,4 +4,4 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES: FinesAccDebtorAddAmendParty
   INDIVIDUAL: 'individual',
   COMPANY: 'company',
   PARENT_GUARDIAN: 'parentGuardian',
-} as const;
+};
