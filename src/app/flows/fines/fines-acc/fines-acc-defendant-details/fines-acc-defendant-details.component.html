@@ -131,13 +131,15 @@
 
 @switch (activeTab) {
   @case ('at-a-glance') {
-    <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabsData['at-a-glance'] | async"
-      [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-      [isYouth]="accountData.is_youth"
-      (addComments)="navigateToAddCommentsPage($event)"
-      [style]="tabContentStyles"
-    ></app-fines-acc-defendant-details-at-a-glance-tab>
+    @if (tabAtAGlance$ | async; as tabData) {
+      <app-fines-acc-defendant-details-at-a-glance-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [isYouth]="accountData.is_youth"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-at-a-glance-tab>
+    }
   }
   @case ('defendant') {
     <app-fines-acc-defendant-details-defendant-tab
