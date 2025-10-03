@@ -3,7 +3,6 @@ import { FINES_DEFAULT_VALUES } from '../../constants/fines-default-values.const
 
 @Component({
   selector: 'app-fines-not-provided',
-  imports: [],
   templateUrl: './fines-not-provided.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

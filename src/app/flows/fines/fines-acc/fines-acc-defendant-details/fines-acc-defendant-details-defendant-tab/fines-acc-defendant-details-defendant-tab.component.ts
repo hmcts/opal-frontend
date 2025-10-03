@@ -26,7 +26,7 @@ import { UpperCasePipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsDefendantTabComponent {
-  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty | null;
+  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;

@@ -143,7 +143,10 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should fetch the defendant tab data when fragment is changed to defendant', () => {
     component['refreshFragment$'].next('defendant');
+    // Subscribe to trigger the pipe execution
+    component.tabDefendant$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
   it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
