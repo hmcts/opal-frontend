@@ -418,7 +418,7 @@ Feature: Navigate and edit sections from task list
 
     # Create a pgToPay account with rejected status for testing
     Given I create a "pgToPay" draft account with the following details:
-      | account.defendant.surname   | TEST                                  |
+      | account.defendant.surname   | TEST                    |
       | account.defendant.forenames | Rejected-PO-640-pgToPay |
     When I update the last created draft account with status "Rejected"
 
@@ -859,7 +859,7 @@ Feature: Navigate and edit sections from task list
       | Comment      | — |
       | Account note | — |
 
-  @PO-607
+  @PO-607 @only
   Scenario: AC2 - View accounts in the Approved tab
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -876,7 +876,20 @@ Feature: Navigate and edit sections from task list
     And I see "Showing accounts Approved in the past 7 days" text on the page
 
     When I click on the "FP123456" link
-    Then I see "Account Details" on the page header
 
+    Then I see the following data in position 1 of the approved accounts table:
+      | FP123456             |
+      | TEST New Company Ltd |
+      | —                    |
+      | days ago             |
+      | Fixed Penalty        |
+      | Business Unit B      |
 
+    Then I see the following data in position 2 of the approved accounts table:
+      | FINE123456      |
+      | James, Smith    |
+      | 15 May 1990     |
+      | days ago        |
+      | —               |
+      | Business Unit A |
 
