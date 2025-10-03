@@ -30,7 +30,7 @@ const TEXT = {
   mustSelectAtLeastOne: 'You must select at least one business unit',
 } as const;
 
-/** Reset selectedIds variable to avoid leakage between scenarios */
+/** Reset selectedIds variable  */
 Before(() => {
   Cypress.env('selectedIds', []);
 });
@@ -38,10 +38,10 @@ Before(() => {
 /** Utility: remove whitespace for text matching. */
 const textNorm = (s: string) => s.replace(/\s+/g, ' ').trim();
 
-/** Utility: data table -> first column list */
+/** Utility: data table - first column list */
 const toNames = (table: DataTable): string[] => table.raw().map((r) => String(r[0]));
 
-/** Click a tab by its visible text.
+/** Click tab by its visible text.
  * @param {string} tabText - Visible text of the tab to click.
  */
 const clickTab = (tabText: string) => cy.contains(SELECTORS.tabsLink, tabText).scrollIntoView().click();
@@ -67,12 +67,12 @@ const assertAllCheckedOnCurrentTab = () => {
   });
 };
 
-/** Keep running selection across tabs in Cypress env to verify totals. */
+/** Keep running selection across tabs to verify totals. */
 const getSelectedIds = () => cy.wrap(null).then(() => (Cypress.env('selectedIds') as number[] | undefined) ?? []);
 const setSelectedIds = (ids: number[]) =>
   cy.wrap(null).then(() => Cypress.env('selectedIds', Array.from(new Set(ids))));
 
-/** Resolve the master-checkbox label for a given tab name. */
+/** Resolve the master-checkbox label for the tab name. */
 const masterLabelForTab = (tab: string): string => {
   const t = textNorm(tab);
   if (t === textNorm(TEXT.finesTab)) return TEXT.finesMaster;

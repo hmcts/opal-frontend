@@ -7,71 +7,71 @@ Feature: Filter by Business Unit
     And I click the "Change" link in the "Business units" section
     Then I am on the "Filter by business unit" page
 
-  # @PO-711 @AC1a
-  # Scenario: AC1a — Page chrome and defaults on first load (Fines)
-  #   Then I see the page heading "Filter by business unit"
-  #   Then I see the following tabs:
-  #     | Fines        |
-  #     | Confiscation |
-  #   And I see the master checkbox label "Fines business units"
-  #   And I see the "Save selection" button
-  #   And I see the "Cancel" link
+  @PO-711 @AC1a
+  Scenario: AC1a — Page chrome and defaults on first load (Fines)
+    Then I see the page heading "Filter by business unit"
+    Then I see the following tabs:
+      | Fines        |
+      | Confiscation |
+    And I see the master checkbox label "Fines business units"
+    And I see the "Save selection" button
+    And I see the "Cancel" link
 
-  # @PO-711 @AC1b
-  # Scenario: AC1b — Switching to Confiscation shows Confiscation header
-  #   When I click on the "Confiscation" link
-  #   Then I see the master checkbox label "Confiscation business units"
-  #   And I am on the "Filter by business unit" page
+  @PO-711 @AC1b
+  Scenario: AC1b — Switching to Confiscation shows Confiscation header
+    When I click on the "Confiscation" link
+    Then I see the master checkbox label "Confiscation business units"
+    And I am on the "Filter by business unit" page
 
-  # @PO-711 @AC7
-  # Scenario: AC7 — Saving sends the combined selection across tabs
-  #   And I unselect all business units on the "Fines" tab
-  #   Then no business units are selected on the "Fines" tab
-  #   And I click on the "Confiscation" link
-  #   And I unselect all business units on the "Confiscation" tab
-  #   And no business units are selected on the "Confiscation" tab
+  @PO-711 @AC7
+  Scenario: AC7 — Saving sends the combined selection across tabs
+    And I unselect all business units on the "Fines" tab
+    Then no business units are selected on the "Fines" tab
+    And I click on the "Confiscation" link
+    And I unselect all business units on the "Confiscation" tab
+    And no business units are selected on the "Confiscation" tab
 
-  #   # Act: pick some on each tab
-  #   When I click on the "Fines" link
-  #   And I select the business units on Fines:
-  #     | Bedfordshire |
-  #     | Bolton       |
-  #   And I click on the "Confiscation" link
-  #   And I select the business units on Confiscation:
-  #     | Berwick |
-  #   And I click the "Save selection" button
-  #   Then I am on the "Search for an account" page
-  #   And the business unit filter summary shows "Bedfordshire Bolton Berwick"
+    # Act: pick some on each tab
+    When I click on the "Fines" link
+    And I select the business units on Fines:
+      | Bedfordshire |
+      | Bolton       |
+    And I click on the "Confiscation" link
+    And I select the business units on Confiscation:
+      | Berwick |
+    And I click the "Save selection" button
+    Then I am on the "Search for an account" page
+    And the business unit filter summary shows "Bedfordshire Bolton Berwick"
 
-  # @PO-711 @AC8
-  # Scenario: AC8 — Cancel does not save and returns to previous page
-  #   And I unselect all business units on the "Fines" tab
-  #   And I unselect all business units on the "Confiscation" tab
-  #   When I click on the "Cancel" link
-  #   Then I am taken back to the "Search for an account" page
-  #   And the business unit filter summary shows "All business units"
+  @PO-711 @AC8
+  Scenario: AC8 — Cancel does not save and returns to previous page
+    And I unselect all business units on the "Fines" tab
+    And I unselect all business units on the "Confiscation" tab
+    When I click on the "Cancel" link
+    Then I am taken back to the "Search for an account" page
+    And the business unit filter summary shows "All business units"
 
-  # @PO-711 @AC9
-  # Scenario: AC9 — Switching tabs preserves selections and total count
-  #   And I unselect all business units on the "Fines" tab
-  #   And I unselect all business units on the "Confiscation" tab
-  #   Then the "Save selection" button shows a total of 0
+  @PO-711 @AC9
+  Scenario: AC9 — Switching tabs preserves selections and total count
+    And I unselect all business units on the "Fines" tab
+    And I unselect all business units on the "Confiscation" tab
+    Then the "Save selection" button shows a total of 0
 
-  #   # Make two selections on Fines
-  #   And I select the business units on Fines:
-  #     | Bedfordshire |
-  #     | Bolton       |
-  #   Then the "Save selection" button shows a total of 2
+    # Make two selections on Fines
+    And I select the business units on Fines:
+      | Bedfordshire |
+      | Bolton       |
+    Then the "Save selection" button shows a total of 2
 
-  #   # Switch away and back — ensure selections & total are preserved
-  #   When I click on the "Confiscation" link
-  #   Then the "Save selection" button shows a total of 2
+    # Switch away and back — ensure selections & total are preserved
+    When I click on the "Confiscation" link
+    Then the "Save selection" button shows a total of 2
 
-  #   When I click on the "Fines" link
-  #   Then the following business units are selected on "Fines":
-  #     | Bedfordshire |
-  #     | Bolton       |
-  #   And the "Save selection" button shows a total of 2
+    When I click on the "Fines" link
+    Then the following business units are selected on "Fines":
+      | Bedfordshire |
+      | Bolton       |
+    And the "Save selection" button shows a total of 2
 
 
   @PO-711 @AC10

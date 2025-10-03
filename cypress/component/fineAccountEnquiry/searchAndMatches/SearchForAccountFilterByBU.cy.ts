@@ -54,7 +54,6 @@ describe('Filter by Business Unit (CT)', () => {
     });
 
   const switchToConfiscation = () => {
-    // Click (for realism) AND drive the fragment observable so CT updates
     clickTabByText(DOM_ELEMENTS.confiscationTabText);
     cy.then(() => {
       fragment$.next('confiscation');
@@ -95,7 +94,7 @@ describe('Filter by Business Unit (CT)', () => {
     });
   };
 
-  // ---------------- test data bootstrap ----------------
+  // ---------------- test data  ----------------
 
   beforeEach(() => {
     resolverPayload = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
@@ -378,7 +377,7 @@ describe('Filter by Business Unit (CT)', () => {
     // Click Save with nothing selected
     clickSave();
 
-    // Error summary appears with a helpful message
+    // Error summary appears with message
     assertErrorSummaryVisible();
 
     // Still on Fines tab (header unchanged)
@@ -389,7 +388,7 @@ describe('Filter by Business Unit (CT)', () => {
     preselectedIds = [];
     setupComponent();
 
-    // Switch to Confiscation (use your helper if you prefer)
+    // Switch to Confiscation
     fragment$.next('confiscation');
     cy.contains(DOM_ELEMENTS.masterCheckboxLabel, DOM_ELEMENTS.confMasterText).should('be.visible');
 
@@ -399,7 +398,7 @@ describe('Filter by Business Unit (CT)', () => {
     // Click Save with nothing selected
     clickSave();
 
-    // Error summary appears with a helpful message
+    // Error summary appears with a message
     assertErrorSummaryVisible();
 
     // Still on Confiscation tab (header unchanged)
