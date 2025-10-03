@@ -59,12 +59,13 @@ export class FinesSaSearchFilterBusinessUnitComponent extends AbstractFormParent
   private getBusinessUnitsFromSelectedIds(
     selectedBusinessUnitIds: Record<number, boolean>[],
   ): IOpalFinesBusinessUnit[] {
-    // Convert selected keys (object keys are strings) into numeric IDs and build a lookup set
-    const selectedIds = Object.entries(selectedBusinessUnitIds)
-      .filter(([, isSelected]) => isSelected)
-      .map(([id]) => Number(id));
-
-    return this.businessUnits.filter((unit) => selectedIds.includes(unit.business_unit_id));
+    // Convert selected keys (object keys are strings) into a Set of numeric IDs
+    const selectedIds = new Set(
+      Object.entries(selectedBusinessUnitIds)
+        .filter(([, isSelected]) => isSelected)
+        .map(([id]) => Number(id)),
+    );
+    return this.businessUnits.filter((unit) => selectedIds.has(unit.business_unit_id));
   }
 
   /**

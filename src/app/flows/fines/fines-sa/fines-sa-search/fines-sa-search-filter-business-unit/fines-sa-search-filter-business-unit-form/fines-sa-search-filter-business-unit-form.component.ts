@@ -78,7 +78,7 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
   private get confAllCtrl(): FormControl<boolean> {
     return this.form.get(this.CONF_ALL_CTRL) as FormControl<boolean>;
   }
-  private businessUnitSelections = signal<Record<number, boolean>>({});
+  private readonly businessUnitSelections = signal<Record<number, boolean>>({});
   private readonly finesSaStore = inject(FinesSaStore);
   private readonly finesSaSearchAccountRoutingPaths = FINES_SA_ROUTING_PATHS;
 
@@ -273,12 +273,12 @@ export class FinesSaSearchFilterBusinessUnitForm extends AbstractFormBaseCompone
 
     const setAllInDomain = (domain: 'Fines' | 'Confiscation', value: boolean) => {
       const businessUnitsInDomain = domain === 'Fines' ? this.finesBusinessUnits : this.confiscationBusinessUnits;
-      businessUnitsInDomain.forEach((businessUnit) => {
+      for (const businessUnit of businessUnitsInDomain) {
         const ctrl = record.get(businessUnit.business_unit_id.toString()) as FormControl<boolean> | null;
         if (ctrl && ctrl.value !== value) {
           ctrl.setValue(value, { emitEvent: true }); // propagate
         }
-      });
+      }
       record.updateValueAndValidity({ emitEvent: true });
     };
 
