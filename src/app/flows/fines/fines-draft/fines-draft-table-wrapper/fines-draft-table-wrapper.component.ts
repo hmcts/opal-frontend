@@ -43,7 +43,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: false }) public isApprovedTab: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;
   @Output() public linkClicked = new EventEmitter<IFinesDraftTableWrapperTableData>();
-  @Output() public accountClicked = new EventEmitter<string>();
+  @Output() public accountClicked = new EventEmitter<number>();
 
   public override paginatedTableDataComputed = computed(() => {
     const data = this.sortedTableDataSignal() as IFinesDraftTableWrapperTableData[];
@@ -64,12 +64,12 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
 
   /**
    * Handles the click event on an account.
-   * Emits the clicked account number.
+   * Emits the clicked account id.
    *
-   * @param {number} account_number - the account number of the clicked account.
+   * @param {number} account_id - the account id of the clicked account.
    * @returns {void}
    */
-  public onAccountClick(account_number: string): void {
-    this.accountClicked.emit(account_number);
+  public onAccountClick(account_id: number): void {
+    this.accountClicked.emit(account_id);
   }
 }
