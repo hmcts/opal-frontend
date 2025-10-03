@@ -12,7 +12,6 @@ const draftAccounts = 'draft-accounts';
 const prosecutors = 'prosecutors';
 const defendantAccounts = 'defendant-accounts';
 const notes = 'notes/add';
-const defendantAccountsSearch = '/search';
 const minorCreditorAccounts = 'minor-creditor-accounts';
 const searchAccounts = '/search';
 
