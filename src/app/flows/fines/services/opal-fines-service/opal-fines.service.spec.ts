@@ -59,7 +59,6 @@ describe('OpalFines', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
       providers: [OpalFines, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(OpalFines);
