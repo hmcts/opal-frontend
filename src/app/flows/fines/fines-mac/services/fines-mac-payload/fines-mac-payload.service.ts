@@ -57,25 +57,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Retrieves the business unit user ID associated with a given business unit ID.
-   *
-   * @param businessUnitId - The ID of the business unit to search for. Can be null.
-   * @param userState - The current session user state containing business unit user information.
-   * @returns The business unit user ID if found, otherwise null.
-   */
-  private getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
-    const businessUnitUserId = userState.business_unit_users.find(
-      (businessUnitUsers) => businessUnitUsers.business_unit_id === businessUnitId,
-    );
-
-    if (businessUnitUserId) {
-      return businessUnitUserId.business_unit_user_id;
-    }
-
-    return null;
-  }
-
-  /**
    * Builds the account payload for the fines MAC service.
    *
    * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
@@ -232,6 +213,25 @@ export class FinesMacPayloadService {
     }
 
     return newStatus;
+  }
+
+  /**
+   * Retrieves the business unit user ID associated with a given business unit ID.
+   *
+   * @param businessUnitId - The ID of the business unit to search for. Can be null.
+   * @param userState - The current session user state containing business unit user information.
+   * @returns The business unit user ID if found, otherwise null.
+   */
+  public getBusinessUnitBusinessUserId(businessUnitId: number | null, userState: IOpalUserState): string | null {
+    const businessUnitUserId = userState.business_unit_users.find(
+      (businessUnitUsers) => businessUnitUsers.business_unit_id === businessUnitId,
+    );
+
+    if (businessUnitUserId) {
+      return businessUnitUserId.business_unit_user_id;
+    }
+
+    return null;
   }
 
   /**
