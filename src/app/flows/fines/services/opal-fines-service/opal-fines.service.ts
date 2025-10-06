@@ -368,7 +368,6 @@ export class OpalFines {
    * fetch fresh data or start with a clean state.
    */
   public clearAccountDetailsCache(): void {
-    //this.atAGlanceCache$ = {};
     this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsCache;
   }
 
