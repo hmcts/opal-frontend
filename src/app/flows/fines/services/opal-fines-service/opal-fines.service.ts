@@ -47,15 +47,14 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interf
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsTabsData } from './interfaces/opal-fines-account-defendant-details-tabs-data.interface';
-import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-acc/services/constants/fines-acc-transform-items-config.constant';
-import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
+import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
+import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 
 @Injectable({
   providedIn: 'root',
@@ -72,9 +71,8 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsData = structuredClone(
-    OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY,
-  );
+  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsCache =
+    {} as IOpalFinesAccountDefendantDetailsTabsCache;
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -370,7 +368,7 @@ export class OpalFines {
    * fetch fresh data or start with a clean state.
    */
   public clearAccountDetailsCache(): void {
-    this.accountDetailsCache$ = structuredClone(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
+    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsCache;
   }
 
   /**
@@ -482,23 +480,17 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlance(
-    account_id: number | null,
-    business_unit_id: string | null,
-    business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDefendantAtAGlance> {
+  public getDefendantAccountAtAGlance(account_id: number | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (!this.accountDetailsCache$['at-a-glance']) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.accountDetailsCache$['at-a-glance'] = this.http
         .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
-            const payload = this.payloadService.transformPayload(response.body!, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
             const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAtAGlance;
             return {
               ...payload,
               version,
@@ -523,20 +515,16 @@ export class OpalFines {
    */
   public getDefendantAccountParty(
     account_id: number | null,
-    business_unit_id: string | null,
-    business_unit_user_id: string | null,
     defendant_party_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     if (!this.accountDetailsCache$['defendant']) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}`;
       this.accountDetailsCache$['defendant'] = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
-            let payload = response.body as IOpalFinesAccountDefendantAccountParty;
             const version = this.extractEtagVersion(response.headers);
-            // Transform the payload, format the dates and times to the correct format
-            payload = this.payloadService.transformPayload(payload, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG);
+            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
             return {
               ...payload,
               version,
@@ -634,6 +622,21 @@ export class OpalFines {
         };
       }),
     );
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An Observable that emits the created note data.
+   */
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**

@@ -16,7 +16,7 @@ import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantDetailsAtAGlanceTabComponent {
-  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAtAGlance | null;
+  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAtAGlance;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
