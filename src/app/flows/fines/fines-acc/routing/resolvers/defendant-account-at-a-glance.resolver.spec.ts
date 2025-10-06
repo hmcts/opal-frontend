@@ -3,49 +3,33 @@ import { convertToParamMap } from '@angular/router';
 import { of, firstValueFrom, Observable } from 'rxjs';
 import { defendantAccountAtAGlanceResolver } from './defendant-account-at-a-glance.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 
 describe('defendantAccountAtAGlanceResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
-  let mockAccountStore: jasmine.SpyObj<InstanceType<typeof FinesAccountStore>>;
   let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
 
   beforeEach(() => {
-    const opalFinesServiceSpy = jasmine.createSpyObj('OpalFines', ['getDefendantAccountAtAGlanceTabData']);
-    const accountStoreSpy = jasmine.createSpyObj('FinesAccountStore', ['getAccountState']);
+    const opalFinesServiceSpy = jasmine.createSpyObj('OpalFines', ['getDefendantAccountAtAGlance']);
     const payloadServiceSpy = jasmine.createSpyObj('FinesAccPayloadService', ['transformAtAGlanceDataToCommentsForm']);
 
     TestBed.configureTestingModule({
       providers: [
         { provide: OpalFines, useValue: opalFinesServiceSpy },
-        { provide: FinesAccountStore, useValue: accountStoreSpy },
         { provide: FinesAccPayloadService, useValue: payloadServiceSpy },
       ],
     });
 
     mockOpalFinesService = TestBed.inject(OpalFines) as jasmine.SpyObj<OpalFines>;
-    mockAccountStore = TestBed.inject(FinesAccountStore) as jasmine.SpyObj<InstanceType<typeof FinesAccountStore>>;
     mockPayloadService = TestBed.inject(FinesAccPayloadService) as jasmine.SpyObj<
       InstanceType<typeof FinesAccPayloadService>
     >;
   });
 
   it('should resolve comments form data successfully', async () => {
-    const accountId = '123';
-    const mockAccountState = {
-      account_id: 456,
-      party_id: '456',
-      business_unit_user_id: 'BU123',
-      business_unit_id: 'BU456',
-      account_number: 'ACC123',
-      party_type: 'Individual',
-      party_name: 'John Doe',
-      base_version: '1',
-      welsh_speaking: 'N',
-    };
+    const accountId = '77';
 
     const expectedFormData: IFinesAccAddCommentsFormState = {
       facc_add_comment: 'Highly vulnerable person',
@@ -59,9 +43,8 @@ describe('defendantAccountAtAGlanceResolver', () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const state = {} as any;
 
-    mockAccountStore.getAccountState.and.returnValue(mockAccountState);
-    mockOpalFinesService.getDefendantAccountAtAGlanceTabData.and.returnValue(
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK),
+    mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
     mockPayloadService.transformAtAGlanceDataToCommentsForm.and.returnValue(expectedFormData);
 
@@ -70,73 +53,9 @@ describe('defendantAccountAtAGlanceResolver', () => {
     );
 
     expect(result).toEqual(expectedFormData);
-    expect(mockAccountStore.getAccountState).toHaveBeenCalled();
-    expect(mockOpalFinesService.getDefendantAccountAtAGlanceTabData).toHaveBeenCalledWith(456, 'BU456', 'BU123');
+    expect(mockOpalFinesService.getDefendantAccountAtAGlance).toHaveBeenCalledWith(77);
     expect(mockPayloadService.transformAtAGlanceDataToCommentsForm).toHaveBeenCalledWith(
-      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
+      OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
     );
-  });
-
-  it('should throw error when account ID is missing', () => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const route = { paramMap: convertToParamMap({}) } as any;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const state = {} as any;
-
-    expect(() => {
-      TestBed.runInInjectionContext(() => defendantAccountAtAGlanceResolver(route, state));
-    }).toThrowError('Account ID is required');
-  });
-
-  it('should throw error when account_id is missing', () => {
-    const accountId = 123;
-    const mockAccountState = {
-      account_id: null,
-      party_id: '456',
-      business_unit_user_id: 'BU123',
-      business_unit_id: 'BU456',
-      account_number: 'ACC123',
-      party_type: 'Individual',
-      party_name: 'John Doe',
-      base_version: '1',
-      welsh_speaking: 'N',
-    };
-
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const route = { paramMap: convertToParamMap({ accountId }) } as any;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const state = {} as any;
-
-    mockAccountStore.getAccountState.and.returnValue(mockAccountState);
-
-    expect(() => {
-      TestBed.runInInjectionContext(() => defendantAccountAtAGlanceResolver(route, state));
-    }).toThrowError('Account state is not properly initialized');
-  });
-
-  it('should throw error when business_unit_user_id is missing', () => {
-    const accountId = 123;
-    const mockAccountState = {
-      account_id: 123,
-      party_id: '456',
-      business_unit_user_id: null,
-      business_unit_id: 'BU456',
-      account_number: 'ACC123',
-      party_type: 'Individual',
-      party_name: 'John Doe',
-      base_version: '1',
-      welsh_speaking: 'N',
-    };
-
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const route = { paramMap: convertToParamMap({ accountId }) } as any;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const state = {} as any;
-
-    mockAccountStore.getAccountState.and.returnValue(mockAccountState);
-
-    expect(() => {
-      TestBed.runInInjectionContext(() => defendantAccountAtAGlanceResolver(route, state));
-    }).toThrowError('Account state is not properly initialized');
   });
 });

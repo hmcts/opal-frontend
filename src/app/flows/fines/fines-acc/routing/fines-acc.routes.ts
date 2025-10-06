@@ -48,7 +48,7 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
@@ -63,7 +63,7 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [authGuard, routePermissionsGuard,finesAccStateGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],

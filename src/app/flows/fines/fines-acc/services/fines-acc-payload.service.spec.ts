@@ -10,7 +10,7 @@ import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
 
@@ -202,7 +202,7 @@ describe('FinesAccPayloadService', () => {
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
   it('should transform at-a-glance data to comments form state', () => {
-    const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
+    const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
     const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
@@ -216,7 +216,7 @@ describe('FinesAccPayloadService', () => {
 
   it('should handle null account notes gracefully', () => {
     const atAGlanceData = {
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK,
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
       comments_and_notes: {
         account_comment: null,
         free_text_note_1: null,
@@ -276,19 +276,19 @@ describe('FinesAccPayloadService', () => {
       });
     });
 
-  it('should transform payload using the transformation service', () => {
-    spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-    const inputPayload = {
-      date_of_birth: '2000-09-09',
-    };
+    it('should transform payload using the transformation service', () => {
+      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+      const inputPayload = {
+        date_of_birth: '2000-09-09',
+      };
 
-    const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
-    expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-      inputPayload,
-      FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-    );
-    expect(result).toEqual(inputPayload);
-
+      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+        inputPayload,
+        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+      );
+      expect(result).toEqual(inputPayload);
+    });
   });
 });

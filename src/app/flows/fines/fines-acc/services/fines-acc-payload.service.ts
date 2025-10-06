@@ -6,7 +6,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
-import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
@@ -77,13 +77,13 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData into IFinesAccAddCommentsFormState for the Comments Add form
+   * Transforms the given IOpalFinesAccountDefendantAtAGlance into IFinesAccAddCommentsFormState for the Comments Add form
    *
    * @param atAGlanceData - The at-a-glance data from the API.
    * @returns The transformed form state object for comments add form.
    */
   public transformAtAGlanceDataToCommentsForm(
-    atAGlanceData: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData,
+    atAGlanceData: IOpalFinesAccountDefendantAtAGlance,
   ): IFinesAccAddCommentsFormState {
     const { comments_and_notes } = atAGlanceData;
     return {

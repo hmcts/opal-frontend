@@ -2,7 +2,6 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { map } from 'rxjs';
-import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccAddCommentsFormState } from '../../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 
@@ -16,15 +15,7 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
   }
 
   const opalFinesService = inject(OpalFines);
-  const accountStore = inject(FinesAccountStore);
   const payloadService = inject(FinesAccPayloadService);
-
-  const accountState = accountStore.getAccountState();
-  const { account_id, business_unit_user_id, business_unit_id } = accountState;
-
-  if (!account_id || !business_unit_user_id || !business_unit_id) {
-    throw new Error('Account state is not properly initialized');
-  }
 
   /**
    * Fetches the defendant account at-a-glance data from cache, transforms it to comment form structure.
@@ -34,6 +25,6 @@ export const defendantAccountAtAGlanceResolver: ResolveFn<IFinesAccAddCommentsFo
    * @throws Error if the account ID is invalid or if the data cannot be fetched.
    */
   return opalFinesService
-    .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
+    .getDefendantAccountAtAGlance(Number(accountId))
     .pipe(map((atAGlanceData) => payloadService.transformAtAGlanceDataToCommentsForm(atAGlanceData)));
 };
