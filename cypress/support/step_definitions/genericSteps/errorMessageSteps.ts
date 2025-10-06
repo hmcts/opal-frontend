@@ -25,3 +25,7 @@ Then('I see the error message {string} above the result code field', (errorMessa
     .find('.govuk-error-message')
     .should('contain', errorMessage);
 });
+
+Then('I see the error message {string}', (errorMessage: string) => {
+  cy.get('p#facc_add_notes-error-message').should('contain', errorMessage);
+});

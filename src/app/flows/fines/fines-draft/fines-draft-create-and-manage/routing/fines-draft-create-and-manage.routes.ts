@@ -8,7 +8,7 @@ import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES } from './constants/fines-
 import { finesDraftCreateAndManageRejectedCountResolver } from './resolvers/fines-draft-create-and-manage-rejected-count.resolver';
 import { finesDraftCreateAndManageViewAllRejectedResolver } from './resolvers/fines-draft-create-and-manage-view-all-rejected.resolver';
 import { finesDraftTabResolver } from '../../routing/resolvers/fines-draft-tab.resolver';
-import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constant';
 
 const draftRootPermissionIds = FINES_PERMISSIONS;
 
