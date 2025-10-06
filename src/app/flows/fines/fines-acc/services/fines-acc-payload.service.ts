@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
+import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.interface';
@@ -16,6 +19,28 @@ export class FinesAccPayloadService {
   private readonly transformationService = inject(TransformationService);
   private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
+  private readonly finesAccStore = inject(FinesAccountStore);
+
+  /**
+   * Constructs the payload for adding a note.
+   *
+   * This method collects necessary data from the finesAccStore as well as the form input to build the
+   * payload required for adding a new note to the account. It gathers the account version, the associated
+   * record's type and ID, the note type (hardcoded as 'AA'), and the note text from the form data.
+   *
+   * @param form - The form containing note data for the fines account.
+   * @returns The payload object conforming to the IOpalFinesAddNotePayload interface.
+   */
+  public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
+    return {
+      activity_note: {
+        record_type: 'DEFENDANT_ACCOUNTS',
+        record_id: this.finesAccStore.account_id()!,
+        note_text: form.formData.facc_add_notes!,
+        note_type: 'AA',
+      },
+    };
+  }
 
   /**
    * Transforms the given IOpalFinesDefendantAccountHeader into IFinesAccountState for the Account Store

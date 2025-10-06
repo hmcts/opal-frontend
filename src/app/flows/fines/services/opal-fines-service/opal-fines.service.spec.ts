@@ -36,11 +36,13 @@ import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-at-a-glance-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
+import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { of } from 'rxjs';
+import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY } from './constants/opal-fines-defendant-account-details-tabs-data.constant';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-defendant-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -48,6 +50,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOC
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
+import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -638,16 +641,12 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountAtAGlance data', () => {
     const account_id: number = 77;
-    const business_unit_id: string = '12';
-    const business_unit_user_id: string | null = '12';
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 
-    service
-      .getDefendantAccountAtAGlanceTabData(account_id, business_unit_id, business_unit_user_id)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountAtAGlance(account_id).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
@@ -659,9 +658,9 @@ describe('OpalFines', () => {
     // const account_id: number = 77;
     // const business_unit_id: string = '12';
     // const business_unit_user_id: string | null = '12';
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_DEFENDANT_TAB_REF_DATA_MOCK;
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
-    service.getDefendantAccountDefendantTabData().subscribe((response) => {
+    service.getDefendantAccountParty().subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
   });
@@ -710,13 +709,88 @@ describe('OpalFines', () => {
     });
   });
 
+  it('should send a POST request to add note API with correct payload and return mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+    const expectedUrl = OPAL_FINES_PATHS.notes;
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response.note_id).toBeGreaterThan(0);
+      expect(response.note_id).toBeLessThanOrEqual(100000);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+  });
+
+  it('should return a response with server-generated fields when using real API', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+    const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
+
+    const httpPostSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, { headers: { 'If-Match': version } });
+  });
+
+  it('should generate random note_id and current timestamp in mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+
+    const responses: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      service.addNote(payload, version).subscribe((response) => {
+        responses.push(response.note_id);
+        expect(response.note_id).toBeGreaterThan(0);
+        expect(response.note_id).toBeLessThanOrEqual(100000);
+      });
+
+      const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+    }
+
+    const uniqueIds = new Set(responses);
+    expect(uniqueIds.size).toBe(1); // Since we're using the same mock response, all IDs will be the same
+  });
+
+  it('should preserve all payload fields in the response', () => {
+    const payload: IOpalFinesAddNotePayload = {
+      activity_note: {
+        record_type: 'custom_type',
+        record_id: 77,
+        note_type: 'Important',
+        note_text: 'Custom test note with special characters: áéíóú & symbols!',
+      },
+    };
+    const version = '42';
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response.note_id).toBeDefined();
+    });
+
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+  });
+
   it('should clear account details cache', () => {
     const tab = 'at-a-glance';
-    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service.clearAccountDetailsCache();
 
     // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$']).toEqual(OPAL_FINES_ACCOUNT_DETAILS_TABS_DATA_EMPTY);
+    expect(service['accountDetailsCache$']).toEqual({} as IOpalFinesAccountDefendantDetailsTabsCache);
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
