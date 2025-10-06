@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from './constants/fines-draft-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
-import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_ROUTING_TITLES } from './constants/fines-draft-routing-titles.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
