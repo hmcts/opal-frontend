@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DOM_ELEMENTS } from '../../manualAccountCreation/FinesMacAccountCommentsAndNotes/constants/fines-mac-account-notes-and-comments-elements';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccNoteAddComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add.component';
+import { FinesAccNoteAddFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-note-add/fines-acc-note-add-form/fines-acc-note-add-form.component';
 import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { of } from 'rxjs';
@@ -12,7 +13,7 @@ import { IFinesAccountState } from 'src/app/flows/fines/fines-acc/interfaces/fin
 describe('FinesAccNoteAddFormComponent', () => {
   let mockFinesAccountStore: IFinesAccountState = {
     party_type: 'PERSON',
-    party_id: '12345',
+    party_id: '67890',
     account_number: '123456789A',
     party_name: 'Mr John, Peter DOE',
     base_version: '1',
@@ -22,7 +23,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     welsh_speaking: null,
   };
 
-  const setupComponent = (formSubmit: any) => {
+  const setupComponent = (formSubmit: any, initialNote: string | null = null) => {
     mount(FinesAccNoteAddComponent, {
       providers: [
         provideHttpClient(),
@@ -47,6 +48,19 @@ describe('FinesAccNoteAddFormComponent', () => {
           },
         },
       ],
+    }).then(({ fixture }) => {
+      if (!initialNote) {
+        return;
+      }
+
+      const formDebugElement = fixture.debugElement.query((debugElement) => {
+        return debugElement.componentInstance instanceof FinesAccNoteAddFormComponent;
+      });
+
+      if (formDebugElement) {
+        formDebugElement.componentInstance.form.patchValue({ facc_add_notes: initialNote });
+        fixture.detectChanges();
+      }
     });
   };
 
@@ -69,10 +83,9 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('(AC2a,2b) should have character limits for account notes', { tags: ['@PO-771', '@807', '@809'] }, () => {
-    setupComponent(null);
+    setupComponent(null, 'a'.repeat(1000));
 
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
-    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1000), { delay: 0 });
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
     cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
 
@@ -87,8 +100,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
     { tags: ['@PO-771', '@807', '@809'] },
     () => {
-      setupComponent(null);
-      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1001), { delay: 0 });
+      setupComponent(null, 'a'.repeat(1000));
       cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
       cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
@@ -99,8 +111,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
     { tags: ['@PO-771', '@807', '@809'] },
     () => {
-      setupComponent(null);
-      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('Test @#$%^&*()');
+      setupComponent(null, 'Test @#$%^&*()');
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
       // page header error summary
       cy.get(DOM_ELEMENTS.errorSummary).should(
@@ -129,15 +140,25 @@ describe('FinesAccNoteAddFormComponent', () => {
   );
 
   it('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: ['@PO-771', '@807', '@809'] }, () => {
-    setupComponent(null);
-    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
+    setupComponent(null, 'a'.repeat(10));
     cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
     cy.get(DOM_ELEMENTS.saveNoteButton).click();
     cy.wait('@addNote').then((interception) => {
       expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
       expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
-      expect(interception.request.body).to.have.nested.property('activity_note.record_id', 12345);
+      expect(interception.request.body).to.have.nested.property(
+        'activity_note.record_id',
+        mockFinesAccountStore.account_id,
+      );
       expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
     });
+  });
+
+  it('should prepopulate the note field when initial data is provided', () => {
+    const existingNote = 'Existing note text';
+
+    setupComponent(null, existingNote);
+
+    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', existingNote);
   });
 });
