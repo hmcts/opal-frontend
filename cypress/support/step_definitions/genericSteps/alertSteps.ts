@@ -62,3 +62,9 @@ Then('I click the browser back button {int} times, a window pops up and I click 
     return false;
   });
 });
+
+Then('I verify {string} a window pops up and I click Ok', (link: string) => {
+  cy.on('window:confirm', (str) => {
+    expect(str).to.equal(link);
+  });
+});

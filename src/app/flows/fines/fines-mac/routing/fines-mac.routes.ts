@@ -14,7 +14,7 @@ import { fetchSendingCourtsResolver } from './resolvers/fetch-sending-courts-res
 import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-results-resolver/fetch-results.resolver';
 import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchProsecutorsResolver } from './resolvers/fetch-prosecutors-resolver/fetch-prosecutors.resolver';
 
 const draftRootPermissionIds = FINES_PERMISSIONS;
