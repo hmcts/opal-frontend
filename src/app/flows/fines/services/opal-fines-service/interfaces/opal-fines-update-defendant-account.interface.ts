@@ -3,16 +3,16 @@
  */
 export interface IOpalFinesUpdateDefendantAccountCommentsNotes {
   account_comment: string | null;
-  account_free_note_1: string | null;
-  account_free_note_2: string | null;
-  account_free_note_3: string | null;
+  free_text_note_1: string | null;
+  free_text_note_2: string | null;
+  free_text_note_3: string | null;
 }
 
 /**
  * Interface for the payload to update a defendant account *Subject to change
  */
 export interface IOpalFinesUpdateDefendantAccountPayload {
-  account_comments_notes: IOpalFinesUpdateDefendantAccountCommentsNotes;
+  comment_and_notes: IOpalFinesUpdateDefendantAccountCommentsNotes;
 }
 
 /**

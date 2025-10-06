@@ -664,21 +664,19 @@ export class OpalFines {
   public patchDefendantAccount(
     accountId: number,
     payload: IOpalFinesUpdateDefendantAccountPayload,
+    version?: string,
+    businessUnitId?: string,
   ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
-    // TODO: Replace with actual HTTP call when API is implemented
-    // const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
-    // return this.http
-    //   .patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { observe: 'response' })
-    //   .pipe(map((response) => this.addVersionToBody(response)));
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
 
-    // Mock response for development purposes
-    const mockResponse: IOpalFinesUpdateDefendantAccountResponse = {
-      defendant_account_id: accountId,
-      message: 'Account comments notes updated successfully',
-    };
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
 
-    console.info('Mock updateDefendantAccount called with:', { accountId, payload });
-
-    return of(mockResponse);
+    return this.http.patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { headers });
   }
 }

@@ -794,12 +794,11 @@ describe('OpalFines', () => {
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
-      version: 1,
-      account_comments_notes: {
+      comment_and_notes: {
         account_comment: 'Updated comment',
-        account_free_note_1: 'Updated note 1',
-        account_free_note_2: 'Updated note 2',
-        account_free_note_3: 'Updated note 3',
+        free_text_note_1: 'Updated note 1',
+        free_text_note_2: 'Updated note 2',
+        free_text_note_3: 'Updated note 3',
       },
     };
 
@@ -808,19 +807,20 @@ describe('OpalFines', () => {
       expect(response.message).toBe('Account comments notes updated successfully');
     });
 
-    // Since this is a mock, no HTTP request should be made
-    httpMock.expectNone(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 
   it('should handle different payload values in mock response for patching defendant account', () => {
     const accountId = 789012;
     const updatePayload = {
       version: 5,
-      account_comments_notes: {
+      comment_and_notes: {
         account_comment: 'Different comment',
-        account_free_note_1: null,
-        account_free_note_2: null,
-        account_free_note_3: null,
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
       },
     };
 
@@ -829,7 +829,8 @@ describe('OpalFines', () => {
       expect(response.message).toBe('Account comments notes updated successfully');
     });
 
-    // Since this is a mock, no HTTP request should be made
-    httpMock.expectNone(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 });

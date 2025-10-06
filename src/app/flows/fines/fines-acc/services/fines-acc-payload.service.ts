@@ -61,7 +61,6 @@ export class FinesAccPayloadService {
     atAGlanceData: IOpalFinesAccountDefendantDetailsAtAGlanceTabRefData,
   ): IFinesAccAddCommentsFormState {
     const { comments_and_notes } = atAGlanceData;
-
     return {
       facc_add_comment: comments_and_notes?.account_comment || '',
       facc_add_free_text_1: comments_and_notes?.free_text_note_1 || '',
@@ -79,11 +78,11 @@ export class FinesAccPayloadService {
    */
   public buildCommentsFormPayload(formState: IFinesAccAddCommentsFormState): IOpalFinesUpdateDefendantAccountPayload {
     return {
-      account_comments_notes: {
+      comment_and_notes: {
         account_comment: formState.facc_add_comment || null,
-        account_free_note_1: formState.facc_add_free_text_1 || null,
-        account_free_note_2: formState.facc_add_free_text_2 || null,
-        account_free_note_3: formState.facc_add_free_text_3 || null,
+        free_text_note_1: formState.facc_add_free_text_1 || null,
+        free_text_note_2: formState.facc_add_free_text_2 || null,
+        free_text_note_3: formState.facc_add_free_text_3 || null,
       },
     };
   }

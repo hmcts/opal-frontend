@@ -35,7 +35,12 @@ export class FinesAccCommentsAddComponent extends AbstractFormParentBaseComponen
   public handleAddNoteSubmit(form: IFinesAccAddCommentsForm): void {
     const payload = this.finesAccPayloadService.buildCommentsFormPayload(form.formData);
     this.opalFinesService
-      .patchDefendantAccount(this.finesAccStore.account_id()!, payload)
+      .patchDefendantAccount(
+        this.finesAccStore.account_id()!,
+        payload,
+        this.finesAccStore.base_version()!,
+        this.finesAccStore.business_unit_id()!,
+      )
       .pipe(
         tap(() => {
           this.routerNavigate(this.finesDefendantRoutingPaths.children.details);
