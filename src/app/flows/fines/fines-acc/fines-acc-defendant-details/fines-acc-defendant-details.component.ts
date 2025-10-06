@@ -129,14 +129,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
-    const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
+    const { account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(
             this.opalFinesService
-              .getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id)
+              .getDefendantAccountAtAGlance(account_id)
               .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;

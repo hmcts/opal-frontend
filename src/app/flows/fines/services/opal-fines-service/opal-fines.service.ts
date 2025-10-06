@@ -481,17 +481,11 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlance(
-    account_id: number | null,
-    business_unit_id: string | null,
-    business_unit_user_id: string | null,
-  ): Observable<IOpalFinesAccountDefendantAtAGlance> {
+  public getDefendantAccountAtAGlance(account_id: number | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (!this.accountDetailsCache$['at-a-glance']) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.accountDetailsCache$['at-a-glance'] = this.http
         .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
