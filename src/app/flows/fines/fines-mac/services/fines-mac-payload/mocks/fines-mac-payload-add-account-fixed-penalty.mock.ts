@@ -44,7 +44,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccou
     offences: [
       {
         date_of_sentence: '2024-12-12',
-        imposing_court_id: 'Magistrates Court Database (204)',
+        imposing_court_id: null,
         offence_id: 12345,
         impositions: [
           {
