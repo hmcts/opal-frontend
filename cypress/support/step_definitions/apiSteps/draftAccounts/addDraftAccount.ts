@@ -183,6 +183,7 @@ type EtagUpdate = {
   etagBefore: string;
   etagAfter: string;
   accountId: number;
+  accountNumber?: string | null;
 };
 
 When('I update the last created draft account with status {string}', (newStatus: string) => {
@@ -227,6 +228,7 @@ When('I update the last created draft account with status {string}', (newStatus:
             etagBefore: beforeEtag,
             etagAfter: afterEtag,
             accountId: Number(id),
+            accountNumber: readString(patchResp.body, 'account_number'),
           } as EtagUpdate,
           { log: false },
         ).as('etagUpdate');
@@ -292,5 +294,21 @@ When('I try to update the last created draft account with a stale ETag I should 
             expect(second.status, 'stale If-Match should conflict').to.eq(409);
           });
       });
+  });
+});
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Click the latest published account link
+// ────────────────────────────────────────────────────────────────────────────────
+
+Then('I click the latest published account link', () => {
+  cy.get<EtagUpdate>('@etagUpdate').then(({ accountNumber }) => {
+    expect(accountNumber, 'accountNumber on @etagUpdate').to.be.a('string').and.not.be.empty;
+    cy.window().then((win) => {
+      cy.stub(win, 'open').callsFake((url) => {
+        win.location.href = url;
+      });
+    });
+    cy.contains('a.govuk-link', String(accountNumber)).click();
   });
 });
