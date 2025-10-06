@@ -23,11 +23,11 @@ import { FinesAccountStore } from '../../../stores/fines-acc.store';
 export const finesAccStateGuard = hasUrlStateMatchGuard(
   () => {
     const finesAccountStore = inject(FinesAccountStore);
-    return finesAccountStore.party_id();
+    return finesAccountStore.account_id();
   },
-  (route) => !!route.params['accountId'], // Only process routes that have accountId parameter
+  (route) => !!route.params['accountId'],
   (storeAccountNumber, route) => {
-    const urlAccountNumber = route.params['accountId'];
+    const urlAccountNumber = Number(route.params['accountId']);
 
     if (!storeAccountNumber) {
       return false;
@@ -41,6 +41,6 @@ export const finesAccStateGuard = hasUrlStateMatchGuard(
   },
   (route) => {
     const accountNumber = route.params['accountId'];
-    return `${FINES_ROUTING_PATHS.root}/defendant/${accountNumber}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+    return `${FINES_ROUTING_PATHS.root}/account/defendant/${accountNumber}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
   },
 );

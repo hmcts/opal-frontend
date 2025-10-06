@@ -19,7 +19,7 @@ describe('FinesAccPayloadService', () => {
     version: jasmine.Spy;
     base_version: jasmine.Spy;
     party_type: jasmine.Spy;
-    party_id: jasmine.Spy;
+    account_id: jasmine.Spy;
   };
 
   beforeEach(() => {
@@ -30,7 +30,7 @@ describe('FinesAccPayloadService', () => {
       version: jasmine.createSpy('version').and.returnValue(1),
       base_version: jasmine.createSpy('base_version').and.returnValue(1),
       party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
-      party_id: jasmine.createSpy('party_id').and.returnValue('12345'),
+      account_id: jasmine.createSpy('account_id').and.returnValue(77),
     };
     mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
       FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
@@ -58,7 +58,7 @@ describe('FinesAccPayloadService', () => {
       // Setup mocks
       mockFinesAccountStore.base_version.and.returnValue(5);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.party_id.and.returnValue('12345');
+      mockFinesAccountStore.account_id.and.returnValue(77);
 
       const testForm: IFinesAccAddNoteForm = {
         formData: {
@@ -72,7 +72,7 @@ describe('FinesAccPayloadService', () => {
       expect(result).toEqual({
         activity_note: {
           record_type: 'DEFENDANT_ACCOUNTS',
-          record_id: '12345',
+          record_id: 77,
           note_type: 'AA',
           note_text: 'Test note content',
         },
@@ -83,32 +83,33 @@ describe('FinesAccPayloadService', () => {
       // Setup mocks
       mockFinesAccountStore.base_version.and.returnValue(1);
       mockFinesAccountStore.party_type.and.returnValue('COMPANY');
-      mockFinesAccountStore.party_id.and.returnValue('67890');
+      mockFinesAccountStore.account_id.and.returnValue(88);
 
       const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
 
       service.buildAddNotePayload(testForm);
 
-      expect(mockFinesAccountStore.party_id).toHaveBeenCalled();
+      expect(mockFinesAccountStore.account_id).toHaveBeenCalled();
     });
 
     it('should use the note text from form data', () => {
       // Setup mocks
       mockFinesAccountStore.base_version.and.returnValue(3);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.party_id.and.returnValue('54321');
+      mockFinesAccountStore.account_id.and.returnValue(99);
 
       const result = service.buildAddNotePayload(FINES_ACC_ADD_NOTE_FORM_MOCK);
 
       expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
       expect(result.activity_note.note_type).toBe('AA');
+      expect(result.activity_note.record_id).toBe(99);
     });
 
     it('should handle null note text from form', () => {
       // Setup mocks
       mockFinesAccountStore.base_version.and.returnValue(2);
       mockFinesAccountStore.party_type.and.returnValue('PERSON');
-      mockFinesAccountStore.party_id.and.returnValue('11111');
+      mockFinesAccountStore.account_id.and.returnValue(111);
 
       const testForm: IFinesAccAddNoteForm = {
         formData: {
@@ -121,6 +122,7 @@ describe('FinesAccPayloadService', () => {
 
       expect(result.activity_note.note_text).toBeNull();
       expect(result.activity_note.note_type).toBe('AA');
+      expect(result.activity_note.record_id).toBe(111);
     });
   });
 

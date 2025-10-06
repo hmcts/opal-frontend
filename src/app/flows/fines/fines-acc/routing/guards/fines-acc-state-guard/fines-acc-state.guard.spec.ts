@@ -12,7 +12,7 @@ describe('finesAccStateGuard', () => {
   let mockFinesAccountStore: any;
 
   const testAccountNumber = '123456789';
-  const expectedUrlWithAccount = `${FINES_ROUTING_PATHS.root}/defendant/${testAccountNumber}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
+  const expectedUrlWithAccount = `${FINES_ROUTING_PATHS.root}/account/defendant/${testAccountNumber}/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details}`;
 
   // Helper function to create a mock ActivatedRouteSnapshot with proper params
   function createMockRoute(params: Record<string, string> = {}): ActivatedRouteSnapshot {
@@ -40,7 +40,7 @@ describe('finesAccStateGuard', () => {
     // Create mock FinesAccountStore
     mockFinesAccountStore = {
       account_number: jasmine.createSpy('account_number').and.returnValue(null),
-      party_id: jasmine.createSpy('party_id').and.returnValue(null),
+      account_id: jasmine.createSpy('account_id').and.returnValue(null),
     };
 
     TestBed.configureTestingModule({
@@ -52,7 +52,7 @@ describe('finesAccStateGuard', () => {
   });
 
   it('should redirect when no accountId in URL but account number exists in store', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue(testAccountNumber);
+    mockFinesAccountStore.account_id.and.returnValue(77);
 
     const route = createMockRoute(); // No accountId in params
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -62,7 +62,7 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should return true when store and URL account numbers match', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue(testAccountNumber);
+    mockFinesAccountStore.account_id.and.returnValue(123456789);
 
     const route = createMockRoute({ accountId: testAccountNumber });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -73,7 +73,7 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should redirect when no account number in store but accountId in URL', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue(null);
+    mockFinesAccountStore.account_id.and.returnValue(null);
 
     const route = createMockRoute({ accountId: testAccountNumber });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -86,7 +86,7 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should redirect when store and URL account numbers do not match', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue('different-account');
+    mockFinesAccountStore.account_id.and.returnValue(88);
 
     const route = createMockRoute({ accountId: testAccountNumber });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -99,7 +99,7 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should redirect when account number is empty string', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue('');
+    mockFinesAccountStore.account_id.and.returnValue(null);
 
     const route = createMockRoute({ accountId: testAccountNumber });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -112,7 +112,7 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should redirect when account number is undefined', fakeAsync(async () => {
-    mockFinesAccountStore.party_id.and.returnValue(undefined);
+    mockFinesAccountStore.account_id.and.returnValue(undefined);
 
     const route = createMockRoute({ accountId: testAccountNumber });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
@@ -125,10 +125,10 @@ describe('finesAccStateGuard', () => {
   }));
 
   it('should handle whitespace-only account number when it matches URL', fakeAsync(async () => {
-    const whitespaceAccount = '   ';
-    mockFinesAccountStore.party_id.and.returnValue(whitespaceAccount);
+    const numericAccountId = 123456789;
+    mockFinesAccountStore.account_id.and.returnValue(numericAccountId);
 
-    const route = createMockRoute({ accountId: whitespaceAccount });
+    const route = createMockRoute({ accountId: numericAccountId.toString() });
     const result = await runFinesAccEmptyFlowGuardWithContext(() => runGuardWithRoute(route));
 
     expect(result).toBeTrue();

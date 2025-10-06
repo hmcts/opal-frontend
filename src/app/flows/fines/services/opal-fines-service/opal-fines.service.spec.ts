@@ -707,7 +707,7 @@ describe('OpalFines', () => {
     const payload: IOpalFinesAddNotePayload = {
       activity_note: {
         record_type: 'custom_type',
-        record_id: 'test-id-123',
+        record_id: 77,
         note_type: 'Important',
         note_text: 'Custom test note with special characters: áéíóú & symbols!',
       },

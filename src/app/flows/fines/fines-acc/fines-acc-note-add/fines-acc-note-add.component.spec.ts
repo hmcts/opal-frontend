@@ -85,7 +85,7 @@ describe('FinesAccNoteAddComponent', () => {
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
         record_type: 'PERSON',
-        record_id: '12345',
+        record_id: 77,
         note_type: 'AA',
         note_text: testForm.formData.facc_add_notes!,
       },
@@ -110,7 +110,7 @@ describe('FinesAccNoteAddComponent', () => {
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
         record_type: 'PERSON',
-        record_id: '12345',
+        record_id: 88,
         note_type: 'AA',
         note_text: testForm.formData.facc_add_notes!,
       },
@@ -134,7 +134,7 @@ describe('FinesAccNoteAddComponent', () => {
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
         record_type: 'PERSON',
-        record_id: '12345',
+        record_id: 99,
         note_type: 'AA',
         note_text: testForm.formData.facc_add_notes!,
       },
@@ -190,7 +190,7 @@ describe('FinesAccNoteAddComponent', () => {
     const expectedPayload: IOpalFinesAddNotePayload = {
       activity_note: {
         record_type: 'PERSON',
-        record_id: '12345',
+        record_id: 111,
         note_type: 'AA',
         note_text: testForm.formData.facc_add_notes!,
       },
