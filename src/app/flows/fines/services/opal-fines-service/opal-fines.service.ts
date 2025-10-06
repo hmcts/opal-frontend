@@ -598,6 +598,11 @@ export class OpalFines {
       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
+          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+          : false;
         return {
           ...payload,
           version,
