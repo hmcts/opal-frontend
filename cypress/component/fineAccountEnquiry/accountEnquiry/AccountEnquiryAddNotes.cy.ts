@@ -136,7 +136,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     cy.wait('@addNote').then((interception) => {
       expect(interception.request.body).to.have.nested.property('activity_note.note_text', 'aaaaaaaaaa');
       expect(interception.request.body).to.have.nested.property('activity_note.note_type', 'AA');
-      expect(interception.request.body).to.have.nested.property('activity_note.record_id', '12345');
+      expect(interception.request.body).to.have.nested.property('activity_note.record_id', 12345);
       expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
     });
   });
