@@ -30,7 +30,7 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
-import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 // Interfaces

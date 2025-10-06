@@ -32,7 +32,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION }
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../../constants/fines-permissions.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';

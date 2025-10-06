@@ -49,6 +49,7 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './in
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -608,6 +609,21 @@ export class OpalFines {
         };
       }),
     );
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An Observable that emits the created note data.
+   */
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**
