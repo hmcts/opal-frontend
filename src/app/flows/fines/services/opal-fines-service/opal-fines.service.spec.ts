@@ -48,6 +48,7 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mo
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -668,6 +669,31 @@ describe('OpalFines', () => {
       )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.version;
+        expect(response).toEqual(expectedResponse);
+      });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
+  });
+
+  it('should getParentOrGuardianAccountParty', () => {
+    const account_id: number = 77;
+    const business_unit_id: string = '12';
+    const business_unit_user_id: string | null = '12';
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK;
+
+    service
+      .getParentOrGuardianAccountParty(
+        account_id,
+        business_unit_id,
+        business_unit_user_id,
+        FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.parent_guardian_party_id,
+      )
+      .subscribe((response) => {
+        response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK.version;
         expect(response).toEqual(expectedResponse);
       });
 

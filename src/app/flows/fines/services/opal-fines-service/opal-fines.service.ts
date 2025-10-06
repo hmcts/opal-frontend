@@ -543,6 +543,41 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves the parent/guardian account party data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @param parent_guardian_party_id - The ID of the parent/guardian account party.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getParentOrGuardianAccountParty(
+    account_id: number | null,
+    business_unit_id: string | null,
+    business_unit_user_id: string | null,
+    party_account_id: string | null,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    if (!this.accountDetailsCache$['parent-or-guardian']) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}?business_unit_id=${business_unit_id}&business_unit_user_id=${business_unit_user_id}`;
+      this.accountDetailsCache$['parent-or-guardian'] = this.http
+        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.accountDetailsCache$['parent-or-guardian'];
+  }
+
+  /**
    * Retrieves the defendant account details enforcement tab data.
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *

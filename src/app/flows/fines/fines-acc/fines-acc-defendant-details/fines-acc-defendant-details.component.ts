@@ -157,7 +157,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'parent-or-guardian':
           this.tabParentOrGuardian$ = this.fetchTabData(
             this.opalFinesService
-              .getDefendantAccountParty(account_id, business_unit_id, business_unit_user_id, parent_guardian_party_id)
+              .getParentOrGuardianAccountParty(
+                account_id,
+                business_unit_id,
+                business_unit_user_id,
+                parent_guardian_party_id,
+              )
               .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
