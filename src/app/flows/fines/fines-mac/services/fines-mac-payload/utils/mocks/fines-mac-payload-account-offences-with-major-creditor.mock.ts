@@ -3,7 +3,7 @@ import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload
 export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR: IFinesMacPayloadAccountOffences[] = [
   {
     date_of_sentence: '01/09/2024',
-    imposing_court_id: 'Magistrates Court Database (204)',
+    imposing_court_id: null,
     offence_id: 1234,
     impositions: [
       {

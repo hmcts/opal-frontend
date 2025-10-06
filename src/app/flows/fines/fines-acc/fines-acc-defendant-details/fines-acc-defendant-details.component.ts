@@ -31,7 +31,7 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
-import { FINES_PERMISSIONS } from '@constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
@@ -135,34 +135,29 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
-    const { business_unit_user_id, business_unit_id, account_id } = this.accountStore.getAccountState();
     const { defendant_party_id, parent_guardian_party_id } = this.accountData;
+    const { account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(
             this.opalFinesService
-              .getDefendantAccountAtAGlance(account_id, business_unit_id, business_unit_user_id)
+              .getDefendantAccountAtAGlance(account_id)
               .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'defendant':
           this.tabDefendant$ = this.fetchTabData(
             this.opalFinesService
-              .getDefendantAccountParty(account_id, business_unit_id, business_unit_user_id, defendant_party_id)
+              .getDefendantAccountParty(account_id, defendant_party_id)
               .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'parent-or-guardian':
           this.tabParentOrGuardian$ = this.fetchTabData(
             this.opalFinesService
-              .getParentOrGuardianAccountParty(
-                account_id,
-                business_unit_id,
-                business_unit_user_id,
-                parent_guardian_party_id,
-              )
+              .getParentOrGuardianAccountParty(account_id, parent_guardian_party_id)
               .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;

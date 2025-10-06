@@ -47,7 +47,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     offences: [
       {
         date_of_sentence: '2024-09-01',
-        imposing_court_id: 'Magistrates Court Database (204)',
+        imposing_court_id: null,
         offence_id: 1234,
         impositions: [
           {
