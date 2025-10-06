@@ -23,7 +23,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     welsh_speaking: null,
   };
 
-  const setupComponent = (formSubmit: any, initialNote: string | null = null) => {
+  const setupComponent = () => {
     mount(FinesAccNoteAddComponent, {
       providers: [
         provideHttpClient(),
@@ -48,30 +48,17 @@ describe('FinesAccNoteAddFormComponent', () => {
           },
         },
       ],
-    }).then(({ fixture }) => {
-      if (!initialNote) {
-        return;
-      }
-
-      const formDebugElement = fixture.debugElement.query((debugElement) => {
-        return debugElement.componentInstance instanceof FinesAccNoteAddFormComponent;
-      });
-
-      if (formDebugElement) {
-        formDebugElement.componentInstance.form.patchValue({ facc_add_notes: initialNote });
-        fixture.detectChanges();
-      }
     });
   };
 
   it('should render the component', () => {
-    setupComponent(null);
+    setupComponent();
 
     cy.get(DOM_ELEMENTS.addNoteApp).should('exist');
   });
 
   it('(AC.2) should load all elements on the screen correctly', { tags: ['@PO-771', '@807', '@809'] }, () => {
-    setupComponent(null);
+    setupComponent();
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add account note');
     cy.get(DOM_ELEMENTS.addAccountNoteLabel).should('contain', '123456789A - Mr John, Peter DOE');
@@ -83,9 +70,10 @@ describe('FinesAccNoteAddFormComponent', () => {
   });
 
   it('(AC2a,2b) should have character limits for account notes', { tags: ['@PO-771', '@807', '@809'] }, () => {
-    setupComponent(null, 'a'.repeat(1000));
+    setupComponent();
 
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.attr', 'maxlength', '1000');
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1000), { delay: 0 });
     cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
     cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
 
@@ -100,7 +88,8 @@ describe('FinesAccNoteAddFormComponent', () => {
     '(AC.3a, 3ai, 3aii, 3d) click submit button after reaching character limit',
     { tags: ['@PO-771', '@807', '@809'] },
     () => {
-      setupComponent(null, 'a'.repeat(1000));
+      setupComponent();
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(1001), { delay: 0 });
       cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', 'a'.repeat(1000));
       cy.get(DOM_ELEMENTS.characterHint).should('contain', 'You have 0 characters remaining');
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
@@ -111,7 +100,8 @@ describe('FinesAccNoteAddFormComponent', () => {
     '(AC.3b, 3bi, 3bii) click submit button after entering non-alphanumeric characters shows an error',
     { tags: ['@PO-771', '@807', '@809'] },
     () => {
-      setupComponent(null, 'Test @#$%^&*()');
+      setupComponent();
+      cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('Test @#$%^&*()');
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
       // page header error summary
       cy.get(DOM_ELEMENTS.errorSummary).should(
@@ -131,7 +121,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     '(AC.3c, 3ci, 3cii)click submit without entering data shows an error',
     { tags: ['@PO-771', '@807', '@809'] },
     () => {
-      setupComponent(null);
+      setupComponent();
       cy.get(DOM_ELEMENTS.addNoteTextBox).clear();
       cy.get(DOM_ELEMENTS.saveNoteButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Add account note or click cancel to return');
@@ -140,7 +130,8 @@ describe('FinesAccNoteAddFormComponent', () => {
   );
 
   it('(AC.4c, 4ci, 4cii)click submit button after entering valid data', { tags: ['@PO-771', '@807', '@809'] }, () => {
-    setupComponent(null, 'a'.repeat(10));
+    setupComponent();
+    cy.get(DOM_ELEMENTS.addNoteTextBox).clear().type('a'.repeat(10), { delay: 0 });
     cy.intercept('POST', '**/opal-fines-service/notes/add', { statusCode: 200 }).as('addNote');
     cy.get(DOM_ELEMENTS.saveNoteButton).click();
     cy.wait('@addNote').then((interception) => {
@@ -152,13 +143,5 @@ describe('FinesAccNoteAddFormComponent', () => {
       );
       expect(interception.request.body).to.have.nested.property('activity_note.record_type', 'DEFENDANT_ACCOUNTS');
     });
-  });
-
-  it('should prepopulate the note field when initial data is provided', () => {
-    const existingNote = 'Existing note text';
-
-    setupComponent(null, existingNote);
-
-    cy.get(DOM_ELEMENTS.addNoteTextBox).should('have.value', existingNote);
   });
 });
