@@ -139,16 +139,13 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       switch (tab) {
         case 'at-a-glance':
           this.tabAtAGlance$ = this.fetchTabData(
-            this.opalFinesService
-              .getDefendantAccountAtAGlance(account_id)
-              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
+            this.opalFinesService.getDefendantAccountAtAGlance(account_id)
           );
           break;
         case 'defendant':
           this.tabDefendant$ = this.fetchTabData(
             this.opalFinesService
               .getDefendantAccountParty(account_id, defendant_party_id)
-              .pipe(map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))),
           );
           break;
         case 'payment-terms':
@@ -177,6 +174,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    */
   private fetchTabData<T extends { version: string | null }>(serviceCall: Observable<T>): Observable<T> {
     return serviceCall.pipe(
+      map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
       tap((data) => {
         this.compareVersion(data.version);
       }),
