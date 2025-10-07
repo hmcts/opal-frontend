@@ -7,14 +7,24 @@ Feature: View Defendant Account Summary - Add Comments
         When I navigate to Search For An Account
 
     Scenario: Navigate to Add Comments screen from Account Summary
-        # Search for an account
-        When I click on the "Individuals" link
-        And I enter "Smith" into the "Last name" field
-        And I enter "John" into the "First names" field
-        When I click the "Search" button
-
-        # Select an account from search results
-        Then I click on the first search result link
+        And I create a "adultOrYouthOnly" draft account with the following details:
+            | Account_status                          | Submitted                      |
+            | account.defendant.forenames             | John                           |
+            | account.defendant.surname               | AccDetailSurname               |
+            | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+            | account.defendant.telephone_number_home | 02078259314                    |
+            | account.account_type                    | Fine                           |
+            | account.prosecutor_case_reference       | PCR-AUTO-002                   |
+            | account.collection_order_made           | false                          |
+            | account.collection_order_made_today     | false                          |
+            | account.payment_card_request            | false                          |
+            | account.defendant.dob                   | 2002-05-15                     |
+        When I update the last created draft account with status "Publishing Pending"
+        And the update should succeed and return a new strong ETag
+        And I enter "AccDetailSurname" into the "Last name" field
+        And I click the "Search" button
+        Then I click the latest published account link
+        And I see "Mr John ACCDETAILSURNAME" on the page header
 
         # Navigate to Add Comments
         When I click on the "Add comments" link

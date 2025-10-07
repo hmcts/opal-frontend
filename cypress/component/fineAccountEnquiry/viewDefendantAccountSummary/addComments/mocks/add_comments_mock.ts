@@ -87,12 +87,13 @@ export const ADD_COMMENTS_FORM_STATE_AMENDMENTS_MOCK: IFinesAccAddCommentsFormSt
 export const MOCK_ACCOUNT_STATE = {
   account_number: '123456789',
   account_id: 1001,
-  party_id: 2001,
-  business_unit_user_id: 3001,
-  business_unit_id: 100,
+  party_id: '2001',
+  business_unit_user_id: '3001',
+  business_unit_id: '100',
   party_name: 'John Doe',
   party_type: 'Individual',
-  base_version: 1,
+  welsh_speaking: 'Y',
+  base_version: '1',
 };
 
 export const ADD_COMMENTS_API_RESPONSE_MOCK = {
