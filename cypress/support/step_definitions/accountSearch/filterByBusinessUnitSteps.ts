@@ -30,6 +30,12 @@ const TEXT = {
   mustSelectAtLeastOne: 'You must select at least one business unit',
 } as const;
 
+// Map known page titles to routes (extend as needed)
+const PAGE_PATHS: Record<string, string> = {
+  'Search for an account': '/fines/search-accounts',
+  'Filter by business unit': '/fines/search-accounts/filter-business-units',
+};
+
 /** Reset selectedIds variable  */
 Before(() => {
   Cypress.env('selectedIds', []);
@@ -151,13 +157,15 @@ Then('I see the master checkbox label {string}', (label: string) => {
   expectMasterLabel(label);
 });
 
+/** Escape regex for literal matching */
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /** @step Assert we are on a page with the given heading. */
 Then('I am on the {string} page', (pageTitle: string) => {
-  cy.get(SELECTORS.pageHeading)
-    .first()
-    .should('be.visible')
-    .invoke('text')
-    .then((t) => expect(textNorm(t)).to.eq(textNorm(pageTitle)));
+  const titleRe = new RegExp(`^\\s*${escapeRegExp(pageTitle)}\\s*$`, 'i');
+
+  // This will retry until heading with the expected text is visible
+  cy.contains(SELECTORS.pageHeading, titleRe, { timeout: 15000 }).should('be.visible');
 });
 
 /** @step Assert no BUs are selected on a given tab. */
