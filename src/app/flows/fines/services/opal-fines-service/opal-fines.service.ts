@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -36,8 +36,13 @@ import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-acco
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
 import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-offences.interface';
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
+import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 
@@ -46,14 +51,17 @@ import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
-  private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
+  private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
+  private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
+  private accountDetailsCache$: { [key: string]: Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> } = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -163,23 +171,48 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the business units based on the specified permission.
-   * Business units are cached to prevent multiple requests for the same data.
-   * Multiple permission types can be provided, and they will be cached separately.
-   * @param permission The permission type for which to retrieve the business units.
-   * @returns An Observable that emits the business units.
+   * Retrieves business unit reference data based on the specified permission.
+   *
+   * This method caches the business unit data for each permission type to avoid
+   * making multiple HTTP requests for the same data. Permissions are cached
+   * separately to account for different permission types such as
+   * `ACCOUNT_ENQUIRY`, `ACCOUNT_ENQUIRY_NOTES`, and `CREATE_MANAGE_DRAFT_ACCOUNTS`.
+   *
+   * @param permission - The permission type for which to retrieve business unit data.
+   * @returns An `Observable` emitting the business unit reference data associated with the given permission.
    */
-  public getBusinessUnits(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
+  public getBusinessUnitsByPermission(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
     // Business units are cached to prevent multiple requests for the same data.
     // We can have multiple permission types so we need to cache them separately.
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
-    if (!this.businessUnitsCache$[permission]) {
-      this.businessUnitsCache$[permission] = this.http
+    if (!this.businessUnitsPermissionCache$[permission]) {
+      this.businessUnitsPermissionCache$[permission] = this.http
         .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
         .pipe(shareReplay(1));
     }
 
-    return this.businessUnitsCache$[permission];
+    return this.businessUnitsPermissionCache$[permission];
+  }
+
+  /**
+   * Retrieves the business unit reference data as an observable.
+   *
+   * This method caches the HTTP response to avoid redundant network requests.
+   * If the cache is empty, it performs an HTTP GET request to fetch the data
+   * from the `OPAL_FINES_PATHS.businessUnitRefData` endpoint and shares the
+   * result among subscribers using `shareReplay(1)`.
+   *
+   * @returns An observable of `IOpalFinesBusinessUnitRefData` containing the
+   *          business unit reference data.
+   */
+  public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
+    if (!this.businessUnitsCache$) {
+      this.businessUnitsCache$ = this.http
+        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.businessUnitsCache$;
   }
 
   /**
@@ -345,6 +378,15 @@ export class OpalFines {
   }
 
   /**
+   * Clears the cache of account details by resetting the `accountDetailsCache$` property to an empty object.
+   * This method is typically used to remove all cached account details data, ensuring that subsequent operations
+   * fetch fresh data or start with a clean state.
+   */
+  public clearAccountDetailsCache(): void {
+    this.accountDetailsCache$ = {};
+  }
+
+  /**
    * Retrieves a draft account summary by its ID.
    *
    * @param draftAccountId - The ID of the draft account to retrieve.
@@ -446,6 +488,64 @@ export class OpalFines {
     }
 
     return this.prosecutorDataCache$[business_unit];
+  }
+
+  /**
+   * Retrieves the defendant account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param defendant_account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getDefendantAccountAtAGlance(): Observable<IOpalFinesAccountDetailsAtAGlanceTabRefData> {
+    if (!this.accountDetailsCache$['at-a-glance']) {
+      this.accountDetailsCache$['at-a-glance'] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    }
+
+    return this.accountDetailsCache$['at-a-glance'];
+  }
+
+  /**
+   * Retrieves the defendant account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified defendant account.
+   *
+   * @param accountId - The unique identifier of the defendant account.
+   * @returns An Observable that emits the defendant account header data.
+   */
+  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
+    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
+      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+        const version = this.extractEtagVersion(response.headers);
+        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
+        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
+          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+          : false;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+    );
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An Observable that emits the created note data.
+   */
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**

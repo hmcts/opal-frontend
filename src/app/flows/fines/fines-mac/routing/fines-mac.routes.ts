@@ -8,13 +8,13 @@ import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { fetchBusinessUnitsResolver } from './resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { fetchEnforcementCourtsResolver } from './resolvers/fetch-enforcement-courts-resolver/fetch-enforcement-courts.resolver';
 import { fetchSendingCourtsResolver } from './resolvers/fetch-sending-courts-resolver/fetch-sending-courts.resolver';
 import { fetchResultsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-results-resolver/fetch-results.resolver';
 import { fetchMajorCreditorsResolver } from '../fines-mac-offence-details/routing/resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constants';
+import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchProsecutorsResolver } from './resolvers/fetch-prosecutors-resolver/fetch-prosecutors.resolver';
 
 const draftRootPermissionIds = FINES_PERMISSIONS;

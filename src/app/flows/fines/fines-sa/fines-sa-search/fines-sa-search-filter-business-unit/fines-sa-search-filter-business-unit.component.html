@@ -1,2 +1,5 @@
-<opal-lib-govuk-back-link (clickEvent)="onBackClick()"></opal-lib-govuk-back-link>
-<h1 class="govuk-heading-l">Filter by business unit</h1>
+<app-fines-sa-search-filter-business-unit-form
+  [businessUnits]="businessUnits"
+  (formSubmit)="handleFilterBusinessUnitSubmit($event)"
+  (unsavedChanges)="handleUnsavedChanges($event)"
+></app-fines-sa-search-filter-business-unit-form>
