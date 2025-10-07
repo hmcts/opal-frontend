@@ -18,6 +18,7 @@
       hintText="Enter area where the account is to be created"
       [autoCompleteItems]="autoCompleteItems"
       [errors]="formControlErrorMessages['fm_create_account_business_unit_id']"
+      [tabIndex]="0"
     ></opal-lib-alphagov-accessible-autocomplete>
   }
 
@@ -26,6 +27,7 @@
     legendText="Account type"
     legendClasses="govuk-fieldset__legend--m"
     [errors]="formControlErrorMessages['fm_create_account_account_type']"
+    [tabIndex]="1"
   >
     @for (accountType of accountTypes; track accountType.key) {
       <div
