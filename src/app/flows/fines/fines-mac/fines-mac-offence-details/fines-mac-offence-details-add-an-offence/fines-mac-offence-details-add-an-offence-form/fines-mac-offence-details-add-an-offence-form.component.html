@@ -185,6 +185,9 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'major'
                         ) {
+                          <span id="major-creditor-conditional-label" class="govuk-visually-hidden">
+                            Options for Major Creditor
+                          </span>
                           <opal-lib-alphagov-accessible-autocomplete
                             [control]="
                               form.get([
@@ -216,6 +219,9 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'minor'
                         ) {
+                          <span id="minor-creditor-conditional-label" class="govuk-visually-hidden">
+                            Options for Minor Creditor
+                          </span>
                           <a
                             class="govuk-link govuk-link--no-visited-state"
                             (click)="goToMinorCreditor(rowIndex)"

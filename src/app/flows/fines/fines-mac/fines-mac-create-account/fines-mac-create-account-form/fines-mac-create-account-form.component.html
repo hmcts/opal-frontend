@@ -41,22 +41,32 @@
       @switch (accountType.value) {
         @case (accountTypesKeys.Fine) {
           @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.Fine) {
-            <ng-container
-              *ngTemplateOutlet="
-                defendantTypesRadioOptions;
-                context: { defendantTypes: fineDefendantTypes, isFine: true }
-              "
-            ></ng-container>
+            <div role="group" aria-live="polite" aria-labelledby="fine-conditional-label" tabindex="0">
+              <span id="fine-conditional-label" class="govuk-visually-hidden">
+                Defendant type options for Fine account
+              </span>
+              <ng-container
+                *ngTemplateOutlet="
+                  defendantTypesRadioOptions;
+                  context: { defendantTypes: fineDefendantTypes, isFine: true }
+                "
+              ></ng-container>
+            </div>
           }
         }
         @case (accountTypesKeys['Fixed Penalty']) {
           @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys['Fixed Penalty']) {
-            <ng-container
-              *ngTemplateOutlet="
-                defendantTypesRadioOptions;
-                context: { defendantTypes: fixedPenaltyDefendantTypes, isFine: false }
-              "
-            ></ng-container>
+            <div role="group" aria-live="polite" aria-labelledby="fixed-penalty-conditional-label" tabindex="0">
+              <span id="fixed-penalty-conditional-label" class="govuk-visually-hidden">
+                Defendant type options for Fixed Penalty account
+              </span>
+              <ng-container
+                *ngTemplateOutlet="
+                  defendantTypesRadioOptions;
+                  context: { defendantTypes: fixedPenaltyDefendantTypes, isFine: false }
+                "
+              ></ng-container>
+            </div>
           }
         }
       }

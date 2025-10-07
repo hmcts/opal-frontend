@@ -34,6 +34,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_parent_guardian_details_add_alias')?.value === true) {
+    <span id="parent-guardian-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_parent_guardian_details_add_alias"

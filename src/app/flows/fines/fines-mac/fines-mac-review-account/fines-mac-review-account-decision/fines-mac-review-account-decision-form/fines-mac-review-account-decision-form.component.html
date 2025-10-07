@@ -15,6 +15,9 @@
         [control]="form.get('fm_review_account_decision')!"
       ></div>
       @if (form.get('fm_review_account_decision')!.value === 'reject' && decisionOption.key === 'reject') {
+        <span id="review-account-reject-decision-conditional-label" class="govuk-visually-hidden">
+          Options for Reject decision
+        </span>
         <div opal-lib-govuk-radios-conditional conditionalId="fm_review_account_decision">
           <div class="govuk-form-group">
             <opal-lib-govuk-text-area

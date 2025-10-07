@@ -43,6 +43,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_personal_details_add_alias')?.value === true) {
+    <span id="personal-details-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add Alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_personal_details_add_alias"
