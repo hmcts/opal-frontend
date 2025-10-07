@@ -32,9 +32,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
   const baseSearchParams = {
     ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
     // MODIFY BELOW CODE ONCE BU SELECTION IMPLEMENTED
-    business_unit_ids:
-      state.fsa_search_account_business_unit_ids ??
-      OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
+    business_unit_ids: state.fsa_search_account_business_unit_ids,
     active_accounts_only: false,
   };
 
