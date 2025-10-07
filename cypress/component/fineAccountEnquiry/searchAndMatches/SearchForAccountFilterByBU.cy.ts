@@ -12,7 +12,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesSaSearchFilterBusinessUnitComponent } from 'src/app/flows/fines/fines-sa/fines-sa-search/fines-sa-search-filter-business-unit/fines-sa-search-filter-business-unit.component';
 
 // Unit-test refData (resolver payload)
-import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '../../../../../opal-frontend/src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 describe('Filter by Business Unit (CT)', () => {
   let resolverPayload: typeof OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
