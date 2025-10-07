@@ -28,6 +28,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
 
     mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
       welsh_speaking: signal('N'),
+      account_number: signal('1234567890'),
+      party_name: signal('Test Party Name'),
     });
 
     await TestBed.configureTestingModule({

@@ -14,7 +14,6 @@ import { IOpalFinesAccountDefendantAccountParty } from '../../services/opal-fine
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
 
-
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
   let mockMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
@@ -383,19 +382,19 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_debtor_add_amend_language_preferences_document_language).toBeNull();
     });
 
-  it('should transform payload using the transformation service', () => {
-    spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-    const inputPayload = {
-      date_of_birth: '2000-09-09',
-    };
+    it('should transform payload using the transformation service', () => {
+      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+      const inputPayload = {
+        date_of_birth: '2000-09-09',
+      };
 
-    const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
-    expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-      inputPayload,
-      FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-    );
-    expect(result).toEqual(inputPayload);
-
+      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+        inputPayload,
+        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+      );
+      expect(result).toEqual(inputPayload);
+    });
   });
 });
