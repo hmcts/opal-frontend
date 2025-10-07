@@ -5,6 +5,16 @@ import { map, catchError, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccDebtorAddAmendForm } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-form.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
+
+/**
+ * Creates a redirect command to the defendant details page
+ * @param router - The Angular Router instance
+ * @returns A RedirectCommand to the defendant details page
+ */
+const createDefendantDetailsRedirect = (router: Router): RedirectCommand => {
+  return new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]));
+};
+
 export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendForm | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
 ) => {
@@ -14,7 +24,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendFor
   const payloadService = inject(FinesAccPayloadService);
 
   if (!accountId) {
-    return new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]));
+    return createDefendantDetailsRedirect(router);
   }
 
   /**
@@ -37,7 +47,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendFor
 
       if (!partyId) {
         // If no valid party ID found, redirect back to defendant details
-        return of(new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details])));
+        return of(createDefendantDetailsRedirect(router));
       }
 
       // Fetch defendant account party data using the determined party ID
@@ -47,12 +57,12 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendFor
           nestedFlow: false,
         })),
         catchError(() => {
-          return of(new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details])));
+          return of(createDefendantDetailsRedirect(router));
         }),
       );
     }),
     catchError(() => {
-      return of(new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details])));
+      return of(createDefendantDetailsRedirect(router));
     }),
   );
 };
