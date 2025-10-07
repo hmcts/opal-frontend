@@ -6,7 +6,10 @@ import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-ac
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { DOM_ELEMENTS, getAliasForenamesInput, getAliasSurnameInput } from './constants/viewAndAmendDefendant_elements';
-import { MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA, VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK } from './mocks/viewAndAmendDefendant.mock';
+import {
+  MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
+  VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK,
+} from './mocks/viewAndAmendDefendant.mock';
 
 describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   let fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
@@ -17,9 +20,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
   });
   const setupComponent = (
-    partyType: string = 'INDIVIDUAL', 
+    partyType: string = 'INDIVIDUAL',
     formData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
-    welshSpeaking: string = 'N'
+    welshSpeaking: string = 'N',
   ) => {
     const mockDateService = {
       getPreviousDate: cy.stub().returns('2024-01-01'),
@@ -69,178 +72,182 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     });
   });
 
-  it('AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data', { tags: ['@PO-1110'] }, () => {
-    setupComponent('INDIVIDUAL', fullMock);
+  it(
+    'AC1a. The "Defendant Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
+    { tags: ['@PO-1110'] },
+    () => {
+      setupComponent('INDIVIDUAL', fullMock);
 
-    // Verify page heading and caption
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
-    
-    // Verify title dropdown options
-    cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mr');
-    cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mrs');
-    cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Miss');
-    cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Ms');
-    
-    cy.get(DOM_ELEMENTS.forenamesInput).should('exist');
-    cy.get(DOM_ELEMENTS.forenamesLabel).should('contain', 'First names');
-    cy.get(DOM_ELEMENTS.forenamesHint).should('contain', 'Include their middle names');
-    
-    cy.get(DOM_ELEMENTS.surnameInput).should('exist');
-    cy.get(DOM_ELEMENTS.surnameLabel).should('contain', 'Last name');
+      // Verify page heading and caption
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
 
-    // Add aliases checkbox - should be ticked by default when mock data has aliases
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
-    cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
-    
-    // Alias section should be visible when checkbox is checked
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-    
-    // Verify first alias from mock data (Johnny Smith)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', 'Johnny');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', 'Smith');
-    
-    // Verify second alias from mock data (Jon Johnson)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput1).should('have.value', 'Jon');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput1).should('have.value', 'Johnson');
+      // Verify title dropdown options
+      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mr');
+      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mrs');
+      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Miss');
+      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Ms');
 
-    // Verify third alias from mock data (Test Smith)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput2).should('have.value', 'Test');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput2).should('have.value', 'Smith');
+      cy.get(DOM_ELEMENTS.forenamesInput).should('exist');
+      cy.get(DOM_ELEMENTS.forenamesLabel).should('contain', 'First names');
+      cy.get(DOM_ELEMENTS.forenamesHint).should('contain', 'Include their middle names');
 
-    // Verify Fourth alias from mock data (Test Smith2)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.surnameInput).should('exist');
+      cy.get(DOM_ELEMENTS.surnameLabel).should('contain', 'Last name');
 
-    // Verify Fifth alias from mock data (Test Smith3)
-    cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-    cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      // Add aliases checkbox - should be ticked by default when mock data has aliases
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
+      cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
 
-    // Date of birth
+      // Alias section should be visible when checkbox is checked
+      cy.get(DOM_ELEMENTS.aliasSection).should('exist');
 
-    cy.get(DOM_ELEMENTS.dobInput).should('exist');
-    cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
+      // Verify first alias from mock data (Johnny Smith)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput).should('have.value', 'Johnny');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput).should('have.value', 'Smith');
 
-    // Age display should show calculated age from DOB in mock data
-    cy.get(DOM_ELEMENTS.ageDisplay).should('exist');
-    cy.get(DOM_ELEMENTS.ageValue).should('contain', 'Age: 25');
-    cy.get(DOM_ELEMENTS.ageGroup).should('contain', 'Adult');
+      // Verify second alias from mock data (Jon Johnson)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput1).should('have.value', 'Jon');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput1).should('have.value', 'Johnson');
 
-    // National Insurance number
-    cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
-    cy.get(DOM_ELEMENTS.niNumberLabel).should('contain', 'National Insurance number');
-    cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456C');
+      // Verify third alias from mock data (Test Smith)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput2).should('have.value', 'Test');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput2).should('have.value', 'Smith');
 
-    // Address Section
-    cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
-    
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 Test Street');
-    
-    cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
-    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', 'Second Floor');
-    
-    cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
-    cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
-    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'City Center');
-    
-    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'TE5T 1NG');
+      // Verify Fourth alias from mock data (Test Smith2)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
 
-    // Contact Details Section
-    cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
-    
-    cy.get(DOM_ELEMENTS.email1Input).should('exist');
-    cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
-    cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'john@example.com');
-    
-    cy.get(DOM_ELEMENTS.email2Input).should('exist');
-    cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
-    cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'john.doe@secondary.com');
-    
-    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
-    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07123456789');
-    
-    cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
-    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '01234567890');
-    
-    cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
-    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02087654321');
+      // Verify Fifth alias from mock data (Test Smith3)
+      cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
 
-    // Vehicle Details Section
-    cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
-    
-    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
-    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
-    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Toyota Corolla');
-    
-    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
-    cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
-    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123');
+      // Date of birth
 
-    // Employer Details Section
-    cy.get(DOM_ELEMENTS.employerFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.employerLegend).should('contain', 'Employer details');
-    
-    cy.get(DOM_ELEMENTS.employerCompanyInput).should('exist');
-    cy.get(DOM_ELEMENTS.employerCompanyLabel).should('contain', 'Employer name');
-    cy.get(DOM_ELEMENTS.employerCompanyInput).should('have.value', 'Test Company');
-    
-    cy.get(DOM_ELEMENTS.employerReferenceInput).should('exist');
-    cy.get(DOM_ELEMENTS.employerReferenceLabel).should('contain', 'Employee reference');
-    cy.get(DOM_ELEMENTS.employerReferenceInput).should('have.value', 'EMP123');
-    
-    cy.get(DOM_ELEMENTS.employerEmailInput).should('exist');
-    cy.get(DOM_ELEMENTS.employerEmailLabel).should('contain', 'Employer email address');
-    cy.get(DOM_ELEMENTS.employerEmailInput).should('have.value', 'hr@company.com');
-    
-    cy.get(DOM_ELEMENTS.employerPhoneInput).should('exist');
-    cy.get(DOM_ELEMENTS.employerPhoneLabel).should('contain', 'Employer telephone');
-    cy.get(DOM_ELEMENTS.employerPhoneInput).should('have.value', '01234567890');
+      cy.get(DOM_ELEMENTS.dobInput).should('exist');
+      cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
 
-    // Employer Address Section
-    cy.get(DOM_ELEMENTS.employerAddressFieldset).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLegend).should('contain', 'Employer address');
-    
-    cy.get(DOM_ELEMENTS.employerAddressLine1Input).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLine1Label).should('contain', 'Address line 1');
-    cy.get(DOM_ELEMENTS.employerAddressLine1Input).should('have.value', '456 Business Park');
-    
-    cy.get(DOM_ELEMENTS.employerAddressLine2Input).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLine2Label).should('contain', 'Address line 2');
-    cy.get(DOM_ELEMENTS.employerAddressLine2Input).should('have.value', 'Suite 200');
-    
-    cy.get(DOM_ELEMENTS.employerAddressLine3Input).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLine3Label).should('contain', 'Address line 3');
-    cy.get(DOM_ELEMENTS.employerAddressLine3Input).should('have.value', 'Industrial Estate');
-    
-    cy.get(DOM_ELEMENTS.employerAddressLine4Input).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLine4Label).should('contain', 'Address line 4');
-    cy.get(DOM_ELEMENTS.employerAddressLine4Input).should('have.value', 'Business District');
-    
-    cy.get(DOM_ELEMENTS.employerAddressLine5Input).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddressLine5Label).should('contain', 'Address line 5');
-    cy.get(DOM_ELEMENTS.employerAddressLine5Input).should('have.value', 'Metropolitan Area');
-    
-    cy.get(DOM_ELEMENTS.employerPostcodeInput).should('exist');
-    cy.get(DOM_ELEMENTS.employerPostcodeLabel).should('contain', 'Postcode');
-    cy.get(DOM_ELEMENTS.employerPostcodeInput).should('have.value', 'BU5 1NE');
+      // Age display should show calculated age from DOB in mock data
+      cy.get(DOM_ELEMENTS.ageDisplay).should('exist');
+      cy.get(DOM_ELEMENTS.ageValue).should('contain', 'Age: 25');
+      cy.get(DOM_ELEMENTS.ageGroup).should('contain', 'Adult');
 
-    // Non-welsh Speaking
-    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+      // National Insurance number
+      cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
+      cy.get(DOM_ELEMENTS.niNumberLabel).should('contain', 'National Insurance number');
+      cy.get(DOM_ELEMENTS.niNumberInput).should('have.value', 'AB123456C');
 
-    // Form Actions
-    cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
-    cy.get(DOM_ELEMENTS.cancelButton).should('exist');
-  });
+      // Address Section
+      cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
+
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '123 Test Street');
+
+      cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
+      cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', 'Second Floor');
+
+      cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
+      cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
+      cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'City Center');
+
+      cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'TE5T 1NG');
+
+      // Contact Details Section
+      cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
+
+      cy.get(DOM_ELEMENTS.email1Input).should('exist');
+      cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
+      cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'john@example.com');
+
+      cy.get(DOM_ELEMENTS.email2Input).should('exist');
+      cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
+      cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'john.doe@secondary.com');
+
+      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
+      cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
+      cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07123456789');
+
+      cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
+      cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
+      cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '01234567890');
+
+      cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
+      cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
+      cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02087654321');
+
+      // Vehicle Details Section
+      cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
+
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
+      cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Toyota Corolla');
+
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
+      cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123');
+
+      // Employer Details Section
+      cy.get(DOM_ELEMENTS.employerFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.employerLegend).should('contain', 'Employer details');
+
+      cy.get(DOM_ELEMENTS.employerCompanyInput).should('exist');
+      cy.get(DOM_ELEMENTS.employerCompanyLabel).should('contain', 'Employer name');
+      cy.get(DOM_ELEMENTS.employerCompanyInput).should('have.value', 'Test Company');
+
+      cy.get(DOM_ELEMENTS.employerReferenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.employerReferenceLabel).should('contain', 'Employee reference');
+      cy.get(DOM_ELEMENTS.employerReferenceInput).should('have.value', 'EMP123');
+
+      cy.get(DOM_ELEMENTS.employerEmailInput).should('exist');
+      cy.get(DOM_ELEMENTS.employerEmailLabel).should('contain', 'Employer email address');
+      cy.get(DOM_ELEMENTS.employerEmailInput).should('have.value', 'hr@company.com');
+
+      cy.get(DOM_ELEMENTS.employerPhoneInput).should('exist');
+      cy.get(DOM_ELEMENTS.employerPhoneLabel).should('contain', 'Employer telephone');
+      cy.get(DOM_ELEMENTS.employerPhoneInput).should('have.value', '01234567890');
+
+      // Employer Address Section
+      cy.get(DOM_ELEMENTS.employerAddressFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLegend).should('contain', 'Employer address');
+
+      cy.get(DOM_ELEMENTS.employerAddressLine1Input).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLine1Label).should('contain', 'Address line 1');
+      cy.get(DOM_ELEMENTS.employerAddressLine1Input).should('have.value', '456 Business Park');
+
+      cy.get(DOM_ELEMENTS.employerAddressLine2Input).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLine2Label).should('contain', 'Address line 2');
+      cy.get(DOM_ELEMENTS.employerAddressLine2Input).should('have.value', 'Suite 200');
+
+      cy.get(DOM_ELEMENTS.employerAddressLine3Input).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLine3Label).should('contain', 'Address line 3');
+      cy.get(DOM_ELEMENTS.employerAddressLine3Input).should('have.value', 'Industrial Estate');
+
+      cy.get(DOM_ELEMENTS.employerAddressLine4Input).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLine4Label).should('contain', 'Address line 4');
+      cy.get(DOM_ELEMENTS.employerAddressLine4Input).should('have.value', 'Business District');
+
+      cy.get(DOM_ELEMENTS.employerAddressLine5Input).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddressLine5Label).should('contain', 'Address line 5');
+      cy.get(DOM_ELEMENTS.employerAddressLine5Input).should('have.value', 'Metropolitan Area');
+
+      cy.get(DOM_ELEMENTS.employerPostcodeInput).should('exist');
+      cy.get(DOM_ELEMENTS.employerPostcodeLabel).should('contain', 'Postcode');
+      cy.get(DOM_ELEMENTS.employerPostcodeInput).should('have.value', 'BU5 1NE');
+
+      // Non-welsh Speaking
+      cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+
+      // Form Actions
+      cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
+      cy.get(DOM_ELEMENTS.cancelButton).should('exist');
+    },
+  );
 
   it('AC1a. Should show alias checkbox unticked when no aliases exist in data', { tags: ['@PO-1110'] }, () => {
     setupComponent('INDIVIDUAL', minimalMock);
@@ -248,7 +255,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     // Add aliases checkbox should be unticked when no aliases in mock data
     cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
     cy.get(DOM_ELEMENTS.aliasCheckbox).should('not.be.checked');
-    
+
     // Alias section should not be visible when checkbox is unchecked
     cy.get(DOM_ELEMENTS.aliasSection).should('not.exist');
   });
@@ -283,15 +290,15 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     // AC2b: Two free text boxes with titles First names / Last name for Alias 1
     cy.get(DOM_ELEMENTS.aliasForenamesInput).should('exist').and('have.value', '');
     cy.get(DOM_ELEMENTS.aliasSurnameInput).should('exist').and('have.value', '');
-  cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
-  cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
+    cy.get(DOM_ELEMENTS.aliasForenamesLabel).should('contain', 'First names');
+    cy.get(DOM_ELEMENTS.aliasSurnameLabel).should('contain', 'Last name');
 
     // Enter some data to later verify clearing behaviour (AC2f)
     cy.get(DOM_ELEMENTS.aliasForenamesInput).type('Alpha');
     cy.get(DOM_ELEMENTS.aliasSurnameInput).type('One');
 
     // AC2c: Grey 'Add another alias' button displayed
-  cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist').and('contain', 'Add another alias');
 
     // Helper to add alias and assert its presence
     const addAliasAndAssert = (aliasNumber: number) => {
@@ -310,22 +317,24 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     addAliasAndAssert(5);
 
     // AC2dii: Once 5 alias rows added, add button disappears
-  cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
     // AC2e / AC2ei: Remove link present (for >1 alias) & not within Alias 1 fieldset
     cy.get('a.govuk-link').contains('Remove').should('exist');
-    cy.contains('legend', 'Alias 1').parent('fieldset').within(() => {
-      cy.contains('Remove').should('not.exist');
-    });
+    cy.contains('legend', 'Alias 1')
+      .parent('fieldset')
+      .within(() => {
+        cy.contains('Remove').should('not.exist');
+      });
 
     // AC2eii: Remove last alias (Alias 5). Expect Alias 5 legend to disappear & button reappear
     cy.get('a.govuk-link').contains('Remove').click();
     cy.contains('legend', 'Alias 5').should('not.exist');
-  cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('exist');
 
     // Add back up to 5 to demonstrate cap again
     addAliasAndAssert(5);
-  cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
 
     // AC2f: Untick Add aliases checkbox hides & wipes alias data
     cy.get(DOM_ELEMENTS.aliasCheckbox).uncheck({ force: true }).should('not.be.checked');
@@ -363,7 +372,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     const coreRequiredMessages = [
-      "Select a title",
+      'Select a title',
       "Enter defendant's first name(s)",
       "Enter defendant's last name",
       'Enter address line 1, typically the building and street',
@@ -376,7 +385,10 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     // Employer required errors should NOT appear because no employer fields were interacted with (conditional requirement)
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', 'Enter employer name');
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', 'Enter employee reference or National Insurance number');
+    cy.get(DOM_ELEMENTS.errorSummary).should(
+      'not.contain.text',
+      'Enter employee reference or National Insurance number',
+    );
   });
 
   it('AC5. Required field validation (employer conditional)', { tags: ['@PO-1110'] }, () => {
@@ -400,7 +412,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC5. Required field validation (alias)', { tags: ['@PO-1110'] }, () => {
-   setupComponent('INDIVIDUAL', minimalMock);
+    setupComponent('INDIVIDUAL', minimalMock);
 
     // Alias validation: enable aliases (one blank alias row added automatically)
     cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
@@ -416,23 +428,23 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 2 first name(s)');
     cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 2 last name');
-
   });
 
   // AC6: Format validation tests
   it('AC6a. DOB with non-numerical characters shows format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_dob = "AA/BB/CCCC";
+    minimalMock.formData.facc_debtor_add_amend_dob = 'AA/BB/CCCC';
     setupComponent('INDIVIDUAL', minimalMock);
 
     // Clear DOB and enter invalid format with letters
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', 'Enter date of birth in the format DD/MM/YYYY');
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain.text', 'Enter date of birth in the format DD/MM/YYYY');
   });
 
   it('AC6b. DOB in the future shows past-date error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_dob = '01/01/2099'
+    minimalMock.formData.facc_debtor_add_amend_dob = '01/01/2099';
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -446,7 +458,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', 'Enter a National Insurance number in the format AANNNNNNA');
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain.text', 'Enter a National Insurance number in the format AANNNNNNA');
   });
 
   // AC7: Email format validation
@@ -465,7 +479,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     minimalMock.formData.facc_debtor_add_amend_contact_email_address_2 = 'bad.second'; // missing @
     setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click(); 
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
@@ -476,7 +490,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     minimalMock.formData.facc_debtor_add_amend_employer_details_employer_email_address = 'employer#mail'; // invalid char & structure
     setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click(); 
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
@@ -517,9 +531,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
-      .and('contain.text', 'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122');
+      .and(
+        'contain.text',
+        'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
+      );
   });
-
-
-
 });
