@@ -5,7 +5,9 @@
       <opal-lib-moj-alert-content content>
         <opal-lib-moj-alert-content-text
           >Some information on this page may be out of date.
-          <a href="#" (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text
+          <a tabindex="0" (click)="refreshPage()" (keyup.enter)="refreshPage()"
+            >Refresh</a
+          ></opal-lib-moj-alert-content-text
         >
       </opal-lib-moj-alert-content>
     </opal-lib-moj-alert>
@@ -178,7 +180,7 @@
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
         [isYouth]="accountData.is_youth"
-        (addComments)="navigateToAddCommentsPage($event)"
+        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-at-a-glance-tab>
     }
@@ -189,10 +191,10 @@
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
         [isYouth]="accountData.is_youth"
-        (addComments)="navigateToAddCommentsPage($event)"
+        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
-        (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
-        (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
+        (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
+        (convertAccount)="navigateToAmendPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }
@@ -202,10 +204,10 @@
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
         [isYouth]="accountData.is_youth"
-        (addComments)="navigateToAddCommentsPage($event)"
+        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
-        (changeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
-        (removeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
+        (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
+        (removeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
   }

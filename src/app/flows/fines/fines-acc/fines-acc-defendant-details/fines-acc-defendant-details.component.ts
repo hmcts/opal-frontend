@@ -34,7 +34,6 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -237,8 +236,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Navigates to the add comments page.
    * @param event The click event that triggered the navigation.
    */
-  public navigateToAddCommentsPage(event: Event): void {
-    event.preventDefault();
+  public navigateToAddCommentsPage(): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -261,10 +259,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Sets the version mismatch state to false.
    * Sets the is refreshed state to true.
    * Refreshes the page.
-   * @param event The click event that triggered the refresh.
+   * @param event The user event that triggered the refresh action.
    */
-  public refreshPage(event: Event): void {
-    event.preventDefault();
+  public refreshPage(): void {
     this.accountStore.setHasVersionMismatch(false);
 
     this.opalFinesService
@@ -296,8 +293,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
-  public navigateToChangeDefendantDetailsPage(event: Event): void {
-    event.preventDefault();
+  public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -305,16 +301,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.userState.business_unit_users,
       )
     ) {
-      let partyType: string;
-
-      if (this.accountData.debtor_type === 'Parent/Guardian') {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
-      } else if (this.accountData.party_details.organisation_flag) {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
-      } else {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
-      }
-
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });

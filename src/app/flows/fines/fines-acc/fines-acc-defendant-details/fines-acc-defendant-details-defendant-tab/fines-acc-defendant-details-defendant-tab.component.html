@@ -11,10 +11,10 @@
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
           <a
-            href="#"
+            tabindex="0"
             [class]="style.changeLink"
-            (click)="handleChangeDefendantDetails($event)"
-            (keyup.enter)="handleChangeDefendantDetails($event)"
+            (click)="handleChangeDefendantDetails()"
+            (keyup.enter)="handleChangeDefendantDetails()"
             >Change</a
           >
         </div>
@@ -474,7 +474,7 @@
     <hr [class]="style.hr" />
     <h2 [class]="style.heading">Actions</h2>
     <p>
-      <a href="#" (click)="handleConvertAccount($event)" (keyup.enter)="handleConvertAccount($event)"
+      <a tabindex="0" (click)="handleConvertAccount()" (keyup.enter)="handleConvertAccount()"
         >Convert to {{ party.party_details.organisation_flag ? 'an individual' : 'a company' }} account</a
       >
     </p>

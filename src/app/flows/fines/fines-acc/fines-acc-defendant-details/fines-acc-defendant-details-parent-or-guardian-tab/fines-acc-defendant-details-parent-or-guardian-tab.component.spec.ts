@@ -24,13 +24,13 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
 
   it('should handle remove parent or guardian details click', () => {
     spyOn(component.removeParentOrGuardianDetails, 'emit');
-    component.handleRemoveParentOrGuardianDetails(new Event('click'));
+    component.handleRemoveParentOrGuardianDetails();
     expect(component.removeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
 
   it('should handle change parent or guardian details click', () => {
     spyOn(component.changeParentOrGuardianDetails, 'emit');
-    component.handleChangeParentOrGuardianDetails(new Event('click'));
+    component.handleChangeParentOrGuardianDetails();
     expect(component.changeParentOrGuardianDetails.emit).toHaveBeenCalled();
   });
 });

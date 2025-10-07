@@ -7,10 +7,10 @@
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
           <a
-            href="#"
+            tabindex="0"
             [class]="style.changeLink"
-            (click)="handleChangeParentOrGuardianDetails($event)"
-            (keyup.enter)="handleChangeParentOrGuardianDetails($event)"
+            (click)="handleChangeParentOrGuardianDetails()"
+            (keyup.enter)="handleChangeParentOrGuardianDetails()"
             >Change</a
           >
         </div>
@@ -475,9 +475,9 @@
       <h2 [class]="style.heading">Actions</h2>
       <p>
         <a
-          href="#"
-          (click)="handleRemoveParentOrGuardianDetails($event)"
-          (keyup.enter)="handleRemoveParentOrGuardianDetails($event)"
+          tabindex="0"
+          (click)="handleRemoveParentOrGuardianDetails()"
+          (keyup.enter)="handleRemoveParentOrGuardianDetails()"
           >Remove Parent or guardian details</a
         >
       </p>
