@@ -54,13 +54,11 @@ import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
-import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
-  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly http = inject(HttpClient);
   private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
@@ -508,8 +506,6 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
    * @param defendant_party_id - The ID of the defendant account party.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
@@ -534,6 +530,37 @@ export class OpalFines {
         );
     }
     return this.accountDetailsCache$['defendant'];
+  }
+
+  /**
+   * Retrieves the parent/guardian account party data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @param parent_guardian_party_id - The ID of the parent/guardian account party.
+   * @returns An Observable that emits the account details at a glance for the specified tab.
+   */
+  public getParentOrGuardianAccountParty(
+    account_id: number | null,
+    party_account_id: string | null,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    if (!this.accountDetailsCache$['parent-or-guardian']) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
+      this.accountDetailsCache$['parent-or-guardian'] = this.http
+        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.accountDetailsCache$['parent-or-guardian'];
   }
 
   /**

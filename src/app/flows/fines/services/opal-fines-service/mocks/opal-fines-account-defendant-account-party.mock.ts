@@ -2,7 +2,6 @@ import { IOpalFinesAccountDefendantAccountParty } from '../interfaces/opal-fines
 
 export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountDefendantAccountParty = {
   version: null,
-  defendant_account_id: 'DEF-000123',
   defendant_account_party: {
     defendant_account_party_type: 'PRIMARY',
     is_debtor: true,
