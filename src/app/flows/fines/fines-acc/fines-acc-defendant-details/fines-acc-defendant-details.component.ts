@@ -4,6 +4,7 @@ import { distinctUntilChanged, EMPTY, map, merge, Observable, Subject, takeUntil
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+
 // Stores
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -27,13 +28,12 @@ import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/m
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 // Pipes & Directives
-import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -47,13 +47,14 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
-import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -61,6 +62,7 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@ser
     AsyncPipe,
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     FinesAccDefendantDetailsDefendantTabComponent,
+    FinesAccDefendantDetailsParentOrGuardianTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     CustomSummaryMetricBarComponent,
@@ -77,7 +79,6 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@ser
     CustomPageHeaderComponent,
     UpperCasePipe,
     GovukButtonDirective,
-    KeyValuePipe,
     MojAlertComponent,
     MojAlertContentComponent,
     MojAlertTextComponent,
@@ -102,6 +103,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountDefendantAtAGlance> = EMPTY;
   public tabDefendant$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
+  public tabParentOrGuardian$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
   public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> = EMPTY;
   public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
@@ -132,7 +134,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
-    const { defendant_party_id } = this.accountData;
+    const { defendant_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
@@ -143,6 +145,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         case 'defendant':
           this.tabDefendant$ = this.fetchTabData(
             this.opalFinesService.getDefendantAccountParty(account_id, defendant_party_id),
+          );
+          break;
+        case 'parent-or-guardian':
+          this.tabParentOrGuardian$ = this.fetchTabData(
+            this.opalFinesService.getParentOrGuardianAccountParty(account_id, parent_guardian_party_id),
           );
           break;
         case 'payment-terms':
@@ -229,8 +236,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Navigates to the add comments page.
    * @param event The click event that triggered the navigation.
    */
-  public navigateToAddCommentsPage(event: Event): void {
-    event.preventDefault();
+  public navigateToAddCommentsPage(): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -253,10 +259,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * Sets the version mismatch state to false.
    * Sets the is refreshed state to true.
    * Refreshes the page.
-   * @param event The click event that triggered the refresh.
+   * @param event The user event that triggered the refresh action.
    */
-  public refreshPage(event: Event): void {
-    event.preventDefault();
+  public refreshPage(): void {
     this.accountStore.setHasVersionMismatch(false);
 
     this.opalFinesService
@@ -288,8 +293,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
-  public navigateToChangeDefendantDetailsPage(event: Event): void {
-    event.preventDefault();
+  public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -297,16 +301,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.userState.business_unit_users,
       )
     ) {
-      let partyType: string;
-
-      if (this.accountData.debtor_type === 'Parent/Guardian') {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
-      } else if (this.accountData.party_details.organisation_flag) {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
-      } else {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
-      }
-
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });

@@ -20,8 +20,12 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() addComments = new EventEmitter<Event>();
+  @Output() addComments = new EventEmitter<void>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+
+  public handleAddComments(): void {
+    this.addComments.emit();
+  }
 }

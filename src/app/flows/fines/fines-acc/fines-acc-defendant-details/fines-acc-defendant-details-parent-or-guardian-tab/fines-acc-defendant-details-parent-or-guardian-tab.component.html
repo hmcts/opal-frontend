@@ -1,20 +1,16 @@
-@if (tabData.defendant_account_party; as party) {
+@if (tabData?.defendant_account_party; as party) {
   <div class="govuk-grid-column-two-thirds">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        @if (party.party_details.organisation_flag) {
-          <h2 [class]="style.heading">Company Details</h2>
-        } @else {
-          <h2 [class]="style.heading">Defendant Details</h2>
-        }
+        <h2 [class]="style.heading">Parent or guardian details</h2>
       </div>
       @if (hasAccountMaintenencePermission) {
         <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
           <a
             tabindex="0"
             [class]="style.changeLink"
-            (click)="handleChangeDefendantDetails()"
-            (keyup.enter)="handleChangeDefendantDetails()"
+            (click)="handleChangeParentOrGuardianDetails()"
+            (keyup.enter)="handleChangeParentOrGuardianDetails()"
             >Change</a
           >
         </div>
@@ -23,13 +19,16 @@
     <hr [class]="style.hr" />
 
     @if (!party.party_details.organisation_flag && party.party_details.individual_details; as individualDetails) {
-      <opal-lib-govuk-summary-card-list cardTitle="Defendant details" summaryCardListId="defendant">
+      <opal-lib-govuk-summary-card-list
+        cardTitle="Parent or guardian details"
+        summaryCardListId="parent-or-guardian-details"
+      >
         <ng-container content>
-          <opal-lib-govuk-summary-list summaryListId="defendantDetails">
+          <opal-lib-govuk-summary-list summaryListId="parentOrGuardianDetails">
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="defendantDetails"
+              summaryListId="parentOrGuardianDetails"
               summaryListRowId="name"
             >
               <ng-container name>Name</ng-container>
@@ -41,7 +40,7 @@
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="defendantDetails"
+              summaryListId="parentOrGuardianDetails"
               summaryListRowId="aliases"
             >
               <ng-container name>Aliases</ng-container>
@@ -58,7 +57,7 @@
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="personalDetails"
+              summaryListId="parentOrGuardianDetails"
               summaryListRowId="dob"
             >
               <ng-container name>Date of birth</ng-container>
@@ -73,7 +72,7 @@
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="personalDetails"
+              summaryListId="parentOrGuardianDetails"
               summaryListRowId="national_insurance_number"
             >
               <ng-container name>National Insurance number</ng-container>
@@ -86,7 +85,7 @@
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="personalDetails"
+              summaryListId="parentOrGuardianDetails"
               summaryListRowId="address"
             >
               <ng-container name>Address</ng-container>
@@ -121,7 +120,7 @@
               <div
                 opal-lib-govuk-summary-list-row
                 class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                summaryListId="personalDetails"
+                summaryListId="parentOrGuardianDetails"
                 summaryListRowId="vehicle_make_and_model"
               >
                 <ng-container name>Vehicle make and model</ng-container>
@@ -136,7 +135,7 @@
               <div
                 opal-lib-govuk-summary-list-row
                 class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                summaryListId="personalDetails"
+                summaryListId="parentOrGuardianDetails"
                 summaryListRowId="vehicle_registration"
               >
                 <ng-container name>Vehicle registration</ng-container>
@@ -470,13 +469,18 @@
       </opal-lib-govuk-summary-card-list>
     }
   </div>
-  <div class="govuk-grid-column-one-third">
-    <hr [class]="style.hr" />
-    <h2 [class]="style.heading">Actions</h2>
-    <p>
-      <a tabindex="0" (click)="handleConvertAccount()" (keyup.enter)="handleConvertAccount()"
-        >Convert to {{ party.party_details.organisation_flag ? 'an individual' : 'a company' }} account</a
-      >
-    </p>
-  </div>
+  @if (tabData?.defendant_account_party?.is_debtor) {
+    <div class="govuk-grid-column-one-third">
+      <hr [class]="style.hr" />
+      <h2 [class]="style.heading">Actions</h2>
+      <p>
+        <a
+          tabindex="0"
+          (click)="handleRemoveParentOrGuardianDetails()"
+          (keyup.enter)="handleRemoveParentOrGuardianDetails()"
+          >Remove Parent or guardian details</a
+        >
+      </p>
+    </div>
+  }
 }
