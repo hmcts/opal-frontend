@@ -8,7 +8,9 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Issuing Authority and Court Details</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Issuing Authority and Court Details</legend>
+    </h2>
     <opal-lib-alphagov-accessible-autocomplete
       [control]="form.controls['fm_fp_court_details_originator_id']"
       labelText="Issuing Authority"
@@ -37,7 +39,9 @@
 
   @if (defendantType === defendantTypesKeys.company) {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Company Details</legend>
+      <h2 class="govuk-label-wrapper">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Company Details</legend>
+      </h2>
       <opal-lib-govuk-text-input
         labelText="Company name"
         inputId="fm_fp_company_details_company_name"
@@ -81,7 +85,9 @@
     </fieldset>
   } @else {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Personal Details</legend>
+      <h2 class="govuk-label-wrapper">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Personal Details</legend>
+      </h2>
       <opal-lib-govuk-select
         labelText="Title"
         labelClasses="govuk-label--s"
@@ -139,7 +145,9 @@
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+      <h2 class="govuk-label-wrapper">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+      </h2>
       <opal-lib-govuk-text-input
         labelText="Address line 1"
         inputId="fm_fp_personal_details_address_line_1"
@@ -177,7 +185,9 @@
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence Details</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence Details</legend>
+    </h2>
     <opal-lib-govuk-text-input
       labelText="Notice number"
       inputId="fm_fp_offence_details_notice_number"
@@ -304,7 +314,9 @@
 
   @if (finesMacStore.businessUnit().welsh_language) {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language Preferences</legend>
+      <h2 class="govuk-label-wrapper">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language Preferences</legend>
+      </h2>
 
       <opal-lib-govuk-radio
         fieldSetId="fm_language_preferences_document_language"
@@ -345,7 +357,9 @@
   }
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Comments and Notes</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Comments and Notes</legend>
+    </h2>
     <opal-lib-govuk-text-area
       labelText="Add comment"
       labelClasses="govuk-label--s"

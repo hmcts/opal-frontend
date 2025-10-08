@@ -23,7 +23,9 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    </h2>
     <opal-lib-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
@@ -73,7 +75,9 @@
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    </h2>
     @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
       <opal-lib-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
@@ -146,7 +150,9 @@
             <div class="govuk-grid-column-full">
               @if (minorCreditors[rowIndex]) {
                 <fieldset class="govuk-fieldset">
-                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
+                  <h2 class="govuk-label-wrapper">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
+                  </h2>
                   <app-fines-mac-offence-details-minor-creditor-information
                     [minorCreditor]="minorCreditors[rowIndex]!"
                     [showActions]="true"
