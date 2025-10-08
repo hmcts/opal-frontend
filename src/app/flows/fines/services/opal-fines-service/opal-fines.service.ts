@@ -80,9 +80,9 @@ export class OpalFines {
    */
   private appendArrayParams(params: HttpParams, key: string, values?: (string | number)[]): HttpParams {
     if (values) {
-      values.forEach((value) => {
+      for (const value of values) {
         params = params.append(key, value.toString());
-      });
+      }
     }
     return params;
   }
@@ -352,13 +352,13 @@ export class OpalFines {
         [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
       };
 
-      Object.entries(filterMapping).forEach(([key, values]) => {
+      for (const [key, values] of Object.entries(filterMapping)) {
         params = this.appendArrayParams(
           params,
           key,
           values?.filter((v) => v != null),
         );
-      });
+      }
 
       this.draftAccountsCache$[cacheKey] = this.http
         .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })

@@ -87,7 +87,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    * @returns The formatted address string with line breaks.
    */
   private formatAddress(addressLines: (string | null)[]): string {
-    const formattedAddress = addressLines.filter((line) => line).join('<br>');
+    const formattedAddress = addressLines.filter(Boolean).join('<br>');
     return formattedAddress.length > 0 ? formattedAddress : FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided;
   }
 
