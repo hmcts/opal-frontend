@@ -37,7 +37,10 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draf
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
+import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { of } from 'rxjs';
+import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
@@ -73,7 +76,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -88,7 +91,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -98,11 +101,44 @@ describe('OpalFines', () => {
     req.flush(mockBusinessUnits);
 
     // Make a second call to searchCourt with the same search body
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
     // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to business unit ref data API without permission when no arg is provided', () => {
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}`;
+
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
+
+    const req = httpMock.expectOne((r) => r.url === expectedUrl && !r.params.has('permission'));
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockBusinessUnits);
+  });
+
+  it('should return cached response for the same ref data search when called without permission', () => {
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}`;
+
+    // First call populates the shared cache
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
+    const req = httpMock.expectOne((r) => r.url === expectedUrl && !r.params.has('permission'));
+    expect(req.request.method).toBe('GET');
+    req.flush(mockBusinessUnits);
+
+    // Second call should hit the cache and not trigger a new request
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
     httpMock.expectNone(expectedUrl);
   });
 
@@ -645,6 +681,81 @@ describe('OpalFines', () => {
     // expect(req.request.method).toBe('GET');
 
     // req.flush(expectedResponse);
+  });
+
+  it('should send a POST request to add note API with correct payload and return mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+    const expectedUrl = OPAL_FINES_PATHS.notes;
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response.note_id).toBeGreaterThan(0);
+      expect(response.note_id).toBeLessThanOrEqual(100000);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+  });
+
+  it('should return a response with server-generated fields when using real API', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+    const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
+
+    const httpPostSpy = spyOn(service['http'], 'post').and.returnValue(of(mockResponse));
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, { headers: { 'If-Match': version } });
+  });
+
+  it('should generate random note_id and current timestamp in mock response', () => {
+    const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
+    const version = '1';
+
+    const responses: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      service.addNote(payload, version).subscribe((response) => {
+        responses.push(response.note_id);
+        expect(response.note_id).toBeGreaterThan(0);
+        expect(response.note_id).toBeLessThanOrEqual(100000);
+      });
+
+      const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.headers.get('If-Match')).toBe(version);
+      req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
+    }
+
+    const uniqueIds = new Set(responses);
+    expect(uniqueIds.size).toBe(1); // Since we're using the same mock response, all IDs will be the same
+  });
+
+  it('should preserve all payload fields in the response', () => {
+    const payload: IOpalFinesAddNotePayload = {
+      activity_note: {
+        record_type: 'custom_type',
+        record_id: 77,
+        note_type: 'Important',
+        note_text: 'Custom test note with special characters: áéíóú & symbols!',
+      },
+    };
+    const version = '42';
+
+    service.addNote(payload, version).subscribe((response) => {
+      expect(response.note_id).toBeDefined();
+    });
+
+    const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
   it('should clear account details cache', () => {

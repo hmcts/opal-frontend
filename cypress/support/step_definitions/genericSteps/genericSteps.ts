@@ -39,9 +39,6 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
     }
   }
 });
-Then('I click the {string} button', (buttonName: string) => {
-  cy.contains('button', buttonName).click();
-});
 
 Then('I go back in the browser', () => {
   cy.go('back');
@@ -127,4 +124,7 @@ Then('I see {string} tab on the page header', (tabName: string) => {
 });
 Then('I click on the {string} tab', (tabName: string) => {
   cy.get('ul.moj-sub-navigation__list').should('exist').and('contain', tabName).click();
+});
+Then('I see the URL contains {string}', (urlPart: string) => {
+  cy.url().should('include', urlPart);
 });

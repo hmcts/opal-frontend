@@ -1,9 +1,12 @@
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { FinesAccountStore } from '../stores/fines-acc.store';
+import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
+import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
-import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
@@ -12,11 +15,23 @@ describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
   let mockMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let mockGlobalStore: jasmine.SpyObj<GlobalStoreType>;
+  let mockFinesAccountStore: {
+    version: jasmine.Spy;
+    base_version: jasmine.Spy;
+    party_type: jasmine.Spy;
+    account_id: jasmine.Spy;
+  };
 
   beforeEach(() => {
     mockMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['getBusinessUnitBusinessUserId']);
     mockGlobalStore = jasmine.createSpyObj('GlobalStore', ['userState']);
 
+    const mockStore = {
+      version: jasmine.createSpy('version').and.returnValue(1),
+      base_version: jasmine.createSpy('base_version').and.returnValue(1),
+      party_type: jasmine.createSpy('party_type').and.returnValue('PERSON'),
+      account_id: jasmine.createSpy('account_id').and.returnValue(77),
+    };
     mockMacPayloadService.getBusinessUnitBusinessUserId.and.returnValue(
       FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
     );
@@ -27,9 +42,88 @@ describe('FinesAccPayloadService', () => {
         FinesAccPayloadService,
         { provide: FinesMacPayloadService, useValue: mockMacPayloadService },
         { provide: GlobalStore, useValue: mockGlobalStore },
+        { provide: FinesAccountStore, useValue: mockStore },
       ],
     });
     service = TestBed.inject(FinesAccPayloadService);
+    mockFinesAccountStore = TestBed.inject(FinesAccountStore) as unknown as typeof mockFinesAccountStore;
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  describe('buildAddNotePayload', () => {
+    it('should build correct payload with form data', () => {
+      // Setup mocks
+      mockFinesAccountStore.base_version.and.returnValue(5);
+      mockFinesAccountStore.party_type.and.returnValue('PERSON');
+      mockFinesAccountStore.account_id.and.returnValue(77);
+
+      const testForm: IFinesAccAddNoteForm = {
+        formData: {
+          facc_add_notes: 'Test note content',
+        },
+        nestedFlow: false,
+      };
+
+      const result = service.buildAddNotePayload(testForm);
+
+      expect(result).toEqual({
+        activity_note: {
+          record_type: 'DEFENDANT_ACCOUNTS',
+          record_id: 77,
+          note_type: 'AA',
+          note_text: 'Test note content',
+        },
+      });
+    });
+
+    it('should call store methods to get party data', () => {
+      // Setup mocks
+      mockFinesAccountStore.base_version.and.returnValue(1);
+      mockFinesAccountStore.party_type.and.returnValue('COMPANY');
+      mockFinesAccountStore.account_id.and.returnValue(88);
+
+      const testForm: IFinesAccAddNoteForm = FINES_ACC_ADD_NOTE_FORM_MOCK;
+
+      service.buildAddNotePayload(testForm);
+
+      expect(mockFinesAccountStore.account_id).toHaveBeenCalled();
+    });
+
+    it('should use the note text from form data', () => {
+      // Setup mocks
+      mockFinesAccountStore.base_version.and.returnValue(3);
+      mockFinesAccountStore.party_type.and.returnValue('PERSON');
+      mockFinesAccountStore.account_id.and.returnValue(99);
+
+      const result = service.buildAddNotePayload(FINES_ACC_ADD_NOTE_FORM_MOCK);
+
+      expect(result.activity_note.note_text).toBe(FINES_ACC_ADD_NOTE_FORM_MOCK.formData.facc_add_notes as string);
+      expect(result.activity_note.note_type).toBe('AA');
+      expect(result.activity_note.record_id).toBe(99);
+    });
+
+    it('should handle null note text from form', () => {
+      // Setup mocks
+      mockFinesAccountStore.base_version.and.returnValue(2);
+      mockFinesAccountStore.party_type.and.returnValue('PERSON');
+      mockFinesAccountStore.account_id.and.returnValue(111);
+
+      const testForm: IFinesAccAddNoteForm = {
+        formData: {
+          facc_add_notes: null,
+        },
+        nestedFlow: false,
+      };
+
+      const result = service.buildAddNotePayload(testForm);
+
+      expect(result.activity_note.note_text).toBeNull();
+      expect(result.activity_note.note_type).toBe('AA');
+      expect(result.activity_note.record_id).toBe(111);
+    });
   });
 
   it('should transform account header for store for an individual', () => {

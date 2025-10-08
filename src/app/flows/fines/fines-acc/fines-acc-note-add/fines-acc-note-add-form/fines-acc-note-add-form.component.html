@@ -1,0 +1,35 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<opal-lib-govuk-heading-with-caption
+  captionText="{{ accountNumber }} - {{ defendantName }}"
+  headingText="Add account note"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-0"
+>
+</opal-lib-govuk-heading-with-caption>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <opal-lib-govuk-text-area
+    labelText=""
+    labelClasses="govuk-label--s"
+    hintText="You can view notes in account history after the account is published"
+    inputId="facc_add_notes"
+    inputName="facc_add_notes"
+    [control]="form.get('facc_add_notes')"
+    [errors]="formControlErrorMessages['facc_add_notes']"
+    [characterCountEnabled]="true"
+    [maxCharacterLimit]="1000"
+  ></opal-lib-govuk-text-area>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <opal-lib-govuk-button buttonId="save-note" type="submit">Save note</opal-lib-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-cancel-link
+        (linkClickEvent)="handleRoute(defendantAccRoutingPaths.children.details)"
+      ></opal-lib-govuk-cancel-link>
+    </div>
+  </div>
+</form>
