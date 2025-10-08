@@ -11556,10 +11556,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.11.0":
-  version: 5.11.0
-  resolution: "jasmine-core@npm:5.11.0"
-  checksum: 10/9b247cca602f8ab08669b697ae057b2fafc8bd09101bca72ac251749f4c3200bc45e6de2b44b0fc1ea6c9a0b95cc474a358b0c8fca9a880512a5fe96480714a6
+"jasmine-core@npm:~5.12.0":
+  version: 5.12.0
+  resolution: "jasmine-core@npm:5.12.0"
+  checksum: 10/2a08eb32601925fa75547417957c7a03e40a43777438dc999490d1adbb350a16fdcf9c6f7071482579bc7d30074df124cf6135b9f4834b520bee6f2821ef0397
   languageName: node
   linkType: hard
 
@@ -13705,7 +13705,7 @@ __metadata:
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
-    jasmine-core: "npm:~5.11.0"
+    jasmine-core: "npm:~5.12.0"
     junit-report-merger: "npm:^8.0.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.2.0"
