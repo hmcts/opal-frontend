@@ -198,7 +198,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   private populateMajorCreditors(): void {
     this.majorCreditors.set(
       this.majorCreditorsRefData.map((mc) => ({
-        value: mc.major_creditor_id.toString(),
+        value: mc.major_creditor_id!.toString(),
         name: this.opalFinesService.getMajorCreditorPrettyName(mc),
       })),
     );

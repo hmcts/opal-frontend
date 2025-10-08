@@ -206,7 +206,7 @@ describe('FinesSaSearchAccountComponent', () => {
 
   it('getAccountEnquiryUrl should return the correct URL for account enquiry', () => {
     const accountId = 123;
-    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_ROUTING_PATHS.children.details}`;
+    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_ROUTING_PATHS.children.defendant}`;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (component as any).getAccountEnquiryUrl(accountId);
     expect(result).toEqual(expectedUrl);
