@@ -184,10 +184,10 @@ export class AppComponent implements OnInit, OnDestroy {
    * Handles the authentication dependent on whether the user is already authenticated
    */
   public handleAuthentication(): void {
-    if (!this.globalStore.authenticated()) {
-      this.handleRedirect(SSO_ENDPOINTS.login);
-    } else {
+    if (this.globalStore.authenticated()) {
       this.handleRedirect(SSO_ENDPOINTS.logout);
+    } else {
+      this.handleRedirect(SSO_ENDPOINTS.login);
     }
   }
 }
