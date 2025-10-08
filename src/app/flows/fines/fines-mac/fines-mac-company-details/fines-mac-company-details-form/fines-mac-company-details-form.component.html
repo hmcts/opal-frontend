@@ -32,6 +32,7 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
             [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"

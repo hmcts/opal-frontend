@@ -42,6 +42,7 @@
       [control]="form.get('fm_personal_details_add_alias')"
     ></div>
   </opal-lib-govuk-checkboxes>
+  <p>Alias controls = {{ aliasControls.length }}</p>
   @if (form.get('fm_personal_details_add_alias')?.value === true) {
     <div
       opal-lib-govuk-checkboxes-conditional
@@ -52,6 +53,7 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="First names"
             [inputId]="aliasControl['fm_personal_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_personal_details_alias_forenames'].inputName"

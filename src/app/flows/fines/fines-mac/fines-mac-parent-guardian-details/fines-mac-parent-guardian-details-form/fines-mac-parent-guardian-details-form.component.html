@@ -43,6 +43,7 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="First names"
             [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
