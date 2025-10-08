@@ -93,10 +93,9 @@
           }}
         </p>
       }
-
       @if (
-        tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
-        tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
+        tabData.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
+        tabData.language_preferences?.hearing_language_preference?.language_display_name === languages.CY
       ) {
         <h2 [class]="style.heading">Language preferences</h2>
         <hr [class]="style.hr" />
