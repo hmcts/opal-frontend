@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -28,12 +28,13 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { FinesSaSearchAccountTab } from '../types/fines-sa-search-account-tab.type';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from '../../routing/constants/fines-sa-search-routing-paths.constant';
-import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS } from './fines-sa-search-account-form-companies/constants/fines-sa-search-account-form-companies-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS } from './fines-sa-search-account-form-individuals/constants/fines-sa-search-account-form-individuals-field-errors.constant';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-minor-creditors/constants/fines-sa-search-account-form-minor-creditors-field-errors.constant';
+import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-account.validator';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -97,12 +98,35 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
 
+  @Input({ required: true }) businessUnitRefData!: IOpalFinesBusinessUnit[];
   public readonly finesSaStore = inject(FinesSaStore);
   /**
    * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
    * Children read computed inline messages via their `[formControlErrorMessages]` input only.
    */
   override fieldErrors: IFinesSaSearchAccountFieldErrors = FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS;
+
+  /**
+   * Returns a human-readable label for the currently selected business units.
+   *
+   * If every business unit is selected, returns "All business units".
+   * Otherwise returns a comma-separated list of the selected business unit names
+   * by mapping the IDs from finesSaStore.searchAccount().fsa_search_account_business_unit_ids
+   * against businessUnitRefData.
+   *
+   * @returns A string describing the selected business units.
+   */
+  public get businessUnitText(): string {
+    const selectedBusinessUnitIds = this.finesSaStore.searchAccount().fsa_search_account_business_unit_ids || [];
+    if (selectedBusinessUnitIds.length === this.businessUnitRefData.length) {
+      return 'All business units';
+    } else {
+      return this.businessUnitRefData
+        .filter((bu) => selectedBusinessUnitIds.includes(bu.business_unit_id))
+        .map((bu) => bu.business_unit_name)
+        .join(', ');
+    }
+  }
 
   /**
    * Creates the root FormGroup, including static controls and empty nested groups

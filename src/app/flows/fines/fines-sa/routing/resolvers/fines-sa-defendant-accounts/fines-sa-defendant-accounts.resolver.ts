@@ -41,9 +41,7 @@ export const finesSaDefendantAccountsResolver =
     // Build shared base params once
     const baseSearchParams = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      business_unit_ids:
-        state.fsa_search_account_business_unit_ids ??
-        OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
+      business_unit_ids: state.fsa_search_account_business_unit_ids,
     } as const;
 
     // Early exit when nothing to search for the SELECTED party type
