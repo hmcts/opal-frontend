@@ -5,8 +5,8 @@
       <hr [class]="style.hr" />
 
       @if (
-        tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
-        tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
+        tabData.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
+        tabData.language_preferences?.hearing_language_preference?.language_display_name === languages.CY
       ) {
         <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-!-margin-bottom-2'" tagId="enforcement_status">{{
           languages.CY
