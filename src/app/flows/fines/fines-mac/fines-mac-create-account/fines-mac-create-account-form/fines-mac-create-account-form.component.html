@@ -43,7 +43,7 @@
       @switch (accountType.value) {
         @case (accountTypesKeys.Fine) {
           @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys.Fine) {
-            <div role="group" aria-live="polite" aria-labelledby="fine-conditional-label" tabindex="0">
+            <div aria-live="polite" aria-labelledby="fine-conditional-label">
               <span id="fine-conditional-label" class="govuk-visually-hidden">
                 Defendant type options for Fine account
               </span>
@@ -58,7 +58,7 @@
         }
         @case (accountTypesKeys['Fixed Penalty']) {
           @if (form.get('fm_create_account_account_type')?.value === accountTypesKeys['Fixed Penalty']) {
-            <div role="group" aria-live="polite" aria-labelledby="fixed-penalty-conditional-label" tabindex="0">
+            <div aria-live="polite" aria-labelledby="fixed-penalty-conditional-label">
               <span id="fixed-penalty-conditional-label" class="govuk-visually-hidden">
                 Defendant type options for Fixed Penalty account
               </span>
@@ -100,6 +100,7 @@
           ? formControlErrorMessages['fm_create_account_fine_defendant_type']
           : formControlErrorMessages['fm_create_account_fixed_penalty_defendant_type']
       "
+      [tabIndex]="2"
     >
       @for (defendantType of defendantTypes; track defendantType.key) {
         <div
