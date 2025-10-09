@@ -68,15 +68,13 @@ export const DOM_ELEMENTS = {
   majorCreditorsPanel: '[id="major-creditors"]',
   majorCreditorsHeading: '[id="major-creditors"] .govuk-heading-l',
   majorCreditorsHelpText: '[id="fsa_search_account_major_creditors_major_creditor_id-hint"]',
+  majorCreditorBusinessUnitLabel: '.govuk-body',
+  majorCreditorBusinessUnitLink: '.govuk-body > .govuk-link',
   majorCreditorDropdown: '[id="fsa_search_account_major_creditors_major_creditor_id-autocomplete"]',
   majorCreditorAutoComplete: `ul[id = "fsa_search_account_major_creditors_major_creditor_id-autocomplete__listbox"]`,
-  //Get error message IDs
-  majorCreditorLengthError: '#fsa_search_account_major_creditors_major_creditor_id-error-message',
-  majorCreditorSpecialCharError: '#fsa_search_account_major_creditors_major_creditor_id-error-message',
-  majorCreditorInvalidError: '#fsa_search_account_major_creditors_major_creditor_id-error-message',
 
-  //resultCodeInput: `input[id = "fm_offence_details_result_id_${number}-autocomplete"]`,
-  //resultCodeLabel: `label[for = "fm_offence_details_result_id_${number}-autocomplete"]`,
+  //Get error message IDs
+  majorCreditorMissingError: '#fsa_search_account_major_creditors_major_creditor_id-autocomplete-error-message',
 
   majorCreditorSelectLabel: '[for="fsa_search_account_major_creditors_major_creditor_id"]',
   majorCreditorSelect: '#fsa_search_account_major_creditors_major_creditor_id',
