@@ -172,7 +172,7 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "@cucumber/messages": "^29.0.0",
+    "@cucumber/messages": "^30.0.0",
     "cookie": "^1.0.0",
     "on-headers": "^1.1.0",
     "brace-expansion": "^4.0.0",
