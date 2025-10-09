@@ -118,13 +118,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     // Update the impositions array with their respective index positions
     // Change the amount imposed and amount paid to numbers
-    form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
+    for (let index = 0; index < form.formData.fm_offence_details_impositions.length; index++) {
+      const imposition = form.formData.fm_offence_details_impositions[index];
       imposition.fm_offence_details_imposition_id = index;
       imposition.fm_offence_details_amount_imposed = +imposition.fm_offence_details_amount_imposed!;
       imposition.fm_offence_details_amount_paid = imposition.fm_offence_details_amount_paid
         ? +imposition.fm_offence_details_amount_paid
         : 0;
-    });
+    }
 
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
@@ -137,7 +138,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
-    if (index !== -1) {
+    if (index >= 0) {
       const offence = structuredClone(offenceDetails[index]);
       offence.formData = form.formData;
       offence.childFormData = form.childFormData;

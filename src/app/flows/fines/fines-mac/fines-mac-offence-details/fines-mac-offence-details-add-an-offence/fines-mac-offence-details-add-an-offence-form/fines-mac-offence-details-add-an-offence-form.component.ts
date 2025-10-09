@@ -191,7 +191,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
-    this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
+    this.setupFormArrayFormControls([...new Array(impositionsLength).keys()], impositionsKey);
     this.setInitialErrorMessages();
     this.getMinorCreditors();
     this.rePopulateForm(formData);
@@ -200,9 +200,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     if (!hasOffenceDetailsDraft && impositionsLength === 0) {
       this.addControlsToFormArray(0, impositionsKey);
     } else {
-      formData[impositionsKey].forEach((_, index) => {
+      for (const [index] of formData[impositionsKey].entries()) {
         this.setupResultCodeListener(index);
-      });
+      }
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
@@ -424,7 +424,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const childFormData =
       offenceDetailsFineMacStore[this.offenceIndex]?.childFormData || draftOffenceDetails[0]?.childFormData || [];
 
-    if (index !== -1) {
+    if (index >= 0) {
       draftOffenceDetails[index].formData = formData;
     } else {
       draftOffenceDetails.push({
@@ -445,7 +445,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
     const formGroupsFormArray = formArray.controls as FormGroup[];
 
-    formGroupsFormArray.forEach((control, rowIndex) => {
+    for (const [rowIndex, control] of formGroupsFormArray.entries()) {
       const amountImposedControl = control.controls[`fm_offence_details_amount_imposed_${rowIndex}`];
       const amountPaidControl = control.controls[`fm_offence_details_amount_paid_${rowIndex}`];
       const balanceRemainingControl = control.controls[`fm_offence_details_balance_remaining_${rowIndex}`];
@@ -454,7 +454,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       const amountPaid: number = this.getControlValueOrDefault(amountPaidControl, 0);
 
       balanceRemainingControl?.setValue(amountImposed - amountPaid, { emitEvent: false });
-    });
+    }
   }
 
   /**
@@ -466,14 +466,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private checkImpositionMinorCreditors(): void {
     const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
-    formArray.controls.forEach((control, rowIndex) => {
+    for (const [rowIndex, control] of formArray.controls.entries()) {
       const needsCreditor = control.get(`fm_offence_details_needs_creditor_${rowIndex}`)?.value;
       const creditorControl = control.get(`fm_offence_details_creditor_${rowIndex}`);
       const selectedCreditor = creditorControl?.value;
       if (needsCreditor && selectedCreditor === 'minor' && !this.minorCreditors?.[rowIndex]) {
         creditorControl?.setErrors({ minorCreditorMissing: true });
       }
-    });
+    }
   }
 
   /**
