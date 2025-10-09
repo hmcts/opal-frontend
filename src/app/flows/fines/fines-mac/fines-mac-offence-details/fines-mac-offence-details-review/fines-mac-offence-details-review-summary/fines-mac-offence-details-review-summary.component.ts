@@ -81,10 +81,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @returns The maximum offence ID.
    */
   private getMaxOffenceId(): number {
-    return this.offencesImpositions.reduce(
-      (max, offence) => (offence.formData.fm_offence_details_id > max ? offence.formData.fm_offence_details_id : max),
-      0,
-    );
+    return this.offencesImpositions.reduce((max, offence) => Math.max(max, offence.formData.fm_offence_details_id), 0);
   }
 
   /**
