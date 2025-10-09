@@ -14,12 +14,15 @@ import {
 import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
+import { of } from 'rxjs';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-  const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
-    mount(FinesMacPersonalDetailsComponent, {
+  const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
+
+    return mount(FinesMacPersonalDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -33,18 +36,27 @@ describe('FinesMacPersonalDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handlePersonalDetailsSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handlePersonalDetailsSubmit?.subscribe) {
+        comp.handlePersonalDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handlePersonalDetailsSubmit === 'function') {
+        comp.handlePersonalDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -115,7 +127,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
 
       for (const [key, value] of Object.entries(MAIN_PERSONAL_DETAILS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -129,7 +141,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
     finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'asja*';
     finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'asja*';
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
 
     for (let i = 1; i <= 3; i++) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK[`addressLine${i}ContainsSpecialCharacters`]);
@@ -149,7 +161,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
       finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
 
       for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -256,7 +268,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
 
@@ -267,7 +279,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_surname_0: 'Smith',
     });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
   });
@@ -279,7 +291,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_forenames_0: 'John',
     });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne);
   });
@@ -296,7 +308,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_surname_1: 'Smith',
     });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
@@ -320,7 +332,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_forenames_1: 'John',
     });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstNameOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
@@ -340,7 +352,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Smith';
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
     finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
   });
 
@@ -348,7 +360,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
 
@@ -365,7 +377,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = '123 fake street';
       finesMacState.personalDetails.formData.fm_personal_details_national_insurance_number = 'AB1234565C';
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
     },
   );
@@ -374,16 +386,16 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.12) should show errors for invalid mandatory fields and allow corrections',
     { tags: ['@PO-272', '@PO-360'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Stuart Philips aarogyam Guuci Coach VII';
       finesMacState.personalDetails.formData.fm_personal_details_surname =
         'Chicago bulls Burberry RedBull 2445 PizzaHut';
       finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'test Road *12';
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(CORRECTION_TEST_MESSAGES)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -394,10 +406,10 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.lastNameInput).clear().type('s', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('addr', { delay: 0 });
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -415,7 +427,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
       finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(VEHICLE_DETAILS_ERRORS)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -450,8 +462,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.titleInput).select('Mr');
     cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
@@ -480,7 +492,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
         .should('have.value', `ALIAS${i + 1}LNAME`);
     }
 
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get('form').should('exist').submit();
   });
 
   it('(AC.1) should convert specified fields to uppercase on user input', { tags: ['@PO-272', '@PO-1448'] }, () => {

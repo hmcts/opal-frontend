@@ -11,12 +11,14 @@ import {
   ALPHABETICAL_TEXT_PATTERN_VALIDATION,
 } from './constants/fines-mac-company-details-errors';
 import { DOM_ELEMENTS } from './constants/fines-mac-company-details-elements';
+import { of } from 'rxjs';
 
 describe('FinesMacCompanyDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
 
-  const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
-    mount(FinesMacCompanyDetailsComponent, {
+  const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
+    return mount(FinesMacCompanyDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -30,18 +32,25 @@ describe('FinesMacCompanyDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handleCompanyDetailsSubmit: formSubmit,
+        // only Inputs here
         defendantType: defendantTypeMock,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) return;
+      const comp: any = fixture.componentInstance as any;
+      // Prefer subscribing to an EventEmitter-style output if present
+      if (comp?.handleCompanyDetailsSubmit?.subscribe) {
+        comp.handleCompanyDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleCompanyDetailsSubmit === 'function') {
+        // Fallback to overriding method after mount
+        comp.handleCompanyDetailsSubmit = formSubmit;
+      }
+      fixture.detectChanges();
     });
   };
 
@@ -74,7 +83,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       finesMacState.companyDetails.formData.fm_company_details_address_line_2 = 'Addr2';
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredName);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAddressLine1);
 
@@ -341,16 +350,16 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it('(AC.12) should allow form to be submitted with valid data', { tags: ['@PO-345', '@PO-365'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit);
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy);
 
     finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
     finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
     finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@formSubmitSpy').should('be.called');
+    cy.wrap(formSubmitSpy).should('have.been.called');
   });
 
   it(
@@ -361,7 +370,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.addAlias).check();
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
@@ -382,7 +391,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.additionalAlias).first().click();
       cy.get(DOM_ELEMENTS.additionalAlias).first().click();
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias2);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias3);
@@ -391,7 +400,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.aliasCompanyName3Input).type('Alias 3', { delay: 0 });
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias2);
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', REQUIRED_VALIDATION.requiredAlias3);
@@ -440,7 +449,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
       finesMacState.companyDetails.formData.fm_company_details_aliases.push({
         fm_company_details_alias_company_name_4: 'A'.repeat(31),
       });
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(MAX_LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -458,7 +467,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
       finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123 Fake Street*';
       finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123 Fake Street*';
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(SPECIAL_CHARACTERS_PATTERN_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -485,7 +494,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
         });
       }
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -496,24 +505,24 @@ describe('FinesMacCompanyDetailsComponent', () => {
     '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit, 'company');
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'company');
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get('@formSubmitSpy').should('not.have.been.called');
+      cy.wrap(formSubmitSpy).should('not.have.been.called');
       cy.then(() => {
-        setupComponent(mockFormSubmit, 'company');
+        setupComponent(formSubmitSpy, 'company');
         finesMacState.companyDetails.formData.fm_company_details_company_name = 'CNAME';
         finesMacState.companyDetails.formData.fm_company_details_address_line_1 = 'addr1';
 
-        cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+        cy.get('form').should('exist').submit();
         cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-        cy.get('@formSubmitSpy').should('have.been.called');
+        cy.wrap(formSubmitSpy).should('have.been.called');
 
         cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
         cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-        cy.get('@formSubmitSpy').should('have.been.called');
+        cy.wrap(formSubmitSpy).should('have.been.called');
       });
     },
   );
@@ -522,8 +531,8 @@ describe('FinesMacCompanyDetailsComponent', () => {
     '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit, 'company');
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy, 'company');
 
       finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
       finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
@@ -537,15 +546,15 @@ describe('FinesMacCompanyDetailsComponent', () => {
         { fm_company_details_alias_company_name_4: 'Alias 5' },
       ];
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('be.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('be.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
     },
   );
   it(

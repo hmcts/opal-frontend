@@ -5,12 +5,13 @@ import { FinesMacOffenceDetailsSearchOffencesStore } from 'src/app/flows/fines/f
 import { SEARCH_OFFENCES_DEFAULT_FORM_MOCK } from './mocks/fines-mac-offence-details-search-offences-form.mock';
 import { FinesMacOffenceDetailsSearchOffencesSearchComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-search-offences/fines-mac-offence-details-search-offences-search/fines-mac-offence-details-search-offences-search.component';
 import { SEARCH_OFFENCES_LENGTH_CHECK, SEARCH_OFFENCES_FORMAT_CHECK } from './constants/search_offence_errors';
+import { of } from 'rxjs';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let offenceSearchFormData = structuredClone(SEARCH_OFFENCES_DEFAULT_FORM_MOCK);
 
-  const setupComponent = (formSubmit: any) => {
-    mount(FinesMacOffenceDetailsSearchOffencesSearchComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacOffenceDetailsSearchOffencesSearchComponent, {
       providers: [
         {
           provide: FinesMacOffenceDetailsSearchOffencesStore,
@@ -23,17 +24,25 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
-      componentProperties: {
-        handleSearchOffencesSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleSearchOffencesSubmit?.subscribe) {
+        comp.handleSearchOffencesSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleSearchOffencesSubmit === 'function') {
+        comp.handleSearchOffencesSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -64,15 +73,15 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     'AC.2a, AC.2b, AC.2c Checking the validation failures when exceeding the maximum characters',
     { tags: ['@PO-545', '@PO-667'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
       //This creates the component with invalid offence code pre-loaded in the form
       offenceSearchFormData.formData.fm_offence_details_search_offences_code = 'a'.repeat(10);
       offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = 'a'.repeat(121);
       offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = 'a'.repeat(4001);
-      setupComponent(mockFormSubmit);
+      setupComponent(formSubmitSpy);
 
-      cy.contains('button', 'Search').click();
+      cy.get('form').should('exist').submit();
 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
@@ -85,7 +94,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     'AC.2d, AC.2e, AC.2f Checking the validation failures when a special character into the fields',
     { tags: ['@PO-545', '@PO-667'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
       const invalidInputs = ['*', '$', '@'];
       cy.wrap(invalidInputs).each((input: string) => {
@@ -93,8 +102,8 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
           offenceSearchFormData.formData.fm_offence_details_search_offences_code = input;
           offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = input;
           offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = input;
-          setupComponent(mockFormSubmit);
-          cy.contains('button', 'Search').click();
+          setupComponent(formSubmitSpy);
+          cy.get('form').should('exist').submit();
 
           cy.get(DOM_ELEMENTS.errorSummary)
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.offenceCodeSpecialCharPattern)

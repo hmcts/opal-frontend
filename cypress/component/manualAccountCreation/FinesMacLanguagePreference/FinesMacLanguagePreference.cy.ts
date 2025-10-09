@@ -4,30 +4,39 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { DOM_ELEMENTS } from '../../../../cypress/component/manualAccountCreation/FinesMacLanguagePreference/constants/fines_mac_language_preference_elements';
+import { of } from 'rxjs';
 
 describe('FinesMacLanguagePreferenceComponent', () => {
   let mockFinesService = {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
   };
 
-  const setupComponent = (formSubmit: any) => {
-    mount(FinesMacLanguagePreferencesComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacLanguagePreferencesComponent, {
       providers: [
         { provide: OpalFines, useValue: mockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
-      componentProperties: {
-        handleLanguagePreferencesSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleLanguagePreferencesSubmit?.subscribe) {
+        comp.handleLanguagePreferencesSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleLanguagePreferencesSubmit === 'function') {
+        comp.handleLanguagePreferencesSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -72,38 +81,38 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   });
 
   it('(AC.3)should allow form to be submitted with no input', { tags: ['@PO-464'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit);
+    setupComponent(formSubmitSpy);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it('(AC.3)should allow selections on language preferences', { tags: ['@PO-464'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit);
+    setupComponent(formSubmitSpy);
 
     cy.get(DOM_ELEMENTS.cyDocumentRadioOption).click();
     cy.get(DOM_ELEMENTS.enCourtHearingRadioOption).click();
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it('(AC.3)should allow selections on language preferences Opposite options', { tags: ['@PO-464'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit);
+    setupComponent(formSubmitSpy);
 
     cy.get(DOM_ELEMENTS.enDocumentRadioOption).click();
     cy.get(DOM_ELEMENTS.cyCourtHearingRadioOption).click();
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 });

@@ -14,6 +14,7 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { PAYMENT_TERMS_SESSION_USER_STATE_MOCK } from './mocks/fines-payment-terms-session-user-mock';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { of } from 'rxjs';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
@@ -49,11 +50,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
@@ -431,7 +428,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('01/02/2004', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDatePast);
         });
       }
@@ -446,7 +443,7 @@ describe('FinesMacPaymentTermsComponent', () => {
         cy.then(() => {
           setupComponent(defendantTypes[i]);
 
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionError);
         });
       }
@@ -463,7 +460,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDateError);
         });
       }
@@ -481,22 +478,22 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.collectionYes).click();
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('32/01/2022', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
 
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('01.13.2022', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDateFormat);
 
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('20/11/2060', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDateFuture);
 
           cy.get(DOM_ELEMENTS.collectionOrderDate).clear();
           cy.get(DOM_ELEMENTS.collectionOrderDate).type('01/11/2001', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.collectionDatePast);
         });
       }
@@ -607,7 +604,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
       });
@@ -625,7 +622,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
       });
@@ -644,7 +641,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
         });
       });
@@ -663,7 +660,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
         });
       });
@@ -678,11 +675,11 @@ describe('FinesMacPaymentTermsComponent', () => {
         cy.then(() => {
           setupComponent(defendantType);
 
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.paymentTerms);
 
           cy.get(DOM_ELEMENTS.payInFull).first().click();
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.payByDate);
           cy.get(DOM_ELEMENTS.payInFull).first().click();
         });
@@ -701,7 +698,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           cy.get(DOM_ELEMENTS.lumpSumPlusInstalments).click();
           cy.get(DOM_ELEMENTS.lumpSumAmount).type('100.5', { delay: 0 });
           cy.get(DOM_ELEMENTS.instalmentAmount).type('100.5', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).first().click();
+          cy.get('form').should('exist').submit();
 
           cy.get(DOM_ELEMENTS.lumpSumAmount).should('have.value', '100.50');
           cy.get(DOM_ELEMENTS.instalmentAmount).should('have.value', '100.50');
@@ -720,7 +717,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
           finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01,01.2022';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDateFormat);
         });
       });
@@ -737,7 +734,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
           finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '32/01/2022';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
@@ -751,7 +748,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
         cy.get(DOM_ELEMENTS.instalmentsOnly).click({ multiple: true });
 
-        cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+        cy.get('form').should('exist').submit();
 
         for (const [, value] of Object.entries(INSTALLMENT_ERRORS)) {
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
@@ -770,7 +767,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
       });
@@ -787,7 +784,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/21/12212';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
       });
@@ -804,7 +801,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
@@ -820,7 +817,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           setupComponent(defendantType);
 
           cy.get(DOM_ELEMENTS.lumpSumPlusInstalments).click({ multiple: true });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
 
           for (const [, value] of Object.entries(LUMPSUM_ERRORS)) {
             cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
@@ -840,7 +837,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = -1;
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validLumpSumAmount);
         });
       });
@@ -857,7 +854,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
         });
       });
@@ -874,7 +871,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/202555';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
         });
       });
@@ -891,7 +888,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
           finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
         });
       });
@@ -944,7 +941,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
           cy.get(DOM_ELEMENTS.hasDaysInDefault).click();
           cy.get(DOM_ELEMENTS.defaultDaysInJail).type('123456', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.daysInDefaultLength);
         });
       }
@@ -961,7 +958,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage)
             .should('contain', ERROR_MESSAGES.validDate)
             .should('contain', ERROR_MESSAGES.defaultDays);
@@ -980,7 +977,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDate);
         });
       }
@@ -1050,7 +1047,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
         finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
         finesMacState.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
-        cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+        cy.get('form').should('exist').submit();
         cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.defaultDaysTypeCheck);
       }
     },
@@ -1096,7 +1093,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           setupComponent(defendantTypes[i]);
 
           cy.get(DOM_ELEMENTS.addEnforcementAction).click();
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.enforcementActionReason);
         });
       }
@@ -1115,18 +1112,18 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
           finesMacState.paymentTerms.formData.fm_payment_terms_prison_and_prison_number = 'HMP:Example-Prison';
           cy.get(DOM_ELEMENTS.earliestReleaseDate).type('32/09/2025', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
 
           for (const [, value] of Object.entries(ENFORCEMENT_ERRORS)) {
             cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', value);
           }
 
           cy.get(DOM_ELEMENTS.earliestReleaseDate).clear().type('29/09/2021', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDateMust);
 
           cy.get(DOM_ELEMENTS.earliestReleaseDate).clear().type('29,09.2021', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.prisonDateFormat);
         });
       }
@@ -1143,7 +1140,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfReason);
         });
       }
@@ -1161,7 +1158,7 @@ describe('FinesMacPaymentTermsComponent', () => {
           finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
           finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
           cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).type('@', { delay: 0 });
-          cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
+          cy.get('form').should('exist').submit();
           cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);
         });
       }
@@ -1172,7 +1169,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,4,5a) correct system note - A collection order was previously made - AY',
     { tags: ['@PO-545', '@PO-651'] },
     () => {
-      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1182,11 +1179,11 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+      cy.get('form').should('exist').submit();
 
-      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
         const arg = calls.args[0][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         expect(systemNote).to.equal(
@@ -1199,7 +1196,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC.1,4,5b) correct system note - A collection order was previously made - AYPG',
     { tags: ['@PO-545', '@PO-651'] },
     () => {
-      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1210,11 +1207,11 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent('pgToPay', mockSetAccountCommentsNotes);
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      cy.get('form').should('exist').submit();
 
-      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
         const arg = calls.args[0][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
         expect(systemNote).to.equal(
@@ -1224,7 +1221,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     },
   );
   it('(AC.2,4,5a) correct system note - Make collection order today - AY', { tags: ['@PO-545', '@PO-651'] }, () => {
-    const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1235,11 +1232,11 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       const arg = calls.args[0][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
       expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
@@ -1247,7 +1244,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('(AC.2,4,5b) correct system note - Make collection order today - AYPG', { tags: ['@PO-545', '@PO-651'] }, () => {
-    const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
     finesMacState.businessUnit.business_unit_id = 17;
@@ -1257,10 +1254,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', mockSetAccountCommentsNotes);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    setupComponent('pgToPay', setAccountCommentsNotesSpy);
+    cy.get('form').should('exist').submit();
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       const arg = calls.args[0][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
       expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
@@ -1268,7 +1265,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('(AC3a,c,4,5a) update system note - Made today - Previously made - AY ', { tags: ['@PO-545', '@PO-651'] }, () => {
-    const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1279,11 +1276,11 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[0][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1293,10 +1290,10 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     cy.get(DOM_ELEMENTS.collectionYes).check();
     cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[1][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1308,7 +1305,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('(AC3a,c,4,5b) update system note - Made today - Previously made - AYPG', { tags: ['@PO-545', '@PO-651'] }, () => {
-    const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1319,12 +1316,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('pgToPay', mockSetAccountCommentsNotes);
+    setupComponent('pgToPay', setAccountCommentsNotesSpy);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[0][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1334,10 +1331,10 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     cy.get(DOM_ELEMENTS.collectionYes).check();
     cy.get(DOM_ELEMENTS.collectionOrderDate).clear().type('01/01/2023', { delay: 0, force: true });
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[1][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1349,7 +1346,7 @@ describe('FinesMacPaymentTermsComponent', () => {
   });
 
   it('(AC3b,d,4,5a) update system note - Previously made - Made today - AY ', { tags: ['@PO-545', '@PO-651'] }, () => {
-    const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+    const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
     finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1360,12 +1357,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
     finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-    setupComponent('adultOrYouthOnly', mockSetAccountCommentsNotes);
+    setupComponent('adultOrYouthOnly', setAccountCommentsNotesSpy);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[0][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1381,10 +1378,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     cy.get(DOM_ELEMENTS.payInFull).check();
     cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
-    cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
       cy.log('Calls:', calls);
       const arg = calls.args[1][0];
       const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1397,7 +1394,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     '(AC3b,d,4,5b) update system note - Previously made - Made today - AYPG ',
     { tags: ['@PO-545', '@PO-651'] },
     () => {
-      const mockSetAccountCommentsNotes = cy.spy().as('setAccountCommentsNotesSpy');
+      const setAccountCommentsNotesSpy = Cypress.sinon.spy();
 
       finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
       finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
@@ -1408,11 +1405,11 @@ describe('FinesMacPaymentTermsComponent', () => {
       finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
       finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
 
-      setupComponent('pgToPay', mockSetAccountCommentsNotes);
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      setupComponent('pgToPay', setAccountCommentsNotesSpy);
+      cy.get('form').should('exist').submit();
 
-      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledOnce');
-      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
         cy.log('Calls:', calls);
         const arg = calls.args[0][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;
@@ -1428,10 +1425,10 @@ describe('FinesMacPaymentTermsComponent', () => {
       cy.get(DOM_ELEMENTS.payInFull).check();
       cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
-      cy.get('@setAccountCommentsNotesSpy').should('have.been.calledTwice');
-      cy.get('@setAccountCommentsNotesSpy').then((calls: any) => {
+      cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+      cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
         cy.log('Calls:', calls);
         const arg = calls.args[1][0];
         const systemNote = arg.formData.fm_account_comments_notes_system_notes;

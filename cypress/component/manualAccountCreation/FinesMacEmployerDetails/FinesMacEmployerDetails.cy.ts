@@ -10,12 +10,14 @@ import {
 import { DOM_ELEMENTS } from './constants/fines_mac_employer_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_EMPLOYER_DETAILS_MOCK } from './mocks/fines-employer-details-mock';
+import { of } from 'rxjs';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
 
-  const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
-    mount(FinesMacEmployerDetailsComponent, {
+  const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
+    return mount(FinesMacEmployerDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -29,18 +31,27 @@ describe('FinesMacEmployerDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handleEmployerDetailsSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleEmployerDetailsSubmit?.subscribe) {
+        comp.handleEmployerDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleEmployerDetailsSubmit === 'function') {
+        comp.handleEmployerDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -127,7 +138,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
       finesMacState.employerDetails.formData = incorrectData;
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -156,7 +167,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
       finesMacState.employerDetails.formData = incorrectData;
 
-      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -169,7 +180,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
 
     cy.get(DOM_ELEMENTS.telephoneNumberInput).should('have.value', '0123 456 7890');
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get('form').should('exist').submit();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
   });
@@ -182,7 +193,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', 'addr1*');
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get('form').should('exist').submit();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address2_special_chars);
@@ -193,7 +204,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get('form').should('exist').submit();
 
     Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -213,7 +224,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'Address Line 5';
       finesMacState.employerDetails.formData.fm_employer_details_employer_post_code = '12345';
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
 
       Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -228,7 +239,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
         finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = email;
         setupComponent(null, 'adultOrYouthOnly');
       });
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
     });
   });
@@ -240,14 +251,14 @@ describe('FinesMacEmployerDetailsComponent', () => {
         finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = telephone;
         setupComponent(null, 'adultOrYouthOnly');
       });
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
     });
   });
 
   it('(AC.6) should allow for form submission with corrected data', { tags: ['@PO-272', '@PO-280'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
     finesMacState.employerDetails.formData = {
       fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
       fm_employer_details_employer_reference: 'XNJ#5567',
@@ -260,11 +271,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_address_line_5: 'Avenue_test*',
       fm_employer_details_employer_post_code: 'AB124BM#',
     };
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
     cy.then(() => {
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
       finesMacState.employerDetails.formData = {
         fm_employer_details_employer_company_name: 'Test Employer',
         fm_employer_details_employer_reference: '1234567890',
@@ -278,15 +289,15 @@ describe('FinesMacEmployerDetailsComponent', () => {
         fm_employer_details_employer_post_code: 'TE12 3ST',
       };
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     });
   });
 
   it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     finesMacState.employerDetails.formData = {
       fm_employer_details_employer_company_name: 'Test Employer',
@@ -301,28 +312,28 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_post_code: '12345',
     };
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it('(AC.1) should load button for next page for AY Defendant', { tags: ['@PO-272', '@PO-434'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
 
   it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
   it('(AC.1) Employer reference and postcode should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.companyNameInput).type('Company XYZ Ltd.', { delay: 0 });
     cy.get(DOM_ELEMENTS.companyNameInput).blur();
@@ -336,7 +347,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.referenceInput).should('have.value', 'ABD123FGT');
     cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE129ET');
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
   });
 
   it(

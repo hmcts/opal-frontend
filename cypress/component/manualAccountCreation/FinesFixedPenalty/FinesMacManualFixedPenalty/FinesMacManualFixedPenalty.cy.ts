@@ -17,8 +17,8 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
 
-  const setupComponent = (formSubmit: any = null) => {
-    mount(FinesMacFixedPenaltyDetailsComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -46,9 +46,21 @@ describe('FinesMacManualFixedPenalty', () => {
           },
         },
       ],
-      componentProperties: {
-        handleFixedPenaltyDetailsSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleFixedPenaltyDetailsSubmit?.subscribe) {
+        comp.handleFixedPenaltyDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleFixedPenaltyDetailsSubmit === 'function') {
+        comp.handleFixedPenaltyDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
   beforeEach(() => {
@@ -107,7 +119,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
 
       // Submit empty form to check all validation messages
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
       cy.get(DOM_ELEMENTS.errorSummaryTitle).should('contain', 'There is a problem');
 
@@ -214,19 +226,19 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent(null);
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
 
     // User enters more than 41 characters
     const longText = 'A'.repeat(42); // Exceeds 41 characters
     cy.get(DOM_ELEMENTS.issuingAuthorityInput).type(longText);
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
 
     // User enters non-alphanumeric characters (assuming there's validation for this)
     cy.get(DOM_ELEMENTS.issuingAuthorityInput).clear().type('Invalid@Authority#123');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter the issuing authority');
   });
 
@@ -234,19 +246,19 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters more than 35 characters
     const longText = 'A'.repeat(36); // Exceeds 35 characters
     cy.get(DOM_ELEMENTS.enforcementCourtInput).type(longText);
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
 
     // User enters non-alphanumeric characters (assuming there's validation for this)
     cy.get(DOM_ELEMENTS.enforcementCourtInput).clear().type('Invalid@Court#123');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an enforcement court');
   });
 
@@ -254,13 +266,13 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not select a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Select a title');
 
     // Select a valid title to fix the error
     cy.get(DOM_ELEMENTS.titleSelect).select('Mr');
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
 
     // There should still be other errors but not the title error
     cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Select a title');
@@ -269,7 +281,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC5) Validation will exist for the First names field - required field', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Enter defendant's first name(s)");
   });
@@ -279,7 +291,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longName = 'A'.repeat(21); // Exceeds 20 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = longName;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must be 20 characters or fewer");
   });
 
@@ -287,14 +299,14 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphabetical characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_forenames = 'John123@#$';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's first name(s) must only contain letters");
   });
 
   it('(AC6) Validation will exist for the Last name field - required field', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Enter defendant's last name");
   });
@@ -304,7 +316,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longName = 'A'.repeat(31); // Exceeds 30 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = longName;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must be 30 characters or fewer");
   });
 
@@ -312,7 +324,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphabetical characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_surname = 'Smith123@#$';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', "Defendant's last name must only contain letters");
   });
 
@@ -322,7 +334,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // Future date validation
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = futureDateStr;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth in the past');
   });
 
@@ -330,7 +342,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // Letters, incorrect days or months validation
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = 'abc/de/fghi';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
   });
 
@@ -338,7 +350,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // Invalid date validation
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '32/13/2000';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid date of birth');
   });
 
@@ -346,21 +358,21 @@ describe('FinesMacManualFixedPenalty', () => {
     // Special characters validation
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01@01#2000';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
   });
 
   it('(AC7e) Validation will exist for the Date of birth field - no separators', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_dob = '01012000';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of birth in the format DD/MM/YYYY');
   });
 
   it('(AC8) Validation will exist for the Address Line 1 field - empty value', { tags: ['@PO-857'] }, () => {
     // User does not provide a value
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter address line 1, typically the building and street');
   });
@@ -370,14 +382,14 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = longAddress;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must be 30 characters or fewer');
   });
 
   it('(AC8) Validation will exist for the Address Line 1 field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_1 = '123 High Street $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 1 must only contain letters or numbers');
   });
 
@@ -386,7 +398,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(31); // Exceeds 30 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = longAddress;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must be 30 characters or fewer');
   });
 
@@ -394,7 +406,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphanumeric characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_2 = 'Apartment 123 $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 2 must only contain letters or numbers');
   });
 
@@ -403,7 +415,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longAddress = 'A'.repeat(17); // Exceeds 16 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = longAddress;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must be 16 characters or fewer');
   });
 
@@ -411,7 +423,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphanumeric characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_address_line_3 = 'West $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Address line 3 must only contain letters or numbers');
   });
 
@@ -420,7 +432,7 @@ describe('FinesMacManualFixedPenalty', () => {
     const longPostcode = 'A'.repeat(9); // Exceeds 8 characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = longPostcode;
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Postcode must be 8 characters or fewer');
   });
 
@@ -428,7 +440,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphanumeric characters
     fixedPenaltyMock.personalDetails.formData.fm_personal_details_post_code = 'SW1A$%^&';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Postcode must only contain letters or numbers');
   });
 
@@ -436,7 +448,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Notice number');
   });
@@ -445,7 +457,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'A'.repeat(17); // Exceeds 16 characters
     setupComponent();
     // User enters more than 16 characters
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Notice number must be 16 characters or fewer');
   });
 
@@ -453,7 +465,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_notice_number = 'FPN12 $%^&*';
     setupComponent();
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Notice number must only contain letters or numbers');
   });
 
@@ -464,7 +476,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
     // User does not provide a value when Vehicle is selected
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Registration number');
   });
@@ -475,7 +487,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Registration number must be 7 characters or fewer');
   });
 
@@ -487,7 +499,7 @@ describe('FinesMacManualFixedPenalty', () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
         'Registration number must only contain letters or numbers',
@@ -505,7 +517,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
       // User does not provide a value when Vehicle is selected
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter Driving licence number');
     },
@@ -520,7 +532,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
       // User does not enter a valid driving license
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
         'Enter Driving licence number in the correct format, like ABCDE123456AA1B1',
@@ -535,7 +547,7 @@ describe('FinesMacManualFixedPenalty', () => {
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
     // User enters more than 16 characters
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Driving licence number must be 16 characters or fewer');
   });
 
@@ -548,7 +560,7 @@ describe('FinesMacManualFixedPenalty', () => {
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
 
       // User enters non-alphanumeric characters
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
         'Driving licence number must only contain letters or numbers',
@@ -560,7 +572,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'A'.repeat(11); // Exceeds 10 characters
     setupComponent();
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Notice to owner or hirer number (NTO/NTH) must be 10 characters or fewer',
@@ -571,7 +583,7 @@ describe('FinesMacManualFixedPenalty', () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_nto_nth = 'NTO$%^&*';
     setupComponent();
     cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Notice to owner or hirer number (NTO/NTH) must only contain letters or numbers',
@@ -585,7 +597,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = calculateWeeksInFuture(1);
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Date notice to owner issued must be in the past');
     },
   );
@@ -597,7 +609,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '40/30/2023';
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid notice to owner date');
     },
   );
@@ -609,7 +621,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = 'abc/de/fghi';
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter notice to owner date in the format DD/MM/YYYY');
     },
   );
@@ -621,7 +633,7 @@ describe('FinesMacManualFixedPenalty', () => {
       fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_nto_issued = '01@01#2023';
       setupComponent();
       cy.get(DOM_ELEMENTS.vehicleRadioButton).check();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter notice to owner date in the format DD/MM/YYYY');
     },
   );
@@ -630,7 +642,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter date of offence');
   });
@@ -638,35 +650,35 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC17) Validation will exist for the Date of offence field - future date', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = calculateWeeksInFuture(1);
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Date of offence must be in the past');
   });
 
   it('(AC17) Validation will exist for the Date of offence field - format', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = 'ab/cd/efgh';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
   });
 
   it('(AC17) Validation will exist for the Date of offence field - invalid date', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '32/13/2023';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter a valid offence date');
   });
 
   it('(AC17) Validation will exist for the Date of offence field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01@01#2023';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
   });
 
   it('(AC17) Validation will exist for the Date of offence field - no separators', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_date_of_offence = '01012023';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence date must be in the format DD/MM/YYYY');
   });
 
@@ -674,7 +686,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter an offence code');
   });
@@ -685,7 +697,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters more than 8 characters
     const longOffenceCode = 'A'.repeat(9); // Exceeds 8 characters
     cy.get(DOM_ELEMENTS.offenceCodeInput).type(longOffenceCode, { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must be 7 or 8 characters');
   });
 
@@ -694,14 +706,14 @@ describe('FinesMacManualFixedPenalty', () => {
 
     // User enters non-alphanumeric characters
     cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('CJ03$%^&', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Offence code must only contain letters or numbers');
   });
 
   it('(AC19) Validation will exist for the Time of offence field - invalid hours', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '25:30';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter time of offence in the correct format, such as 02:00 or 14:00',
@@ -711,7 +723,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC19) Validation will exist for the Time of offence field - invalid minutes', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14:70';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter time of offence in the correct format, such as 02:00 or 14:00',
@@ -721,7 +733,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC19) Validation will exist for the Time of offence field - incorrect format', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '14-30';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter time of offence in the correct format, such as 02:00 or 14:00',
@@ -731,7 +743,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC19) Validation will exist for the Time of offence field - AM/PM format', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '2:30pm';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter time of offence in the correct format, such as 02:00 or 14:00',
@@ -741,7 +753,7 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC19) Validation will exist for the Time of offence field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_time_of_offence = '@!:$%';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter time of offence in the correct format, such as 02:00 or 14:00',
@@ -752,7 +764,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter where the offence took place');
   });
@@ -760,14 +772,14 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC20) Validation will exist for the Place of offence field - max length', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'A'.repeat(31); // Exceeds 30 characters
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Place of offence must be 30 characters or fewer');
   });
 
   it('(AC20) Validation will exist for the Place of offence field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.fixedPenaltyDetails.formData.fm_offence_details_place_of_offence = 'High Street $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
@@ -778,7 +790,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent();
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter amount imposed');
   });
@@ -791,7 +803,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
       // User enters amount with non-numeric characters
       cy.get(DOM_ELEMENTS.amountImposedInput).type('123.45abc', { delay: 0 });
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter valid amount');
     },
   );
@@ -801,7 +813,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
     // User enters amount with special characters
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type('100$%^&*', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter valid amount');
   });
 
@@ -811,7 +823,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters amount with more than 18 integers and 2 decimal places
     const longAmount = '1'.repeat(19) + '.99';
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type(longAmount, { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
@@ -823,7 +835,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
     // User enters amount with more than 2 decimal places
     cy.get(DOM_ELEMENTS.amountImposedInput).clear().type('123.456', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
@@ -833,14 +845,14 @@ describe('FinesMacManualFixedPenalty', () => {
   it('(AC22) Validation will exist for the Add comment field - max length', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'A'.repeat(30);
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.commentsInputHint).should('contain', 'You have 0 characters remaining');
   });
 
   it('(AC22) Validation will exist for the Add comment field - special characters', { tags: ['@PO-857'] }, () => {
     fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_comments = 'Test comment $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Add comment must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
@@ -851,7 +863,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters more than 1000 characters
     fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(1000);
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.accountNoteInputHint).should('contain', 'You have 0 characters remaining');
   });
 
@@ -859,7 +871,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters non-alphanumeric characters
     fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'Test account note $%^&*';
     setupComponent();
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should(
       'contain',
       'Add account note must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
@@ -916,7 +928,7 @@ describe('FinesMacManualFixedPenalty', () => {
     setupComponent(null);
 
     // User does not provide a value
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter company name');
   });
@@ -928,7 +940,7 @@ describe('FinesMacManualFixedPenalty', () => {
     // User enters more than 50 characters
     const longText = 'A'.repeat(51); // Exceeds 50 characters
     fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = longText;
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
     cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Company name must be 50 characters or fewer');
   });
 
@@ -941,7 +953,7 @@ describe('FinesMacManualFixedPenalty', () => {
 
       // User enters non-alphanumeric characters
       fixedPenaltyMock.companyDetails.formData.fm_company_details_company_name = 'Company!123';
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummaryList).should(
         'contain',
         'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',

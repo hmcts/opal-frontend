@@ -11,6 +11,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flow
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { DOM_ELEMENTS } from './constants/minor_creditor_elements';
 import { REQUIRED_FIELDS, FORMAT_CHECK, LENGTH_CHECK } from './constants/minor_creditor_errors';
+import { of } from 'rxjs';
 
 describe('FinesMacMinorCreditor', () => {
   let formData: any;
@@ -46,8 +47,9 @@ describe('FinesMacMinorCreditor', () => {
     formData = childForms;
   });
 
-  const setupComponent = (formSubmit: any, defendantType: string = '') => {
-    mount(FinesMacOffenceDetailsMinorCreditorComponent, {
+  const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+    return mount(FinesMacOffenceDetailsMinorCreditorComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -72,17 +74,25 @@ describe('FinesMacMinorCreditor', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
-      componentProperties: {
-        handleMinorCreditorFormSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleMinorCreditorFormSubmit?.subscribe) {
+        comp.handleMinorCreditorFormSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleMinorCreditorFormSubmit === 'function') {
+        comp.handleMinorCreditorFormSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -163,7 +173,7 @@ describe('FinesMacMinorCreditor', () => {
 
       console.log(formData[0].formData);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
 
       for (const [, value] of Object.entries(LENGTH_CHECK)) {
         if (value != 'Company name must be 50 characters or fewer') {
@@ -188,7 +198,7 @@ describe('FinesMacMinorCreditor', () => {
     formData[0].formData.fm_offence_details_minor_creditor_surname = '123$£!*';
     formData[0].formData.fm_offence_details_minor_creditor_forenames = '123$£!*';
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
       if (
@@ -206,7 +216,7 @@ describe('FinesMacMinorCreditor', () => {
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.creditorTypeRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNameRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankSortCodeRequired);
@@ -224,7 +234,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = 'a'.repeat(51);
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_CHECK.companyNameMaxLength);
     },
   );
@@ -237,7 +247,7 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = '123@*';
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.companyNameAlphabeticalTextPattern);
     },
   );
@@ -249,7 +259,7 @@ describe('FinesMacMinorCreditor', () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.companyNameRequired);
     },
   );
@@ -264,7 +274,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
       formData[0].formData.fm_offence_details_minor_creditor_forenames = '123@*';
       formData[0].formData.fm_offence_details_minor_creditor_surname = '123@*';
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.forenamesAlphabeticalTextPattern);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.surnameAlphabeticalTextPattern);
     },
@@ -277,7 +287,7 @@ describe('FinesMacMinorCreditor', () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
     },
   );
@@ -312,8 +322,8 @@ describe('FinesMacMinorCreditor', () => {
     ' (AC.11) should allow form submission with valid data for individual creditor',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
@@ -329,8 +339,8 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.get('form').should('exist').submit();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -338,8 +348,8 @@ describe('FinesMacMinorCreditor', () => {
     '(AC.11) should allow form submission with valid data for company creditor',
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = 'Test Company';
@@ -353,8 +363,8 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.get('form').should('exist').submit();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
   it(
@@ -373,8 +383,8 @@ describe('FinesMacMinorCreditor', () => {
   );
 
   it('(AC.1) Payment reference should be captilise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     formData[0].formData.fm_offence_details_minor_creditor_pay_by_bacs = true;
     formData[0].formData.fm_offence_details_minor_creditor_bank_account_name = 'John Doe';
@@ -395,7 +405,7 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
     cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get('form').should('exist').submit();
   });
 
   it(
@@ -416,15 +426,15 @@ describe('FinesMacMinorCreditor', () => {
     '(AC.1a, AC.3) updated conditionality and validation on minor creditor screen for individual',
     { tags: ['@PO-1075'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = '';
       formData[0].formData.fm_offence_details_minor_creditor_forenames = '';
       formData[0].formData.fm_offence_details_minor_creditor_surname = '';
       cy.get(DOM_ELEMENTS.payByBacsCheckbox).click();
-      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get('form').should('exist').submit();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualTitleRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualFirstNameRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
@@ -433,8 +443,8 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.forenamesInput).type('John', { delay: 0 });
       cy.get(DOM_ELEMENTS.surnameInput).type('Doe', { delay: 0 });
 
-      cy.get(DOM_ELEMENTS.submitButton).click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.get('form').should('exist').submit();
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 });

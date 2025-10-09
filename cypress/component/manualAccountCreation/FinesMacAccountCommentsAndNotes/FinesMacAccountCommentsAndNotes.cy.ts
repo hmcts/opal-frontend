@@ -11,6 +11,7 @@ import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK } from './mocks/fin
 import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_completed_mock';
 import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_missing_mock';
 import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_PG_mandatory_missing_mock';
+import { of } from 'rxjs';
 
 describe('FinesMacAccountCommentsAndNotesComponent', () => {
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '', finesMacStateMock: IFinesMacState) => {
@@ -27,18 +28,25 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handleAccountCommentsNoteSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) return;
+
+      const comp: any = fixture.componentInstance as any;
+
+      // Preferred: subscribe to the child's EventEmitter output via the instance
+      // If the parent exposes the child instance, subscribe directly; otherwise override method after mount:
+      if (typeof comp.handleAccountCommentsNoteSubmit === 'function') {
+        comp.handleAccountCommentsNoteSubmit = formSubmit as any;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -104,25 +112,25 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   });
 
   it('(AC.1) should allow users to fill in data and submit with no errors', { tags: ['@PO-272', '@PO-469'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
     cy.get('.errorSummary').should('not.exist');
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it('(AC.1) should allow users to submit without entering data', { tags: ['@PO-272', '@PO-469'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+    cy.get('form').should('exist').submit();
 
     cy.get('.errorSummary').should('not.exist');
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it(
