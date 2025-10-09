@@ -39,7 +39,7 @@
           <h3 [class]="style.key">Aliases</h3>
           <p [class]="style.value">
             @for (alias of tabData.party_details.individual_details?.individual_aliases; track alias) {
-              {{ alias.alias_forenames }} {{ alias.alias_surname | uppercase }}<br />
+              {{ alias.forenames }} {{ alias.surname | uppercase }}<br />
             }
           </p>
         }
