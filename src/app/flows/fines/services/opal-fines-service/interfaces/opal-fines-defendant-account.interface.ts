@@ -39,10 +39,10 @@ export interface IOpalFinesDefendantAccountOrganisationAlias {
 }
 
 export interface IOpalFinesDefendantAccountIndividualAlias {
-  alias_number: string;
+  alias_id: string;
   sequence_number: number;
-  alias_surname: string;
-  alias_forenames: string | null;
+  surname: string;
+  forenames: string | null;
 }
 
 export interface IOpalFinesDefendantAccountIndividualDetails {
