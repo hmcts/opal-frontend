@@ -4,7 +4,7 @@ import {
 } from '../interfaces/opal-fines-creditor-accounts-search-params.interface';
 
 export const OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS: IOpalFinesCreditorAccountsSearchParams = {
-  business_unit_ids: [65, 66, 73, 77, 80, 78],
+  business_unit_ids: null,
   active_accounts_only: null,
   account_number: null,
   creditor: null,
