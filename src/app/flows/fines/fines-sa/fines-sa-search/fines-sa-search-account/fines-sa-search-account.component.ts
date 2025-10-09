@@ -38,7 +38,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * has a default search account business unit selection.
    *
    * - Reads resolver data from the activated route snapshot.
-   * - Filters the refData to only include business units that have an `opal_domain`.
+   * - Filters the refData to only include business units that have a business unit type of `Accounting Division`.
    * - Assigns the filtered array to `this.businessUnitRefData`.
    * - If the store's search account does not already have `fsa_search_account_business_unit_ids`,
    *   initializes the search account state with the IDs of the filtered business units.
@@ -49,7 +49,9 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
   private getBusinessUnits(): void {
     const resolverData = this['activatedRoute']?.snapshot?.data?.['businessUnits'];
     const refData = resolverData?.refData as IOpalFinesBusinessUnit[] | undefined;
-    this.businessUnitRefData = Array.isArray(refData) ? refData.filter((bu) => Boolean(bu?.opal_domain)) : [];
+    this.businessUnitRefData = Array.isArray(refData)
+      ? refData.filter((bu) => bu.business_unit_type === 'Accounting Division')
+      : [];
     if (!this.finesSaStore.searchAccount().fsa_search_account_business_unit_ids) {
       this.finesSaStore.setSearchAccount({
         ...FINES_SA_SEARCH_ACCOUNT_STATE,
