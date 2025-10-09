@@ -323,7 +323,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    */
   private setProsecutorName(): void {
     const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
-    const idValue = idControl?.value != null ? idControl.value.toString() : '';
+    const idValue = idControl?.value ? idControl.value.toString() : '';
     const prosecutor = this.getProsecutorFromId(idValue);
 
     if (prosecutor && typeof prosecutor.name === 'string') {
