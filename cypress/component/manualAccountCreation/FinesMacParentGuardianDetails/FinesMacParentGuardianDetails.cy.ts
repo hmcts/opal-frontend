@@ -18,16 +18,16 @@ import {
   ALIAS_ALPHABETIC_VALIDATION,
 } from './constants/fines_mac_parent_guardian_details_errors';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import {
-  permittedSpecialCharacters,
-  nonPermittedSpecialCharacters,
-} from './constants/fines_mac_parent_guardian_details_character_check';
+import { nonPermittedSpecialCharacters } from './constants/fines_mac_parent_guardian_details_character_check';
+import { of } from 'rxjs';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-  const setupComponent = (formSubmit: any, mockDefendantType: string = '') => {
-    mount(FinesMacParentGuardianDetailsComponent, {
+  const setupComponent = (formSubmit?: any, mockDefendantType: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = mockDefendantType;
+
+    return mount(FinesMacParentGuardianDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -41,18 +41,27 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handleParentGuardianDetailsSubmit: formSubmit,
         defendantType: mockDefendantType,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleParentGuardianDetailsSubmit?.subscribe) {
+        comp.handleParentGuardianDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleParentGuardianDetailsSubmit === 'function') {
+        comp.handleParentGuardianDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -559,9 +568,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.5) should show errors for invalid mandatory fields and allow corrections and submit form',
     { tags: ['@PO-344', '@PO-364'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'pgToPay');
+      setupComponent(formSubmitSpy, 'pgToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
         'John Jacob Jingleheimer Schmidt Jingleheimer';
@@ -582,7 +591,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -590,9 +599,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.6) should show errors for invalid mandatory fields and allow corrections and submit form',
     { tags: ['@PO-344', '@PO-364'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'pgToPay');
+      setupComponent(formSubmitSpy, 'pgToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'FNAME';
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'LNAME';
@@ -601,13 +610,13 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
   it('(AC.1) Parent or guardian details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.firstNameInput).type('fname', { delay: 0 });
     cy.get(DOM_ELEMENTS.firstNameInput).blur();
@@ -647,6 +656,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     }
 
     cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 });

@@ -14,12 +14,15 @@ import {
 import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
+import { of } from 'rxjs';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-  const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
-    mount(FinesMacPersonalDetailsComponent, {
+  const setupComponent = (formSubmit?: any, defendantTypeMock: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantTypeMock;
+
+    return mount(FinesMacPersonalDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -33,18 +36,27 @@ describe('FinesMacPersonalDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handlePersonalDetailsSubmit: formSubmit,
         defendantType: defendantTypeMock,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handlePersonalDetailsSubmit?.subscribe) {
+        comp.handlePersonalDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handlePersonalDetailsSubmit === 'function') {
+        comp.handlePersonalDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -374,9 +386,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     '(AC.12) should show errors for invalid mandatory fields and allow corrections',
     { tags: ['@PO-272', '@PO-360'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.personalDetails.formData.fm_personal_details_forenames = 'Stuart Philips aarogyam Guuci Coach VII';
       finesMacState.personalDetails.formData.fm_personal_details_surname =
@@ -397,7 +409,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -450,8 +462,8 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('(AC.1) Personal details should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.titleInput).select('Mr');
     cy.get(DOM_ELEMENTS.firstNameInput).clear().type('fname', { delay: 0 });
