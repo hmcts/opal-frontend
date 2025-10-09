@@ -8,6 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 import { DOM_ELEMENTS } from './constants/minor-creditor-information-elements';
+import { of } from 'rxjs';
 
 describe('FinesMacMinorCreditorInformation', () => {
   let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
@@ -32,11 +33,7 @@ describe('FinesMacMinorCreditorInformation', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],

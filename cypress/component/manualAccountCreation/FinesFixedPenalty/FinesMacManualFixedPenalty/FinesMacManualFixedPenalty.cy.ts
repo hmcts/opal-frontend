@@ -17,8 +17,8 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
 
-  const setupComponent = (formSubmit: any = null) => {
-    mount(FinesMacFixedPenaltyDetailsComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -46,9 +46,21 @@ describe('FinesMacManualFixedPenalty', () => {
           },
         },
       ],
-      componentProperties: {
-        handleFixedPenaltyDetailsSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleFixedPenaltyDetailsSubmit?.subscribe) {
+        comp.handleFixedPenaltyDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleFixedPenaltyDetailsSubmit === 'function') {
+        comp.handleFixedPenaltyDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
   beforeEach(() => {

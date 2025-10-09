@@ -1,5 +1,3 @@
-import { error } from 'console';
-
 export const DOM_ELEMENTS = {
   pageTitle: 'h1.govuk-heading-l',
   addAccountNoteLabel: '.govuk-caption-l',
