@@ -13,8 +13,8 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacCreateAccountComponent', () => {
-  const setupComponent = (formSubmit: any) => {
-    mount(FinesMacCreateAccountComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacCreateAccountComponent, {
       providers: [
         OpalFines,
         provideHttpClient(),
@@ -38,9 +38,21 @@ describe('FinesMacCreateAccountComponent', () => {
           },
         },
       ],
-      componentProperties: {
-        handleAccountDetailsSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleAccountDetailsSubmit?.subscribe) {
+        comp.handleAccountDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleAccountDetailsSubmit === 'function') {
+        comp.handleAccountDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -165,8 +177,8 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('(AC5)should pass validation if both business unit and account type are filled in', { tags: ['@PO-523'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit);
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy);
 
     cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
     cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
@@ -175,16 +187,16 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(DOM_ELEMENTS.continueButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
     { tags: ['@PO-523'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit);
+      setupComponent(formSubmitSpy);
 
       cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
       cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
@@ -199,7 +211,7 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(DOM_ELEMENTS.conditionalCautionInput).click();
       cy.get(DOM_ELEMENTS.continueButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 });

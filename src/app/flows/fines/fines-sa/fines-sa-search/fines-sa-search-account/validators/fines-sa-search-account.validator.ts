@@ -26,7 +26,7 @@ function hasNestedValue(control: AbstractControl): boolean {
  *   - `fsa_search_account_individuals_search_criteria`
  *   - `fsa_search_account_companies_search_criteria`
  *   - `fsa_search_account_minor_creditors_search_criteria`
- *   - `fsa_search_account_major_creditor_search_criteria`
+ *   - `fsa_search_account_major_creditors_search_criteria`
  *
  * The validator only runs if all nested groups are valid. It returns:
  * - `null` if exactly one of the criteria is populated (valid state)
@@ -49,7 +49,7 @@ export function atLeastOneCriteriaValidator(group: AbstractControl): ValidationE
     'fsa_search_account_individuals_search_criteria',
     'fsa_search_account_companies_search_criteria',
     'fsa_search_account_minor_creditors_search_criteria',
-    'fsa_search_account_major_creditor_search_criteria',
+    'fsa_search_account_major_creditors_search_criteria',
   ];
 
   const nestedGroups = nestedGroupKeys
