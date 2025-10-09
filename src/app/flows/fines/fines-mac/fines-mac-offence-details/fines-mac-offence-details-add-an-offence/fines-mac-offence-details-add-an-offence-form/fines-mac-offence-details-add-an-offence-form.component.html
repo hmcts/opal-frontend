@@ -23,7 +23,9 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Offence details</h2>
+    </legend>
     <opal-lib-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
@@ -73,11 +75,15 @@
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Impositions</h2>
+    </legend>
     @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
       <opal-lib-moj-ticket-panel>
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-visually-hidden">Imposition {{ rowIndex + 1 }}</legend>
+          <legend class="govuk-visually-hidden">
+            <h3 class="govuk-heading-m govuk-!-margin-0">Imposition {{ rowIndex + 1 }}</h3>
+          </legend>
           <div class="govuk-grid-row govuk-form-group">
             <div class="govuk-grid-column-one-half">
               <opal-lib-alphagov-accessible-autocomplete
@@ -148,7 +154,9 @@
               <div class="govuk-grid-column-full">
                 @if (minorCreditors[rowIndex]) {
                   <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                      <h4 class="govuk-heading-s govuk-!-margin-0">Minor creditor</h4>
+                    </legend>
                     <app-fines-mac-offence-details-minor-creditor-information
                       [minorCreditor]="minorCreditors[rowIndex]!"
                       [showActions]="true"

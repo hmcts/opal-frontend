@@ -41,7 +41,9 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
+          </legend>
           <opal-lib-govuk-text-input
             #aliasFirstField
             labelText="First names"
@@ -138,7 +140,9 @@
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian address</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Parent or guardian address</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_parent_guardian_details_address_line_1"
@@ -174,7 +178,9 @@
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian vehicle details</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Parent or guardian vehicle details</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Make and model"
       inputId="fm_parent_guardian_details_vehicle_make"
