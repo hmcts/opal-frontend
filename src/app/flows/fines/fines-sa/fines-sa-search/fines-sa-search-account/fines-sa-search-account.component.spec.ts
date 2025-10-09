@@ -163,10 +163,10 @@ describe('FinesSaSearchAccountComponent', () => {
     });
 
     const refData = [
-      { business_unit_id: 1, opal_domain: 'Fines' },
-      { business_unit_id: 2, opal_domain: '' },
-      { business_unit_id: 3, opal_domain: undefined },
-      { business_unit_id: 4, opal_domain: 'Confiscation' },
+      { business_unit_id: 1, business_unit_type: 'Accounting Division' },
+      { business_unit_id: 2, business_unit_type: '' },
+      { business_unit_id: 3, business_unit_type: undefined },
+      { business_unit_id: 4, business_unit_type: 'Accounting Division' },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any[];
 
