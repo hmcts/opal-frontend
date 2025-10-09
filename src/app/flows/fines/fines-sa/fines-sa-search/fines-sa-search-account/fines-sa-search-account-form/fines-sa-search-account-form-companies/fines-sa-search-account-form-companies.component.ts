@@ -126,7 +126,7 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
     this.addControlsToNestedFormGroup(controlsGroup);
     this.setupConditionalValidation();
     this.rePopulateForm(this.finesSaStore.searchAccount().fsa_search_account_companies_search_criteria);
-    this.finesSaStore.resetSearchAccount();
+    this.finesSaStore.resetDefendantSearchCriteria();
     this.handleConditionalValidation();
   }
 

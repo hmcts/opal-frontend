@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["cypress", "node"],
+    "paths": {
+      "@constants/*": ["./src/app/constants/*"],
+      "@services/fines/*": ["./src/app/flows/fines/services/*"],
+      "@routing/pages/*": ["./src/app/pages/routing/*"],
+      "@routing/fines/*": ["./src/app/flows/fines/routing/*"],
+      "@routing/flows/*": ["./src/app/flows/routing/*"]
+    }
+  },
+  "include": [
+    "cypress",
+    "cypress/**/*.ts",
+    "cypress/**/*.tsx",
+    "cypress/**/*.js",
+    "cypress/**/*.jsx",
+    "src/**/*.ts",
+    "cypress.config.ts",
+    "node_modules/cypress"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

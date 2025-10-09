@@ -62,7 +62,8 @@ export class OpalFines {
   private readonly http = inject(HttpClient);
   private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
-  private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
+  private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
+  private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
@@ -89,9 +90,9 @@ export class OpalFines {
    */
   private appendArrayParams(params: HttpParams, key: string, values?: (string | number)[]): HttpParams {
     if (values) {
-      values.forEach((value) => {
+      for (const value of values) {
         params = params.append(key, value.toString());
-      });
+      }
     }
     return params;
   }
@@ -179,23 +180,48 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the business units based on the specified permission.
-   * Business units are cached to prevent multiple requests for the same data.
-   * Multiple permission types can be provided, and they will be cached separately.
-   * @param permission The permission type for which to retrieve the business units.
-   * @returns An Observable that emits the business units.
+   * Retrieves business unit reference data based on the specified permission.
+   *
+   * This method caches the business unit data for each permission type to avoid
+   * making multiple HTTP requests for the same data. Permissions are cached
+   * separately to account for different permission types such as
+   * `ACCOUNT_ENQUIRY`, `ACCOUNT_ENQUIRY_NOTES`, and `CREATE_MANAGE_DRAFT_ACCOUNTS`.
+   *
+   * @param permission - The permission type for which to retrieve business unit data.
+   * @returns An `Observable` emitting the business unit reference data associated with the given permission.
    */
-  public getBusinessUnits(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
+  public getBusinessUnitsByPermission(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
     // Business units are cached to prevent multiple requests for the same data.
     // We can have multiple permission types so we need to cache them separately.
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
-    if (!this.businessUnitsCache$[permission]) {
-      this.businessUnitsCache$[permission] = this.http
+    if (!this.businessUnitsPermissionCache$[permission]) {
+      this.businessUnitsPermissionCache$[permission] = this.http
         .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
         .pipe(shareReplay(1));
     }
 
-    return this.businessUnitsCache$[permission];
+    return this.businessUnitsPermissionCache$[permission];
+  }
+
+  /**
+   * Retrieves the business unit reference data as an observable.
+   *
+   * This method caches the HTTP response to avoid redundant network requests.
+   * If the cache is empty, it performs an HTTP GET request to fetch the data
+   * from the `OPAL_FINES_PATHS.businessUnitRefData` endpoint and shares the
+   * result among subscribers using `shareReplay(1)`.
+   *
+   * @returns An observable of `IOpalFinesBusinessUnitRefData` containing the
+   *          business unit reference data.
+   */
+  public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
+    if (!this.businessUnitsCache$) {
+      this.businessUnitsCache$ = this.http
+        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+        .pipe(shareReplay(1));
+    }
+
+    return this.businessUnitsCache$;
   }
 
   /**
@@ -335,13 +361,13 @@ export class OpalFines {
         [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
       };
 
-      Object.entries(filterMapping).forEach(([key, values]) => {
+      for (const [key, values] of Object.entries(filterMapping)) {
         params = this.appendArrayParams(
           params,
           key,
           values?.filter((v) => v != null),
         );
-      });
+      }
 
       this.draftAccountsCache$[cacheKey] = this.http
         .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })

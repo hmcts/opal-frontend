@@ -19,7 +19,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj('Router', ['getCurrentNavigation']);
+    mockRouter = jasmine.createSpyObj('Router', ['currentNavigation']);
     mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['searchOffences']);
     mockDateService = jasmine.createSpyObj('DateService', ['getDateNow', 'toFormat']);
     mockUtilsService = jasmine.createSpyObj('UtilsService', ['scrollToTop', 'filterNullOrUndefined']);
@@ -35,7 +35,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   });
 
   it('should resolve and return offence data when state.payload is provided', (done) => {
-    mockRouter.getCurrentNavigation.and.returnValue({
+    mockRouter.currentNavigation.and.returnValue({
       extras: {
         state: {
           payload: {
@@ -72,7 +72,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   });
 
   it('should resolve and return offence data when state.payload is provided with active true', (done) => {
-    mockRouter.getCurrentNavigation.and.returnValue({
+    mockRouter.currentNavigation.and.returnValue({
       extras: {
         state: {
           payload: {
@@ -110,7 +110,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
 
   it('should return empty array if no state.payload is available', (done) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockRouter.getCurrentNavigation.and.returnValue({ extras: {} } as any);
+    mockRouter.currentNavigation.and.returnValue({ extras: {} } as any);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     executeResolver({} as any, {} as any).subscribe((result: IOpalFinesSearchOffencesData) => {
@@ -120,7 +120,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   });
 
   it('should return empty array if API call fails', fakeAsync(() => {
-    mockRouter.getCurrentNavigation.and.returnValue({
+    mockRouter.currentNavigation.and.returnValue({
       extras: {
         state: {
           payload: {

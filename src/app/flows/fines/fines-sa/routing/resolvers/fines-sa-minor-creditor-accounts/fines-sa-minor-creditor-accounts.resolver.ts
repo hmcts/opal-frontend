@@ -32,9 +32,7 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
   const baseSearchParams = {
     ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
     // MODIFY BELOW CODE ONCE BU SELECTION IMPLEMENTED
-    business_unit_ids:
-      state.fsa_search_account_business_unit_ids ??
-      OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
+    business_unit_ids: state.fsa_search_account_business_unit_ids,
     active_accounts_only: false,
   };
 
@@ -69,22 +67,22 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
         ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
         organisation: false,
         surname:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_last_name,
         exact_match_surname:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_last_name_exact_match,
         forenames:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_first_names,
         exact_match_forenames:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_first_names_exact_match,
         address_line_1:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_individual_address_line_1,
         postcode:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_individual
+          minorCreditorCriteria.fsa_search_account_minor_creditors_individual
             .fsa_search_account_minor_creditors_individual_post_code,
       },
     });
@@ -95,16 +93,16 @@ export const finesSaMinorCreditorAccountsResolver: ResolveFn<IOpalFinesCreditorA
         ...OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_CREDITOR_DEFAULT,
         organisation: true,
         organisation_name:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+          minorCreditorCriteria.fsa_search_account_minor_creditors_company
             .fsa_search_account_minor_creditors_company_name,
         exact_match_organisation_name:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+          minorCreditorCriteria.fsa_search_account_minor_creditors_company
             .fsa_search_account_minor_creditors_company_name_exact_match,
         address_line_1:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+          minorCreditorCriteria.fsa_search_account_minor_creditors_company
             .fsa_search_account_minor_creditors_company_address_line_1,
         postcode:
-          minorCreditorCriteria!.fsa_search_account_minor_creditors_company
+          minorCreditorCriteria.fsa_search_account_minor_creditors_company
             .fsa_search_account_minor_creditors_company_post_code,
       },
     });
