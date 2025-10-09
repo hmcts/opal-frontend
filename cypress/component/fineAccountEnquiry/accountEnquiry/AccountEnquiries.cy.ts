@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { FinesAccDefendantDetailsComponent } from '../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details.component';
 import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
@@ -25,8 +26,13 @@ describe('Defendant Account Summary (Component)', () => {
   const setupComponent = (prefilledData = DEFENDANT_HEADER_MOCK, user = USER_STATE_MOCK_NO_PERMISSION) => {
     mount(FinesAccDefendantDetailsComponent, {
       providers: [
-        provideHttpClient(),
-        OpalFines,
+        {
+          provide: OpalFines,
+          useValue: {
+            getDefendantAccountAtAGlance: cy.stub().as('getDefendantAccountAtAGlance').returns(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
+            clearAccountDetailsCache: cy.stub().as('clearAccountDetailsCache'),
+          },
+        },
         {
           provide: FinesAccountStore,
           useFactory: () => {

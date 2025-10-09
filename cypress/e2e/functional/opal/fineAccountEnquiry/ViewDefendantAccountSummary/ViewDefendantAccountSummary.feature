@@ -60,8 +60,13 @@ Feature: View Defendant Account Summary - Add Comments
 
         # AC9a - Test route guard with unsaved changes
         # Test cancel with unsaved changes (route guard should trigger)
+        Then I click "Cancel", a window pops up and I click Cancel
+        And I see "Comments" on the page header
+
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Mr John ACCDETAILSURNAME" on the page header
+
+
 
 
 
@@ -103,6 +108,15 @@ Feature: View Defendant Account Summary - Add Comments
         And I see "Company Line1" text on the page
         And I see "Company Line2" text on the page
         And I see "Company Line3" text on the page
+
+
+        # AC9a - Test route guard with unsaved changes
+        # Test cancel with unsaved changes (route guard should trigger)
+        Then I click "Cancel", a window pops up and I click Cancel
+        And I see "Comments" on the page header
+
+        Then I click "Cancel", a window pops up and I click Ok
+        And I see "Mr John ACCDETAILSURNAME" on the page header
 
     @PO-777
     Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
