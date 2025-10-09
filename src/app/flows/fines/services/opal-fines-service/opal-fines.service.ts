@@ -39,6 +39,7 @@ import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draf
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDetailsAtAGlanceTabRefData } from './interfaces/opal-fines-account-details-tab-ref-data.interface';
 import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -79,9 +80,9 @@ export class OpalFines {
    */
   private appendArrayParams(params: HttpParams, key: string, values?: (string | number)[]): HttpParams {
     if (values) {
-      values.forEach((value) => {
+      for (const value of values) {
         params = params.append(key, value.toString());
-      });
+      }
     }
     return params;
   }
@@ -351,13 +352,13 @@ export class OpalFines {
         [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
       };
 
-      Object.entries(filterMapping).forEach(([key, values]) => {
+      for (const [key, values] of Object.entries(filterMapping)) {
         params = this.appendArrayParams(
           params,
           key,
           values?.filter((v) => v != null),
         );
-      });
+      }
 
       this.draftAccountsCache$[cacheKey] = this.http
         .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })
@@ -530,6 +531,21 @@ export class OpalFines {
         };
       }),
     );
+  }
+
+  /**
+   * Adds a note to be associated with a record (Entity).
+   * In this instance, the associated record (Entity) will be the Defendant Account.
+   *
+   * Permission required: 'Account Maintenance' (in the Business Unit that the Defendant Account belongs to).
+   *
+   * @param payload - The payload containing note details including associated record information,
+   *                  note type, note text, and defendant account version for concurrency.
+   * @param version - The version string to be used as the value for the `If-Match` header.
+   * @returns An Observable that emits the created note data.
+   */
+  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
   }
 
   /**

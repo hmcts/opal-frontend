@@ -56,6 +56,38 @@ export function pathForAccount(id: number | string | JQuery<HTMLElement>): strin
   return `/opal-fines-service/draft-accounts/${encodeURIComponent(finalId)}`;
 }
 
+//* Build the path for defendant accounts. Accepts number | string | jQuery element. */
+export function pathForDefendantAccount(id: number | string | JQuery<HTMLElement>): string {
+  let norm: number | string;
+  if (isJQueryElement(id)) {
+    norm = normalizeIdInput(id);
+  } else if (typeof id === 'number' || typeof id === 'string') {
+    norm = normalizeIdInput(id);
+  } else {
+    throw new Error('pathForDefendantAccount: id must be number, string, or jQuery element');
+  }
+
+  const asNum = typeof norm === 'number' ? norm : Number(norm);
+  const finalId = Number.isFinite(asNum) ? String(asNum) : String(norm);
+  return `/opal-fines-service/defendant-accounts/${encodeURIComponent(finalId)}`;
+}
+
+//* Build the testing support path for defendant accounts. Accepts number | string | jQuery element. */
+export function pathForDefAccountTestSupport(id: number | string | JQuery<HTMLElement>): string {
+  let norm: number | string;
+  if (isJQueryElement(id)) {
+    norm = normalizeIdInput(id);
+  } else if (typeof id === 'number' || typeof id === 'string') {
+    norm = normalizeIdInput(id);
+  } else {
+    throw new Error('pathForDefAccountTestSupport: id must be number, string, or jQuery element');
+  }
+
+  const asNum = typeof norm === 'number' ? norm : Number(norm);
+  const finalId = Number.isFinite(asNum) ? String(asNum) : String(norm);
+  return `opal-fines-service/testing-support/defendant-accounts/${encodeURIComponent(finalId)}`;
+}
+
 /** Extract an ID from a jQuery element’s text or a specific attribute. */
 export function extractIdFromElement(
   $el: JQuery<HTMLElement>,
@@ -117,7 +149,9 @@ function readForDelete(base: string) {
       const hdrs = toRecord(resp.headers);
       const raw = hdrs['etag'];
       const etag = typeof raw === 'string' ? raw : undefined;
-      return { status: resp.status, etag };
+      // defendant account ID if its present in the body return it, else undefined
+      const defAccId: number | undefined = resp.body.account_id;
+      return { status: resp.status, etag, defAccId };
     });
 }
 
@@ -142,6 +176,35 @@ function deleteWithPreference(base: string) {
   });
 }
 
+/** DELETE defendant account */
+function deleteDefAccount(base: string) {
+  return cy.request({ method: 'DELETE', url: base, headers: { Accept: 'application/json' }, failOnStatusCode: false });
+}
+
+/**
+ * Delete Defendant Accounts and associated data.
+ * When an account is promoted, rows are created in many tables.
+ * As a result there exists a test support API endpoint to delete defendant accounts correctly.
+ * This function will get the defendant account ID from the draft account details
+ * and call the delete defendant account endpoint, this will be called for each draft account ID passed in.
+ * The promotion of the account may also create a minor creditor account, this will also be deleted if it exists.
+ */
+function deleteDefAccountFromDraft(draftBase: string) {
+  return readForDelete(draftBase).then(({ status, defAccId }) => {
+    if (status === 404 || defAccId === undefined) return;
+    const defAccBase = pathForDefAccountTestSupport(defAccId);
+    //Future Delete associated minor creditor account first if it exists.
+
+    // Now delete the defendant account
+    return deleteDefAccount(defAccBase).then((delResp) => {
+      const status = delResp.status;
+      if (![200, 204, 404].includes(status)) {
+        cy.log(`cleanup DELETE defendant account ${defAccId} → ${status}`);
+      }
+    });
+  });
+}
+
 /** Global After hook that cleans up any created draft accounts. */
 export function installDraftAccountCleanup(): void {
   After(() => {
@@ -149,14 +212,17 @@ export function installDraftAccountCleanup(): void {
     clearAllIds();
     if (ids.length === 0) return;
 
-    // Type the callback param to silence “[object Object]” stringification warnings in logs
+    // First delete any promoted defendant accounts
     return cy.wrap(ids, { log: false }).each((idNum: number) => {
       const base = pathForAccount(idNum); // idNum is a number
-      return deleteWithPreference(base).then((delResp) => {
-        const status = delResp.status;
-        if (![200, 204, 404].includes(status)) {
-          cy.log(`cleanup DELETE ${idNum} → ${status}`);
-        }
+      return deleteDefAccountFromDraft(base).then(() => {
+        // Now delete the draft account itself
+        return deleteWithPreference(base).then((delResp) => {
+          const status = delResp.status;
+          if (![200, 204, 404].includes(status)) {
+            cy.log(`cleanup DELETE ${idNum} → ${status}`);
+          }
+        });
       });
     });
   });
