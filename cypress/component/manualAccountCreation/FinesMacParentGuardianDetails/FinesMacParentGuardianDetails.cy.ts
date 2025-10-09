@@ -134,7 +134,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'a'.repeat(31);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.firstNameTooLong);
   });
   it('(AC.1) should not permit special characters on first name field', { tags: ['@PO-344', '@PO-569'] }, () => {
@@ -143,7 +143,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
         setupComponent(null, 'pgToPay');
       });
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidFirstNames);
     });
   });
@@ -151,7 +151,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'a'.repeat(31);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.lastNameTooLong);
   });
 
@@ -161,7 +161,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;
         setupComponent(null, 'pgToPay');
       });
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.invalidLastNames);
     });
   });
@@ -169,14 +169,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('(AC.2) should reqiure first name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingFirstName);
   });
 
   it('(AC.2) should reqiure last name field input', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', MAIN_PERSONAL_DETAILS.missingLastName);
   });
 
@@ -280,7 +280,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
   });
 
@@ -291,7 +291,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
   });
@@ -303,7 +303,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
     });
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasOne);
   });
@@ -322,7 +322,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_surname_1: 'Smith',
     });
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
@@ -352,7 +352,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_1: 'John',
     });
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastNameOne}`);
@@ -393,7 +393,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       fm_parent_guardian_details_alias_surname_4: 'a'.repeat(31),
     });
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_LENGTH_VALIDATION.tooLongAliasLastNameOne}`);
@@ -440,7 +440,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       fm_parent_guardian_details_alias_surname_4: 'Lnamefive()',
     });
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasOne}`);
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_ALPHABETIC_VALIDATION.nonAlphaAliasLastNameOne}`);
@@ -465,7 +465,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       setupComponent(null, 'pgToPay');
 
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/3000';
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInFuture']);
     },
   );
@@ -474,7 +474,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
 
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
 
@@ -485,7 +485,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       setupComponent(null, 'pgToPay');
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number = 'AB1234565C';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.validNationalInsuranceNumber);
     },
   );
@@ -494,7 +494,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine1TooLong);
   });
 
@@ -502,14 +502,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'addr1*';
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine1ContainsSpecialCharacters);
   });
   it('(AC.1) should have max length validation for address line 2', { tags: ['@PO-344', '@PO-364'] }, () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine2TooLong);
   });
 
@@ -517,14 +517,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'addr2*';
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine2ContainsSpecialCharacters);
   });
   it('(AC.9) should have max length validation for address line 3', { tags: ['@PO-344', '@PO-569'] }, () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(14);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.addressLine3TooLong);
   });
 
@@ -532,14 +532,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'addr3*';
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.addressLine3ContainsSpecialCharacters);
   });
   it('(AC.1) should have max length validation for postcode', { tags: ['@PO-344', '@PO-364'] }, () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_post_code = 'a'.repeat(9);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.postcodeTooLong);
   });
 
@@ -547,7 +547,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null, 'pgToPay');
     finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.vehicleMakeTooLong);
   });
   it(
@@ -559,7 +559,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         12,
       );
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_VALIDATION.vehicleRegistrationTooLong);
     },
   );
@@ -578,7 +578,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         'smith Johnson Alexander Williams Brown Davis';
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = '120 street*';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
       for (const [, value] of Object.entries(CORRECTION_TEST_MESSAGES)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -588,7 +588,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.lastNameInput).clear().focus().type('Cola Family', { delay: 0 });
       cy.get(DOM_ELEMENTS.addressLine1Input).clear().focus().type('Pepsi Road', { delay: 0 });
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
@@ -607,7 +607,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'LNAME';
       finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'ADDR1';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
@@ -655,7 +655,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
         .should('have.value', `ALIAS${aliasNumber[i].toUpperCase()}LNAME`);
     }
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
 });

@@ -182,7 +182,7 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('contain', OFFENCE_ERROR_MESSAGES.requiredSentenceDate)
@@ -207,7 +207,7 @@ describe('FinesMacAddOffenceComponent', () => {
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
         structuredClone(Imposition);
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
@@ -262,7 +262,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(SELECTOR.resultCodeInput).click();
       cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredCreditor);
     },
   );
@@ -298,7 +298,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.majorCreditorCode).should('exist');
       cy.get(SELECTOR.majorCreditorCodeLabel).should('contain', 'Search using name or code');
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMajorCreditor);
     },
@@ -360,7 +360,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDateFormat);
     },
@@ -373,7 +373,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDate);
     },
@@ -392,7 +392,7 @@ describe('FinesMacAddOffenceComponent', () => {
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
         futureDateString;
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidFutureDate);
     },
@@ -417,7 +417,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(SELECTOR.amountImposedInput).type('invalid', { delay: 0 });
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmountValue);
     },
@@ -442,7 +442,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(SELECTOR.amountImposedInput).type('123456789012345678901.12', { delay: 0 });
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmount);
     },
@@ -535,7 +535,7 @@ describe('FinesMacAddOffenceComponent', () => {
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
         structuredClone(Imposition);
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
@@ -559,7 +559,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.resultCodeInput).click();
       cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
       cy.get(SELECTOR.minorCreditor).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
@@ -584,7 +584,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.resultCodeInput).click();
       cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
       cy.get(SELECTOR.minorCreditor).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
@@ -609,7 +609,7 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(SELECTOR.resultCodeInput).click();
       cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
       cy.get(SELECTOR.minorCreditor).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
       cy.get(DOM_ELEMENTS.addAnotherOffenceButton).first().click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);

@@ -140,7 +140,7 @@ describe('FinesMacCreateAccountComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.fineInput).click();
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.continueButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
   });
 
@@ -152,7 +152,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
       cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
       cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.continueButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.accountType);
     },
@@ -161,7 +161,7 @@ describe('FinesMacCreateAccountComponent', () => {
   it('(AC.4d)should have validation if both business unit and account type are empty', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.continueButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('contain', ERROR_MESSAGES.businessUnit)
       .should('contain', ERROR_MESSAGES.accountType);
@@ -184,7 +184,7 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
     cy.get(DOM_ELEMENTS.fineInput).click();
     cy.get(DOM_ELEMENTS.adultOrYouthInput).click();
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.continueButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
@@ -201,15 +201,15 @@ describe('FinesMacCreateAccountComponent', () => {
       cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
       cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
       cy.get(DOM_ELEMENTS.fineInput).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.continueButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Select a defendant type');
 
       cy.get(DOM_ELEMENTS.fixedPenaltyInput).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.continueButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Select a defendant type');
 
       cy.get(DOM_ELEMENTS.conditionalCautionInput).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.continueButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },

@@ -116,7 +116,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
     setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('.errorSummary').should('not.exist');
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
@@ -127,7 +127,7 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
 
     setupComponent(formSubmitSpy, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('.errorSummary').should('not.exist');
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');

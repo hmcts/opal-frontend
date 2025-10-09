@@ -85,7 +85,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
     setupComponent(formSubmitSpy);
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
@@ -98,7 +98,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get(DOM_ELEMENTS.cyDocumentRadioOption).click();
     cy.get(DOM_ELEMENTS.enCourtHearingRadioOption).click();
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
@@ -111,7 +111,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get(DOM_ELEMENTS.enDocumentRadioOption).click();
     cy.get(DOM_ELEMENTS.cyCourtHearingRadioOption).click();
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });

@@ -138,7 +138,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
       finesMacState.employerDetails.formData = incorrectData;
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -167,7 +167,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
       finesMacState.employerDetails.formData = incorrectData;
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
       for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -180,7 +180,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
 
     cy.get(DOM_ELEMENTS.telephoneNumberInput).should('have.value', '0123 456 7890');
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
   });
@@ -193,7 +193,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
     finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', 'addr1*');
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address2_special_chars);
@@ -204,7 +204,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
 
     Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -224,7 +224,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'Address Line 5';
       finesMacState.employerDetails.formData.fm_employer_details_employer_post_code = '12345';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
 
       Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
@@ -239,7 +239,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
         finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = email;
         setupComponent(null, 'adultOrYouthOnly');
       });
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
     });
   });
@@ -251,7 +251,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
         finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = telephone;
         setupComponent(null, 'adultOrYouthOnly');
       });
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
     });
   });
@@ -271,7 +271,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_address_line_5: 'Avenue_test*',
       fm_employer_details_employer_post_code: 'AB124BM#',
     };
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
     cy.then(() => {
@@ -289,7 +289,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
         fm_employer_details_employer_post_code: 'TE12 3ST',
       };
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     });
@@ -312,7 +312,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_post_code: '12345',
     };
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.wrap(formSubmitSpy).should('have.been.calledOnce');
   });
@@ -347,7 +347,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.referenceInput).should('have.value', 'ABD123FGT');
     cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE129ET');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
   });
 
   it(

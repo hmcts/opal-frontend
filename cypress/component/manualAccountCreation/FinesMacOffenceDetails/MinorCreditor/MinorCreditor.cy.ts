@@ -173,7 +173,7 @@ describe('FinesMacMinorCreditor', () => {
 
       console.log(formData[0].formData);
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
       for (const [, value] of Object.entries(LENGTH_CHECK)) {
         if (value != 'Company name must be 50 characters or fewer') {
@@ -198,7 +198,7 @@ describe('FinesMacMinorCreditor', () => {
     formData[0].formData.fm_offence_details_minor_creditor_surname = '123$£!*';
     formData[0].formData.fm_offence_details_minor_creditor_forenames = '123$£!*';
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
     for (const [, value] of Object.entries(FORMAT_CHECK)) {
       if (
@@ -216,7 +216,7 @@ describe('FinesMacMinorCreditor', () => {
     { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.creditorTypeRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankAccountNameRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.bankSortCodeRequired);
@@ -234,7 +234,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = 'a'.repeat(51);
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', LENGTH_CHECK.companyNameMaxLength);
     },
   );
@@ -247,7 +247,7 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = '123@*';
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.companyNameAlphabeticalTextPattern);
     },
   );
@@ -259,7 +259,7 @@ describe('FinesMacMinorCreditor', () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'company';
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.companyNameRequired);
     },
   );
@@ -274,7 +274,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
       formData[0].formData.fm_offence_details_minor_creditor_forenames = '123@*';
       formData[0].formData.fm_offence_details_minor_creditor_surname = '123@*';
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.forenamesAlphabeticalTextPattern);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.surnameAlphabeticalTextPattern);
     },
@@ -287,7 +287,7 @@ describe('FinesMacMinorCreditor', () => {
       setupComponent(null);
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
     },
   );
@@ -339,7 +339,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
@@ -363,7 +363,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_number = '12345678';
       formData[0].formData.fm_offence_details_minor_creditor_bank_account_ref = 'Testing';
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
@@ -405,7 +405,7 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.surnameInput).should('have.value', 'SURNAME');
     cy.get(DOM_ELEMENTS.postCodeInput).should('have.value', 'NE137FG');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.submitButton).click();
   });
 
   it(
@@ -434,7 +434,7 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_forenames = '';
       formData[0].formData.fm_offence_details_minor_creditor_surname = '';
       cy.get(DOM_ELEMENTS.payByBacsCheckbox).click();
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualTitleRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualFirstNameRequired);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_FIELDS.individualLastNameRequired);
@@ -443,7 +443,7 @@ describe('FinesMacMinorCreditor', () => {
       cy.get(DOM_ELEMENTS.forenamesInput).type('John', { delay: 0 });
       cy.get(DOM_ELEMENTS.surnameInput).type('Doe', { delay: 0 });
 
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.submitButton).click();
       cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );

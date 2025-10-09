@@ -158,7 +158,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
 
     //Verify page did not change
     cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
@@ -176,7 +176,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('contain', MISSING_ERRORS.missingEnforcementCourt);
 
     //Submit without input
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
 
     //Verify page did not change
     cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
@@ -202,7 +202,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = '1234';
 
       //Submit without input
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.returnToACDetails).click();
 
       //Verify page did not change
       cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
@@ -220,7 +220,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
 
       //Submit without input
-      cy.get('form').should('exist').submit();
+      cy.get(DOM_ELEMENTS.addPersonalDetails).click();
 
       //Verify page did not change
       cy.get(DOM_ELEMENTS.pageTitle).should('have.text', 'Court details');
@@ -245,7 +245,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(null);
 
     //Submit with invalid input
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
 
     //Verify error message
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.tooLongPCR);
@@ -257,7 +257,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.then(() => {
         setupComponent(null);
         finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = input;
-        cy.get('form').should('exist').submit();
+        cy.get(DOM_ELEMENTS.returnToACDetails).click();
         cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
       });
     });
@@ -268,7 +268,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
 
     //Verify error summary
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -287,7 +287,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourt).focus().type('Port', { delay: 0 });
     cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
     cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.pcrErrorMessage).should('not.exist');
@@ -299,7 +299,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
 
     //Verify error summary
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
@@ -317,9 +317,9 @@ describe('FinesMacCourtDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.enforcementCourtAutocomplete).find('li').first().click();
 
     //Verify error summary is cleared
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.addPersonalDetails).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
     cy.get(DOM_ELEMENTS.ljaErrorMessage).should('not.exist');
     cy.get(DOM_ELEMENTS.enforcementCourtErrorMessage).should('not.exist');
@@ -347,7 +347,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.pcrInput).should('have.value', 'TESTPCR');
 
-    cy.get('form').should('exist').submit();
+    cy.get(DOM_ELEMENTS.returnToACDetails).click();
   });
 
   it('(AC.1) should convert PCR input to uppercase', { tags: ['@PO-272', '@PO-1448'] }, () => {

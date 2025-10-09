@@ -81,7 +81,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
       offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = 'a'.repeat(4001);
       setupComponent(formSubmitSpy);
 
-      cy.get('form').should('exist').submit();
+      cy.contains('button', 'Search').click();
 
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('contain', SEARCH_OFFENCES_LENGTH_CHECK.offenceCodeMaxLength)
@@ -103,7 +103,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
           offenceSearchFormData.formData.fm_offence_details_search_offences_short_title = input;
           offenceSearchFormData.formData.fm_offence_details_search_offences_act_section = input;
           setupComponent(formSubmitSpy);
-          cy.get('form').should('exist').submit();
+          cy.contains('button', 'Search').click();
 
           cy.get(DOM_ELEMENTS.errorSummary)
             .should('contain', SEARCH_OFFENCES_FORMAT_CHECK.offenceCodeSpecialCharPattern)
