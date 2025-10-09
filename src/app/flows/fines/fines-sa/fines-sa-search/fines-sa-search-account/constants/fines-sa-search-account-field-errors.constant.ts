@@ -29,6 +29,6 @@ export const FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesSaSearchAccountFieldErr
   fsa_search_account_individuals_search_criteria: {},
   fsa_search_account_companies_search_criteria: {},
   fsa_search_account_minor_creditors_search_criteria: {},
-  fsa_search_account_major_creditor_search_criteria: {},
+  fsa_search_account_major_creditors_search_criteria: {},
   fsa_search_account_active_accounts_only: {},
 };
