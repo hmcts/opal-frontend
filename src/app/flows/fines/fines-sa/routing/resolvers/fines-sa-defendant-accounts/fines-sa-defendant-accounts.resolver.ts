@@ -41,9 +41,7 @@ export const finesSaDefendantAccountsResolver =
     // Build shared base params once
     const baseSearchParams = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      business_unit_ids:
-        state.fsa_search_account_business_unit_ids ??
-        OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS.business_unit_ids,
+      business_unit_ids: state.fsa_search_account_business_unit_ids,
     } as const;
 
     // Early exit when nothing to search for the SELECTED party type
@@ -91,15 +89,15 @@ export const finesSaDefendantAccountsResolver =
         reference_number: null,
         defendant: {
           ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-          surname: individualCriteria!.fsa_search_account_individuals_last_name,
-          exact_match_surname: individualCriteria!.fsa_search_account_individuals_last_name_exact_match ?? false,
-          forenames: individualCriteria!.fsa_search_account_individuals_first_names,
-          exact_match_forenames: individualCriteria!.fsa_search_account_individuals_first_names_exact_match ?? false,
-          birth_date: individualCriteria!.fsa_search_account_individuals_date_of_birth,
-          national_insurance_number: individualCriteria!.fsa_search_account_individuals_national_insurance_number,
-          address_line_1: individualCriteria!.fsa_search_account_individuals_address_line_1,
-          postcode: individualCriteria!.fsa_search_account_individuals_post_code,
-          include_aliases: individualCriteria!.fsa_search_account_individuals_include_aliases ?? false,
+          surname: individualCriteria.fsa_search_account_individuals_last_name,
+          exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match ?? false,
+          forenames: individualCriteria.fsa_search_account_individuals_first_names,
+          exact_match_forenames: individualCriteria.fsa_search_account_individuals_first_names_exact_match ?? false,
+          birth_date: individualCriteria.fsa_search_account_individuals_date_of_birth,
+          national_insurance_number: individualCriteria.fsa_search_account_individuals_national_insurance_number,
+          address_line_1: individualCriteria.fsa_search_account_individuals_address_line_1,
+          postcode: individualCriteria.fsa_search_account_individuals_post_code,
+          include_aliases: individualCriteria.fsa_search_account_individuals_include_aliases ?? false,
           organisation: isCompany,
         },
         active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,
@@ -112,12 +110,11 @@ export const finesSaDefendantAccountsResolver =
         reference_number: null,
         defendant: {
           ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-          organisation_name: companyCriteria!.fsa_search_account_companies_company_name,
-          exact_match_organisation_name:
-            companyCriteria!.fsa_search_account_companies_company_name_exact_match ?? false,
-          include_aliases: companyCriteria!.fsa_search_account_companies_include_aliases ?? false,
-          address_line_1: companyCriteria!.fsa_search_account_companies_address_line_1,
-          postcode: companyCriteria!.fsa_search_account_companies_post_code,
+          organisation_name: companyCriteria.fsa_search_account_companies_company_name,
+          exact_match_organisation_name: companyCriteria.fsa_search_account_companies_company_name_exact_match ?? false,
+          include_aliases: companyCriteria.fsa_search_account_companies_include_aliases ?? false,
+          address_line_1: companyCriteria.fsa_search_account_companies_address_line_1,
+          postcode: companyCriteria.fsa_search_account_companies_post_code,
           organisation: isCompany,
         },
         active_accounts_only: state.fsa_search_account_active_accounts_only ?? true,

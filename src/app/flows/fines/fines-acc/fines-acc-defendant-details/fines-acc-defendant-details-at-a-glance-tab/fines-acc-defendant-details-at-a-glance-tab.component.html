@@ -5,8 +5,8 @@
       <hr [class]="style.hr" />
 
       @if (
-        tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
-        tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
+        tabData.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
+        tabData.language_preferences?.hearing_language_preference?.language_display_name === languages.CY
       ) {
         <opal-lib-govuk-tag [tagClasses]="'govuk-tag govuk-!-margin-bottom-2'" tagId="enforcement_status">{{
           languages.CY
@@ -93,10 +93,9 @@
           }}
         </p>
       }
-
       @if (
-        tabData.language_preferences?.document_language_preference?.language_code === languages.CY ||
-        tabData.language_preferences?.hearing_language_preference?.language_code === languages.CY
+        tabData.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
+        tabData.language_preferences?.hearing_language_preference?.language_display_name === languages.CY
       ) {
         <h2 [class]="style.heading">Language preferences</h2>
         <hr [class]="style.hr" />
@@ -132,8 +131,10 @@
           <p [class]="style.value">Instalments only</p>
         }
 
-        <h3 [class]="style.key">Frequency</h3>
-        <p [class]="style.value">{{ tabData.payment_terms.instalment_period }}</p>
+        @if (tabData.payment_terms.instalment_period?.instalment_period_display_name) {
+          <h3 [class]="style.key">Frequency</h3>
+          <p [class]="style.value">{{ tabData.payment_terms.instalment_period?.instalment_period_display_name }}</p>
+        }
         @if (tabData.payment_terms.instalment_amount) {
           <h3 [class]="style.key">Instalments</h3>
           <p [class]="style.value">
@@ -152,13 +153,16 @@
     <div class="govuk-grid-column-one-third">
       <h2 [class]="style.heading">Enforcement status</h2>
       <hr [class]="style.hr" />
-      <opal-lib-govuk-tag
-        [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
-        tagId="enforcement_status"
-        >{{ tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_id }} ({{
-          tabData.enforcement_status.last_enforcement_action?.last_enforcement_action_title
-        }})</opal-lib-govuk-tag
-      >
+      @if (tabData.enforcement_status.last_enforcement_action) {
+        <opal-lib-govuk-tag
+          [tagClasses]="'govuk-tag govuk-blue-background-colour govuk-white-text-colour govuk-!-margin-bottom-2'"
+          tagId="enforcement_status"
+          >{{ tabData.enforcement_status.last_enforcement_action.last_enforcement_action_id }} ({{
+            tabData.enforcement_status.last_enforcement_action.last_enforcement_action_title
+          }})</opal-lib-govuk-tag
+        >
+        <br />
+      }
       @if (tabData.enforcement_status.collection_order_made) {
         @if (!isYouth) {
           <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
