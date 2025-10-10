@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-fines-sa-search-account-form-major-creditors',
-  imports: [],
   templateUrl: './fines-sa-search-account-form-major-creditors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
