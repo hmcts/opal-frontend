@@ -29,7 +29,10 @@ describe('Defendant Account Summary (Component)', () => {
         {
           provide: OpalFines,
           useValue: {
-            getDefendantAccountAtAGlance: cy.stub().as('getDefendantAccountAtAGlance').returns(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
+            getDefendantAccountAtAGlance: cy
+              .stub()
+              .as('getDefendantAccountAtAGlance')
+              .returns(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
             clearAccountDetailsCache: cy.stub().as('clearAccountDetailsCache'),
           },
         },
