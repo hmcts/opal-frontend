@@ -60,11 +60,11 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
     offenceDetails.splice(this.finesMacOffenceDetailsStore.offenceIndex(), 1);
 
     // decrease the fm_offence_details_id of each offence after the removed offence
-    offenceDetails.slice(startIndex).forEach((offence) => {
+    for (const offence of offenceDetails.slice(startIndex)) {
       if (offence?.formData?.fm_offence_details_id !== undefined) {
         offence.formData.fm_offence_details_id -= 1;
       }
-    });
+    }
 
     this.finesMacOffenceDetailsStore.setOffenceRemoved(true);
     this.finesMacStore.setOffenceDetails(offenceDetails);
