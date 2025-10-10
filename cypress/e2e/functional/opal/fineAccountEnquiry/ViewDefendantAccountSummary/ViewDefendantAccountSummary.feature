@@ -41,6 +41,16 @@ Feature: View Defendant Account Summary - Add Comments
         And I click on the "Cancel" link
         And I see "Mr John ACCDETAILSURNAME" on the page header
 
+        # AC9a - Test route guard with unsaved changes
+        # Test cancel with unsaved changes (route guard should trigger)
+        When I click on the "Add comments" link
+        And I see "Comments" on the page header
+        Then I click "Cancel", a window pops up and I click Cancel
+        And I see "Comments" on the page header
+
+        Then I click "Cancel", a window pops up and I click Ok
+        And I see "Mr John ACCDETAILSURNAME" on the page header
+
         # AC5 - Navigate to Change Comments when comments already exist
         When I click on the "Add comments" link
         Then I see "Comments" on the page header
@@ -58,13 +68,13 @@ Feature: View Defendant Account Summary - Add Comments
         And I see "Line2 Test" text on the page
         And I see "Line3 Test" text on the page
 
-        # AC9a - Test route guard with unsaved changes
-        # Test cancel with unsaved changes (route guard should trigger)
-        Then I click "Cancel", a window pops up and I click Cancel
-        And I see "Comments" on the page header
+        When I click on the "Change" link
+        Then I see "Comments" on the page header
+        And I see "Comment Test" in the "comment" text field
+        And I see "Line1 Test" in the "Line 1" text field
+        And I see "Line2 Test" in the "Line 2" text field
+        And I see "Line3 Test" in the "Line 3" text field
 
-        Then I click "Cancel", a window pops up and I click Ok
-        And I see "Mr John ACCDETAILSURNAME" on the page header
 
     @PO-777
     Scenario: Complete View Defendant Company Account Summary and Comments functionality
@@ -87,6 +97,16 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click the latest published account link
         And I see "Accdetail comp" on the page header
 
+        # AC9a - Test route guard with unsaved changes
+        # Test cancel with unsaved changes (route guard should trigger)
+        When I click on the "Add comments" link
+        And I see "Comments" on the page header
+        Then I click "Cancel", a window pops up and I click Cancel
+        And I see "Comments" on the page header
+
+        Then I click "Cancel", a window pops up and I click Ok
+        And I see "Accdetail comp" on the page header
+
         # AC2 / AC3 - Navigate to Add Comments and test form functionality
         When I click on the "Add comments" link
         Then I see "Comments" on the page header
@@ -95,7 +115,7 @@ Feature: View Defendant Account Summary - Add Comments
         And I enter "Company Line2" into the "Line 2" text field
         And I enter "Company Line3" into the "Line 3" text field
         And I see the "Save comments" button
-        # And I see the "Cancel" link
+        And I see the "Cancel" link
         And I click the "Save comments" button
         And I see "Accdetail comp" on the page header
 
@@ -105,13 +125,12 @@ Feature: View Defendant Account Summary - Add Comments
         And I see "Company Line2" text on the page
         And I see "Company Line3" text on the page
 
-    # AC9a - Test route guard with unsaved changes
-    # Test cancel with unsaved changes (route guard should trigger)
-    # Then I click "Cancel", a window pops up and I click Cancel
-    # And I see "Comments" on the page header
-
-    # Then I click "Cancel", a window pops up and I click Ok
-    # And I see "Mr John ACCDETAILSURNAME" on the page header
+        When I click on the "Change" link
+        Then I see "Comments" on the page header
+        And I see "Company Comment" in the "comment" text field
+        And I see "Company Line1" in the "Line 1" text field
+        And I see "Company Line2" in the "Line 2" text field
+        And I see "Company Line3" in the "Line 3" text field
 
     @PO-777
     Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality
@@ -135,6 +154,16 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click the latest published account link
         And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
 
+        # AC9a - Test route guard with unsaved changes
+        # Test cancel with unsaved changes (route guard should trigger)
+        When I click on the "Add comments" link
+        And I see "Comments" on the page header
+        Then I click "Cancel", a window pops up and I click Cancel
+        And I see "Comments" on the page header
+
+        Then I click "Cancel", a window pops up and I click Ok
+        And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
+
         # AC2 / AC3 - Navigate to Add Comments and test form functionality for pgToPay account
         When I click on the "Add comments" link
         Then I see "Comments" on the page header
@@ -146,3 +175,17 @@ Feature: View Defendant Account Summary - Add Comments
         And I see the "Cancel" link
         And I click the "Save comments" button
         And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
+
+        # AC5c - Verify updated comments display for pgToPay account
+        Then I see "Parent Guardian Comment" text on the page
+        And I see "Parent Guardian Line1" text on the page
+        And I see "Parent Guardian Line2" text on the page
+        And I see "Parent Guardian Line3" text on the page
+
+        When I click on the "Change" link
+        Then I see "Comments" on the page header
+        And I see "Parent Guardian Comment" in the "comment" text field
+        And I see "Parent Guardian Line1" in the "Line 1" text field
+        And I see "Parent Guardian Line2" in the "Line 2" text field
+        And I see "Parent Guardian Line3" in the "Line 3" text field
+
