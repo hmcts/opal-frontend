@@ -5,7 +5,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
   count: 5,
   defendant_accounts: [
     {
-      defendant_account_id: '1',
+      defendant_account_id: 1,
       account_number: '13003BU',
       organisation_flag: false,
       aliases: [
@@ -33,7 +33,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: 'Michael',
     },
     {
-      defendant_account_id: '2',
+      defendant_account_id: 2,
       account_number: '13001BU',
       organisation_flag: false,
       aliases: null,
@@ -54,7 +54,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: 'Jane',
     },
     {
-      defendant_account_id: '3',
+      defendant_account_id: 3,
       account_number: '13002BU',
       organisation_flag: false,
       aliases: [
@@ -82,7 +82,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '4',
+      defendant_account_id: 4,
       account_number: '13005BU',
       organisation_flag: false,
       aliases: null,
@@ -103,7 +103,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: 'Susan',
     },
     {
-      defendant_account_id: '5',
+      defendant_account_id: 5,
       account_number: '13004BU',
       organisation_flag: false,
       aliases: [
