@@ -688,11 +688,14 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountParty', () => {
     const account_id: number = 77;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_id}`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
     service
-      .getDefendantAccountParty(account_id, OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_id)
+      .getDefendantAccountParty(
+        account_id,
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id,
+      )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.version;
         expect(response).toEqual(expectedResponse);
