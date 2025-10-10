@@ -45,8 +45,10 @@ Feature: View Defendant Account Summary - Add Comments
         # Test cancel with unsaved changes (route guard should trigger)
         When I click on the "Add comments" link
         And I see "Comments" on the page header
+        And I enter "Comment Test" into the "comment" text field
         Then I click "Cancel", a window pops up and I click Cancel
         And I see "Comments" on the page header
+        And I see "Comment Test" in the "comment" text field
 
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Mr John ACCDETAILSURNAME" on the page header
@@ -101,8 +103,10 @@ Feature: View Defendant Account Summary - Add Comments
         # Test cancel with unsaved changes (route guard should trigger)
         When I click on the "Add comments" link
         And I see "Comments" on the page header
+        And I enter "Company Comment" into the "comment" text field
         Then I click "Cancel", a window pops up and I click Cancel
         And I see "Comments" on the page header
+        And I see "Company Comment" in the "comment" text field
 
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Accdetail comp" on the page header
@@ -158,8 +162,10 @@ Feature: View Defendant Account Summary - Add Comments
         # Test cancel with unsaved changes (route guard should trigger)
         When I click on the "Add comments" link
         And I see "Comments" on the page header
+        And I enter "Parent Guardian Comment" into the "comment" text field
         Then I click "Cancel", a window pops up and I click Cancel
         And I see "Comments" on the page header
+        And I see "Parent Guardian Comment" in the "comment" text field
 
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
