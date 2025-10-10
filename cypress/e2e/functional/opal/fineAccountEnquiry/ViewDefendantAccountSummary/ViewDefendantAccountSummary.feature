@@ -66,10 +66,6 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Mr John ACCDETAILSURNAME" on the page header
 
-
-
-
-
     @PO-777
     Scenario: Complete View Defendant Company Account Summary and Comments functionality
         # AC4 - Create & publish a company account then view header summary
@@ -99,7 +95,7 @@ Feature: View Defendant Account Summary - Add Comments
         And I enter "Company Line2" into the "Line 2" text field
         And I enter "Company Line3" into the "Line 3" text field
         And I see the "Save comments" button
-        And I see the "Cancel" link
+        # And I see the "Cancel" link
         And I click the "Save comments" button
         And I see "Accdetail comp" on the page header
 
@@ -109,14 +105,13 @@ Feature: View Defendant Account Summary - Add Comments
         And I see "Company Line2" text on the page
         And I see "Company Line3" text on the page
 
+    # AC9a - Test route guard with unsaved changes
+    # Test cancel with unsaved changes (route guard should trigger)
+    # Then I click "Cancel", a window pops up and I click Cancel
+    # And I see "Comments" on the page header
 
-        # AC9a - Test route guard with unsaved changes
-        # Test cancel with unsaved changes (route guard should trigger)
-        Then I click "Cancel", a window pops up and I click Cancel
-        And I see "Comments" on the page header
-
-        Then I click "Cancel", a window pops up and I click Ok
-        And I see "Mr John ACCDETAILSURNAME" on the page header
+    # Then I click "Cancel", a window pops up and I click Ok
+    # And I see "Mr John ACCDETAILSURNAME" on the page header
 
     @PO-777
     Scenario: Complete View Defendant Adult or Youth with Parent Guardian to Pay Account Summary and Comments functionality

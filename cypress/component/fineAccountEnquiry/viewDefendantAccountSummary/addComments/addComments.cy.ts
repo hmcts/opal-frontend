@@ -1,8 +1,6 @@
 import { mount } from 'cypress/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { provideHttpClient } from '@angular/common/http';
-
 import { FinesAccCommentsAddComponent } from '../../../../../src/app/flows/fines/fines-acc/fines-acc-comments-add/fines-acc-comments-add.component';
 import { FinesAccountStore } from '../../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../../../../src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
@@ -22,10 +20,22 @@ import {
 
 describe('FinesAccCommentsAddComponent', () => {
   const setupComponent = (prefilledData = ADD_COMMENTS_FORM_STATE_MOCK, formSubmit: any = null) => {
+    const patchDefendantAccountStub = cy.stub().as('patchDefendantAccount').returns(of(undefined));
+
     mount(FinesAccCommentsAddComponent, {
       providers: [
-        provideHttpClient(),
-        OpalFines,
+        {
+          provide: OpalFines,
+          useValue: {
+            patchDefendantAccount: patchDefendantAccountStub,
+          },
+        },
+        {
+          provide: Router,
+          useValue: {
+            navigate: cy.stub().as('routerNavigate'),
+          },
+        },
         {
           provide: FinesAccountStore,
           useFactory: () => {
@@ -47,9 +57,14 @@ describe('FinesAccCommentsAddComponent', () => {
         FinesAccPayloadService,
         UtilsService,
       ],
-      componentProperties: {
-        handleAddNoteSubmit: formSubmit,
-      },
+    }).then(({ component }) => {
+      if (formSubmit) {
+        const original = component.handleAddNoteSubmit.bind(component);
+        component.handleAddNoteSubmit = (form: any) => {
+          formSubmit(form);
+          original(form);
+        };
+      }
     });
   };
 
