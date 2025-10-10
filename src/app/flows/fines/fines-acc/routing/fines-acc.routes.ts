@@ -25,6 +25,10 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
+    canActivateChild: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
+    },
     children: [
       {
         path: FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
@@ -58,9 +62,10 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [finesAccStateGuard],
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,
         },
         resolve: { title: TitleResolver },
