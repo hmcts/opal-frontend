@@ -60,8 +60,9 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   });
 
-  const setupComponent = (formSubmit: any, defendantType: string = '') => {
-    mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
+  const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+    return mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -98,9 +99,22 @@ describe('FinesMacAddOffenceComponent', () => {
         },
       ],
       componentProperties: {
-        handleOffenceDetailsSubmit: formSubmit,
         defendantType: defendantType,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleOffenceDetailsSubmit?.subscribe) {
+        comp.handleOffenceDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleOffenceDetailsSubmit === 'function') {
+        comp.handleOffenceDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -182,8 +196,8 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.8)should allow form to be submitted with required fields filled in',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_3);
 
@@ -194,7 +208,7 @@ describe('FinesMacAddOffenceComponent', () => {
         structuredClone(Imposition);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -489,9 +503,9 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.6, AC.8) should allow form submission with multiple impositions',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit);
+      setupComponent(formSubmitSpy);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_2);
       Imposition[0] = {
@@ -523,7 +537,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
