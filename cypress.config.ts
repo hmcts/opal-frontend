@@ -1,6 +1,8 @@
 import { defineConfig } from 'cypress';
-import * as webpack from '@cypress/webpack-preprocessor';
+import webpack from '@cypress/webpack-preprocessor';
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import * as path from 'path';
 
 function setupBrowserLaunch(on) {
   on('before:browser:launch', (browser, launchOptions) => {
@@ -89,6 +91,7 @@ async function setupNodeEvents(on, config) {
 }
 
 export default defineConfig({
+  nodeVersion: 'bundled',
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
@@ -126,6 +129,14 @@ export default defineConfig({
       webpackConfig: {
         devServer: {
           port: Number(`809${process.env.CYPRESS_THREAD || '0'}`),
+        },
+        resolve: {
+          extensions: ['.ts', '.js'],
+          plugins: [
+            new TsconfigPathsPlugin({
+              configFile: path.resolve(__dirname, 'tsconfig.cypress.json'),
+            }),
+          ],
         },
       },
     },

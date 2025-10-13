@@ -82,7 +82,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -97,7 +97,7 @@ describe('OpalFines', () => {
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
@@ -107,11 +107,44 @@ describe('OpalFines', () => {
     req.flush(mockBusinessUnits);
 
     // Make a second call to searchCourt with the same search body
-    service.getBusinessUnits(permission).subscribe((response) => {
+    service.getBusinessUnitsByPermission(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);
     });
 
     // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to business unit ref data API without permission when no arg is provided', () => {
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}`;
+
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
+
+    const req = httpMock.expectOne((r) => r.url === expectedUrl && !r.params.has('permission'));
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockBusinessUnits);
+  });
+
+  it('should return cached response for the same ref data search when called without permission', () => {
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}`;
+
+    // First call populates the shared cache
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
+    const req = httpMock.expectOne((r) => r.url === expectedUrl && !r.params.has('permission'));
+    expect(req.request.method).toBe('GET');
+    req.flush(mockBusinessUnits);
+
+    // Second call should hit the cache and not trigger a new request
+    service.getBusinessUnits().subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
     httpMock.expectNone(expectedUrl);
   });
 
@@ -656,11 +689,14 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountParty', () => {
     const account_id: number = 77;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
     service
-      .getDefendantAccountParty(account_id, FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id)
+      .getDefendantAccountParty(
+        account_id,
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id,
+      )
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.version;
         expect(response).toEqual(expectedResponse);

@@ -1,7 +1,7 @@
 import { IFinesSaSearchAccountState } from '../interfaces/fines-sa-search-account-state.interface';
 
 export const FINES_SA_SEARCH_ACCOUNT_STATE_MOCK: IFinesSaSearchAccountState = {
-  fsa_search_account_business_unit_ids: [1, 2],
+  fsa_search_account_business_unit_ids: [65, 66, 73, 77, 80, 78],
   fsa_search_account_number: 'ACC12345678',
   fsa_search_account_reference_case_number: 'REF987654321',
   fsa_search_account_individuals_search_criteria: {
@@ -17,6 +17,6 @@ export const FINES_SA_SEARCH_ACCOUNT_STATE_MOCK: IFinesSaSearchAccountState = {
   },
   fsa_search_account_companies_search_criteria: null,
   fsa_search_account_minor_creditors_search_criteria: null,
-  fsa_search_account_major_creditor_search_criteria: null,
+  fsa_search_account_major_creditors_search_criteria: null,
   fsa_search_account_active_accounts_only: true,
 };

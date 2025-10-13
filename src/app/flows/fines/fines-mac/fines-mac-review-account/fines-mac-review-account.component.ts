@@ -327,11 +327,54 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {string} The back navigation path.
    */
   private getBackPath(): string {
-    return this.finesDraftStore.checker()
-      ? this.checkAndValidateTabs
-      : this.finesDraftStore.viewAllAccounts()
-        ? this.viewAllAccountsTabs
-        : this.createAndManageTabs;
+    const isChecker = this.finesDraftStore.checker();
+    const isViewAllAccounts = this.finesDraftStore.viewAllAccounts();
+
+    if (isChecker) {
+      return this.checkAndValidateTabs;
+    }
+
+    if (isViewAllAccounts) {
+      return this.viewAllAccountsTabs;
+    }
+
+    return this.createAndManageTabs;
+  }
+
+  /**
+   * Handles navigation for read-only accounts
+   */
+  private handleReadOnlyNavigation(): void {
+    this.finesMacStore.setUnsavedChanges(false);
+    this.finesMacStore.setStateChanges(false);
+    const path = this.getBackPath();
+
+    if (this.finesDraftStore.viewAllAccounts()) {
+      this.handleRoute(path, true);
+      return;
+    }
+
+    this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
+  }
+
+  /**
+   * Handles navigation for editable accounts based on account type and status
+   */
+  private handleEditableAccountNavigation(): void {
+    const isFixedPenalty = this.accountType === this.accountTypesKeys['Fixed Penalty'];
+    const isRejected = this.accountStatus === 'Rejected';
+
+    if (isFixedPenalty && isRejected) {
+      this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
+      return;
+    }
+
+    if (isFixedPenalty) {
+      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      return;
+    }
+
+    this.handleRoute(this.finesMacRoutes.children.accountDetails);
   }
 
   /**
@@ -359,29 +402,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
       return;
     }
-    if (this.isReadOnly) {
-      this.finesMacStore.setUnsavedChanges(false);
-      this.finesMacStore.setStateChanges(false);
-      const path = this.getBackPath();
 
-      // return true when going back to view-all-accounts
-      // and false when going back to tabbed fragment
-      if (this.finesDraftStore.viewAllAccounts()) {
-        this.handleRoute(path, true);
-      } else {
-        this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
-      }
-    } else {
-      if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-        if (this.accountStatus === 'Rejected') {
-          this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
-        } else {
-          this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
-        }
-      } else {
-        this.handleRoute(this.finesMacRoutes.children.accountDetails);
-      }
+    if (this.isReadOnly) {
+      this.handleReadOnlyNavigation();
+      return;
     }
+
+    this.handleEditableAccountNavigation();
   }
 
   /**

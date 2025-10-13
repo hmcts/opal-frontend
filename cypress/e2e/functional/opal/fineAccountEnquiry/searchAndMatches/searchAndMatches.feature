@@ -468,17 +468,17 @@ Feature: Account Search and Matches
     When I intercept the "account number" account search API call
     And I click the "Search" button
     Then the intercepted defendant search calls contain expected parameters
-      | defendant                 | null                     |
-      | account_number            | 12345678A                |
-      | business_unit_ids         | [65, 66, 73, 77, 80, 78] |
-      | active_accounts_only      | false                    |
-      | organisation              | false                    |
-      | prosecutor_case_reference | null                     |
+      | defendant                 | null                                                                                                                                                                                |
+      | account_number            | 12345678A                                                                                                                                                                           |
+      | business_unit_ids         | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
+      | active_accounts_only      | false                                                                                                                                                                               |
+      | organisation              | false                                                                                                                                                                               |
+      | prosecutor_case_reference | null                                                                                                                                                                                |
     And the intercepted minor creditor search call contains
-      | account_number       | 12345678A                |
-      | business_unit_ids    | [65, 66, 73, 77, 80, 78] |
-      | active_accounts_only | false                    |
-      | creditor             | null                     |
+      | account_number       | 12345678A                                                                                                                                                                           |
+      | business_unit_ids    | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
+      | active_accounts_only | false                                                                                                                                                                               |
+      | creditor             | null                                                                                                                                                                                |
 
   # PO-708 AC3b & AC2b Will be covered once API integration is complete
 

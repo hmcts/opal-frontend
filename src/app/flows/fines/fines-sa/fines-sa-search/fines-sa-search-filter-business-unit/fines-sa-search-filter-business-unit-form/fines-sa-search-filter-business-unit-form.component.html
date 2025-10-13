@@ -1,0 +1,97 @@
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Filter by business unit</h1>
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+  <opal-lib-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="inputter-in-review-tab"
+      [activeSubNavItemFragment]="tab()"
+      subNavItemFragment="fines"
+      subNavItemText="Fines"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="inputter-approved-tab"
+      [activeSubNavItemFragment]="tab()"
+      subNavItemFragment="confiscation"
+      subNavItemText="Confiscation"
+    ></li>
+  </opal-lib-moj-sub-navigation>
+  @switch (tab()) {
+    @case ('fines') {
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('confiscation') {
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+  }
+
+  <ng-template #tableWrapper>
+    <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+      <div>
+        {{ tab() === 'fines' ? selectedFines() : selectedConfiscation() }} of
+        {{ tab() === 'fines' ? finesBusinessUnits.length : confiscationBusinessUnits.length }} selected
+      </div>
+      <opal-lib-custom-vertical-scroll-pane>
+        <opal-lib-custom-vertical-scroll-pane-outer-pane>
+          <opal-lib-custom-vertical-scroll-pane-inner-pane>
+            <opal-lib-govuk-table>
+              <ng-container head>
+                <th opal-lib-govuk-table-heading>
+                  @let tabName = tab() === 'fines' ? 'Fines' : 'Confiscation';
+                  @let labelId = tab() + '_select_all_label';
+                  @let controlId = tab() + '_select_all';
+                  <span id="{{ labelId }}" class="govuk-visually-hidden"> {{ tabName }} business units </span>
+                  <div
+                    class="govuk-checkboxes--small"
+                    opal-lib-govuk-checkboxes-item
+                    [labelText]="tabName + ' business units'"
+                    labelClasses="govuk-!-font-weight-bold"
+                    inputId="fsa_search_account_business_unit_ids"
+                    [inputName]="controlId"
+                    [control]="form.get('fsa_search_account_business_unit_ids_' + tab() + '_select_all')"
+                  ></div>
+                </th>
+              </ng-container>
+              <ng-container body>
+                @for (
+                  row of tab() === 'fines' ? finesBusinessUnits : confiscationBusinessUnits;
+                  track row.business_unit_id;
+                  let i = $index
+                ) {
+                  <tr opal-lib-govuk-table-body-row>
+                    <td opal-lib-govuk-table-body-row-data id="business_unit_id_{{ row.business_unit_id.toString() }}">
+                      <div
+                        class="govuk-checkboxes--small"
+                        opal-lib-govuk-checkboxes-item
+                        [labelText]="row.business_unit_name"
+                        inputId="{{ row.business_unit_id.toString() }}"
+                        inputName="{{ row.business_unit_id.toString() }}"
+                        [control]="getBusinessUnitControl(row.business_unit_id.toString())"
+                      ></div>
+                    </td>
+                  </tr>
+                }
+              </ng-container>
+            </opal-lib-govuk-table>
+          </opal-lib-custom-vertical-scroll-pane-inner-pane>
+        </opal-lib-custom-vertical-scroll-pane-outer-pane>
+      </opal-lib-custom-vertical-scroll-pane>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <opal-lib-govuk-button buttonId="submitForm" type="submit">
+            Save selection ({{ selectedTotal() }})
+          </opal-lib-govuk-button>
+        </div>
+      </div>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <opal-lib-govuk-cancel-link cancelLinkText="Cancel" (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</div>

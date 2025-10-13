@@ -13,8 +13,9 @@ describe('fetchBusinessUnitsResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
 
   beforeEach(() => {
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnits']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getBusinessUnits', 'getBusinessUnitsByPermission']);
     mockOpalFinesService.getBusinessUnits.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
+    mockOpalFinesService.getBusinessUnitsByPermission.and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
 
     TestBed.configureTestingModule({
       providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
@@ -28,12 +29,33 @@ describe('fetchBusinessUnitsResolver', () => {
 
     await executeResolver(route, mockRouterStateSnapshot);
 
-    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith('PERMISSION_XYZ');
+    expect(mockOpalFinesService.getBusinessUnitsByPermission).toHaveBeenCalledWith('PERMISSION_XYZ');
   });
 
   it('should resolve business units data from the service', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { data: { permission: 'TEST_PERMISSION' } };
+    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+
+    const result = await firstValueFrom(
+      executeResolver(route, mockRouterStateSnapshot) as Observable<IOpalFinesBusinessUnitRefData>,
+    );
+    expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+  });
+
+  it('should call getBusinessUnits without args when no permission is provided', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} }; // no permission
+    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+
+    await executeResolver(route, mockRouterStateSnapshot);
+
+    expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalledWith();
+  });
+
+  it('should resolve business units data when no permission is provided', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { data: {} }; // no permission
     const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
 
     const result = await firstValueFrom(
