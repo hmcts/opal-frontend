@@ -183,7 +183,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.balanceCell).first().should('contain', '£1,000.00');
   });
 
-  it('(AC5e/d) Only individual tab when only results exist for individual', { tags: ['PO-709'] }, () => {
+  it('(AC5e, 5d) Only individual tab when only results exist for individual', { tags: ['PO-709'] }, () => {
     setupComponent('INDIVIDUALS_ONLY_RESULTS');
 
     // Verify only individuals and companies tabs are shown
@@ -192,7 +192,7 @@ describe('FinesSaResultsComponent - All Account Types', () => {
     cy.get(DOM_ELEMENTS.minorCreditorsTab).should('not.exist');
   });
 
-  it('(AC5e/d) Only company tab when only results exist for company', { tags: ['PO-709'] }, () => {
+  it('(AC5e, 5d) Only company tab when only results exist for company', { tags: ['PO-709'] }, () => {
     setupComponent('COMPANY_RESULTS_ONLY');
 
     // Verify only companies tab are shown

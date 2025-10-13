@@ -603,7 +603,7 @@ Feature: Account Search and Matches
     And I see "PCRAUTO010" is present in column "Ref"
     And I do not see "PCRAUTO010A" in column "Ref"
 
-  @only
+  @PO-709
   Scenario: Verify that 'Check your search' link returns user to Search for an Account screen after no results found
 
     When I enter "NOMATCH999" into the "Reference or case number" field
