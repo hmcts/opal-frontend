@@ -1,13 +1,10 @@
 import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
 /**
- * Step to intercept the defendant account update API call and mock amendments API call
- * This will capture the actual PATCH call and simulate what the amendments API should receive
+ * Step to intercept the defendant account update API call so we can assert against the live amendments payload.
  */
 When('I intercept the amendments API call', () => {
-  // Intercept the actual PATCH call to defendant-accounts that happens when saving comments
   cy.intercept('PATCH', '**/opal-fines-service/defendant-accounts/**', (req) => {
-    // Log the actual request being made
     console.log('defendantAccountUpdate →', {
       method: req.method,
       url: req.url,
@@ -17,32 +14,33 @@ When('I intercept the amendments API call', () => {
     const accountIdFromUrl = req.url.split('/').pop() ?? '';
     const numericAccountId = Number(accountIdFromUrl);
     const defendantAccountId = Number.isNaN(numericAccountId) ? accountIdFromUrl : numericAccountId;
+    Cypress.env('lastDefendantAccountId', defendantAccountId);
 
-    const stubbedResponse = {
-      defendant_account_id: defendantAccountId,
-      version: 'stubbed-version',
-      message: 'Account comments notes updated successfully',
-    };
+    const businessUnitHeader =
+      (req.headers && (req.headers['business-unit-id'] as string | undefined)) ??
+      (req.headers && (req.headers['Business-Unit-Id'] as string | undefined));
+    const businessUnitIdValue = businessUnitHeader ?? null;
+    const parsedBusinessUnitId =
+      businessUnitIdValue === null || businessUnitIdValue === undefined
+        ? null
+        : Number.isNaN(Number(businessUnitIdValue))
+          ? businessUnitIdValue
+          : Number(businessUnitIdValue);
 
-    // Stub the backend response so the test does not rely on a locally running promotion flow.
-    req.reply({
-      statusCode: 200,
-      headers: {
-        'content-type': 'application/json',
-        etag: '"stubbed-version"',
-      },
-      body: stubbedResponse,
-    });
+    if (parsedBusinessUnitId !== null && parsedBusinessUnitId !== undefined) {
+      Cypress.env('lastBusinessUnitId', parsedBusinessUnitId);
+    }
 
-    console.log('defendantAccountUpdate response →', {
-      status: 200,
-      responseBody: stubbedResponse,
+    req.continue((res) => {
+      console.log('defendantAccountUpdate response (live) →', {
+        status: res.statusCode,
+        responseBody: res.body,
+      });
     });
   }).as('defendantAccountUpdate');
 });
 
 /**
- * Step to validate that the defendant account update would trigger amendments with expected AC7 parameters
  * This validates all AC7 requirements for the amendments API
  */
 Then(
@@ -54,113 +52,164 @@ Then(
     cy.wait('@defendantAccountUpdate').then((interception) => {
       const updateBody = interception.request.body;
       const accountId = interception.request.url.split('/').pop();
+      const envAccountId = Cypress.env('lastDefendantAccountId');
+      const accountIdFromUrl = accountId ?? envAccountId ?? '';
       
       console.log('Defendant account update body:', JSON.stringify(updateBody, null, 2));
       console.log('Account ID from URL:', accountId);
 
-      // Extract the comment values from the update body to validate what should go in amendments
-      const commentData = updateBody.comment_and_notes || {};
-      
+      const commentData = (updateBody as { comment_and_notes?: Record<string, unknown> }).comment_and_notes ?? {};
+      const accountComment = (commentData as { account_comment?: unknown }).account_comment;
+      const responseBody = interception.response?.body ?? {};
+      const amendmentEntries: Array<Record<string, unknown>> = Array.isArray(
+        (responseBody as { amendments?: unknown }).amendments,
+      )
+        ? ((responseBody as { amendments: Record<string, unknown>[] }).amendments ?? [])
+        : [];
+      expect(
+        amendmentEntries.length,
+        'PATCH /defendant-accounts response should include at least one amendment entry',
+      ).to.be.greaterThan(0);
+      const expectedFieldCode = expectedParams['field_code'] ?? 'ACC_COMMENT';
+      const capturedAmendment =
+        amendmentEntries.find((entry) => String(entry['field_code'] ?? '') === expectedFieldCode) ??
+        amendmentEntries[0];
+
+      console.log('Captured amendments payload:', JSON.stringify(amendmentEntries, null, 2));
+
+      expect(capturedAmendment, 'amendment payload from intercepted response').to.exist;
+      const amendmentRecord = capturedAmendment as Record<string, unknown>;
+      const requestHeaders = interception.request.headers ?? {};
+      const resolveExpectedToken = (raw: string) => {
+        switch (raw) {
+          case 'null':
+            return null;
+          case 'account-id':
+          case 'from-url':
+            return accountIdFromUrl;
+          case 'env:last-defendant-account-id':
+            return envAccountId;
+          case 'env:last-business-unit-id':
+            return Cypress.env('lastBusinessUnitId');
+          case 'request:business-unit-id':
+            return (
+              (requestHeaders['business-unit-id'] as string | undefined) ??
+              (requestHeaders['Business-Unit-Id'] as string | undefined) ??
+              null
+            );
+          default:
+            return raw;
+        }
+      };
+
       // AC7a - amendment_id validation (auto-generated unique ID)
       if (expectedParams['amendment_id']) {
-        // Since this is auto-generated, we just validate it should exist and be unique
-        expect(expectedParams['amendment_id']).to.equal('auto-generated');
+        const actualAmendmentId = amendmentRecord['amendment_id'];
+        expect(actualAmendmentId, 'amendment_id should exist on amendment payload').to.exist;
+        if (expectedParams['amendment_id'] === 'auto-generated') {
+          expect(String(actualAmendmentId)).to.not.equal('');
+        } else {
+          expect(String(actualAmendmentId)).to.equal(expectedParams['amendment_id']);
+        }
         console.log('AC7a VALIDATED: amendment_id should be auto-generated unique ID');
       }
 
       // AC7b - business_unit_id validation (from defendant account business unit)
       if (expectedParams['business_unit_id']) {
-        // This should come from the account's business unit context
-        expect(expectedParams['business_unit_id']).to.exist;
-        console.log(`AC7b VALIDATED: business_unit_id = ${expectedParams['business_unit_id']}`);
+        const actualBusinessUnitId = amendmentRecord['business_unit_id'];
+        const expectedBusinessUnit = resolveExpectedToken(expectedParams['business_unit_id']);
+        expect(String(actualBusinessUnitId)).to.equal(String(expectedBusinessUnit));
+        console.log(`AC7b VALIDATED: business_unit_id = ${actualBusinessUnitId}`);
       }
 
       // AC7c - associated_record_type validation
       if (expectedParams['associated_record_type']) {
-        expect('defendant account').to.equal(expectedParams['associated_record_type']);
+        expect(String(amendmentRecord['associated_record_type'] ?? '')).to.equal(
+          expectedParams['associated_record_type'],
+        );
         console.log('AC7c VALIDATED: associated_record_type = "defendant account"');
       }
 
       // AC7d - associated_record_id validation (account ID from URL)
       if (expectedParams['associated_record_id']) {
-        expect(accountId).to.exist;
-        console.log(`AC7d VALIDATED: associated_record_id = ${accountId}`);
+        const expectedAssociated = resolveExpectedToken(expectedParams['associated_record_id']);
+        expect(String(amendmentRecord['associated_record_id'] ?? '')).to.equal(
+          String(expectedAssociated),
+        );
+        console.log(`AC7d VALIDATED: associated_record_id = ${amendmentRecord['associated_record_id']}`);
       }
 
       // AC7e - amended_date validation (system date)
       if (expectedParams['amended_date']) {
-        const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const amendmentDate = String(amendmentRecord['amended_date'] ?? '');
+        expect(amendmentDate, 'amended_date should be provided').to.not.equal('');
+        const dateOnly = amendmentDate.split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
         if (expectedParams['amended_date'] === 'system-date') {
-          // Validate it should be today's date
+          expect(dateOnly).to.equal(today);
           console.log(`AC7e VALIDATED: amended_date should be system date (${today})`);
         } else {
-          expect(expectedParams['amended_date']).to.equal(today);
+          expect(dateOnly).to.equal(expectedParams['amended_date']);
+          console.log(`AC7e VALIDATED: amended_date = ${dateOnly}`);
         }
       }
 
       // AC7f - amended_by validation (username from access token)
       if (expectedParams['amended_by']) {
-        // This should be the logged in user's username from the access token
-        expect(expectedParams['amended_by']).to.exist;
-        console.log(`AC7f VALIDATED: amended_by = ${expectedParams['amended_by']}`);
+        const amendedBy = amendmentRecord['amended_by'];
+        expect(String(amendedBy)).to.equal(expectedParams['amended_by']);
+        console.log(`AC7f VALIDATED: amended_by = ${amendedBy}`);
       }
 
       // AC7g - field_code validation (based on field being amended)
       if (expectedParams['field_code']) {
-        // For account comments, this should be 'ACC_COMMENT'
-        expect(expectedParams['field_code']).to.equal('ACC_COMMENT');
+        expect(String(amendmentRecord['field_code'] ?? '')).to.equal(expectedParams['field_code']);
         console.log('AC7g VALIDATED: field_code = "ACC_COMMENT"');
       }
 
       // AC7h - old_value validation (value before amendment)
       if (expectedParams['old_value']) {
-        // For new comments, this should be null
+        const actualOldValue = amendmentRecord['old_value'] ?? null;
         if (expectedParams['old_value'] === 'null') {
-          expect(null).to.be.null;
+          expect(actualOldValue, 'old_value should be null').to.be.null;
           console.log('AC7h VALIDATED: old_value = null (new comment)');
         } else {
-          // For updates, this should contain the previous value
-          expect(expectedParams['old_value']).to.exist;
-          console.log(`AC7h VALIDATED: old_value = ${expectedParams['old_value']}`);
+          expect(String(actualOldValue ?? '')).to.equal(expectedParams['old_value']);
+          console.log(`AC7h VALIDATED: old_value = ${actualOldValue}`);
         }
       }
 
       // AC7i - new_value validation (amended value)
-      if (expectedParams['new_value'] && commentData.account_comment) {
-        expect(commentData.account_comment).to.equal(expectedParams['new_value']);
-        console.log(`AC7i VALIDATED: new_value = ${commentData.account_comment}`);
+      if (expectedParams['new_value']) {
+        const expectedNewValue = resolveExpectedToken(expectedParams['new_value']);
+        const actualNewValue = amendmentRecord['new_value'] ?? null;
+        if (expectedNewValue === null) {
+          expect(actualNewValue, 'new_value should be null').to.be.null;
+        } else {
+          expect(String(actualNewValue ?? '')).to.equal(String(expectedNewValue));
+        }
+        if (accountComment !== undefined && expectedNewValue !== null) {
+          expect(accountComment).to.equal(expectedNewValue);
+        }
+        console.log(`AC7i VALIDATED: new_value = ${amendmentRecord['new_value']}`);
       }
 
       // AC7j - case_reference validation (should be null for manual amendments)
       if (expectedParams['case_reference']) {
         if (expectedParams['case_reference'] === 'null') {
-          expect(null).to.be.null;
+          expect(amendmentRecord['case_reference'] ?? null, 'case_reference should be null').to.be.null;
           console.log('AC7j VALIDATED: case_reference = null (manual amendment)');
+        } else {
+          expect(String(amendmentRecord['case_reference'] ?? '')).to.equal(expectedParams['case_reference']);
+          console.log(`AC7j VALIDATED: case_reference = ${amendmentRecord['case_reference']}`);
         }
       }
 
       // AC7k - function_code validation (should be 'AE' for Account Enquiry)
       if (expectedParams['function_code']) {
-        expect('AE').to.equal(expectedParams['function_code']);
+        expect(String(amendmentRecord['function_code'] ?? '')).to.equal(expectedParams['function_code']);
         console.log('AC7k VALIDATED: function_code = "AE" (Account Enquiry)');
       }
-
-      // Comprehensive validation summary
-      console.log('═══════════════════════════════════════════════════════════════');
-      console.log('COMPLETE AC7 AMENDMENTS API VALIDATION SUMMARY:');
-      console.log('═══════════════════════════════════════════════════════════════');
-      console.log(`AC7a - amendment_id: auto-generated unique ID`);
-      console.log(`AC7b - business_unit_id: ${expectedParams['business_unit_id'] || 'from account context'}`);
-      console.log(`AC7c - associated_record_type: defendant account`);
-      console.log(`AC7d - associated_record_id: ${accountId}`);
-      console.log(`AC7e - amended_date: ${expectedParams['amended_date'] || 'system date'}`);
-      console.log(`AC7f - amended_by: ${expectedParams['amended_by']}`);
-      console.log(`AC7g - field_code: ${expectedParams['field_code']}`);
-      console.log(`AC7h - old_value: ${expectedParams['old_value']}`);
-      console.log(`AC7i - new_value: ${commentData.account_comment || expectedParams['new_value']}`);
-      console.log(`AC7j - case_reference: null`);
-      console.log(`AC7k - function_code: AE`);
-      console.log('═══════════════════════════════════════════════════════════════');
     });
   },
 );
