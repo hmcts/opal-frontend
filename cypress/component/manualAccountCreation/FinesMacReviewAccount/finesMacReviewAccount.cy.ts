@@ -297,10 +297,10 @@ describe('FinesMacReviewAccountComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
     }).as('postDraftAccount');
-    cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', (req) => {
-      req.alias = 'replaceDraftAccount';
-      req.reply({ statusCode: 200, body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK });
-    });
+    cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', {
+      statusCode: 200,
+      body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
+    }).as('replaceDraftAccount');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
