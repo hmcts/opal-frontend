@@ -39,8 +39,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
       date_of_birth: '1980-02-03',
       age: '45',
       national_insurance_number: 'QA 12 34 56C',
-      individual_aliases: INDIVIDUAL_ALIASES, // Changed from null to empty array if it expects an array type
-      //individual_aliases: null,
+      individual_aliases: INDIVIDUAL_ALIASES,
     },
   },
   address: {
@@ -53,12 +52,12 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
   },
   language_preferences: {
     document_language_preference: {
-      language_code: 'EN',
-      language_display_name: 'English only',
+      language_code: 'CY',
+      language_display_name: 'Welsh and English',
     },
     hearing_language_preference: {
-      language_code: 'EN',
-      language_display_name: 'English only',
+      language_code: 'CY',
+      language_display_name: 'Welsh and English',
     },
   },
   payment_terms: {
