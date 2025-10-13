@@ -480,7 +480,142 @@ Feature: Account Search and Matches
       | active_accounts_only | false                                                                                                                                                                               |
       | creditor             | null                                                                                                                                                                                |
 
-  # PO-708 AC3b & AC2b Will be covered once API integration is complete
+
+  @PO-709
+  Scenario: Verify API call parameters for Defenders and Creditors search using Reference or case number
+    # AC1a, AC1b, AC1c
+    And I create a "company" draft account with the following details:
+      | Account_status                      | Submitted              |
+      | account.defendant.company_name      | Test CGI Comp 1        |
+      | account.defendant.email_address_1   | Accdetailcomp@test.com |
+      | account.defendant.post_code         | AB23 4RN               |
+      | account.account_type                | Fine                   |
+      | account.prosecutor_case_reference   | PCRAUTO008             |
+      | account.collection_order_made       | false                  |
+      | account.collection_order_made_today | false                  |
+      | account.payment_card_request        | false                  |
+    When I update the last created draft account with status "Publishing Pending"
+    And the update should succeed and return a new strong ETag
+    And I create a "adultOrYouthOnly" draft account with the following details:
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | John                           |
+      | account.defendant.surname               | AccWithComp                    |
+      | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+      | account.defendant.telephone_number_home | 02078259314                    |
+      | account.account_type                    | Fine                           |
+      | account.prosecutor_case_reference       | PCRAUTO008                     |
+      | account.collection_order_made           | false                          |
+      | account.collection_order_made_today     | false                          |
+      | account.payment_card_request            | false                          |
+      | account.defendant.dob                   | 2002-05-15                     |
+    When I update the last created draft account with status "Publishing Pending"
+    When I intercept the "reference" account search API call
+    When I enter "PCRAUTO008" into the "Reference or case number" field
+    When I select the "Companies" tab
+    And I click the "Search" button
+
+    #This step verifies that 2 calls are made, one for individuals and one for companies
+    #AC6B active accounts only is set to false
+    Then the intercepted defendant search calls contain expected parameters
+      | defendant                 | null                                                                                                                                                                                |
+      | account_number            | null                                                                                                                                                                                |
+      | business_unit_ids         | [107,52,109,130,82,135,47,77,5,65,66,8,97,45,9,10,11,12,60,126,61,110,14,89,26,36,21,22,105,24,78,112,29,139,113,106,28,30,119,31,103,57,124,96,92,38,125,116,128,99,73,129,80,138] |
+      | active_accounts_only      | false                                                                                                                                                                               |
+      | organisation              | false                                                                                                                                                                               |
+      | prosecutor_case_reference | PCRAUTO008                                                                                                                                                                          |
+
+    #AC5b, AC5c, AC5e, AC5f
+    Then I see "Search results" on the page header
+    And I see the "Individuals" tab is selected
+    And I see "PCRAUTO008" is present in column "Ref"
+    When I select the "Companies" tab
+    And I see the "Companies" tab is selected
+    And I see "PCRAUTO008" is present in column "Ref"
+
+    #AC7: Verify Back navigation behavior
+    When I click the back button link
+    Then I see "Search for an account" on the page header
+    And I see the "Companies" tab is selected
+    And I see "PCRAUTO008" in the "Reference or case number" field
+
+
+  @PO-709
+  Scenario: Verify search works for all reference types
+    #AC6
+    And I create a "company" draft account with the following details:
+      | Account_status                      | Submitted         |
+      | account.defendant.company_name      | Test CGI Co       |
+      | account.defendant.email_address_1   | test@test.com     |
+      | account.defendant.post_code         | AB23 4RN          |
+      | account.account_type                | Fine              |
+      | <reference_field>                   | <reference_value> |
+      | account.collection_order_made       | false             |
+      | account.collection_order_made_today | false             |
+      | account.payment_card_request        | false             |
+
+    When I update the last created draft account with status "Publishing Pending"
+    And the update should succeed and return a new strong ETag
+    And I enter "<reference_value>" into the "Reference or case number" field
+    And I click the "Search" button
+    And I see "Search results" on the page header
+    And I see the "Individuals" tab is selected
+    And I see "<reference_value>" is present in column "Ref"
+
+    Examples:
+      | reference_type          | reference_field                   | expected_reference_field | reference_value |
+      | Case Number             | account.prosecutor_case_reference | case_number              | CN12345         |
+      | Police Reference Number | account.prosecutor_case_reference | police_reference_number  | PRN67890        |
+      | Crown Court Reference   | account.prosecutor_case_reference | crown_court_reference    | CCR98765        |
+
+  @PO-709
+  Scenario: Verify that the Reference or Case Number search only returns exact matches
+    #AC6a - Return only exact match
+    And I create a "company" draft account with the following details:
+      | Account_status                      | Submitted      |
+      | account.defendant.company_name      | Test CGI Co A  |
+      | account.defendant.email_address_1   | testA@test.com |
+      | account.defendant.post_code         | AB23 4RN       |
+      | account.account_type                | Fine           |
+      | account.prosecutor_case_reference   | PCRAUTO010     |
+      | account.collection_order_made       | false          |
+      | account.collection_order_made_today | false          |
+      | account.payment_card_request        | false          |
+    When I update the last created draft account with status "Publishing Pending"
+
+    And I create a "company" draft account with the following details:
+      | Account_status                      | Submitted      |
+      | account.defendant.company_name      | Test CGI Co B  |
+      | account.defendant.email_address_1   | testB@test.com |
+      | account.defendant.post_code         | AB23 4RN       |
+      | account.account_type                | Fine           |
+      | account.prosecutor_case_reference   | PCRAUTO010A    |
+      | account.collection_order_made       | false          |
+      | account.collection_order_made_today | false          |
+      | account.payment_card_request        | false          |
+    When I update the last created draft account with status "Publishing Pending"
+
+    When I enter "PCRAUTO010" into the "Reference or case number" field
+    And I click the "Search" button
+
+    # --- Step 3: Verify results show only exact match ---
+    Then I see "Search results" on the page header
+    And I see the "Individuals" tab is selected
+    And I see "PCRAUTO010" is present in column "Ref"
+    And I do not see "PCRAUTO010A" in column "Ref"
+
+  @only
+  Scenario: Verify that 'Check your search' link returns user to Search for an Account screen after no results found
+
+    When I enter "NOMATCH999" into the "Reference or case number" field
+    When I select the "Companies" tab
+    And I click the "Search" button
+    And I see "Check your search" text on the page
+    When I click on the "Check your search" link
+
+    #AC3b - Returned to search screen with state retained
+    Then I see "Search for an account" on the page header
+    And I see the "Companies" tab is selected
+    And I see "NOMATCH999" in the "Reference or case number" field
 
   @PO-717
   Scenario: Verify API call parameters for Individual search
