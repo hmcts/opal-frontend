@@ -20,7 +20,6 @@ Then('There is a button to go back to the dashboard', () => {
 When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
   const emailSSO = email;
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
-  Cypress.env('signedInUserEmail', emailSSO);
 
   // Using the cy.session to cache the session for the specific user (identified by emailSSO)
   // the intention of this is to reduce the number of requests when SSO is enabled.

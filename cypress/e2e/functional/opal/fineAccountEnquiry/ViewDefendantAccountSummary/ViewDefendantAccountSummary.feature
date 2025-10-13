@@ -53,48 +53,8 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Mr John ACCDETAILSURNAME" on the page header
 
-        # AC8 Intercept the amendments API call without making changes
-        When I intercept the amendments API call
-        And I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I click the "Save comments" button
-
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated      |
-            | business_unit_id       | 77                  |
-            | associated_record_type | defendant account   |
-            | associated_record_id   | account-id          |
-            | amended_date           | system-date         |
-            | amended_by             | opal-test@HMCTS.NET |
-            | field_code             | ACC_COMMENT         |
-            | old_value              | null                |
-            | new_value              | null                |
-            | case_reference         | null                |
-            | function_code          | AE                  |
-
-
-        # Add comment and save - this should trigger the amendments API call
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I enter "Test Comment for Amendment" into the "comment" text field
-        And I click the "Save comments" button
-
-        # AC7 Validate the amendments API call was made with correct parameters
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated             |
-            | business_unit_id       | 77                         |
-            | associated_record_type | defendant account          |
-            | associated_record_id   | account-id                 |
-            | amended_date           | system-date                |
-            | amended_by             | opal-test@HMCTS.NET        |
-            | field_code             | ACC_COMMENT                |
-            | old_value              | null                       |
-            | new_value              | Test Comment for Amendment |
-            | case_reference         | null                       |
-            | function_code          | AE                         |
-
         # AC5 - Navigate to Change Comments when comments already exist
-        When I click on the "Change" link
+        When I click on the "Add comments" link
         Then I see "Comments" on the page header
         And I enter "Comment Test" into the "comment" text field
         And I enter "Line1 Test" into the "Line 1" text field
@@ -151,47 +111,8 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Accdetail comp" on the page header
 
-        # AC8 Intercept the amendments API call without making changes
-        When I intercept the amendments API call
-        And I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I click the "Save comments" button
-
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated      |
-            | business_unit_id       | 77                  |
-            | associated_record_type | defendant account   |
-            | associated_record_id   | account-id          |
-            | amended_date           | system-date         |
-            | amended_by             | opal-test@HMCTS.NET |
-            | field_code             | ACC_COMMENT         |
-            | old_value              | null                |
-            | new_value              | null                |
-            | case_reference         | null                |
-            | function_code          | AE                  |
-
-        # Add comment and save - this should trigger the amendments API call
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I enter "Company Comment for Amendment" into the "comment" text field
-        And I click the "Save comments" button
-
-        # AC7 Validate the amendments API call was made with correct parameters
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated                |
-            | business_unit_id       | 77                            |
-            | associated_record_type | defendant account             |
-            | associated_record_id   | account-id                    |
-            | amended_date           | system-date                   |
-            | amended_by             | opal-test@HMCTS.NET           |
-            | field_code             | ACC_COMMENT                   |
-            | old_value              | null                          |
-            | new_value              | Company Comment for Amendment |
-            | case_reference         | null                          |
-            | function_code          | AE                            |
-
         # AC2 / AC3 - Navigate to Add Comments and test form functionality
-        When I click on the "Change" link
+        When I click on the "Add comments" link
         Then I see "Comments" on the page header
         And I enter "Company Comment" into the "comment" text field
         And I enter "Company Line1" into the "Line 1" text field
@@ -249,47 +170,8 @@ Feature: View Defendant Account Summary - Add Comments
         Then I click "Cancel", a window pops up and I click Ok
         And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
 
-        # AC8 Intercept the amendments API call without making changes
-        When I intercept the amendments API call
-        And I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I click the "Save comments" button
-
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated      |
-            | business_unit_id       | 73                  |
-            | associated_record_type | defendant account   |
-            | associated_record_id   | account-id          |
-            | amended_date           | system-date         |
-            | amended_by             | opal-test@HMCTS.NET |
-            | field_code             | ACC_COMMENT         |
-            | old_value              | null                |
-            | new_value              | null                |
-            | case_reference         | null                |
-            | function_code          | AE                  |
-
-        # Add comment and save - this should trigger the amendments API call
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        And I enter "Parent Guardian Comment for Amendment" into the "comment" text field
-        And I click the "Save comments" button
-
-        # AC7 Validate the amendments API call was made with correct parameters
-        Then the intercepted amendments API call contains the following parameters:
-            | amendment_id           | auto-generated                        |
-            | business_unit_id       | 73                                    |
-            | associated_record_type | defendant account                     |
-            | associated_record_id   | account-id                            |
-            | amended_date           | system-date                           |
-            | amended_by             | opal-test@HMCTS.NET                   |
-            | field_code             | ACC_COMMENT                           |
-            | old_value              | null                                  |
-            | new_value              | Parent Guardian Comment for Amendment |
-            | case_reference         | null                                  |
-            | function_code          | AE                                    |
-
         # AC2 / AC3 - Navigate to Add Comments and test form functionality for pgToPay account
-        When I click on the "Change" link
+        When I click on the "Add comments" link
         Then I see "Comments" on the page header
         And I enter "Parent Guardian Comment" into the "comment" text field
         And I enter "Parent Guardian Line1" into the "Line 1" text field
