@@ -9,6 +9,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flow
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { DOM_ELEMENTS } from './constants/remove_minor_creditor_elements';
+import { of } from 'rxjs';
 
 describe('FinesMacRemoveMinorCreditor', () => {
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
@@ -50,11 +51,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IFinesSaSearchAccountForm } from '../interfaces/fines-sa-search-account-form.interface';
 import { FinesSaStore } from '../../../stores/fines-sa.store';
@@ -35,6 +35,10 @@ import { atLeastOneCriteriaValidator } from '../validators/fines-sa-search-accou
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS } from './fines-sa-search-account-form-major-creditors/constants/fines-sa-search-account-form-major-creditors-field-errors.constants';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -81,6 +85,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent {
   private readonly finesSaSearchRoutingPaths = FINES_SA_SEARCH_ROUTING_PATHS;
+  private readonly opalFinesService = inject(OpalFines);
   /**
    * Tab-specific field error templates. On tab change, the parent recomputes
    * `fieldErrors = { ...BASE, ...tabFieldErrorMap[activeTab] }` and then
@@ -90,15 +95,17 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     individuals: FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_FIELD_ERRORS,
     companies: FINES_SA_SEARCH_ACCOUNT_FORM_COMPANIES_FIELD_ERRORS,
     minorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MINOR_CREDITORS_FIELD_ERRORS,
-    majorCreditors: {},
+    majorCreditors: FINES_SA_SEARCH_ACCOUNT_FORM_MAJOR_CREDITORS_FIELD_ERRORS,
   };
 
   /**
    * Emits after `handleFormSubmit` runs the base validation/submission logic and the form is valid.
    */
   @Output() protected override formSubmit = new EventEmitter<IFinesSaSearchAccountForm>();
+  protected majorCreditors = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
 
   @Input({ required: true }) businessUnitRefData!: IOpalFinesBusinessUnit[];
+  @Input({ required: true }) majorCreditorsRefData!: IOpalFinesMajorCreditor[];
   public readonly finesSaStore = inject(FinesSaStore);
   /**
    * Parent-owned field error templates. These are swapped per active tab using `tabFieldErrorMap`.
@@ -149,7 +156,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
         fsa_search_account_individuals_search_criteria: new FormGroup({}),
         fsa_search_account_companies_search_criteria: new FormGroup({}),
         fsa_search_account_minor_creditors_search_criteria: new FormGroup({}),
-        fsa_search_account_major_creditor_search_criteria: new FormGroup({}),
+        fsa_search_account_major_creditors_search_criteria: new FormGroup({}),
         fsa_search_account_active_accounts_only: new FormControl<boolean | null>(null),
       },
       { validators: atLeastOneCriteriaValidator },
@@ -178,6 +185,26 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Populates the `majorCreditors` property with a list of major creditors
+   * retrieved from the route's snapshot data. The data is transformed into
+   * an array of objects containing the creditor's ID as `value` and a
+   * prettified name as `name`.
+   *
+   * The method uses the `opalFinesService` to generate the prettified names
+   * for the major creditors.
+   *
+   * @private
+   */
+  private populateMajorCreditors(): void {
+    this.majorCreditors.set(
+      this.majorCreditorsRefData.map((mc) => ({
+        value: mc.major_creditor_id!.toString(),
+        name: this.opalFinesService.getMajorCreditorPrettyName(mc),
+      })),
+    );
+  }
+
+  /**
    * Builds the form shell, wires the fragment listener, and seeds empty error message
    * structures based on the initial tab’s templates.
    */
@@ -186,6 +213,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
     this.rePopulateForm(this.finesSaStore.searchAccount());
     this.setupFragmentListener();
     this.setInitialErrorMessages();
+    this.populateMajorCreditors();
   }
 
   /**
@@ -193,9 +221,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    for (const key of ['individuals', 'companies', 'minor_creditors', 'major_creditor']) {
-      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false });
-    }
+    ['individuals', 'companies', 'minor_creditors', 'major_creditors'].forEach((key) =>
+      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
+    );
     this.clearAllErrorMessages();
   }
 
@@ -262,7 +290,7 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
       case 'minorCreditors':
         return this.form.get('fsa_search_account_minor_creditors_search_criteria') as FormGroup;
       case 'majorCreditors':
-        return this.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup;
+        return this.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup;
       default:
         return new FormGroup({});
     }

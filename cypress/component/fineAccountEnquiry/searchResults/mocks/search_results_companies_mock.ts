@@ -12,7 +12,7 @@ export const SEARCH_RESULTS_WITH_DATA_MOCK: IOpalFinesDefendantAccountResponse =
   count: 2,
   defendant_accounts: [
     {
-      defendant_account_id: '1',
+      defendant_account_id: 1,
       account_number: '23001BU',
       organisation_flag: true,
       aliases: null,
@@ -33,7 +33,7 @@ export const SEARCH_RESULTS_WITH_DATA_MOCK: IOpalFinesDefendantAccountResponse =
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '2',
+      defendant_account_id: 2,
       account_number: '23002BU',
       organisation_flag: true,
       aliases: null,
@@ -60,7 +60,7 @@ export const SEARCH_RESULTS_WITH_DATA_MOCK: IOpalFinesDefendantAccountResponse =
 export const PAGINATION_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
   count: 100,
   defendant_accounts: Array.from({ length: 100 }, (_, index) => ({
-    defendant_account_id: (index + 1).toString(),
+    defendant_account_id: index + 1,
     account_number: `23${String(index + 1000)}BU`,
     organisation_flag: true,
     aliases: null,
@@ -86,7 +86,7 @@ export const PAGINATION_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse 
 export const LARGE_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
   count: 101,
   defendant_accounts: Array.from({ length: 101 }, (_, index) => ({
-    defendant_account_id: (index + 1).toString(),
+    defendant_account_id: index + 1,
     account_number: `23${String(index + 1000)}BU`,
     organisation_flag: true,
     aliases: null,
@@ -113,7 +113,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
   count: 5,
   defendant_accounts: [
     {
-      defendant_account_id: '1',
+      defendant_account_id: 1,
       account_number: '23003BU',
       organisation_flag: true,
       aliases: null,
@@ -134,7 +134,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '2',
+      defendant_account_id: 2,
       account_number: '23001BU',
       organisation_flag: true,
       aliases: null,
@@ -155,7 +155,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '3',
+      defendant_account_id: 3,
       account_number: '23002BU',
       organisation_flag: true,
       aliases: null,
@@ -176,7 +176,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '4',
+      defendant_account_id: 4,
       account_number: '23004BU',
       organisation_flag: true,
       aliases: null,
@@ -197,7 +197,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '5',
+      defendant_account_id: 5,
       account_number: '23005BU',
       organisation_flag: true,
       aliases: null,
@@ -224,7 +224,7 @@ export const SORTING_SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
 export const SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
   count: 99,
   defendant_accounts: Array.from({ length: 99 }, (_, index) => ({
-    defendant_account_id: (index + 1).toString(),
+    defendant_account_id: index + 1,
     account_number: `23${String(index + 1000)}BU`,
     organisation_flag: true,
     aliases: null,
@@ -237,11 +237,11 @@ export const SEARCH_RESULTS_MOCK: IOpalFinesDefendantAccountResponse = {
     account_balance: 500.0 + index * 50,
     organisation_name: `COMPANY${index + 1} LTD`,
     defendant_title: null,
-    defendant_first_names: null,
+    defendant_firstnames: null,
     defendant_surname: null,
     birth_date: null,
     national_insurance_number: null,
     parent_guardian_surname: null,
-    parent_guardian_first_names: null,
+    parent_guardian_firstnames: null,
   })),
 };
