@@ -143,6 +143,10 @@ export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
         },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
+        },
       ],
     },
   ],
@@ -173,6 +177,10 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
         {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
+        },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
         },
       ],
     },
