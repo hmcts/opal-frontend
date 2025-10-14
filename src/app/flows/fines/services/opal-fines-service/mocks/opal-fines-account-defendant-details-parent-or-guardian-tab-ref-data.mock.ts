@@ -28,16 +28,16 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DAT
           national_insurance_number: 'QQ123456C',
           individual_aliases: [
             {
-              alias_number: '1',
+              alias_id: '1',
               sequence_number: 1,
-              alias_surname: 'Taylor',
-              alias_forenames: 'S. J.',
+              surname: 'Taylor',
+              forenames: 'S. J.',
             },
             {
-              alias_number: '2',
+              alias_id: '2',
               sequence_number: 2,
-              alias_surname: 'Peters',
-              alias_forenames: 'John',
+              surname: 'Peters',
+              forenames: 'John',
             },
           ],
         },

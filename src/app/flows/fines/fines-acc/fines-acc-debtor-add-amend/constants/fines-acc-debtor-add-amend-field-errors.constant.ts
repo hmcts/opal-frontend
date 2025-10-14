@@ -300,15 +300,23 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
   facc_debtor_add_amend_language_preferences_document_language: {},
   facc_debtor_add_amend_language_preferences_hearing_language: {},
   facc_debtor_add_amend_employer_details_employer_company_name: {
+    required: {
+      message: 'Enter employer name',
+      priority: 1,
+    },
     maxlength: {
       message: 'Employer name must be 50 characters or fewer',
-      priority: 1,
+      priority: 2,
     },
   },
   facc_debtor_add_amend_employer_details_employer_reference: {
+    required: {
+      message: 'Enter employee reference or National Insurance number',
+      priority: 1,
+    },
     maxlength: {
       message: 'Employee reference must be 20 characters or fewer',
-      priority: 1,
+      priority: 2,
     },
   },
   facc_debtor_add_amend_employer_details_employer_email_address: {
@@ -332,13 +340,17 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     },
   },
   facc_debtor_add_amend_employer_details_employer_address_line_1: {
+    required: {
+      message: 'Enter address line 1, typically the building and street',
+      priority: 1,
+    },
     maxlength: {
       message: 'Address line 1 must be 30 characters or fewer',
-      priority: 1,
+      priority: 2,
     },
     alphanumericTextPattern: {
       message: 'Address line 1 must only contain letters or numbers',
-      priority: 2,
+      priority: 3,
     },
   },
   facc_debtor_add_amend_employer_details_employer_address_line_2: {

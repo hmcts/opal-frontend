@@ -323,4 +323,104 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
     expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
   });
+
+  describe('Employer fields validation', () => {
+    it('should not require employer company name and reference when no employer fields are filled', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+
+      expect(companyNameControl?.valid).toBe(true);
+      expect(referenceControl?.valid).toBe(true);
+    });
+
+    it('should require employer company name when employer email is provided but company name is empty', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
+      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+
+      emailControl?.setValue('test@company.com');
+      companyNameControl?.setValue('');
+
+      expect(companyNameControl?.hasError('required')).toBe(true);
+    });
+
+    it('should require employer reference when employer telephone is provided but reference is empty', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const telephoneControl = component.form.get('facc_debtor_add_amend_employer_details_employer_telephone_number');
+      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+
+      telephoneControl?.setValue('01234567890');
+      referenceControl?.setValue('');
+
+      expect(referenceControl?.hasError('required')).toBe(true);
+    });
+
+    it('should require both employer company name and reference when any employer address field is provided', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const addressControl = component.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
+      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+
+      addressControl?.setValue('123 Business Street');
+      companyNameControl?.setValue('');
+      referenceControl?.setValue('');
+
+      expect(companyNameControl?.hasError('required')).toBe(true);
+      expect(referenceControl?.hasError('required')).toBe(true);
+    });
+
+    it('should not show validation errors when both company name and reference are provided with other employer fields', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
+      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+
+      emailControl?.setValue('test@company.com');
+      companyNameControl?.setValue('Test Company Ltd');
+      referenceControl?.setValue('EMP123');
+
+      expect(companyNameControl?.hasError('required')).toBe(false);
+      expect(referenceControl?.hasError('required')).toBe(false);
+    });
+
+    it('should trigger validation when employer post code is provided', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const postCodeControl = component.form.get('facc_debtor_add_amend_employer_details_employer_post_code');
+      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+
+      postCodeControl?.setValue('SW1A 1AA');
+      companyNameControl?.setValue('');
+      referenceControl?.setValue('');
+
+      expect(companyNameControl?.hasError('required')).toBe(true);
+      expect(referenceControl?.hasError('required')).toBe(true);
+    });
+
+    it('should require employer address line 1 when other employer fields are provided but address line 1 is empty', () => {
+      component.partyType = 'Adult';
+      fixture.detectChanges();
+
+      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
+      const addressLine1Control = component.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
+
+      emailControl?.setValue('test@company.com');
+      addressLine1Control?.setValue('');
+
+      expect(addressLine1Control?.hasError('required')).toBe(true);
+    });
+  });
 });

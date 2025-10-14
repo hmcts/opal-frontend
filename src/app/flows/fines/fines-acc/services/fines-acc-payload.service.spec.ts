@@ -255,16 +255,16 @@ describe('FinesAccPayloadService', () => {
       if (mockDefendantData.defendant_account_party.party_details.individual_details) {
         mockDefendantData.defendant_account_party.party_details.individual_details.individual_aliases = [
           {
-            alias_number: '1',
+            alias_id: '1',
             sequence_number: 1,
-            alias_forenames: 'Johnny',
-            alias_surname: 'Smith',
+            forenames: 'Johnny',
+            surname: 'Smith',
           },
           {
-            alias_number: '2',
+            alias_id: '2',
             sequence_number: 2,
-            alias_forenames: 'Jon',
-            alias_surname: 'Doe',
+            forenames: 'Jon',
+            surname: 'Doe',
           },
         ];
       }

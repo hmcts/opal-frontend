@@ -53,6 +53,7 @@ import {
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from '../constants/fines-acc-debtor-add-amend-form.constant';
+import { employerFieldsValidator } from '../constants/fines-acc-debtor-add-amend-validators.constant';
 
 // regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
@@ -174,9 +175,11 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
       facc_debtor_add_amend_language_preferences_hearing_language: new FormControl(null),
       facc_debtor_add_amend_employer_details_employer_company_name: new FormControl(null, [
         optionalMaxLengthValidator(50),
+        employerFieldsValidator,
       ]),
       facc_debtor_add_amend_employer_details_employer_reference: new FormControl(null, [
         optionalMaxLengthValidator(20),
+        employerFieldsValidator,
       ]),
       facc_debtor_add_amend_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
@@ -188,6 +191,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_1: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        employerFieldsValidator,
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
@@ -238,6 +242,40 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   }
 
   /**
+   * Sets up listeners for employer fields to trigger validation when any employer field changes.
+   */
+  private setupEmployerFieldsValidation(): void {
+    const employerFieldNames = [
+      'facc_debtor_add_amend_employer_details_employer_company_name',
+      'facc_debtor_add_amend_employer_details_employer_reference',
+      'facc_debtor_add_amend_employer_details_employer_email_address',
+      'facc_debtor_add_amend_employer_details_employer_telephone_number',
+      'facc_debtor_add_amend_employer_details_employer_address_line_1',
+      'facc_debtor_add_amend_employer_details_employer_address_line_2',
+      'facc_debtor_add_amend_employer_details_employer_address_line_3',
+      'facc_debtor_add_amend_employer_details_employer_address_line_4',
+      'facc_debtor_add_amend_employer_details_employer_address_line_5',
+      'facc_debtor_add_amend_employer_details_employer_post_code',
+    ];
+
+    const companyNameControl = this.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+    const employerReferenceControl = this.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+    const employerAddressLine1Control = this.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
+
+    employerFieldNames.forEach((fieldName) => {
+      const control = this.form.get(fieldName);
+      if (control) {
+        control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+          // Update validation for all required fields when any employer field changes
+          companyNameControl?.updateValueAndValidity({ emitEvent: false });
+          employerReferenceControl?.updateValueAndValidity({ emitEvent: false });
+          employerAddressLine1Control?.updateValueAndValidity({ emitEvent: false });
+        });
+      }
+    });
+  }
+
+  /**
    * Sets up the initial debtor add/amend form.
    */
   private initialDebtorAddAmendSetup(): void {
@@ -251,6 +289,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
     this.rePopulateForm(this.initialFormData.formData);
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
+    this.setupEmployerFieldsValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 

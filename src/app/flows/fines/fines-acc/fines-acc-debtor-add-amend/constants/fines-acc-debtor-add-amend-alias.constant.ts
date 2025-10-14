@@ -8,10 +8,10 @@ const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPAC
 export const FINES_ACC_DEBTOR_ADD_AMEND_ALIAS: IAbstractFormArrayControlValidation[] = [
   {
     controlName: 'facc_debtor_add_amend_alias_forenames',
-    validators: [Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR],
+    validators: [Validators.maxLength(20), Validators.required, LETTERS_WITH_SPACES_PATTERN_VALIDATOR],
   },
   {
     controlName: 'facc_debtor_add_amend_alias_surname',
-    validators: [Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR],
+    validators: [Validators.maxLength(30), Validators.required, LETTERS_WITH_SPACES_PATTERN_VALIDATOR],
   },
 ];

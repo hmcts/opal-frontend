@@ -13,9 +13,9 @@ const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAlia
     if (index < 5) {
       const aliasObject: IFinesAccDebtorAddAmendAliasState = {};
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (aliasObject as any)[`facc_debtor_add_amend_alias_forenames_${index}`] = alias.alias_forenames || null;
+      (aliasObject as any)[`facc_debtor_add_amend_alias_forenames_${index}`] = alias.forenames || null;
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (aliasObject as any)[`facc_debtor_add_amend_alias_surname_${index}`] = alias.alias_surname || null;
+      (aliasObject as any)[`facc_debtor_add_amend_alias_surname_${index}`] = alias.surname || null;
 
       result.push(aliasObject);
     }

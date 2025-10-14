@@ -109,10 +109,10 @@ describe('transformDefendantAccountPartyPayload', () => {
 
   it('should limit aliases to maximum of 5', () => {
     const manyAliases = Array.from({ length: 10 }, (_, i) => ({
-      alias_number: `${i + 1}`,
+      alias_id: `${i + 1}`,
       sequence_number: i + 1,
-      alias_forenames: `Alias${i}`,
-      alias_surname: `Surname${i}`,
+      forenames: `Alias${i}`,
+      surname: `Surname${i}`,
     }));
 
     mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = manyAliases;
@@ -189,7 +189,6 @@ describe('transformDefendantAccountPartyPayload', () => {
     // Example of how to use the empty mock with spread operator to customize specific fields
     const customizedMockData: IOpalFinesAccountDefendantAccountParty = {
       ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
-      defendant_account_id: 'DA-123',
       defendant_account_party: {
         ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK.defendant_account_party,
         defendant_account_party_type: 'Individual',
