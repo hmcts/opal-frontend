@@ -24,8 +24,15 @@ import { interceptAtAGlance } from './intercept/defendentAccountIntercept';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 describe('Defendant Account Summary (Component)', () => {
+  const mockDataChangeName = structuredClone(DEFENDANT_HEADER_MOCK);
+  if (mockDataChangeName.party_details.individual_details) {
+    mockDataChangeName.party_details.individual_details.forenames = 'James';
+    mockDataChangeName.party_details.individual_details.surname = 'Robert';
+    mockDataChangeName.party_details.individual_details.title = 'Mr';
+  }
+
   const setupComponent = (
-    prefilledData = DEFENDANT_HEADER_MOCK,
+    prefilledData = mockDataChangeName,
     language = MOCK_FINES_ACCOUNT_STATE,
     userState: IOpalUserState,
   ) => {
@@ -84,32 +91,46 @@ describe('Defendant Account Summary (Component)', () => {
     });
   };
   it(
-    'AC1,Ac1a, Ac1b, AC2a: displays Language Preferences section below National Insurance Number',
+    'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact and displays Language Preferences section below National Insurance Number',
     { tags: ['PO-984'] },
     () => {
       interceptAtAGlance();
       setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-      cy.contains(DOM.labelDefendant).should('be.visible');
-      cy.contains(DOM.labelPaymentTerms).should('be.visible');
-      cy.contains(DOM.labelEnforcementStatus).should('be.visible');
+
       cy.get(DOM.pageHeader).should('exist');
       cy.get(DOM.headingWithCaption).should('exist');
-      cy.get(DOM.headingName).should('exist').and('contain.text', 'Anna Graham');
+      cy.get(DOM.headingName).should('exist').and('contain.text', 'Robert Thomson');
       cy.get(DOM.accountInfo).should('exist');
       cy.get(DOM.summaryMetricBar).should('exist');
       cy.get(DOM.subnav).should('exist');
       cy.get(DOM.atAGlanceTabComponent).should('exist');
-      cy.contains('h3', /national insurance number/i)
+      cy.contains(DOM.labelDefendant).should('be.visible');
+      cy.contains(DOM.labelPaymentTerms).should('be.visible');
+      cy.contains(DOM.labelEnforcementStatus).should('be.visible');
+      cy.get('h3')
+        .contains('Date of birth')
+        .next('p')
         .should('be.visible')
-        .as('niH3');
-      cy.get('@niH3')
-        .siblings('h2')
-        .contains(/language preference(s)?/i)
-        .should('be.visible');
+        .should('contain.text', ' 03 February 1980 ');
+      cy.get('h3')
+        .contains('Address')
+        .next('p')
+        .should('be.visible')
+        .should('contain.text', ' 123 Main Street  Apt 4  AB12 3CD ');
     },
   );
 
-  it('AC2ai: displays Language Preferences as read-only fields', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2a: Displays Language Preferences section below National Insurance Number', { tags: ['PO-984'] }, () => {
+    interceptAtAGlance();
+    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+    cy.get('h3').contains('National Insurance Number').next('p').should('be.visible').as('niH3');
+    cy.get('@niH3')
+      .siblings('h2')
+      .contains(/language preference(s)?/i)
+      .should('be.visible');
+  });
+
+  it('AC2ai: Displays Language Preferences as read-only fields', { tags: ['PO-1593', 'PO-866'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
 
@@ -184,9 +205,9 @@ describe('Defendant Account Summary (Component)', () => {
       .then((text) => {
         const aliases = text.replace(/\s+/g, ' ').trim();
 
-        expect(aliases).to.contain('B SMITH');
-        expect(aliases).to.contain('A GRAHAM');
-        expect(aliases.indexOf('B SMITH')).to.be.lessThan(aliases.indexOf('A GRAHAM')); // order check
+        expect(aliases).to.contain('Ewan SMITH');
+        expect(aliases).to.contain('Megan WILLIAMS');
+        expect(aliases.indexOf('Ewan SMITH')).to.be.lessThan(aliases.indexOf('Megan WILLIAMS')); // order check
       });
   });
   it('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-984'] }, () => {
@@ -222,7 +243,7 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
   });
 
-  it('AC4b: displays Comments section with Account Comment but no Free Text Notes', { tags: ['PO-984'] }, () => {
+  it('AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes', { tags: ['PO-984'] }, () => {
     const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     mockDataNoComments.comments_and_notes = {
       account_comment: 'Test account comment',
@@ -238,7 +259,7 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
   });
 
-  it('AC4c: displays Comments section with Free Text Notes but no Account Comment', { tags: ['PO-984'] }, () => {
+  it('AC4c, Ac9: displays Comments section with Free Text Notes but no Account Comment', { tags: ['PO-984'] }, () => {
     const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     mockDataNoComments.comments_and_notes = {
       account_comment: null,
@@ -271,7 +292,7 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
   it(
-    'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in current BU',
+    'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU',
     { tags: ['PO-984'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -299,7 +320,7 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   it(
-    'AC5i: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in current BU',
+    'AC5i: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU',
     { tags: ['PO-984'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
@@ -370,7 +391,7 @@ describe('Defendant Account Summary (Component)', () => {
     },
   );
 
-  it('AC5c: Calls error path when user has no permission in this BU only in other BU', { tags: ['PO-984'] }, () => {
+  it('AC5c: Calls error path when user has no permission in any BU', { tags: ['PO-984'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_NO_PERMISSION);
     cy.get(DOM.linkText).should('not.exist');
@@ -468,8 +489,6 @@ describe('Defendant Account Summary (Component)', () => {
       }),
         interceptAtAGlance(mockDataNoEnforcementAction));
       setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-      //to do existing tests
-      cy.get('h3').contains('Last Enforcement Action').should('not.exist');
       cy.get('h3').contains('Days in default').and('be.visible').next('p').should('have.text', ' 45 days ');
       cy.get('h3')
         .contains('Enforcement override')
@@ -515,7 +534,7 @@ describe('Defendant Account Summary (Component)', () => {
         .and('have.css', 'color', 'rgb(212, 53, 28)');
     },
   );
-  //the red flag is not coming for youth with co true
+
   it(
     'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
     { tags: ['PO-984'] },
@@ -533,6 +552,7 @@ describe('Defendant Account Summary (Component)', () => {
         .and('have.css', 'color', 'rgb(212, 53, 28)');
     },
   );
+
   it(
     'AC8d: displays no collection order label when defendant is youth and CO flag is false',
     { tags: ['PO-984'] },

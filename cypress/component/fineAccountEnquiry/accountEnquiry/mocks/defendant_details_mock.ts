@@ -38,9 +38,9 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
     organisation_flag: false,
     organisation_details: null,
     individual_details: {
-      title: 'Ms',
-      forenames: 'Anna',
-      surname: 'Graham',
+      title: 'Mr',
+      forenames: 'Robert',
+      surname: 'Thomson',
       date_of_birth: '1980-02-03',
       age: '45',
       national_insurance_number: null,

@@ -5,8 +5,8 @@ import { IOpalFinesDefendantAccountAlias } from '../../../../../src/app/flows/fi
 import { IFinesAccountState } from '../../../../../src/app/flows/fines/fines-acc/interfaces/fines-acc-state-interface';
 import { IOpalFinesDefendantAccountIndividualAlias } from '../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 const INDIVIDUAL_ALIASES: IOpalFinesDefendantAccountIndividualAlias[] = [
-  { alias_id: '2', sequence_number: 1, surname: 'Smith', forenames: 'B' },
-  { alias_id: '1', sequence_number: 2, surname: 'Graham', forenames: 'A' },
+  { alias_id: '2', sequence_number: 1, surname: 'Smith', forenames: 'Ewan' },
+  { alias_id: '1', sequence_number: 2, surname: 'Williams', forenames: 'Megan' },
 ];
 
 export const MOCK_FINES_ACCOUNT_STATE: IFinesAccountState = {
@@ -34,8 +34,8 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
     organisation_details: null,
     individual_details: {
       title: 'Ms',
-      forenames: 'Anna',
-      surname: 'Graham',
+      forenames: 'Megan ',
+      surname: 'Williams',
       date_of_birth: '1980-02-03',
       age: '45',
       national_insurance_number: 'QA 12 34 56C',
