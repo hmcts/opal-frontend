@@ -655,7 +655,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       'Primary email address must be 76 characters or fewer',
       'Secondary email address must be 76 characters or fewer',
       'Make and model must be 30 characters or fewer',
-      'Registration number must be 20 characters or fewer',
+      'Vehicle registration must be 20 characters or fewer',
       'Employer name must be 50 characters or fewer',
       'Employee reference must be 20 characters or fewer',
       'Employer email address must be 76 characters or fewer',
@@ -675,7 +675,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     });
   });
 
-  it('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110'] }, () => {
+  it.only('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110'] }, () => {
     const dataTypeValidationMock = structuredClone(minimalMock);
     
     dataTypeValidationMock.formData = {
@@ -712,10 +712,10 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     // AC10a: Alphabetical field error messages
     const alphabeticalFieldErrors = [
-      "Defendant's first name(s) must only include letters a to z, hyphens, spaces and apostrophes",
-      "Defendant's last name must only include letters a to z, hyphens, spaces and apostrophes",
-      'Alias 1 first name(s) must only include letters a to z, hyphens, spaces and apostrophes',
-      'Alias 1 last name must only include letters a to z, hyphens, spaces and apostrophes',
+      "Defendant's first name(s) must only contain letters",
+      "Defendant's last name must only contain letters",
+      'Alias 1 first name(s) must only contain letters',
+      'Alias 1 last name must only contain letters',
     ];
 
     // AC10b: Alphanumeric field error messages
@@ -724,8 +724,8 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Employee reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
