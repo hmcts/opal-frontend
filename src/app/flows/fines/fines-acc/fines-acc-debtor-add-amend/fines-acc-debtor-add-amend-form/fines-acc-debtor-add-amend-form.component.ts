@@ -142,7 +142,10 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
         optionalMaxLengthValidator(16),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      facc_debtor_add_amend_post_code: new FormControl(null, [
+        optionalMaxLengthValidator(8),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
       facc_debtor_add_amend_contact_email_address_1: new FormControl(null, [
         optionalMaxLengthValidator(76),
         EMAIL_ADDRESS_PATTERN_VALIDATOR,
@@ -181,6 +184,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
       facc_debtor_add_amend_employer_details_employer_reference: new FormControl(null, [
         optionalMaxLengthValidator(20),
         employerFieldsValidator,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),

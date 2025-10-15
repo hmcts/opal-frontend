@@ -322,7 +322,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     },
     alphanumericTextPattern: {
       message: 'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 2,
+      priority: 3,
     },
   },
   facc_debtor_add_amend_employer_details_employer_reference: {
@@ -333,6 +333,10 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     maxlength: {
       message: 'Employee reference must be 20 characters or fewer',
       priority: 2,
+    },
+    alphanumericTextPattern: {
+      message: 'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 3,
     },
   },
   facc_debtor_add_amend_employer_details_employer_email_address: {
