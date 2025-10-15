@@ -390,10 +390,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     );
   });
 
-  it('AC5. Required field validation (employer conditional)', { tags: ['@PO-1110'] }, () => {
+  it('AC5. Required field validation (employer name)', { tags: ['@PO-1110'] }, () => {
+    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_company_name = 'Test Company';
     setupComponent('INDIVIDUAL', minimalMock);
-
-    cy.get(DOM_ELEMENTS.employerCompanyInput).type('Test Company');
 
     // Leave all employer values blank then submit
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -409,31 +408,98 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     });
   });
 
-  it('AC5. Required field validation (alias)', { tags: ['@PO-1110'] }, () => {
+  it('AC5. Required field validation (employer address)', { tags: ['@PO-1110'] }, () => {
+    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_address_line_1 = 'Address';
     setupComponent('INDIVIDUAL', minimalMock);
 
-    // Alias validation: enable aliases (one blank alias row added automatically)
-    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
-    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
-    // Attempt to submit to show alias 1 errors
+    // Leave all employer values blank then submit
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 1 first name(s)');
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 1 last name');
 
-    // Add a second alias row and submit again to see alias 2 errors
-    cy.get(DOM_ELEMENTS.addAliasButton).click();
-    cy.contains('legend', 'Alias 2').should('exist');
-    cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 2 first name(s)');
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', 'Enter alias 2 last name');
+    // Now the employer required messages appears (conditional activation)
+    const employerRequiredMessages = [
+      'Enter employee reference or National Insurance number',
+      'Enter employer name',
+    ];
+
+    employerRequiredMessages.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
   });
 
-  // AC6: Format validation tests
+  it('AC5. Required field validation (employer reference number)', { tags: ['@PO-1110'] }, () => {
+    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_reference = 'Ref123';
+    setupComponent('INDIVIDUAL', minimalMock);
+
+    // Leave all employer values blank then submit
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // Now the employer required messages appears (conditional activation)
+    const employerRequiredMessages = [
+      'Enter address line 1, typically the building and street',
+      'Enter employer name',
+    ];
+
+    employerRequiredMessages.forEach((msg) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
+    });
+  }); 
+
+
+  it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)', { tags: ['@PO-1110'] }, () => {
+    setupComponent('INDIVIDUAL', minimalMock);
+    cy.get(DOM_ELEMENTS.aliasCheckbox).check({ force: true }).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+
+    for (let i = 2; i <= 5; i++) {
+      cy.get(DOM_ELEMENTS.addAliasButton).click();
+      cy.contains('legend', `Alias ${i}`).should('exist');
+    }
+    cy.get(DOM_ELEMENTS.addAliasButton).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // AC5h: Verify all alias first name and last name required errors appear
+    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', `Enter alias ${aliasNumber} first name(s)`);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', `Enter alias ${aliasNumber} last name`);
+    }
+
+    // AC5i: Test partial completion - fill only first names, leave last names empty
+    for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
+      cy.get(getAliasForenamesInput(aliasIndex)).clear().type(`FirstName${aliasIndex + 1}`, { delay: 0 });
+    }
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', `Enter alias ${aliasNumber} last name`);
+    }
+
+    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', `Enter alias ${aliasNumber} first name(s)`);
+    }
+
+    // AC5j: Test partial completion - clear first names, fill only last names
+    for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
+      cy.get(getAliasForenamesInput(aliasIndex)).clear();
+      cy.get(getAliasSurnameInput(aliasIndex)).clear().type(`LastName${aliasIndex + 1}`, { delay: 0 });
+    }
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', `Enter alias ${aliasNumber} first name(s)`);
+    }
+
+    for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', `Enter alias ${aliasNumber} last name`);
+    }
+  });
+
   it('AC6a. DOB with non-numerical characters shows format error', { tags: ['@PO-1110'] }, () => {
     minimalMock.formData.facc_debtor_add_amend_dob = 'AA/BB/CCCC';
     setupComponent('INDIVIDUAL', minimalMock);
 
-    // Clear DOB and enter invalid format with letters
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary)
@@ -495,7 +561,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       .and('contain.text', 'Enter employer email address in the correct format, like name@example.com');
   });
 
-  // AC8: Telephone number format validation
+
   it('AC8a. Home telephone invalid format shows home telephone error', { tags: ['@PO-1110'] }, () => {
     minimalMock.formData.facc_debtor_add_amend_contact_telephone_number_home = '01632A960001'; // alpha char
     setupComponent('INDIVIDUAL', minimalMock);
@@ -552,7 +618,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
         },
       ],
       facc_debtor_add_amend_add_alias: true,
-      facc_debtor_add_amend_national_insurance_number: 'AB123456CD', // 10 characters
+      facc_debtor_add_amend_national_insurance_number: 'AB123456CD',
       facc_debtor_add_amend_address_line_1: 'E'.repeat(31),
       facc_debtor_add_amend_address_line_2: 'F'.repeat(31),
       facc_debtor_add_amend_address_line_3: 'G'.repeat(17),
@@ -605,6 +671,77 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
     expectedErrors.forEach((message) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+    });
+  });
+
+  it('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110'] }, () => {
+    const dataTypeValidationMock = structuredClone(minimalMock);
+    
+    dataTypeValidationMock.formData = {
+      ...dataTypeValidationMock.formData,
+      facc_debtor_add_amend_forenames: 'John123',
+      facc_debtor_add_amend_surname: 'Doe@Smith', 
+      facc_debtor_add_amend_aliases: [
+        {
+          facc_debtor_add_amend_alias_forenames_0: 'Johnny$',
+          facc_debtor_add_amend_alias_surname_0: 'Smith#Brown',
+        },
+      ],
+      facc_debtor_add_amend_add_alias: true,
+      
+      facc_debtor_add_amend_address_line_1: '123 Main St @#$',
+      facc_debtor_add_amend_address_line_2: 'Apt 4B %^&',
+      facc_debtor_add_amend_address_line_3: 'Building C *()+=',
+      facc_debtor_add_amend_post_code: 'M1& 1AA',
+      facc_debtor_add_amend_vehicle_make: 'Toyota Corolla {}[]',
+      facc_debtor_add_amend_vehicle_registration_mark: 'ABC123|\\',
+      facc_debtor_add_amend_employer_details_employer_company_name: 'Test Company <>?/',
+      facc_debtor_add_amend_employer_details_employer_reference: 'EMP123~`',
+      facc_debtor_add_amend_employer_details_employer_address_line_1: '456 Business Park !@#',
+      facc_debtor_add_amend_employer_details_employer_address_line_2: 'Suite 200 $%^', 
+      facc_debtor_add_amend_employer_details_employer_address_line_3: 'Industrial Estate &*()',
+      facc_debtor_add_amend_employer_details_employer_address_line_4: 'Business District +={}',
+      facc_debtor_add_amend_employer_details_employer_address_line_5: 'Metropolitan Area []|\\',
+      facc_debtor_add_amend_employer_details_employer_post_code: 'BU5& 1NE', 
+    };
+
+    setupComponent('INDIVIDUAL', dataTypeValidationMock);
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // AC10a: Alphabetical field error messages
+    const alphabeticalFieldErrors = [
+      "Defendant's first name(s) must only include letters a to z, hyphens, spaces and apostrophes",
+      "Defendant's last name must only include letters a to z, hyphens, spaces and apostrophes",
+      'Alias 1 first name(s) must only include letters a to z, hyphens, spaces and apostrophes',
+      'Alias 1 last name must only include letters a to z, hyphens, spaces and apostrophes',
+    ];
+
+    // AC10b: Alphanumeric field error messages
+    const alphanumericFieldErrors = [
+      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Registration number must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employee reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    ];
+    const allExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
+
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+    // Verify all expected error messages appear
+    allExpectedErrors.forEach((message) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
     });
   });
