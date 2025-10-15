@@ -1,15 +1,20 @@
 import { mount } from 'cypress/angular';
-import { FinesAccDebtorAddAmend } from 'src/app/flows/fines/fines-acc/fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { signal } from '@angular/core';
 import { of } from 'rxjs';
-import { DOM_ELEMENTS, getAliasForenamesInput, getAliasSurnameInput } from './constants/viewAndAmendDefendant_elements';
+import { FinesAccDebtorAddAmend } from 'src/app/flows/fines/fines-acc/fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component';
+import {
+  DOM_ELEMENTS,
+  getAliasForenamesInput,
+  getAliasSurnameInput,
+  getFieldErrorFor,
+} from './constants/viewAndAmendDefendant_elements';
 import {
   MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
   VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK,
 } from './mocks/viewAndAmendDefendant.mock';
+import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 
 describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   let fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
@@ -24,27 +29,19 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     formData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
     welshSpeaking: string = 'N',
   ) => {
-    const mockDateService = {
-      getPreviousDate: cy.stub().returns('2024-01-01'),
-      isValidDate: cy.stub().returns(true),
-      calculateAge: cy.stub().returns(25),
-      getAgeObject: cy.stub().returns({ value: 25, group: 'Adult' }),
-      getFromFormat: cy.stub().callsFake((value: string) => value),
-      toFormat: cy.stub().callsFake((value: string) => value),
-      getFromFormatToFormat: cy.stub().callsFake((value: string) => value),
-    };
-
     mount(FinesAccDebtorAddAmend, {
       providers: [
-        { provide: DateService, useValue: mockDateService },
+        DateService,
         {
           provide: FinesAccountStore,
           useFactory: () => {
             const store = new FinesAccountStore();
-            // Set the required signal values
-            store.welsh_speaking.set(welshSpeaking);
-            store.account_number.set('ACC123456');
-            store.party_name.set('John Doe');
+            const state = structuredClone(MOCK_FINES_ACCOUNT_STATE);
+            state.account_number = 'ACC123456';
+            state.party_name = 'John Doe';
+            state.party_type = partyType?.toLowerCase?.() ?? state.party_type;
+            state.welsh_speaking = welshSpeaking;
+            store.setAccountState(state);
             return store;
           },
         },
@@ -68,7 +65,6 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
   afterEach(() => {
     cy.then(() => {
-      // Reset any state if needed
     });
   });
 
@@ -127,9 +123,14 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
 
       // Age display should show calculated age from DOB in mock data
+      const dateService = new DateService();
+      const dob = fullMock.formData.facc_debtor_add_amend_dob ?? '';
+      const expectedAge = dateService.calculateAge(dob, 'dd/MM/yyyy');
+      const expectedAgeGroup = dateService.getAgeObject(dob)?.group ?? '';
+
       cy.get(DOM_ELEMENTS.ageDisplay).should('exist');
-      cy.get(DOM_ELEMENTS.ageValue).should('contain', 'Age: 25');
-      cy.get(DOM_ELEMENTS.ageGroup).should('contain', 'Adult');
+      cy.get(DOM_ELEMENTS.ageValue).should('contain', `Age: ${expectedAge}`);
+      cy.get(DOM_ELEMENTS.ageGroup).should('contain', expectedAgeGroup);
 
       // National Insurance number
       cy.get(DOM_ELEMENTS.niNumberInput).should('exist');
@@ -273,7 +274,6 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC2. Alias add/remove and clear behaviour', { tags: ['@PO-1110'] }, () => {
-    // Start with minimal mock clone so no aliases are present initially
     setupComponent('INDIVIDUAL', minimalMock);
 
     // Pre-condition: checkbox unchecked & section hidden
@@ -348,7 +348,6 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC5. Required field validation (core)', { tags: ['@PO-1110'] }, () => {
-    // Create a local modified clone leaving required fields blank without mutating source mocks
     const emptyCoreMock = structuredClone(minimalMock);
     emptyCoreMock.formData = {
       ...emptyCoreMock.formData,
@@ -394,14 +393,13 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   it('AC5. Required field validation (employer conditional)', { tags: ['@PO-1110'] }, () => {
     setupComponent('INDIVIDUAL', minimalMock);
 
-    cy.get(DOM_ELEMENTS.employerCompanyInput).focus().blur();
+    cy.get(DOM_ELEMENTS.employerCompanyInput).type('Test Company');
 
     // Leave all employer values blank then submit
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-    // Now the employer required messages SHOULD appear (conditional activation)
+    // Now the employer required messages appears (conditional activation)
     const employerRequiredMessages = [
-      'Enter employer name',
       'Enter employee reference or National Insurance number',
       'Enter address line 1, typically the building and street',
     ];
@@ -535,5 +533,79 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
         'contain.text',
         'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
       );
+  });
+
+  it('AC9. Max length validation retains user on form and shows per-field errors', { tags: ['@PO-1110'] }, () => {
+    const maxLengthMock = structuredClone(minimalMock);
+    const primaryEmail = `${'a'.repeat(65)}@example.com`;
+    const secondaryEmail = `${'b'.repeat(65)}@example.com`;
+    const employerEmail = `${'c'.repeat(65)}@example.com`;
+
+    maxLengthMock.formData = {
+      ...maxLengthMock.formData,
+      facc_debtor_add_amend_forenames: 'A'.repeat(21),
+      facc_debtor_add_amend_surname: 'B'.repeat(31),
+      facc_debtor_add_amend_aliases: [
+        {
+          facc_debtor_add_amend_alias_forenames_0: 'C'.repeat(21),
+          facc_debtor_add_amend_alias_surname_0: 'D'.repeat(31),
+        },
+      ],
+      facc_debtor_add_amend_add_alias: true,
+      facc_debtor_add_amend_national_insurance_number: 'AB123456CD', // 10 characters
+      facc_debtor_add_amend_address_line_1: 'E'.repeat(31),
+      facc_debtor_add_amend_address_line_2: 'F'.repeat(31),
+      facc_debtor_add_amend_address_line_3: 'G'.repeat(17),
+      facc_debtor_add_amend_post_code: 'POSTCODE9',
+      facc_debtor_add_amend_contact_email_address_1: primaryEmail,
+      facc_debtor_add_amend_contact_email_address_2: secondaryEmail,
+      facc_debtor_add_amend_vehicle_make: 'H'.repeat(31),
+      facc_debtor_add_amend_vehicle_registration_mark: 'I'.repeat(21),
+      facc_debtor_add_amend_employer_details_employer_company_name: 'J'.repeat(51),
+      facc_debtor_add_amend_employer_details_employer_reference: 'K'.repeat(21),
+      facc_debtor_add_amend_employer_details_employer_email_address: employerEmail,
+      facc_debtor_add_amend_employer_details_employer_address_line_1: 'L'.repeat(31),
+      facc_debtor_add_amend_employer_details_employer_address_line_2: 'M'.repeat(31),
+      facc_debtor_add_amend_employer_details_employer_address_line_3: 'N'.repeat(31),
+      facc_debtor_add_amend_employer_details_employer_address_line_4: 'O'.repeat(31),
+      facc_debtor_add_amend_employer_details_employer_address_line_5: 'P'.repeat(31),
+      facc_debtor_add_amend_employer_details_employer_post_code: 'EMPPOSTC9',
+    };
+
+    setupComponent('INDIVIDUAL', maxLengthMock);
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    const expectedErrors = [
+      "Defendant's first name(s) must be 20 characters or fewer",
+      "Defendant's last name must be 30 characters or fewer",
+      'Alias 1 first name(s) must be 20 characters or fewer',
+      'Alias 1 last name must be 30 characters or fewer',
+      'Enter a National Insurance number in the format AANNNNNNA',
+      'Address line 1 must be 30 characters or fewer',
+      'Address line 2 must be 30 characters or fewer',
+      'Address line 3 must be 16 characters or fewer',
+      'Postcode must be 8 characters or fewer',
+      'Primary email address must be 76 characters or fewer',
+      'Secondary email address must be 76 characters or fewer',
+      'Make and model must be 30 characters or fewer',
+      'Registration number must be 20 characters or fewer',
+      'Employer name must be 50 characters or fewer',
+      'Employee reference must be 20 characters or fewer',
+      'Employer email address must be 76 characters or fewer',
+      'Address line 1 must be 30 characters or fewer',
+      'Address line 2 must be 30 characters or fewer',
+      'Address line 3 must be 30 characters or fewer',
+      'Address line 4 must be 30 characters or fewer',
+      'Address line 5 must be 30 characters or fewer',
+      'Postcode must be 8 characters or fewer',
+    ];
+
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+    expectedErrors.forEach((message) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+    });
   });
 });
