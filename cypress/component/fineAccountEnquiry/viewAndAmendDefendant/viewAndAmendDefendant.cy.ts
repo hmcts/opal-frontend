@@ -64,8 +64,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   };
 
   afterEach(() => {
-    cy.then(() => {
-    });
+    cy.then(() => {});
   });
 
   it(
@@ -416,10 +415,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     // Now the employer required messages appears (conditional activation)
-    const employerRequiredMessages = [
-      'Enter employee reference or National Insurance number',
-      'Enter employer name',
-    ];
+    const employerRequiredMessages = ['Enter employee reference or National Insurance number', 'Enter employer name'];
 
     employerRequiredMessages.forEach((msg) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
@@ -434,16 +430,12 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     // Now the employer required messages appears (conditional activation)
-    const employerRequiredMessages = [
-      'Enter address line 1, typically the building and street',
-      'Enter employer name',
-    ];
+    const employerRequiredMessages = ['Enter address line 1, typically the building and street', 'Enter employer name'];
 
     employerRequiredMessages.forEach((msg) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
     });
-  }); 
-
+  });
 
   it('AC5h, AC5i, AC5j. Required field validation for all alias rows (N=1 to 5)', { tags: ['@PO-1110'] }, () => {
     setupComponent('INDIVIDUAL', minimalMock);
@@ -466,7 +458,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     // AC5i: Test partial completion - fill only first names, leave last names empty
     for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
-      cy.get(getAliasForenamesInput(aliasIndex)).clear().type(`FirstName${aliasIndex + 1}`, { delay: 0 });
+      cy.get(getAliasForenamesInput(aliasIndex))
+        .clear()
+        .type(`FirstName${aliasIndex + 1}`, { delay: 0 });
     }
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -482,7 +476,9 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     // AC5j: Test partial completion - clear first names, fill only last names
     for (let aliasIndex = 0; aliasIndex < 5; aliasIndex++) {
       cy.get(getAliasForenamesInput(aliasIndex)).clear();
-      cy.get(getAliasSurnameInput(aliasIndex)).clear().type(`LastName${aliasIndex + 1}`, { delay: 0 });
+      cy.get(getAliasSurnameInput(aliasIndex))
+        .clear()
+        .type(`LastName${aliasIndex + 1}`, { delay: 0 });
     }
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -560,7 +556,6 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       .should('exist')
       .and('contain.text', 'Enter employer email address in the correct format, like name@example.com');
   });
-
 
   it('AC8a. Home telephone invalid format shows home telephone error', { tags: ['@PO-1110'] }, () => {
     minimalMock.formData.facc_debtor_add_amend_contact_telephone_number_home = '01632A960001'; // alpha char
@@ -675,13 +670,13 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     });
   });
 
-  it.only('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110'] }, () => {
+  it('AC10. Data type validation for alphabetical and alphanumeric fields', { tags: ['@PO-1110'] }, () => {
     const dataTypeValidationMock = structuredClone(minimalMock);
-    
+
     dataTypeValidationMock.formData = {
       ...dataTypeValidationMock.formData,
       facc_debtor_add_amend_forenames: 'John123',
-      facc_debtor_add_amend_surname: 'Doe@Smith', 
+      facc_debtor_add_amend_surname: 'Doe@Smith',
       facc_debtor_add_amend_aliases: [
         {
           facc_debtor_add_amend_alias_forenames_0: 'Johnny$',
@@ -689,7 +684,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
         },
       ],
       facc_debtor_add_amend_add_alias: true,
-      
+
       facc_debtor_add_amend_address_line_1: '123 Main St @#$',
       facc_debtor_add_amend_address_line_2: 'Apt 4B %^&',
       facc_debtor_add_amend_address_line_3: 'Building C *()+=',
@@ -699,11 +694,11 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       facc_debtor_add_amend_employer_details_employer_company_name: 'Test Company <>?/',
       facc_debtor_add_amend_employer_details_employer_reference: 'EMP123~`',
       facc_debtor_add_amend_employer_details_employer_address_line_1: '456 Business Park !@#',
-      facc_debtor_add_amend_employer_details_employer_address_line_2: 'Suite 200 $%^', 
+      facc_debtor_add_amend_employer_details_employer_address_line_2: 'Suite 200 $%^',
       facc_debtor_add_amend_employer_details_employer_address_line_3: 'Industrial Estate &*()',
       facc_debtor_add_amend_employer_details_employer_address_line_4: 'Business District +={}',
       facc_debtor_add_amend_employer_details_employer_address_line_5: 'Metropolitan Area []|\\',
-      facc_debtor_add_amend_employer_details_employer_post_code: 'BU5& 1NE', 
+      facc_debtor_add_amend_employer_details_employer_post_code: 'BU5& 1NE',
     };
 
     setupComponent('INDIVIDUAL', dataTypeValidationMock);
