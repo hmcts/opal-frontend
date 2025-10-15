@@ -11,7 +11,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { DOM_ELEMENTS as DOM } from './constants/defendant_details_elements';
 import {
   DEFENDANT_HEADER_MOCK,
-  DEFENDANT_HEADER_YOUTH_MOCK,
+  DEFENDANT_HEADER_ORG_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
@@ -19,11 +19,12 @@ import {
 import {
   OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
   MOCK_FINES_ACCOUNT_STATE,
+  OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK,
 } from './mocks/defendant_details_at_glance_mock';
 import { interceptAtAGlance } from './intercept/defendentAccountIntercept';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
-describe('Defendant Account Summary (Component)', () => {
+describe('Defendant Account Summary - At a Glance Tab', () => {
   const mockDataChangeName = structuredClone(DEFENDANT_HEADER_MOCK);
   if (mockDataChangeName.party_details.individual_details) {
     mockDataChangeName.party_details.individual_details.forenames = 'James';
@@ -90,8 +91,40 @@ describe('Defendant Account Summary (Component)', () => {
       });
     });
   };
+
   it(
-    'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact and displays Language Preferences section below National Insurance Number',
+    'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for company',
+    { tags: ['PO-814'] },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.party_details.organisation_flag = true;
+      header.party_details.organisation_details = {
+        organisation_name: 'Test Org Ltd',
+        organisation_aliases: [],
+      };
+      interceptAtAGlance(OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK);
+      setupComponent(header, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+      cy.get(DOM.pageHeader).should('exist');
+      cy.get(DOM.headingWithCaption).should('exist');
+      cy.get(DOM.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+      cy.get(DOM.accountInfo).should('exist');
+      cy.get(DOM.summaryMetricBar).should('exist');
+      cy.get(DOM.subnav).should('exist');
+      cy.get(DOM.atAGlanceTabComponent).should('exist');
+      cy.contains(DOM.labelDefendant).should('be.visible');
+      cy.contains(DOM.labelPaymentTerms).should('be.visible');
+      cy.contains(DOM.labelEnforcementStatus).should('be.visible');
+      cy.get('h3').contains('Company Name').next('p').should('be.visible').and('contain.text', ' Tech Solutions Ltd ');
+      cy.get('h3')
+        .contains('Address')
+        .next('p')
+        .should('be.visible')
+        .should('contain.text', ' 123 Main Street  Apt 4  AB12 3CD ');
+    },
+  );
+
+  it(
+    'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for defendant',
     { tags: ['PO-984'] },
     () => {
       interceptAtAGlance();
@@ -130,7 +163,7 @@ describe('Defendant Account Summary (Component)', () => {
       .should('be.visible');
   });
 
-  it('AC2ai: Displays Language Preferences as read-only fields', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2ai: Displays Language Preferences as read-only fields', { tags: ['PO-984', 'PO-814'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
 
@@ -147,7 +180,7 @@ describe('Defendant Account Summary (Component)', () => {
 
   it(
     'AC2b: displays Document language and Court hearing language values in Language Preferences section',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       interceptAtAGlance();
       setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
@@ -166,7 +199,7 @@ describe('Defendant Account Summary (Component)', () => {
         });
     },
   );
-  it('AC2bi: Label Welsh and Language is displayed in blue', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2bi: Label Welsh and Language is displayed in blue', { tags: ['PO-984', 'PO-814'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.enforcementStatusTag)
@@ -175,13 +208,13 @@ describe('Defendant Account Summary (Component)', () => {
       .and('have.css', 'color', 'rgb(12, 45, 74)');
   });
 
-  it('AC2bia: Label Welsh and Language is not displayed ', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2bia: Label Welsh and Language is not displayed ', { tags: ['PO-984', 'PO-814'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
     cy.get(DOM.enforcementStatusTag).should('not.exist');
   });
 
-  it('AC2c: Labels not displayed ', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC2c: Labels not displayed ', { tags: ['PO-984', 'PO-814'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
 
@@ -193,7 +226,7 @@ describe('Defendant Account Summary (Component)', () => {
     cy.contains('p', 'Welsh and English').should('not.exist');
   });
 
-  it('AC3: displays Aliases section when defendant has one or more aliases', { tags: ['PO-1593', 'PO-866'] }, () => {
+  it('AC3: displays Aliases section when defendant has one or more aliases', { tags: ['PO-984'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
 
@@ -215,85 +248,119 @@ describe('Defendant Account Summary (Component)', () => {
     headerNoAliases.party_details.individual_details!.individual_aliases = [];
     interceptAtAGlance(headerNoAliases);
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-    cy.get('h3').contains('Aliases').should('not.exist');
+    cy.get('h3').contains('Aliases').next('p').should('not.have.text');
   });
 
-  it('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-984'] }, () => {
-    const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    headerNoAliases.party_details.individual_details!.individual_aliases = [];
+  it('AC3: displays Aliases section when company has one or more aliases', { tags: ['PO-814'] }, () => {
+    interceptAtAGlance(OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK);
+    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+
+    cy.get('h3')
+      .contains('Aliases')
+      .next('p')
+      .should('exist')
+      .invoke('text')
+      .then((text) => {
+        const aliases = text.replace(/\s+/g, ' ').trim();
+
+        expect(aliases).to.contain('Meridian Construction Ltd');
+        expect(aliases).to.contain('Meridian Solutions Ltd');
+        expect(aliases.indexOf('Meridian Construction Ltd')).to.be.lessThan(aliases.indexOf('Meridian Solutions Ltd')); // order check
+      });
+  });
+
+  it('AC3b: does not display Aliases section when company has no aliases', { tags: ['PO-814'] }, () => {
+    const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK);
+    headerNoAliases.party_details.organisation_details!.organisation_aliases = [];
     interceptAtAGlance(headerNoAliases);
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-    cy.get('h3').contains('Aliases').should('not.exist');
-  });
-
-  it('AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes', { tags: ['PO-984'] }, () => {
-    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataNoComments.comments_and_notes = {
-      account_comment: null,
-      free_text_note_1: null,
-      free_text_note_2: null,
-      free_text_note_3: null,
-    };
-
-    interceptAtAGlance(mockDataNoComments);
-    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-
-    cy.get('h3').contains('Comment').should('not.exist');
-    cy.get('h3').contains('Free text notes').should('not.exist');
-    cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
-  });
-
-  it('AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes', { tags: ['PO-984'] }, () => {
-    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataNoComments.comments_and_notes = {
-      account_comment: 'Test account comment',
-      free_text_note_1: null,
-      free_text_note_2: null,
-      free_text_note_3: null,
-    };
-
-    interceptAtAGlance(mockDataNoComments);
-    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-
-    cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
-    cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
-  });
-
-  it('AC4c, Ac9: displays Comments section with Free Text Notes but no Account Comment', { tags: ['PO-984'] }, () => {
-    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataNoComments.comments_and_notes = {
-      account_comment: null,
-      free_text_note_1: 'First note.',
-      free_text_note_2: null,
-      free_text_note_3: null,
-    };
-
-    interceptAtAGlance(mockDataNoComments);
-    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-
-    cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', '-');
-    cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
-  });
-
-  it('AC4d: displays Comments section with both Account Comment and Free Text Notes', { tags: ['PO-984'] }, () => {
-    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    mockDataNoComments.comments_and_notes = {
-      account_comment: 'Test account comment',
-      free_text_note_1: 'First note.',
-      free_text_note_2: null,
-      free_text_note_3: null,
-    };
-
-    interceptAtAGlance(mockDataNoComments);
-    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
-
-    cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
-    cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
+    cy.get('h3').contains('Aliases').next('p').should('not.have.text');
   });
 
   it(
+    'AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoComments.comments_and_notes = {
+        account_comment: null,
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptAtAGlance(mockDataNoComments);
+      setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+
+      cy.get('h3').contains('Comment').should('not.exist');
+      cy.get('h3').contains('Free text notes').should('not.exist');
+      cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
+    },
+  );
+
+  it(
+    'AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoComments.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptAtAGlance(mockDataNoComments);
+      setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+
+      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
+      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
+    },
+  );
+
+  it(
+    'AC4c, Ac9: displays Comments section with Free Text Notes but no Account Comment',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoComments.comments_and_notes = {
+        account_comment: null,
+        free_text_note_1: 'First note.',
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptAtAGlance(mockDataNoComments);
+      setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+
+      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', '-');
+      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
+    },
+  );
+
+  it(
+    'AC4d: displays Comments section with both Account Comment and Free Text Notes',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      mockDataNoComments.comments_and_notes = {
+        account_comment: 'Test account comment',
+        free_text_note_1: 'First note.',
+        free_text_note_2: null,
+        free_text_note_3: null,
+      };
+
+      interceptAtAGlance(mockDataNoComments);
+      setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+
+      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
+      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
+    },
+  );
+
+  it(
     'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -321,7 +388,7 @@ describe('Defendant Account Summary (Component)', () => {
 
   it(
     'AC5i: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -346,8 +413,8 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   it(
-    'AC5a: Calls error path when user has no permission in this BU only in other BU - Add Comment link',
-    { tags: ['PO-984'] },
+    'AC5a: Calls error path when user has permission in at least one BU but not the BU associated to the account - Add Comment link',
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -374,8 +441,8 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   it(
-    'AC5a: Calls error path when user has no permission in this BU only in other BU - Change link',
-    { tags: ['PO-984'] },
+    'AC5a: Calls error path when user has permission in at least one BU but not the BU associated to the account - Change link',
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       interceptAtAGlance();
       setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU17);
@@ -391,13 +458,13 @@ describe('Defendant Account Summary (Component)', () => {
     },
   );
 
-  it('AC5c: Calls error path when user has no permission in any BU', { tags: ['PO-984'] }, () => {
+  it('AC5c: Calls error path when user has no permission in any BU', { tags: ['PO-984', 'PO-814'] }, () => {
     interceptAtAGlance();
     setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_NO_PERMISSION);
     cy.get(DOM.linkText).should('not.exist');
   });
 
-  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984'] }, () => {
+  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
     const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     mockDataPayByDate.payment_terms = {
       payment_terms_type: {
@@ -422,20 +489,28 @@ describe('Defendant Account Summary (Component)', () => {
     cy.get('h3').contains('Start Date').should('not.exist');
   });
 
-  it('AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario', { tags: ['PO-984'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
+  it(
+    'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
+    { tags: ['PO-984', 'PO-814'] },
+    () => {
+      interceptAtAGlance();
+      setupComponent(DEFENDANT_HEADER_MOCK, MOCK_FINES_ACCOUNT_STATE, USER_STATE_MOCK_PERMISSION_BU77);
 
-    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Lump sum plus instalments');
-    cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
-    cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
-    cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
+      cy.get('h3')
+        .contains('Payment terms')
+        .and('be.visible')
+        .next('p')
+        .should('have.text', 'Lump sum plus instalments');
+      cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
+      cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
+      cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
 
-    // Verify that "By date" field is not displayed
-    cy.get('h3').contains('By date').should('not.exist');
-  });
+      // Verify that "By date" field is not displayed
+      cy.get('h3').contains('By date').should('not.exist');
+    },
+  );
 
-  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984'] }, () => {
+  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
     const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     mockDataPayByDate.payment_terms = {
       payment_terms_type: {
@@ -461,7 +536,7 @@ describe('Defendant Account Summary (Component)', () => {
 
   it(
     'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       ((mockDataNoEnforcementAction.enforcement_status = {
@@ -500,7 +575,7 @@ describe('Defendant Account Summary (Component)', () => {
   );
   it(
     'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataAdultWithCO.is_youth = false;
@@ -518,7 +593,7 @@ describe('Defendant Account Summary (Component)', () => {
   );
   it(
     'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataAdultNoCO.is_youth = false;
@@ -537,7 +612,7 @@ describe('Defendant Account Summary (Component)', () => {
 
   it(
     'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataYouthWithCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataYouthWithCO.is_youth = true;
@@ -555,7 +630,7 @@ describe('Defendant Account Summary (Component)', () => {
 
   it(
     'AC8d: displays no collection order label when defendant is youth and CO flag is false',
-    { tags: ['PO-984'] },
+    { tags: ['PO-984', 'PO-814'] },
     () => {
       const mockDataYouthNoCO = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       mockDataYouthNoCO.is_youth = true;
