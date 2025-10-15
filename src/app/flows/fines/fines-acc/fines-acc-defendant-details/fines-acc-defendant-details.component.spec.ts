@@ -207,10 +207,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
-    const event: Event = new Event('click');
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = true;
-    spyOn(event, 'preventDefault');
     component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
@@ -223,10 +221,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
-    const event: Event = new Event('click');
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = false;
-    spyOn(event, 'preventDefault');
     component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
@@ -262,7 +258,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
-    const event: Event = new Event('click');
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
     component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
