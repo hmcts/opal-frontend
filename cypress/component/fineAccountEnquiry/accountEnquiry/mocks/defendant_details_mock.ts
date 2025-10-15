@@ -39,8 +39,8 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
     organisation_details: null,
     individual_details: {
       title: 'Mr',
-      forenames: 'Robert',
-      surname: 'Thomson',
+      forenames: 'Anna',
+      surname: 'Graham',
       date_of_birth: '1980-02-03',
       age: '45',
       national_insurance_number: null,
@@ -50,6 +50,26 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   is_youth: false,
   debtor_type: 'Defendant',
 };
+
+/**
+ * Utility to create a custom defendant header mock with overridden forenames and surname.
+ */
+export function createDefendantHeaderMockWithName(
+  forenames: string,
+  surname: string,
+): IOpalFinesAccountDefendantDetailsHeader {
+  return {
+    ...DEFENDANT_HEADER_MOCK,
+    party_details: {
+      ...DEFENDANT_HEADER_MOCK.party_details,
+      individual_details: {
+        ...DEFENDANT_HEADER_MOCK.party_details?.individual_details!,
+        forenames,
+        surname,
+      },
+    },
+  };
+}
 
 export const DEFENDANT_HEADER_YOUTH_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   ...DEFENDANT_HEADER_MOCK,
