@@ -727,13 +727,13 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
       'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Employee reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
     ];
     const allExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
 
