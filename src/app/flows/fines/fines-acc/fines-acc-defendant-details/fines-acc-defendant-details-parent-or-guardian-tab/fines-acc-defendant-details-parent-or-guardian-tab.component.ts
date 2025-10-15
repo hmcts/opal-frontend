@@ -30,19 +30,19 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changeParentOrGuardianDetails = new EventEmitter<Event>();
-  @Output() removeParentOrGuardianDetails = new EventEmitter<Event>();
+  @Output() changeParentOrGuardianDetails = new EventEmitter<boolean>();
+  @Output() removeParentOrGuardianDetails = new EventEmitter<boolean>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   public handleRemoveParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.removeParentOrGuardianDetails.emit(event);
+    this.removeParentOrGuardianDetails.emit(this.tabData?.defendant_account_party.is_debtor);
   }
 
   public handleChangeParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.changeParentOrGuardianDetails.emit(event);
+    this.changeParentOrGuardianDetails.emit(this.tabData?.defendant_account_party.is_debtor);
   }
 }

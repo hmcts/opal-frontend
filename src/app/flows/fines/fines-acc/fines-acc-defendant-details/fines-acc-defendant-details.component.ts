@@ -296,8 +296,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
-  public navigateToChangeDefendantDetailsPage(event: Event): void {
-    event.preventDefault();
+  public navigateToChangeDefendantDetailsPage(debtor: boolean): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -315,7 +314,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
       }
 
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
+      this['router'].navigate([`../${debtor ? 'debtor' : 'non-debtor'}/${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
     } else {

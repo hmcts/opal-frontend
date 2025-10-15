@@ -72,7 +72,7 @@ export const routing: Routes = [
         resolve: { title: TitleResolver },
       },
       {
-        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/:partyType/amend`,
+        path: `debtor/:partyType/amend`,
 
         loadComponent: () =>
           import('../fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component').then(

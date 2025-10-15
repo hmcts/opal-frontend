@@ -195,8 +195,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const event: Event = new Event('click');
     component.accountData.debtor_type = 'Parent/Guardian';
     spyOn(event, 'preventDefault');
-    component.navigateToChangeDefendantDetailsPage(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+    component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
         `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
@@ -212,8 +211,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = true;
     spyOn(event, 'preventDefault');
-    component.navigateToChangeDefendantDetailsPage(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+    component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
         `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY}/amend`,
@@ -229,8 +227,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = false;
     spyOn(event, 'preventDefault');
-    component.navigateToChangeDefendantDetailsPage(event);
-    expect(event.preventDefault).toHaveBeenCalled();
+    component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [
         `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL}/amend`,
@@ -267,7 +264,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
     const event: Event = new Event('click');
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-    component.navigateToChangeDefendantDetailsPage(event);
+    component.navigateToChangeDefendantDetailsPage(true);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });

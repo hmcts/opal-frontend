@@ -205,7 +205,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Address line 1 must only contain letters or numbers',
+      message: 'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 3,
     },
   },
@@ -215,7 +215,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 2 must only contain letters or numbers',
+      message: 'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -225,7 +225,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 3 must only contain letters or numbers',
+      message: 'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -233,6 +233,10 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     maxlength: {
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
+    },
+    alphanumericTextPattern: {
+      message: 'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
     },
   },
   facc_debtor_add_amend_contact_email_address_1: {
@@ -290,11 +294,19 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       message: `Make and model must be 30 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: 'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
+    },
   },
   facc_debtor_add_amend_vehicle_registration_mark: {
     maxlength: {
-      message: `Registration number must be 20 characters or fewer`,
+      message: `Vehicle registration must be 20 characters or fewer`,
       priority: 1,
+    },
+    alphanumericTextPattern: {
+      message: 'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
     },
   },
   facc_debtor_add_amend_language_preferences_document_language: {},
@@ -306,6 +318,10 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     },
     maxlength: {
       message: 'Employer name must be 50 characters or fewer',
+      priority: 2,
+    },
+    alphanumericTextPattern: {
+      message: 'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -349,7 +365,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Address line 1 must only contain letters or numbers',
+      message: 'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 3,
     },
   },
@@ -359,7 +375,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 2 must only contain letters or numbers',
+      message: 'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -369,7 +385,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 3 must only contain letters or numbers',
+      message: 'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -379,7 +395,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 4 must only contain letters or numbers',
+      message: 'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -389,7 +405,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Address line 5 must only contain letters or numbers',
+      message: 'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
@@ -397,6 +413,10 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
     maxlength: {
       message: 'Postcode must be 8 characters or fewer',
       priority: 1,
+    },
+    alphanumericTextPattern: {
+      message: 'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
     },
   },
 };

@@ -176,6 +176,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
       facc_debtor_add_amend_employer_details_employer_company_name: new FormControl(null, [
         optionalMaxLengthValidator(50),
         employerFieldsValidator,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_reference: new FormControl(null, [
         optionalMaxLengthValidator(20),
@@ -191,19 +192,24 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_1: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         employerFieldsValidator,
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_debtor_add_amend_employer_details_employer_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),
