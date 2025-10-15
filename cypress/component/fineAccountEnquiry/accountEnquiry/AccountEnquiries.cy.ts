@@ -8,7 +8,7 @@ import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/sto
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { interceptAtAGlance } from './intercept/defendentAccountIntercept';
+import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
 
 // constants + mocks
 import { DOM_ELEMENTS as DOM } from './constants/defendant_details_elements';
