@@ -2545,16 +2545,16 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^23.0.0":
-  version: 23.2.0
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:23.2.0"
+  version: 23.2.1
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:23.2.1"
   dependencies:
     "@cucumber/ci-environment": "npm:^10.0.1"
     "@cucumber/cucumber": "npm:^12.0.0"
     "@cucumber/cucumber-expressions": "npm:^18.0.0"
     "@cucumber/gherkin": "npm:^35.0.0"
-    "@cucumber/html-formatter": "npm:^21.7.0"
+    "@cucumber/html-formatter": "npm:^22.0.0"
     "@cucumber/message-streams": "npm:^4.0.1"
-    "@cucumber/messages": "npm:^29.0.0"
+    "@cucumber/messages": "npm:^30.0.0"
     "@cucumber/pretty-formatter": "npm:^1.0.1"
     "@cucumber/tag-expressions": "npm:^6.1.0"
     base64-js: "npm:^1.5.1"
@@ -2577,7 +2577,7 @@ __metadata:
     cucumber-html-formatter: dist/bin/cucumber-html-formatter.js
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
-  checksum: 10/fb61e76fbc4ff641176cc43078963c131d979d4d5f8dbbaef915f3ce10a5827ed1ea8ccab53b56904a980b0041f9d626f20a82882b878ee2933889f1d04a1c6d
+  checksum: 10/7e001e1d978231284bc4634a44abb66483fb5e4e88a2b482012ac95b1e5ffdadf3c44a5e5e57eacd351b025cf4c01c66b74802692e1dab6530ad01beb7f76094
   languageName: node
   linkType: hard
 
@@ -2737,12 +2737,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/html-formatter@npm:^21.7.0":
-  version: 21.8.0
-  resolution: "@cucumber/html-formatter@npm:21.8.0"
+"@cucumber/html-formatter@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@cucumber/html-formatter@npm:22.0.0"
   peerDependencies:
     "@cucumber/messages": ">=18"
-  checksum: 10/83646bb8485791f1118dd03165c275fb268bbf7b1c3f748f1af19f93efc6bb36bc1774d371951d402bdcd554bd28c84d2118e123027d1287064de33e6636f80a
+  checksum: 10/211adb649b86296aeb8e91d5773dbb07687244274b63915d7173a8fc66d17300c29ead5eb5853f9e969c2f1dcdd538d12e1b40c10911db239f9c78355ef7d807
   languageName: node
   linkType: hard
 
