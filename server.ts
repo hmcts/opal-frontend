@@ -65,7 +65,7 @@ function app(): express.Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration } = getRoutesConfig();
+  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration } = getRoutesConfig();
 
   configureApiProxyRoutes(server);
 
@@ -80,6 +80,7 @@ function app(): express.Express {
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
+    opalUserServiceConfiguration,
   );
 
   const serverTransferState = configureMonitoring();

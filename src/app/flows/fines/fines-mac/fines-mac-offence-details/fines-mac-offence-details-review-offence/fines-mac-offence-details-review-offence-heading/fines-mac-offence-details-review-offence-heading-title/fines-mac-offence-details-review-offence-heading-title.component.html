@@ -24,6 +24,7 @@
     opal-lib-govuk-summary-list-row-action-item
     [actionId]="showDetails ? 'hide' : 'show'"
     [actionName]="showDetails ? 'Hide' : 'Show'"
+    [visuallyHiddenText]="showDetails ? 'Hide details' : 'Show details'"
     (linkClick)="onActionClick($event)"
   ></li>
 </ng-template>
@@ -34,12 +35,14 @@
     opal-lib-govuk-summary-list-row-action-item
     actionId="change"
     actionName="Change"
+    visuallyHiddenText="Change"
     (linkClick)="onActionClick($event)"
   ></li>
   <li
     opal-lib-govuk-summary-list-row-action-item
     actionId="remove"
     actionName="Remove"
+    visuallyHiddenText="Remove"
     (linkClick)="onActionClick($event)"
   ></li>
 </ng-template>
