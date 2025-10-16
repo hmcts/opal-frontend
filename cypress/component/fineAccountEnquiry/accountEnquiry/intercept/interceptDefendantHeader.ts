@@ -24,7 +24,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fin
  */
 
 export const interceptDefendantHeader = (
-  accountId: number,
+  accountId: String,
   defendantHeaderMock: IOpalFinesAccountDefendantDetailsHeader,
   respHeaderEtag: string,
 ) => {

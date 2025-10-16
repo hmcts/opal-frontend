@@ -15,7 +15,7 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
  * ```
  */
 export function interceptAtAGlance(
-  accountId: number,
+  accountId: String,
   mockData: IOpalFinesAccountDefendantAtAGlance,
   respHeaderEtag: string,
 ) {
