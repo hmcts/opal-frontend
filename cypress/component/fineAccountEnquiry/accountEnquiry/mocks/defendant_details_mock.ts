@@ -38,7 +38,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
     organisation_flag: false,
     organisation_details: null,
     individual_details: {
-      title: 'Ms',
+      title: 'Mr',
       forenames: 'Anna',
       surname: 'Graham',
       date_of_birth: '1980-02-03',
@@ -50,6 +50,26 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   is_youth: false,
   debtor_type: 'Defendant',
 };
+
+/**
+ * Utility to create a custom defendant header mock with overridden forenames and surname.
+ */
+export function createDefendantHeaderMockWithName(
+  forenames: string,
+  surname: string,
+): IOpalFinesAccountDefendantDetailsHeader {
+  return {
+    ...DEFENDANT_HEADER_MOCK,
+    party_details: {
+      ...DEFENDANT_HEADER_MOCK.party_details,
+      individual_details: {
+        ...DEFENDANT_HEADER_MOCK.party_details?.individual_details!,
+        forenames,
+        surname,
+      },
+    },
+  };
+}
 
 export const DEFENDANT_HEADER_YOUTH_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   ...DEFENDANT_HEADER_MOCK,
@@ -143,6 +163,10 @@ export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
         },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
+        },
       ],
     },
   ],
@@ -177,6 +201,10 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
         {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
+        },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
         },
       ],
     },

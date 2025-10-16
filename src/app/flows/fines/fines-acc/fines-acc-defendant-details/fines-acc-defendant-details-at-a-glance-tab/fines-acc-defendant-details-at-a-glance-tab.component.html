@@ -164,7 +164,7 @@
         <br />
       }
       @if (tabData.enforcement_status.collection_order_made) {
-        @if (!isYouth) {
+        @if (!tabData.is_youth) {
           <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
             >Collection Order</opal-lib-moj-badge
           >
@@ -173,7 +173,7 @@
             >No collection Order</opal-lib-moj-badge
           >
         }
-      } @else if (!isYouth) {
+      } @else if (!tabData.is_youth) {
         <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
           >No collection Order</opal-lib-moj-badge
         >
