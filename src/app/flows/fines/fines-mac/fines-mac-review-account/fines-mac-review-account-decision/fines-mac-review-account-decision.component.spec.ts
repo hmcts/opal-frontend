@@ -165,6 +165,6 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     component.ngOnDestroy();
 
-    expect(setErrorSpy).toHaveBeenCalledWith({ error: false, message: '' });
+    expect(setErrorSpy).toHaveBeenCalledWith({ error: false, title: '', message: '', operationId: null });
   });
 });

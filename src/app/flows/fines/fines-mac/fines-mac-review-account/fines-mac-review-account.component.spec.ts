@@ -114,7 +114,9 @@ function createTestModule(snapshotData?: any) {
   globalStore.setUserState(OPAL_USER_STATE_MOCK);
   globalStore.setError({
     error: false,
+    title: '',
     message: '',
+    operationId: null,
   });
   const finesMacStore = TestBed.inject(FinesMacStore);
   finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);

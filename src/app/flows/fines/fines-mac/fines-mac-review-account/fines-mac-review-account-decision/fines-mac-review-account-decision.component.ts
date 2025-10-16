@@ -114,7 +114,9 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
 
     this.globalStore.setError({
       error: false,
+      title: '',
       message: '',
+      operationId: null,
     });
   }
 }
