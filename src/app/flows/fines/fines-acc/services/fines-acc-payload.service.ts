@@ -77,6 +77,7 @@ export class FinesAccPayloadService {
   }
 
   /**
+
    * Transforms the given IOpalFinesAccountDefendantAtAGlance into IFinesAccAddCommentsFormState for the Comments Add form
    *
    * @param atAGlanceData - The at-a-glance data from the API.
@@ -113,6 +114,7 @@ export class FinesAccPayloadService {
   }
 
   /**
+
    * Transforms the given finesMacPayload object by applying the transformations
    * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
    *

@@ -10,3 +10,9 @@ Then('I see the following tabs:', (table: DataTable) => {
     cy.contains('a', tabText).should('be.visible');
   });
 });
+
+Then('I select the {string} tab', (tabName: string) => {
+  cy.contains('a.govuk-tabs__tab', tabName, { matchCase: false }).should('be.visible').click();
+
+  cy.contains('li.govuk-tabs__list-item', tabName).should('have.class', 'govuk-tabs__list-item--selected');
+});

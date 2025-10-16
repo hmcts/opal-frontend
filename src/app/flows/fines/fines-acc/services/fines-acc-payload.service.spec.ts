@@ -201,6 +201,7 @@ describe('FinesAccPayloadService', () => {
     expect(result.base_version).toBe(header.version);
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
+  
   it('should transform at-a-glance data to comments form state', () => {
     const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
@@ -290,5 +291,19 @@ describe('FinesAccPayloadService', () => {
       );
       expect(result).toEqual(inputPayload);
     });
+
+  it('should transform payload using the transformation service', () => {
+    spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+    const inputPayload = {
+      date_of_birth: '2000-09-09',
+    };
+
+    const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+    expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+      inputPayload,
+      FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+    );
+    expect(result).toEqual(inputPayload);
   });
 });
