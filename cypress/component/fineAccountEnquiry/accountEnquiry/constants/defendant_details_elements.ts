@@ -18,6 +18,9 @@ export const DOM_ELEMENTS = {
   labelBusinessUnit: 'Business Unit:',
   labelImposed: 'Imposed:',
   labelArrears: 'Arrears:',
+  labelDefendant: 'Defendant',
+  labelPaymentTerms: 'Payment terms',
+  labelEnforcementStatus: 'Enforcement status',
 
   // Subnav / tabs
   subnav: 'opal-lib-moj-sub-navigation',
@@ -25,4 +28,12 @@ export const DOM_ELEMENTS = {
 
   // Conditional tag
   statusTag: '#status',
+
+  // Enforcement status tag
+  enforcementStatusTag: ':nth-child(1) > opal-lib-govuk-tag > #enforcement_status',
+
+  // Links
+  linkText: 'a[class="govuk-link govuk-link--no-visited-state"]',
+  badgeBlue: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--blue"]',
+  badgeRed: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--red"]',
 };
