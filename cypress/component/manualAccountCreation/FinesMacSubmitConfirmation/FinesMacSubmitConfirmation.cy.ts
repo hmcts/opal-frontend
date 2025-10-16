@@ -3,6 +3,7 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacSubmitConfirmationComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
+import { of } from 'rxjs';
 
 describe('FinesMacSubmitConfirmation', () => {
   let mockFinesService = {
@@ -26,11 +27,7 @@ describe('FinesMacSubmitConfirmation', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
