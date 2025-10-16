@@ -859,7 +859,7 @@ Feature: Navigate and edit sections from task list
       | Comment      | — |
       | Account note | — |
 
-  @PO-607 @only
+  @PO-607
   Scenario: AC2 - View accounts in the Approved tab
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
