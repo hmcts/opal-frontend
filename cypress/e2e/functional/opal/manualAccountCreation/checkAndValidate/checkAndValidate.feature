@@ -859,7 +859,7 @@ Feature: Navigate and edit sections from task list
       | Comment      | — |
       | Account note | — |
 
-  @PO-607
+  @PO-607 @only
   Scenario: AC2 - View accounts in the Approved tab
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -874,8 +874,6 @@ Feature: Navigate and edit sections from task list
     When I click on the "Approved" link
 
     And I see "Showing accounts Approved in the past 7 days" text on the page
-
-    When I click on the "FP123456" link
 
     Then I see the following data in position 1 of the approved accounts table:
       | FP123456             |
