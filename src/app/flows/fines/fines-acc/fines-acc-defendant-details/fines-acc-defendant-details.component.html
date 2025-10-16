@@ -1,3 +1,31 @@
+@if (accountStore.hasVersionMismatch()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert type="warning" ariaLabel="offenceCodeMessage">
+      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text
+          >Some information on this page may be out of date.
+          <a href="#" (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text
+        >
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+} @else if (accountStore.successMessage()) {
+  <div class="govuk-grid-column-full">
+    <opal-lib-moj-alert
+      type="success"
+      ariaLabel="offenceCodeMessage"
+      [showDismiss]="true"
+      (dismissed)="accountStore.clearSuccessMessage()"
+    >
+      <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ accountStore.successMessage() }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  </div>
+}
+
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>
@@ -89,20 +117,42 @@
 
 <div class="govuk-grid-column-full govuk-!-padding-top-2">
   <opal-lib-moj-sub-navigation subNavId="account-details-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-    <li
-      opal-lib-moj-sub-navigation-item
-      subNavItemId="at-a-glance-tab"
-      [activeSubNavItemFragment]="activeTab"
-      subNavItemFragment="at-a-glance"
-      subNavItemText="At a glance"
-    ></li>
+    @for (tab of tabs | keyvalue; track tab.key) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        [subNavItemId]="tab.key + '-tab'"
+        [activeSubNavItemFragment]="activeTab"
+        [subNavItemFragment]="tab.key"
+        [subNavItemText]="tab.value"
+      ></li>
+    }
   </opal-lib-moj-sub-navigation>
 </div>
 
 @switch (activeTab) {
   @case ('at-a-glance') {
-    <app-fines-acc-defendant-details-at-a-glance-tab
-      [tabData]="tabData$ | async"
-    ></app-fines-acc-defendant-details-at-a-glance-tab>
+    @if (tabAtAGlance$ | async; as tabData) {
+      <app-fines-acc-defendant-details-at-a-glance-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-at-a-glance-tab>
+    }
+  }
+  @case ('defendant') {
+    <div class="govuk-grid-column-full"></div>
+  }
+  @case ('payment-terms') {
+    <div class="govuk-grid-column-full"></div>
+  }
+  @case ('enforcement') {
+    <div class="govuk-grid-column-full"></div>
+  }
+  @case ('impositions') {
+    <div class="govuk-grid-column-full"></div>
+  }
+  @case ('history-and-notes') {
+    <div class="govuk-grid-column-full"></div>
   }
 }

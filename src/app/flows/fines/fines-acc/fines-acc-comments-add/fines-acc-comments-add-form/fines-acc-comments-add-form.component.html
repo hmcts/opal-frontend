@@ -1,0 +1,78 @@
+<div class="govuk-grid-column-three-quarters">
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+  <opal-lib-govuk-heading-with-caption
+    captionText="{{ accountNumber }} - {{ defendantName }}"
+    headingText="Comments"
+    headingClasses="govuk-heading-l govuk-!-margin-bottom-30"
+  >
+  </opal-lib-govuk-heading-with-caption>
+  <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+    <opal-lib-govuk-text-area
+      labelText="Comment"
+      labelClasses="govuk-label--m"
+      inputClasses="govuk-!-width-two-thirds"
+      hintText="For example, a warning or reference number, which will appear on the account summary"
+      [maxCharacterLimit]="30"
+      [rows]="1"
+      [characterCountEnabled]="true"
+      inputId="facc_add_comment"
+      inputName="facc_add_comment"
+      [control]="form.get('facc_add_comment')"
+      [errors]="formControlErrorMessages['facc_add_comment']"
+    >
+    </opal-lib-govuk-text-area>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    <h2 class="govuk-heading-m">Free text notes</h2>
+    <opal-lib-govuk-text-area
+      labelText="Line 1"
+      labelClasses="govuk-label--s"
+      [maxCharacterLimit]="76"
+      [characterCountEnabled]="true"
+      inputId="facc_add_free_text_1"
+      inputName="facc_add_free_text_1"
+      [rows]="1"
+      [control]="form.get('facc_add_free_text_1')"
+      [errors]="formControlErrorMessages['facc_add_free_text_1']"
+    >
+    </opal-lib-govuk-text-area>
+    <opal-lib-govuk-text-area
+      labelText="Line 2"
+      labelClasses="govuk-label--s"
+      [maxCharacterLimit]="76"
+      [characterCountEnabled]="true"
+      inputId="facc_add_free_text_2"
+      inputName="facc_add_free_text_2"
+      [rows]="1"
+      [control]="form.get('facc_add_free_text_2')"
+      [errors]="formControlErrorMessages['facc_add_free_text_2']"
+    >
+    </opal-lib-govuk-text-area>
+    <opal-lib-govuk-text-area
+      labelText="Line 3"
+      labelClasses="govuk-label--s"
+      [maxCharacterLimit]="76"
+      [characterCountEnabled]="true"
+      [rows]="1"
+      inputId="facc_add_free_text_3"
+      inputName="facc_add_free_text_3"
+      [control]="form.get('facc_add_free_text_3')"
+      [errors]="formControlErrorMessages['facc_add_free_text_3']"
+    >
+    </opal-lib-govuk-text-area>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <opal-lib-govuk-button buttonId="save-comments" type="submit">Save comments</opal-lib-govuk-button>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <opal-lib-govuk-cancel-link
+          (linkClickEvent)="handleRoute(finesAccDefendantRoutingPaths.children.details)"
+        ></opal-lib-govuk-cancel-link>
+      </div>
+    </div>
+  </form>
+</div>
