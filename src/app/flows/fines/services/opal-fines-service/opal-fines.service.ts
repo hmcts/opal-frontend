@@ -54,13 +54,11 @@ import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
-import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
-  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly http = inject(HttpClient);
   private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
