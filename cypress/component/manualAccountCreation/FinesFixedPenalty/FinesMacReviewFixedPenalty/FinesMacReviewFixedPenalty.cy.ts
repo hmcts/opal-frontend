@@ -232,7 +232,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.registrationNumber).should('contain', '—');
     cy.get(DOM_ELEMENTS.dateOfBirth).should('contain', '—');
 
-     // Accessibility verification - check for screen readers (AC2bia)
+    // Accessibility verification - check for screen readers (AC2bia)
     const adultNotProvidedFields = [
       DOM_ELEMENTS.timeOfOffence,
       DOM_ELEMENTS.comments,
@@ -368,7 +368,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       });
     },
   );
-  
+
   it(
     '(AC.1) Submit for Review button should be present at bottom of form - adultOrYouthOnly',
     { tags: ['@PO-1796'] },
