@@ -1,7 +1,11 @@
 <opal-lib-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
   @if (!isReadOnly) {
     <ng-container actions>
-      <li app-fines-mac-review-account-change-link (emitChange)="changePaymentTerms()"></li>
+      <li
+        app-fines-mac-review-account-change-link
+        visuallyHiddenTextChange="Payment terms"
+        (emitChange)="changePaymentTerms()"
+      ></li>
     </ng-container>
   }
   <ng-container content>

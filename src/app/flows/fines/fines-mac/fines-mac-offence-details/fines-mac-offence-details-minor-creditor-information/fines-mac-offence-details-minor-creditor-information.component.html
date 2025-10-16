@@ -9,7 +9,7 @@
         opal-lib-govuk-summary-card-action
         [actionText]="isDetailsHidden ? 'Show details' : 'Hide details'"
         actionRoute="showHideDetails"
-        [visuallyHiddenText]="isDetailsHidden ? 'Show details' : 'Hide details'"
+        [visuallyHiddenText]="name"
         (clickEvent)="summaryListActionClick($event)"
       ></li>
       <li
@@ -17,14 +17,14 @@
         class="govuk-!-padding-left-2"
         actionText="Change"
         actionRoute="change"
-        visuallyHiddenText="Change"
+        [visuallyHiddenText]="name"
         (clickEvent)="summaryListActionClick($event)"
       ></li>
       <li
         opal-lib-govuk-summary-card-action
         actionText="Remove"
         actionRoute="remove"
-        visuallyHiddenText="Remove"
+        [visuallyHiddenText]="name"
         (clickEvent)="summaryListActionClick($event)"
       ></li>
     </ng-container>
