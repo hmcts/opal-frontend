@@ -307,7 +307,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
 
-  it('Company test', { tags: ['PO-790'] }, () => {
+  it.only('Company - Defendant details tab layout', { tags: ['PO-790'] }, () => {
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
@@ -319,5 +319,123 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
     interceptDefendantDetails(1, defendantDetailsMock, '1');
     setupComponent('1');
+
+    cy.get(DOM.pageHeader).should('exist');
+    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+    cy.get(DEFENDANT_DETAILS.companyTitle).should('exist').and('contain.text', 'Company details');
+    cy.get(DEFENDANT_DETAILS.companyName).should('exist').and('contain.text', 'Acme Corporation');
+    cy.get(DEFENDANT_DETAILS.companyAlias).should('exist').and('contain.text', 'Acme Corp');
+    cy.get(DEFENDANT_DETAILS.companyAddress)
+      .should('exist')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim().replace(/\s+/g, ' ')).to.eq('45 High Street Flat 2B AB1 2CD');
+      });
+    cy.get(DEFENDANT_DETAILS.companyVehicle).should('exist').and('contain.text', 'Ford Focus');
+    cy.get(DEFENDANT_DETAILS.companyVehicleReg).should('exist').and('contain.text', 'XY21 ABC');
+
+    cy.get(DEFENDANT_DETAILS.companyPrimaryEmail).should('exist').and('contain.text', 'sarah.thompson@example.com');
+    cy.get(DEFENDANT_DETAILS.companySecondaryEmail).should('exist').and('contain.text', 'sarah.t@example.com');
+    cy.get(DEFENDANT_DETAILS.companyMobilePhone).should('exist').and('contain.text', '07123 456789');
+    cy.get(DEFENDANT_DETAILS.companyHomePhone).should('exist').and('contain.text', '01234 567890');
+    cy.get(DEFENDANT_DETAILS.companyWorkPhone).should('exist').and('contain.text', '09876 543210');
+  });
+
+  it.only('AC1ciii. Company - Should display em-dash for blank row', { tags: ['PO-790'] }, () => {
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
+    defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+    interceptDefendantDetails(1, defendantDetailsMock, '1');
+    setupComponent('1');
+
+    cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
+  });
+
+  it.only(
+    'AC1b. Company - Should display language preferences sub-section when applicable',
+    { tags: ['PO-790'] },
+    () => {
+      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      setLanguagePref(language_preferences!.document_language_preference, 'CY', 'Welsh and English');
+      setLanguagePref(language_preferences!.hearing_language_preference, 'CY', 'Welsh and English');
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+      interceptDefendantDetails(1, defendantDetailsMock, '1');
+      setupComponent('1');
+
+      cy.get(DEFENDANT_DETAILS.documentLanguage).should('exist').and('contain.text', 'Welsh and English');
+      cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
+    },
+  );
+
+  it.only(
+    'AC2. Company - Account maintenance permission true, BU associated with account',
+    { tags: ['PO-790'] },
+    () => {
+      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+      interceptDefendantDetails(1, defendantDetailsMock, '1');
+      setupComponent('1');
+
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/individual/amend']);
+    },
+  );
+
+  it.only(
+    'AC2a. Company - Account maintenance permission true, BU not associated with account',
+    { tags: ['PO-790'] },
+    () => {
+      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+      defendantDetailsMock.defendant_account_party.is_debtor = true;
+      const { language_preferences } = defendantDetailsMock.defendant_account_party;
+      setLanguagePref(language_preferences!.document_language_preference);
+      setLanguagePref(language_preferences!.hearing_language_preference);
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+      interceptDefendantDetails(1, defendantDetailsMock, '1');
+      setupComponent('1');
+
+      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
+    },
+  );
+
+  it.only('AC2b. Company - Account maintenance permission false', { tags: ['PO-790'] }, () => {
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+    interceptDefendantDetails(1, defendantDetailsMock, '1');
+    setupComponent('1');
+
+    cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
 });
