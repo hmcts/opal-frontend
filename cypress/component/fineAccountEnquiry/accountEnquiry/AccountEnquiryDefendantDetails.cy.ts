@@ -25,6 +25,7 @@ import { interceptDefendantDetails } from './intercept/interceptDefendantDetails
 import { interceptAddNotes } from './intercept/interceptAddNotes';
 import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
+import { setLanguagePref } from './Utils/SharedFunctions';
 
 /**
  * Sets up and mounts the `FinesAccComponent` for Cypress component testing.
@@ -95,20 +96,6 @@ const setupComponent = (accountId: string | null = '77') => {
     });
   });
 };
-
-/**
- * Sets the language preference properties on the provided preference object.
- *
- * @param pref - The preference object to update.
- * @param code - The language code to set. Defaults to `'EN'`.
- * @param name - The display name for the language. Defaults to `'English only'`.
- */
-function setLanguagePref(pref: any, code = 'EN', name = 'English only') {
-  Object.assign(pref!, {
-    language_code: code,
-    language_display_name: name,
-  });
-}
 
 describe('Account Enquiry Defendant Details Tab', () => {
   // it.skip('example test setup', { tags: ['@PO-784'] }, () => {
