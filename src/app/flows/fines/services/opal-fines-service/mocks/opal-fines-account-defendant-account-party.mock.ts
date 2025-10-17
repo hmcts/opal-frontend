@@ -7,7 +7,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
     is_debtor: true,
     party_details: {
       party_id: 'PTY-1001',
-      organisation_flag: true,
+      organisation_flag: false,
       organisation_details: {
         organisation_name: 'Acme Corporation',
         organisation_aliases: [
