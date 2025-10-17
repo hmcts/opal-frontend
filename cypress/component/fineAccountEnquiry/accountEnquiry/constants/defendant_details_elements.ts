@@ -25,7 +25,22 @@ export const DEFENDANT_DETAILS = {
   defendantEmployerPhone: '[summaryListRowId="employer_telephone_number"]',
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
-  //Language preferences details table
+  // Company details table
+  companyTitle: '.govuk-summary-card__title',
+  companyName: '#companyDetailsNameValue',
+  companyAlias: '#companyDetailsAliasesValue',
+  companyAddress: '#companyDetailsAddressValue',
+  companyVehicle: '[summaryListRowId="vehicle_make_and_model"]',
+  companyVehicleReg: '[summaryListRowId="vehicle_registration"]',
+
+  // Company contact details table
+  companyPrimaryEmail: '[summaryListRowId="primary_email_address"]',
+  companySecondaryEmail: '[summaryListRowId="secondary_email_address"]',
+  companyMobilePhone: '[summaryListRowId="mobile_telephone_number"]',
+  companyHomePhone: '[summaryListRowId="home_telephone_number"]',
+  companyWorkPhone: '[summaryListRowId="work_telephone_number"]',
+
+  // Language preferences details table
   documentLanguage: '#languagePreferencesDocument_languageValue',
   courtHearingLanguage: '#languagePreferencesHearing_languageValue',
 
