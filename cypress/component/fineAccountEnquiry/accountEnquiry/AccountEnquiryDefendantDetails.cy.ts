@@ -307,7 +307,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
 
-  it.only('Company - Defendant details tab layout', { tags: ['PO-790'] }, () => {
+  it('Company - Defendant details tab layout', { tags: ['PO-790'] }, () => {
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
@@ -342,7 +342,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.companyWorkPhone).should('exist').and('contain.text', '09876 543210');
   });
 
-  it.only('AC1ciii. Company - Should display em-dash for blank row', { tags: ['PO-790'] }, () => {
+  it('AC1ciii. Company - Should display em-dash for blank row', { tags: ['PO-790'] }, () => {
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
@@ -360,49 +360,41 @@ describe('Account Enquiry Defendant Details Tab', () => {
     cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
   });
 
-  it.only(
-    'AC1b. Company - Should display language preferences sub-section when applicable',
-    { tags: ['PO-790'] },
-    () => {
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      setLanguagePref(language_preferences!.document_language_preference, 'CY', 'Welsh and English');
-      setLanguagePref(language_preferences!.hearing_language_preference, 'CY', 'Welsh and English');
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
-      interceptDefendantDetails(1, defendantDetailsMock, '1');
-      setupComponent('1');
+  it('AC1b. Company - Should display language preferences sub-section when applicable', { tags: ['PO-790'] }, () => {
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    setLanguagePref(language_preferences!.document_language_preference, 'CY', 'Welsh and English');
+    setLanguagePref(language_preferences!.hearing_language_preference, 'CY', 'Welsh and English');
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+    interceptDefendantDetails(1, defendantDetailsMock, '1');
+    setupComponent('1');
 
-      cy.get(DEFENDANT_DETAILS.documentLanguage).should('exist').and('contain.text', 'Welsh and English');
-      cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.documentLanguage).should('exist').and('contain.text', 'Welsh and English');
+    cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
+  });
 
-  it.only(
-    'AC2. Company - Account maintenance permission true, BU associated with account',
-    { tags: ['PO-790'] },
-    () => {
-      let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-      defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
-      defendantDetailsMock.defendant_account_party.is_debtor = true;
-      const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      setLanguagePref(language_preferences!.document_language_preference);
-      setLanguagePref(language_preferences!.hearing_language_preference);
-      interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
-      interceptDefendantDetails(1, defendantDetailsMock, '1');
-      setupComponent('1');
+  it('AC2. Company - Account maintenance permission true, BU associated with account', { tags: ['PO-790'] }, () => {
+    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
+    defendantDetailsMock.defendant_account_party.is_debtor = true;
+    const { language_preferences } = defendantDetailsMock.defendant_account_party;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+    interceptDefendantDetails(1, defendantDetailsMock, '1');
+    setupComponent('1');
 
-      cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/individual/amend']);
-    },
-  );
+    cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/individual/amend']);
+  });
 
-  it.only(
+  it(
     'AC2a. Company - Account maintenance permission true, BU not associated with account',
     { tags: ['PO-790'] },
     () => {
@@ -423,7 +415,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     },
   );
 
-  it.only('AC2b. Company - Account maintenance permission false', { tags: ['PO-790'] }, () => {
+  it('AC2b. Company - Account maintenance permission false', { tags: ['PO-790'] }, () => {
     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
