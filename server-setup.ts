@@ -11,6 +11,7 @@ import {
   RoutesConfiguration,
   SessionStorageConfiguration,
   TransferServerState,
+  OpalUserServiceConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 
 const env = process.env['NODE_ENV'] || 'development';
@@ -19,6 +20,7 @@ const developmentMode = env === 'development';
 export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
+  opalUserServiceConfiguration: OpalUserServiceConfiguration;
 } {
   const testMode = config.get<boolean>('expiry.testMode');
   const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
@@ -42,7 +44,13 @@ export function getRoutesConfig(): {
     microsoftUrl: config.get('microsoft.url'),
   };
 
-  return { sessionExpiryConfiguration, routesConfiguration };
+  const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
+    userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
+    addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
+    updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+  };
+
+  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration };
 }
 
 export function configureApiProxyRoutes(app: express.Express): void {
