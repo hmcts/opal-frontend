@@ -40,6 +40,6 @@ export interface IOpalFinesAccountDefendantDetailsHeader {
       individual_aliases: IOpalFinesDefendantAccountAlias[] | null;
     } | null;
   };
-  is_youth: boolean; // not in response
-  debtor_type: string; // not in response
+  is_youth: boolean;
+  debtor_type: string;
 }
