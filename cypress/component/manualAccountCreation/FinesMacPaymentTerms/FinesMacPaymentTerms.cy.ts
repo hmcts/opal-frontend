@@ -1437,4 +1437,93 @@ describe('FinesMacPaymentTermsComponent', () => {
       });
     },
   );
+
+  it('(AC1b, 1e) Update system note - Previously made → Criteria not met', { tags: ['@PO-1592'] }, () => {
+    const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
+
+    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+    finesMacState.businessUnit.business_unit_id = 17;
+
+    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '05/01/2023';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+
+    setupComponent('pgToPay', setAccountCommentsNotesSpy);
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+      cy.log('Calls:', calls);
+      const arg = calls.args[0][0];
+      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+      cy.log('System note:', systemNote);
+      expect(systemNote).to.equal(
+        'A collection order was previously made on 05/01/2023 prior to this account creation',
+      );
+    });
+
+    cy.get(DOM_ELEMENTS.collectionNo).check();
+    cy.get(DOM_ELEMENTS.makeCollection).uncheck();
+
+    cy.get(DOM_ELEMENTS.payInFull).check();
+    cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+      cy.log('Calls:', calls);
+      const arg = calls.args[1][0];
+      cy.log('Arg:', arg);
+      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+      cy.log('System note:', systemNote);
+      expect(systemNote).to.be.null;
+    });
+  });
+
+  it('(AC1b, 1e) Update system note - Made today → Criteria not met', { tags: ['@PO-1592'] }, () => {
+    const setAccountCommentsNotesSpy = cy.spy().as('setAccountCommentsNotesSpy');
+
+    finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/2000';
+    finesMacState.accountDetails.formData.fm_create_account_business_unit_id = 17;
+    finesMacState.businessUnit.business_unit_id = 17;
+
+    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made = false;
+    finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_made_today = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2023';
+
+    setupComponent('pgToPay', setAccountCommentsNotesSpy);
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledOnce');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+      cy.log('Calls:', calls);
+      const arg = calls.args[0][0];
+      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+      cy.log('System note:', systemNote);
+      expect(systemNote).to.equal('A collection order has been made by Timmy Test using Authorised Functions');
+    });
+
+    cy.get(DOM_ELEMENTS.collectionNo).check();
+    cy.get(DOM_ELEMENTS.makeCollection).uncheck();
+
+    cy.get(DOM_ELEMENTS.payInFull).check();
+    cy.get(DOM_ELEMENTS.payByDate).clear().type('01/01/2023', { delay: 0, force: true });
+
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+    cy.wrap(setAccountCommentsNotesSpy).should('have.been.calledTwice');
+    cy.wrap(setAccountCommentsNotesSpy).then((calls: any) => {
+      cy.log('Calls:', calls);
+      const arg = calls.args[1][0];
+      cy.log('Arg:', arg);
+      const systemNote = arg.formData.fm_account_comments_notes_system_notes;
+      cy.log('System note:', systemNote);
+      expect(systemNote).to.be.null;
+    });
+  });
 });

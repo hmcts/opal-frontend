@@ -27,6 +27,11 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
   let store: any;
+
+  /**
+   * Mount the Review Account component with the three stores and a minimal ActivatedRoute.
+   * After mount, mirror the created GlobalStore on window.globalStore so helpers can find it.
+   */
   const setupComponent = (
     finesDraftStateMock: any = finesDraftState,
     activatedRouteMock: any = null,
@@ -40,6 +45,7 @@ describe('FinesMacReviewAccountComponent', () => {
         UtilsService,
         FinesMacPayloadService,
         {
+          // Router: stub navigate calls so we don't actually change the URL.
           provide: Router,
           useValue: {
             navigate: cy.stub().as('routerNavigate'),
@@ -47,18 +53,17 @@ describe('FinesMacReviewAccountComponent', () => {
           },
         },
         {
+          // GlobalStore: create the instance used by the app and keep a reference for helpers.
           provide: GlobalStore,
           useFactory: () => {
-            let store = new GlobalStore();
+            const store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
-            store.setError({
-              error: false,
-              message: '',
-            });
+            store.setError({ error: false, message: '' });
             return store;
           },
         },
         {
+          // FinesMacStore: in-progress form state (we mutate this in helpers above).
           provide: FinesMacStore,
           useFactory: () => {
             let store = new FinesMacStore();
@@ -67,6 +72,7 @@ describe('FinesMacReviewAccountComponent', () => {
           },
         },
         {
+          // FinesDraftStore: draft-level flags and state.
           provide: FinesDraftStore,
           useFactory: () => {
             let store = new FinesDraftStore();
@@ -77,6 +83,7 @@ describe('FinesMacReviewAccountComponent', () => {
           },
         },
         {
+          // ActivatedRoute: just enough data for the component to render.
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
@@ -114,7 +121,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
-    });
+    }).as('replaceDraftAccount');
     cy.intercept('GET', '**/opal-fines-service/draft-accounts**', {
       statusCode: 200,
       body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,

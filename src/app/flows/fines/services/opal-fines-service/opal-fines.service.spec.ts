@@ -36,15 +36,21 @@ import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
-import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { of } from 'rxjs';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
+import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -667,20 +673,73 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountAtAGlance data', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
-    const expectedResponse = OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK;
-    // const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendant_account_id}/at-a-glance`;
+    const account_id: number = 77;
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 
-    service.getDefendantAccountAtAGlance().subscribe((response) => {
+    service.getDefendantAccountAtAGlance(account_id).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 
-    // const req = httpMock.expectOne(apiUrl);
-    // expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
 
-    // req.flush(expectedResponse);
+    req.flush(expectedResponse);
+  });
+
+  it('should getDefendantAccounDefendantTabData', () => {
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
+
+    service.getDefendantAccountParty().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  it('should getDefendantAccountEnforcementTabData', () => {
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
+
+    service.getDefendantAccountEnforcementTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  it('should getDefendantAccountImpositionsTabData', () => {
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK;
+
+    service.getDefendantAccountImpositionsTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  it('should getDefendantAccountPaymentTermsTabData', () => {
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
+
+    service.getDefendantAccountPaymentTermsTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  it('should getDefendantAccountHistoryAndNotesTabData', () => {
+    // const account_id: number = 77;
+    // const business_unit_id: string = '12';
+    // const business_unit_user_id: string | null = '12';
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK;
+
+    service.getDefendantAccountHistoryAndNotesTabData().subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
   });
 
   it('should send a POST request to add note API with correct payload and return mock response', () => {
@@ -760,11 +819,11 @@ describe('OpalFines', () => {
 
   it('should clear account details cache', () => {
     const tab = 'at-a-glance';
-    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK);
+    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
     service.clearAccountDetailsCache();
 
     // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$'][tab]).toBeUndefined();
+    expect(service['accountDetailsCache$']).toEqual({} as IOpalFinesAccountDefendantDetailsTabsCache);
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {
@@ -837,5 +896,48 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should return a mock response for patching defendant account', () => {
+    const accountId = 123456;
+    const updatePayload = {
+      comment_and_notes: {
+        account_comment: 'Updated comment',
+        free_text_note_1: 'Updated note 1',
+        free_text_note_2: 'Updated note 2',
+        free_text_note_3: 'Updated note 3',
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
+  });
+
+  it('should handle different payload values in mock response for patching defendant account', () => {
+    const accountId = 789012;
+    const updatePayload = {
+      version: 5,
+      comment_and_notes: {
+        account_comment: 'Different comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 });
