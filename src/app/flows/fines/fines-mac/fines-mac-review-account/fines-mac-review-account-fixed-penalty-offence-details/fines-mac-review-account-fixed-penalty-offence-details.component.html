@@ -17,7 +17,7 @@
           @if (offenceDetails.fm_offence_details_notice_number) {
             {{ offenceDetails.fm_offence_details_notice_number }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -32,7 +32,7 @@
           @if (offenceDetails.fm_offence_details_offence_type) {
             {{ offenceType(offenceDetails.fm_offence_details_offence_type) }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -47,7 +47,7 @@
           @if (offenceDetails.fm_offence_details_vehicle_registration_number) {
             {{ offenceDetails.fm_offence_details_vehicle_registration_number }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -62,7 +62,7 @@
           @if (offenceDetails.fm_offence_details_driving_licence_number) {
             {{ offenceDetails.fm_offence_details_driving_licence_number }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -77,7 +77,7 @@
           @if (offenceDetails.fm_offence_details_nto_nth) {
             {{ offenceDetails.fm_offence_details_nto_nth }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -92,7 +92,7 @@
           @if (offenceDetails.fm_offence_details_date_nto_issued) {
             {{ dateFormat(offenceDetails.fm_offence_details_date_nto_issued) }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -107,7 +107,7 @@
           @if (offenceDetails.fm_offence_details_date_of_offence) {
             {{ dateFormat(offenceDetails.fm_offence_details_date_of_offence) }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -122,7 +122,7 @@
           @if (offenceDetails.fm_offence_details_offence_cjs_code) {
             {{ offence }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -137,7 +137,7 @@
           @if (offenceDetails.fm_offence_details_time_of_offence) {
             {{ offenceDetails.fm_offence_details_time_of_offence }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -152,7 +152,7 @@
           @if (offenceDetails.fm_offence_details_place_of_offence) {
             {{ offenceDetails.fm_offence_details_place_of_offence }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -167,7 +167,7 @@
           @if (offenceDetails.fm_offence_details_amount_imposed) {
             {{ utilsService.convertToMonetaryString(offenceDetails.fm_offence_details_amount_imposed) }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
