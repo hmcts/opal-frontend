@@ -11,7 +11,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
 
 // constants + mocks
-import { DOM_ELEMENTS as DOM } from './constants/defendant_details_elements';
+import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
