@@ -60,6 +60,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
+import { FINES_ACC_DEBTOR_TYPES } from '../../fines-acc/constants/fines-acc-debtor-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -623,7 +624,9 @@ export class OpalFines {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
         // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
-        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
+        payload.debtor_type = payload.parent_guardian_party_id
+          ? FINES_ACC_DEBTOR_TYPES.parentGuardian
+          : FINES_ACC_DEBTOR_TYPES.defendant;
         payload.is_youth = payload.party_details?.individual_details?.date_of_birth
           ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
           : false;

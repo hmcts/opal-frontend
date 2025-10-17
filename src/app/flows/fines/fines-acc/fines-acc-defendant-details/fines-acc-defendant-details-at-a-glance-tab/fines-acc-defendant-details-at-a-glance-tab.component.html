@@ -1,7 +1,13 @@
 <div class="govuk-grid-column-full">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-      <h2 [class]="style.heading">Defendant</h2>
+      <h2 [class]="style.heading">
+        @if (tabData.debtor_type === debtorTypes.parentGuardian) {
+          Parent or Guardian
+        } @else {
+          Defendant
+        }
+      </h2>
       <hr [class]="style.hr" />
 
       @if (
@@ -164,7 +170,7 @@
         <br />
       }
       @if (tabData.enforcement_status.collection_order_made) {
-        @if (!tabData.is_youth) {
+        @if (!tabData.is_youth || tabData.debtor_type === debtorTypes.parentGuardian) {
           <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--blue govuk-!-margin-bottom-2"
             >Collection Order</opal-lib-moj-badge
           >
@@ -173,7 +179,7 @@
             >No collection Order</opal-lib-moj-badge
           >
         }
-      } @else if (!tabData.is_youth) {
+      } @else if (!tabData.is_youth || tabData.debtor_type === debtorTypes.parentGuardian) {
         <opal-lib-moj-badge badgeId="badge1" badgeClasses="moj-badge--red govuk-!-margin-bottom-2"
           >No collection Order</opal-lib-moj-badge
         >
