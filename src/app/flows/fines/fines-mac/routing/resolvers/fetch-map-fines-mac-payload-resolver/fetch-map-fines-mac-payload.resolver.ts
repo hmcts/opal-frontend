@@ -65,7 +65,9 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     // Log and rethrow the error
     globalStore.setError({
       error: true,
+      title: 'There was a problem',
       message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      operationId: null,
     });
     throw error;
   }

@@ -158,7 +158,9 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
     expect(globalStore.error()).toEqual({
       error: true,
+      title: 'There was a problem',
       message: `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
+      operationId: null,
     });
   });
 
@@ -179,7 +181,9 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
     expect(globalStore.error()).toEqual({
       error: true,
+      title: 'There was a problem',
       message: 'Cannot find business unit for ID: 61',
+      operationId: null,
     });
   });
 
@@ -196,6 +200,8 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     expect(globalStore.error()).toEqual({
       error: true,
       message: 'Unexpected error',
+      title: 'There was a problem',
+      operationId: null,
     });
   });
 
@@ -216,6 +222,8 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     expect(globalStore.error()).toEqual({
       error: true,
       message: 'An unexpected error occurred',
+      title: 'There was a problem',
+      operationId: null,
     });
   });
 });

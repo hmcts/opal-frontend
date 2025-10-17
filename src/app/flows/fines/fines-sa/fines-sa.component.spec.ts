@@ -38,7 +38,7 @@ describe('FinesSaComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesSaStore.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
-    expect(globalStore.error()).toEqual({ error: false, message: '' });
+    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
   });
 
   it('should call handleBeforeUnload ', () => {

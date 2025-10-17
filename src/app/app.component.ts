@@ -11,6 +11,7 @@ import {
   MojAlertContentComponent,
   MojAlertTextComponent,
   MojAlertIconComponent,
+  MojAlertHeadingComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
@@ -33,6 +34,7 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
     MojAlertContentComponent,
     MojAlertTextComponent,
     MojAlertIconComponent,
+    MojAlertHeadingComponent,
     GovukFooterComponent,
   ],
   templateUrl: './app.component.html',

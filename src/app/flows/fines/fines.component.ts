@@ -20,7 +20,9 @@ export class FinesComponent implements OnDestroy {
     // Clear any errors...
     this.globalStore.setError({
       error: false,
+      title: '',
       message: '',
+      operationId: null,
     });
   }
 }

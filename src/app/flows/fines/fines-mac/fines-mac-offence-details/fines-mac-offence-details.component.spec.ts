@@ -45,7 +45,7 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
-    expect(globalStore.error()).toEqual({ error: false, message: '' });
+    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
   });
 
   it('should call canDeactivate ', () => {

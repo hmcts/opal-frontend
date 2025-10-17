@@ -477,7 +477,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
     this.globalStore.setError({
       error: false,
+      title: '',
       message: '',
+      operationId: null,
     });
   }
 
