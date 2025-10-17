@@ -30,7 +30,7 @@ Then('I see the following Minor creditor details for imposition {int}:', (index:
   const details = dataTable.rowsHash();
   const summary = cy
     .contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .find('app-fines-mac-offence-details-minor-creditor-information');
@@ -40,7 +40,7 @@ Then('I see the following Minor creditor details for imposition {int}:', (index:
 
 Then('I do not see the Minor creditor details for imposition {int}', (index: number, dataTable: DataTable) => {
   cy.contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .find('app-fines-mac-offence-details-minor-creditor-information')

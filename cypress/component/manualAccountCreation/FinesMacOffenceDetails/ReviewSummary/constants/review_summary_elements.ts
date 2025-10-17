@@ -1,6 +1,6 @@
 export const DOM_ELEMENTS = {
   headingLarge: 'h1.govuk-heading-l',
-  headingMedium: 'h1.govuk-heading-m',
+  headingMedium: 'h2.govuk-heading-m',
   dateOfSentence: 'div[id = "dateOfSentenceDateOfSentence"]',
   offencecode: 'app-fines-mac-offence-details-review-offence-heading-title',
 
