@@ -10,12 +10,12 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { UpperCasePipe } from '@angular/common';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 
 @Component({
-  selector: 'app-fines-acc-defendant-details-defendant-tab',
+  selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
   imports: [
     UpperCasePipe,
     GovukSummaryCardListComponent,
@@ -23,33 +23,25 @@ import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-a
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
   ],
-  templateUrl: './fines-acc-defendant-details-defendant-tab.component.html',
+  templateUrl: './fines-acc-defendant-details-parent-or-guardian-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantDetailsDefendantTabComponent {
-  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
+export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
+  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changeDefendantDetails = new EventEmitter<string>();
-  @Output() convertAccount = new EventEmitter<string>();
+  @Output() changeParentOrGuardianDetails = new EventEmitter<string>();
+  @Output() removeParentOrGuardianDetails = new EventEmitter<string>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
-  public handleConvertAccount(): void {
-    if (this.tabData.defendant_account_party.party_details.organisation_flag) {
-      this.convertAccount.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY);
-    } else {
-      this.convertAccount.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL);
-    }
+  public handleRemoveParentOrGuardianDetails(): void {
+    this.removeParentOrGuardianDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN);
   }
 
-  public handleChangeDefendantDetails(): void {
-    if (this.tabData.defendant_account_party.party_details.organisation_flag) {
-      this.changeDefendantDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY);
-    } else {
-      this.changeDefendantDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL);
-    }
+  public handleChangeParentOrGuardianDetails(): void {
+    this.changeParentOrGuardianDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN);
   }
 }

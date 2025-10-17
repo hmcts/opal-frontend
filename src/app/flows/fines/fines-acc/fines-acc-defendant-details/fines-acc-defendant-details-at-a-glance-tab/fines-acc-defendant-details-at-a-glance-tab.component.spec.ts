@@ -21,4 +21,10 @@ describe('FinesAccDefendantDetailsAtAGlanceTabComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should handle add comments click', () => {
+    spyOn(component.addComments, 'emit');
+    component.handleAddComments();
+    expect(component.addComments.emit).toHaveBeenCalled();
+  });
 });
