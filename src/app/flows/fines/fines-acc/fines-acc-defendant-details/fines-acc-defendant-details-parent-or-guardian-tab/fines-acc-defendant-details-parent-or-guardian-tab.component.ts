@@ -10,11 +10,11 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { UpperCasePipe } from '@angular/common';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
-  selector: 'app-fines-acc-defendant-details-defendant-tab',
+  selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
   imports: [
     UpperCasePipe,
     GovukSummaryCardListComponent,
@@ -22,27 +22,27 @@ import { UpperCasePipe } from '@angular/common';
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
   ],
-  templateUrl: './fines-acc-defendant-details-defendant-tab.component.html',
+  templateUrl: './fines-acc-defendant-details-parent-or-guardian-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantDetailsDefendantTabComponent {
-  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty;
+export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
+  @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAccountParty | null;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changeDefendantDetails = new EventEmitter<boolean>();
-  @Output() convertAccount = new EventEmitter<boolean>();
+  @Output() changeParentOrGuardianDetails = new EventEmitter<boolean>();
+  @Output() removeParentOrGuardianDetails = new EventEmitter<boolean>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
-  public handleConvertAccount(event: Event): void {
+  public handleRemoveParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.convertAccount.emit(this.tabData.defendant_account_party.is_debtor);
+    this.removeParentOrGuardianDetails.emit(this.tabData?.defendant_account_party.is_debtor);
   }
 
-  public handleChangeDefendantDetails(event: Event): void {
+  public handleChangeParentOrGuardianDetails(event: Event): void {
     event.preventDefault();
-    this.changeDefendantDetails.emit(this.tabData.defendant_account_party.is_debtor);
+    this.changeParentOrGuardianDetails.emit(this.tabData?.defendant_account_party.is_debtor);
   }
 }

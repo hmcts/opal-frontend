@@ -875,8 +875,6 @@ Feature: Navigate and edit sections from task list
 
     And I see "Showing accounts Approved in the past 7 days" text on the page
 
-    When I click on the "FP123456" link
-
     Then I see the following data in position 1 of the approved accounts table:
       | FP123456             |
       | TEST New Company Ltd |
