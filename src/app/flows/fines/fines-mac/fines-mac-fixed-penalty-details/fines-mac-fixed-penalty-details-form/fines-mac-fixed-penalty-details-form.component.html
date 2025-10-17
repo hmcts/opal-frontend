@@ -203,6 +203,9 @@
         [control]="form.controls['fm_fp_offence_details_offence_type']"
       ></div>
       @if (form.get('fm_fp_offence_details_offence_type')?.value === 'vehicle') {
+        <span id="vehicle-offence-type-conditional-label" class="govuk-visually-hidden">
+          Options for Vehicle Offence Type
+        </span>
         <ng-container *ngTemplateOutlet="vehicleForm"></ng-container>
       }
       <div
