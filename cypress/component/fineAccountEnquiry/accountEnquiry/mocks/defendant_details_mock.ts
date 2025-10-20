@@ -131,6 +131,10 @@ export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
           permission_id: 5,
           permission_name: 'Check and Validate Draft Accounts',
         },
+        {
+          permission_id: 6,
+          permission_name: 'Search and view accounts',
+        },
       ],
     },
   ],

@@ -7,7 +7,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
     is_debtor: true,
     party_details: {
       party_id: 'PTY-1001',
-      organisation_flag: true,
+      organisation_flag: false,
       organisation_details: {
         organisation_name: 'Acme Corporation',
         organisation_aliases: [
@@ -24,7 +24,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
         surname: 'Thompson',
         date_of_birth: '12/04/1988',
         age: '36',
-        national_insurance_number: 'QQ123456C',
+        national_insurance_number: 'QQ 12 34 56 C',
         individual_aliases: [
           {
             alias_id: '1',
@@ -52,9 +52,9 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
     contact_details: {
       primary_email_address: 'sarah.thompson@example.com',
       secondary_email_address: 'sarah.t@example.com',
-      mobile_telephone_number: '07123456789',
-      home_telephone_number: '01234567890',
-      work_telephone_number: '09876543210',
+      mobile_telephone_number: '07123 456789',
+      home_telephone_number: '01234 567890',
+      work_telephone_number: '09876 543210',
     },
     vehicle_details: {
       vehicle_registration: 'XY21 ABC',
@@ -64,7 +64,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
       employer_name: 'Tech Solutions Ltd',
       employer_reference: 'EMP-001234',
       employer_email_address: 'hr@techsolutions.com',
-      employer_telephone_number: '01234567890',
+      employer_telephone_number: '01234 567890',
       employer_address: {
         address_line_1: '200 Innovation Park',
         address_line_2: null,

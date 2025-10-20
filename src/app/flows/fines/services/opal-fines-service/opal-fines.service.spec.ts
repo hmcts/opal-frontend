@@ -922,4 +922,47 @@ describe('OpalFines', () => {
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
+
+  it('should return a mock response for patching defendant account', () => {
+    const accountId = 123456;
+    const updatePayload = {
+      comment_and_notes: {
+        account_comment: 'Updated comment',
+        free_text_note_1: 'Updated note 1',
+        free_text_note_2: 'Updated note 2',
+        free_text_note_3: 'Updated note 3',
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
+  });
+
+  it('should handle different payload values in mock response for patching defendant account', () => {
+    const accountId = 789012;
+    const updatePayload = {
+      version: 5,
+      comment_and_notes: {
+        account_comment: 'Different comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
+  });
 });

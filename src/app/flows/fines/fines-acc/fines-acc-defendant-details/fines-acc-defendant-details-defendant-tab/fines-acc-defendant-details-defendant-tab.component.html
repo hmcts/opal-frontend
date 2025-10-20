@@ -91,64 +91,18 @@
             >
               <ng-container name>Address</ng-container>
               @if (party.address; as address) {
-                <ng-container value
-                  >{{ address.address_line_1 }}
-                  @if (address.address_line_2) {
-                    <br />
-                    {{ address.address_line_2 }}
-                  }
-                  @if (address.address_line_3) {
-                    <br />
-                    {{ address.address_line_3 }}
-                  }
-                  @if (address.address_line_4) {
-                    <br />
-                    {{ address.address_line_4 }}
-                  }
-                  @if (address.address_line_5) {
-                    <br />
-                    {{ address.address_line_5 }}
-                  }
-                  <br />
-                  {{ address.postcode | uppercase }}</ng-container
-                >
+                <ng-container value>
+                  <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                </ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
             </div>
 
-            @if (party.vehicle_details; as vehicle) {
-              <div
-                opal-lib-govuk-summary-list-row
-                class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                summaryListId="personalDetails"
-                summaryListRowId="vehicle_make_and_model"
-              >
-                <ng-container name>Vehicle make and model</ng-container>
-                @if (vehicle.vehicle_make_and_model) {
-                  <ng-container value>
-                    {{ vehicle.vehicle_make_and_model }}
-                  </ng-container>
-                } @else {
-                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-                }
-              </div>
-              <div
-                opal-lib-govuk-summary-list-row
-                class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                summaryListId="personalDetails"
-                summaryListRowId="vehicle_registration"
-              >
-                <ng-container name>Vehicle registration</ng-container>
-                @if (vehicle.vehicle_registration) {
-                  <ng-container value>
-                    {{ vehicle.vehicle_registration | uppercase }}
-                  </ng-container>
-                } @else {
-                  <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-                }
-              </div>
-            }
+            <ng-container
+              *ngTemplateOutlet="vehicleRows; context: { listId: 'personalDetails', vehicle: party?.vehicle_details }"
+            >
+            </ng-container>
           </opal-lib-govuk-summary-list>
         </ng-container>
       </opal-lib-govuk-summary-card-list>
@@ -196,63 +150,17 @@
               >
                 <ng-container name>Address</ng-container>
                 @if (party.address; as address) {
-                  <ng-container value
-                    >{{ address.address_line_1 }}
-                    @if (address.address_line_2) {
-                      <br />
-                      {{ address.address_line_2 }}
-                    }
-                    @if (address.address_line_3) {
-                      <br />
-                      {{ address.address_line_3 }}
-                    }
-                    @if (address.address_line_4) {
-                      <br />
-                      {{ address.address_line_4 }}
-                    }
-                    @if (address.address_line_5) {
-                      <br />
-                      {{ address.address_line_5 }}
-                    }
-                    <br />
-                    {{ address.postcode | uppercase }}</ng-container
-                  >
+                  <ng-container value>
+                    <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                  </ng-container>
                 } @else {
                   <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
                 }
               </div>
-              @if (party.vehicle_details; as vehicle) {
-                <div
-                  opal-lib-govuk-summary-list-row
-                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                  summaryListId="companyDetails"
-                  summaryListRowId="vehicle_make_and_model"
-                >
-                  <ng-container name>Vehicle make and model</ng-container>
-                  @if (vehicle.vehicle_make_and_model) {
-                    <ng-container value>
-                      {{ vehicle.vehicle_make_and_model }}
-                    </ng-container>
-                  } @else {
-                    <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-                  }
-                </div>
-                <div
-                  opal-lib-govuk-summary-list-row
-                  class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-                  summaryListId="companyDetails"
-                  summaryListRowId="vehicle_registration"
-                >
-                  <ng-container name>Vehicle registration</ng-container>
-                  @if (vehicle.vehicle_registration) {
-                    <ng-container value>
-                      {{ vehicle.vehicle_registration | uppercase }}
-                    </ng-container>
-                  } @else {
-                    <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-                  }
-                </div>
-              }
+              <ng-container
+                *ngTemplateOutlet="vehicleRows; context: { listId: 'companyDetails', vehicle: party?.vehicle_details }"
+              >
+              </ng-container>
             </opal-lib-govuk-summary-list>
           </ng-container>
         </opal-lib-govuk-summary-card-list>
@@ -440,27 +348,9 @@
             >
               <ng-container name>Employer address</ng-container>
               @if (employer_details.employer_address; as address) {
-                <ng-container value
-                  >{{ address.address_line_1 }}
-                  @if (address.address_line_2) {
-                    <br />
-                    {{ address.address_line_2 }}
-                  }
-                  @if (address.address_line_3) {
-                    <br />
-                    {{ address.address_line_3 }}
-                  }
-                  @if (address.address_line_4) {
-                    <br />
-                    {{ address.address_line_4 }}
-                  }
-                  @if (address.address_line_5) {
-                    <br />
-                    {{ address.address_line_5 }}
-                  }
-                  <br />
-                  {{ address.postcode | uppercase }}</ng-container
-                >
+                <ng-container value>
+                  <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                </ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
               }
@@ -480,3 +370,56 @@
     </p>
   </div>
 }
+
+<ng-template #addressTemplate let-address="address">
+  {{ address.address_line_1 }}
+  @if (address.address_line_2) {
+    <br />{{ address.address_line_2 }}
+  }
+  @if (address.address_line_3) {
+    <br />{{ address.address_line_3 }}
+  }
+  @if (address.address_line_4) {
+    <br />{{ address.address_line_4 }}
+  }
+  @if (address.address_line_5) {
+    <br />{{ address.address_line_5 }}
+  }
+  <br />{{ address.postcode | uppercase }}
+</ng-template>
+
+<ng-template #vehicleRows let-listId="listId" let-vehicle="vehicle">
+  @if (vehicle) {
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      [summaryListId]="listId"
+      summaryListRowId="vehicle_make_and_model"
+    >
+      <ng-container name>Vehicle make and model</ng-container>
+      <ng-container value>
+        @if (vehicle.vehicle_make_and_model) {
+          {{ vehicle.vehicle_make_and_model }}
+        } @else {
+          <app-fines-not-provided></app-fines-not-provided>
+        }
+      </ng-container>
+    </div>
+
+    <div
+      opal-lib-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      [summaryListId]="listId"
+      summaryListRowId="vehicle_registration"
+    >
+      <ng-container name>Vehicle registration</ng-container>
+      <ng-container value>
+        @if (vehicle.vehicle_registration) {
+          {{ vehicle.vehicle_registration | uppercase }}
+        } @else {
+          <app-fines-not-provided></app-fines-not-provided>
+        }
+      </ng-container>
+    </div>
+  }
+</ng-template>

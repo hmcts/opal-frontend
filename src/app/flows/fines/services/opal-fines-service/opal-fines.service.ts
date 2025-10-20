@@ -42,6 +42,10 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import {
+  IOpalFinesUpdateDefendantAccountPayload,
+  IOpalFinesUpdateDefendantAccountResponse,
+} from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
@@ -720,5 +724,32 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`,
       searchParams,
     );
+  }
+
+  /**
+   * Updates a defendant account with new account notes and comments.
+   * Currently returns a mock response since the API is not yet developed.
+   *
+   * @param accountId - The unique identifier of the defendant account to update.
+   * @param payload - The payload containing the updated account notes and version for concurrency control.
+   * @returns An Observable that emits the updated defendant account response.
+   */
+  public patchDefendantAccount(
+    accountId: number,
+    payload: IOpalFinesUpdateDefendantAccountPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { headers });
   }
 }

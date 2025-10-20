@@ -6,12 +6,13 @@ import { of } from 'rxjs';
 import { FinesAccDefendantDetailsComponent } from '../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details.component';
 import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
 
 // constants + mocks
-import { DOM_ELEMENTS as DOM } from './constants/defendant_details_elements';
+import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
