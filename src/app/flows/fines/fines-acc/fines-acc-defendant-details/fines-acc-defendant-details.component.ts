@@ -54,6 +54,7 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@servic
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { head } from 'lodash';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -267,6 +268,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
           );
         }),
+        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {
