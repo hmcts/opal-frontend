@@ -62,7 +62,6 @@ describe('OpalFines', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
       providers: [OpalFines, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(OpalFines);
@@ -687,15 +686,25 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccounDefendantTabData', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
+  it('should getDefendantAccountParty', () => {
+    const account_id: number = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
-    service.getDefendantAccountParty().subscribe((response) => {
-      expect(response).toEqual(expectedResponse);
-    });
+    service
+      .getDefendantAccountParty(
+        account_id,
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details.party_id,
+      )
+      .subscribe((response) => {
+        response.version = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.version;
+        expect(response).toEqual(expectedResponse);
+      });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccountEnforcementTabData', () => {
