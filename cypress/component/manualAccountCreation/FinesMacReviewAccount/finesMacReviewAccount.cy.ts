@@ -18,7 +18,7 @@ import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCre
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountComponent', () => {
