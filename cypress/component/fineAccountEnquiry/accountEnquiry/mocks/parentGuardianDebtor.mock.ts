@@ -35,8 +35,8 @@ export const OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK: IOpalFinesAccountDef
       work_telephone_number: '0800 000 1066',
     },
     vehicle_details: {
-      vehicle_registration: null,
-      vehicle_make_and_model: null,
+      vehicle_registration: 'PGreg1',
+      vehicle_make_and_model: 'PGmake1 PGmodel1',
     },
     employer_details: {
       employer_name: 'employername4',
@@ -54,12 +54,12 @@ export const OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK: IOpalFinesAccountDef
     },
     language_preferences: {
       document_language_preference: {
-        language_code: 'EN',
-        language_display_name: 'English only',
+        language_code: 'CY',
+        language_display_name: 'Welsh and English',
       },
       hearing_language_preference: {
-        language_code: 'EN',
-        language_display_name: 'English only',
+        language_code: 'CY',
+        language_display_name: 'Welsh and English',
       },
     },
   },
