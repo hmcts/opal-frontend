@@ -92,7 +92,7 @@
               <ng-container name>Address</ng-container>
               @if (party.address; as address) {
                 <ng-container value>
-                  <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                  <app-fines-acc-address [address]="address"></app-fines-acc-address>
                 </ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -151,7 +151,7 @@
                 <ng-container name>Address</ng-container>
                 @if (party.address; as address) {
                   <ng-container value>
-                    <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                    <app-fines-acc-address [address]="address"></app-fines-acc-address>
                   </ng-container>
                 } @else {
                   <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -349,7 +349,7 @@
               <ng-container name>Employer address</ng-container>
               @if (employer_details.employer_address; as address) {
                 <ng-container value>
-                  <ng-container *ngTemplateOutlet="addressTemplate; context: { address: address }"></ng-container>
+                  <app-fines-acc-address [address]="address"></app-fines-acc-address>
                 </ng-container>
               } @else {
                 <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
@@ -370,23 +370,6 @@
     </p>
   </div>
 }
-
-<ng-template #addressTemplate let-address="address">
-  {{ address.address_line_1 }}
-  @if (address.address_line_2) {
-    <br />{{ address.address_line_2 }}
-  }
-  @if (address.address_line_3) {
-    <br />{{ address.address_line_3 }}
-  }
-  @if (address.address_line_4) {
-    <br />{{ address.address_line_4 }}
-  }
-  @if (address.address_line_5) {
-    <br />{{ address.address_line_5 }}
-  }
-  <br />{{ address.postcode | uppercase }}
-</ng-template>
 
 <ng-template #vehicleRows let-listId="listId" let-vehicle="vehicle">
   @if (vehicle) {

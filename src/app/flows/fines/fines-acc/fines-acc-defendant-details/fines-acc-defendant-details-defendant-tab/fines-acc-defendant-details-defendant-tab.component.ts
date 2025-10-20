@@ -13,6 +13,7 @@ import {
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 import { NgTemplateOutlet, UpperCasePipe } from '@angular/common';
+import { FinesAccAddressComponent } from '../../components/fines-acc-address/fines-acc-address.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-defendant-tab',
@@ -23,6 +24,7 @@ import { NgTemplateOutlet, UpperCasePipe } from '@angular/common';
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
     NgTemplateOutlet,
+    FinesAccAddressComponent,
   ],
   templateUrl: './fines-acc-defendant-details-defendant-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

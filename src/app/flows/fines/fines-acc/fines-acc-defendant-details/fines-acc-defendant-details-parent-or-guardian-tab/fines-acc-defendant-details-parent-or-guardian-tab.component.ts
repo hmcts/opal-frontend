@@ -10,9 +10,10 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
-import { NgTemplateOutlet, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
+import { FinesAccAddressComponent } from '../../components/fines-acc-address/fines-acc-address.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
@@ -22,7 +23,7 @@ import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-a
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
-    NgTemplateOutlet,
+    FinesAccAddressComponent,
   ],
   templateUrl: './fines-acc-defendant-details-parent-or-guardian-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
