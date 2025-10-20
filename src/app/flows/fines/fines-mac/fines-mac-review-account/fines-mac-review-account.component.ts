@@ -42,7 +42,7 @@ import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-a
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
-
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 @Component({
   selector: 'app-fines-mac-review-account',
   imports: [
@@ -476,10 +476,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
 
     this.globalStore.setError({
-      error: false,
-      title: '',
-      message: '',
-      operationId: null,
+      ...GLOBAL_ERROR_STATE,
     });
   }
 

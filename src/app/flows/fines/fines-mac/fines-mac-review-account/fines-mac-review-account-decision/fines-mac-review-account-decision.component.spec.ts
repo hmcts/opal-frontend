@@ -13,6 +13,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('FinesMacReviewAccountDecisionComponent', () => {
   let component: FinesMacReviewAccountDecisionComponent;
@@ -165,6 +166,6 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
     component.ngOnDestroy();
 
-    expect(setErrorSpy).toHaveBeenCalledWith({ error: false, title: '', message: '', operationId: null });
+    expect(setErrorSpy).toHaveBeenCalledWith({ ...GLOBAL_ERROR_STATE });
   });
 });

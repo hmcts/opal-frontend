@@ -7,6 +7,7 @@ import { FinesMacOffenceDetailsStoreType } from './stores/types/fines-mac-offenc
 import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
@@ -45,7 +46,7 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
-    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
+    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call canDeactivate ', () => {

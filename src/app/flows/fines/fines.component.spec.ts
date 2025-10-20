@@ -5,6 +5,7 @@ import { FinesMacStoreType } from './fines-mac/stores/types/fines-mac-store.type
 import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
@@ -40,6 +41,6 @@ describe('FinesComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
-    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
+    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 });

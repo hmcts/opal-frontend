@@ -17,6 +17,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
@@ -157,10 +158,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     );
 
     expect(globalStore.error()).toEqual({
+      ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',
       message: `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
-      operationId: null,
     });
   });
 
@@ -180,10 +181,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     );
 
     expect(globalStore.error()).toEqual({
+      ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',
       message: 'Cannot find business unit for ID: 61',
-      operationId: null,
     });
   });
 
@@ -198,10 +199,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError('Unexpected error');
 
     expect(globalStore.error()).toEqual({
+      ...GLOBAL_ERROR_STATE,
       error: true,
       message: 'Unexpected error',
       title: 'There was a problem',
-      operationId: null,
     });
   });
 
@@ -220,10 +221,10 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     });
 
     expect(globalStore.error()).toEqual({
+      ...GLOBAL_ERROR_STATE,
       error: true,
       message: 'An unexpected error occurred',
       title: 'There was a problem',
-      operationId: null,
     });
   });
 });

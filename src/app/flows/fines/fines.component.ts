@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/
 import { RouterOutlet } from '@angular/router';
 import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 @Component({
   selector: 'app-fines',
@@ -19,10 +20,7 @@ export class FinesComponent implements OnDestroy {
 
     // Clear any errors...
     this.globalStore.setError({
-      error: false,
-      title: '',
-      message: '',
-      operationId: null,
+      ...GLOBAL_ERROR_STATE,
     });
   }
 }

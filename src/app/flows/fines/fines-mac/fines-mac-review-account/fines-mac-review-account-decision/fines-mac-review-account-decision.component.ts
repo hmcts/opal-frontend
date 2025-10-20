@@ -14,6 +14,7 @@ import { IFinesMacAddAccountPayload } from '../../services/fines-mac-payload/int
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { catchError, of, Subject, takeUntil, tap } from 'rxjs';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-decision',
@@ -113,10 +114,7 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
     this.ngUnsubscribe.complete();
 
     this.globalStore.setError({
-      error: false,
-      title: '',
-      message: '',
-      operationId: null,
+      ...GLOBAL_ERROR_STATE,
     });
   }
 }

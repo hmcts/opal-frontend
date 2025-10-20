@@ -6,6 +6,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from './constants/fines-mac-offence-details-search-offences-form.constant';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from './mocks/fines-mac-offence-details-search-offences-form.mock';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
@@ -46,7 +47,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     );
     expect(finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()).toBe(false);
     expect(finesMacOffenceDetailsSearchOffencesStore.stateChanges()).toBe(false);
-    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
+    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call handleBeforeUnload ', () => {

@@ -5,6 +5,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FinesSaStore } from './stores/fines-sa.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from './fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 describe('FinesSaComponent', () => {
   let component: FinesSaComponent;
@@ -38,7 +39,7 @@ describe('FinesSaComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesSaStore.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
-    expect(globalStore.error()).toEqual({ error: false, title: '', message: '', operationId: null });
+    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call handleBeforeUnload ', () => {

@@ -6,6 +6,7 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,
@@ -64,10 +65,10 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
   } catch (error) {
     // Log and rethrow the error
     globalStore.setError({
+      ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',
       message: error instanceof Error ? error.message : 'An unexpected error occurred',
-      operationId: null,
     });
     throw error;
   }
