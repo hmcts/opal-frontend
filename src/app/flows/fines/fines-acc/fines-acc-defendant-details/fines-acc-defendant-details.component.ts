@@ -33,6 +33,7 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
+import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -45,6 +46,7 @@ import {
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IFinesAccSummaryTabsContentStyles } from './interfaces/fines-acc-summary-tabs-content-styles.interface';
+import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defendant-details-defendant-tab/fines-acc-defendant-details-defendant-tab.component';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
@@ -58,6 +60,7 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@ser
   imports: [
     AsyncPipe,
     FinesAccDefendantDetailsAtAGlanceTabComponent,
+    FinesAccDefendantDetailsDefendantTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     CustomSummaryMetricBarComponent,
@@ -129,6 +132,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
+    const { defendant_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
@@ -137,7 +141,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           this.tabAtAGlance$ = this.fetchTabData(this.opalFinesService.getDefendantAccountAtAGlance(account_id));
           break;
         case 'defendant':
-          this.tabDefendant$ = this.fetchTabData(this.opalFinesService.getDefendantAccountParty());
+          this.tabDefendant$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountParty(account_id, defendant_party_id),
+          );
           break;
         case 'payment-terms':
           this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
@@ -280,5 +286,34 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.accountStore.setHasVersionMismatch(false);
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  public navigateToChangeDefendantDetailsPage(event: Event): void {
+    event.preventDefault();
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['account-maintenance'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      let partyType: string;
+
+      if (this.accountData.debtor_type === 'Parent/Guardian') {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
+      } else if (this.accountData.party_details.organisation_flag) {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
+      } else {
+        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
+      }
+
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
   }
 }
