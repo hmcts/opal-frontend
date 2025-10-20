@@ -218,7 +218,7 @@ describe('FinesAccPayloadService', () => {
     );
     expect(result).toEqual(inputPayload);
   });
-  
+
   it('should transform at-a-glance data to comments form state', () => {
     const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 

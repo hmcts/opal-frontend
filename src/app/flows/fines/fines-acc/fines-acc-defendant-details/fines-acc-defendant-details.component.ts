@@ -28,13 +28,12 @@ import { MojButtonMenuComponent } from '@hmcts/opal-frontend-common/components/m
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/components/custom/custom-page-header';
 // Pipes & Directives
-import { AsyncPipe, KeyValuePipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 // Constants
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
