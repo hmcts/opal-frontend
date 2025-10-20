@@ -23,7 +23,7 @@ import {
   MOCK_FINES_ACCOUNT_STATE,
   OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK,
 } from './mocks/defendant_details_at_glance_mock';
-import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
+import { interceptAtAGlance } from './intercept/defendantAccountIntercepts';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 
 describe('Defendant Account Summary - At a Glance Tab', () => {

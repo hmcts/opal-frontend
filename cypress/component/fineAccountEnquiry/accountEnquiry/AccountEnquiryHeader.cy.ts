@@ -1,4 +1,4 @@
-import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
+import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
@@ -10,10 +10,10 @@ import {
   USER_STATE_MOCK_PERMISSION_BU17,
   DEFENDANT_HEADER_ORG_MOCK,
 } from './mocks/defendant_details_mock';
-import { interceptDefendantHeader } from './intercept/interceptDefendantHeader';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 
 describe('Account Enquiry - Defendant Header', () => {
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC1a: renders the Defendant Account Header Summary', { tags: ['PO-1593', 'PO-866'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -51,7 +51,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -72,7 +72,7 @@ describe('Account Enquiry - Defendant Header', () => {
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, header, '1');
-      interceptAtAGlance();
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -105,7 +105,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, header, '1');
-      interceptAtAGlance();
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -150,7 +150,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
       interceptDefendantHeader(77, header, '1');
-      interceptAtAGlance();
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -167,7 +167,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -186,7 +186,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -203,7 +203,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, adult, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -217,7 +217,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -232,7 +232,7 @@ describe('Account Enquiry - Defendant Header', () => {
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, header, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -244,7 +244,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -254,7 +254,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -273,7 +273,7 @@ describe('Account Enquiry - Defendant Header', () => {
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
-      interceptAtAGlance();
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -290,7 +290,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -300,7 +300,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -309,7 +309,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
     cy.get(DOM.addNoteButton).click();
@@ -327,7 +327,7 @@ describe('Account Enquiry - Defendant Header', () => {
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-      interceptAtAGlance();
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
       cy.get(DOM.addNoteButton).click();
@@ -343,7 +343,7 @@ describe('Account Enquiry - Defendant Header', () => {
   it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
-    interceptAtAGlance();
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
     setupAccountEnquiryComponent(componentProperties);
     cy.get(DOM.addNoteButton).should('not.exist');

@@ -17,12 +17,9 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { interceptDefendantHeader } from './intercept/interceptDefendantHeader';
-import { interceptAtAGlance } from './intercept/interceptAtAGlance';
+import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { interceptDefendantDetails } from './intercept/interceptDefendantDetails';
-import { interceptAddNotes } from './intercept/interceptAddNotes';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from './constants/account_enquiry_header_elements';
 import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
 import { setLanguagePref } from './Utils/SharedFunctions';
