@@ -88,26 +88,29 @@ const setupComponent = (accountId: string | null = '77') => {
     });
   });
 };
-describe('Account Enquiry Component', () => {
-  it('should mount the component', { tags: ['@PO-784'] }, () => {
-    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
 
-    let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-    defendantDetailsMock.defendant_account_party.is_debtor = false;
+//Needs deleting this was just an example file
 
-    interceptAddNotes();
+// describe('Account Enquiry Component', () => {
+//   it('should mount the component', { tags: ['@PO-784'] }, () => {
+//     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
 
-    interceptAuthenticatedUser();
-    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-    interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
-    interceptAtAGlance(1, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-    interceptDefendantDetails(1, defendantDetailsMock, '1');
+//     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+//     defendantDetailsMock.defendant_account_party.is_debtor = false;
 
-    setupComponent('1');
-    cy.get('router-outlet').should('exist');
-    cy.get('a').contains('Defendant').click();
-    //cy.get('a').contains('Convert to an individual account').click();
+//     interceptAddNotes();
 
-    //cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
-  });
-});
+//     interceptAuthenticatedUser();
+//     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+//     interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
+//     interceptAtAGlance(1, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+//     interceptDefendantDetails(1, defendantDetailsMock, '1');
+
+//     setupComponent('1');
+//     cy.get('router-outlet').should('exist');
+//     cy.get('a').contains('Defendant').click();
+//     //cy.get('a').contains('Convert to an individual account').click();
+
+//     //cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
+//   });
+// });
