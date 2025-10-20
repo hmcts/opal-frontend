@@ -14,7 +14,7 @@ export const OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_PARTY_MOCK: IOpalFinesAccountDef
         surname: 'LNAME',
         national_insurance_number: 'OT000001D',
         individual_aliases: null,
-        date_of_birth: null,
+        date_of_birth: '1975-06-15',
         title: 'Mr',
         age: null,
       },

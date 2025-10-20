@@ -225,7 +225,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   );
 
   it(
-    'AC1c:should display "Parent or Guardian details" title when viewing Parent or Guardian tab',
+    'AC1c: should display only Parent or Guardian details sub-section when debtor flag is false',
     { tags: ['@PO-788'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
