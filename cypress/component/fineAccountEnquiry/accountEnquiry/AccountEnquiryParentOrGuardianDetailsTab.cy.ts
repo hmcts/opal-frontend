@@ -7,10 +7,10 @@ import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/f
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { interceptAuthenticatedUser, interceptUserState } from './intercept/interceptUserState';
 import {
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_NO_PERMISSION,
+  createDefendantHeaderMockWithName,
 } from './mocks/defendant_details_mock';
 import { REDIRECT_TO_SSO } from '@hmcts/opal-frontend-common/guards/auth';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -99,7 +99,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC1,Ac1a, Ac1b,Ac1bi:should display "Parent or Guardian details" title and other fields when viewing Parent or Guardian tab',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -160,7 +160,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC1bi: should not display Language preferences sub-section when account is not associated with Welsh speaking BU',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -228,7 +228,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC1c:should display "Parent or Guardian details" title when viewing Parent or Guardian tab',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -285,7 +285,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC1d, AC1ci, AC1cii, AC1ciii: should display data fields with correct format and all fields read-only',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -396,7 +396,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
   );
 
   it('AC1civ: should display em-dash (—) for fields that have not been provided', { tags: ['@PO-788'] }, () => {
-    let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
     headerMock.parent_guardian_party_id = '1770000001';
     headerMock.debtor_type = 'Parent/Guardian';
 
@@ -477,7 +477,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC2: should display Change button and navigate to change screen when user has Account Maintenance permission in current BU',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -520,7 +520,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC2a: should display Change button but navigate to access denied when user lacks permission in current BU',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
@@ -562,7 +562,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     'AC2b: should not display Change button when user has no Account Maintenance permission in any BU',
     { tags: ['@PO-788'] },
     () => {
-      let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.parent_guardian_party_id = '1770000001';
       headerMock.debtor_type = 'Parent/Guardian';
 
