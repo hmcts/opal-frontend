@@ -189,7 +189,6 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        [isYouth]="accountData.is_youth"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
@@ -202,7 +201,6 @@
       <app-fines-acc-defendant-details-parent-or-guardian-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        [isYouth]="accountData.is_youth"
         (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
         (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
