@@ -5,12 +5,12 @@ import {
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { IFinesMacParentGuardianDetailsState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacParentGuardianDetailsAliasState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-parent-guardian-details',
@@ -19,7 +19,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
-    FinesMacReviewAccountNotProvidedComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-parent-guardian-details.component.html',
   styles: ``,
