@@ -19,7 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { data } from 'cypress/types/jquery';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
