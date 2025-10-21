@@ -5,7 +5,7 @@ import { FinesMacStoreType } from './stores/types/fines-mac-store.type';
 import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;

@@ -6,7 +6,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM } from './constants/fines-mac-offence-details-search-offences-form.constant';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_FORM_MOCK } from './mocks/fines-mac-offence-details-search-offences-form.mock';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;

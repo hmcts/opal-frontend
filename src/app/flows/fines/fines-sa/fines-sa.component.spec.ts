@@ -5,7 +5,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { FinesSaStore } from './stores/fines-sa.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from './fines-sa-search/fines-sa-search-account/constants/fines-sa-search-account-state.constant';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesSaComponent', () => {
   let component: FinesSaComponent;

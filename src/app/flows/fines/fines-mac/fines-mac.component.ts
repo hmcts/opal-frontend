@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 @Component({
   selector: 'app-fines-mac',
   imports: [RouterOutlet],

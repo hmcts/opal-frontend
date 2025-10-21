@@ -28,7 +28,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

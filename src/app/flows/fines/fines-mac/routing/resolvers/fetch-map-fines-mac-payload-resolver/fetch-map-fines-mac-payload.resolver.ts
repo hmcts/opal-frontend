@@ -6,7 +6,7 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,
