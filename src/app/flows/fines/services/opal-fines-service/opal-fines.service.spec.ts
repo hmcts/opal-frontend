@@ -708,24 +708,6 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getParentOrGuardianAccountParty', () => {
-    const account_id: number = 77;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}`;
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK;
-
-    service
-      .getParentOrGuardianAccountParty(account_id, FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.parent_guardian_party_id)
-      .subscribe((response) => {
-        response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK.version;
-        expect(response).toEqual(expectedResponse);
-      });
-
-    const req = httpMock.expectOne(apiUrl);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(expectedResponse);
-  });
-
   it('should getDefendantAccountEnforcementTabData', () => {
     // const account_id: number = 77;
     // const business_unit_id: string = '12';
@@ -924,5 +906,48 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
+  });
+
+  it('should return a mock response for patching defendant account', () => {
+    const accountId = 123456;
+    const updatePayload = {
+      comment_and_notes: {
+        account_comment: 'Updated comment',
+        free_text_note_1: 'Updated note 1',
+        free_text_note_2: 'Updated note 2',
+        free_text_note_3: 'Updated note 3',
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
+  });
+
+  it('should handle different payload values in mock response for patching defendant account', () => {
+    const accountId = 789012;
+    const updatePayload = {
+      version: 5,
+      comment_and_notes: {
+        account_comment: 'Different comment',
+        free_text_note_1: null,
+        free_text_note_2: null,
+        free_text_note_3: null,
+      },
+    };
+
+    service.patchDefendantAccount(accountId, updatePayload).subscribe((response) => {
+      expect(response.defendant_account_id).toBe(accountId);
+      expect(response.message).toBe('Account comments notes updated successfully');
+    });
+
+    const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 });

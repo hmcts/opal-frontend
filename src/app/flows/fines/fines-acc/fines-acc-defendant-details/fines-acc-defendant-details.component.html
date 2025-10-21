@@ -195,19 +195,6 @@
       ></app-fines-acc-defendant-details-defendant-tab>
     }
   }
-  @case ('parent-or-guardian') {
-    @if (tabParentOrGuardian$ | async; as tabData) {
-      <app-fines-acc-defendant-details-parent-or-guardian-tab
-        [tabData]="tabData"
-        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        [isYouth]="accountData.is_youth"
-        (addComments)="navigateToAddCommentsPage($event)"
-        [style]="tabContentStyles"
-        (changeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
-        (removeParentOrGuardianDetails)="navigateToChangeDefendantDetailsPage($event)"
-      ></app-fines-acc-defendant-details-parent-or-guardian-tab>
-    }
-  }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full"></div>
   }

@@ -20,7 +20,6 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -151,14 +150,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
     // Subscribe to trigger the pipe execution
     component.tabDefendant$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalled();
-    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
-  });
-
-  it('should fetch the parent or guardian tab data when fragment is changed to parent-or-guardian', () => {
-    component['refreshFragment$'].next('parent-or-guardian');
-    // Subscribe to trigger the pipe execution
-    component.tabParentOrGuardian$.subscribe();
-    expect(mockOpalFinesService.getParentOrGuardianAccountParty).toHaveBeenCalled();
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 

@@ -6,6 +6,7 @@ import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.const
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { defendantAccountHeadingResolver } from './resolvers/defendant-account-heading.resolver';
+import { defendantAccountAtAGlanceResolver } from './resolvers/defendant-account-at-a-glance.resolver';
 import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
@@ -48,7 +49,7 @@ export const routing: Routes = [
 
         loadComponent: () =>
           import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
@@ -63,13 +64,34 @@ export const routing: Routes = [
           import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
             (c) => c.FinesAccCommentsAddComponent,
           ),
-        canActivate: [routePermissionsGuard, finesAccStateGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,
         },
-        resolve: { title: TitleResolver },
+        resolve: {
+          title: TitleResolver,
+          defendantAccountHeadingData: defendantAccountHeadingResolver,
+          commentsFormData: defendantAccountAtAGlanceResolver,
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/:partyType/amend`,
+
+        loadComponent: () =>
+          import('../fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component').then(
+            (c) => c.FinesAccDebtorAddAmend,
+          ),
+        canActivate: [routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.debtor,
+        },
+        resolve: {
+          title: TitleResolver,
+        },
       },
       {
         path: `debtor/:partyType/amend`,

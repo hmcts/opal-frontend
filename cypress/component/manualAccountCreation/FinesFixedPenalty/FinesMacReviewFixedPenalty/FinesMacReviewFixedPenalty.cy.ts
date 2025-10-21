@@ -26,6 +26,7 @@ import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-m
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   const routes: Routes = [

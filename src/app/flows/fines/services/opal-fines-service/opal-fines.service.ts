@@ -42,6 +42,10 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import {
+  IOpalFinesUpdateDefendantAccountPayload,
+  IOpalFinesUpdateDefendantAccountResponse,
+} from './interfaces/opal-fines-update-defendant-account.interface';
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
@@ -532,6 +536,8 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
+   * @param business_unit_id - The ID of the business unit.
+   * @param business_unit_user_id - The ID of the business unit user.
    * @param defendant_party_id - The ID of the defendant account party.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
@@ -556,37 +562,6 @@ export class OpalFines {
         );
     }
     return this.accountDetailsCache$['defendant'];
-  }
-
-  /**
-   * Retrieves the parent/guardian account party data.
-   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
-   *
-   * @param account_id - The ID of the defendant account.
-   * @param parent_guardian_party_id - The ID of the parent/guardian account party.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
-   */
-  public getParentOrGuardianAccountParty(
-    account_id: number | null,
-    party_account_id: string | null,
-  ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.accountDetailsCache$['parent-or-guardian']) {
-      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
-      this.accountDetailsCache$['parent-or-guardian'] = this.http
-        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
-        .pipe(
-          map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
-            const version = this.extractEtagVersion(response.headers);
-            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
-            return {
-              ...payload,
-              version,
-            };
-          }),
-          shareReplay(1),
-        );
-    }
-    return this.accountDetailsCache$['parent-or-guardian'];
   }
 
   /**
@@ -720,5 +695,32 @@ export class OpalFines {
       `${OPAL_FINES_PATHS.searchMinorCreditorAccounts}`,
       searchParams,
     );
+  }
+
+  /**
+   * Updates a defendant account with new account notes and comments.
+   * Currently returns a mock response since the API is not yet developed.
+   *
+   * @param accountId - The unique identifier of the defendant account to update.
+   * @param payload - The payload containing the updated account notes and version for concurrency control.
+   * @returns An Observable that emits the updated defendant account response.
+   */
+  public patchDefendantAccount(
+    accountId: number,
+    payload: IOpalFinesUpdateDefendantAccountPayload,
+    version?: string,
+    businessUnitId?: string,
+  ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
+
+    const headers: Record<string, string> = {};
+    if (version) {
+      headers['If-Match'] = version;
+    }
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+
+    return this.http.patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { headers });
   }
 }
