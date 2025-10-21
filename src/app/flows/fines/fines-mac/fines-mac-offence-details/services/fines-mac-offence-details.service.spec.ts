@@ -16,7 +16,6 @@ describe('FinesMacOffenceDetailsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
       providers: [OpalFines, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(FinesMacOffenceDetailsService);
