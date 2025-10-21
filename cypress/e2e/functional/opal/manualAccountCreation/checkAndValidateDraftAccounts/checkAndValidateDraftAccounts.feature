@@ -411,8 +411,3 @@ Feature: Check and Validate - Checker
     #AC.8 Back button
     When I click on the "Back" link
     And I see "Review accounts" on the page header
-
-
-
-
-

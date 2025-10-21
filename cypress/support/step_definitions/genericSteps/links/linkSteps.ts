@@ -1,7 +1,21 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { clickLinkAcrossPages } from '../../../step_definitions/genericSteps/links/linkHelpers';
+
+/* ------------------------------------------------------------------------------------------------
+ * Cucumber steps
+ * ----------------------------------------------------------------------------------------------*/
 
 Then('I click on the {string} link', (linkText: string) => {
-  cy.get('a').contains(linkText).click();
+  clickLinkAcrossPages(linkText, {
+    waitAfterPageMs: 200,
+    maxPages: 30,
+    paginationRetries: 5,
+    paginationRetryDelayMs: 500,
+    singlePageRetries: 6,
+    singlePageRetryDelayMs: 500,
+    // For tabs like “Rejected/Failed”, refreshing the current tab can help on slow renders:
+    singlePageRefreshSelector: '.moj-sub-navigation__link[aria-current="page"]',
+  });
 });
 
 When('{string} is clicked', (linkText: string) => {
@@ -20,9 +34,11 @@ When('{string} is clicked, nothing happens', (linkText: string) => {
     cy.url().should('eq', initialUrl);
   });
 });
+
 When('the link with text {string} should not be present', (linkText: string) => {
   cy.contains('a', linkText).should('not.exist');
 });
+
 Then('I click on the {string} link for imposition {int}', (linkText: string, index: number) => {
   cy.contains('legend', 'Impositions')
     .parent()
@@ -31,6 +47,7 @@ Then('I click on the {string} link for imposition {int}', (linkText: string, ind
     .contains('a', linkText)
     .click();
 });
+
 Then('I see the {string} link for imposition {int}', (linkText: string, index: number) => {
   cy.contains('legend', 'Impositions')
     .parent()
@@ -39,6 +56,7 @@ Then('I see the {string} link for imposition {int}', (linkText: string, index: n
     .contains('a', linkText)
     .should('exist');
 });
+
 Then('I do not see the {string} link for imposition {int}', (linkText: string, index: number) => {
   cy.contains('legend', 'Impositions')
     .parent()
@@ -47,12 +65,15 @@ Then('I do not see the {string} link for imposition {int}', (linkText: string, i
     .contains('a', linkText)
     .should('not.exist');
 });
+
 Then('I click the {string} link for offence {string}', (linkText: string, offence: string) => {
   cy.contains('app-fines-mac-offence-details-review-offence', offence).find('a').contains(linkText).click();
 });
+
 Then('I see the {string} link for offence {string}', (linkText: string, offence: string) => {
   cy.contains('app-fines-mac-offence-details-review-offence', offence).find('a').contains(linkText).should('exist');
 });
+
 Then('I open the {string} link in the same tab', (linkText: string) => {
   cy.get('a').contains(linkText).invoke('removeAttr', 'target').click();
 });
