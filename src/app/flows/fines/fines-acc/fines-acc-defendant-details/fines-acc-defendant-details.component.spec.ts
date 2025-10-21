@@ -63,7 +63,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'getDefendantAccountEnforcementTabData',
       'getDefendantAccountPaymentTermsTabData',
       'getDefendantAccountParty',
-      'getParentOrGuardianAccountParty',
       'clearAccountDetailsCache',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
@@ -71,9 +70,6 @@ describe('FinesAccDefendantDetailsComponent', () => {
       of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
-    mockOpalFinesService.getParentOrGuardianAccountParty.and.returnValue(
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK),
-    );
     mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );

@@ -131,15 +131,6 @@
       subNavItemFragment="defendant"
       [subNavItemText]="tabs['defendant']"
     ></li>
-    @if (accountData.debtor_type === 'Parent/Guardian') {
-      <li
-        opal-lib-moj-sub-navigation-item
-        subNavItemId="parent-or-guardian-tab"
-        [activeSubNavItemFragment]="activeTab"
-        subNavItemFragment="parent-or-guardian"
-        [subNavItemText]="tabs['parent-or-guardian']"
-      ></li>
-    }
     <li
       opal-lib-moj-sub-navigation-item
       subNavItemId="payment-terms-tab"
