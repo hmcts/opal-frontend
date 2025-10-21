@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en-GB",
+  "words": [
+  "AYG",
+    "AYPG",
+    "Authorised",
+    "bacs",
+    "badeball",
+    "biii",
+    "BLART",
+    "CJS",
+    "COLLO",
+    "cyroute",
+    "datepicker",
+    "earliestreleasedate",
+    "elem",
+    "FCOST",
+    "finesmac",
+    "forenames",
+    "Grandtotal",
+    "HMCTS",
+    "impositions",
+    "lastname",
+    "linters"
+    "LJA",
+    "macreview",
+    "mockable",
+    "NOENF",
+    "nums",
+    "offence",
+    "offencecode",
+    "OPAL",
+    "postcodes",
+    "PRIS",
+    "prisonandprisonnumber",
+    "Serde",
+    "Typecheck"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "coverage",
+    ".husky",
+    "*.lock",
+    "**/*.snap",
+    "**/generated/**"
+  ],
+  "ignoreRegExpList": [
+    "/^\\s*\\/\\/\\s*cspell:disable-next-line.*$/",
+    "/[A-F0-9]{8,}/"  // hex IDs, hashes
+  ],
+  "files": [
+    "**/*.{ts,tsx,js,jsx,json,md,html,css,scss}",
+    "cypress/**/*"
+  ],
+  "flagWords": [
+    "teh",
+    "adn"
+  ]
+}

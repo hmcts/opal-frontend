@@ -51,7 +51,9 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <h2 class="govuk-label-wrapper">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          </h2>
           <opal-lib-govuk-text-input
             labelText="First names"
             [inputId]="aliasControl['fm_personal_details_alias_forenames'].inputId"
@@ -148,7 +150,9 @@
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    </h2>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_personal_details_address_line_1"
@@ -184,7 +188,9 @@
   @if (defendantType === defendantTypesKeys.adultOrYouthOnly) {
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
+      <h2 class="govuk-label-wrapper">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
+      </h2>
       <opal-lib-govuk-text-input
         labelText="Make and model"
         inputId="fm_personal_details_vehicle_make"

@@ -6,11 +6,17 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
+import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
+import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
+import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesAccPayloadService {
+  private readonly transformationService = inject(TransformationService);
   private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
@@ -68,5 +74,58 @@ export class FinesAccPayloadService {
       business_unit_user_id: business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
     };
+  }
+
+  /**
+
+   * Transforms the given IOpalFinesAccountDefendantAtAGlance into IFinesAccAddCommentsFormState for the Comments Add form
+   *
+   * @param atAGlanceData - The at-a-glance data from the API.
+   * @returns The transformed form state object for comments add form.
+   */
+  public transformAtAGlanceDataToCommentsForm(
+    atAGlanceData: IOpalFinesAccountDefendantAtAGlance,
+  ): IFinesAccAddCommentsFormState {
+    const { comments_and_notes } = atAGlanceData;
+    return {
+      facc_add_comment: comments_and_notes?.account_comment || '',
+      facc_add_free_text_1: comments_and_notes?.free_text_note_1 || '',
+      facc_add_free_text_2: comments_and_notes?.free_text_note_2 || '',
+      facc_add_free_text_3: comments_and_notes?.free_text_note_3 || '',
+    };
+  }
+
+  /**
+   * Transforms the given IFinesAccAddCommentsFormState and account version into an update payload
+   * for the defendant account API.
+   *
+   * @param formState - The form state containing the comment and note data
+   * @returns The transformed payload for updating the defendant account
+   */
+  public buildCommentsFormPayload(formState: IFinesAccAddCommentsFormState): IOpalFinesUpdateDefendantAccountPayload {
+    return {
+      comment_and_notes: {
+        account_comment: formState.facc_add_comment || null,
+        free_text_note_1: formState.facc_add_free_text_1 || null,
+        free_text_note_2: formState.facc_add_free_text_2 || null,
+        free_text_note_3: formState.facc_add_free_text_3 || null,
+      },
+    };
+  }
+
+  /**
+
+   * Transforms the given finesMacPayload object by applying the transformations
+   * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
+   *
+   * @param finesAccPayload - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  public transformPayload<T extends { [key: string]: any }>(
+    finesAccPayload: T,
+    transformItemsConfig: ITransformItem[],
+  ): T {
+    return this.transformationService.transformObjectValues(finesAccPayload, transformItemsConfig);
   }
 }
