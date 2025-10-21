@@ -106,5 +106,6 @@ export function configureMonitoring(): TransferServerState {
     launchDarklyConfig: launchDarkly,
     ssoEnabled: config.get('features.sso.enabled'),
     appInsightsConfig: appInsights,
+    userStateCacheExpirationMilliseconds: config.get('expiry.userStateExpiryInMilliseconds'),
   };
 }

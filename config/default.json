@@ -61,7 +61,8 @@
     "test": {
       "expiryTimeInMilliseconds": 300000,
       "warningThresholdInMilliseconds": 300000
-    }
+    },
+    "userStateExpiryInMilliseconds": 60000
   },
   "application-insights": {
     "cloudRoleName": "opal-frontend"
