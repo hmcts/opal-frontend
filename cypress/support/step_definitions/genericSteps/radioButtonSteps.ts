@@ -66,7 +66,7 @@ When('I see {string} under the {string} radio button', (inputField: string, radi
 });
 Then('I select the {string} radio button for imposition {int}', (radioButton: string, index: number) => {
   cy.contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .find('.govuk-radios')
