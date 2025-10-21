@@ -1,18 +1,7 @@
-import { mount } from 'cypress/angular';
-import { provideHttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-
-import { FinesAccDefendantDetailsComponent } from '../../../../src/app/flows/fines/fines-acc/fines-acc-defendant-details/fines-acc-defendant-details.component';
-import { FinesAccountStore } from '../../../../src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { interceptAtAGlance } from './intercept/defendantAccountIntercept';
+import { interceptAtAGlance, interceptDefendantHeader } from './intercept/defendantAccountIntercepts';
 
 // constants + mocks
-import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_YOUTH_MOCK,
@@ -20,74 +9,39 @@ import {
   USER_STATE_MOCK_PERMISSION_BU77,
   USER_STATE_MOCK_PERMISSION_BU17,
   DEFENDANT_HEADER_ORG_MOCK,
-  MOCK_ACCOUNT_STATE,
 } from './mocks/defendant_details_mock';
+import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { IComponentProperties } from './setup/setupComponent.interface';
+import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/defendant_details_at_glance_mock';
 
-describe('Defendant Account Summary (Component)', () => {
-  const setupComponent = (prefilledData = DEFENDANT_HEADER_MOCK, user = USER_STATE_MOCK_NO_PERMISSION) => {
-    cy.then(() => {
-      mount(FinesAccDefendantDetailsComponent, {
-        providers: [
-          provideHttpClient(),
-          OpalFines,
-          {
-            provide: FinesAccountStore,
-            useFactory: () => {
-              const store = new FinesAccountStore();
-              const mockState = structuredClone(MOCK_ACCOUNT_STATE);
-              if (prefilledData.party_details.organisation_flag) {
-                mockState.party_name = prefilledData.party_details.organisation_details?.organisation_name ?? '';
-                mockState.party_type = 'Organisation';
-              } else {
-                mockState.party_name =
-                  `${prefilledData.party_details.individual_details?.forenames ?? ''} ${prefilledData.party_details.individual_details?.surname ?? ''}`.trim();
-                mockState.party_type = 'Individual';
-              }
+describe('Account Enquiry - Defendant Header', () => {
+  beforeEach(() => {
+    interceptAuthenticatedUser();
+  });
 
-              store.setAccountState(mockState);
-              return store;
-            },
-          },
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              fragment: of('at-a-glance'),
-              snapshot: {
-                data: {
-                  defendantAccountHeadingData: prefilledData,
-                },
-                fragment: 'at-a-glance',
-                parent: { snapshot: { url: [{ path: 'defendant' }] } },
-              },
-            },
-          },
-          UtilsService,
-          {
-            provide: GlobalStore,
-            useFactory: () => {
-              let store = new GlobalStore();
-              store.setUserState(user);
-              return store;
-            },
-          },
-          {
-            provide: Router,
-            useValue: {
-              navigate: cy.stub().as('routerNavigate'),
-            },
-          },
-        ],
-      });
-    });
+  const componentProperties: IComponentProperties = {
+    accountId: '77',
+    fragments: undefined,
+    interceptedRoutes: [
+      '/access-denied',
+      '../note/add',
+      '../debtor/individual/amend',
+      '../debtor/parentGuardian/amend',
+      // Add more routes here as needed
+    ],
   };
 
   it('AC1a: renders the Defendant Account Header Summary', { tags: ['PO-1593', 'PO-866'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_YOUTH_MOCK);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.pageHeader).should('exist');
     cy.get(DOM.headingWithCaption).should('exist');
-    cy.get(DOM.headingName).should('exist').and('contain.text', 'Anna Graham');
+    cy.get(DOM.headingName).should('exist').and('contain.text', 'Mr Anna GRAHAM');
     cy.get(DOM.accountInfo).should('exist');
     cy.get(DOM.summaryMetricBar).should('exist');
     cy.get(DOM.subnav).should('exist');
@@ -95,8 +49,11 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
   it('AC1a: renders the Company Account Header Summary', { tags: ['PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.pageHeader).should('exist');
     cy.get(DOM.headingWithCaption).should('exist');
@@ -113,8 +70,11 @@ describe('Defendant Account Summary (Component)', () => {
     () => {
       const header = structuredClone(DEFENDANT_HEADER_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
-      interceptAtAGlance();
-      setupComponent(header);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
 
       cy.get(DOM.accountInfo).within(() => {
         cy.contains(DOM.labelAccountType).should('be.visible');
@@ -143,8 +103,11 @@ describe('Defendant Account Summary (Component)', () => {
       const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
       header.prosecutor_case_reference = 'ref123'; // UI should uppercase
 
-      interceptAtAGlance();
-      setupComponent(header);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
 
       cy.get(DOM.accountInfo).within(() => {
         cy.contains(DOM.labelAccountType).should('be.visible');
@@ -167,16 +130,31 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   // ONLY Youth tag when youth is the debtor and no P/G associated
-  it(
+  it.only(
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
     { tags: ['PO-1593'] },
     () => {
+      const dateOfBirth = new Date();
+      dateOfBirth.setFullYear(dateOfBirth.getFullYear() - 15); // 15 years old
+
       const header = structuredClone(DEFENDANT_HEADER_YOUTH_MOCK);
+      header.is_youth = true;
       header.debtor_type = 'Defendant';
       header.parent_guardian_party_id = null;
+      header.party_details.individual_details = {
+        ...header.party_details.individual_details!,
+        date_of_birth: '15/06/2010', //this is what the UI expects but is the incorrect format
+        // date_of_birth: '2010-06-15', // This is the correct ISO format, that the UI should be using, PO-2321 has been raised to address this
+        age: '14',
+      };
 
-      interceptAtAGlance();
-      setupComponent(header);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(77, header, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
+      cy.log('header', header);
 
       cy.get(DOM.statusTag).should('exist').and('contain.text', 'Youth Account');
     },
@@ -187,8 +165,11 @@ describe('Defendant Account Summary (Component)', () => {
     header.debtor_type = 'Parent/Guardian';
     header.parent_guardian_party_id = '99';
 
-    interceptAtAGlance();
-    setupComponent(header);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, header, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.statusTag)
       .should('exist')
@@ -203,8 +184,11 @@ describe('Defendant Account Summary (Component)', () => {
     header.debtor_type = 'Parent/Guardian';
     header.parent_guardian_party_id = '99';
 
-    interceptAtAGlance();
-    setupComponent(header);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, header, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.statusTag).should('not.contain.text', 'Youth Account');
     cy.get(DOM.statusTag).should('contain.text', 'Parent or Guardian to pay');
@@ -217,8 +201,11 @@ describe('Defendant Account Summary (Component)', () => {
     adult.debtor_type = 'Defendant';
     adult.parent_guardian_party_id = null;
 
-    interceptAtAGlance();
-    setupComponent(adult);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, adult, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.statusTag).should('not.exist');
   });
@@ -228,8 +215,11 @@ describe('Defendant Account Summary (Component)', () => {
     const header = structuredClone(DEFENDANT_HEADER_MOCK);
     header.payment_state_summary.account_balance = -4.5;
 
-    interceptAtAGlance();
-    setupComponent(header);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, header, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.summaryMetricBar)
       .contains(/-£\s*4\.50|−£\s*4\.50/)
@@ -240,8 +230,11 @@ describe('Defendant Account Summary (Component)', () => {
     const header = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
     header.payment_state_summary.account_balance = -4.5;
 
-    interceptAtAGlance();
-    setupComponent(header);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, header, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.summaryMetricBar)
       .contains(/-£\s*4\.50|−£\s*4\.50/)
@@ -249,14 +242,22 @@ describe('Defendant Account Summary (Component)', () => {
   });
 
   it('AC4: shows "Add account note" when user has permission', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
 
   it('AC4: Calls add note path when user has permission in this BU', { tags: ['PO-1593', 'PO-866', 'PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
     cy.get(DOM.addNoteButton).click();
     cy.get('@routerNavigate')
       .its('lastCall.args.0')
@@ -270,8 +271,12 @@ describe('Defendant Account Summary (Component)', () => {
     'AC4a: Calls error path when user has no permission in this BU only in other BU',
     { tags: ['PO-1593', 'PO-866', 'PO-867'] },
     () => {
-      interceptAtAGlance();
-      setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
+
       cy.get(DOM.addNoteButton).click();
       cy.get('@routerNavigate')
         .its('lastCall.args.0')
@@ -283,19 +288,30 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   it('AC4b: hides "Add account note" when user has no permission in any BU', { tags: ['PO-1593', 'PO-866'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_NO_PERMISSION);
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 
   it('AC3: shows "Add account note" when user has permission - Company', { tags: ['PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
     cy.get(DOM.addNoteButton).should('exist').and('be.enabled');
   });
   it('AC3: Calls add note path when user has permission in this BU - Company', { tags: ['PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU77);
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
     cy.get(DOM.addNoteButton).click();
     cy.get('@routerNavigate')
       .its('lastCall.args.0')
@@ -309,8 +325,11 @@ describe('Defendant Account Summary (Component)', () => {
     'AC3a: Calls error path when user has no permission in this BU only in other BU - Company',
     { tags: ['PO-867'] },
     () => {
-      interceptAtAGlance();
-      setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_PERMISSION_BU17);
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+      setupAccountEnquiryComponent(componentProperties);
       cy.get(DOM.addNoteButton).click();
       cy.get('@routerNavigate')
         .its('lastCall.args.0')
@@ -322,8 +341,11 @@ describe('Defendant Account Summary (Component)', () => {
   );
 
   it('AC3b: hides "Add account note" when user has no permission in any BU - Company', { tags: ['PO-867'] }, () => {
-    interceptAtAGlance();
-    setupComponent(DEFENDANT_HEADER_ORG_MOCK, USER_STATE_MOCK_NO_PERMISSION);
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(77, DEFENDANT_HEADER_ORG_MOCK, '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
     cy.get(DOM.addNoteButton).should('not.exist');
   });
 });

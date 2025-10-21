@@ -51,7 +51,6 @@ import {
   GovukRadiosItemComponent,
   GovukRadioComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -79,7 +78,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     AlphagovAccessibleAutocompleteComponent,
     MojTicketPanelComponent,
     GovukButtonComponent,
-    GovukTextInputPrefixSuffixComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukCancelLinkComponent,
