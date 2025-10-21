@@ -21,7 +21,7 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { getToday } from 'cypress/support/utils/dateUtils';

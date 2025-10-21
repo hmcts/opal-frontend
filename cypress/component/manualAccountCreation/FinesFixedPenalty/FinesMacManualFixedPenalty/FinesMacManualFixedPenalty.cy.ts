@@ -12,7 +12,7 @@ import { DOM_ELEMENTS } from './constants/fines_mac_manual_fixed_penalty_element
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
