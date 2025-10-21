@@ -20,7 +20,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_debtor_add_amend_forenames).toBe('Sarah Jane');
     expect(result.facc_debtor_add_amend_surname).toBe('Thompson');
     expect(result.facc_debtor_add_amend_dob).toBe('12/04/1988');
-    expect(result.facc_debtor_add_amend_national_insurance_number).toBe('QQ123456C');
+    expect(result.facc_debtor_add_amend_national_insurance_number).toBe('QQ 12 34 56 C');
     expect(result.facc_debtor_add_amend_add_alias).toBe(true); // Should be true when aliases exist
 
     // Test address details
@@ -32,9 +32,9 @@ describe('transformDefendantAccountPartyPayload', () => {
     // Test contact details
     expect(result.facc_debtor_add_amend_contact_email_address_1).toBe('sarah.thompson@example.com');
     expect(result.facc_debtor_add_amend_contact_email_address_2).toBe('sarah.t@example.com');
-    expect(result.facc_debtor_add_amend_contact_telephone_number_mobile).toBe('07123456789');
-    expect(result.facc_debtor_add_amend_contact_telephone_number_home).toBe('01234567890');
-    expect(result.facc_debtor_add_amend_contact_telephone_number_business).toBe('09876543210');
+    expect(result.facc_debtor_add_amend_contact_telephone_number_mobile).toBe('07123 456789');
+    expect(result.facc_debtor_add_amend_contact_telephone_number_home).toBe('01234 567890');
+    expect(result.facc_debtor_add_amend_contact_telephone_number_business).toBe('09876 543210');
 
     // Test vehicle details
     expect(result.facc_debtor_add_amend_vehicle_make).toBe('Ford Focus');
@@ -48,7 +48,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBe('Tech Solutions Ltd');
     expect(result.facc_debtor_add_amend_employer_details_employer_reference).toBe('EMP-001234');
     expect(result.facc_debtor_add_amend_employer_details_employer_email_address).toBe('hr@techsolutions.com');
-    expect(result.facc_debtor_add_amend_employer_details_employer_telephone_number).toBe('01234567890');
+    expect(result.facc_debtor_add_amend_employer_details_employer_telephone_number).toBe('01234 567890');
     expect(result.facc_debtor_add_amend_employer_details_employer_address_line_1).toBe('200 Innovation Park');
     expect(result.facc_debtor_add_amend_employer_details_employer_address_line_2).toBeNull();
     expect(result.facc_debtor_add_amend_employer_details_employer_address_line_3).toBeNull();

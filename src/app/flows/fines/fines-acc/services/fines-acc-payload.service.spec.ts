@@ -382,109 +382,111 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
       expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBeNull();
       expect(result.facc_debtor_add_amend_language_preferences_document_language).toBeNull();
-  it('should transform at-a-glance data to comments form state', () => {
-    const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
-
-    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
-
-    expect(result).toEqual({
-      facc_add_comment: atAGlanceData.comments_and_notes?.account_comment || '',
-      facc_add_free_text_1: atAGlanceData.comments_and_notes?.free_text_note_1 || '',
-      facc_add_free_text_2: atAGlanceData.comments_and_notes?.free_text_note_2 || '',
-      facc_add_free_text_3: atAGlanceData.comments_and_notes?.free_text_note_3 || '',
     });
-  });
+    it('should transform at-a-glance data to comments form state', () => {
+      const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
 
-  it('should handle null account notes gracefully', () => {
-    const atAGlanceData = {
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
-      comments_and_notes: {
-        account_comment: null,
-        free_text_note_1: null,
-        free_text_note_2: null,
-        free_text_note_3: null,
-      },
-    };
-
-    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
-
-    expect(result).toEqual({
-      facc_add_comment: '',
-      facc_add_free_text_1: '',
-      facc_add_free_text_2: '',
-      facc_add_free_text_3: '',
-    });
-  });
-
-  describe('buildCommentsFormPayload', () => {
-    it('should transform form state to update payload correctly', () => {
-      const formState: IFinesAccAddCommentsFormState = {
-        facc_add_comment: 'Updated comment',
-        facc_add_free_text_1: 'Updated note 1',
-        facc_add_free_text_2: 'Updated note 2',
-        facc_add_free_text_3: 'Updated note 3',
-      };
-
-      const result = service.buildCommentsFormPayload(formState);
+      const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
       expect(result).toEqual({
-        comment_and_notes: {
-          account_comment: 'Updated comment',
-          free_text_note_1: 'Updated note 1',
-          free_text_note_2: 'Updated note 2',
-          free_text_note_3: 'Updated note 3',
-        },
+        facc_add_comment: atAGlanceData.comments_and_notes?.account_comment || '',
+        facc_add_free_text_1: atAGlanceData.comments_and_notes?.free_text_note_1 || '',
+        facc_add_free_text_2: atAGlanceData.comments_and_notes?.free_text_note_2 || '',
+        facc_add_free_text_3: atAGlanceData.comments_and_notes?.free_text_note_3 || '',
       });
     });
 
-    it('should handle null/empty values in form state', () => {
-      const formState: IFinesAccAddCommentsFormState = {
-        facc_add_comment: '',
-        facc_add_free_text_1: null,
-        facc_add_free_text_2: '',
-        facc_add_free_text_3: null,
-      };
-
-      const result = service.buildCommentsFormPayload(formState);
-
-      expect(result).toEqual({
-        comment_and_notes: {
+    it('should handle null account notes gracefully', () => {
+      const atAGlanceData = {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        comments_and_notes: {
           account_comment: null,
           free_text_note_1: null,
           free_text_note_2: null,
           free_text_note_3: null,
         },
+      };
+
+      const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
+
+      expect(result).toEqual({
+        facc_add_comment: '',
+        facc_add_free_text_1: '',
+        facc_add_free_text_2: '',
+        facc_add_free_text_3: '',
       });
     });
 
-    it('should transform payload using the transformation service', () => {
-      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-      const inputPayload = {
-        date_of_birth: '2000-09-09',
-      };
+    describe('buildCommentsFormPayload', () => {
+      it('should transform form state to update payload correctly', () => {
+        const formState: IFinesAccAddCommentsFormState = {
+          facc_add_comment: 'Updated comment',
+          facc_add_free_text_1: 'Updated note 1',
+          facc_add_free_text_2: 'Updated note 2',
+          facc_add_free_text_3: 'Updated note 3',
+        };
 
-      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+        const result = service.buildCommentsFormPayload(formState);
 
-      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-        inputPayload,
-        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-      );
-      expect(result).toEqual(inputPayload);
-    });
+        expect(result).toEqual({
+          comment_and_notes: {
+            account_comment: 'Updated comment',
+            free_text_note_1: 'Updated note 1',
+            free_text_note_2: 'Updated note 2',
+            free_text_note_3: 'Updated note 3',
+          },
+        });
+      });
 
-    it('should transform payload using the transformation service', () => {
-      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-      const inputPayload = {
-        date_of_birth: '2000-09-09',
-      };
+      it('should handle null/empty values in form state', () => {
+        const formState: IFinesAccAddCommentsFormState = {
+          facc_add_comment: '',
+          facc_add_free_text_1: null,
+          facc_add_free_text_2: '',
+          facc_add_free_text_3: null,
+        };
 
-      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+        const result = service.buildCommentsFormPayload(formState);
 
-      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-        inputPayload,
-        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-      );
-      expect(result).toEqual(inputPayload);
+        expect(result).toEqual({
+          comment_and_notes: {
+            account_comment: null,
+            free_text_note_1: null,
+            free_text_note_2: null,
+            free_text_note_3: null,
+          },
+        });
+      });
+
+      it('should transform payload using the transformation service', () => {
+        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        const inputPayload = {
+          date_of_birth: '2000-09-09',
+        };
+
+        const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+        expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+          inputPayload,
+          FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+        );
+        expect(result).toEqual(inputPayload);
+      });
+
+      it('should transform payload using the transformation service', () => {
+        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        const inputPayload = {
+          date_of_birth: '2000-09-09',
+        };
+
+        const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+        expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+          inputPayload,
+          FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+        );
+        expect(result).toEqual(inputPayload);
+      });
     });
   });
 });
