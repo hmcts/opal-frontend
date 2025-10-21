@@ -291,12 +291,13 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   private initialDebtorAddAmendSetup(): void {
     this.setupDebtorAddAmendForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls(
-      [...new Array(this.initialFormData.formData?.facc_debtor_add_amend_aliases?.length).keys()],
-      'facc_debtor_add_amend_aliases',
-    );
+
+    // Safe access to aliases array
+    const aliasesLength = this.initialFormData?.formData?.facc_debtor_add_amend_aliases?.length || 0;
+    this.setupAliasFormControls([...new Array(aliasesLength).keys()], 'facc_debtor_add_amend_aliases');
+
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.initialFormData.formData);
+    this.rePopulateForm(this.initialFormData?.formData || null);
     this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
     this.dateOfBirthListener();
     this.setupEmployerFieldsValidation();
@@ -304,6 +305,11 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   }
 
   public override ngOnInit(): void {
+    // Ensure initialFormData is set with default values if undefined
+    if (!this.initialFormData) {
+      this.initialFormData = FINES_ACC_DEBTOR_ADD_AMEND_FORM;
+    }
+
     this.initialDebtorAddAmendSetup();
     super.ngOnInit();
   }

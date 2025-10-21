@@ -6,6 +6,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
+@if (form) {
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <opal-lib-govuk-select
     labelText="Title"
@@ -397,3 +398,4 @@
     </div>
   </div>
 </form>
+}
