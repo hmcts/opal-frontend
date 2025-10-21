@@ -27,7 +27,10 @@ describe('defendantAccountHeadingResolver', () => {
 
     mockAccountStore = jasmine.createSpyObj('FinesAccountStore', ['setAccountState']);
 
-    mockAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['transformAccountHeaderForStore', 'transformPayload']);
+    mockAccPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
+      'transformAccountHeaderForStore',
+      'transformPayload',
+    ]);
     mockAccPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
     mockAccPayloadService.transformPayload.and.returnValue(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
 

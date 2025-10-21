@@ -28,6 +28,6 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
     tap((headingData) => {
       accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
     }),
-    map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG))
+    map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
   );
 };
