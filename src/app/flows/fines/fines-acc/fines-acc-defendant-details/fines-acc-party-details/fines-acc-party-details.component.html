@@ -76,36 +76,9 @@
         </div>
 
         @if (party.vehicle_details; as vehicle) {
-          <div
-            opal-lib-govuk-summary-list-row
-            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-            [summaryListId]="summaryListId"
-            summaryListRowId="vehicle_make_and_model"
-          >
-            <ng-container name>Vehicle make and model</ng-container>
-            <ng-container value>
-              @if (vehicle.vehicle_make_and_model) {
-                {{ vehicle.vehicle_make_and_model }}
-              } @else {
-                <app-fines-not-provided></app-fines-not-provided>
-              }
-            </ng-container>
-          </div>
-          <div
-            opal-lib-govuk-summary-list-row
-            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-            [summaryListId]="summaryListId"
-            summaryListRowId="vehicle_registration"
-          >
-            <ng-container name>Vehicle registration</ng-container>
-            <ng-container value>
-              @if (vehicle.vehicle_registration) {
-                {{ vehicle.vehicle_registration | uppercase }}
-              } @else {
-                <app-fines-not-provided></app-fines-not-provided>
-              }
-            </ng-container>
-          </div>
+          <ng-container
+            *ngTemplateOutlet="vehicleDetailsTemplate; context: { vehicle: vehicle, summaryListId: summaryListId }"
+          ></ng-container>
         }
       </opal-lib-govuk-summary-list>
     </ng-container>
@@ -162,36 +135,9 @@
             }
           </div>
           @if (party.vehicle_details; as vehicle) {
-            <div
-              opal-lib-govuk-summary-list-row
-              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="companyDetails"
-              summaryListRowId="vehicle_make_and_model"
-            >
-              <ng-container name>Vehicle make and model</ng-container>
-              <ng-container value>
-                @if (vehicle.vehicle_make_and_model) {
-                  {{ vehicle.vehicle_make_and_model }}
-                } @else {
-                  <app-fines-not-provided></app-fines-not-provided>
-                }
-              </ng-container>
-            </div>
-            <div
-              opal-lib-govuk-summary-list-row
-              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-              summaryListId="companyDetails"
-              summaryListRowId="vehicle_registration"
-            >
-              <ng-container name>Vehicle registration</ng-container>
-              <ng-container value>
-                @if (vehicle.vehicle_registration) {
-                  {{ vehicle.vehicle_registration | uppercase }}
-                } @else {
-                  <app-fines-not-provided></app-fines-not-provided>
-                }
-              </ng-container>
-            </div>
+            <ng-container
+              *ngTemplateOutlet="vehicleDetailsTemplate; context: { vehicle: vehicle, summaryListId: 'companyDetails' }"
+            ></ng-container>
           }
         </opal-lib-govuk-summary-list>
       </ng-container>
@@ -407,4 +353,37 @@
     <br />{{ address.address_line_5 }}
   }
   <br />{{ address.postcode | uppercase }}
+</ng-template>
+
+<ng-template #vehicleDetailsTemplate let-vehicle="vehicle" let-summaryListId="summaryListId">
+  <div
+    opal-lib-govuk-summary-list-row
+    class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+    [summaryListId]="summaryListId"
+    summaryListRowId="vehicle_make_and_model"
+  >
+    <ng-container name>Vehicle make and model</ng-container>
+    <ng-container value>
+      @if (vehicle.vehicle_make_and_model) {
+        {{ vehicle.vehicle_make_and_model }}
+      } @else {
+        <app-fines-not-provided></app-fines-not-provided>
+      }
+    </ng-container>
+  </div>
+  <div
+    opal-lib-govuk-summary-list-row
+    class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+    [summaryListId]="summaryListId"
+    summaryListRowId="vehicle_registration"
+  >
+    <ng-container name>Vehicle registration</ng-container>
+    <ng-container value>
+      @if (vehicle.vehicle_registration) {
+        {{ vehicle.vehicle_registration | uppercase }}
+      } @else {
+        <app-fines-not-provided></app-fines-not-provided>
+      }
+    </ng-container>
+  </div>
 </ng-template>
