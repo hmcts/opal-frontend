@@ -30,7 +30,9 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <h2 class="govuk-label-wrapper">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          </h2>
           <opal-lib-govuk-text-input
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
@@ -81,7 +83,7 @@
   }
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</h2>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_company_details_address_line_1"
