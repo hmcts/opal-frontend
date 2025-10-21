@@ -9,7 +9,7 @@ import { IFinesAccDebtorAddAmendAliasState } from '../../fines-acc-debtor-add-am
 const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAliasState[] => {
   const result: IFinesAccDebtorAddAmendAliasState[] = [];
 
-  aliases.forEach((alias, index) => {
+  for (const [index, alias] of aliases.entries()) {
     if (index < 5) {
       const aliasObject: IFinesAccDebtorAddAmendAliasState = {};
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +19,7 @@ const mapAliasesToArrayStructure = (aliases: any[]): IFinesAccDebtorAddAmendAlia
 
       result.push(aliasObject);
     }
-  });
+  }
 
   return result;
 };

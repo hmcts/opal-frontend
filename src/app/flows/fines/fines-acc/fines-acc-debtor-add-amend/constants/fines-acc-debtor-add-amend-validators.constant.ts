@@ -5,7 +5,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
  * If any employer field is filled out, then employer reference and employer company name are required.
  */
 export const employerFieldsValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  if (!control || !control.parent) {
+  if (!control?.parent) {
     return null;
   }
 
@@ -36,9 +36,7 @@ export const employerFieldsValidator: ValidatorFn = (control: AbstractControl): 
 
   // If any employer field is filled but company name or reference is missing, return error
   if (hasAnyEmployerField) {
-    const controlName = control?.parent?.controls
-      ? Object.keys(control.parent.controls).find((key) => control.parent?.get(key) === control)
-      : '';
+    const controlName = Object.keys(control.parent.controls).find((key) => control.parent?.get(key) === control) ?? '';
 
     if (controlName === 'facc_debtor_add_amend_employer_details_employer_company_name' && !employerCompanyName) {
       return { required: true };

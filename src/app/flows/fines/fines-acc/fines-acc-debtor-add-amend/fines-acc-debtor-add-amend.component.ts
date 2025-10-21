@@ -21,7 +21,6 @@ export class FinesAccDebtorAddAmend extends AbstractFormParentBaseComponent {
   public handleFormSubmit(formData: IFinesAccDebtorAddAmendForm): void {
     console.log('Form submitted with data:', formData);
     console.log('Party Type:', this.partyType);
-    // TODO: Implement actual form submission logic
   }
 
   /**

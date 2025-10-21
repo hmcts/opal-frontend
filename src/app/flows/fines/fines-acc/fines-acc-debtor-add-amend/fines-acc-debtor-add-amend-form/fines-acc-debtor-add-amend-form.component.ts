@@ -272,7 +272,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
     const employerReferenceControl = this.form.get('facc_debtor_add_amend_employer_details_employer_reference');
     const employerAddressLine1Control = this.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
 
-    employerFieldNames.forEach((fieldName) => {
+    for (const fieldName of employerFieldNames) {
       const control = this.form.get(fieldName);
       if (control) {
         control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
@@ -282,7 +282,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
           employerAddressLine1Control?.updateValueAndValidity({ emitEvent: false });
         });
       }
-    });
+    }
   }
 
   /**
