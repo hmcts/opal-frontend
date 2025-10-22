@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { IFinesMacAccountDetailsAccountStatus } from './interfaces/fines-mac-account-details-account-status.interface';
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS } from './constants/fines-mac-account-details-account-status';
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-account-details-account-types';
@@ -16,7 +16,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-task-list';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
+import { RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
@@ -36,6 +36,7 @@ import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/f
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -56,9 +57,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
 
@@ -111,7 +110,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   private accountDetailsFetchedMappedPayload(): void {
-    const snapshot = this.activatedRoute.snapshot;
+    const snapshot = this['activatedRoute'].snapshot;
     if (!snapshot) return;
 
     const accountDetailsFetchMap = snapshot.data['accountDetailsFetchMap'] as IFetchMapFinesMacPayload;
@@ -180,7 +179,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Listens to router events and updates the `pageNavigation` property accordingly.
    */
   private routerListener(): void {
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event: NavigationEvent) => {
+    this['router'].events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
         this.pageNavigation = !event.url.includes(this.fineMacRoutes.children.createAccount);
       }
@@ -245,7 +244,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Determines whether the component can be deactivated.
    * @returns A CanDeactivateTypes object representing the navigation status.
    */
-  protected canDeactivate(): CanDeactivateTypes {
+  protected override canDeactivate(): CanDeactivateTypes {
     return this.pageNavigation;
   }
 
@@ -255,33 +254,16 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   public navigateBack(): void {
     if (this.finesDraftStore.amend()) {
-      this.handleRoute(
+      const fragment = this.finesDraftStore.fragment();
+      this.routerNavigate(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
         false,
         undefined,
-        this.finesDraftStore.fragment(),
+        fragment ? { fragment } : undefined,
       );
     } else {
       this.pageNavigation = false;
-      this.handleRoute(this.fineMacRoutes.children.createAccount);
-    }
-  }
-
-  /**
-   * Navigates to the specified route.
-   *
-   * @param route - The route to navigate to.
-   */
-  public handleRoute(route: string, nonRelative: boolean = false, event?: Event, fragment?: string): void {
-    if (event) {
-      event.preventDefault();
-    }
-    if (nonRelative) {
-      this.router.navigate([route]);
-    } else if (fragment) {
-      this.router.navigate([route], { fragment });
-    } else {
-      this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+      this.routerNavigate(this.fineMacRoutes.children.createAccount);
     }
   }
 

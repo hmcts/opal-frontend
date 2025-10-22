@@ -191,10 +191,12 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(handleRequestErrorSpy).toHaveBeenCalled();
     });
 
-    it('should call handleRoute with submitConfirmation on submitPayload success', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+    it('should call router.navigate with submitConfirmation on submitPayload success', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
       component['submitPayload']();
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.submitConfirmation);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.submitConfirmation], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     });
 
     it('should handle submitPayload failure', () => {
@@ -208,7 +210,7 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should test processPutResponse', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
       const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
       finesDraftStore.setFragment('review');
 
@@ -218,20 +220,46 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
       expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
-      expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        false,
-        undefined,
-        finesDraftStore.fragment(),
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+        ],
+        {
+          relativeTo: jasmine.any(Object),
+          state: { fragment: finesDraftStore.fragment() },
+        },
+      );
+    });
+
+    it('should test processPutResponse when fragment is empty', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      const expectedResult = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+      finesDraftStore.setFragment('');
+
+      component['processPutResponse'](expectedResult);
+
+      expect(finesDraftStore.bannerMessage()).toEqual(`You have submitted Test Defendant Name's account for review.`);
+      expect(finesMacStore.stateChanges()).toBeFalse();
+      expect(finesMacStore.unsavedChanges()).toBeFalse();
+      expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+        ],
+        {
+          relativeTo: jasmine.any(Object),
+        },
       );
     });
 
     it('should test processPostResponse', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
 
       component['processPostResponse']();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(`${component['finesMacRoutes'].children.submitConfirmation}`);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.submitConfirmation], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     });
 
     it('should test preparePutPayload', () => {
@@ -277,33 +305,40 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should handle submitPayload success', () => {
       finesDraftStore.setAmend(false);
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
 
       component['submitPayload']();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.submitConfirmation);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.submitConfirmation], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     });
 
-    it('should call handleRoute with POST', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+    it('should call router.navigate with POST', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
       finesDraftStore.setAmend(false);
 
       component['submitPayload']();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.submitConfirmation);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.submitConfirmation], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     });
 
-    it('should call handleRoute with PUT', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+    it('should call router.navigate with PUT', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
       finesDraftStore.setFragmentAndAmend('review', true);
 
       component['submitPayload']();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        false,
-        undefined,
-        finesDraftStore.fragment(),
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+        ],
+        {
+          relativeTo: jasmine.any(Object),
+          state: { fragment: finesDraftStore.fragment() },
+        },
       );
     });
 
@@ -319,7 +354,7 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should navigate back the fixed Penalty Details form when isReadOnly is false, there is no accountType in the store and the account status is not Rejected', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
 
       finesDraftStore.setAccountType('');
       finesDraftStore.setAccountStatus('In Progress');
@@ -328,7 +363,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.navigateBack();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+        relativeTo: jasmine.any(Object),
+      });
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
@@ -343,7 +380,43 @@ describe('FinesMacReviewAccountComponent', () => {
           `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
         ],
         {
-          fragment: finesDraftStore.fragment(),
+          relativeTo: jasmine.any(Object),
+          state: { fragment: finesDraftStore.fragment() },
+        },
+      );
+    });
+
+    it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment is empty', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      finesDraftStore.setFragment('');
+      finesDraftStore.setViewAllAccounts(false);
+      finesDraftStore.setChecker(false);
+      component.isReadOnly = true;
+      component.navigateBack();
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+        ],
+        {
+          relativeTo: jasmine.any(Object),
+        },
+      );
+    });
+
+    it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment has value', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      finesDraftStore.setFragment('test-fragment');
+      finesDraftStore.setViewAllAccounts(false);
+      finesDraftStore.setChecker(false);
+      component.isReadOnly = true;
+      component.navigateBack();
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+        ],
+        {
+          relativeTo: jasmine.any(Object),
+          state: { fragment: 'test-fragment' },
         },
       );
     });
@@ -355,9 +428,12 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith([
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
-      ]);
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
+        ],
+        {},
+      );
     });
 
     it('should navigate back to in-review on navigateBack when checker is true', () => {
@@ -372,7 +448,10 @@ describe('FinesMacReviewAccountComponent', () => {
           `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.checkAndValidate}/${component['finesDraftCheckAndValidateRoutes'].children.tabs}`,
         ],
         {
-          fragment: finesDraftStore.fragment(),
+          relativeTo: jasmine.any(Object),
+          state: {
+            fragment: 'in-review',
+          },
         },
       );
     });
@@ -382,22 +461,27 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setViewAllAccounts(true);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith([
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
-      ]);
+      expect(routerSpy).toHaveBeenCalledWith(
+        [
+          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
+        ],
+        {},
+      );
     });
 
     it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
       spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
 
       component.navigateBack();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+        relativeTo: jasmine.any(Object),
+      });
     });
 
     it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
 
       // Ensure we do NOT hit the early return branch at the start of navigateBack
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -410,22 +494,35 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.navigateBack();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+        relativeTo: jasmine.any(Object),
+      });
     });
 
     it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute').and.stub();
+      const routerSpy = spyOn(component['router'], 'navigate');
       component.accountStatus = 'Rejected';
       component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
       component.isReadOnly = false;
       component.navigateBack();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(
-        component['getBackPath'](),
-        false,
-        undefined,
-        component['finesDraftStore'].fragment(),
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['getBackPath']()], {
+        relativeTo: jasmine.any(Object),
+      });
+    });
+
+    it('should navigate back to referrer when account type is fixed penalty, status is "Rejected", and fragment has value', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
+      finesDraftStore.setFragment('test-fragment');
+      component.accountStatus = 'Rejected';
+      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.isReadOnly = false;
+      component.navigateBack();
+
+      expect(routerSpy).toHaveBeenCalledWith([component['getBackPath']()], {
+        relativeTo: jasmine.any(Object),
+        state: { fragment: 'test-fragment' },
+      });
     });
 
     it('should submit payload on submitForReview', () => {
@@ -437,36 +534,8 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(submitPayloadSpy).toHaveBeenCalled();
     });
 
-    it('should navigate on handleRoute with event', () => {
+    it('should call router.navigate with relative route when handleDeleteAccount is called and account id is 0', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
-      const event = jasmine.createSpyObj(Event, ['preventDefault']);
-
-      component.handleRoute('test', true, event);
-
-      expect(routerSpy).toHaveBeenCalledWith(['test']);
-      expect(event.preventDefault).toHaveBeenCalled();
-    });
-
-    it('should navigate on handleRoute', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-
-      component.handleRoute('test');
-
-      expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
-    });
-
-    it('should navigate on handleRoute with event', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-      const event = jasmine.createSpyObj(Event, ['preventDefault']);
-
-      component.handleRoute('test', true, event);
-
-      expect(routerSpy).toHaveBeenCalledWith(['test']);
-      expect(event.preventDefault).toHaveBeenCalled();
-    });
-
-    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is 0', () => {
-      spyOn(component, 'handleRoute').and.stub();
       spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
       const route = component['finesMacRoutes'].children.deleteAccountConfirmation;
       const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
@@ -474,12 +543,12 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(0);
     });
 
-    it('should call handleRoute with relative route when handleDeleteAccount is called and account id is > 0', () => {
-      spyOn(component, 'handleRoute').and.stub();
+    it('should call router.navigate with relative route when handleDeleteAccount is called and account id is > 0', () => {
+      const routerSpy = spyOn(component['router'], 'navigate');
       spyOn(component['finesMacStore'], 'setDeleteFromCheckAccount').and.stub();
       const route = component['finesMacRoutes'].children.deleteAccountConfirmation + `/${component.accountId}`;
       const mockEvent: Event = jasmine.createSpyObj('Event', ['preventDefault']);
@@ -487,18 +556,8 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component.handleDeleteAccount(mockEvent);
 
-      expect(component.handleRoute).toHaveBeenCalledWith(route, false, mockEvent);
+      expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
       expect(component['finesMacStore'].setDeleteFromCheckAccount).toHaveBeenCalledTimes(1);
-    });
-
-    it('should navigate on handleRoute to delete account', () => {
-      const routerSpy = spyOn(component['router'], 'navigate');
-
-      component.handleRoute(component['finesMacRoutes'].children.deleteAccountConfirmation);
-
-      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
-        relativeTo: component['activatedRoute'].parent,
-      });
     });
 
     it('should scroll to top and return null on handleRequestError', () => {
@@ -508,21 +567,25 @@ describe('FinesMacReviewAccountComponent', () => {
     });
 
     it('should route to the account details page when change() is called from a fine account', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
       component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
 
       component.change();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.accountDetails);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.accountDetails], {
+        relativeTo: component['activatedRoute'].parent,
+      });
     });
 
     it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
-      const handleRouteSpy = spyOn(component, 'handleRoute');
+      const routerSpy = spyOn(component['router'], 'navigate');
       component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
 
       component.change();
 
-      expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.fixedPenaltyDetails);
+      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
+        relativeTo: jasmine.any(Object),
+      });
     });
   });
 

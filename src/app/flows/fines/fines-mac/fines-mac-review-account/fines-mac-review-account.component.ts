@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -42,6 +41,7 @@ import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-a
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -67,10 +67,8 @@ import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
+export class FinesMacReviewAccountComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
@@ -97,7 +95,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
   public prosecutors!: IOpalFinesProsecutorRefData;
-  public accountId = Number(this.activatedRoute.snapshot.paramMap.get('draftAccountId'));
+  public accountId = Number(this['activatedRoute'].snapshot.paramMap.get('draftAccountId'));
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
   public accountStatus!: string;
@@ -134,7 +132,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   private reviewAccountFetchedMappedPayload(): void {
-    const snapshot = this.activatedRoute.snapshot;
+    const snapshot = this['activatedRoute'].snapshot;
     if (!snapshot) return;
 
     const fetchMap = snapshot.data['reviewAccountFetchMap'] as IFetchMapFinesMacPayload;
@@ -247,11 +245,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesDraftStore.setBannerMessageByType('submitted', defendantName);
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
-    this.handleRoute(
+    this.routerNavigate(
       `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
       false,
       undefined,
-      this.finesDraftStore.fragment(),
+      this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
     );
   }
 
@@ -264,7 +262,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   private processPostResponse(): void {
-    this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+    this.routerNavigate(this.finesMacRoutes.children.submitConfirmation);
   }
 
   /**
@@ -350,11 +348,16 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     const path = this.getBackPath();
 
     if (this.finesDraftStore.viewAllAccounts()) {
-      this.handleRoute(path, true);
+      this.routerNavigate(path, true);
       return;
     }
 
-    this.handleRoute(path, false, undefined, this.finesDraftStore.fragment());
+    this.routerNavigate(
+      path,
+      false,
+      undefined,
+      this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
+    );
   }
 
   /**
@@ -365,16 +368,21 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     const isRejected = this.accountStatus === 'Rejected';
 
     if (isFixedPenalty && isRejected) {
-      this.handleRoute(this.getBackPath(), false, undefined, this.finesDraftStore.fragment());
+      this.routerNavigate(
+        this.getBackPath(),
+        false,
+        undefined,
+        this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
+      );
       return;
     }
 
     if (isFixedPenalty) {
-      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
       return;
     }
 
-    this.handleRoute(this.finesMacRoutes.children.accountDetails);
+    this.routerNavigate(this.finesMacRoutes.children.accountDetails);
   }
 
   /**
@@ -399,7 +407,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public navigateBack(): void {
     if (this.finesMacStore.getAccountType() === this.accountTypesKeys['Fixed Penalty']) {
-      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
       return;
     }
 
@@ -418,9 +426,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public change(): void {
     if (this.accountType === this.accountTypesKeys['Fixed Penalty']) {
-      this.handleRoute(this.finesMacRoutes.children.fixedPenaltyDetails);
+      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
     } else {
-      this.handleRoute(this.finesMacRoutes.children.accountDetails);
+      this.routerNavigate(this.finesMacRoutes.children.accountDetails);
     }
   }
 
@@ -430,24 +438,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public submitForReview(): void {
     this.submitPayload();
-  }
-
-  /**
-   * Navigates to the specified route.
-   *
-   * @param route - The route to navigate to.
-   */
-  public handleRoute(route: string, nonRelative: boolean = false, event?: Event, fragment?: string): void {
-    if (event) {
-      event.preventDefault();
-    }
-    if (nonRelative) {
-      this.router.navigate([route]);
-    } else if (fragment) {
-      this.router.navigate([route], { fragment });
-    } else {
-      this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
-    }
   }
 
   /** * Handles the deletion of an account.
@@ -461,13 +451,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public handleDeleteAccount(event: Event, nonRelative = false): void {
     if (this.accountId > 0) {
       this.finesMacStore.setDeleteFromCheckAccount(true);
-      this.handleRoute(
+      this.routerNavigate(
         `${this.finesMacRoutes.children.deleteAccountConfirmation}/${this.accountId}`,
         nonRelative,
         event,
       );
     } else {
-      this.handleRoute(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
+      this.routerNavigate(`${this.finesMacRoutes.children.deleteAccountConfirmation}`, nonRelative, event);
     }
   }
 
@@ -482,11 +472,11 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.localJusticeAreas = this.activatedRoute.snapshot.data['localJusticeAreas'];
-    this.courts = this.activatedRoute.snapshot.data['courts'];
-    this.results = this.activatedRoute.snapshot.data['results'];
-    this.majorCreditors = this.activatedRoute.snapshot.data['majorCreditors'];
-    this.prosecutors = this.activatedRoute.snapshot.data['prosecutors'];
+    this.localJusticeAreas = this['activatedRoute'].snapshot.data['localJusticeAreas'];
+    this.courts = this['activatedRoute'].snapshot.data['courts'];
+    this.results = this['activatedRoute'].snapshot.data['results'];
+    this.majorCreditors = this['activatedRoute'].snapshot.data['majorCreditors'];
+    this.prosecutors = this['activatedRoute'].snapshot.data['prosecutors'];
 
     this.reviewAccountFetchedMappedPayload();
   }

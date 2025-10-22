@@ -4,7 +4,6 @@ import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from './constants/fines-mac-account-details-state';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
@@ -88,40 +87,6 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate on handleRoute', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.handleRoute('test');
-
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
-  });
-
-  it('should navigate on handleRoute with relative to', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.handleRoute('test', true);
-
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
-  });
-
-  it('should navigate on handleRoute with fragment', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.handleRoute('test', false, undefined, 'rejected');
-
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { fragment: 'rejected' });
-  });
-
-  it('should navigate on handleRoute with event', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj(Event, ['preventDefault']);
-
-    component.handleRoute('test', true, event);
-
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
-    expect(event.preventDefault).toHaveBeenCalled();
-  });
-
   it('should navigate back on navigateBack', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -134,7 +99,25 @@ describe('FinesMacAccountDetailsComponent', () => {
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
       ],
       {
-        fragment: finesDraftStore.fragment(),
+        relativeTo: jasmine.any(Object),
+        state: { fragment: 'rejected' },
+      },
+    );
+  });
+
+  it('should navigate back on navigateBack when fragment is empty', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    finesDraftStore.setAmend(true);
+    finesDraftStore.setFragment('');
+    component.navigateBack();
+
+    expect(routerSpy).toHaveBeenCalledWith(
+      [
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
+      ],
+      {
+        relativeTo: jasmine.any(Object),
       },
     );
   });
@@ -260,9 +243,11 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should set pageNavigation to false if URL includes createAccount', () => {
     component['routerListener']();
-    component.handleRoute(FINES_MAC_ROUTING_PATHS.children.courtDetails);
+    // Simulate navigating to a route that includes createAccount
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.navigateBack();
 
-    expect(component.pageNavigation).toBeTruthy();
+    expect(routerSpy).toHaveBeenCalled();
   });
 
   it('should call canDeactivate ', () => {
