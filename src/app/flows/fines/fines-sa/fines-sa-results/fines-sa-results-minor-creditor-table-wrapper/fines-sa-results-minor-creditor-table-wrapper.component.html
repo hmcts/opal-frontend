@@ -69,9 +69,7 @@
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
           <td opal-lib-moj-sortable-table-row-data id="accountNumber">
-            @if (row['Account'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
+            <app-fines-sa-results-shared-table-cell [value]="row['Account']">
               @if (row['Creditor account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
@@ -83,34 +81,30 @@
               } @else {
                 {{ row['Account'] }}
               }
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="name">
-            @if (row['Name'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
+            <app-fines-sa-results-shared-table-cell [value]="row['Name']">
               {{ row['Name'] }}
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="addressLine1">
-            @if (row['Address line 1'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
+            <app-fines-sa-results-shared-table-cell [value]="row['Address line 1']">
               {{ row['Address line 1'] }}
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="postcode">
-            @if (row['Postcode'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
+            <app-fines-sa-results-shared-table-cell [value]="row['Postcode']">
               {{ row['Postcode'] }}
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="businessUnit">
-            {{ row['Business unit'] }}
+            <app-fines-sa-results-shared-table-cell [value]="row['Business unit']">
+              {{ row['Business unit'] }}
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="defendant">
-            @if (row['Defendant'] !== null) {
+            <app-fines-sa-results-shared-table-cell [value]="row['Defendant']">
               @if (row['Defendant account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
@@ -122,42 +116,28 @@
               } @else {
                 {{ row['Defendant'] }}
               }
-            } @else {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="balance">
-            @if (row['Balance'] === null) {
-              <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
+            <app-fines-sa-results-shared-table-cell [value]="row['Balance']">
               {{ row['Balance'] | currency: 'GBP' }}
-            }
+            </app-fines-sa-results-shared-table-cell>
           </td>
         </tr>
       }
     </ng-container>
-    <ng-container status>
-      <opal-lib-moj-sortable-table-status
-        [columnTitle]="sortedColumnTitleSignal()"
-        [sortDirection]="sortedColumnDirectionSignal()"
-      />
-    </ng-container>
+    <app-fines-sa-results-shared-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    />
   </opal-lib-moj-sortable-table>
 </opal-lib-custom-horizontal-scroll-pane>
-@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
-  <opal-lib-moj-pagination
-    id="fines-draft-table-pagination"
-    [currentPage]="currentPageSignal()"
-    [limit]="itemsPerPageSignal()"
-    [total]="filteredTableDataSignal().length"
-    (changePage)="onPageChange($event)"
-  ></opal-lib-moj-pagination>
-}
 
-<ng-template #noData>
-  <p
-    class="govuk-!-margin-0"
-    [innerHTML]="finesDefaultValues.notProvidedLabel"
-    [ariaLabel]="finesDefaultValues.notProvidedAriaLabel"
-  ></p>
-</ng-template>
+<app-fines-sa-results-shared-pagination
+  paginationId="fines-draft-table-pagination"
+  [currentPage]="currentPageSignal()"
+  [itemsPerPage]="itemsPerPageSignal()"
+  [totalItems]="filteredTableDataSignal().length"
+  [currentPageItems]="paginatedTableDataComputed().length"
+  (changePage)="onPageChange($event)"
+></app-fines-sa-results-shared-pagination>
