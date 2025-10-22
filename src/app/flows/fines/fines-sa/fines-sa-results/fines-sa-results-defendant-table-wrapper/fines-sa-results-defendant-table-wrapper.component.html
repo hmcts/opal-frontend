@@ -149,13 +149,13 @@
               </app-fines-sa-results-shared-table-cell>
             </td>
           }
-          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
-            <app-fines-sa-results-shared-table-cell [value]="row['Address line 1']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAddressLine1">
+            <app-fines-sa-results-shared-table-cell class="defendantAddressLine1" [value]="row['Address line 1']">
               {{ row['Address line 1'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="postcode">
-            <app-fines-sa-results-shared-table-cell [value]="row['Postcode']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantPostcode">
+            <app-fines-sa-results-shared-table-cell class="defendantPostcode" [value]="row['Postcode']">
               {{ row['Postcode'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
