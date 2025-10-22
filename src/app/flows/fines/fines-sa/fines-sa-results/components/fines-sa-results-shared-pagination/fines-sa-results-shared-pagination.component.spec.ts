@@ -149,7 +149,8 @@ describe('FinesSaResultsSharedPaginationComponent', () => {
 
     it('should call onPageChange method when pagination emits changePage', () => {
       // Arrange
-      spyOn(component, 'onPageChange');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      spyOn<any>(component, 'onPageChange');
       const paginationComponent = fixture.debugElement.query(By.directive(MojPaginationComponent)).componentInstance;
       const testPage = 4;
 
@@ -157,7 +158,7 @@ describe('FinesSaResultsSharedPaginationComponent', () => {
       paginationComponent.changePage.emit(testPage);
 
       // Assert
-      expect(component.onPageChange).toHaveBeenCalledWith(testPage);
+      expect(component['onPageChange']).toHaveBeenCalledWith(testPage);
     });
   });
 
