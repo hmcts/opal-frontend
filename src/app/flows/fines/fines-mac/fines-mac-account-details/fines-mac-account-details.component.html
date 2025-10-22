@@ -57,7 +57,7 @@
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
         [actionEnabled]="true"
-        (actionClick)="handleRoute(fineMacRoutes.children.languagePreferences)"
+        (actionClick)="routerNavigate(fineMacRoutes.children.languagePreferences)"
       >
         <ng-container name>Document language</ng-container>
         <ng-container value>
@@ -71,7 +71,7 @@
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
         [actionEnabled]="true"
-        (actionClick)="handleRoute(fineMacRoutes.children.languagePreferences)"
+        (actionClick)="routerNavigate(fineMacRoutes.children.languagePreferences)"
       >
         <ng-container name>Hearing language</ng-container>
         <ng-container value>
@@ -126,7 +126,7 @@
     <opal-lib-govuk-button
       buttonId="checkAccountButton"
       buttonClasses="govuk-!-margin-bottom-0"
-      (buttonClickEvent)="handleRoute(fineMacRoutes.children.reviewAccount)"
+      (buttonClickEvent)="routerNavigate(fineMacRoutes.children.reviewAccount)"
       >Check account</opal-lib-govuk-button
     >
   } @else {
@@ -137,8 +137,8 @@
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <a
       class="govuk-link govuk-error-colour"
-      (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-      (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      (click)="routerNavigate(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      (keyup.enter)="routerNavigate(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
       tabindex="0"
       >Delete account</a
     >
@@ -169,8 +169,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.contactDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.contactDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.contactDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.contactDetails, false, $event)"
         tabindex="0"
         aria-describedby="contactDetailsStatus"
       >
@@ -194,8 +194,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.employerDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.employerDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.employerDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.employerDetails, false, $event)"
         tabindex="0"
         aria-describedby="employerDetailsStatus"
       >
@@ -219,8 +219,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.companyDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.companyDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.companyDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.companyDetails, false, $event)"
         tabindex="0"
         aria-describedby="companyDetailsStatus"
       >
@@ -244,8 +244,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.personalDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.personalDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.personalDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.personalDetails, false, $event)"
         tabindex="0"
         aria-describedby="personalDetailsStatus"
       >
@@ -270,8 +270,8 @@
       <ng-container name>
         <a
           class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-          (click)="handleRoute(fineMacRoutes.children.courtDetails, false, $event)"
-          (keyup.enter)="handleRoute(fineMacRoutes.children.courtDetails, false, $event)"
+          (click)="routerNavigate(fineMacRoutes.children.courtDetails, false, $event)"
+          (keyup.enter)="routerNavigate(fineMacRoutes.children.courtDetails, false, $event)"
           tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
@@ -296,8 +296,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.parentGuardianDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.parentGuardianDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.parentGuardianDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.parentGuardianDetails, false, $event)"
         tabindex="0"
         aria-describedby="parentOrGuardianDetailsStatus"
       >
@@ -321,8 +321,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.offenceDetails, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.offenceDetails, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.offenceDetails, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.offenceDetails, false, $event)"
         tabindex="0"
         aria-describedby="offenceDetailsStatus"
       >
@@ -362,8 +362,8 @@
   @if (canAccessPaymentTerms()) {
     <a
       class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-      (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
-      (keyup.enter)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      (click)="routerNavigate(fineMacRoutes.children.paymentTerms, false, $event)"
+      (keyup.enter)="routerNavigate(fineMacRoutes.children.paymentTerms, false, $event)"
       tabindex="0"
       aria-describedby="paymentTermsStatus"
     >
@@ -393,8 +393,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.accountCommentsNotes, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.accountCommentsNotes, false, $event)"
+        (click)="routerNavigate(fineMacRoutes.children.accountCommentsNotes, false, $event)"
+        (keyup.enter)="routerNavigate(fineMacRoutes.children.accountCommentsNotes, false, $event)"
         tabindex="0"
         aria-describedby="accountCommentsAndNotesStatus"
       >
