@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FinesNotProvidedComponent } from "src/app/flows/fines/components/fines-not-provided/fines-not-provided.component";
+import { FinesNotProvidedComponent } from 'src/app/flows/fines/components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -34,8 +34,8 @@ import { FinesNotProvidedComponent } from "src/app/flows/fines/components/fines-
     GovukTableBodyRowDataComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    FinesNotProvidedComponent
-],
+    FinesNotProvidedComponent,
+  ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
