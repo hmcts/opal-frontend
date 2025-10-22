@@ -117,8 +117,10 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
-            <app-fines-sa-results-shared-table-cell [value]="row['Account']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAccountNumber">
+            @if (row['Account'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               @if (row['Account ID']) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
@@ -130,87 +132,107 @@
               } @else {
                 {{ row['Account'] }}
               }
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="name">
-            <app-fines-sa-results-shared-table-cell class="defendantName" [value]="row['Name']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantName">
+            @if (row['Name'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Name'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="aliases">
-            <app-fines-sa-results-shared-table-cell class="defendantAliases" [value]="row['Aliases']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAliases">
+            @if (row['Aliases'] === null || row['Aliases'].length === 0) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Aliases'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
           @if (!isCompany) {
-            <td opal-lib-moj-sortable-table-row-data id="dateOfBirth">
-              <app-fines-sa-results-shared-table-cell [value]="row['Date of birth']">
+            <td opal-lib-moj-sortable-table-row-data id="defendantDateOfBirth">
+              @if (row['Date of birth'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
                 {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
-              </app-fines-sa-results-shared-table-cell>
+              }
             </td>
           }
           <td opal-lib-moj-sortable-table-row-data id="defendantAddressLine1">
-            <app-fines-sa-results-shared-table-cell class="defendantAddressLine1" [value]="row['Address line 1']">
+            @if (row['Address line 1'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Address line 1'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
           <td opal-lib-moj-sortable-table-row-data id="defendantPostcode">
-            <app-fines-sa-results-shared-table-cell class="defendantPostcode" [value]="row['Postcode']">
+            @if (row['Postcode'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Postcode'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
           @if (!isCompany) {
-            <td opal-lib-moj-sortable-table-row-data id="nationalInsuranceNumber">
-              <app-fines-sa-results-shared-table-cell class="defendantNationalInsurance" [value]="row['NI number']">
+            <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
+              @if (row['NI number'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
                 {{ row['NI number'] | nationalInsurance }}
-              </app-fines-sa-results-shared-table-cell>
+              }
             </td>
-            <td opal-lib-moj-sortable-table-row-data id="parentOrGuardian">
-              <app-fines-sa-results-shared-table-cell
-                class="defendantParentGuardian"
-                [value]="row['Parent or guardian']"
-              >
+            <td opal-lib-moj-sortable-table-row-data id="defendantParentOrGuardian">
+              @if (row['Parent or guardian'] === null) {
+                <ng-container *ngTemplateOutlet="noData"></ng-container>
+              } @else {
                 {{ row['Parent or guardian'] }}
-              </app-fines-sa-results-shared-table-cell>
+              }
             </td>
           }
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
-            <app-fines-sa-results-shared-table-cell class="defendantBusinessUnit" [value]="row['Business unit']">
-              {{ row['Business unit'] }}
-            </app-fines-sa-results-shared-table-cell>
+          <td opal-lib-moj-sortable-table-row-data id="defendantBusinessUnit">
+            {{ row['Business unit'] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="ref">
-            <app-fines-sa-results-shared-table-cell class="defendantRef" [value]="row['Ref']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantRef">
+            @if (row['Ref'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Ref'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="enf">
-            <app-fines-sa-results-shared-table-cell class="defendantEnf" [value]="row['Enf']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantEnf">
+            @if (row['Enf'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Enf'] | uppercase }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="balance">
-            <app-fines-sa-results-shared-table-cell class="defendantBalance" [value]="row['Balance']">
+          <td opal-lib-moj-sortable-table-row-data id="defendantBalance">
+            @if (row['Balance'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Balance'] | currency: 'GBP' }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
         </tr>
       }
     </ng-container>
-    <app-fines-sa-results-shared-table-status
-      class="defendantTableStatus"
-      [columnTitle]="sortedColumnTitleSignal()"
-      [sortDirection]="sortedColumnDirectionSignal()"
-    />
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        class="defendant-table-status"
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
   </opal-lib-moj-sortable-table>
 </opal-lib-custom-horizontal-scroll-pane>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="defendant-table-wrapper-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
 
-<app-fines-sa-results-shared-pagination
-  class="defendantPagination"
-  paginationId="fines-defendant-table-pagination"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  [totalItems]="filteredTableDataSignal().length"
-  [currentPageItems]="paginatedTableDataComputed().length"
-  (changePage)="onPageChange($event)"
-></app-fines-sa-results-shared-pagination>
+<ng-template #noData>
+  <app-fines-not-provided class="defendant-no-data-provided"></app-fines-not-provided>
+</ng-template>

@@ -5,6 +5,7 @@ import {
   MojSortableTableHeaderComponent,
   MojSortableTableRowComponent,
   MojSortableTableRowDataComponent,
+  MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
@@ -13,9 +14,8 @@ import { IFinesSaResultsDefendantTableWrapperTableSort } from './interfaces/fine
 import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
-import { FinesSaResultsSharedTableCellComponent } from '../components/fines-sa-results-shared-table-cell/fines-sa-results-shared-table-cell.component';
-import { FinesSaResultsSharedPaginationComponent } from '../components/fines-sa-results-shared-pagination/fines-sa-results-shared-pagination.component';
-import { FinesSaResultsSharedTableStatusComponent } from '../components/fines-sa-results-shared-table-status/fines-sa-results-shared-table-status.component';
+import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-sa-results-defendant-table-wrapper',
@@ -25,12 +25,12 @@ import { FinesSaResultsSharedTableStatusComponent } from '../components/fines-sa
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
+    MojSortableTableStatusComponent,
+    MojPaginationComponent,
     DateFormatPipe,
     NationalInsurancePipe,
     CustomHorizontalScrollPaneComponent,
-    FinesSaResultsSharedTableCellComponent,
-    FinesSaResultsSharedPaginationComponent,
-    FinesSaResultsSharedTableStatusComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-sa-results-defendant-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

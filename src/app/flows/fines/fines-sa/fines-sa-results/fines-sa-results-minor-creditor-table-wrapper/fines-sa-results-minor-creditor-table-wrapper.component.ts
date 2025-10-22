@@ -2,18 +2,18 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
+import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
 import {
   MojSortableTableComponent,
   MojSortableTableHeaderComponent,
   MojSortableTableRowComponent,
   MojSortableTableRowDataComponent,
+  MojSortableTableStatusComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sortable-table';
 import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
 import { IFinesSaResultsMinorCreditorTableWrapperTableSort } from './interfaces/fines-sa-results-minor-creditor-table-wrapper-table-sort.interface';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
-import { FinesSaResultsSharedTableCellComponent } from '../components/fines-sa-results-shared-table-cell/fines-sa-results-shared-table-cell.component';
-import { FinesSaResultsSharedPaginationComponent } from '../components/fines-sa-results-shared-pagination/fines-sa-results-shared-pagination.component';
-import { FinesSaResultsSharedTableStatusComponent } from '../components/fines-sa-results-shared-table-status/fines-sa-results-shared-table-status.component';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-sa-results-minor-creditor-table-wrapper',
@@ -23,10 +23,10 @@ import { FinesSaResultsSharedTableStatusComponent } from '../components/fines-sa
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
+    MojSortableTableStatusComponent,
+    MojPaginationComponent,
     CustomHorizontalScrollPaneComponent,
-    FinesSaResultsSharedTableCellComponent,
-    FinesSaResultsSharedPaginationComponent,
-    FinesSaResultsSharedTableStatusComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-sa-results-minor-creditor-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

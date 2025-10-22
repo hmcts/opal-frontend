@@ -68,8 +68,10 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
-            <app-fines-sa-results-shared-table-cell [value]="row['Account']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
+            @if (row['Account'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               @if (row['Creditor account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
@@ -81,30 +83,34 @@
               } @else {
                 {{ row['Account'] }}
               }
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="name">
-            <app-fines-sa-results-shared-table-cell class="minorCreditorName" [value]="row['Name']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorName">
+            @if (row['Name'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Name'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
-            <app-fines-sa-results-shared-table-cell class="minorCreditorAddressLine1" [value]="row['Address line 1']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAddressLine1">
+            @if (row['Address line 1'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Address line 1'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="postcode">
-            <app-fines-sa-results-shared-table-cell class="minorCreditorPostcode" [value]="row['Postcode']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorPostcode">
+            @if (row['Postcode'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Postcode'] }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
-            <app-fines-sa-results-shared-table-cell class="minorCreditorBusinessUnit" [value]="row['Business unit']">
-              {{ row['Business unit'] }}
-            </app-fines-sa-results-shared-table-cell>
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorBusinessUnit">
+            {{ row['Business unit'] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="defendant">
-            <app-fines-sa-results-shared-table-cell [value]="row['Defendant']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorDefendant">
+            @if (row['Defendant'] !== null) {
               @if (row['Defendant account id'] !== null) {
                 <a
                   class="govuk-link govuk-link--no-visited-state"
@@ -116,30 +122,39 @@
               } @else {
                 {{ row['Defendant'] }}
               }
-            </app-fines-sa-results-shared-table-cell>
+            } @else {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="balance">
-            <app-fines-sa-results-shared-table-cell class="minorCreditorBalance" [value]="row['Balance']">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorBalance">
+            @if (row['Balance'] === null) {
+              <ng-container *ngTemplateOutlet="noData"></ng-container>
+            } @else {
               {{ row['Balance'] | currency: 'GBP' }}
-            </app-fines-sa-results-shared-table-cell>
+            }
           </td>
         </tr>
       }
     </ng-container>
-    <app-fines-sa-results-shared-table-status
-      class="minorCreditorTableStatus"
-      [columnTitle]="sortedColumnTitleSignal()"
-      [sortDirection]="sortedColumnDirectionSignal()"
-    />
+    <ng-container status>
+      <opal-lib-moj-sortable-table-status
+        class="minor-creditor-table-status"
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
   </opal-lib-moj-sortable-table>
 </opal-lib-custom-horizontal-scroll-pane>
+@if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
+  <opal-lib-moj-pagination
+    id="minor-creditor-table-wrapper-pagination"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="filteredTableDataSignal().length"
+    (changePage)="onPageChange($event)"
+  ></opal-lib-moj-pagination>
+}
 
-<app-fines-sa-results-shared-pagination
-  class="minorCreditorPagination"
-  paginationId="fines-minor-creditor-table-pagination"
-  [currentPage]="currentPageSignal()"
-  [itemsPerPage]="itemsPerPageSignal()"
-  [totalItems]="filteredTableDataSignal().length"
-  [currentPageItems]="paginatedTableDataComputed().length"
-  (changePage)="onPageChange($event)"
-></app-fines-sa-results-shared-pagination>
+<ng-template #noData>
+  <app-fines-not-provided class="minor-creditor-no-data-provided"></app-fines-not-provided>
+</ng-template>
