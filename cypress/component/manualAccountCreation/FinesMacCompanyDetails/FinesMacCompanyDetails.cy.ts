@@ -98,7 +98,10 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
     cy.get(DOM_ELEMENTS.companyNameLabel).should('contain', 'Company name');
-    cy.get(DOM_ELEMENTS.Legend).should('contain', 'Address');
+    cy.get(DOM_ELEMENTS.Legend)
+      .should('not.be.empty')
+      .invoke('text')
+      .then((txt) => expect(txt.trim()).to.contain('Address'));
     cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
     cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
     cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
@@ -139,7 +142,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.additionalAlias).first().click();
 
-    cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+    cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
     cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
     cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');
@@ -215,7 +218,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.additionalAlias).first().click();
     cy.get(DOM_ELEMENTS.aliasRemoveLink).should('exist');
 
-    cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+    cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
     cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
     cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');
@@ -243,7 +246,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.additionalAlias).first().click();
       cy.get(DOM_ELEMENTS.aliasRemoveLink).should('exist');
 
-      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
       cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
       cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');
@@ -277,7 +280,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.aliasRemoveLink).click();
 
-      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
       cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
       cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');
@@ -294,7 +297,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.aliasRemoveLink).click();
 
-      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
       cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
       cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');
@@ -308,7 +311,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.aliasRemoveLink).click();
 
-      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).should('have.text', 'Alias 1');
+      cy.get(DOM_ELEMENTS.aliasCompanyName1Label).first().should('have.text', 'Alias 1');
       cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('exist');
 
       cy.get(DOM_ELEMENTS.aliasCompanyName2Label).should('have.text', 'Alias 2');

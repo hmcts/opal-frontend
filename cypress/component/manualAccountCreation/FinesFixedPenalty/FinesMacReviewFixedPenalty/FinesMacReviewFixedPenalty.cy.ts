@@ -20,11 +20,12 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 
 describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
   const routes: Routes = [
@@ -232,30 +233,21 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.dateOfBirth).should('contain', '—');
 
     // Accessibility verification - check for screen readers (AC2bia)
-    cy.get(DOM_ELEMENTS.timeOfOffence)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.comments)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.accountNotes)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.ntoNth)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.dateOfOffence)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.drivingLicenceNumber)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.registrationNumber)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
-    cy.get(DOM_ELEMENTS.dateOfBirth)
-      .find('app-fines-mac-review-account-not-provided p')
-      .should('have.attr', 'aria-label', 'Not provided');
+    const adultNotProvidedFields = [
+      DOM_ELEMENTS.timeOfOffence,
+      DOM_ELEMENTS.comments,
+      DOM_ELEMENTS.accountNotes,
+      DOM_ELEMENTS.ntoNth,
+      DOM_ELEMENTS.dateOfOffence,
+      DOM_ELEMENTS.drivingLicenceNumber,
+      DOM_ELEMENTS.registrationNumber,
+      DOM_ELEMENTS.dateOfBirth,
+    ];
+    adultNotProvidedFields.forEach((selector) => {
+      cy.get(selector)
+        .find(`${DOM_ELEMENTS.notProvided} p`)
+        .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+    });
   });
 
   it(
@@ -360,27 +352,20 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.placeOfOffence).should('contain', '—');
 
       // Accessibility verification - check for screen readers (AC2bia)
-      cy.get(DOM_ELEMENTS.timeOfOffence)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.comments)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.accountNotes)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.ntoNth)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.dateOfOffence)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.registrationNumber)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
-      cy.get(DOM_ELEMENTS.placeOfOffence)
-        .find('app-fines-mac-review-account-not-provided p')
-        .should('have.attr', 'aria-label', 'Not provided');
+      const companyNotProvidedFields = [
+        DOM_ELEMENTS.timeOfOffence,
+        DOM_ELEMENTS.comments,
+        DOM_ELEMENTS.accountNotes,
+        DOM_ELEMENTS.ntoNth,
+        DOM_ELEMENTS.dateOfOffence,
+        DOM_ELEMENTS.registrationNumber,
+        DOM_ELEMENTS.placeOfOffence,
+      ];
+      companyNotProvidedFields.forEach((selector) => {
+        cy.get(selector)
+          .find(`${DOM_ELEMENTS.notProvided} p`)
+          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+      });
     },
   );
   it(

@@ -38,7 +38,6 @@ import { IOpalFinesSearchOffencesData } from './interfaces/opal-fines-search-off
 import { IOpalFinesDraftAccountPatchPayload } from './interfaces/opal-fines-draft-account.interface';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from './interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
@@ -59,7 +58,6 @@ import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
-import { FinesAccPayloadService } from '../../fines-acc/services/fines-acc-payload.service';
 import { FINES_ACC_DEBTOR_TYPES } from '../../fines-acc/constants/fines-acc-debtor-types.constant';
 
 @Injectable({
@@ -68,7 +66,6 @@ import { FINES_ACC_DEBTOR_TYPES } from '../../fines-acc/constants/fines-acc-debt
 export class OpalFines {
   private readonly http = inject(HttpClient);
   private readonly dateService = inject(DateService);
-  private readonly payloadService = inject(FinesAccPayloadService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
   private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
@@ -542,10 +539,30 @@ export class OpalFines {
    * @param account_id - The ID of the defendant account.
    * @param business_unit_id - The ID of the business unit.
    * @param business_unit_user_id - The ID of the business unit user.
+   * @param defendant_party_id - The ID of the defendant account party.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountParty(): Observable<IOpalFinesAccountDefendantAccountParty> {
-    return this.accountDetailsCache$['defendant'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+  public getDefendantAccountParty(
+    account_id: number | null,
+    defendant_party_id: string | null,
+  ): Observable<IOpalFinesAccountDefendantAccountParty> {
+    if (!this.accountDetailsCache$['defendant']) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}`;
+      this.accountDetailsCache$['defendant'] = this.http
+        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantAccountParty;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.accountDetailsCache$['defendant'];
   }
 
   /**

@@ -3,4 +3,5 @@ export interface IFinesAccSummaryTabsContentStyles {
   hr: string;
   key: string;
   value: string;
+  changeLink: string;
 }

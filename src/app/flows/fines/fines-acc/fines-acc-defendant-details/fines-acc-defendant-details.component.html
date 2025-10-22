@@ -141,7 +141,17 @@
     }
   }
   @case ('defendant') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabDefendant$ | async; as tabData) {
+      <app-fines-acc-defendant-details-defendant-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        [isYouth]="accountData.is_youth"
+        (addComments)="navigateToAddCommentsPage($event)"
+        [style]="tabContentStyles"
+        (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
+        (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
+      ></app-fines-acc-defendant-details-defendant-tab>
+    }
   }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full"></div>
