@@ -117,7 +117,7 @@ export const DOM_ELEMENTS = {
   //Decision section
   approveRadioButton: 'input[id="approve"]',
   rejectRadioButton: 'input[id="reject"]',
-  rejectionText: 'h1.govuk-label-wrapper',
+  rejectionText: 'div.govuk-label-wrapper.govuk-label-wrapper',
   continue: 'button[id = "submitForm"]',
   textArea: 'textarea[id="fm_review_account_decision_reason"]',
 };
