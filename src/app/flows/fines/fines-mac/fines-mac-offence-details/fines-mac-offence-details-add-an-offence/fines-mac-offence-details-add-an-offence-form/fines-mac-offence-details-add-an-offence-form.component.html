@@ -59,18 +59,10 @@
       </a></opal-lib-govuk-text-input
     >
     @if (offenceCode$ | async; as offenceCode) {
-      @if (selectedOffenceConfirmation) {
-        @if (offenceCode.count === 1) {
-          <ng-container
-            *ngTemplateOutlet="
-              offenceCodeHint;
-              context: { found: true, offenceTitle: offenceCode.refData[0].offence_title }
-            "
-          ></ng-container>
-        } @else {
-          <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: false }"></ng-container>
-        }
-      }
+      <app-fines-mac-offence-code-hint
+        [offenceCode]="offenceCode"
+        [selectedOffenceConfirmation]="selectedOffenceConfirmation"
+      ></app-fines-mac-offence-code-hint>
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
@@ -282,18 +274,3 @@
     </div>
   </div>
 </form>
-
-<ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
-  <opal-lib-moj-ticket-panel
-    [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
-    [alert]="true"
-  >
-    @let offenceFound = found ? 'Offence found' : 'Offence not found';
-    <strong>{{ offenceFound }}</strong>
-    @if (found) {
-      <p>{{ offenceTitle }}</p>
-    } @else {
-      <p>Enter a valid offence code</p>
-    }
-  </opal-lib-moj-ticket-panel>
-</ng-template>

@@ -61,6 +61,7 @@ import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../../f
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details.service';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { FinesMacOffenceCodeHintComponent } from '../../../components/fines-mac-offence-code-hint/fines-mac-offence-code-hint.component';
 
 //regex pattern validators for the form controls
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -90,6 +91,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojAlertTextComponent,
     MojAlertIconComponent,
     FinesMacOffenceDetailsMinorCreditorInformationComponent,
+    FinesMacOffenceCodeHintComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
