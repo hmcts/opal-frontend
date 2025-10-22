@@ -133,12 +133,12 @@
             </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="name">
-            <app-fines-sa-results-shared-table-cell [value]="row['Name']">
+            <app-fines-sa-results-shared-table-cell class="defendantName" [value]="row['Name']">
               {{ row['Name'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="aliases">
-            <app-fines-sa-results-shared-table-cell [value]="row['Aliases']">
+            <app-fines-sa-results-shared-table-cell class="defendantAliases" [value]="row['Aliases']">
               {{ row['Aliases'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
@@ -161,33 +161,36 @@
           </td>
           @if (!isCompany) {
             <td opal-lib-moj-sortable-table-row-data id="nationalInsuranceNumber">
-              <app-fines-sa-results-shared-table-cell [value]="row['NI number']">
+              <app-fines-sa-results-shared-table-cell class="defendantNationalInsurance" [value]="row['NI number']">
                 {{ row['NI number'] | nationalInsurance }}
               </app-fines-sa-results-shared-table-cell>
             </td>
             <td opal-lib-moj-sortable-table-row-data id="parentOrGuardian">
-              <app-fines-sa-results-shared-table-cell [value]="row['Parent or guardian']">
+              <app-fines-sa-results-shared-table-cell
+                class="defendantParentGuardian"
+                [value]="row['Parent or guardian']"
+              >
                 {{ row['Parent or guardian'] }}
               </app-fines-sa-results-shared-table-cell>
             </td>
           }
           <td opal-lib-moj-sortable-table-row-data id="businessUnit">
-            <app-fines-sa-results-shared-table-cell [value]="row['Business unit']">
+            <app-fines-sa-results-shared-table-cell class="defendantBusinessUnit" [value]="row['Business unit']">
               {{ row['Business unit'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="ref">
-            <app-fines-sa-results-shared-table-cell [value]="row['Ref']">
+            <app-fines-sa-results-shared-table-cell class="defendantRef" [value]="row['Ref']">
               {{ row['Ref'] }}
             </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="enf">
-            <app-fines-sa-results-shared-table-cell [value]="row['Enf']">
+            <app-fines-sa-results-shared-table-cell class="defendantEnf" [value]="row['Enf']">
               {{ row['Enf'] | uppercase }}
             </app-fines-sa-results-shared-table-cell>
           </td>
           <td opal-lib-moj-sortable-table-row-data id="balance">
-            <app-fines-sa-results-shared-table-cell [value]="row['Balance']">
+            <app-fines-sa-results-shared-table-cell class="defendantBalance" [value]="row['Balance']">
               {{ row['Balance'] | currency: 'GBP' }}
             </app-fines-sa-results-shared-table-cell>
           </td>
@@ -195,6 +198,7 @@
       }
     </ng-container>
     <app-fines-sa-results-shared-table-status
+      class="defendantTableStatus"
       [columnTitle]="sortedColumnTitleSignal()"
       [sortDirection]="sortedColumnDirectionSignal()"
     />
@@ -202,6 +206,7 @@
 </opal-lib-custom-horizontal-scroll-pane>
 
 <app-fines-sa-results-shared-pagination
+  class="defendantPagination"
   paginationId="fines-defendant-table-pagination"
   [currentPage]="currentPageSignal()"
   [itemsPerPage]="itemsPerPageSignal()"
