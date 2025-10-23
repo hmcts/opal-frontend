@@ -21,7 +21,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('ReviewAccountRejectedApproveComponent', () => {

@@ -7,7 +7,7 @@ export const DEFENDANT_DETAILS = {
   defendantAlias: '[summaryListRowId="aliases"]',
   defendantDOB: '[summaryListRowId="dob"]',
   defendantNI: '[summaryListRowId="national_insurance_number"]',
-  defendantAddress: '#personalDetailsAddressValue',
+  defendantAddress: '#defendantDetailsAddressValue',
   defendantVehicle: '[summaryListRowId="vehicle_make_and_model"]',
   defendantVehicleReg: '[summaryListRowId="vehicle_registration"]',
 

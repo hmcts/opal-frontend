@@ -9,6 +9,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { IComponentProperties } from './setupComponent.interface';
+
 /**
  * Sets up and mounts the `FinesAccComponent` for Cypress component testing.
  *
@@ -19,7 +21,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
  * @param accountId - The account ID to use for navigation. Defaults to `'77'` if not provided.
  * @returns A Cypress chainable that completes after the component is mounted and navigation is performed.
  */
-const setupComponent = (accountId: string | null = '77') => {
+export const setupAccountEnquiryComponent = (componentProperties: IComponentProperties) => {
   cy.then(() => {
     mount(FinesAccComponent, {
       providers: [
@@ -53,14 +55,8 @@ const setupComponent = (accountId: string | null = '77') => {
         .callsFake((commands, extras) => {
           // If the navigation is trying to go to '/access-denied', intercept and resolve immediately.
           // This prevents the actual redirect during the test, allowing us to test other logic.
-          const interceptedRoutes = [
-            '/access-denied',
-            '../note/add',
-            '../debtor/individual/amend',
-            '../debtor/parentGuardian/amend',
-            // Add more routes here as needed
-          ];
-          if (Array.isArray(commands) && interceptedRoutes.includes(commands[0])) {
+
+          if (Array.isArray(commands) && componentProperties.interceptedRoutes.includes(commands[0])) {
             return Promise.resolve(true); // Swallow the redirect, simulating a successful navigation.
           }
           // For all other routes, call the original navigate method to allow normal navigation.
@@ -69,38 +65,14 @@ const setupComponent = (accountId: string | null = '77') => {
 
       // Attempt to navigate to the defendant details page using the router.
       // This triggers the stub above, which will allow this navigation to proceed normally.
-      return router.navigate(['defendant', accountId, 'details']).then((success) => {
-        // Assert that navigation was successful.
-        expect(success).to.be.true;
-        // Trigger Angular change detection to update the component state after navigation.
-        fixture.detectChanges();
-      });
+      return router
+        .navigate(['defendant', componentProperties.accountId, 'details'], { fragment: componentProperties.fragments })
+        .then((success) => {
+          // Assert that navigation was successful.
+          expect(success).to.be.true;
+          // Trigger Angular change detection to update the component state after navigation.
+          fixture.detectChanges();
+        });
     });
   });
 };
-
-//Needs deleting this was just an example file
-
-// describe('Account Enquiry Component', () => {
-//   it('should mount the component', { tags: ['@PO-784'] }, () => {
-//     let headerMock = structuredClone(DEFENDANT_HEADER_MOCK);
-
-//     let defendantDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
-//     defendantDetailsMock.defendant_account_party.is_debtor = false;
-
-//     interceptAddNotes();
-
-//     interceptAuthenticatedUser();
-//     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-//     interceptDefendantHeader(1, DEFENDANT_HEADER_MOCK, '1');
-//     interceptAtAGlance(1, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
-//     interceptDefendantDetails(1, defendantDetailsMock, '1');
-
-//     setupComponent('1');
-//     cy.get('router-outlet').should('exist');
-//     cy.get('a').contains('Defendant').click();
-//     //cy.get('a').contains('Convert to an individual account').click();
-
-//     //cy.get('@routerNavigate').should('have.been.calledWith', ['/access-denied']);
-//   });
-// });

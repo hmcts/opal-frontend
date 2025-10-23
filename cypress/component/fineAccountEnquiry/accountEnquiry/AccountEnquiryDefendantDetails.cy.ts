@@ -1,108 +1,39 @@
-import { provideHttpClient } from '@angular/common/http';
-import { provideRouter, Router } from '@angular/router';
-import { mount } from 'cypress/angular';
-import { FinesAccComponent } from 'src/app/flows/fines/fines-acc/fines-acc.component';
-import { routing } from 'src/app/flows/fines/fines-acc/routing/fines-acc.routes';
-import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
-import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { interceptAuthenticatedUser, interceptUserState } from './intercept/interceptUserState';
+import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import {
   DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from './mocks/defendant_details_mock';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
-import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
-import { interceptDefendantHeader } from './intercept/interceptDefendantHeader';
+import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { interceptDefendantDetails } from './intercept/interceptDefendantDetails';
-import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from './constants/account_enquiry_header_elements';
 import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
-// import { setLanguagePref } from './Utils/SharedFunctions';
+import { IComponentProperties } from './setup/setupComponent.interface';
+import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { setLanguagePref } from './Utils/SharedFunctions';
 
 /**
  * Local implementation of setLanguagePref to avoid injection context errors
  */
-const setLanguagePref = (langPref: any, code: string = 'EN', displayName: string = 'English') => {
-  if (langPref) {
-    langPref.language_code = code;
-    langPref.language_display_name = displayName;
-  }
-};
+// const setLanguagePref = (langPref: any, code: string = 'EN', displayName: string = 'English') => {
+//   if (langPref) {
+//     langPref.language_code = code;
+//     langPref.language_display_name = displayName;
+//   }
+// };
 
-/**
- * Sets up and mounts the `FinesAccComponent` for Cypress component testing.
- *
- * This function configures the necessary Angular providers, stubs out authentication redirects,
- * and overrides router navigation to prevent hard redirects during tests. It then navigates to
- * the defendant details route for the specified account ID and ensures the fixture is updated.
- *
- * @param accountId - The account ID to use for navigation. Defaults to `'77'` if not provided.
- * @returns A Cypress chainable that completes after the component is mounted and navigation is performed.
- */
-const setupComponent = (accountId: string | null = '77') => {
-  cy.then(() => {
-    mount(FinesAccComponent, {
-      providers: [
-        provideHttpClient(),
-        // Provides the Angular Router with the application's routing configuration.
-        provideRouter([...routing]),
-        FinesAccPayloadService,
-        OpalFines,
-        PermissionsService,
-        UtilsService,
-        GlobalStore,
-        FinesAccountStore,
-        // {
-        //   // prevents the auth guard from hard-redirecting the test runner
-        //   provide: REDIRECT_TO_SSO,
-        //   useValue: cy.stub().as('redirectToSso'),
-        // },
-      ],
-    }).then(({ fixture }) => {
-      // Get the Angular Router instance from the test fixture's injector.
-      // This allows us to control and observe navigation during the test.
-      const router = fixture.debugElement.injector.get(Router);
-
-      // Save the original navigate method so we can call it for non-intercepted routes.
-      const originalNavigate = router.navigate.bind(router);
-
-      // Use Cypress to stub the router's navigate method.
-      // This lets us intercept navigation attempts and control their behavior in the test.
-      cy.stub(router, 'navigate')
-        .as('routerNavigate') // Give the stub a name for easier reference in assertions.
-        .callsFake((commands, extras) => {
-          // If the navigation is trying to go to '/access-denied', intercept and resolve immediately.
-          // This prevents the actual redirect during the test, allowing us to test other logic.
-          const interceptedRoutes = [
-            '/access-denied',
-            '../note/add',
-            '../debtor/individual/amend',
-            '../debtor/company/amend',
-            '../debtor/parentGuardian/amend',
-            // Add more routes here as needed
-          ];
-          if (Array.isArray(commands) && interceptedRoutes.includes(commands[0])) {
-            return Promise.resolve(true); // Swallow the redirect, simulating a successful navigation.
-          }
-          // For all other routes, call the original navigate method to allow normal navigation.
-          return originalNavigate(commands, extras);
-        });
-
-      // Attempt to navigate to the defendant details page using the router.
-      // This triggers the stub above, which will allow this navigation to proceed normally.
-      return router.navigate(['defendant', accountId, 'details'], { fragment: 'defendant' }).then((success) => {
-        // Assert that navigation was successful.
-        expect(success).to.be.true;
-        // Trigger Angular change detection to update the component state after navigation.
-        fixture.detectChanges();
-      });
-    });
-  });
+const componentProperties: IComponentProperties = {
+  accountId: '77',
+  fragments: 'defendant',
+  interceptedRoutes: [
+    '/access-denied',
+    '../note/add',
+    '../debtor/individual/amend',
+    '../debtor/company/amend',
+    '../debtor/parentGuardian/amend',
+    // Add more routes here as needed
+  ],
 };
 
 describe('Account Enquiry Defendant Details Tab', () => {
@@ -138,9 +69,11 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
     cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
@@ -187,10 +120,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
     cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
@@ -234,7 +167,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
     cy.get(DEFENDANT_DETAILS.defendantEmployerPhone).should('exist').and('contain.text', '—');
@@ -253,7 +186,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.documentLanguage).should('exist').and('contain.text', 'Welsh and English');
     cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
@@ -272,7 +205,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/individual/amend']);
@@ -291,7 +224,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
@@ -310,7 +243,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
@@ -328,10 +261,10 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.companyTitle).should('exist').and('contain.text', 'Company details');
     cy.get(DEFENDANT_DETAILS.companyName).should('exist').and('contain.text', 'Acme Corporation');
@@ -367,7 +300,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantSecondaryEmail).should('exist').and('contain.text', '—');
   });
@@ -385,7 +318,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.documentLanguage).should('exist').and('contain.text', 'Welsh and English');
     cy.get(DEFENDANT_DETAILS.courtHearingLanguage).should('exist').and('contain.text', 'Welsh and English');
@@ -404,7 +337,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/company/amend']);
@@ -426,7 +359,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(accountId, headerMock, accountId);
       interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-      setupComponent(accountId);
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
       cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['/access-denied']);
@@ -446,7 +379,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
     interceptDefendantHeader(accountId, headerMock, accountId);
     interceptDefendantDetails(accountId, defendantDetailsMock, accountId);
-    setupComponent(accountId);
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('not.exist');
   });
