@@ -11,11 +11,11 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
-import { IFinesAccDebtorAddAmendFieldErrors } from '../interfaces/fines-acc-debtor-add-amend-field-errors.interface';
-import { IFinesAccDebtorAddAmendForm } from '../interfaces/fines-acc-debtor-add-amend-form.interface';
-import { FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS } from '../constants/fines-acc-debtor-add-amend-field-errors.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_ALIAS } from '../constants/fines-acc-debtor-add-amend-alias.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../constants/fines-acc-debtor-add-amend-party-types.constant';
+import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
+import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fines-acc-party-add-amend-convert-field-errors.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../constants/fines-acc-party-add-amend-convert-alias.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { takeUntil } from 'rxjs';
@@ -52,8 +52,8 @@ import {
   EMAIL_ADDRESS_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { FINES_ACC_DEBTOR_ADD_AMEND_FORM } from '../constants/fines-acc-debtor-add-amend-form.constant';
-import { employerFieldsValidator } from '../constants/fines-acc-debtor-add-amend-validators.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
+import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-convert-validators.constant';
 
 // regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
@@ -83,28 +83,32 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     MojTicketPanelComponent,
     CapitalisationDirective,
   ],
-  templateUrl: './fines-acc-debtor-add-amend-form.component.html',
+  templateUrl: './fines-acc-party-add-amend-convert-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesAccPartyAddAmendConvertFormComponent
+  extends AbstractFormAliasBaseComponent
+  implements OnInit, OnDestroy
+{
   private readonly finesAccountStore = inject(FinesAccountStore);
 
-  @Output() protected override formSubmit = new EventEmitter<IFinesAccDebtorAddAmendForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();
   protected readonly dateService = inject(DateService);
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   protected readonly accountStore = this.finesAccountStore;
 
   @Input({ required: true }) public partyType!: string;
-  @Input({ required: false }) public initialFormData: IFinesAccDebtorAddAmendForm = FINES_ACC_DEBTOR_ADD_AMEND_FORM;
-  override fieldErrors: IFinesAccDebtorAddAmendFieldErrors = {
-    ...FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS,
+  @Input({ required: false }) public initialFormData: IFinesAccPartyAddAmendConvertForm =
+    FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
+  override fieldErrors: IFinesAccPartyAddAmendConvertFieldErrors = {
+    ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS,
   };
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
   public age!: number;
   public ageLabel!: string;
-  public readonly partyTypes = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES;
+  public readonly partyTypes = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES;
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
@@ -114,108 +118,110 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    */
   private setupDebtorAddAmendForm(): void {
     this.form = new FormGroup({
-      facc_debtor_add_amend_title: new FormControl(null, [Validators.required]),
-      facc_debtor_add_amend_forenames: new FormControl(null, [
+      facc_party_add_amend_convert_title: new FormControl(null, [Validators.required]),
+      facc_party_add_amend_convert_forenames: new FormControl(null, [
         Validators.required,
         Validators.maxLength(20),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_surname: new FormControl(null, [
+      facc_party_add_amend_convert_surname: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_aliases: new FormArray([]),
-      facc_debtor_add_amend_add_alias: new FormControl(null),
-      facc_debtor_add_amend_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      facc_debtor_add_amend_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      facc_debtor_add_amend_address_line_1: new FormControl(null, [
+      facc_party_add_amend_convert_aliases: new FormArray([]),
+      facc_party_add_amend_convert_add_alias: new FormControl(null),
+      facc_party_add_amend_convert_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      facc_party_add_amend_convert_national_insurance_number: new FormControl(null, [
+        nationalInsuranceNumberValidator(),
+      ]),
+      facc_party_add_amend_convert_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_address_line_2: new FormControl(null, [
+      facc_party_add_amend_convert_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_address_line_3: new FormControl(null, [
+      facc_party_add_amend_convert_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(16),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_post_code: new FormControl(null, [
+      facc_party_add_amend_convert_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_contact_email_address_1: new FormControl(null, [
+      facc_party_add_amend_convert_contact_email_address_1: new FormControl(null, [
         optionalMaxLengthValidator(76),
         EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_contact_email_address_2: new FormControl(null, [
+      facc_party_add_amend_convert_contact_email_address_2: new FormControl(null, [
         optionalMaxLengthValidator(76),
         EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_contact_telephone_number_mobile: new FormControl(null, [
+      facc_party_add_amend_convert_contact_telephone_number_mobile: new FormControl(null, [
         optionalMaxLengthValidator(35),
         optionalPhoneNumberValidator(),
       ]),
-      facc_debtor_add_amend_contact_telephone_number_home: new FormControl(null, [
+      facc_party_add_amend_convert_contact_telephone_number_home: new FormControl(null, [
         optionalMaxLengthValidator(35),
         optionalPhoneNumberValidator(),
       ]),
-      facc_debtor_add_amend_contact_telephone_number_business: new FormControl(null, [
+      facc_party_add_amend_convert_contact_telephone_number_business: new FormControl(null, [
         optionalMaxLengthValidator(35),
         optionalPhoneNumberValidator(),
       ]),
-      facc_debtor_add_amend_vehicle_make: new FormControl(null, [
+      facc_party_add_amend_convert_vehicle_make: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_vehicle_registration_mark: new FormControl(null, [
+      facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
         optionalMaxLengthValidator(20),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_language_preferences_document_language: new FormControl(null),
-      facc_debtor_add_amend_language_preferences_hearing_language: new FormControl(null),
-      facc_debtor_add_amend_employer_details_employer_company_name: new FormControl(null, [
+      facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
+      facc_party_add_amend_convert_language_preferences_hearing_language: new FormControl(null),
+      facc_party_add_amend_convert_employer_company_name: new FormControl(null, [
         optionalMaxLengthValidator(50),
         employerFieldsValidator,
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_reference: new FormControl(null, [
+      facc_party_add_amend_convert_employer_reference: new FormControl(null, [
         optionalMaxLengthValidator(20),
         employerFieldsValidator,
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_email_address: new FormControl(null, [
+      facc_party_add_amend_convert_employer_email_address: new FormControl(null, [
         optionalMaxLengthValidator(76),
         EMAIL_ADDRESS_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_telephone_number: new FormControl(null, [
+      facc_party_add_amend_convert_employer_telephone_number: new FormControl(null, [
         optionalMaxLengthValidator(35),
         optionalPhoneNumberValidator(),
       ]),
-      facc_debtor_add_amend_employer_details_employer_address_line_1: new FormControl(null, [
+      facc_party_add_amend_convert_employer_address_line_1: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         employerFieldsValidator,
       ]),
-      facc_debtor_add_amend_employer_details_employer_address_line_2: new FormControl(null, [
+      facc_party_add_amend_convert_employer_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_address_line_3: new FormControl(null, [
+      facc_party_add_amend_convert_employer_address_line_3: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_address_line_4: new FormControl(null, [
+      facc_party_add_amend_convert_employer_address_line_4: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_address_line_5: new FormControl(null, [
+      facc_party_add_amend_convert_employer_address_line_5: new FormControl(null, [
         optionalMaxLengthValidator(30),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_debtor_add_amend_employer_details_employer_post_code: new FormControl(null, [
+      facc_party_add_amend_convert_employer_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
@@ -226,15 +232,15 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    * Sets up the alias configuration for the debtor add/amend form.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = FINES_ACC_DEBTOR_ADD_AMEND_ALIAS.map((control) => control.controlName);
-    this.aliasControlsValidation = FINES_ACC_DEBTOR_ADD_AMEND_ALIAS;
+    this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
+    this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
   }
 
   /**
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
   private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['facc_debtor_add_amend_dob'];
+    const dobControl = this.form.controls['facc_party_add_amend_convert_dob'];
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -256,21 +262,21 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
    */
   private setupEmployerFieldsValidation(): void {
     const employerFieldNames = [
-      'facc_debtor_add_amend_employer_details_employer_company_name',
-      'facc_debtor_add_amend_employer_details_employer_reference',
-      'facc_debtor_add_amend_employer_details_employer_email_address',
-      'facc_debtor_add_amend_employer_details_employer_telephone_number',
-      'facc_debtor_add_amend_employer_details_employer_address_line_1',
-      'facc_debtor_add_amend_employer_details_employer_address_line_2',
-      'facc_debtor_add_amend_employer_details_employer_address_line_3',
-      'facc_debtor_add_amend_employer_details_employer_address_line_4',
-      'facc_debtor_add_amend_employer_details_employer_address_line_5',
-      'facc_debtor_add_amend_employer_details_employer_post_code',
+      'facc_party_add_amend_convert_employer_company_name',
+      'facc_party_add_amend_convert_employer_reference',
+      'facc_party_add_amend_convert_employer_email_address',
+      'facc_party_add_amend_convert_employer_telephone_number',
+      'facc_party_add_amend_convert_employer_address_line_1',
+      'facc_party_add_amend_convert_employer_address_line_2',
+      'facc_party_add_amend_convert_employer_address_line_3',
+      'facc_party_add_amend_convert_employer_address_line_4',
+      'facc_party_add_amend_convert_employer_address_line_5',
+      'facc_party_add_amend_convert_employer_post_code',
     ];
 
-    const companyNameControl = this.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
-    const employerReferenceControl = this.form.get('facc_debtor_add_amend_employer_details_employer_reference');
-    const employerAddressLine1Control = this.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
+    const companyNameControl = this.form.get('facc_party_add_amend_convert_employer_company_name');
+    const employerReferenceControl = this.form.get('facc_party_add_amend_convert_employer_reference');
+    const employerAddressLine1Control = this.form.get('facc_party_add_amend_convert_employer_address_line_1');
 
     for (const fieldName of employerFieldNames) {
       const control = this.form.get(fieldName);
@@ -293,12 +299,12 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
     this.setupAliasConfiguration();
 
     // Safe access to aliases array
-    const aliasesLength = this.initialFormData?.formData?.facc_debtor_add_amend_aliases?.length || 0;
-    this.setupAliasFormControls([...new Array(aliasesLength).keys()], 'facc_debtor_add_amend_aliases');
+    const aliasesLength = this.initialFormData?.formData?.facc_party_add_amend_convert_aliases?.length || 0;
+    this.setupAliasFormControls([...new Array(aliasesLength).keys()], 'facc_party_add_amend_convert_aliases');
 
     this.setInitialErrorMessages();
     this.rePopulateForm(this.initialFormData?.formData || null);
-    this.setUpAliasCheckboxListener('facc_debtor_add_amend_add_alias', 'facc_debtor_add_amend_aliases');
+    this.setUpAliasCheckboxListener('facc_party_add_amend_convert_add_alias', 'facc_party_add_amend_convert_aliases');
     this.dateOfBirthListener();
     this.setupEmployerFieldsValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
@@ -307,7 +313,7 @@ export class FinesAccDebtorAddAmendFormComponent extends AbstractFormAliasBaseCo
   public override ngOnInit(): void {
     // Ensure initialFormData is set with default values if undefined
     if (!this.initialFormData) {
-      this.initialFormData = FINES_ACC_DEBTOR_ADD_AMEND_FORM;
+      this.initialFormData = FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
     }
 
     this.initialDebtorAddAmendSetup();

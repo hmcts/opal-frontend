@@ -34,7 +34,7 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -289,7 +289,8 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
-  public navigateToChangeDefendantDetailsPage(debtor: boolean): void {
+  public navigateToChangeDefendantDetailsPage(event: Event): void {
+    event.preventDefault();
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
         FINES_PERMISSIONS['account-maintenance'],
@@ -300,14 +301,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       let partyType: string;
 
       if (this.accountData.debtor_type === 'Parent/Guardian') {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN;
+        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
       } else if (this.accountData.party_details.organisation_flag) {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY;
+        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
       } else {
-        partyType = FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL;
+        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
       }
 
-      this['router'].navigate([`../${debtor ? 'debtor' : 'non-debtor'}/${partyType}/amend`], {
+      this['router'].navigate([`../${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
     } else {

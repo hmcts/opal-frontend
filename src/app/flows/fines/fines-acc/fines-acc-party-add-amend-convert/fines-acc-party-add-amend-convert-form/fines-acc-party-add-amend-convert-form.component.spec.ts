@@ -3,17 +3,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesAccDebtorAddAmendFormComponent } from './fines-acc-debtor-add-amend-form.component';
+import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import {
-  MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
-  MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES,
-} from '../mocks/fines-acc-debtor-add-amend-form.mock';
+  MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
+  MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
+} from '../mocks/fines-acc-party-add-amend-convert-form.mock';
 
-describe('FinesAccDebtorAddAmendFormComponent', () => {
-  let component: FinesAccDebtorAddAmendFormComponent;
-  let fixture: ComponentFixture<FinesAccDebtorAddAmendFormComponent>;
+describe('FinesAccPartyAddAmendConvertFormComponent', () => {
+  let component: FinesAccPartyAddAmendConvertFormComponent;
+  let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccountStore: any;
@@ -33,7 +33,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FinesAccDebtorAddAmendFormComponent],
+      imports: [ReactiveFormsModule, FinesAccPartyAddAmendConvertFormComponent],
       providers: [
         { provide: DateService, useValue: mockDateService },
         { provide: FinesAccountStore, useValue: mockFinesAccountStore },
@@ -41,7 +41,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccDebtorAddAmendFormComponent);
+    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
     component = fixture.componentInstance;
 
     mockDateService.getPreviousDate.and.returnValue('2024-01-01');
@@ -61,35 +61,37 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     fixture.detectChanges();
 
     expect(component.form).toBeDefined();
-    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBeNull();
-    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBeNull();
-    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_title')?.value).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_forenames')?.value).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_surname')?.value).toBeNull();
   });
 
   it('should initialize form with provided initial data', () => {
     component.partyType = 'INDIVIDUAL';
-    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA;
+    component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA;
     fixture.detectChanges();
 
-    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
-    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
-    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBe('Doe');
-    expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
-    expect(component.form.get('facc_debtor_add_amend_national_insurance_number')?.value).toBe('AB123456C');
-    expect(component.form.get('facc_debtor_add_amend_dob')?.value).toBe('1990-01-01');
+    expect(component.form.get('facc_party_add_amend_convert_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_party_add_amend_convert_forenames')?.value).toBe('John');
+    expect(component.form.get('facc_party_add_amend_convert_surname')?.value).toBe('Doe');
+    expect(component.form.get('facc_party_add_amend_convert_address_line_1')?.value).toBe('123 Test Street');
+    expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.value).toBe('AB123456C');
+    expect(component.form.get('facc_party_add_amend_convert_dob')?.value).toBe('1990-01-01');
   });
 
   it('should populate National Insurance number and other fields correctly', () => {
     component.partyType = 'INDIVIDUAL';
-    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA;
+    component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA;
     fixture.detectChanges();
 
-    expect(component.form.get('facc_debtor_add_amend_national_insurance_number')?.value).toBe('AB123456C');
-    expect(component.form.get('facc_debtor_add_amend_contact_email_address_1')?.value).toBe('john@example.com');
-    expect(component.form.get('facc_debtor_add_amend_contact_telephone_number_mobile')?.value).toBe('07123456789');
-    expect(component.form.get('facc_debtor_add_amend_vehicle_make')?.value).toBe('Toyota Corolla');
-    expect(component.form.get('facc_debtor_add_amend_vehicle_registration_mark')?.value).toBe('ABC123');
-    expect(component.form.get('facc_debtor_add_amend_post_code')?.value).toBe('TE5T 1NG');
+    expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.value).toBe('AB123456C');
+    expect(component.form.get('facc_party_add_amend_convert_contact_email_address_1')?.value).toBe('john@example.com');
+    expect(component.form.get('facc_party_add_amend_convert_contact_telephone_number_mobile')?.value).toBe(
+      '07123456789',
+    );
+    expect(component.form.get('facc_party_add_amend_convert_vehicle_make')?.value).toBe('Toyota Corolla');
+    expect(component.form.get('facc_party_add_amend_convert_vehicle_registration_mark')?.value).toBe('ABC123');
+    expect(component.form.get('facc_party_add_amend_convert_post_code')?.value).toBe('TE5T 1NG');
   });
 
   it('should set yesterday date on initialization', () => {
@@ -129,7 +131,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    const dobControl = component.form.get('facc_party_add_amend_convert_dob');
     dobControl?.setValue('1994-01-01');
 
     expect(mockDateService.getAgeObject).toHaveBeenCalledWith('1994-01-01');
@@ -142,7 +144,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    const dobControl = component.form.get('facc_party_add_amend_convert_dob');
     dobControl?.setValue('2008-01-01');
 
     expect(component.age).toBe(16);
@@ -154,7 +156,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const dobControl = component.form.get('facc_debtor_add_amend_dob');
+    const dobControl = component.form.get('facc_party_add_amend_convert_dob');
     dobControl?.setValue('invalid-date');
 
     expect(mockDateService.getAgeObject).toHaveBeenCalledWith('invalid-date');
@@ -164,7 +166,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const titleControl = component.form.get('facc_debtor_add_amend_title');
+    const titleControl = component.form.get('facc_party_add_amend_convert_title');
     expect(titleControl?.hasError('required')).toBe(true);
 
     titleControl?.setValue('Mr');
@@ -175,7 +177,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const forenamesControl = component.form.get('facc_debtor_add_amend_forenames');
+    const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
     expect(forenamesControl?.hasError('required')).toBe(true);
 
     forenamesControl?.setValue('John');
@@ -189,7 +191,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const surnameControl = component.form.get('facc_debtor_add_amend_surname');
+    const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
     expect(surnameControl?.hasError('required')).toBe(true);
 
     surnameControl?.setValue('Doe');
@@ -203,7 +205,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const addressControl = component.form.get('facc_debtor_add_amend_address_line_1');
+    const addressControl = component.form.get('facc_party_add_amend_convert_address_line_1');
     expect(addressControl?.hasError('required')).toBe(true);
 
     addressControl?.setValue('123 Test Street');
@@ -214,7 +216,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const emailControl = component.form.get('facc_debtor_add_amend_contact_email_address_1');
+    const emailControl = component.form.get('facc_party_add_amend_convert_contact_email_address_1');
 
     emailControl?.setValue('invalid-email');
     expect(emailControl?.hasError('emailPattern')).toBe(true);
@@ -225,14 +227,14 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
 
   it('should populate existing aliases on initialization', () => {
     component.partyType = 'INDIVIDUAL';
-    component.initialFormData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA_WITH_ALIASES;
+    component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES;
     fixture.detectChanges();
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const aliasArray = component.form.get('facc_debtor_add_amend_aliases') as any;
+    const aliasArray = component.form.get('facc_party_add_amend_convert_aliases') as any;
     expect(aliasArray.length).toBe(1);
 
-    const addAliasControl = component.form.get('facc_debtor_add_amend_add_alias');
+    const addAliasControl = component.form.get('facc_party_add_amend_convert_add_alias');
     expect(addAliasControl?.value).toBe(true);
   });
 
@@ -240,7 +242,7 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     component.partyType = 'INDIVIDUAL';
     fixture.detectChanges();
 
-    const aliasFormArray = component.form.get('facc_debtor_add_amend_aliases');
+    const aliasFormArray = component.form.get('facc_party_add_amend_convert_aliases');
     expect(aliasFormArray).toBeDefined();
   });
 
@@ -251,10 +253,10 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     spyOn(component['formSubmit'], 'emit');
 
     component.form.patchValue({
-      facc_debtor_add_amend_title: 'Mr',
-      facc_debtor_add_amend_forenames: 'John',
-      facc_debtor_add_amend_surname: 'Doe',
-      facc_debtor_add_amend_address_line_1: '123 Test Street',
+      facc_party_add_amend_convert_title: 'Mr',
+      facc_party_add_amend_convert_forenames: 'John',
+      facc_party_add_amend_convert_surname: 'Doe',
+      facc_party_add_amend_convert_address_line_1: '123 Test Street',
     });
 
     expect(component.form.valid).toBe(true);
@@ -289,20 +291,20 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     fixture.detectChanges();
 
     const mockFormData = {
-      facc_debtor_add_amend_title: 'Mr',
-      facc_debtor_add_amend_forenames: 'John',
-      facc_debtor_add_amend_surname: 'Doe',
-      facc_debtor_add_amend_address_line_1: '123 Test Street',
+      facc_party_add_amend_convert_title: 'Mr',
+      facc_party_add_amend_convert_forenames: 'John',
+      facc_party_add_amend_convert_surname: 'Doe',
+      facc_party_add_amend_convert_address_line_1: '123 Test Street',
     };
     spyOn(component.form, 'patchValue').and.callThrough();
 
     component['rePopulateForm'](mockFormData);
 
     expect(component.form.patchValue).toHaveBeenCalledWith(mockFormData);
-    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
-    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
-    expect(component.form.get('facc_debtor_add_amend_surname')?.value).toBe('DOE');
-    expect(component.form.get('facc_debtor_add_amend_address_line_1')?.value).toBe('123 Test Street');
+    expect(component.form.get('facc_party_add_amend_convert_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_party_add_amend_convert_forenames')?.value).toBe('John');
+    expect(component.form.get('facc_party_add_amend_convert_surname')?.value).toBe('DOE');
+    expect(component.form.get('facc_party_add_amend_convert_address_line_1')?.value).toBe('123 Test Street');
   });
 
   it('should handle formData with aliases by including them in form patch', () => {
@@ -310,9 +312,9 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
     fixture.detectChanges();
 
     const mockFormData = {
-      facc_debtor_add_amend_title: 'Mr',
-      facc_debtor_add_amend_forenames: 'John',
-      facc_debtor_add_amend_aliases: [{ facc_debtor_add_amend_alias_forenames_0: 'Johnny' }],
+      facc_party_add_amend_convert_title: 'Mr',
+      facc_party_add_amend_convert_forenames: 'John',
+      facc_party_add_amend_convert_aliases: [{ facc_party_add_amend_convert_alias_forenames_0: 'Johnny' }],
     };
     spyOn(component.form, 'patchValue').and.callThrough();
 
@@ -320,8 +322,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
 
     // Expect the form to be patched with all data including aliases
     expect(component.form.patchValue).toHaveBeenCalledWith(mockFormData);
-    expect(component.form.get('facc_debtor_add_amend_title')?.value).toBe('Mr');
-    expect(component.form.get('facc_debtor_add_amend_forenames')?.value).toBe('John');
+    expect(component.form.get('facc_party_add_amend_convert_title')?.value).toBe('Mr');
+    expect(component.form.get('facc_party_add_amend_convert_forenames')?.value).toBe('John');
   });
 
   describe('Employer fields validation', () => {
@@ -329,8 +331,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
-      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+      const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
+      const referenceControl = component.form.get('facc_party_add_amend_convert_employer_reference');
 
       expect(companyNameControl?.valid).toBe(true);
       expect(referenceControl?.valid).toBe(true);
@@ -340,8 +342,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
-      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
+      const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
+      const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
 
       emailControl?.setValue('test@company.com');
       companyNameControl?.setValue('');
@@ -353,8 +355,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const telephoneControl = component.form.get('facc_debtor_add_amend_employer_details_employer_telephone_number');
-      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+      const telephoneControl = component.form.get('facc_party_add_amend_convert_employer_telephone_number');
+      const referenceControl = component.form.get('facc_party_add_amend_convert_employer_reference');
 
       telephoneControl?.setValue('01234567890');
       referenceControl?.setValue('');
@@ -366,9 +368,9 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const addressControl = component.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
-      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
-      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+      const addressControl = component.form.get('facc_party_add_amend_convert_employer_address_line_1');
+      const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
+      const referenceControl = component.form.get('facc_party_add_amend_convert_employer_reference');
 
       addressControl?.setValue('123 Business Street');
       companyNameControl?.setValue('');
@@ -382,9 +384,9 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
-      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
-      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+      const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
+      const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
+      const referenceControl = component.form.get('facc_party_add_amend_convert_employer_reference');
 
       emailControl?.setValue('test@company.com');
       companyNameControl?.setValue('Test Company Ltd');
@@ -398,9 +400,9 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const postCodeControl = component.form.get('facc_debtor_add_amend_employer_details_employer_post_code');
-      const companyNameControl = component.form.get('facc_debtor_add_amend_employer_details_employer_company_name');
-      const referenceControl = component.form.get('facc_debtor_add_amend_employer_details_employer_reference');
+      const postCodeControl = component.form.get('facc_party_add_amend_convert_employer_post_code');
+      const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
+      const referenceControl = component.form.get('facc_party_add_amend_convert_employer_reference');
 
       postCodeControl?.setValue('SW1A 1AA');
       companyNameControl?.setValue('');
@@ -414,8 +416,8 @@ describe('FinesAccDebtorAddAmendFormComponent', () => {
       component.partyType = 'Adult';
       fixture.detectChanges();
 
-      const emailControl = component.form.get('facc_debtor_add_amend_employer_details_employer_email_address');
-      const addressLine1Control = component.form.get('facc_debtor_add_amend_employer_details_employer_address_line_1');
+      const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
+      const addressLine1Control = component.form.get('facc_party_add_amend_convert_employer_address_line_1');
 
       emailControl?.setValue('test@company.com');
       addressLine1Control?.setValue('');

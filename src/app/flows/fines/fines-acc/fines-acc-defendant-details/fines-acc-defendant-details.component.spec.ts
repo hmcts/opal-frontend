@@ -19,7 +19,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } fr
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -182,11 +182,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const event: Event = new Event('click');
     component.accountData.debtor_type = 'Parent/Guardian';
     spyOn(event, 'preventDefault');
-    component.navigateToChangeDefendantDetailsPage(true);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN}/amend`,
-      ],
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -194,13 +192,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
+    const event: Event = new Event('click');
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = true;
-    component.navigateToChangeDefendantDetailsPage(true);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.COMPANY}/amend`,
-      ],
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -208,13 +205,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
+    const event: Event = new Event('click');
     component.accountData.debtor_type = 'Defendant';
     component.accountData.party_details.organisation_flag = false;
-    component.navigateToChangeDefendantDetailsPage(true);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.INDIVIDUAL}/amend`,
-      ],
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -245,8 +241,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
+    const event: Event = new Event('click');
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-    component.navigateToChangeDefendantDetailsPage(true);
+    component.navigateToChangeDefendantDetailsPage(event);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });

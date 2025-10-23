@@ -1,13 +1,13 @@
-import { IFinesAccDebtorAddAmendFieldErrors } from '../interfaces/fines-acc-debtor-add-amend-field-errors.interface';
+import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 
-export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFieldErrors = {
-  facc_debtor_add_amend_title: {
+export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAmendConvertFieldErrors = {
+  facc_party_add_amend_convert_title: {
     required: {
       message: 'Select a title',
       priority: 1,
     },
   },
-  facc_debtor_add_amend_forenames: {
+  facc_party_add_amend_convert_forenames: {
     required: {
       message: `Enter defendant's first name(s)`,
       priority: 1,
@@ -21,7 +21,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_surname: {
+  facc_party_add_amend_convert_surname: {
     required: {
       message: `Enter defendant's last name`,
       priority: 1,
@@ -35,7 +35,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames_0: {
+  facc_party_add_amend_convert_alias_forenames_0: {
     required: {
       message: `Enter alias 1 first name(s)`,
       priority: 1,
@@ -49,7 +49,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname_0: {
+  facc_party_add_amend_convert_alias_surname_0: {
     required: {
       message: `Enter alias 1 last name`,
       priority: 1,
@@ -63,7 +63,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames_1: {
+  facc_party_add_amend_convert_alias_forenames_1: {
     required: {
       message: `Enter alias 2 first name(s)`,
       priority: 1,
@@ -77,7 +77,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname_1: {
+  facc_party_add_amend_convert_alias_surname_1: {
     required: {
       message: `Enter alias 2 last name`,
       priority: 1,
@@ -91,7 +91,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames_2: {
+  facc_party_add_amend_convert_alias_forenames_2: {
     required: {
       message: `Enter alias 3 first name(s)`,
       priority: 1,
@@ -105,7 +105,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname_2: {
+  facc_party_add_amend_convert_alias_surname_2: {
     required: {
       message: `Enter alias 3 last name`,
       priority: 1,
@@ -119,7 +119,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames_3: {
+  facc_party_add_amend_convert_alias_forenames_3: {
     required: {
       message: `Enter alias 4 first name(s)`,
       priority: 1,
@@ -133,7 +133,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname_3: {
+  facc_party_add_amend_convert_alias_surname_3: {
     required: {
       message: `Enter alias 4 last name`,
       priority: 1,
@@ -147,7 +147,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_forenames_4: {
+  facc_party_add_amend_convert_alias_forenames_4: {
     required: {
       message: `Enter alias 5 first name(s)`,
       priority: 1,
@@ -161,7 +161,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_alias_surname_4: {
+  facc_party_add_amend_convert_alias_surname_4: {
     required: {
       message: `Enter alias 5 last name`,
       priority: 1,
@@ -175,7 +175,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_dob: {
+  facc_party_add_amend_convert_dob: {
     invalidDateFormat: {
       message: `Enter date of birth in the format DD/MM/YYYY`,
       priority: 1,
@@ -189,13 +189,13 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_national_insurance_number: {
+  facc_party_add_amend_convert_national_insurance_number: {
     nationalInsuranceNumberPattern: {
       message: `Enter a National Insurance number in the format AANNNNNNA`,
       priority: 1,
     },
   },
-  facc_debtor_add_amend_address_line_1: {
+  facc_party_add_amend_convert_address_line_1: {
     required: {
       message: 'Enter address line 1, typically the building and street',
       priority: 1,
@@ -209,7 +209,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_address_line_2: {
+  facc_party_add_amend_convert_address_line_2: {
     maxlength: {
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
@@ -219,7 +219,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_address_line_3: {
+  facc_party_add_amend_convert_address_line_3: {
     maxlength: {
       message: `Address line 3 must be 16 characters or fewer`,
       priority: 1,
@@ -229,7 +229,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_post_code: {
+  facc_party_add_amend_convert_post_code: {
     maxlength: {
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
@@ -239,7 +239,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_contact_email_address_1: {
+  facc_party_add_amend_convert_contact_email_address_1: {
     maxlength: {
       message: 'Primary email address must be 76 characters or fewer',
       priority: 1,
@@ -249,7 +249,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_contact_email_address_2: {
+  facc_party_add_amend_convert_contact_email_address_2: {
     maxlength: {
       message: 'Secondary email address must be 76 characters or fewer',
       priority: 1,
@@ -259,7 +259,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_contact_telephone_number_mobile: {
+  facc_party_add_amend_convert_contact_telephone_number_mobile: {
     maxlength: {
       message: 'Enter a valid mobile telephone number, like 07700 900 982',
       priority: 1,
@@ -269,7 +269,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_contact_telephone_number_home: {
+  facc_party_add_amend_convert_contact_telephone_number_home: {
     maxlength: {
       message: 'Enter a valid home telephone number, like 01632 960 001',
       priority: 1,
@@ -279,7 +279,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_contact_telephone_number_business: {
+  facc_party_add_amend_convert_contact_telephone_number_business: {
     maxlength: {
       message: 'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982',
       priority: 1,
@@ -289,7 +289,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_vehicle_make: {
+  facc_party_add_amend_convert_vehicle_make: {
     maxlength: {
       message: `Make and model must be 30 characters or fewer`,
       priority: 1,
@@ -299,7 +299,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_vehicle_registration_mark: {
+  facc_party_add_amend_convert_vehicle_registration_mark: {
     maxlength: {
       message: `Vehicle registration must be 20 characters or fewer`,
       priority: 1,
@@ -309,9 +309,9 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_language_preferences_document_language: {},
-  facc_debtor_add_amend_language_preferences_hearing_language: {},
-  facc_debtor_add_amend_employer_details_employer_company_name: {
+  facc_party_add_amend_convert_language_preferences_document_language: {},
+  facc_party_add_amend_convert_language_preferences_hearing_language: {},
+  facc_party_add_amend_convert_employer_company_name: {
     required: {
       message: 'Enter employer name',
       priority: 1,
@@ -325,7 +325,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_reference: {
+  facc_party_add_amend_convert_employer_reference: {
     required: {
       message: 'Enter employee reference or National Insurance number',
       priority: 1,
@@ -339,7 +339,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_email_address: {
+  facc_party_add_amend_convert_employer_email_address: {
     maxlength: {
       message: 'Employer email address must be 76 characters or fewer',
       priority: 1,
@@ -349,7 +349,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_telephone_number: {
+  facc_party_add_amend_convert_employer_telephone_number: {
     maxlength: {
       message: 'Enter a valid employer telephone number in the correct format, like 07700 900 982 or 01263 766122',
       priority: 1,
@@ -359,7 +359,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_address_line_1: {
+  facc_party_add_amend_convert_employer_address_line_1: {
     required: {
       message: 'Enter address line 1, typically the building and street',
       priority: 1,
@@ -373,7 +373,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 3,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_address_line_2: {
+  facc_party_add_amend_convert_employer_address_line_2: {
     maxlength: {
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
@@ -383,7 +383,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_address_line_3: {
+  facc_party_add_amend_convert_employer_address_line_3: {
     maxlength: {
       message: 'Address line 3 must be 30 characters or fewer',
       priority: 1,
@@ -393,7 +393,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_address_line_4: {
+  facc_party_add_amend_convert_employer_address_line_4: {
     maxlength: {
       message: 'Address line 4 must be 30 characters or fewer',
       priority: 1,
@@ -403,7 +403,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_address_line_5: {
+  facc_party_add_amend_convert_employer_address_line_5: {
     maxlength: {
       message: 'Address line 5 must be 30 characters or fewer',
       priority: 1,
@@ -413,7 +413,7 @@ export const FINES_ACC_DEBTOR_ADD_AMEND_FIELD_ERRORS: IFinesAccDebtorAddAmendFie
       priority: 2,
     },
   },
-  facc_debtor_add_amend_employer_details_employer_post_code: {
+  facc_party_add_amend_convert_employer_post_code: {
     maxlength: {
       message: 'Postcode must be 8 characters or fewer',
       priority: 1,

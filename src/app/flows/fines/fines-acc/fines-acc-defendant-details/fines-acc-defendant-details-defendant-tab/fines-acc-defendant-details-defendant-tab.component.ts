@@ -31,19 +31,19 @@ export class FinesAccDefendantDetailsDefendantTabComponent {
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() isYouth: boolean | null = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changeDefendantDetails = new EventEmitter<boolean>();
-  @Output() convertAccount = new EventEmitter<boolean>();
+  @Output() changeDefendantDetails = new EventEmitter<Event>();
+  @Output() convertAccount = new EventEmitter<Event>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   public handleConvertAccount(event: Event): void {
     event.preventDefault();
-    this.convertAccount.emit(this.tabData.defendant_account_party.is_debtor);
+    this.convertAccount.emit(event);
   }
 
   public handleChangeDefendantDetails(event: Event): void {
     event.preventDefault();
-    this.changeDefendantDetails.emit(this.tabData.defendant_account_party.is_debtor);
+    this.changeDefendantDetails.emit(event);
   }
 }

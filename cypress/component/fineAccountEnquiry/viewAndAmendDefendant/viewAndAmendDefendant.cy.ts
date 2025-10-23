@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { of } from 'rxjs';
-import { FinesAccDebtorAddAmend } from 'src/app/flows/fines/fines-acc/fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component';
+import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
 import {
   DOM_ELEMENTS,
   getAliasForenamesInput,
@@ -16,7 +16,7 @@ import {
 } from './mocks/viewAndAmendDefendant.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 
-describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
+describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
   let fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
   let minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
 
@@ -29,7 +29,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     formData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
     welshSpeaking: string = 'N',
   ) => {
-    mount(FinesAccDebtorAddAmend, {
+    mount(FinesAccPartyAddAmendConvert, {
       providers: [
         DateService,
         {
@@ -50,7 +50,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
           useValue: {
             snapshot: {
               data: {
-                debtorAmendFormData: formData,
+                partyAmendFormData: formData,
               },
               params: {
                 partyType: partyType.toLowerCase(),
@@ -123,7 +123,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
       // Age display should show calculated age from DOB in mock data
       const dateService = new DateService();
-      const dob = fullMock.formData.facc_debtor_add_amend_dob ?? '';
+      const dob = fullMock.formData.facc_party_add_amend_convert_dob ?? '';
       const expectedAge = dateService.calculateAge(dob, 'dd/MM/yyyy');
       const expectedAgeGroup = dateService.getAgeObject(dob)?.group ?? '';
 
@@ -350,10 +350,10 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
     const emptyCoreMock = structuredClone(minimalMock);
     emptyCoreMock.formData = {
       ...emptyCoreMock.formData,
-      facc_debtor_add_amend_title: '',
-      facc_debtor_add_amend_forenames: '',
-      facc_debtor_add_amend_surname: '',
-      facc_debtor_add_amend_address_line_1: '',
+      facc_party_add_amend_convert_title: '',
+      facc_party_add_amend_convert_forenames: '',
+      facc_party_add_amend_convert_surname: '',
+      facc_party_add_amend_convert_address_line_1: '',
     };
     setupComponent('INDIVIDUAL', emptyCoreMock);
 
@@ -390,7 +390,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC5. Required field validation (employer name)', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_company_name = 'Test Company';
+    minimalMock.formData.facc_party_add_amend_convert_employer_company_name = 'Test Company';
     setupComponent('INDIVIDUAL', minimalMock);
 
     // Leave all employer values blank then submit
@@ -408,7 +408,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC5. Required field validation (employer address)', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_address_line_1 = 'Address';
+    minimalMock.formData.facc_party_add_amend_convert_employer_address_line_1 = 'Address';
     setupComponent('INDIVIDUAL', minimalMock);
 
     // Leave all employer values blank then submit
@@ -423,7 +423,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC5. Required field validation (employer reference number)', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_reference = 'Ref123';
+    minimalMock.formData.facc_party_add_amend_convert_employer_reference = 'Ref123';
     setupComponent('INDIVIDUAL', minimalMock);
 
     // Leave all employer values blank then submit
@@ -493,7 +493,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC6a. DOB with non-numerical characters shows format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_dob = 'AA/BB/CCCC';
+    minimalMock.formData.facc_party_add_amend_convert_dob = 'AA/BB/CCCC';
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -504,7 +504,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC6b. DOB in the future shows past-date error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_dob = '01/01/2099';
+    minimalMock.formData.facc_party_add_amend_convert_dob = '01/01/2099';
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -513,7 +513,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC6c. NI number invalid format shows NI format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_national_insurance_number = '12345';
+    minimalMock.formData.facc_party_add_amend_convert_national_insurance_number = '12345';
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -525,7 +525,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
   // AC7: Email format validation
   it('AC7a. Primary email invalid format shows primary email format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_contact_email_address_1 = 'invalid_email'; // missing @ and domain
+    minimalMock.formData.facc_party_add_amend_convert_contact_email_address_1 = 'invalid_email'; // missing @ and domain
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -536,7 +536,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC7b. Secondary email invalid format shows secondary email format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_contact_email_address_2 = 'bad.second'; // missing @
+    minimalMock.formData.facc_party_add_amend_convert_contact_email_address_2 = 'bad.second'; // missing @
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -547,7 +547,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC7c. Employer email invalid format shows employer email format error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_email_address = 'employer#mail'; // invalid char & structure
+    minimalMock.formData.facc_party_add_amend_convert_employer_email_address = 'employer#mail'; // invalid char & structure
     setupComponent('INDIVIDUAL', minimalMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -558,7 +558,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC8a. Home telephone invalid format shows home telephone error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_contact_telephone_number_home = '01632A960001'; // alpha char
+    minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_home = '01632A960001'; // alpha char
     setupComponent('INDIVIDUAL', minimalMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
@@ -567,7 +567,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC8b. Work telephone invalid format shows work telephone error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_contact_telephone_number_business = '01632-960-001X'; // invalid char X
+    minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_business = '01632-960-001X'; // invalid char X
     setupComponent('INDIVIDUAL', minimalMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
@@ -576,7 +576,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC8c. Mobile telephone invalid length/format shows mobile telephone error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_contact_telephone_number_mobile = '0770090098'; // 10 digits (should be 11)
+    minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_mobile = '0770090098'; // 10 digits (should be 11)
     setupComponent('INDIVIDUAL', minimalMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
@@ -585,7 +585,7 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
   });
 
   it('AC8d. Employer telephone invalid format shows employer telephone error', { tags: ['@PO-1110'] }, () => {
-    minimalMock.formData.facc_debtor_add_amend_employer_details_employer_telephone_number = '01263 76612X'; // invalid char X
+    minimalMock.formData.facc_party_add_amend_convert_employer_telephone_number = '01263 76612X'; // invalid char X
     setupComponent('INDIVIDUAL', minimalMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
@@ -604,33 +604,33 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     maxLengthMock.formData = {
       ...maxLengthMock.formData,
-      facc_debtor_add_amend_forenames: 'A'.repeat(21),
-      facc_debtor_add_amend_surname: 'B'.repeat(31),
-      facc_debtor_add_amend_aliases: [
+      facc_party_add_amend_convert_forenames: 'A'.repeat(21),
+      facc_party_add_amend_convert_surname: 'B'.repeat(31),
+      facc_party_add_amend_convert_aliases: [
         {
-          facc_debtor_add_amend_alias_forenames_0: 'C'.repeat(21),
-          facc_debtor_add_amend_alias_surname_0: 'D'.repeat(31),
+          facc_party_add_amend_convert_alias_forenames_0: 'C'.repeat(21),
+          facc_party_add_amend_convert_alias_surname_0: 'D'.repeat(31),
         },
       ],
-      facc_debtor_add_amend_add_alias: true,
-      facc_debtor_add_amend_national_insurance_number: 'AB123456CD',
-      facc_debtor_add_amend_address_line_1: 'E'.repeat(31),
-      facc_debtor_add_amend_address_line_2: 'F'.repeat(31),
-      facc_debtor_add_amend_address_line_3: 'G'.repeat(17),
-      facc_debtor_add_amend_post_code: 'POSTCODE9',
-      facc_debtor_add_amend_contact_email_address_1: primaryEmail,
-      facc_debtor_add_amend_contact_email_address_2: secondaryEmail,
-      facc_debtor_add_amend_vehicle_make: 'H'.repeat(31),
-      facc_debtor_add_amend_vehicle_registration_mark: 'I'.repeat(21),
-      facc_debtor_add_amend_employer_details_employer_company_name: 'J'.repeat(51),
-      facc_debtor_add_amend_employer_details_employer_reference: 'K'.repeat(21),
-      facc_debtor_add_amend_employer_details_employer_email_address: employerEmail,
-      facc_debtor_add_amend_employer_details_employer_address_line_1: 'L'.repeat(31),
-      facc_debtor_add_amend_employer_details_employer_address_line_2: 'M'.repeat(31),
-      facc_debtor_add_amend_employer_details_employer_address_line_3: 'N'.repeat(31),
-      facc_debtor_add_amend_employer_details_employer_address_line_4: 'O'.repeat(31),
-      facc_debtor_add_amend_employer_details_employer_address_line_5: 'P'.repeat(31),
-      facc_debtor_add_amend_employer_details_employer_post_code: 'EMPPOSTC9',
+      facc_party_add_amend_convert_add_alias: true,
+      facc_party_add_amend_convert_national_insurance_number: 'AB123456CD',
+      facc_party_add_amend_convert_address_line_1: 'E'.repeat(31),
+      facc_party_add_amend_convert_address_line_2: 'F'.repeat(31),
+      facc_party_add_amend_convert_address_line_3: 'G'.repeat(17),
+      facc_party_add_amend_convert_post_code: 'POSTCODE9',
+      facc_party_add_amend_convert_contact_email_address_1: primaryEmail,
+      facc_party_add_amend_convert_contact_email_address_2: secondaryEmail,
+      facc_party_add_amend_convert_vehicle_make: 'H'.repeat(31),
+      facc_party_add_amend_convert_vehicle_registration_mark: 'I'.repeat(21),
+      facc_party_add_amend_convert_employer_company_name: 'J'.repeat(51),
+      facc_party_add_amend_convert_employer_reference: 'K'.repeat(21),
+      facc_party_add_amend_convert_employer_email_address: employerEmail,
+      facc_party_add_amend_convert_employer_address_line_1: 'L'.repeat(31),
+      facc_party_add_amend_convert_employer_address_line_2: 'M'.repeat(31),
+      facc_party_add_amend_convert_employer_address_line_3: 'N'.repeat(31),
+      facc_party_add_amend_convert_employer_address_line_4: 'O'.repeat(31),
+      facc_party_add_amend_convert_employer_address_line_5: 'P'.repeat(31),
+      facc_party_add_amend_convert_employer_post_code: 'EMPPOSTC9',
     };
 
     setupComponent('INDIVIDUAL', maxLengthMock);
@@ -675,30 +675,30 @@ describe('FinesAccDebtorAddAmend - View and Amend Defendant', () => {
 
     dataTypeValidationMock.formData = {
       ...dataTypeValidationMock.formData,
-      facc_debtor_add_amend_forenames: 'John123',
-      facc_debtor_add_amend_surname: 'Doe@Smith',
-      facc_debtor_add_amend_aliases: [
+      facc_party_add_amend_convert_forenames: 'John123',
+      facc_party_add_amend_convert_surname: 'Doe@Smith',
+      facc_party_add_amend_convert_aliases: [
         {
-          facc_debtor_add_amend_alias_forenames_0: 'Johnny$',
-          facc_debtor_add_amend_alias_surname_0: 'Smith#Brown',
+          facc_party_add_amend_convert_alias_forenames_0: 'Johnny$',
+          facc_party_add_amend_convert_alias_surname_0: 'Smith#Brown',
         },
       ],
-      facc_debtor_add_amend_add_alias: true,
+      facc_party_add_amend_convert_add_alias: true,
 
-      facc_debtor_add_amend_address_line_1: '123 Main St @#$',
-      facc_debtor_add_amend_address_line_2: 'Apt 4B %^&',
-      facc_debtor_add_amend_address_line_3: 'Building C *()+=',
-      facc_debtor_add_amend_post_code: 'M1& 1AA',
-      facc_debtor_add_amend_vehicle_make: 'Toyota Corolla {}[]',
-      facc_debtor_add_amend_vehicle_registration_mark: 'ABC123|\\',
-      facc_debtor_add_amend_employer_details_employer_company_name: 'Test Company <>?/',
-      facc_debtor_add_amend_employer_details_employer_reference: 'EMP123~`',
-      facc_debtor_add_amend_employer_details_employer_address_line_1: '456 Business Park !@#',
-      facc_debtor_add_amend_employer_details_employer_address_line_2: 'Suite 200 $%^',
-      facc_debtor_add_amend_employer_details_employer_address_line_3: 'Industrial Estate &*()',
-      facc_debtor_add_amend_employer_details_employer_address_line_4: 'Business District +={}',
-      facc_debtor_add_amend_employer_details_employer_address_line_5: 'Metropolitan Area []|\\',
-      facc_debtor_add_amend_employer_details_employer_post_code: 'BU5& 1NE',
+      facc_party_add_amend_convert_address_line_1: '123 Main St @#$',
+      facc_party_add_amend_convert_address_line_2: 'Apt 4B %^&',
+      facc_party_add_amend_convert_address_line_3: 'Building C *()+=',
+      facc_party_add_amend_convert_post_code: 'M1& 1AA',
+      facc_party_add_amend_convert_vehicle_make: 'Toyota Corolla {}[]',
+      facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123|\\',
+      facc_party_add_amend_convert_employer_company_name: 'Test Company <>?/',
+      facc_party_add_amend_convert_employer_reference: 'EMP123~`',
+      facc_party_add_amend_convert_employer_address_line_1: '456 Business Park !@#',
+      facc_party_add_amend_convert_employer_address_line_2: 'Suite 200 $%^',
+      facc_party_add_amend_convert_employer_address_line_3: 'Industrial Estate &*()',
+      facc_party_add_amend_convert_employer_address_line_4: 'Business District +={}',
+      facc_party_add_amend_convert_employer_address_line_5: 'Metropolitan Area []|\\',
+      facc_party_add_amend_convert_employer_post_code: 'BU5& 1NE',
     };
 
     setupComponent('INDIVIDUAL', dataTypeValidationMock);

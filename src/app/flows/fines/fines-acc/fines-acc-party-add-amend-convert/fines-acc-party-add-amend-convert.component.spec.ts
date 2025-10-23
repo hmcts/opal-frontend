@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { FinesAccDebtorAddAmend } from './fines-acc-debtor-add-amend.component';
-import { MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA } from './mocks/fines-acc-debtor-add-amend-form.mock';
+import { FinesAccPartyAddAmendConvert } from './fines-acc-party-add-amend-convert.component';
+import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from './mocks/fines-acc-party-add-amend-convert-form.mock';
 
-describe('FinesAccDebtorAddAmend', () => {
-  let component: FinesAccDebtorAddAmend;
-  let fixture: ComponentFixture<FinesAccDebtorAddAmend>;
+describe('FinesAccPartyAddAmendConvert', () => {
+  let component: FinesAccPartyAddAmendConvert;
+  let fixture: ComponentFixture<FinesAccPartyAddAmendConvert>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccDebtorAddAmend],
+      imports: [FinesAccPartyAddAmendConvert],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                debtorAmendFormData: MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
+                debtorAmendFormData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
               },
               params: {
                 partyType: 'individual',
@@ -27,7 +27,7 @@ describe('FinesAccDebtorAddAmend', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccDebtorAddAmend);
+    fixture = TestBed.createComponent(FinesAccPartyAddAmendConvert);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -39,7 +39,7 @@ describe('FinesAccDebtorAddAmend', () => {
   it('should log form data when called', () => {
     // Arrange
     const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA.formData,
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
     const consoleSpy = spyOn(console, 'log');
@@ -53,7 +53,7 @@ describe('FinesAccDebtorAddAmend', () => {
 
   it('should handle form submission without throwing errors', () => {
     const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA.formData,
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: true,
     };
     expect(() => component.handleFormSubmit(mockFormData)).not.toThrow();

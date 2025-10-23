@@ -11,7 +11,7 @@ import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfa
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { IFinesAccDebtorAddAmendState } from '../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-state.interface';
+import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
 
@@ -140,7 +140,7 @@ export class FinesAccPayloadService {
    */
   public mapDebtorAccountPartyPayload(
     defendantData: IOpalFinesAccountDefendantAccountParty,
-  ): IFinesAccDebtorAddAmendState {
+  ): IFinesAccPartyAddAmendConvertState {
     return transformDefendantAccountPartyPayload(defendantData);
   }
 }

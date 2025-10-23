@@ -218,32 +218,34 @@ describe('FinesAccPayloadService', () => {
       const { party_details, address, contact_details, vehicle_details } = defendant_account_party;
       const individualDetails = party_details.individual_details;
 
-      expect(result.facc_debtor_add_amend_title).toBe(individualDetails?.title || null);
-      expect(result.facc_debtor_add_amend_forenames).toBe(individualDetails?.forenames || null);
-      expect(result.facc_debtor_add_amend_surname).toBe(individualDetails?.surname || null);
-      expect(result.facc_debtor_add_amend_dob).toBe(individualDetails?.date_of_birth || null);
-      expect(result.facc_debtor_add_amend_national_insurance_number).toBe(
+      expect(result.facc_party_add_amend_convert_title).toBe(individualDetails?.title || null);
+      expect(result.facc_party_add_amend_convert_forenames).toBe(individualDetails?.forenames || null);
+      expect(result.facc_party_add_amend_convert_surname).toBe(individualDetails?.surname || null);
+      expect(result.facc_party_add_amend_convert_dob).toBe(individualDetails?.date_of_birth || null);
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe(
         individualDetails?.national_insurance_number || null,
       );
-      expect(result.facc_debtor_add_amend_address_line_1).toBe(address?.address_line_1 || null);
-      expect(result.facc_debtor_add_amend_address_line_2).toBe(address?.address_line_2 || null);
-      expect(result.facc_debtor_add_amend_address_line_3).toBe(address?.address_line_3 || null);
-      expect(result.facc_debtor_add_amend_post_code).toBe(address?.postcode || null);
-      expect(result.facc_debtor_add_amend_contact_email_address_1).toBe(contact_details?.primary_email_address || null);
-      expect(result.facc_debtor_add_amend_contact_email_address_2).toBe(
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe(address?.address_line_1 || null);
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe(address?.address_line_2 || null);
+      expect(result.facc_party_add_amend_convert_address_line_3).toBe(address?.address_line_3 || null);
+      expect(result.facc_party_add_amend_convert_post_code).toBe(address?.postcode || null);
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe(
+        contact_details?.primary_email_address || null,
+      );
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe(
         contact_details?.secondary_email_address || null,
       );
-      expect(result.facc_debtor_add_amend_contact_telephone_number_mobile).toBe(
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe(
         contact_details?.mobile_telephone_number || null,
       );
-      expect(result.facc_debtor_add_amend_contact_telephone_number_home).toBe(
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe(
         contact_details?.home_telephone_number || null,
       );
-      expect(result.facc_debtor_add_amend_contact_telephone_number_business).toBe(
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe(
         contact_details?.work_telephone_number || null,
       );
-      expect(result.facc_debtor_add_amend_vehicle_make).toBe(vehicle_details?.vehicle_make_and_model || null);
-      expect(result.facc_debtor_add_amend_vehicle_registration_mark).toBe(
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe(vehicle_details?.vehicle_make_and_model || null);
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe(
         vehicle_details?.vehicle_registration || null,
       );
     });
@@ -273,17 +275,17 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_aliases).toEqual([
+      expect(result.facc_party_add_amend_convert_aliases).toEqual([
         {
-          facc_debtor_add_amend_alias_forenames_0: 'Johnny',
-          facc_debtor_add_amend_alias_surname_0: 'Smith',
+          facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
+          facc_party_add_amend_convert_alias_surname_0: 'Smith',
         },
         {
-          facc_debtor_add_amend_alias_forenames_1: 'Jon',
-          facc_debtor_add_amend_alias_surname_1: 'Doe',
+          facc_party_add_amend_convert_alias_forenames_1: 'Jon',
+          facc_party_add_amend_convert_alias_surname_1: 'Doe',
         },
       ]);
-      expect(result.facc_debtor_add_amend_add_alias).toBe(true); // Should be true when aliases exist
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(true); // Should be true when aliases exist
     });
 
     it('should handle employer details transformation', () => {
@@ -309,16 +311,16 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBe('Test Company Ltd');
-      expect(result.facc_debtor_add_amend_employer_details_employer_reference).toBe('EMP123');
-      expect(result.facc_debtor_add_amend_employer_details_employer_email_address).toBe('hr@testcompany.com');
-      expect(result.facc_debtor_add_amend_employer_details_employer_telephone_number).toBe('01234567890');
-      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_1).toBe('123 Business Park');
-      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_2).toBe('Business District');
-      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_3).toBe('City Center');
-      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_4).toBe('County');
-      expect(result.facc_debtor_add_amend_employer_details_employer_address_line_5).toBe('Region');
-      expect(result.facc_debtor_add_amend_employer_details_employer_post_code).toBe('BU5 1NE');
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Test Company Ltd');
+      expect(result.facc_party_add_amend_convert_employer_reference).toBe('EMP123');
+      expect(result.facc_party_add_amend_convert_employer_email_address).toBe('hr@testcompany.com');
+      expect(result.facc_party_add_amend_convert_employer_telephone_number).toBe('01234567890');
+      expect(result.facc_party_add_amend_convert_employer_address_line_1).toBe('123 Business Park');
+      expect(result.facc_party_add_amend_convert_employer_address_line_2).toBe('Business District');
+      expect(result.facc_party_add_amend_convert_employer_address_line_3).toBe('City Center');
+      expect(result.facc_party_add_amend_convert_employer_address_line_4).toBe('County');
+      expect(result.facc_party_add_amend_convert_employer_address_line_5).toBe('Region');
+      expect(result.facc_party_add_amend_convert_employer_post_code).toBe('BU5 1NE');
     });
 
     it('should handle language preferences transformation', () => {
@@ -340,8 +342,8 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_language_preferences_document_language).toBe('CY');
-      expect(result.facc_debtor_add_amend_language_preferences_hearing_language).toBe('EN');
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBe('CY');
+      expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBe('EN');
     });
 
     it('should handle null and undefined values gracefully', () => {
@@ -372,16 +374,16 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-      expect(result.facc_debtor_add_amend_title).toBeNull();
-      expect(result.facc_debtor_add_amend_forenames).toBeNull();
-      expect(result.facc_debtor_add_amend_surname).toBeNull();
-      expect(result.facc_debtor_add_amend_aliases).toEqual([]);
-      expect(result.facc_debtor_add_amend_address_line_1).toBeNull(); // Empty string becomes null due to || null
-      expect(result.facc_debtor_add_amend_address_line_2).toBeNull();
-      expect(result.facc_debtor_add_amend_post_code).toBeNull(); // Empty string becomes null due to || null
-      expect(result.facc_debtor_add_amend_contact_email_address_1).toBeNull();
-      expect(result.facc_debtor_add_amend_employer_details_employer_company_name).toBeNull();
-      expect(result.facc_debtor_add_amend_language_preferences_document_language).toBeNull();
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_address_line_1).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_party_add_amend_convert_address_line_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_post_code).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBeNull();
     });
     it('should transform at-a-glance data to comments form state', () => {
       const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;

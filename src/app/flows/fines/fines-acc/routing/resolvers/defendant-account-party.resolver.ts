@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, Router } from '@ang
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { map, catchError, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
-import { IFinesAccDebtorAddAmendForm } from '../../fines-acc-debtor-add-amend/interfaces/fines-acc-debtor-add-amend-form.interface';
+import { IFinesAccPartyAddAmendConvertForm } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 
 /**
@@ -15,7 +15,7 @@ const createDefendantDetailsRedirect = (router: Router): RedirectCommand => {
   return new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]));
 };
 
-export const defendantAccountPartyResolver: ResolveFn<IFinesAccDebtorAddAmendForm | RedirectCommand> = (
+export const defendantAccountPartyResolver: ResolveFn<IFinesAccPartyAddAmendConvertForm | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
 ) => {
   const accountId = route.paramMap.get('accountId');

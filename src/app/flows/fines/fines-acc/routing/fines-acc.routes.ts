@@ -77,11 +77,11 @@ export const routing: Routes = [
         },
       },
       {
-        path: `debtor/:partyType/amend`,
+        path: `:partyType/amend`,
 
         loadComponent: () =>
-          import('../fines-acc-debtor-add-amend/fines-acc-debtor-add-amend.component').then(
-            (c) => c.FinesAccDebtorAddAmend,
+          import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(
+            (c) => c.FinesAccPartyAddAmendConvert,
           ),
         canActivate: [routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
@@ -91,7 +91,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          debtorAmendFormData: defendantAccountPartyResolver,
+          partyAmendFormData: defendantAccountPartyResolver,
         },
       },
     ],
