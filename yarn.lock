@@ -3229,9 +3229,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.15":
-  version: 0.0.15
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.15"
+"@hmcts/opal-frontend-common-node@npm:^0.0.16":
+  version: 0.0.16
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.16"
   dependencies:
     "@azure/msal-browser": "npm:^4.11.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3254,7 +3254,7 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/0ec112a4afbff6c7fce4a28fcd997c0114206bbc8736e2c2450d7eb02029f08526d275ec8b36b059f8bfb54334f9ff7096127ecaf6c1ec2d82cfbf906f497d05
+  checksum: 10/83a461d3570c00bbaca2eb5c2c774f8c916375ef34886ac58e2ba1d7fb07a82531dd7d73f9fca7ac4db745b866d106662a8493f59b0209090385ca68aebecadc
   languageName: node
   linkType: hard
 
@@ -3977,13 +3977,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^5.0.0":
-  version: 5.2.1
-  resolution: "@ministryofjustice/frontend@npm:5.2.1"
+"@ministryofjustice/frontend@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@ministryofjustice/frontend@npm:6.0.0"
   peerDependencies:
-    govuk-frontend: ^5.8.0
+    govuk-frontend: ^5.11.2
     moment: 2.30.1
-  checksum: 10/c16353880819525d412867e788869c79be7de9d4b82e5dfe949623bbdfe4cb49492b1fc882bd0049db3c4e2e17858e8aa1c0f4dc558efd7125b54a514dc0f4ed
+  checksum: 10/64a04edeb9f525fd17c04f393d09150ca3b9ad9263b9b3335c1748f6b8682a6600ed0dbf99351197046f2ca1231c1191b0442dc901c0adbb4fe7ac9b79ea0061
   languageName: node
   linkType: hard
 
@@ -10405,9 +10405,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.12.0
-  resolution: "govuk-frontend@npm:5.12.0"
-  checksum: 10/966974213fc243327217112d6113cc07957dbd55496e8e3beecac74dc92b243b0fa7d5368a17ea6e4f3dd7066f3cb969f5891f278b3aada0541c37dde5aa8054
+  version: 5.13.0
+  resolution: "govuk-frontend@npm:5.13.0"
+  checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
   languageName: node
   linkType: hard
 
@@ -13642,10 +13642,10 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/opal-frontend-common": "npm:^0.0.40"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.15"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.16"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
-    "@ministryofjustice/frontend": "npm:^5.0.0"
+    "@ministryofjustice/frontend": "npm:^6.0.0"
     "@ngrx/signals": "npm:^20.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"

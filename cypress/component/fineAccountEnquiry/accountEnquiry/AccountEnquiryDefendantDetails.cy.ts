@@ -5,7 +5,7 @@ import { FinesAccComponent } from 'src/app/flows/fines/fines-acc/fines-acc.compo
 import { routing } from 'src/app/flows/fines/fines-acc/routing/fines-acc.routes';
 import { FinesAccPayloadService } from 'src/app/flows/fines/fines-acc/services/fines-acc-payload.service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
-import { interceptAuthenticatedUser, interceptUserState } from './intercept/interceptUserState';
+import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import {
   DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
@@ -17,13 +17,10 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { interceptDefendantHeader } from './intercept/interceptDefendantHeader';
-import { interceptAtAGlance } from './intercept/interceptAtAGlance';
+import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
-import { interceptDefendantDetails } from './intercept/interceptDefendantDetails';
-import { interceptAddNotes } from './intercept/interceptAddNotes';
-import { DOM_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from './constants/account_enquiry_header_elements';
 import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
 import { setLanguagePref } from './Utils/SharedFunctions';
 
@@ -130,8 +127,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptDefendantDetails(1, defendantDetailsMock, '1');
     setupComponent('1');
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
     cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
@@ -178,8 +175,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptDefendantDetails(1, defendantDetailsMock, '1');
     setupComponent('1');
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.defendantTitle).should('exist').and('contain.text', 'Defendant details');
     cy.get(DEFENDANT_DETAILS.defendantName).should('exist').and('contain.text', 'Ms Sarah Jane THOMPSON');
@@ -307,8 +304,8 @@ describe('Account Enquiry Defendant Details Tab', () => {
     interceptDefendantDetails(1, defendantDetailsMock, '1');
     setupComponent('1');
 
-    cy.get(DOM.pageHeader).should('exist');
-    cy.get(DOM.headingWithCaption).should('exist');
+    cy.get(HEADER.pageHeader).should('exist');
+    cy.get(HEADER.headingWithCaption).should('exist');
     cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
     cy.get(DEFENDANT_DETAILS.companyTitle).should('exist').and('contain.text', 'Company details');
     cy.get(DEFENDANT_DETAILS.companyName).should('exist').and('contain.text', 'Acme Corporation');
