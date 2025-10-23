@@ -7,7 +7,7 @@ export const DEFENDANT_DETAILS = {
   defendantAlias: '[summaryListRowId="aliases"]',
   defendantDOB: '[summaryListRowId="dob"]',
   defendantNI: '[summaryListRowId="national_insurance_number"]',
-  defendantAddress: '#personalDetailsAddressValue',
+  defendantAddress: '#defendantDetailsAddressValue',
   defendantVehicle: '[summaryListRowId="vehicle_make_and_model"]',
   defendantVehicleReg: '[summaryListRowId="vehicle_registration"]',
 
@@ -25,6 +25,15 @@ export const DEFENDANT_DETAILS = {
   defendantEmployerPhone: '[summaryListRowId="employer_telephone_number"]',
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
+  // Visible labels used in assertions
+  labelAccountType: 'Account type:',
+  labelCaseNumber: 'PCR or case number:',
+  labelBusinessUnit: 'Business Unit:',
+  labelImposed: 'Imposed:',
+  labelArrears: 'Arrears:',
+  labelDefendant: 'Defendant',
+  labelPaymentTerms: 'Payment terms',
+  labelEnforcementStatus: 'Enforcement status',
   // Company details table
   companyTitle: '.govuk-summary-card__title',
   companyName: '#companyDetailsNameValue',
@@ -40,6 +49,16 @@ export const DEFENDANT_DETAILS = {
   companyHomePhone: '[summaryListRowId="home_telephone_number"]',
   companyWorkPhone: '[summaryListRowId="work_telephone_number"]',
 
+  // Conditional tag
+  statusTag: '#status',
+
+  // Enforcement status tag
+  enforcementStatusTag: ':nth-child(1) > opal-lib-govuk-tag > #enforcement_status',
+
+  // Links
+  linkText: 'a[class="govuk-link govuk-link--no-visited-state"]',
+  badgeBlue: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--blue"]',
+  badgeRed: 'span[class="govuk-!-margin-bottom-2 moj-badge moj-badge--red"]',
   // Language preferences details table
   documentLanguage: '#languagePreferencesDocument_languageValue',
   courtHearingLanguage: '#languagePreferencesHearing_languageValue',
