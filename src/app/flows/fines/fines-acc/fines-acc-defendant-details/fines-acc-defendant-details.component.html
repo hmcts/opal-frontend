@@ -5,7 +5,9 @@
       <opal-lib-moj-alert-content content>
         <opal-lib-moj-alert-content-text
           >Some information on this page may be out of date.
-          <a href="#" (click)="refreshPage($event)">Refresh</a></opal-lib-moj-alert-content-text
+          <a tabindex="0" (click)="refreshPage()" (keyup.enter)="refreshPage()"
+            >Refresh</a
+          ></opal-lib-moj-alert-content-text
         >
       </opal-lib-moj-alert-content>
     </opal-lib-moj-alert>
@@ -131,6 +133,15 @@
       subNavItemFragment="defendant"
       [subNavItemText]="tabs['defendant']"
     ></li>
+    @if (accountData.debtor_type === 'Parent/Guardian') {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="parent-or-guardian-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="parent-or-guardian"
+        [subNavItemText]="tabs['parent-or-guardian']"
+      ></li>
+    }
     <li
       opal-lib-moj-sub-navigation-item
       subNavItemId="payment-terms-tab"
@@ -168,7 +179,7 @@
       <app-fines-acc-defendant-details-at-a-glance-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        (addComments)="navigateToAddCommentsPage($event)"
+        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-at-a-glance-tab>
     }
@@ -178,12 +189,23 @@
       <app-fines-acc-defendant-details-defendant-tab
         [tabData]="tabData"
         [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
-        [isYouth]="accountData.is_youth"
-        (addComments)="navigateToAddCommentsPage($event)"
+        (addComments)="navigateToAddCommentsPage()"
         [style]="tabContentStyles"
-        (changeDefendantDetails)="navigateToChangeDefendantDetailsPage($event)"
-        (convertAccount)="navigateToChangeDefendantDetailsPage($event)"
+        (changeDefendantDetails)="navigateToAmendPartyDetailsPage($event)"
+        (convertAccount)="navigateToAmendPartyDetailsPage($event)"
       ></app-fines-acc-defendant-details-defendant-tab>
+    }
+  }
+  @case ('parent-or-guardian') {
+    @if (tabParentOrGuardian$ | async; as tabData) {
+      <app-fines-acc-defendant-details-parent-or-guardian-tab
+        [tabData]="tabData"
+        [hasAccountMaintenencePermission]="hasPermission('account-maintenance')"
+        (addComments)="navigateToAddCommentsPage()"
+        [style]="tabContentStyles"
+        (changeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
+        (removeParentOrGuardianDetails)="navigateToAmendPartyDetailsPage($event)"
+      ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
   }
   @case ('payment-terms') {

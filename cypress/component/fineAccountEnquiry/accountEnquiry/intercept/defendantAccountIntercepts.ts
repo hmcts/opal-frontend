@@ -63,7 +63,7 @@ import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fin
  * ```
  */
 export function interceptDefendantDetails(
-  accountId: number,
+  accountId: String | number,
   mockData: IOpalFinesAccountDefendantAccountParty,
   respHeaderEtag: string,
 ) {
@@ -103,7 +103,7 @@ import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fin
  */
 
 export const interceptDefendantHeader = (
-  accountId: number,
+  accountId: String | number,
   defendantHeaderMock: IOpalFinesAccountDefendantDetailsHeader,
   respHeaderEtag: string,
 ) => {
@@ -117,3 +117,38 @@ export const interceptDefendantHeader = (
     })
     .as('getDefendantHeaderSummary');
 };
+/**
+ * Intercepts the network request for fetching defendant account party details
+ * and mocks the response with provided data and headers.
+ *
+ * @param accountId - The ID of the defendant account.
+ * @param pgPartyId - The party ID (can be string or number) for the defendant account party.
+ * @param mockData - The mock data to return as the response body.
+ * @param respHeaderEtag - The ETag header value to include in the response.
+ * @returns Cypress chainable object for further chaining.
+ *
+ * @example
+ * interceptPGDetails(
+ *   '12345',
+ *   '67890',
+ *   { name: 'John Doe', partyType: 'Individual' } as IOpalFinesAccountDefendantAccountParty,
+ *   'W/"etag-value"'
+ * );
+ * cy.wait('@getPGDetails');
+ */
+export function interceptPGDetails(
+  accountId: String,
+  pgPartyId: String | number,
+  mockData: IOpalFinesAccountDefendantAccountParty,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `**/defendant-accounts/${accountId}/defendant-account-parties/${pgPartyId}`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getPGDetails');
+}
