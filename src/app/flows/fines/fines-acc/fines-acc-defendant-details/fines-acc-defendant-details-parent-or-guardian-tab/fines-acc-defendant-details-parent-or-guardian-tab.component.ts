@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES } from '../../fines-acc-debtor-add-amend/constants/fines-acc-debtor-add-amend-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FinesAccPartyDetails } from '../fines-acc-party-details/fines-acc-party-details.component';
 
 @Component({
@@ -19,10 +19,10 @@ export class FinesAccDefendantDetailsParentOrGuardianTabComponent {
   @Output() removeParentOrGuardianDetails = new EventEmitter<string>();
 
   public handleRemoveParentOrGuardianDetails(): void {
-    this.removeParentOrGuardianDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN);
+    this.removeParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
   }
 
   public handleChangeParentOrGuardianDetails(): void {
-    this.changeParentOrGuardianDetails.emit(FINES_ACC_DEBTOR_ADD_AMEND_PARTY_TYPES.PARENT_GUARDIAN);
+    this.changeParentOrGuardianDetails.emit(FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN);
   }
 }

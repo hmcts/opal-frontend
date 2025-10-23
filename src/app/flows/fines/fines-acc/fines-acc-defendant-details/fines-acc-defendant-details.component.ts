@@ -34,7 +34,6 @@ import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/gov
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS } from './constants/fines-acc-defendant-details-tabs.constant';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 // Interfaces
 import { IOpalFinesAccountDefendantDetailsHeader } from './interfaces/fines-acc-defendant-details-header.interface';
 import { IFinesAccountDefendantDetailsTabs } from './interfaces/fines-acc-defendant-details-tabs.interface';
@@ -302,16 +301,6 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.userState.business_unit_users,
       )
     ) {
-      let partyType: string;
-
-      if (this.accountData.debtor_type === 'Parent/Guardian') {
-        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
-      } else if (this.accountData.party_details.organisation_flag) {
-        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
-      } else {
-        partyType = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
-      }
-
       this['router'].navigate([`../${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
