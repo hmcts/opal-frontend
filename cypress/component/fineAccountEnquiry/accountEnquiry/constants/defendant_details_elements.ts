@@ -25,6 +25,10 @@ export const DEFENDANT_DETAILS = {
   defendantEmployerPhone: '[summaryListRowId="employer_telephone_number"]',
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
+  // Parent/Guardian details table
+  parentGuardianTag: '#status',
+  parentGuardianTableSections: '.govuk-\\!-margin-top-2',
+
   // Company details table
   companyTitle: '.govuk-summary-card__title',
   companyName: '#companyDetailsNameValue',
