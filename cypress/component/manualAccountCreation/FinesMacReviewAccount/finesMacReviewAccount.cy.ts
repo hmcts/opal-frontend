@@ -864,7 +864,8 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('(AC.4) should render summary tables under review account for AY', { tags: ['@PO-610', '@PO-584'] }, () => {
-    setupComponent(finesAccountPayload, finesAccountPayload);
+    setupComponent(finesAccountPayload, finesAccountPayload, false, true);
+    
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.backLink).should('exist');

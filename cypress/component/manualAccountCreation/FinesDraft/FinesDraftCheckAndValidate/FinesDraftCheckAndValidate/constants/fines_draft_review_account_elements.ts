@@ -113,9 +113,9 @@ export const DOM_ELEMENTS = {
   textArea: 'textarea[id="fm_review_account_decision_reason"]',
 
   //confirm delete page
-  reasonLabel: 'h1.govuk-label-wrapper',
+  reasonLabel: 'label[for="fm_delete_account_confirmation_reason"]',
   commentInput: 'textarea[id="fm_delete_account_confirmation_reason"]',
-  commentCharHint: 'div[id="fm_delete_account_confirmation_reason-hint"]',
+  commentCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
   deleteConfirmation: 'button[id="confirmDeletion"]',
   cancelLink: 'a.govuk-link.button-link',
 };
