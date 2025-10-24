@@ -245,12 +245,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
     this.finesDraftStore.setBannerMessageByType('submitted', defendantName);
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
-    this.routerNavigate(
-      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
-      false,
-      undefined,
-      this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
-    );
+    this.routerNavigate(this.createAndManageTabs, true, undefined, undefined, this.finesDraftStore.fragment());
   }
 
   /**
@@ -352,12 +347,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
       return;
     }
 
-    this.routerNavigate(
-      path,
-      false,
-      undefined,
-      this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
-    );
+    this.routerNavigate(path, true, undefined, undefined, this.finesDraftStore.fragment() || undefined);
   }
 
   /**
@@ -372,7 +362,8 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
         this.getBackPath(),
         false,
         undefined,
-        this.finesDraftStore.fragment() ? { fragment: this.finesDraftStore.fragment() } : undefined,
+        undefined,
+        this.finesDraftStore.fragment() || undefined,
       );
       return;
     }

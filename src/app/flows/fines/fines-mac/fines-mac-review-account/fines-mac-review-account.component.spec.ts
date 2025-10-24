@@ -220,15 +220,9 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
       expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-          state: { fragment: finesDraftStore.fragment() },
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {
+        fragment: finesDraftStore.fragment(),
+      });
     });
 
     it('should test processPutResponse when fragment is empty', () => {
@@ -242,14 +236,7 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(finesMacStore.stateChanges()).toBeFalse();
       expect(finesMacStore.unsavedChanges()).toBeFalse();
       expect(mockFinesMacPayloadService.getDefendantName).toHaveBeenCalledWith(expectedResult);
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {});
     });
 
     it('should test processPostResponse', () => {
@@ -331,15 +318,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
       component['submitPayload']();
 
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-          state: { fragment: finesDraftStore.fragment() },
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {
+        fragment: finesDraftStore.fragment(),
+      });
     });
 
     it('should navigate back on navigateBack when isReadOnly is false', () => {
@@ -375,15 +356,9 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-          state: { fragment: finesDraftStore.fragment() },
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {
+        fragment: finesDraftStore.fragment(),
+      });
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment is empty', () => {
@@ -393,14 +368,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], {});
     });
 
     it('should navigate back to inputter on navigateBack when isReadOnly is true and fragment has value', () => {
@@ -410,15 +378,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-          state: { fragment: 'test-fragment' },
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['createAndManageTabs']], { fragment: 'test-fragment' });
     });
 
     it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
@@ -428,12 +388,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(false);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
-        ],
-        {},
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['viewAllAccountsTabs']], {});
     });
 
     it('should navigate back to in-review on navigateBack when checker is true', () => {
@@ -443,17 +398,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setChecker(true);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.checkAndValidate}/${component['finesDraftCheckAndValidateRoutes'].children.tabs}`,
-        ],
-        {
-          relativeTo: jasmine.any(Object),
-          state: {
-            fragment: 'in-review',
-          },
-        },
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['checkAndValidateTabs']], { fragment: 'in-review' });
     });
 
     it('should navigate back to view-all-rejected on navigateBack when isReadOnly is true and viewAllAccounts is true', () => {
@@ -461,12 +406,7 @@ describe('FinesMacReviewAccountComponent', () => {
       finesDraftStore.setViewAllAccounts(true);
       component.isReadOnly = true;
       component.navigateBack();
-      expect(routerSpy).toHaveBeenCalledWith(
-        [
-          `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.viewAllRejected}`,
-        ],
-        {},
-      );
+      expect(routerSpy).toHaveBeenCalledWith([component['viewAllAccountsTabs']], {});
     });
 
     it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
@@ -520,8 +460,8 @@ describe('FinesMacReviewAccountComponent', () => {
       component.navigateBack();
 
       expect(routerSpy).toHaveBeenCalledWith([component['getBackPath']()], {
-        relativeTo: jasmine.any(Object),
-        state: { fragment: 'test-fragment' },
+        relativeTo: component['activatedRoute'].parent,
+        fragment: 'test-fragment',
       });
     });
 

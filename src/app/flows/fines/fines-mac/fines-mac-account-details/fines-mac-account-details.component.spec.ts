@@ -98,10 +98,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       [
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
       ],
-      {
-        relativeTo: jasmine.any(Object),
-        state: { fragment: 'rejected' },
-      },
+      { fragment: 'rejected' },
     );
   });
 
@@ -116,9 +113,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       [
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCreateAndManageRoutes'].children.tabs}`,
       ],
-      {
-        relativeTo: jasmine.any(Object),
-      },
+      {},
     );
   });
 

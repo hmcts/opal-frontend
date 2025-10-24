@@ -257,9 +257,10 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
       const fragment = this.finesDraftStore.fragment();
       this.routerNavigate(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCreateAndManageRoutes.children.tabs}`,
-        false,
+        true,
         undefined,
-        fragment ? { fragment } : undefined,
+        undefined,
+        fragment,
       );
     } else {
       this.pageNavigation = false;
