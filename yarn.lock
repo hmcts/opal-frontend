@@ -4252,8 +4252,8 @@ __metadata:
   linkType: hard
 
 "@ngrx/signals@npm:^20.0.0":
-  version: 20.0.1
-  resolution: "@ngrx/signals@npm:20.0.1"
+  version: 20.1.0
+  resolution: "@ngrx/signals@npm:20.1.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
@@ -4262,7 +4262,7 @@ __metadata:
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10/d8b3dee22282ceea202978d74d96dccdcc91182420d7347c38c2141a319995e1f8f4563e9b389f57c3e6962aa891b28369220a33a585086b9b7f72aaf9f68a5e
+  checksum: 10/a0c0b6275fc7326f87e51e7dd356f2f652ddad33cf9c1e6fccf961c00027f38c0c484d56eb3d9497149aae454a32e5a11769f4bf0dcbde2bc0b3170cacd7481b
   languageName: node
   linkType: hard
 
@@ -5332,25 +5332,25 @@ __metadata:
   linkType: hard
 
 "@types/express@npm:*, @types/express@npm:^5.0.0":
-  version: 5.0.3
-  resolution: "@types/express@npm:5.0.3"
+  version: 5.0.4
+  resolution: "@types/express@npm:5.0.4"
   dependencies:
     "@types/body-parser": "npm:*"
     "@types/express-serve-static-core": "npm:^5.0.0"
     "@types/serve-static": "npm:*"
-  checksum: 10/bb6f10c14c8e3cce07f79ee172688aa9592852abd7577b663cd0c2054307f172c2b2b36468c918fed0d4ac359b99695807b384b3da6157dfa79acbac2226b59b
+  checksum: 10/0a07540b8220d0ebeeaca3afad96b6541d815e36f204c9fac202dd4c59fc545ffabea46df2c02f44276c00adbfccb7bb7a98f877cea4aebb0f9f8d4502447fec
   languageName: node
   linkType: hard
 
 "@types/express@npm:^4.17.21":
-  version: 4.17.23
-  resolution: "@types/express@npm:4.17.23"
+  version: 4.17.24
+  resolution: "@types/express@npm:4.17.24"
   dependencies:
     "@types/body-parser": "npm:*"
     "@types/express-serve-static-core": "npm:^4.17.33"
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
-  checksum: 10/cf4d540bbd90801cdc79a46107b8873404698a7fd0c3e8dd42989d52d3bd7f5b8768672e54c20835e41e27349c319bb47a404ad14c0f8db0e9d055ba1cb8a05b
+  checksum: 10/90a8cd03184bc8781b804c027059cbc7604b3c4138712eb160e3dbaef2c36302840f1413d8ce39e59b7585fcf4d8c93dd066d41d33fa3d89a23a815b5248bd1d
   languageName: node
   linkType: hard
 
