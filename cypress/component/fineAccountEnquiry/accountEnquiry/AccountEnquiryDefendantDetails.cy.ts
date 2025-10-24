@@ -29,9 +29,9 @@ const componentProperties: IComponentProperties = {
   interceptedRoutes: [
     '/access-denied',
     '../note/add',
-    '../debtor/individual/amend',
-    '../debtor/company/amend',
-    '../debtor/parentGuardian/amend',
+    '../individual/amend',
+    '../company/amend',
+    '../parentGuardian/amend',
     // Add more routes here as needed
   ],
 };
@@ -340,7 +340,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../debtor/company/amend']);
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../company/amend']);
   });
 
   it(
