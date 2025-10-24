@@ -4252,8 +4252,8 @@ __metadata:
   linkType: hard
 
 "@ngrx/signals@npm:^20.0.0":
-  version: 20.0.1
-  resolution: "@ngrx/signals@npm:20.0.1"
+  version: 20.1.0
+  resolution: "@ngrx/signals@npm:20.1.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
@@ -4262,7 +4262,7 @@ __metadata:
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10/d8b3dee22282ceea202978d74d96dccdcc91182420d7347c38c2141a319995e1f8f4563e9b389f57c3e6962aa891b28369220a33a585086b9b7f72aaf9f68a5e
+  checksum: 10/a0c0b6275fc7326f87e51e7dd356f2f652ddad33cf9c1e6fccf961c00027f38c0c484d56eb3d9497149aae454a32e5a11769f4bf0dcbde2bc0b3170cacd7481b
   languageName: node
   linkType: hard
 
