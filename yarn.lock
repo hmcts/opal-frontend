@@ -5228,11 +5228,11 @@ __metadata:
   linkType: hard
 
 "@types/cookie-parser@npm:^1.4.6":
-  version: 1.4.9
-  resolution: "@types/cookie-parser@npm:1.4.9"
+  version: 1.4.10
+  resolution: "@types/cookie-parser@npm:1.4.10"
   peerDependencies:
     "@types/express": "*"
-  checksum: 10/6192a4899b5412a4c3be0f47158321aef73a4cd7e7a4f7b2a37e2e1045f11a21209681cb1bc5335f250ee2a6ce64d8a3fefb851181a98e6415d3716ef9ed1f62
+  checksum: 10/1f37b5a4115dbfd4b7bbea2d874fbf9495eca8c3e8c87fa7e38c50f9fff66222377c911cfdc7a1ea08855e822919c5534ebbcc4bf25b596bc6f7270e403483d9
   languageName: node
   linkType: hard
 
@@ -5500,12 +5500,12 @@ __metadata:
   linkType: hard
 
 "@types/session-file-store@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "@types/session-file-store@npm:1.2.5"
+  version: 1.2.6
+  resolution: "@types/session-file-store@npm:1.2.6"
   dependencies:
     "@types/express": "npm:*"
     "@types/express-session": "npm:*"
-  checksum: 10/77205f83886a454071130bcc1fff1b4592558705617142623b64630db993050e5d0f112616f6ff6bd44449efcd06f3b4a19e8ac29b6a3e58ff2537bf55727277
+  checksum: 10/f5271f021e95cf6c5e55726ae9e1be43e585a388961a7fb067fb9e5a6420aa928f80c068f86099efa977e5f0ae45b807d47db8cb3152844dc3a3b677b6a87981
   languageName: node
   linkType: hard
 
