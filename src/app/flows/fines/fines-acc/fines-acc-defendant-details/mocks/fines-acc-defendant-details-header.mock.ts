@@ -4,7 +4,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
   version: '1',
   account_number: '177A',
   defendant_party_id: '77',
-  parent_guardian_party_id: null,
+  parent_guardian_party_id: '77',
   account_type: 'Fine',
   prosecutor_case_reference: '090A',
   fixed_penalty_ticket_number: '888',
@@ -41,5 +41,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
     },
   },
   is_youth: false,
-  debtor_type: 'Defendant',
+  debtor_type: 'Parent/Guardian',
 };
