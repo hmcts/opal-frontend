@@ -3,7 +3,8 @@ export const DOM_ELEMENTS = {
   addAccountNoteLabel: '.govuk-caption-l',
   commentLabel: 'label[for="fm_account_comments_notes_comments"]',
   commentHint: 'div[id = "fm_account_comments_notes_comments-hint"]',
-  commentCharHint: 'app-fines-mac-account-comments-notes-form form opal-lib-govuk-text-area:first-of-type .govuk-character-count__message.govuk-character-count__status',
+  commentCharHint:
+    'app-fines-mac-account-comments-notes-form form opal-lib-govuk-text-area:first-of-type .govuk-character-count__message.govuk-character-count__status',
   commentInput: 'textarea[id="fm_account_comments_notes_comments"]',
   noteLabel: 'label[for="fm_account_comments_notes_notes"]',
   noteHint: 'div[id = "fm_account_comments_notes_notes-hint"]',
