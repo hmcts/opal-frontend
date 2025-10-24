@@ -2,7 +2,7 @@ export const DOM_ELEMENTS = {
   app: 'div.govuk-grid-column-full',
   heading: 'h1.govuk-heading-l',
 
-  name: 'h2.govuk-summary-card__title',
+  name: 'h5.govuk-summary-card__title',
   address: 'dd[id = "minorCreditorAddressMinorCreditorValue"]',
   paymentMethod: 'dd[id = "minorCreditorPaymentMethodMinorCreditorValue"]',
   accountName: 'dd[id = "minorCreditorAccountNameMinorCreditorValue"]',
