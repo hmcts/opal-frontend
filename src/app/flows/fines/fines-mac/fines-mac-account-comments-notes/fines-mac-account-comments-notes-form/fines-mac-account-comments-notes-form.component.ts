@@ -1,22 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  inject,
-} from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
-import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
-import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
@@ -24,6 +9,12 @@ import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IFinesMacAccountCommentsNotesFieldErrors } from '../interfaces/fines-mac-account-comments-notes-field-errors.interface';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { AbstractSignalFormBaseComponent } from 'src/app/shared/abstract/abstract-signal-form-base';
+import { SignalGovukTextAreaComponent } from 'src/app/shared/govuk-signal/govuk-signal-text-area';
+import { SignalFormControlAdapter } from 'src/app/shared/forms/signal-forms';
+import { IFinesMacAccountCommentsNotesState } from '../interfaces/fines-mac-account-comments-notes-state.interface';
 
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
@@ -33,50 +24,26 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    GovukErrorSummaryComponent,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    GovukTextAreaComponent,
-    GovukErrorSummaryComponent,
+    SignalGovukTextAreaComponent,
   ],
   templateUrl: './fines-mac-account-comments-notes-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacAccountCommentsNotesFormComponent
+  extends AbstractSignalFormBaseComponent<IFinesMacAccountCommentsNotesState>
+  implements OnInit, OnDestroy
+{
   private readonly finesMacStore = inject(FinesMacStore);
 
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-  protected override fieldErrors: IFinesMacAccountCommentsNotesFieldErrors =
-    FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS;
 
   @Input() public defendantType!: string;
   public mandatorySectionsCompleted!: boolean;
 
-  /**
-   * Sets up the account comments and notes form with the necessary form controls.
-   */
-  private setupAccountCommentsNotesForm(): void {
-    this.form = new FormGroup({
-      fm_account_comments_notes_comments: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-      ]),
-      fm_account_comments_notes_notes: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
-      ]),
-      fm_account_comments_notes_system_notes: new FormControl<string | null>(null),
-    });
-  }
-
-  /**
-   * Checks if all mandatory sections are completed by calling the finesService.
-   * Updates the `mandatorySectionsCompleted` property with the result.
-   *
-   * @private
-   * @returns {void}
-   */
   private checkMandatorySections(): void {
     this.mandatorySectionsCompleted = false;
     switch (this.finesMacStore.getDefendantType()) {
@@ -95,20 +62,29 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     }
   }
 
-  /**
-   * Performs the initial setup for the fines-mac-account-comments-notes-form component.
-   * This method sets up the account comments notes form, and populates the form with data.
-   */
-  private initialAccountCommentsNotesSetup(): void {
+  protected override initialiseForm(): void {
+    this.fieldErrors = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS as IFinesMacAccountCommentsNotesFieldErrors;
+    this.createControl<string>('fm_account_comments_notes_comments', [
+      ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ]);
+    this.createControl<string>('fm_account_comments_notes_notes', [
+      ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ]);
+    this.createControl<string>('fm_account_comments_notes_system_notes');
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
     const { formData } = this.finesMacStore.accountCommentsNotes();
-    this.setupAccountCommentsNotesForm();
-    this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.checkMandatorySections();
   }
 
-  public override ngOnInit(): void {
-    this.initialAccountCommentsNotesSetup();
-    super.ngOnInit();
+  protected get commentsControl(): SignalFormControlAdapter<string | null> {
+    return this.getSignalControlAdapter<string>('fm_account_comments_notes_comments');
+  }
+
+  protected get notesControl(): SignalFormControlAdapter<string | null> {
+    return this.getSignalControlAdapter<string>('fm_account_comments_notes_notes');
   }
 }

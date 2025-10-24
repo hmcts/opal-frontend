@@ -4,30 +4,30 @@
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
-  <opal-lib-govuk-text-area
+  <app-signal-govuk-text-area
     labelText="Add comment"
     labelClasses="govuk-label--s"
     hintText="For example, a warning, which will appear on the account summary"
     inputId="fm_account_comments_notes_comments"
     inputName="fm_account_comments_notes_comments"
-    [control]="form.get('fm_account_comments_notes_comments')"
+    [control]="commentsControl"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="30"
     [rows]="1"
     [errors]="formControlErrorMessages['fm_account_comments_notes_comments']"
-  ></opal-lib-govuk-text-area>
+  ></app-signal-govuk-text-area>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-  <opal-lib-govuk-text-area
+  <app-signal-govuk-text-area
     labelText="Add account notes"
     labelClasses="govuk-label--s"
     hintText="You can view notes in account history after the account is published"
     inputId="fm_account_comments_notes_notes"
     inputName="fm_account_comments_notes_notes"
-    [control]="form.get('fm_account_comments_notes_notes')"
+    [control]="notesControl"
     [characterCountEnabled]="true"
     [maxCharacterLimit]="1000"
     [errors]="formControlErrorMessages['fm_account_comments_notes_notes']"
-  ></opal-lib-govuk-text-area>
+  ></app-signal-govuk-text-area>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <opal-lib-govuk-button buttonId="submitForm" type="submit">Return to account details</opal-lib-govuk-button>
