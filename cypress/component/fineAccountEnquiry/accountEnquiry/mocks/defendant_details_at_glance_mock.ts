@@ -192,3 +192,87 @@ export const OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK: IOpalFinesAccountDefendant
     free_text_note_3: null,
   },
 };
+
+// Parent/Guardian At A Glance Mock with parent/guardian data mapping
+export const OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK: IOpalFinesAccountDefendantAtAGlance = {
+  version: null,
+  defendant_account_id: 'DEF-001',
+  account_number: 'ACC-123456',
+  debtor_type: 'Parent/Guardian',
+  is_youth: false,
+
+  party_details: {
+    party_id: '77',
+    organisation_flag: false,
+    organisation_details: null,
+    individual_details: {
+      title: 'Mr',
+      forenames: 'Opal parent',
+      surname: 'LNAME',
+      date_of_birth: '1975-06-15',
+      age: '49',
+      national_insurance_number: 'OT000001D',
+      individual_aliases: null, // Parent/guardian aliases can be added if needed
+    },
+  },
+  address: {
+    address_line_1: 'PG2 addr1',
+    address_line_2: 'PG2 addr2',
+    address_line_3: 'PG2 addr3',
+    address_line_4: null,
+    address_line_5: null,
+    postcode: 'PG12 3ST',
+  },
+  language_preferences: {
+    document_language_preference: {
+      language_code: 'CY',
+      language_display_name: 'Welsh and English',
+    },
+    hearing_language_preference: {
+      language_code: 'CY',
+      language_display_name: 'Welsh and English',
+    },
+  },
+  payment_terms: {
+    payment_terms_type: {
+      payment_terms_type_code: 'I',
+      payment_terms_type_display_name: 'By date',
+    },
+    effective_date: '01/01/2024',
+    instalment_period: {
+      instalment_period_code: 'M',
+      instalment_period_display_name: 'Monthly',
+    },
+    lump_sum_amount: 1000,
+    instalment_amount: 100,
+  },
+  enforcement_status: {
+    last_enforcement_action: {
+      last_enforcement_action_id: 'EA-001',
+      last_enforcement_action_title: 'Warrant Issued',
+    },
+    collection_order_made: true,
+    default_days_in_jail: 0,
+    enforcement_override: {
+      enforcement_override_result: {
+        enforcement_override_result_id: 'EOR-001',
+        enforcement_override_result_title: 'Override Approved',
+      },
+      enforcer: {
+        enforcer_id: 10,
+        enforcer_name: 'Court Officer',
+      },
+      lja: {
+        lja_id: 20,
+        lja_name: 'Central LJA',
+      },
+    },
+    last_movement_date: '01/05/2024',
+  },
+  comments_and_notes: {
+    account_comment: 'Account reviewed.',
+    free_text_note_1: 'First note.',
+    free_text_note_2: 'Second note.',
+    free_text_note_3: null,
+  },
+};
