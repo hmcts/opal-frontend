@@ -10,6 +10,8 @@ import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { TestBed } from '@angular/core/testing';
+import { IOpalFinesAccountDefendantAccountParty } from '../../services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
@@ -204,124 +206,304 @@ describe('FinesAccPayloadService', () => {
     expect(result.business_unit_user_id).toBe(header.business_unit_summary.business_unit_id);
   });
 
-  it('should transform payload using the transformation service', () => {
-    spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-    const inputPayload = {
-      date_of_birth: '2000-09-09',
-    };
+  describe('transformDefendantDataToDebtorForm', () => {
+    it('should transform complete defendant data to debtor form', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+      );
 
-    const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-    expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-      inputPayload,
-      FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-    );
-    expect(result).toEqual(inputPayload);
-  });
+      const { defendant_account_party } = mockDefendantData;
+      const { party_details, address, contact_details, vehicle_details } = defendant_account_party;
+      const individualDetails = party_details.individual_details;
 
-  it('should transform at-a-glance data to comments form state', () => {
-    const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
-
-    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
-
-    expect(result).toEqual({
-      facc_add_comment: atAGlanceData.comments_and_notes?.account_comment || '',
-      facc_add_free_text_1: atAGlanceData.comments_and_notes?.free_text_note_1 || '',
-      facc_add_free_text_2: atAGlanceData.comments_and_notes?.free_text_note_2 || '',
-      facc_add_free_text_3: atAGlanceData.comments_and_notes?.free_text_note_3 || '',
+      expect(result.facc_party_add_amend_convert_title).toBe(individualDetails?.title || null);
+      expect(result.facc_party_add_amend_convert_forenames).toBe(individualDetails?.forenames || null);
+      expect(result.facc_party_add_amend_convert_surname).toBe(individualDetails?.surname || null);
+      expect(result.facc_party_add_amend_convert_dob).toBe(individualDetails?.date_of_birth || null);
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe(
+        individualDetails?.national_insurance_number || null,
+      );
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe(address?.address_line_1 || null);
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe(address?.address_line_2 || null);
+      expect(result.facc_party_add_amend_convert_address_line_3).toBe(address?.address_line_3 || null);
+      expect(result.facc_party_add_amend_convert_post_code).toBe(address?.postcode || null);
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe(
+        contact_details?.primary_email_address || null,
+      );
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBe(
+        contact_details?.secondary_email_address || null,
+      );
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBe(
+        contact_details?.mobile_telephone_number || null,
+      );
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBe(
+        contact_details?.home_telephone_number || null,
+      );
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBe(
+        contact_details?.work_telephone_number || null,
+      );
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe(vehicle_details?.vehicle_make_and_model || null);
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBe(
+        vehicle_details?.vehicle_registration || null,
+      );
     });
-  });
 
-  it('should handle null account notes gracefully', () => {
-    const atAGlanceData = {
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
-      comments_and_notes: {
-        account_comment: null,
-        free_text_note_1: null,
-        free_text_note_2: null,
-        free_text_note_3: null,
-      },
-    };
+    it('should handle aliases transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+      );
 
-    const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
+      // Add aliases to the mock data
+      if (mockDefendantData.defendant_account_party.party_details.individual_details) {
+        mockDefendantData.defendant_account_party.party_details.individual_details.individual_aliases = [
+          {
+            alias_id: '1',
+            sequence_number: 1,
+            forenames: 'Johnny',
+            surname: 'Smith',
+          },
+          {
+            alias_id: '2',
+            sequence_number: 2,
+            forenames: 'Jon',
+            surname: 'Doe',
+          },
+        ];
+      }
 
-    expect(result).toEqual({
-      facc_add_comment: '',
-      facc_add_free_text_1: '',
-      facc_add_free_text_2: '',
-      facc_add_free_text_3: '',
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+
+      expect(result.facc_party_add_amend_convert_aliases).toEqual([
+        {
+          facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
+          facc_party_add_amend_convert_alias_surname_0: 'Smith',
+        },
+        {
+          facc_party_add_amend_convert_alias_forenames_1: 'Jon',
+          facc_party_add_amend_convert_alias_surname_1: 'Doe',
+        },
+      ]);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(true); // Should be true when aliases exist
     });
-  });
 
-  describe('buildCommentsFormPayload', () => {
-    it('should transform form state to update payload correctly', () => {
-      const formState: IFinesAccAddCommentsFormState = {
-        facc_add_comment: 'Updated comment',
-        facc_add_free_text_1: 'Updated note 1',
-        facc_add_free_text_2: 'Updated note 2',
-        facc_add_free_text_3: 'Updated note 3',
+    it('should handle employer details transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+      );
+
+      // Add employer details to the mock data
+      mockDefendantData.defendant_account_party.employer_details = {
+        employer_name: 'Test Company Ltd',
+        employer_reference: 'EMP123',
+        employer_email_address: 'hr@testcompany.com',
+        employer_telephone_number: '01234567890',
+        employer_address: {
+          address_line_1: '123 Business Park',
+          address_line_2: 'Business District',
+          address_line_3: 'City Center',
+          address_line_4: 'County',
+          address_line_5: 'Region',
+          postcode: 'BU5 1NE',
+        },
       };
 
-      const result = service.buildCommentsFormPayload(formState);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Test Company Ltd');
+      expect(result.facc_party_add_amend_convert_employer_reference).toBe('EMP123');
+      expect(result.facc_party_add_amend_convert_employer_email_address).toBe('hr@testcompany.com');
+      expect(result.facc_party_add_amend_convert_employer_telephone_number).toBe('01234567890');
+      expect(result.facc_party_add_amend_convert_employer_address_line_1).toBe('123 Business Park');
+      expect(result.facc_party_add_amend_convert_employer_address_line_2).toBe('Business District');
+      expect(result.facc_party_add_amend_convert_employer_address_line_3).toBe('City Center');
+      expect(result.facc_party_add_amend_convert_employer_address_line_4).toBe('County');
+      expect(result.facc_party_add_amend_convert_employer_address_line_5).toBe('Region');
+      expect(result.facc_party_add_amend_convert_employer_post_code).toBe('BU5 1NE');
+    });
+
+    it('should transform payload using the transformation service', () => {
+      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+      const inputPayload = {
+        date_of_birth: '2000-09-09',
+      };
+
+      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+        inputPayload,
+        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+      );
+      expect(result).toEqual(inputPayload);
+    });
+
+    it('should handle language preferences transformation', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+      );
+
+      // Add language preferences to the mock data
+      mockDefendantData.defendant_account_party.language_preferences = {
+        document_language_preference: {
+          language_code: 'CY',
+          language_display_name: 'Welsh and English',
+        },
+        hearing_language_preference: {
+          language_code: 'EN',
+          language_display_name: 'English only',
+        },
+      };
+
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBe('CY');
+      expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBe('EN');
+    });
+
+    it('should handle null and undefined values gracefully', () => {
+      const mockDefendantData: IOpalFinesAccountDefendantAccountParty = structuredClone(
+        OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+      );
+
+      // Set all optional fields to null
+      mockDefendantData.defendant_account_party.party_details.individual_details = null;
+      mockDefendantData.defendant_account_party.address = {
+        address_line_1: '',
+        address_line_2: null,
+        address_line_3: null,
+        address_line_4: null,
+        address_line_5: null,
+        postcode: '',
+      };
+      mockDefendantData.defendant_account_party.contact_details = {
+        primary_email_address: null,
+        secondary_email_address: null,
+        mobile_telephone_number: null,
+        home_telephone_number: null,
+        work_telephone_number: null,
+      };
+      mockDefendantData.defendant_account_party.vehicle_details = null;
+      mockDefendantData.defendant_account_party.employer_details = null;
+      mockDefendantData.defendant_account_party.language_preferences = null;
+
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_address_line_1).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_party_add_amend_convert_address_line_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_post_code).toBeNull(); // Empty string becomes null due to || null
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBeNull();
+    });
+    it('should transform at-a-glance data to comments form state', () => {
+      const atAGlanceData = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+
+      const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
 
       expect(result).toEqual({
-        comment_and_notes: {
-          account_comment: 'Updated comment',
-          free_text_note_1: 'Updated note 1',
-          free_text_note_2: 'Updated note 2',
-          free_text_note_3: 'Updated note 3',
-        },
+        facc_add_comment: atAGlanceData.comments_and_notes?.account_comment || '',
+        facc_add_free_text_1: atAGlanceData.comments_and_notes?.free_text_note_1 || '',
+        facc_add_free_text_2: atAGlanceData.comments_and_notes?.free_text_note_2 || '',
+        facc_add_free_text_3: atAGlanceData.comments_and_notes?.free_text_note_3 || '',
       });
     });
 
-    it('should handle null/empty values in form state', () => {
-      const formState: IFinesAccAddCommentsFormState = {
-        facc_add_comment: '',
-        facc_add_free_text_1: null,
-        facc_add_free_text_2: '',
-        facc_add_free_text_3: null,
-      };
-
-      const result = service.buildCommentsFormPayload(formState);
-
-      expect(result).toEqual({
-        comment_and_notes: {
+    it('should handle null account notes gracefully', () => {
+      const atAGlanceData = {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        comments_and_notes: {
           account_comment: null,
           free_text_note_1: null,
           free_text_note_2: null,
           free_text_note_3: null,
         },
+      };
+
+      const result: IFinesAccAddCommentsFormState = service.transformAtAGlanceDataToCommentsForm(atAGlanceData);
+
+      expect(result).toEqual({
+        facc_add_comment: '',
+        facc_add_free_text_1: '',
+        facc_add_free_text_2: '',
+        facc_add_free_text_3: '',
       });
     });
 
-    it('should transform payload using the transformation service', () => {
-      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-      const inputPayload = {
-        date_of_birth: '2000-09-09',
-      };
+    describe('buildCommentsFormPayload', () => {
+      it('should transform form state to update payload correctly', () => {
+        const formState: IFinesAccAddCommentsFormState = {
+          facc_add_comment: 'Updated comment',
+          facc_add_free_text_1: 'Updated note 1',
+          facc_add_free_text_2: 'Updated note 2',
+          facc_add_free_text_3: 'Updated note 3',
+        };
 
-      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+        const result = service.buildCommentsFormPayload(formState);
 
-      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-        inputPayload,
-        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-      );
-      expect(result).toEqual(inputPayload);
-    });
+        expect(result).toEqual({
+          comment_and_notes: {
+            account_comment: 'Updated comment',
+            free_text_note_1: 'Updated note 1',
+            free_text_note_2: 'Updated note 2',
+            free_text_note_3: 'Updated note 3',
+          },
+        });
+      });
 
-    it('should transform payload using the transformation service', () => {
-      spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
-      const inputPayload = {
-        date_of_birth: '2000-09-09',
-      };
+      it('should handle null/empty values in form state', () => {
+        const formState: IFinesAccAddCommentsFormState = {
+          facc_add_comment: '',
+          facc_add_free_text_1: null,
+          facc_add_free_text_2: '',
+          facc_add_free_text_3: null,
+        };
 
-      const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+        const result = service.buildCommentsFormPayload(formState);
 
-      expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
-        inputPayload,
-        FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-      );
-      expect(result).toEqual(inputPayload);
+        expect(result).toEqual({
+          comment_and_notes: {
+            account_comment: null,
+            free_text_note_1: null,
+            free_text_note_2: null,
+            free_text_note_3: null,
+          },
+        });
+      });
+
+      it('should transform payload using the transformation service', () => {
+        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        const inputPayload = {
+          date_of_birth: '2000-09-09',
+        };
+
+        const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+        expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+          inputPayload,
+          FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+        );
+        expect(result).toEqual(inputPayload);
+      });
+
+      it('should transform payload using the transformation service', () => {
+        spyOn(service['transformationService'], 'transformObjectValues').and.callFake((...args) => args[0]);
+        const inputPayload = {
+          date_of_birth: '2000-09-09',
+        };
+
+        const result = service.transformPayload(inputPayload, FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+        expect(service['transformationService'].transformObjectValues).toHaveBeenCalledWith(
+          inputPayload,
+          FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+        );
+        expect(result).toEqual(inputPayload);
+      });
     });
   });
 });
