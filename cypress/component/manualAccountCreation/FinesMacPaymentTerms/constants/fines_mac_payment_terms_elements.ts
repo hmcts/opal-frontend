@@ -30,8 +30,8 @@ export const DOM_ELEMENTS = {
 
   //Hints
   prisHint: 'div[id = "fm_payment_terms_prison_and_prison_number-hint"]',
-  prisCharHint: 'div[id="fm_payment_terms_prison_and_prison_number-hint"]',
-  noenfCharHint: 'div[id="fm_payment_terms_reason_account_is_on_noenf-hint"]',
+  prisCharHint: '.govuk-character-count__status',
+  noenfCharHint: '.govuk-character-count__status',
   dateHint: 'div.govuk-hint',
   // Collection order
   collectionOrderMadeTrue: 'input[id="fm_payment_terms_collection_order_made_true"]',
