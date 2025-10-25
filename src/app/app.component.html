@@ -43,10 +43,18 @@
         }
 
         @if (globalStore.authenticated() && globalStore.error().error) {
-          <div opal-lib-moj-alert ariaLabel="Authentication Message" type="warning">
-            <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
-            <opal-lib-moj-alert-content content
-              ><opal-lib-moj-alert-content-text>{{ globalStore.error().message }} </opal-lib-moj-alert-content-text>
+          <div opal-lib-moj-alert ariaLabel="Error Message" type="error">
+            <opal-lib-moj-alert-icon icon type="error"></opal-lib-moj-alert-icon>
+            <opal-lib-moj-alert-content content>
+              <opal-lib-moj-alert-content-heading>{{ globalStore.error().title }}</opal-lib-moj-alert-content-heading>
+              <opal-lib-moj-alert-content-text>{{ globalStore.error().message }}</opal-lib-moj-alert-content-text>
+              @if (globalStore.error().operationId) {
+                <opal-lib-moj-alert-content-text>
+                  <p class="govuk-body-s govuk-dark-grey-text-colour govuk-!-margin-top-1">
+                    Error code: {{ globalStore.error().operationId }}
+                  </p>
+                </opal-lib-moj-alert-content-text>
+              }
             </opal-lib-moj-alert-content>
           </div>
         }
