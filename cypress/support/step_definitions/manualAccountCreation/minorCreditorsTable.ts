@@ -17,8 +17,10 @@ const verifyMinorCreditorDetails = (
   Object.keys(detailKeys).forEach((key) => {
     if (details[key]) {
       const element = detailKeys[key];
+
       if (element === 'h2') {
-        summary.get(element).should('contain', details[key]);
+        // Match old <h2> and new <h5> summary-card headings
+        summary.get('h2, h5.govuk-summary-card__title, h5.moj-summary-card__title').should('contain', details[key]);
       } else {
         summary.get(element).contains(element, key).next().should('contain', details[key]);
       }
