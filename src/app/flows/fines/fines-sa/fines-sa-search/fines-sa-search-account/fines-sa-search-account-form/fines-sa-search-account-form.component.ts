@@ -221,9 +221,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    ['individuals', 'companies', 'minor_creditors', 'major_creditors'].forEach((key) =>
-      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
-    );
+    for (const key of ['individuals', 'companies', 'minor_creditors', 'major_creditors']) {
+      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false });
+    }
     this.clearAllErrorMessages();
   }
 

@@ -68,7 +68,7 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAccountNumber">
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -85,31 +85,31 @@
               }
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="name">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorName">
             @if (row['Name'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Name'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorAddressLine1">
             @if (row['Address line 1'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Address line 1'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="postcode">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorPostcode">
             @if (row['Postcode'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Postcode'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorBusinessUnit">
             {{ row['Business unit'] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="defendant">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorDefendant">
             @if (row['Defendant'] !== null) {
               @if (row['Defendant account id'] !== null) {
                 <a
@@ -126,7 +126,7 @@
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="balance">
+          <td opal-lib-moj-sortable-table-row-data id="minorCreditorBalance">
             @if (row['Balance'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -138,6 +138,7 @@
     </ng-container>
     <ng-container status>
       <opal-lib-moj-sortable-table-status
+        class="minor-creditor-table-status"
         [columnTitle]="sortedColumnTitleSignal()"
         [sortDirection]="sortedColumnDirectionSignal()"
       />
@@ -146,7 +147,7 @@
 </opal-lib-custom-horizontal-scroll-pane>
 @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
   <opal-lib-moj-pagination
-    id="fines-draft-table-pagination"
+    id="minor-creditor-table-wrapper-pagination"
     [currentPage]="currentPageSignal()"
     [limit]="itemsPerPageSignal()"
     [total]="filteredTableDataSignal().length"
@@ -155,9 +156,5 @@
 }
 
 <ng-template #noData>
-  <p
-    class="govuk-!-margin-0"
-    [innerHTML]="finesDefaultValues.notProvidedLabel"
-    [ariaLabel]="finesDefaultValues.notProvidedAriaLabel"
-  ></p>
+  <app-fines-not-provided class="minor-creditor-no-data-provided"></app-fines-not-provided>
 </ng-template>
