@@ -130,7 +130,7 @@ describe('Account Enquiry - Defendant Header', () => {
   );
 
   // ONLY Youth tag when youth is the debtor and no P/G associated
-  it.only(
+  it(
     'AC2: shows ONLY "Youth Account" when youth=true, debtor=Defendant, and no Parent/Guardian',
     { tags: ['PO-1593'] },
     () => {
@@ -143,8 +143,7 @@ describe('Account Enquiry - Defendant Header', () => {
       header.parent_guardian_party_id = null;
       header.party_details.individual_details = {
         ...header.party_details.individual_details!,
-        date_of_birth: '15/06/2010', //this is what the UI expects but is the incorrect format
-        // date_of_birth: '2010-06-15', // This is the correct ISO format, that the UI should be using, PO-2321 has been raised to address this
+        date_of_birth: '2010-06-15',
         age: '14',
       };
 
