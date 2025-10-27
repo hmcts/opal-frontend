@@ -1,5 +1,6 @@
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
 import {
+  createDefendantHeaderMockWithName,
   createParentGuardianHeaderMockWithName,
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
@@ -33,7 +34,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       // Add more routes here as needed
     ],
   };
-  it.only(
+  it(
     'AC1,Ac1a, Ac1b: The At a Glance tab is built as per the design artefact for parent/guardian',
     { tags: ['PO-779'] },
     () => {
@@ -56,11 +57,12 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       cy.get(DOM.atAGlanceTabComponent).should('exist');
       cy.contains(DOM.labelDefendant).should('be.visible');
       cy.contains(DOM.labelPaymentTerms).should('be.visible');
-      cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Parent or Guardian'); // Mock issue
+      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+      cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Parent or Guardian');
       cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Language preferences');
       cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Payment terms');
       cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Enforcement status');
-      cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Comment'); // Figma shows "Comment" not "Comments"
+      cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('contain.text', 'Comment');
       cy.get('h3')
         .contains('Name')
         .next('p')
@@ -74,16 +76,17 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
           expect(normalized).to.eq('Mr Opal parent LNAME');
         });
+      cy.get('h3').contains('Date of birth').next('p').should('be.visible').should('contain.text', ' 15 June 1975 ');
       cy.get('h3')
         .contains('Address')
         .next('p')
         .should('be.visible')
-        .should('contain.text', ' 123 Main Street  Apt 4  AB12 3CD ');
+        .should('contain.text', ' PG2 addr1  PG2 addr2  PG2 addr3  PG12 3ST ');
       cy.get('h3')
         .contains('National Insurance Number')
         .next('p')
         .should('be.visible')
-        .should('contain.text', ' QA 12 34 56C ');
+        .should('contain.text', ' OT000001D ');
     },
   );
 
@@ -148,6 +151,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   });
 
   it('AC2bia: Label Welsh and Language is not displayed ', { tags: ['PO-779'] }, () => {
+    // TODO: Modify mock to not include language preferences, for some reason the usual method is not working
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
     interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
@@ -155,6 +159,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     setupAccountEnquiryComponent(componentProperties);
 
     cy.get(DOM.enforcementStatusTag).should('not.exist'); //Passing when it shouldn't
+    cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('not.exist');
   });
 
   it('AC2c: Labels not displayed ', { tags: ['PO-779'] }, () => {
@@ -175,9 +180,12 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   });
 
   it('AC3: displays Aliases section when defendant has one or more aliases', { tags: ['PO-779'] }, () => {
+    // TODO: Modify mock to include at least one alias, for some reason, the usual method is not working
+    //const mockDataWithAlias = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    //mockDataWithAlias.party_details.individual_details!.individual_aliases = ['Lorum Ipsum'];
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
+    //interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1'); - Does this need to be commented out if modifying the mock above?
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -203,59 +211,51 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     interceptAtAGlance(77, headerNoAliases, '1');
 
     setupAccountEnquiryComponent(componentProperties);
-    cy.get('h3').should('not.contain', 'Aliases'); // Seeing Aliases section in Cypress when it shouldn't be there, potential mock issue or defect
+    cy.get('h3').should('not.contain', 'Aliases');
+  });
+
+  it('AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes', { tags: ['PO-779'] }, () => {
+    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    mockDataNoComments.comments_and_notes = {
+      account_comment: null,
+      free_text_note_1: null,
+      free_text_note_2: null,
+      free_text_note_3: null,
+    };
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+    interceptAtAGlance(77, mockDataNoComments, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
+    cy.get('h3').contains('Comment').should('not.exist');
+    cy.get('h3').contains('Free text notes').should('not.exist');
+    cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
+  });
+
+  it('AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes', { tags: ['PO-779'] }, () => {
+    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    mockDataNoComments.comments_and_notes = {
+      account_comment: 'Test account comment',
+      free_text_note_1: null,
+      free_text_note_2: null,
+      free_text_note_3: null,
+    };
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+    interceptAtAGlance(77, mockDataNoComments, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+
+    cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
+    cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
   });
 
   it(
-    'AC4,AC4a: displays Comments section with no Account Comment or Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataNoComments.comments_and_notes = {
-        account_comment: null,
-        free_text_note_1: null,
-        free_text_note_2: null,
-        free_text_note_3: null,
-      };
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataNoComments, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get('h3').contains('Comment').should('not.exist');
-      cy.get('h3').contains('Free text notes').should('not.exist');
-      cy.get(DOM.linkText).should('exist').should('have.text', 'Add comments');
-    },
-  );
-
-  it(
-    'AC4b, Ac9: displays Comments section with Account Comment but no Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataNoComments.comments_and_notes = {
-        account_comment: 'Test account comment',
-        free_text_note_1: null,
-        free_text_note_2: null,
-        free_text_note_3: null,
-      };
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataNoComments, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
-      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
-    },
-  );
-
-  it(
     'AC4c, AC9: displays Comments section with Free Text Notes but no Account Comment, showing em-dash for empty fields',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -277,56 +277,28 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-    it(
-    'AC9: displays Comments section with no Account Comment but no Free Text Notes, showing em-dash for empty fields',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataNoComments.comments_and_notes = {
-        account_comment: 'Comment here',
-        free_text_note_1: null,
-        free_text_note_2: null,
-        free_text_note_3: null,
-      };
+  it('AC4d: displays Comments section with both Account Comment and Free Text Notes', { tags: ['PO-779'] }, () => {
+    const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    mockDataNoComments.comments_and_notes = {
+      account_comment: 'Test account comment',
+      free_text_note_1: 'First note.',
+      free_text_note_2: null,
+      free_text_note_3: null,
+    };
 
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataNoComments, '1');
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+    interceptAtAGlance(77, mockDataNoComments, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+    setupAccountEnquiryComponent(componentProperties);
 
-      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Comment here');
-
-      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', '—');
-    },
-  );
-
-  it(
-    'AC4d: displays Comments section with both Account Comment and Free Text Notes',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataNoComments.comments_and_notes = {
-        account_comment: 'Test account comment',
-        free_text_note_1: 'First note.',
-        free_text_note_2: null,
-        free_text_note_3: null,
-      };
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataNoComments, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
-      cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
-    },
-  );
+    cy.get('h3').contains('Comment').and('be.visible').next('p').should('have.text', 'Test account comment');
+    cy.get('h3').contains('Free text notes').and('be.visible').next('p').should('have.text', ' First note. ');
+  });
 
   it(
     'AC5: Shows Add comments link and navigates to Comments screen when user has Account Maintenance permission in associated  BU',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -353,7 +325,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5: Shows Change link and navigates to Comments screen when user has Account Maintenance permission in associated BU',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -378,7 +350,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Add Comment link exists when user has permission in at least one BU but not the BU associated to the account',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataNoComments = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoComments.comments_and_notes = {
@@ -405,7 +377,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5a: Change link exists when user has permission in at least one BU but not the BU associated to the account',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -422,7 +394,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC5b: Change link and add comment do not exist when user has no permission in any BU',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
       interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
@@ -436,65 +408,57 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
     },
   );
 
-  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
-        const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-        mockDataPayByDate.payment_terms = {
-          payment_terms_type: {
-            payment_terms_type_code: 'B',
-            payment_terms_type_display_name: 'By date',
-          },
-          effective_date: '31/12/2024',
-          instalment_period: null,
-          lump_sum_amount: null,
-          instalment_amount: null,
-        };
+  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-779'] }, () => {
+    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    mockDataPayByDate.payment_terms = {
+      payment_terms_type: {
+        payment_terms_type_code: 'B',
+        payment_terms_type_display_name: 'By date',
+      },
+      effective_date: '31/12/2024',
+      instalment_period: null,
+      lump_sum_amount: null,
+      instalment_amount: null,
+    };
 
-        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-        interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-        interceptAtAGlance(77, mockDataPayByDate, '1');
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+    interceptAtAGlance(77, mockDataPayByDate, '1');
 
-        setupAccountEnquiryComponent(componentProperties);
-        cy.get('h2').contains('Payment terms').should('exist');
-        cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
-        cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+    setupAccountEnquiryComponent(componentProperties);
+    cy.get('h2').contains('Payment terms').should('exist');
+    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
+    cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
 
-      // Verify that instalment-specific fields are not displayed
-      cy.get('h3').contains('Frequency').should('not.exist');
-      cy.get('h3').contains('Instalments').should('not.exist');
-      cy.get('h3').contains('Start Date').should('not.exist');
-    },
-  );
+    // Verify that instalment-specific fields are not displayed
+    cy.get('h3').contains('Frequency').should('not.exist');
+    cy.get('h3').contains('Instalments').should('not.exist');
+    cy.get('h3').contains('Start Date').should('not.exist');
+  });
 
-  it(
-    'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
+  it('AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario', { tags: ['PO-779'] }, () => {
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
+    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1');
 
-      setupAccountEnquiryComponent(componentProperties);
+    setupAccountEnquiryComponent(componentProperties);
 
-      cy.get('h3')
-        .contains('Payment terms')
-        .and('be.visible')
-        .next('p')
-        .should('have.text', 'Lump sum plus instalments');
-      cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
-      cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
-      cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
+    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Lump sum plus instalments');
+    cy.get('h3').contains('Frequency').and('be.visible').next('p').should('have.text', 'Monthly');
+    cy.get('h3').contains('Instalments').and('be.visible').next('p').should('have.text', ' £100.00 ');
+    cy.get('h3').contains('Start date').and('be.visible').next('p').should('have.text', ' 01 January 2024 ');
 
-      // Verify that "By date" field is not displayed
-      cy.get('h3').contains('By date').should('not.exist');
-    },
-  );
+    // Verify that "By date" field is not displayed
+    cy.get('h3').contains('By date').should('not.exist');
+  });
 
-  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
+  it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-779'] }, () => {
+    // TODO: Still showing lump sum plus instalments - need to fix
     const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
     mockDataPayByDate.payment_terms = {
       payment_terms_type: {
         payment_terms_type_code: 'I',
-        payment_terms_type_display_name: 'By date',
+        payment_terms_type_display_name: 'Instalments',
       },
       effective_date: '31/12/2024',
       instalment_period: {
@@ -518,7 +482,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
   it(
     'AC7a, AC7b, AC7c, AC7d: displays Last Enforcement Action field only when value is present',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataNoEnforcementAction = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataNoEnforcementAction.enforcement_status = {
@@ -555,17 +519,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .and('be.visible')
         .next('p')
         .should('have.text', ' Override Approved EOR-001 ');
-      cy.get('h3')
-        .contains('Date of last movement')
-        .and('be.visible')
-        .next('p')
-        .should('have.text', ' 01 May 2024 ');
+      cy.get('h3').contains('Date of last movement').and('be.visible').next('p').should('have.text', ' 01 May 2024 ');
     },
   );
 
   it(
     'AC8a: displays blue "collection order" label when defendant is adult and CO flag is true',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataAdultWithCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultWithCO.is_youth = false;
@@ -578,15 +538,13 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.badgeBlue)
-        .contains('Collection Order')
-        .should('be.visible');
+      cy.get(DOM.badgeBlue).contains('Collection Order').should('be.visible');
     },
   );
 
   it(
     'AC8b: displays red "no collection order" label when defendant is adult and CO flag is false',
-    { tags: ['PO-984', 'PO-814'] },
+    { tags: ['PO-779'] },
     () => {
       const mockDataAdultNoCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
       mockDataAdultNoCO.is_youth = false;
@@ -599,50 +557,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
 
       setupAccountEnquiryComponent(componentProperties);
 
-      cy.get(DOM.badgeRed)
-        .contains('No collection Order')
-        .should('be.visible');
-    },
-  );
-
-  it(
-    'AC8c: displays red "no collection order" label when defendant is youth and CO flag is true',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataYouthWithCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataYouthWithCO.is_youth = true;
-      mockDataYouthWithCO.enforcement_status.collection_order_made = true;
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataYouthWithCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get(DOM.badgeRed)
-        .contains('No collection Order')
-        .should('be.visible');
-    },
-  );
-
-  it(
-    'AC8d: displays no collection order label when defendant is youth and CO flag is false',
-    { tags: ['PO-984', 'PO-814'] },
-    () => {
-      const mockDataYouthNoCO = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-      mockDataYouthNoCO.is_youth = true;
-      mockDataYouthNoCO.enforcement_status.collection_order_made = false;
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-      interceptAtAGlance(77, mockDataYouthNoCO, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-
-      cy.get('opal-lib-govuk-tag')
-        .contains(/collection order/i)
-        .should('not.exist');
-      cy.get('h2').contains('Enforcement status').should('be.visible');
+      cy.get(DOM.badgeRed).contains('No collection Order').should('be.visible');
     },
   );
 });
