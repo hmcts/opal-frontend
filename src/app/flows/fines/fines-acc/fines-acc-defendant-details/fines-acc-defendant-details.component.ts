@@ -272,6 +272,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
           );
         }),
+        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {
