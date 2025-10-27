@@ -11,6 +11,7 @@ import {
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { HeadingLevel } from '@hmcts/opal-frontend-common/types';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
@@ -29,6 +30,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
   @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: true }) public isDetailsHidden!: boolean;
+  @Input({ required: false }) public headingLevel: HeadingLevel = 5;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
   public name!: string;
   public address!: string;
