@@ -41,6 +41,18 @@ async function sha256Base64(bytes: Uint8Array): Promise<string> {
 }
 
 /**
+ * Returns true when the provided content type represents JSON.
+ */
+function isJsonContentType(ct: string | null | undefined): boolean {
+  if (!ct) {
+    return false;
+  }
+
+  const normalized = ct.toLowerCase();
+  return normalized.includes('application/json') || normalized.includes('+json');
+}
+
+/**
  * Determines whether the request should have a content digest applied.
  */
 function shouldDigestJsonRequest(req: HttpRequest<unknown>): boolean {
@@ -48,13 +60,20 @@ function shouldDigestJsonRequest(req: HttpRequest<unknown>): boolean {
     return false;
   }
 
-  const contentType = req.headers.get('Content-Type') ?? req.detectContentTypeHeader();
-  if (!contentType) {
-    return false;
+  const contentType = req.headers.get('Content-Type');
+  if (isJsonContentType(contentType)) {
+    return true;
   }
 
-  const normalized = contentType.toLowerCase();
-  return normalized.includes('application/json') || normalized.includes('+json');
+  const bodyType = typeof req.body;
+  // No explicit header: treat plain object-like bodies as JSON payloads.
+  const isPlainObject =
+    bodyType === 'object' &&
+    req.body !== null &&
+    !(req.body instanceof FormData) &&
+    !(req.body instanceof Blob);
+
+  return isPlainObject;
 }
 
 /**
