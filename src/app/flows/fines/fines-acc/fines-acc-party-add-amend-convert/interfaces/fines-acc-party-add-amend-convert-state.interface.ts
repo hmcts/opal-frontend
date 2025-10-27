@@ -1,13 +1,21 @@
-import { IFinesAccPartyAddAmendConvertAliasState } from './fines-acc-party-add-amend-convert-alias-state.interface';
+import { IFinesAccPartyAddAmendConvertIndividualAliasState } from './fines-acc-party-add-amend-convert-individual-alias-state.interface';
+import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from './fines-acc-party-add-amend-convert-organisation-alias-state.interface';
 
 export interface IFinesAccPartyAddAmendConvertState {
+  // Organisation/Company fields
+  facc_party_add_amend_convert_organisation_name: string | null;
+
+  // Individual fields
   facc_party_add_amend_convert_title: string | null;
   facc_party_add_amend_convert_forenames: string | null;
   facc_party_add_amend_convert_surname: string | null;
-  facc_party_add_amend_convert_aliases: IFinesAccPartyAddAmendConvertAliasState[];
-  facc_party_add_amend_convert_add_alias: boolean | null;
   facc_party_add_amend_convert_dob: string | null;
   facc_party_add_amend_convert_national_insurance_number: string | null;
+
+  // Alias fields - separated by type
+  facc_party_add_amend_convert_individual_aliases: IFinesAccPartyAddAmendConvertIndividualAliasState[];
+  facc_party_add_amend_convert_organisation_aliases: IFinesAccPartyAddAmendConvertOrganisationAliasState[];
+  facc_party_add_amend_convert_add_alias: boolean | null;
   facc_party_add_amend_convert_address_line_1: string | null;
   facc_party_add_amend_convert_address_line_2: string | null;
   facc_party_add_amend_convert_address_line_3: string | null;

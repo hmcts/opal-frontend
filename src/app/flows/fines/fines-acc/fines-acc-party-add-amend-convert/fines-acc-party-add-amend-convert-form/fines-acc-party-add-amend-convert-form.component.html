@@ -1,42 +1,66 @@
-<opal-lib-govuk-heading-with-caption
-  [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
-  headingText="Defendant details"
-></opal-lib-govuk-heading-with-caption>
+@if (partyType === 'company') {
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
+    headingText="Company details"
+  ></opal-lib-govuk-heading-with-caption>
+} @else {
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
+    headingText="Defendant details"
+  ></opal-lib-govuk-heading-with-caption>
+}
+
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
 @if (form) {
   <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-    <opal-lib-govuk-select
-      labelText="Title"
-      labelClasses="govuk-label--s"
-      selectId="facc_party_add_amend_convert_title"
-      selectName="facc_party_add_amend_convert_title"
-      [options]="titleOptions"
-      [control]="form.get('facc_party_add_amend_convert_title')!"
-      [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
-    ></opal-lib-govuk-select>
-    <opal-lib-govuk-text-input
-      labelText="First names"
-      inputId="facc_party_add_amend_convert_forenames"
-      inputName="facc_party_add_amend_convert_forenames"
-      inputClasses="govuk-input--width-20"
-      labelClasses="govuk-label--s"
-      hintText="Include their middle names"
-      [control]="form.get('facc_party_add_amend_convert_forenames')"
-      [errors]="formControlErrorMessages['facc_party_add_amend_convert_forenames']"
-    ></opal-lib-govuk-text-input>
-    <opal-lib-govuk-text-input
-      labelText="Last name"
-      inputId="facc_party_add_amend_convert_surname"
-      inputName="facc_party_add_amend_convert_surname"
-      inputClasses="govuk-input--width-20"
-      labelClasses="govuk-label--s"
-      [control]="form.get('facc_party_add_amend_convert_surname')"
-      [errors]="formControlErrorMessages['facc_party_add_amend_convert_surname']"
-      [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_surname')!"
-    ></opal-lib-govuk-text-input>
+    <!-- Company Name - Only for company party type -->
+    @if (isCompanyPartyType) {
+      <opal-lib-govuk-text-input
+        labelText="Company name"
+        inputId="facc_party_add_amend_convert_organisation_name"
+        inputName="facc_party_add_amend_convert_organisation_name"
+        inputClasses="govuk-input--width-20"
+        labelClasses="govuk-label--s"
+        [control]="form.get('facc_party_add_amend_convert_organisation_name')"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_organisation_name']"
+      ></opal-lib-govuk-text-input>
+    }
+
+    <!-- Individual Details - Only for individual party type -->
+    @if (isIndividualPartyType) {
+      <opal-lib-govuk-select
+        labelText="Title"
+        labelClasses="govuk-label--s"
+        selectId="facc_party_add_amend_convert_title"
+        selectName="facc_party_add_amend_convert_title"
+        [options]="titleOptions"
+        [control]="form.get('facc_party_add_amend_convert_title')!"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
+      ></opal-lib-govuk-select>
+      <opal-lib-govuk-text-input
+        labelText="First names"
+        inputId="facc_party_add_amend_convert_forenames"
+        inputName="facc_party_add_amend_convert_forenames"
+        inputClasses="govuk-input--width-20"
+        labelClasses="govuk-label--s"
+        hintText="Include their middle names"
+        [control]="form.get('facc_party_add_amend_convert_forenames')"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_forenames']"
+      ></opal-lib-govuk-text-input>
+      <opal-lib-govuk-text-input
+        labelText="Last name"
+        inputId="facc_party_add_amend_convert_surname"
+        inputName="facc_party_add_amend_convert_surname"
+        inputClasses="govuk-input--width-20"
+        labelClasses="govuk-label--s"
+        [control]="form.get('facc_party_add_amend_convert_surname')"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_surname']"
+        [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_surname')!"
+      ></opal-lib-govuk-text-input>
+    }
     <opal-lib-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
       <div
         opal-lib-govuk-checkboxes-item
@@ -47,110 +71,177 @@
       ></div>
     </opal-lib-govuk-checkboxes>
     @if (form.get('facc_party_add_amend_convert_add_alias')?.value === true) {
-      <div
-        opal-lib-govuk-checkboxes-conditional
-        conditionalId="facc_party_add_amend_convert_add_alias"
-        formArrayName="facc_party_add_amend_convert_aliases"
-      >
-        @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-            <opal-lib-govuk-text-input
-              labelText="First names"
-              [inputId]="aliasControl['facc_party_add_amend_convert_alias_forenames'].inputId"
-              [inputName]="aliasControl['facc_party_add_amend_convert_alias_forenames'].inputName"
-              inputClasses="govuk-input--width-20"
-              [control]="
-                form.get([
-                  'facc_party_add_amend_convert_aliases',
-                  rowIndex,
-                  aliasControl['facc_party_add_amend_convert_alias_forenames'].controlName,
-                ])
-              "
-              [errors]="
-                formControlErrorMessages[aliasControl['facc_party_add_amend_convert_alias_forenames'].controlName]
-              "
-            ></opal-lib-govuk-text-input>
-            <opal-lib-govuk-text-input
-              labelText="Last name"
-              [inputId]="aliasControl['facc_party_add_amend_convert_alias_surname'].inputId"
-              [inputName]="aliasControl['facc_party_add_amend_convert_alias_surname'].inputName"
-              inputClasses="govuk-input--width-20"
-              [control]="
-                form.get([
-                  'facc_party_add_amend_convert_aliases',
-                  rowIndex,
-                  aliasControl['facc_party_add_amend_convert_alias_surname'].controlName,
-                ])
-              "
-              [errors]="
-                formControlErrorMessages[aliasControl['facc_party_add_amend_convert_alias_surname'].controlName]
-              "
-              [opalLibCapitaliseAllCharacters]="
-                form.get([
-                  'facc_party_add_amend_convert_aliases',
-                  rowIndex,
-                  aliasControl['facc_party_add_amend_convert_alias_surname'].controlName,
-                ])!
-              "
-            ></opal-lib-govuk-text-input>
-          </fieldset>
-        }
-        @if (aliasControls.length > 1) {
-          <div class="govuk-!-margin-bottom-3">
-            <a
-              class="govuk-link govuk-link--no-visited-state"
-              (click)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_aliases')"
-              (keyup.enter)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_aliases')"
-              tabindex="0"
+      @if (isIndividualPartyType) {
+        <div
+          opal-lib-govuk-checkboxes-conditional
+          conditionalId="facc_party_add_amend_convert_add_alias"
+          formArrayName="facc_party_add_amend_convert_individual_aliases"
+        >
+          @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+              <opal-lib-govuk-text-input
+                labelText="First names"
+                [inputId]="aliasControl['facc_party_add_amend_convert_alias_forenames'].inputId"
+                [inputName]="aliasControl['facc_party_add_amend_convert_alias_forenames'].inputName"
+                inputClasses="govuk-input--width-20"
+                [control]="
+                  form.get([
+                    'facc_party_add_amend_convert_individual_aliases',
+                    rowIndex,
+                    aliasControl['facc_party_add_amend_convert_alias_forenames'].controlName,
+                  ])
+                "
+                [errors]="
+                  formControlErrorMessages[aliasControl['facc_party_add_amend_convert_alias_forenames'].controlName]
+                "
+              ></opal-lib-govuk-text-input>
+              <opal-lib-govuk-text-input
+                labelText="Last name"
+                [inputId]="aliasControl['facc_party_add_amend_convert_alias_surname'].inputId"
+                [inputName]="aliasControl['facc_party_add_amend_convert_alias_surname'].inputName"
+                inputClasses="govuk-input--width-20"
+                [control]="
+                  form.get([
+                    'facc_party_add_amend_convert_individual_aliases',
+                    rowIndex,
+                    aliasControl['facc_party_add_amend_convert_alias_surname'].controlName,
+                  ])
+                "
+                [errors]="
+                  formControlErrorMessages[aliasControl['facc_party_add_amend_convert_alias_surname'].controlName]
+                "
+                [opalLibCapitaliseAllCharacters]="
+                  form.get([
+                    'facc_party_add_amend_convert_individual_aliases',
+                    rowIndex,
+                    aliasControl['facc_party_add_amend_convert_alias_surname'].controlName,
+                  ])!
+                "
+              ></opal-lib-govuk-text-input>
+            </fieldset>
+          }
+          @if (aliasControls.length > 1) {
+            <div class="govuk-!-margin-bottom-3">
+              <a
+                class="govuk-link govuk-link--no-visited-state"
+                (click)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_individual_aliases')"
+                (keyup.enter)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_individual_aliases')"
+                tabindex="0"
+              >
+                Remove
+              </a>
+            </div>
+          }
+          @if (aliasControls.length < 5) {
+            <opal-lib-govuk-button
+              buttonId="addAlias"
+              buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+              type="button"
+              (buttonClickEvent)="addAlias(aliasControls.length, 'facc_party_add_amend_convert_individual_aliases')"
+              >Add another alias</opal-lib-govuk-button
             >
-              Remove
-            </a>
-          </div>
-        }
-        @if (aliasControls.length < 5) {
-          <opal-lib-govuk-button
-            buttonId="addAlias"
-            buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-            type="button"
-            (buttonClickEvent)="addAlias(aliasControls.length, 'facc_party_add_amend_convert_aliases')"
-            >Add another alias</opal-lib-govuk-button
-          >
-        }
-      </div>
+          }
+        </div>
+      }
+      @if (isCompanyPartyType) {
+        <div
+          opal-lib-govuk-checkboxes-conditional
+          conditionalId="facc_party_add_amend_convert_add_alias"
+          formArrayName="facc_party_add_amend_convert_organisation_aliases"
+        >
+          @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+              <opal-lib-govuk-text-input
+                labelText="Company name"
+                [inputId]="aliasControl['facc_party_add_amend_convert_alias_organisation_name'].inputId"
+                [inputName]="aliasControl['facc_party_add_amend_convert_alias_organisation_name'].inputName"
+                inputClasses="govuk-input--width-20"
+                [control]="
+                  form.get([
+                    'facc_party_add_amend_convert_organisation_aliases',
+                    rowIndex,
+                    aliasControl['facc_party_add_amend_convert_alias_organisation_name'].controlName,
+                  ])
+                "
+                [errors]="
+                  formControlErrorMessages[
+                    aliasControl['facc_party_add_amend_convert_alias_organisation_name'].controlName
+                  ]
+                "
+                [opalLibCapitaliseAllCharacters]="
+                  form.get([
+                    'facc_party_add_amend_convert_organisation_aliases',
+                    rowIndex,
+                    aliasControl['facc_party_add_amend_convert_alias_organisation_name'].controlName,
+                  ])!
+                "
+              ></opal-lib-govuk-text-input>
+            </fieldset>
+          }
+          @if (aliasControls.length > 1) {
+            <div class="govuk-!-margin-bottom-3">
+              <a
+                class="govuk-link govuk-link--no-visited-state"
+                (click)="removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_organisation_aliases')"
+                (keyup.enter)="
+                  removeAlias(aliasControls.length - 1, 'facc_party_add_amend_convert_organisation_aliases')
+                "
+                tabindex="0"
+              >
+                Remove
+              </a>
+            </div>
+          }
+          @if (aliasControls.length < 5) {
+            <opal-lib-govuk-button
+              buttonId="addAlias"
+              buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+              type="button"
+              (buttonClickEvent)="addAlias(aliasControls.length, 'facc_party_add_amend_convert_organisation_aliases')"
+              >Add another alias</opal-lib-govuk-button
+            >
+          }
+        </div>
+      }
     }
-    <opal-lib-moj-date-picker
-      labelText="Date of birth"
-      labelClasses="govuk-label--s"
-      inputId="facc_party_add_amend_convert_dob"
-      inputName="facc_party_add_amend_convert_dob"
-      inputClasses="govuk-input--width-10"
-      hintText="For example, 31/01/2023"
-      [control]="form.get('facc_party_add_amend_convert_dob')!"
-      [maxDate]="yesterday"
-      (dateChange)="setInputValue($event, 'facc_party_add_amend_convert_dob')"
-      [errors]="formControlErrorMessages['facc_party_add_amend_convert_dob']"
-    ></opal-lib-moj-date-picker>
-    @if (age && ageLabel) {
-      <opal-lib-moj-ticket-panel
-        componentClasses="govuk-!-width-one-third"
-        sectionClasses="moj-ticket-panel__content--blue"
-        [alert]="true"
-      >
-        <strong>Age: {{ age }}</strong>
-        <p>{{ ageLabel }}</p>
-      </opal-lib-moj-ticket-panel>
+
+    <!-- Date of Birth and NI Number - Only for individual party type -->
+    @if (isIndividualPartyType) {
+      <opal-lib-moj-date-picker
+        labelText="Date of birth"
+        labelClasses="govuk-label--s"
+        inputId="facc_party_add_amend_convert_dob"
+        inputName="facc_party_add_amend_convert_dob"
+        inputClasses="govuk-input--width-10"
+        hintText="For example, 31/01/2023"
+        [control]="form.get('facc_party_add_amend_convert_dob')!"
+        [maxDate]="yesterday"
+        (dateChange)="setInputValue($event, 'facc_party_add_amend_convert_dob')"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_dob']"
+      ></opal-lib-moj-date-picker>
+      @if (age && ageLabel) {
+        <opal-lib-moj-ticket-panel
+          componentClasses="govuk-!-width-one-third"
+          sectionClasses="moj-ticket-panel__content--blue"
+          [alert]="true"
+        >
+          <strong>Age: {{ age }}</strong>
+          <p>{{ ageLabel }}</p>
+        </opal-lib-moj-ticket-panel>
+      }
+      <opal-lib-govuk-text-input
+        labelText="National Insurance number"
+        inputId="facc_party_add_amend_convert_national_insurance_number"
+        inputName="facc_party_add_amend_convert_national_insurance_number"
+        inputClasses="govuk-input--width-10"
+        labelClasses="govuk-label--s"
+        [control]="form.get('facc_party_add_amend_convert_national_insurance_number')"
+        [errors]="formControlErrorMessages['facc_party_add_amend_convert_national_insurance_number']"
+        [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_national_insurance_number')!"
+      ></opal-lib-govuk-text-input>
     }
-    <opal-lib-govuk-text-input
-      labelText="National Insurance number"
-      inputId="facc_party_add_amend_convert_national_insurance_number"
-      inputName="facc_party_add_amend_convert_national_insurance_number"
-      inputClasses="govuk-input--width-10"
-      labelClasses="govuk-label--s"
-      [control]="form.get('facc_party_add_amend_convert_national_insurance_number')"
-      [errors]="formControlErrorMessages['facc_party_add_amend_convert_national_insurance_number']"
-      [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_national_insurance_number')!"
-    ></opal-lib-govuk-text-input>
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
@@ -301,94 +392,96 @@
 
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Employer details</legend>
-      <opal-lib-govuk-text-input
-        labelText="Employer name"
-        inputId="facc_party_add_amend_convert_employer_company_name"
-        inputName="facc_party_add_amend_convert_employer_company_name"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_employer_company_name')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_company_name']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Employee reference"
-        inputId="facc_party_add_amend_convert_employer_reference"
-        inputName="facc_party_add_amend_convert_employer_reference"
-        inputClasses="govuk-input--width-10"
-        labelClasses="govuk-label--s"
-        hintText="If employee reference not known, add National Insurance number"
-        [control]="form.get('facc_party_add_amend_convert_employer_reference')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_reference']"
-        [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_employer_reference')!"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Employer email address"
-        inputId="facc_party_add_amend_convert_employer_email_address"
-        inputName="facc_party_add_amend_convert_employer_email_address"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_employer_email_address')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_email_address']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Employer telephone"
-        inputId="facc_party_add_amend_convert_employer_telephone_number"
-        inputName="facc_party_add_amend_convert_employer_telephone_number"
-        inputClasses="govuk-input--width-20"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_employer_telephone_number')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_telephone_number']"
-      ></opal-lib-govuk-text-input>
-    </fieldset>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Employer address</legend>
-      <opal-lib-govuk-text-input
-        labelText="Address line 1"
-        inputId="facc_party_add_amend_convert_employer_address_line_1"
-        inputName="facc_party_add_amend_convert_employer_address_line_1"
-        [control]="form.get('facc_party_add_amend_convert_employer_address_line_1')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_1']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Address line 2"
-        inputId="facc_party_add_amend_convert_employer_address_line_2"
-        inputName="facc_party_add_amend_convert_employer_address_line_2"
-        [control]="form.get('facc_party_add_amend_convert_employer_address_line_2')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_2']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Address line 3"
-        inputId="facc_party_add_amend_convert_employer_address_line_3"
-        inputName="facc_party_add_amend_convert_employer_address_line_3"
-        [control]="form.get('facc_party_add_amend_convert_employer_address_line_3')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_3']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Address line 4"
-        inputId="facc_party_add_amend_convert_employer_address_line_4"
-        inputName="facc_party_add_amend_convert_employer_address_line_4"
-        [control]="form.get('facc_party_add_amend_convert_employer_address_line_4')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_4']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Address line 5"
-        inputId="facc_party_add_amend_convert_employer_address_line_5"
-        inputName="facc_party_add_amend_convert_employer_address_line_5"
-        [control]="form.get('facc_party_add_amend_convert_employer_address_line_5')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_5']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Postcode"
-        inputId="facc_party_add_amend_convert_employer_post_code"
-        inputName="facc_party_add_amend_convert_employer_post_code"
-        inputClasses="govuk-input--width-10"
-        [control]="form.get('facc_party_add_amend_convert_employer_post_code')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_post_code']"
-        [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_employer_post_code')!"
-      ></opal-lib-govuk-text-input>
-    </fieldset>
-
+    <!-- Employer Details - Only for individual party type -->
+    @if (isIndividualPartyType) {
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Employer details</legend>
+        <opal-lib-govuk-text-input
+          labelText="Employer name"
+          inputId="facc_party_add_amend_convert_employer_company_name"
+          inputName="facc_party_add_amend_convert_employer_company_name"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_employer_company_name')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_company_name']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Employee reference"
+          inputId="facc_party_add_amend_convert_employer_reference"
+          inputName="facc_party_add_amend_convert_employer_reference"
+          inputClasses="govuk-input--width-10"
+          labelClasses="govuk-label--s"
+          hintText="If employee reference not known, add National Insurance number"
+          [control]="form.get('facc_party_add_amend_convert_employer_reference')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_reference']"
+          [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_employer_reference')!"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Employer email address"
+          inputId="facc_party_add_amend_convert_employer_email_address"
+          inputName="facc_party_add_amend_convert_employer_email_address"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_employer_email_address')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_email_address']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Employer telephone"
+          inputId="facc_party_add_amend_convert_employer_telephone_number"
+          inputName="facc_party_add_amend_convert_employer_telephone_number"
+          inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_employer_telephone_number')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_telephone_number']"
+        ></opal-lib-govuk-text-input>
+      </fieldset>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Employer address</legend>
+        <opal-lib-govuk-text-input
+          labelText="Address line 1"
+          inputId="facc_party_add_amend_convert_employer_address_line_1"
+          inputName="facc_party_add_amend_convert_employer_address_line_1"
+          [control]="form.get('facc_party_add_amend_convert_employer_address_line_1')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_1']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Address line 2"
+          inputId="facc_party_add_amend_convert_employer_address_line_2"
+          inputName="facc_party_add_amend_convert_employer_address_line_2"
+          [control]="form.get('facc_party_add_amend_convert_employer_address_line_2')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_2']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Address line 3"
+          inputId="facc_party_add_amend_convert_employer_address_line_3"
+          inputName="facc_party_add_amend_convert_employer_address_line_3"
+          [control]="form.get('facc_party_add_amend_convert_employer_address_line_3')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_3']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Address line 4"
+          inputId="facc_party_add_amend_convert_employer_address_line_4"
+          inputName="facc_party_add_amend_convert_employer_address_line_4"
+          [control]="form.get('facc_party_add_amend_convert_employer_address_line_4')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_4']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Address line 5"
+          inputId="facc_party_add_amend_convert_employer_address_line_5"
+          inputName="facc_party_add_amend_convert_employer_address_line_5"
+          [control]="form.get('facc_party_add_amend_convert_employer_address_line_5')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_address_line_5']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Postcode"
+          inputId="facc_party_add_amend_convert_employer_post_code"
+          inputName="facc_party_add_amend_convert_employer_post_code"
+          inputClasses="govuk-input--width-10"
+          [control]="form.get('facc_party_add_amend_convert_employer_post_code')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_employer_post_code']"
+          [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_employer_post_code')!"
+        ></opal-lib-govuk-text-input>
+      </fieldset>
+    }
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <opal-lib-govuk-button buttonId="submitForm" type="submit">Save changes</opal-lib-govuk-button>

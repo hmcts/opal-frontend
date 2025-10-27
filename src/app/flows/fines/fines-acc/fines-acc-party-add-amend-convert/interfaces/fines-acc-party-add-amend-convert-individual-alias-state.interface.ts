@@ -1,4 +1,4 @@
-export interface IFinesAccPartyAddAmendConvertAliasState {
+export interface IFinesAccPartyAddAmendConvertIndividualAliasState {
   facc_party_add_amend_convert_alias_forenames_0?: string;
   facc_party_add_amend_convert_alias_surname_0?: string;
   facc_party_add_amend_convert_alias_forenames_1?: string;

@@ -275,7 +275,7 @@ describe('FinesAccPayloadService', () => {
 
       const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
 
-      expect(result.facc_party_add_amend_convert_aliases).toEqual([
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([
         {
           facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
           facc_party_add_amend_convert_alias_surname_0: 'Smith',
@@ -377,7 +377,8 @@ describe('FinesAccPayloadService', () => {
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_forenames).toBeNull();
       expect(result.facc_party_add_amend_convert_surname).toBeNull();
-      expect(result.facc_party_add_amend_convert_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
       expect(result.facc_party_add_amend_convert_address_line_1).toBeNull(); // Empty string becomes null due to || null
       expect(result.facc_party_add_amend_convert_address_line_2).toBeNull();
       expect(result.facc_party_add_amend_convert_post_code).toBeNull(); // Empty string becomes null due to || null

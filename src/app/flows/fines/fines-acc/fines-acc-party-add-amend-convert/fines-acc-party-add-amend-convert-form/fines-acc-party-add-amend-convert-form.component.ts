@@ -15,6 +15,7 @@ import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-ac
 import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fines-acc-party-add-amend-convert-field-errors.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../constants/fines-acc-party-add-amend-convert-alias.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../constants/fines-acc-party-add-amend-convert-company-alias.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
@@ -50,6 +51,7 @@ import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   EMAIL_ADDRESS_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
@@ -57,6 +59,10 @@ import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-
 
 // regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -116,20 +122,23 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Sets up the debtor add/amend form structure without populating data.
    */
-  private setupDebtorAddAmendForm(): void {
+  private setupPartyAddAmendConvertForm(): void {
     this.form = new FormGroup({
-      facc_party_add_amend_convert_title: new FormControl(null, [Validators.required]),
+      facc_party_add_amend_convert_organisation_name: new FormControl(null, [
+        Validators.maxLength(50),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
+      facc_party_add_amend_convert_title: new FormControl(null),
       facc_party_add_amend_convert_forenames: new FormControl(null, [
-        Validators.required,
         Validators.maxLength(20),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_surname: new FormControl(null, [
-        Validators.required,
         Validators.maxLength(30),
         LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      facc_party_add_amend_convert_aliases: new FormArray([]),
+      facc_party_add_amend_convert_individual_aliases: new FormArray([]),
+      facc_party_add_amend_convert_organisation_aliases: new FormArray([]),
       facc_party_add_amend_convert_add_alias: new FormControl(null),
       facc_party_add_amend_convert_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       facc_party_add_amend_convert_national_insurance_number: new FormControl(null, [
@@ -229,11 +238,16 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
-   * Sets up the alias configuration for the debtor add/amend form.
+   * Sets up the alias configuration for company/individual form.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
-    this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
+    if (this.isCompanyPartyType) {
+      this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS.map((control) => control.controlName);
+      this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS;
+    } else {
+      this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
+      this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
+    }
   }
 
   /**
@@ -294,20 +308,89 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Sets up the initial debtor add/amend form.
    */
-  private initialDebtorAddAmendSetup(): void {
-    this.setupDebtorAddAmendForm();
+  private initialPartyAddAmendConvertSetup(): void {
+    this.setupPartyAddAmendConvertForm();
     this.setupAliasConfiguration();
 
-    // Safe access to aliases array
-    const aliasesLength = this.initialFormData?.formData?.facc_party_add_amend_convert_aliases?.length || 0;
-    this.setupAliasFormControls([...new Array(aliasesLength).keys()], 'facc_party_add_amend_convert_aliases');
+    // Setup alias form controls based on party type
+    if (this.isIndividualPartyType) {
+      const individualAliasesLength =
+        this.initialFormData?.formData?.facc_party_add_amend_convert_individual_aliases?.length || 0;
+      this.setupAliasFormControls(
+        [...new Array(individualAliasesLength).keys()],
+        'facc_party_add_amend_convert_individual_aliases',
+      );
+      this.setUpAliasCheckboxListener(
+        'facc_party_add_amend_convert_add_alias',
+        'facc_party_add_amend_convert_individual_aliases',
+      );
+    } else if (this.isCompanyPartyType) {
+      const organisationAliasesLength =
+        this.initialFormData?.formData?.facc_party_add_amend_convert_organisation_aliases?.length || 0;
+      this.setupAliasFormControls(
+        [...new Array(organisationAliasesLength).keys()],
+        'facc_party_add_amend_convert_organisation_aliases',
+      );
+      this.setUpAliasCheckboxListener(
+        'facc_party_add_amend_convert_add_alias',
+        'facc_party_add_amend_convert_organisation_aliases',
+      );
+    }
 
     this.setInitialErrorMessages();
     this.rePopulateForm(this.initialFormData?.formData || null);
-    this.setUpAliasCheckboxListener('facc_party_add_amend_convert_add_alias', 'facc_party_add_amend_convert_aliases');
     this.dateOfBirthListener();
     this.setupEmployerFieldsValidation();
+    this.setupPartyTypeValidation();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+  }
+
+  /**
+   * Sets up validation based on the party type.
+   */
+  private setupPartyTypeValidation(): void {
+    if (this.partyType === this.partyTypes.COMPANY) {
+      // Company validation - require organisation name
+      const organisationNameControl = this.form.get('facc_party_add_amend_convert_organisation_name');
+      organisationNameControl?.setValidators([
+        Validators.required,
+        Validators.maxLength(50),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]);
+      organisationNameControl?.updateValueAndValidity();
+    } else if (this.partyType === this.partyTypes.INDIVIDUAL) {
+      // Individual validation - require individual fields
+      const titleControl = this.form.get('facc_party_add_amend_convert_title');
+      const forenamesControl = this.form.get('facc_party_add_amend_convert_forenames');
+      const surnameControl = this.form.get('facc_party_add_amend_convert_surname');
+
+      titleControl?.setValidators([Validators.required]);
+      forenamesControl?.setValidators([
+        Validators.required,
+        Validators.maxLength(20),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+      ]);
+      surnameControl?.setValidators([
+        Validators.required,
+        Validators.maxLength(30),
+        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+      ]);
+
+      titleControl?.updateValueAndValidity();
+      forenamesControl?.updateValueAndValidity();
+      surnameControl?.updateValueAndValidity();
+    }
+
+    // Update alias configuration based on party type
+    this.setupAliasConfiguration();
+  }
+
+  public get isCompanyPartyType(): boolean {
+    return this.partyType === this.partyTypes.COMPANY;
+  }
+
+  public get isIndividualPartyType(): boolean {
+    return this.partyType === this.partyTypes.INDIVIDUAL;
   }
 
   public override ngOnInit(): void {
@@ -316,7 +399,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       this.initialFormData = FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
     }
 
-    this.initialDebtorAddAmendSetup();
+    this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
   }
 }

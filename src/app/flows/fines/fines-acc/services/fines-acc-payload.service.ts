@@ -133,7 +133,7 @@ export class FinesAccPayloadService {
   }
 
   /**
-   * Transforms the given IOpalFinesAccountDefendantAccountParty into IFinesAccDebtorAddAmendState for the Debtor Add/Amend form
+   * Transforms the given IOpalFinesAccountDefendantAccountParty into IFinesAccPartyAddAmendConvertState for the party Amend form
    *
    * @param defendantData - The defendant tab data from the API.
    * @returns The transformed form state object for debtor add/amend form.
