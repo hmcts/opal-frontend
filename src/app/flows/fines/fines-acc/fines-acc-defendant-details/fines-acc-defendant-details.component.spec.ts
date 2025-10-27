@@ -20,6 +20,7 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -63,6 +64,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'getDefendantAccountEnforcementTabData',
       'getDefendantAccountPaymentTermsTabData',
       'getDefendantAccountParty',
+      'getParentOrGuardianAccountParty',
       'clearAccountDetailsCache',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
@@ -70,6 +72,9 @@ describe('FinesAccDefendantDetailsComponent', () => {
       of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
     );
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
+    mockOpalFinesService.getParentOrGuardianAccountParty.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK),
+    );
     mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );
@@ -134,8 +139,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should call router.navigate when navigateToAddCommentsPage is called', () => {
-    const event: Event = new Event('click');
-    component.navigateToAddCommentsPage(event);
+    component.navigateToAddCommentsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
       relativeTo: component['activatedRoute'],
     });
@@ -146,6 +150,14 @@ describe('FinesAccDefendantDetailsComponent', () => {
     // Subscribe to trigger the pipe execution
     component.tabDefendant$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('should fetch the parent or guardian tab data when fragment is changed to parent-or-guardian', () => {
+    component['refreshFragment$'].next('parent-or-guardian');
+    // Subscribe to trigger the pipe execution
+    component.tabParentOrGuardian$.subscribe();
+    expect(mockOpalFinesService.getParentOrGuardianAccountParty).toHaveBeenCalled();
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 
@@ -171,18 +183,15 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should refresh the data for the header and current tab when refreshPage is called', () => {
     component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
-    const event = new Event('click');
-    component.refreshPage(event);
+    component.refreshPage();
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(
       Number(MOCK_FINES_ACCOUNT_STATE.account_id),
     );
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a parent/guardian', () => {
-    const event: Event = new Event('click');
-    component.accountData.debtor_type = 'Parent/Guardian';
-    spyOn(event, 'preventDefault');
-    component.navigateToChangeDefendantDetailsPage(event);
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+    component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`],
       {
@@ -192,10 +201,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
-    const event: Event = new Event('click');
-    component.accountData.debtor_type = 'Defendant';
-    component.accountData.party_details.organisation_flag = true;
-    component.navigateToChangeDefendantDetailsPage(event);
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
+    component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
       {
@@ -205,10 +212,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
-    const event: Event = new Event('click');
-    component.accountData.debtor_type = 'Defendant';
-    component.accountData.party_details.organisation_flag = false;
-    component.navigateToChangeDefendantDetailsPage(event);
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
+    component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`],
       {
@@ -232,18 +237,17 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to access-denied if user lacks permission for the add comments page', () => {
-    const event: Event = new Event('click');
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-    component.navigateToAddCommentsPage(event);
+    component.navigateToAddCommentsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
   });
 
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
-    const event: Event = new Event('click');
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-    component.navigateToChangeDefendantDetailsPage(event);
+    component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });

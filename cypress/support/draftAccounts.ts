@@ -207,7 +207,7 @@ function deleteDefAccountFromDraft(draftBase: string) {
 
 /** Global After hook that cleans up any created draft accounts. */
 export function installDraftAccountCleanup(): void {
-  After(() => {
+  afterEach(() => {
     const ids = getAllIds();
     clearAllIds();
     if (ids.length === 0) return;
