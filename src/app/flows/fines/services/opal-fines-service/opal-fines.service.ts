@@ -671,7 +671,13 @@ export class OpalFines {
         // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
         payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
         payload.is_youth = payload.party_details?.individual_details?.date_of_birth
-          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
+          ? this.dateService.getAgeObject(
+              this.dateService.getFromFormatToFormat(
+                payload.party_details.individual_details.date_of_birth,
+                'yyyy-MM-dd',
+                'dd/MM/yyyy',
+              ),
+            )?.group === 'Youth'
           : false;
         return {
           ...payload,

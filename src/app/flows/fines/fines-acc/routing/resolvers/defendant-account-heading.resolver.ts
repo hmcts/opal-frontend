@@ -5,6 +5,8 @@ import { tap } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
+import { map } from 'rxjs/operators';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
 
 export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefendantDetailsHeader> = (
   route: ActivatedRouteSnapshot,
@@ -26,5 +28,6 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
     tap((headingData) => {
       accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
     }),
+    map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
   );
 };
