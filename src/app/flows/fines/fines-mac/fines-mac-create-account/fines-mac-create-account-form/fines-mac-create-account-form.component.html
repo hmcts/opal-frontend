@@ -27,7 +27,6 @@
     legendText="Account type"
     legendClasses="govuk-fieldset__legend--m"
     [errors]="formControlErrorMessages['fm_create_account_account_type']"
-    [tabIndex]="1"
   >
     @for (accountType of accountTypes; track accountType.key) {
       <div
@@ -100,7 +99,6 @@
           ? formControlErrorMessages['fm_create_account_fine_defendant_type']
           : formControlErrorMessages['fm_create_account_fixed_penalty_defendant_type']
       "
-      [tabIndex]="2"
     >
       @for (defendantType of defendantTypes; track defendantType.key) {
         <div
