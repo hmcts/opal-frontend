@@ -1,6 +1,6 @@
-import { HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
-import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
+import { from, of } from 'rxjs';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 
 type WebCryptoLike = {
   subtle?: {
@@ -68,10 +68,7 @@ function shouldDigestJsonRequest(req: HttpRequest<unknown>): boolean {
   const bodyType = typeof req.body;
   // No explicit header: treat plain object-like bodies as JSON payloads.
   const isPlainObject =
-    bodyType === 'object' &&
-    req.body !== null &&
-    !(req.body instanceof FormData) &&
-    !(req.body instanceof Blob);
+    bodyType === 'object' && req.body !== null && !(req.body instanceof FormData) && !(req.body instanceof Blob);
 
   return isPlainObject;
 }
@@ -81,9 +78,10 @@ function shouldDigestJsonRequest(req: HttpRequest<unknown>): boolean {
  */
 export const contentDigestInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const wantDigestHeader = { 'Want-Content-Digest': 'sha-256' };
+  const responseValidator = mergeMap((event: HttpEvent<unknown>) => validateResponseContentDigest(event));
   if (!shouldDigestJsonRequest(req)) {
     // Always request digests from the server even when we skip hashing.
-    return next(req.clone({ setHeaders: wantDigestHeader }));
+    return next(req.clone({ setHeaders: wantDigestHeader })).pipe(responseValidator);
   }
 
   const bodyString = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
@@ -104,7 +102,62 @@ export const contentDigestInterceptor: HttpInterceptorFn = (req: HttpRequest<unk
           setHeaders,
           body: bodyString,
         }),
-      );
+      ).pipe(responseValidator);
     }),
   );
 };
+
+/**
+ * Validates Content-Digest response headers for JSON payloads.
+ */
+function validateResponseContentDigest(event: HttpEvent<unknown>) {
+  console.log('Validating response content digest...');
+  console.log(event);
+  if (!(event instanceof HttpResponse)) {
+    return of(event);
+  }
+
+  const contentType = event.headers.get('Content-Type');
+  if (!isJsonContentType(contentType)) {
+    return of(event);
+  }
+
+  const digestHeader = event.headers.get('Content-Digest');
+  if (!digestHeader) {
+    return of(event);
+  }
+
+  const expectedDigest = extractSha256Digest(digestHeader);
+  const normalizedBody = event.body ?? null;
+  const bodyString = typeof normalizedBody === 'string' ? normalizedBody : JSON.stringify(normalizedBody);
+  if (typeof bodyString !== 'string') {
+    throw new TypeError('Unable to serialize JSON response body for digest verification.');
+  }
+
+  const bytes = new TextEncoder().encode(bodyString);
+  return from(sha256Base64(bytes)).pipe(
+    map((actualDigest) => {
+      if (actualDigest !== expectedDigest) {
+        throw new Error('Response content digest mismatch detected.');
+      }
+      return event;
+    }),
+  );
+}
+
+const SHA256_CONTENT_DIGEST_REGEX = /^sha-256=:([A-Z0-9+/]+={0,2}):$/i;
+
+function extractSha256Digest(headerValue: string): string {
+  const candidates = headerValue
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+  for (const candidate of candidates) {
+    const match = SHA256_CONTENT_DIGEST_REGEX.exec(candidate);
+    if (match) {
+      return match[1];
+    }
+  }
+
+  throw new Error('Malformed Content-Digest header: missing sha-256 entry.');
+}
