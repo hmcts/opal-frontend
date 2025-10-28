@@ -22,6 +22,9 @@
 
       @if (creditorType.key === 'individual') {
         @if (form.get('fm_offence_details_minor_creditor_creditor_type')!.value === creditorType.key) {
+          <span id="minor-creditor-individual-form-conditional-label" class="govuk-visually-hidden">
+            Options for Minor Creditor Individual form
+          </span>
           <div opal-lib-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
             <div class="govuk-form-group">
               <opal-lib-govuk-select
@@ -60,6 +63,9 @@
         }
       } @else if (creditorType.key === 'company') {
         @if (form.get('fm_offence_details_minor_creditor_creditor_type')!.value === creditorType.key) {
+          <span id="minor-creditor-company-form-conditional-label" class="govuk-visually-hidden">
+            Options for Minor Creditor Company form
+          </span>
           <div opal-lib-govuk-radios-conditional conditionalId="fm_offence_details_minor_creditor_creditor_type">
             <div class="govuk-form-group">
               <opal-lib-govuk-text-input
@@ -128,6 +134,7 @@
       ></div>
     </opal-lib-govuk-checkboxes>
     @if (form.get('fm_offence_details_minor_creditor_pay_by_bacs')?.value === true) {
+      <span id="pay-by-bacs-conditional-label" class="govuk-visually-hidden"> Options for Pay by BACS </span>
       <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_offence_details_minor_creditor_pay_by_bacs">
         <opal-lib-govuk-text-input
           labelText="Name on the account"

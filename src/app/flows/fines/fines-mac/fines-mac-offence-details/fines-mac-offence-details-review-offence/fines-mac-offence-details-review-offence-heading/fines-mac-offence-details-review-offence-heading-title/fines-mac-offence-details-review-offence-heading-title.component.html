@@ -24,6 +24,7 @@
     opal-lib-govuk-summary-list-row-action-item
     [actionId]="showDetails ? 'hide' : 'show'"
     [actionName]="showDetails ? 'Hide' : 'Show'"
+    [visuallyHiddenText]="'Offence ' + offenceCode"
     (linkClick)="onActionClick($event)"
   ></li>
 </ng-template>
@@ -34,12 +35,14 @@
     opal-lib-govuk-summary-list-row-action-item
     actionId="change"
     actionName="Change"
+    [visuallyHiddenText]="'Offence ' + offenceCode"
     (linkClick)="onActionClick($event)"
   ></li>
   <li
     opal-lib-govuk-summary-list-row-action-item
     actionId="remove"
     actionName="Remove"
+    [visuallyHiddenText]="'Offence ' + offenceCode"
     (linkClick)="onActionClick($event)"
   ></li>
 </ng-template>
