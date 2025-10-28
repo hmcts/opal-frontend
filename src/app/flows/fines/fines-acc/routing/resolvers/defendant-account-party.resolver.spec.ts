@@ -58,7 +58,7 @@ describe('defendantAccountPartyResolver', () => {
     } as any;
 
     const mockHeaderData: IOpalFinesAccountDefendantDetailsHeader = {
-      defendant_party_id: 'DEFENDANT123',
+      defendant_account_party_id: 'DEFENDANT123',
       parent_guardian_party_id: null,
       debtor_type: 'Defendant',
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,7 +101,7 @@ describe('defendantAccountPartyResolver', () => {
     } as any;
 
     const mockHeaderData: IOpalFinesAccountDefendantDetailsHeader = {
-      defendant_party_id: 'DEFENDANT123',
+      defendant_account_party_id: 'DEFENDANT123',
       parent_guardian_party_id: null,
       debtor_type: 'Defendant',
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,7 +136,7 @@ describe('defendantAccountPartyResolver', () => {
     } as any;
 
     const mockHeaderData: IOpalFinesAccountDefendantDetailsHeader = {
-      defendant_party_id: 'DEFENDANT123',
+      defendant_account_party_id: 'DEFENDANT123',
       parent_guardian_party_id: 'GUARDIAN456',
       debtor_type: 'Parent/Guardian',
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,7 +179,7 @@ describe('defendantAccountPartyResolver', () => {
     } as any;
 
     const mockHeaderData: IOpalFinesAccountDefendantDetailsHeader = {
-      defendant_party_id: '',
+      defendant_account_party_id: '',
       parent_guardian_party_id: null,
       debtor_type: 'Defendant',
       //eslint-disable-next-line @typescript-eslint/no-explicit-any

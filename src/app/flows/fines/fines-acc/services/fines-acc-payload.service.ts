@@ -69,7 +69,7 @@ export class FinesAccPayloadService {
     return {
       account_number: headingData.account_number,
       account_id: Number(account_id),
-      party_id: headingData.defendant_party_id,
+      party_id: headingData.defendant_account_party_id,
       party_type: headingData.debtor_type,
       party_name: party_name,
       base_version: headingData.version,
