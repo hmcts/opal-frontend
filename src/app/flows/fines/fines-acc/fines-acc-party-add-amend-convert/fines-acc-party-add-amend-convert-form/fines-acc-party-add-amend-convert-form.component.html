@@ -1,14 +1,9 @@
-@if (partyType === 'company') {
-  <opal-lib-govuk-heading-with-caption
-    [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
-    headingText="Company details"
-  ></opal-lib-govuk-heading-with-caption>
-} @else {
-  <opal-lib-govuk-heading-with-caption
-    [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
-    headingText="Defendant details"
-  ></opal-lib-govuk-heading-with-caption>
-}
+@let headingText = partyType === 'company' ? 'Company details' : 'Defendant details';
+
+<opal-lib-govuk-heading-with-caption
+  [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
+  [headingText]="headingText"
+></opal-lib-govuk-heading-with-caption>
 
 <opal-lib-govuk-error-summary
   [errors]="formErrorSummaryMessage"
