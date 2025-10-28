@@ -111,8 +111,6 @@ export const contentDigestInterceptor: HttpInterceptorFn = (req: HttpRequest<unk
  * Validates Content-Digest response headers for JSON payloads.
  */
 function validateResponseContentDigest(event: HttpEvent<unknown>) {
-  console.log('Validating response content digest...');
-  console.log(event);
   if (!(event instanceof HttpResponse)) {
     return of(event);
   }
