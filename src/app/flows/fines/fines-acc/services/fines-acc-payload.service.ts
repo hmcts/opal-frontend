@@ -10,7 +10,10 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
+import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +69,7 @@ export class FinesAccPayloadService {
     return {
       account_number: headingData.account_number,
       account_id: Number(account_id),
-      party_id: headingData.defendant_party_id,
+      party_id: headingData.defendant_account_party_id,
       party_type: headingData.debtor_type,
       party_name: party_name,
       base_version: headingData.version,
@@ -127,5 +130,17 @@ export class FinesAccPayloadService {
     transformItemsConfig: ITransformItem[],
   ): T {
     return this.transformationService.transformObjectValues(finesAccPayload, transformItemsConfig);
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountDefendantAccountParty into IFinesAccDebtorAddAmendState for the Debtor Add/Amend form
+   *
+   * @param defendantData - The defendant tab data from the API.
+   * @returns The transformed form state object for debtor add/amend form.
+   */
+  public mapDebtorAccountPartyPayload(
+    defendantData: IOpalFinesAccountDefendantAccountParty,
+  ): IFinesAccPartyAddAmendConvertState {
+    return transformDefendantAccountPartyPayload(defendantData);
   }
 }
