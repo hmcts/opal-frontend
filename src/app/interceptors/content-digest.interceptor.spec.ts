@@ -21,7 +21,7 @@ async function computeSha256Digest(body: unknown): Promise<string> {
   if (typeof btoa === 'function') {
     let binary = '';
     for (const value of digestBytes) {
-      binary += String.fromCharCode(value);
+      binary += String.fromCodePoint(value);
     }
     return btoa(binary);
   }
