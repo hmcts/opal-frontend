@@ -34,6 +34,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_parent_guardian_details_add_alias')?.value === true) {
+    <span id="parent-guardian-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_parent_guardian_details_add_alias"
@@ -88,9 +89,10 @@
             class="govuk-link govuk-link--no-visited-state"
             (click)="removeAlias(aliasControls.length - 1, 'fm_parent_guardian_details_aliases')"
             (keyup.enter)="removeAlias(aliasControls.length - 1, 'fm_parent_guardian_details_aliases')"
+            [attr.aria-label]="'Remove alias ' + aliasControls.length"
             tabindex="0"
           >
-            Remove
+            Remove <span class="govuk-visually-hidden">alias {{ aliasControls.length }}</span>
           </a>
         </div>
       }
