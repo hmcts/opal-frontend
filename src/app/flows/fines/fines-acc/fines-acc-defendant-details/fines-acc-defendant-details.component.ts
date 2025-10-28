@@ -134,7 +134,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       this.refreshFragment$,
     );
 
-    const { defendant_party_id, parent_guardian_party_id } = this.accountData;
+    const { defendant_account_party_id, parent_guardian_party_id } = this.accountData;
     const { account_id } = this.accountStore.getAccountState();
 
     fragment$.subscribe((tab) => {
@@ -144,7 +144,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'defendant':
           this.tabDefendant$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountParty(account_id, defendant_party_id),
+            this.opalFinesService.getDefendantAccountParty(account_id, defendant_account_party_id),
           );
           break;
         case 'parent-or-guardian':
@@ -272,6 +272,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.payloadService.transformAccountHeaderForStore(Number(this.accountStore.account_id()), headingData),
           );
         }),
+        map((headingData) => this.payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
         takeUntil(this.destroy$),
       )
       .subscribe((res) => {

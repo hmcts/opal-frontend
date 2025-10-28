@@ -4,9 +4,14 @@ Then('I see the error message {string} at the top of the page', (errorMessage: s
   cy.get('.govuk-error-summary').should('contain', errorMessage);
 });
 Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
-  cy.get('.govuk-error-message');
-  cy.contains('.govuk-error-message', errorMessage).siblings('label, h1').should('contain', fieldName);
+  cy.contains('label', fieldName)
+    .closest('div')
+    .parent()
+    .within(() => {
+      cy.get('p.govuk-error-message').should('exist').and('contain.text', errorMessage);
+    });
 });
+
 Then('I see the error message {string} above the {string} payment field', (errorMessage: string, fieldName: string) => {
   cy.contains('.govuk-error-message', errorMessage).prev().should('contain', fieldName);
 });

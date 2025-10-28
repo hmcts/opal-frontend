@@ -2,16 +2,19 @@ import { IOpalFinesDefendantAccountAlias } from '@services/fines/opal-fines-serv
 
 export interface IOpalFinesAccountDefendantDetailsHeader {
   version: string | null;
+  defendant_account_id: string;
+  debtor_type: string;
+  is_youth: boolean;
   account_number: string;
-  defendant_party_id: string;
+  defendant_account_party_id: string;
   parent_guardian_party_id: string | null;
+  account_type: string | null;
+  prosecutor_case_reference: string | null;
+  fixed_penalty_ticket_number: string | null;
   account_status_reference: {
     account_status_code: string;
     account_status_display_name: string;
   };
-  account_type: string | null;
-  prosecutor_case_reference: string | null;
-  fixed_penalty_ticket_number: string | null;
   business_unit_summary: {
     business_unit_id: string;
     business_unit_name: string;
@@ -40,6 +43,4 @@ export interface IOpalFinesAccountDefendantDetailsHeader {
       individual_aliases: IOpalFinesDefendantAccountAlias[] | null;
     } | null;
   };
-  is_youth: boolean; // not in response
-  debtor_type: 'Defendant' | 'Parent/Guardian';
 }

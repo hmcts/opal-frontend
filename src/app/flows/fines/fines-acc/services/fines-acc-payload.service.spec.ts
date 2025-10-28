@@ -141,7 +141,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
-      party_id: header.defendant_party_id,
+      party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name:
         header.party_details.individual_details?.title +
@@ -172,7 +172,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
-      party_id: header.defendant_party_id,
+      party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
       base_version: header.version,
