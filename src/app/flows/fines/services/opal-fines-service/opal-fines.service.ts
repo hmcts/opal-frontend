@@ -55,17 +55,14 @@ import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fi
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
-import { FINES_ACC_DEBTOR_TYPES } from '../../fines-acc/constants/fines-acc-debtor-types.constant';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
-  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
   private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
