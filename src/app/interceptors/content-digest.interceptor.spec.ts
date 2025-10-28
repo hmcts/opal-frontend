@@ -1,10 +1,4 @@
-import {
-  HttpEvent,
-  HttpHandlerFn,
-  HttpHeaders,
-  HttpRequest,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpEvent, HttpHandlerFn, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { contentDigestInterceptor } from './content-digest.interceptor';
 
