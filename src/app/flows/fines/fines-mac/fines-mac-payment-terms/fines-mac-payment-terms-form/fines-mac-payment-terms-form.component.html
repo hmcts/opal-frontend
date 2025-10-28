@@ -21,6 +21,9 @@
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === true) {
+          <span id="payment-terms-collection-order-made-conditional-label" class="govuk-visually-hidden">
+            Options for Collection Order Made
+          </span>
           <div opal-lib-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
             <div class="govuk-form-group">
               <opal-lib-moj-date-picker
@@ -51,6 +54,9 @@
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
           @if (permissions[permissionsMap['collection-order']] !== false) {
+            <span id="payment-terms-collection-order-made-today-conditional-label" class="govuk-visually-hidden">
+              Options for Collection Order Made Today
+            </span>
             <div opal-lib-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">
                 <opal-lib-govuk-checkboxes-item
@@ -85,6 +91,9 @@
       @switch (paymentTerm.key) {
         @case ('payInFull') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
+            <span id="payment-term-pay-in-full-conditional-label" class="govuk-visually-hidden">
+              Options for Pay In Full
+            </span>
             <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <div class="govuk-form-group">
                 <opal-lib-moj-date-picker
@@ -114,6 +123,9 @@
         }
         @case ('instalmentsOnly') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
+            <span id="payment-term-instalments-only-conditional-label" class="govuk-visually-hidden">
+              Options for Instalments Only
+            </span>
             <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
@@ -121,6 +133,9 @@
         }
         @case ('lumpSumPlusInstalments') {
           @if (form.get('fm_payment_terms_payment_terms')!.value === paymentTerm.key) {
+            <span id="payment-term-lump-sum-plus-instalments-conditional-label" class="govuk-visually-hidden">
+              Options for Lump Sum Plus Instalments
+            </span>
             <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_payment_terms">
               <div class="govuk-form-group">
                 <opal-lib-govuk-text-input-prefix-suffix
@@ -167,6 +182,9 @@
       ></div>
 
       @if (form.get('fm_payment_terms_has_days_in_default')?.value) {
+        <span id="has-days-in-default-conditional-label" class="govuk-visually-hidden">
+          Options for Has days in default
+        </span>
         <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_has_days_in_default">
           <div class="govuk-form-group">
             <opal-lib-moj-date-picker
@@ -218,6 +236,9 @@
       ></div>
       @if (form.get('fm_payment_terms_hold_enforcement_on_account')?.value) {
         <div>
+          <span id="hold-enforcement-on-account-conditional-label" class="govuk-visually-hidden">
+            Options for Hold enforcement on account (NOENF)
+          </span>
           <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_hold_enforcement_on_account">
             <opal-lib-govuk-text-area
               labelText="Reason account is on NOENF"
@@ -244,6 +265,9 @@
       ></div>
       @if (form.get('fm_payment_terms_add_enforcement_action')!.value !== null) {
         @if (form.get('fm_payment_terms_add_enforcement_action')?.value === true) {
+          <span id="add-enforcement-actions-conditional-label" class="govuk-visually-hidden">
+            Options for Add enforcement action
+          </span>
           <div opal-lib-govuk-checkboxes-conditional conditionalId="fm_payment_terms_add_enforcement_action">
             <opal-lib-govuk-radio
               fieldSetId="fm_payment_terms_enforcement_action"
@@ -261,6 +285,9 @@
                 ></div>
                 @if (enforcementAction.key === 'PRIS') {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
+                    <span id="payment-term-enforcement-type-prison-conditional-label" class="govuk-visually-hidden">
+                      Options for Defendant is in custody
+                    </span>
                     <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
                       <div class="govuk-form-group">
                         <opal-lib-moj-date-picker
@@ -294,6 +321,9 @@
                   }
                 } @else {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
+                    <span id="payment-term-enforcement-type-noenf-conditional-label" class="govuk-visually-hidden">
+                      Options for Hold enforcement on account
+                    </span>
                     <div opal-lib-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
                       <opal-lib-govuk-text-area
                         labelText="Reason account is on NOENF"

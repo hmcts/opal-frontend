@@ -14,7 +14,5 @@ export const DOM_ELEMENTS = {
   freeText2Error: '#facc_add_free_text_2-error-message',
   freeText3Error: '#facc_add_free_text_3-error-message',
   commentCharacterCount: '.govuk-form-group > :nth-child(4)',
-  freeText1CharacterCount: '#facc_add_free_text_1-hint',
-  freeText2CharacterCount: '#facc_add_free_text_2-hint',
-  freeText3CharacterCount: '#facc_add_free_text_3-hint',
+  freeTextCharacterCount: 'div[class="govuk-hint govuk-character-count__message govuk-character-count__status"]',
 };
