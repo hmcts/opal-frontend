@@ -43,7 +43,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccPartyAddAmendConv
       const partyId =
         headingData.debtor_type === 'Parent/Guardian'
           ? headingData.parent_guardian_party_id
-          : headingData.defendant_party_id;
+          : headingData.defendant_account_party_id;
 
       if (!partyId) {
         // If no valid party ID found, redirect back to defendant details
