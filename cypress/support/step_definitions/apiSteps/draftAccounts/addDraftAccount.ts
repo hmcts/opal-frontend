@@ -11,6 +11,7 @@ import {
   pathForAccount,
   readDraftIdFromBody,
 } from '../../../../support/draftAccounts';
+import { clickLinkAcrossPages } from '../../genericSteps/links/linkHelpers';
 
 /** Ensure global cleanup hook is installed (safe to call multiple times). */
 installDraftAccountCleanup();
@@ -309,6 +310,14 @@ Then('I click the latest published account link', () => {
         win.location.href = url;
       });
     });
-    cy.contains('a.govuk-link', String(accountNumber)).click();
+    cy.get('app-fines-sa-results').then((resultTable) => {
+      const linkExists = resultTable.find(`a.govuk-link:contains(${accountNumber})`).length > 0;
+      cy.log(`Link for account number ${accountNumber} exists: ${linkExists}`);
+      if (linkExists) {
+        cy.get(`a.govuk-link:contains(${accountNumber})`).click();
+      } else {
+        clickLinkAcrossPages(String(accountNumber));
+      }
+    });
   });
 });

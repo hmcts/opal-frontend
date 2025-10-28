@@ -6,15 +6,23 @@ import { clickLinkAcrossPages } from '../../../step_definitions/genericSteps/lin
  * ----------------------------------------------------------------------------------------------*/
 
 Then('I click on the {string} link', (linkText: string) => {
-  clickLinkAcrossPages(linkText, {
-    waitAfterPageMs: 200,
-    maxPages: 30,
-    paginationRetries: 5,
-    paginationRetryDelayMs: 500,
-    singlePageRetries: 6,
-    singlePageRetryDelayMs: 500,
-    // For tabs like “Rejected/Failed”, refreshing the current tab can help on slow renders:
-    singlePageRefreshSelector: '.moj-sub-navigation__link[aria-current="page"]',
+  cy.get('a').then((links) => {
+    const link = links.filter(`:contains(${linkText})`).first();
+    if (link.length) {
+      cy.wrap(link).click();
+    } else {
+      cy.log(`Link with text "${linkText}" not found`);
+      clickLinkAcrossPages(linkText, {
+        waitAfterPageMs: 200,
+        maxPages: 30,
+        paginationRetries: 5,
+        paginationRetryDelayMs: 500,
+        singlePageRetries: 6,
+        singlePageRetryDelayMs: 500,
+        // For tabs like “Rejected/Failed”, refreshing the current tab can help on slow renders:
+        singlePageRefreshSelector: '.moj-sub-navigation__link[aria-current="page"]',
+      });
+    }
   });
 });
 
