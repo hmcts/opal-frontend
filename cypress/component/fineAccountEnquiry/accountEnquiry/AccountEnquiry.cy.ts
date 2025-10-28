@@ -56,8 +56,8 @@ const setupComponent = (accountId: string | null = '77') => {
           const interceptedRoutes = [
             '/access-denied',
             '../note/add',
-            '../debtor/individual/amend',
-            '../debtor/parentGuardian/amend',
+            '../individual/amend',
+            '../parentGuardian/amend',
             // Add more routes here as needed
           ];
           if (Array.isArray(commands) && interceptedRoutes.includes(commands[0])) {
