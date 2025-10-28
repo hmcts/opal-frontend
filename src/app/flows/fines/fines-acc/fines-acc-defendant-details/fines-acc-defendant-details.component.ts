@@ -302,7 +302,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.userState.business_unit_users,
       )
     ) {
-      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.debtor}/${partyType}/amend`], {
+      this['router'].navigate([`../${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
     } else {

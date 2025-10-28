@@ -6,7 +6,7 @@ Feature: Account Enquiries - View Account Details
         And I clear all approved draft accounts
         When I navigate to Search For An Account
 
-    @PO-1593 @866
+    @PO-1593 @866 @PO-1110
     Scenario: As a user I can view account details of an defendant account
         And I create a "adultOrYouthOnly" draft account with the following details:
             | Account_status                          | Submitted                      |
@@ -26,6 +26,35 @@ Feature: Account Enquiries - View Account Details
         And I click the "Search" button
         Then I click the latest published account link
         And I see "Mr John ACCDETAILSURNAME" on the page header
+
+        When I click on the "Defendant" link
+        Then I click on the "Change" link
+        And I see "Defendant details" on the page header
+
+        # AC4 - Route Guard
+        When I enter "Test" into the "First name" field
+        Then I click Cancel, a window pops up and I click Cancel
+        Then I see 'Test' in the 'First name' field
+
+        When I click Cancel, a window pops up and I click Ok
+        Then I see "Mr John ACCDETAILSURNAME" on the page header
+
+
+        # AC3 - Cancel Changes
+        When I click on the "Defendant" link
+        Then I click on the "Change" link
+        When I click on the "Cancel" link
+        Then I see "Mr John ACCDETAILSURNAME" on the page header
+
+        When I click on the "Defendant" link
+        And I click on the "Change" link
+        And I enter "Test" into the "First name" field
+
+        Then I click "Cancel", a window pops up and I click Cancel
+        Then I see "Test" in the "First name" field
+
+        Then I click "Cancel", a window pops up and I click Ok
+        Then I see "Mr John ACCDETAILSURNAME" on the page header
 
     @967
     Scenario: As a user I can view account details of a company account
