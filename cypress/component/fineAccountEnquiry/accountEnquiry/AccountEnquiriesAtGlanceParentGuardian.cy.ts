@@ -18,6 +18,7 @@ import { interceptAuthenticatedUser, interceptUserState } from 'cypress/componen
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { DEFENDANT_DETAILS } from './constants/defendant_details_elements';
+import { setLanguagePref } from './Utils/SharedFunctions';
 
 describe('Defendant Account Summary - At a Glance Tab', () => {
   beforeEach(() => {
@@ -128,12 +129,18 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .parent()
         .within(() => {
           // Verify Document language field and value are displayed
-          cy.contains(/document language/i).should('be.visible');
-          cy.contains('p', 'Welsh and English').should('be.visible');
+          cy.contains(/document language/i)
+            .should('be.visible')
+            .next('p')
+            .contains('Welsh and English')
+            .should('be.visible');
 
           //Verify Court hearing language field and value are displayed
-          cy.contains(/court hearing language/i).should('be.visible');
-          cy.contains('p', 'Welsh and English').should('be.visible'); //This selects the same "Welsh and English" as above
+          cy.contains(/court hearing language/i)
+            .should('be.visible')
+            .next('p')
+            .contains('Welsh and English')
+            .should('be.visible'); //This selects the same "Welsh and English" as above
         });
     },
   );
@@ -151,15 +158,19 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   });
 
   it('AC2bia: Label Welsh and Language is not displayed ', { tags: ['PO-779'] }, () => {
-    // TODO: Modify mock to not include language preferences, for some reason the usual method is not working
+    let PGAtAGlance = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    const { language_preferences } = PGAtAGlance;
+    setLanguagePref(language_preferences!.document_language_preference);
+    setLanguagePref(language_preferences!.hearing_language_preference);
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-    interceptAtAGlance(77, OPAL_FINES_ACCOUNT_ORG_AT_A_GLANCE_MOCK, '1');
+    interceptAtAGlance(77, PGAtAGlance, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
-    cy.get(DOM.enforcementStatusTag).should('not.exist'); //Passing when it shouldn't
-    cy.get(DEFENDANT_DETAILS.parentGuardianTableSections).should('not.exist');
+    cy.contains('h2', /language preference(s)?/i).should('not.exist');
+    cy.contains(/document language/i).should('not.exist');
+    cy.contains(/court hearing language/i).should('not.exist');
   });
 
   it('AC2c: Labels not displayed ', { tags: ['PO-779'] }, () => {
@@ -180,12 +191,23 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   });
 
   it('AC3: displays Aliases section when defendant has one or more aliases', { tags: ['PO-779'] }, () => {
-    // TODO: Modify mock to include at least one alias, for some reason, the usual method is not working
-    //const mockDataWithAlias = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-    //mockDataWithAlias.party_details.individual_details!.individual_aliases = ['Lorum Ipsum'];
+    const mockDataWithAlias = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
+    const aliasOne = {
+      alias_id: '12345',
+      sequence_number: 1,
+      surname: 'SMITH',
+      forenames: 'Ewan',
+    };
+    const aliasTwo = {
+      alias_id: '12346',
+      sequence_number: 2,
+      surname: 'WILLIAMS',
+      forenames: 'Megan',
+    };
+    mockDataWithAlias.party_details.individual_details!.individual_aliases = [aliasOne, aliasTwo];
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
-    //interceptAtAGlance(77, OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK, '1'); - Does this need to be commented out if modifying the mock above?
+    interceptAtAGlance(77, mockDataWithAlias, '1');
 
     setupAccountEnquiryComponent(componentProperties);
 
@@ -202,6 +224,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         expect(aliases.indexOf('Ewan SMITH')).to.be.lessThan(aliases.indexOf('Megan WILLIAMS')); // order check
       });
   });
+
   it('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-779'] }, () => {
     const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
     headerNoAliases.party_details.individual_details!.individual_aliases = [];
@@ -453,7 +476,6 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
   });
 
   it('AC6c: displays Payment Terms section for "Instalments only" scenario', { tags: ['PO-779'] }, () => {
-    // TODO: Still showing lump sum plus instalments - need to fix
     const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
     mockDataPayByDate.payment_terms = {
       payment_terms_type: {
@@ -465,7 +487,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         instalment_period_code: 'M',
         instalment_period_display_name: 'Monthly',
       },
-      lump_sum_amount: 1000,
+      lump_sum_amount: null,
       instalment_amount: 100,
     };
 
