@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { GovukSummaryCardActionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 
 @Component({
@@ -8,6 +8,7 @@ import { GovukSummaryCardActionComponent } from '@hmcts/opal-frontend-common/com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountChangeLinkComponent {
+  @Input({ required: true }) public visuallyHiddenTextChange!: string;
   @Output() public emitChange = new EventEmitter<void>();
 
   /**

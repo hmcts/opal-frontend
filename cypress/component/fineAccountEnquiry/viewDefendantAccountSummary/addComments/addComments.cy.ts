@@ -118,13 +118,13 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(DOM_ELEMENTS.commentCharacterCount).should('contain', 'You have 0 characters remaining');
 
       cy.get(DOM_ELEMENTS.freeText1Field).should('have.value', 'B'.repeat(76));
-      cy.get(DOM_ELEMENTS.freeText1CharacterCount).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(0).should('contain', 'You have 0 characters remaining');
 
       cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', 'C'.repeat(76));
-      cy.get(DOM_ELEMENTS.freeText2CharacterCount).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(1).should('contain', 'You have 0 characters remaining');
 
       cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', 'D'.repeat(76));
-      cy.get(DOM_ELEMENTS.freeText3CharacterCount).should('contain', 'You have 0 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(2).should('contain', 'You have 0 characters remaining');
 
       // AC3a: Test clearing all fields and verify no errors occur
       cy.get(DOM_ELEMENTS.commentField).clear();
@@ -137,10 +137,10 @@ describe('FinesAccCommentsAddComponent', () => {
       cy.get(DOM_ELEMENTS.freeText2Field).should('have.value', '');
       cy.get(DOM_ELEMENTS.freeText3Field).should('have.value', '');
 
-      cy.get(DOM_ELEMENTS.commentCharacterCount).should('contain', 'You have 30 characters remaining');
-      cy.get(DOM_ELEMENTS.freeText1CharacterCount).should('contain', 'You have 76 characters remaining');
-      cy.get(DOM_ELEMENTS.freeText2CharacterCount).should('contain', 'You have 76 characters remaining');
-      cy.get(DOM_ELEMENTS.freeText3CharacterCount).should('contain', 'You have 76 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(0).should('contain', 'You have 30 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(1).should('contain', 'You have 76 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(2).should('contain', 'You have 76 characters remaining');
+      cy.get(DOM_ELEMENTS.freeTextCharacterCount).eq(3).should('contain', 'You have 76 characters remaining');
 
       // AC2a: Should verify all fields are optional
       cy.get(DOM_ELEMENTS.submitButton).should('not.be.disabled');

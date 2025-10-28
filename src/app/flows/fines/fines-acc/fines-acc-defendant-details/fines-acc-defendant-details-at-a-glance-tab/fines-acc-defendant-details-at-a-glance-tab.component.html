@@ -254,10 +254,10 @@
         @if (hasAccountMaintenencePermission) {
           <p [class]="style.value">
             <a
+              tabindex="0"
               class="govuk-link govuk-link--no-visited-state"
-              href="#"
-              (click)="addComments.emit($event)"
-              (keyup.enter)="addComments.emit($event)"
+              (click)="handleAddComments()"
+              (keyup.enter)="handleAddComments()"
               >Change</a
             >
           </p>
@@ -265,10 +265,10 @@
       } @else if (hasAccountMaintenencePermission) {
         <p [class]="style.value">
           <a
+            tabindex="0"
             class="govuk-link govuk-link--no-visited-state"
-            href="#"
-            (click)="addComments.emit($event)"
-            (keyup.enter)="addComments.emit($event)"
+            (click)="handleAddComments()"
+            (keyup.enter)="handleAddComments()"
             >Add comments</a
           >
         </p>
