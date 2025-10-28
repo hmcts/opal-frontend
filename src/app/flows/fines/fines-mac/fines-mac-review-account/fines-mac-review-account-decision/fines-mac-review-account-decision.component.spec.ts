@@ -13,7 +13,6 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacReviewAccountDecisionComponent', () => {
   let component: FinesMacReviewAccountDecisionComponent;
@@ -162,10 +161,10 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should clean up subscriptions and reset error on ngOnDestroy', () => {
     const globalStore = component['globalStore'];
-    const setErrorSpy = spyOn(globalStore, 'setError');
+    const setErrorSpy = spyOn(globalStore, 'resetError');
 
     component.ngOnDestroy();
 
-    expect(setErrorSpy).toHaveBeenCalledWith({ ...GLOBAL_ERROR_STATE });
+    expect(setErrorSpy).toHaveBeenCalled();
   });
 });

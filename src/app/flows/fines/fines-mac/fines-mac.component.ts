@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 @Component({
   selector: 'app-fines-mac',
   imports: [RouterOutlet],
@@ -53,8 +52,6 @@ export class FinesMacComponent implements OnDestroy {
     this.finesMacStore.resetFinesMacStore();
 
     // Clear any errors...
-    this.globalStore.setError({
-      ...GLOBAL_ERROR_STATE,
-    });
+    this.globalStore.resetError();
   }
 }

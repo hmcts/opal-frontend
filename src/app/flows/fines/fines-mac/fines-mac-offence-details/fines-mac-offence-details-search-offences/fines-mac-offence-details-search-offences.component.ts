@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
   imports: [RouterOutlet],
@@ -46,8 +45,6 @@ export class FinesMacOffenceDetailsSearchOffencesComponent implements OnDestroy 
     this.finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
 
     // Clear any errors...
-    this.globalStore.setError({
-      ...GLOBAL_ERROR_STATE,
-    });
+    this.globalStore.resetError();
   }
 }
