@@ -342,6 +342,7 @@ Feature: Manual fixed penalty account creation - Create Draft Account
 
     # PO-1809 AC1 - Navigate to 'Reason for rejection' screen when selecting defendant name hyperlink
     And I click on the "SMITH, John" link
+    Then I see "Mr John SMITH" on the page header
 
 
     # PO-1809 AC2a - Fixed Penalty Details form is pre-populated with existing data

@@ -227,3 +227,7 @@ export function installDraftAccountCleanup(): void {
     });
   });
 }
+
+export function aliasDraftAccountPut() {
+  return cy.intercept('PUT', '/opal-fines-service/draft-accounts/*').as('putDraftAccount');
+}
