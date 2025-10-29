@@ -2,6 +2,7 @@ import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 const globalErrorBannerText = 'You can try again. If the problem persists, contact the service desk.';
 const globalRetriableWarningBannerText = 'Please try again later or contact the help desk.';
+const genericWarningBannerText = 'You can try again. If the problem persists, contact the service desk.';
 
 Given(
   'I click the Manual account creation link and trigger a {int} error for the get businessUnits API',
@@ -30,7 +31,6 @@ Then('I should not see the global error banner', () => {
 Given(
   'I click the Manual account creation link and trigger a {int} retriable error for the get businessUnits API',
   (statusCode: number) => {
-    // Mock retriable error response for GET/PATCH/PUT/POST draft-accounts
     cy.intercept(
       {
         method: 'GET',
@@ -49,10 +49,8 @@ Given(
 
     cy.get('button, a').contains('Manual Account Creation').click();
 
-    // Wait for the mocked call
     cy.wait('@getBusinessUnitsError');
 
-    // Verify the intercepted response
     cy.get('@getBusinessUnitsError').then((interception: any) => {
       expect(interception.response.statusCode).to.equal(statusCode);
       expect(interception.response.body.retriable).to.be.true;
@@ -69,4 +67,22 @@ Then('I should see the retriable global warning banner', () => {
     .and('contain.text', 'Temporary System Issue')
     .and('contain.text', globalRetriableWarningBannerText)
     .and('contain.text', 'OP12345');
+});
+
+Given('I trigger a network failure for the get businessUnits API', () => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: '**/opal-fines-service/business-units*',
+    },
+    { forceNetworkError: true }, //  simulate no backend response
+  ).as('getBusinessUnitsNetworkError');
+
+  cy.contains('a', 'Manual Account Creation').click();
+
+  cy.wait('@getBusinessUnitsNetworkError');
+});
+
+Then('I should see the generic global warning banner', () => {
+  cy.get('div[opal-lib-moj-alert]', { timeout: 5000 }).should('exist').and('contain.text', genericWarningBannerText);
 });
