@@ -43,7 +43,7 @@ function clickSubnavTabIfPresent(
     containerSelector = '.moj-sub-navigation',
     linkSelector = '.moj-sub-navigation__link',
     attempts = 6,
-    delayMs = 300,
+    delayMs = 0,
   }: {
     containerSelector?: string;
     linkSelector?: string;
@@ -281,7 +281,7 @@ function tryClickLinkOnCurrentPage(linkText: string, linkSelector = 'a'): Cypres
  */
 function clickPage(
   page: number,
-  { waitAfterPageMs = 200, routeToWaitForAlias }: { waitAfterPageMs?: number; routeToWaitForAlias?: string } = {},
+  { waitAfterPageMs = 0, routeToWaitForAlias }: { waitAfterPageMs?: number; routeToWaitForAlias?: string } = {},
 ): Cypress.Chainable<undefined> {
   const ariaPrefix = `Page ${page} of`;
 
@@ -340,7 +340,7 @@ function scanPagesAndClick(
   last: number,
   {
     linkSelector = 'a',
-    waitAfterPageMs = 200,
+    waitAfterPageMs = 0,
     routeToWaitForAlias,
   }: { linkSelector?: string; waitAfterPageMs?: number; routeToWaitForAlias?: string } = {},
 ): Cypress.Chainable<undefined> {
@@ -372,7 +372,7 @@ function waitAndClickLinkOnSinglePage(
   {
     linkSelector = 'a',
     attempts = 6,
-    delayMs = 500,
+    delayMs = 0,
     refreshSelector,
     routeToWaitForAlias,
   }: {
@@ -418,7 +418,7 @@ function waitAndClickLinkOnSinglePage(
  * ----------------------------------------------------------------------------------------------*/
 
 /** Retry wrapper for pagination read to allow SPA screens to finish rendering. */
-function readPaginationInfoWithRetry(retries = 5, delayMs = 500): Cypress.Chainable<PaginationInfo> {
+function readPaginationInfoWithRetry(retries = 5, delayMs = 0): Cypress.Chainable<PaginationInfo> {
   const attempt = (n: number): Cypress.Chainable<PaginationInfo> =>
     readPaginationInfo().then((info) => {
       if (info.total === 1 && n < retries) {
@@ -440,12 +440,12 @@ function clickViaPaginationOrSinglePage(
   {
     linkSelector = 'a',
     maxPages,
-    waitAfterPageMs = 200,
+    waitAfterPageMs = 0,
     routeToWaitForAlias,
     paginationRetries = 5,
-    paginationRetryDelayMs = 500,
+    paginationRetryDelayMs = 0,
     singlePageRetries = 6,
-    singlePageRetryDelayMs = 500,
+    singlePageRetryDelayMs = 0,
     singlePageRefreshSelector,
   }: {
     linkSelector?: string;
@@ -496,12 +496,12 @@ function clickLinkAcrossPages(
   {
     linkSelector = 'a',
     maxPages = 50,
-    waitAfterPageMs = 200,
+    waitAfterPageMs = 0,
     routeToWaitForAlias,
     paginationRetries = 5,
-    paginationRetryDelayMs = 500,
+    paginationRetryDelayMs = 0,
     singlePageRetries = 6,
-    singlePageRetryDelayMs = 500,
+    singlePageRetryDelayMs = 0,
     singlePageRefreshSelector,
   }: {
     linkSelector?: string;
@@ -528,7 +528,7 @@ function clickLinkAcrossPages(
     ],
   });
 
-  return clickSubnavTabIfPresent(linkText, { attempts: 6, delayMs: 300 })
+  return clickSubnavTabIfPresent(linkText, { attempts: 6, delayMs: 0 })
     .then((tabHit) => {
       if (tabHit) {
         Cypress.log({ name: 'click-across', message: ['hit via subnav tab'] });
