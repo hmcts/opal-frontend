@@ -108,14 +108,14 @@ export const DOM_ELEMENTS = {
   //approveRadioButton: 'input[id="approve"]',
   approveRadioButton: 'input[type="radio"][id="approve"]',
   rejectRadioButton: 'input[id="reject"]',
-  rejectionText: 'div.govuk-label-wrapper.govuk-label-wrapper',
+  rejectionText: 'div.govuk-label-wrapper label.govuk-label--s',
   continue: 'button[id = "submitForm"]',
   textArea: 'textarea[id="fm_review_account_decision_reason"]',
 
   //confirm delete page
-  reasonLabel: 'div.govuk-label-wrapper.govuk-label-wrapper',
+  reasonLabel: 'label[for="fm_delete_account_confirmation_reason"]',
   commentInput: 'textarea[id="fm_delete_account_confirmation_reason"]',
-  commentCharHint: '.govuk-character-count__status',
+  commentCharHint: 'div.govuk-character-count__message.govuk-character-count__status',
   deleteConfirmation: 'button[id="confirmDeletion"]',
   cancelLink: 'a.govuk-link.button-link',
 };
