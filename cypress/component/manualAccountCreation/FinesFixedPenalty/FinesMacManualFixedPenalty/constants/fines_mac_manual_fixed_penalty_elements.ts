@@ -42,9 +42,9 @@ export const DOM_ELEMENTS = {
   offenceStatusMessage: 'strong',
 
   commentsInput: 'textarea[id="fm_fp_account_comments_notes_comments"]',
-  commentsInputHint: '[labeltext="Add comment"] > .govuk-form-group > .govuk-character-count__status',
+  commentsInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
-  accountNoteInputHint: '[labeltext="Add account notes"] > .govuk-form-group > .govuk-character-count__status',
+  accountNoteInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
 
   documentLanguageSelect: '#fm_language_preferences_document_language',
   hearingLanguageSelect: '#fm_language_preferences_hearing_language',
