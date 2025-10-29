@@ -11,7 +11,7 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
-import { contentDigestInterceptor } from './interceptors/content-digest.interceptor';
+import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 
 export const appConfig: ApplicationConfig = {
   providers: [

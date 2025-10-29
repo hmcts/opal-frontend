@@ -33,9 +33,6 @@ export class FinesMacOffenceDetailsComponent implements OnDestroy {
     this.finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
 
     // Clear any errors...
-    this.globalStore.setError({
-      error: false,
-      message: '',
-    });
+    this.globalStore.resetError();
   }
 }
