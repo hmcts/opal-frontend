@@ -145,7 +145,7 @@
   }
 </div>
 
-<ng-template #statusTag let-status>
+<ng-template #statusTag let-status let-statusId>
   <opal-lib-govuk-tag
     [tagClasses]="
       status === finesMacStatus.PROVIDED
@@ -154,7 +154,7 @@
           ? 'govuk-tag--red'
           : 'govuk-tag--grey'
     "
-    [tagId]="status"
+    [tagId]="statusId"
   >
     {{ status }}</opal-lib-govuk-tag
   >
@@ -179,7 +179,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.contactDetailsStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.contactDetailsStatus(), statusId: 'contactDetailsStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>
@@ -204,7 +207,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.employerDetailsStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.employerDetailsStatus(), statusId: 'employerDetailsStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>
@@ -229,7 +235,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.companyDetailsStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.companyDetailsStatus(), statusId: 'companyDetailsStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>
@@ -254,7 +263,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.personalDetailsStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.personalDetailsStatus(), statusId: 'personalDetailsStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>
@@ -280,7 +292,10 @@
       </ng-container>
       <ng-container status>
         <ng-container
-          *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.courtDetailsStatus() }"
+          *ngTemplateOutlet="
+            statusTag;
+            context: { $implicit: finesMacStore.courtDetailsStatus(), statusId: 'courtDetailsStatus' }
+          "
         ></ng-container>
       </ng-container>
     </opal-lib-govuk-task-list-item>
@@ -306,7 +321,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.parentGuardianDetailsStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.parentGuardianDetailsStatus(), statusId: 'parentGuardianDetailsStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>
@@ -336,6 +354,7 @@
           statusTag;
           context: {
             $implicit: status,
+            statusId: 'offenceDetailsStatus',
           }
         "
       ></ng-container>
@@ -377,7 +396,10 @@
 <ng-template #paymentTermsStatus>
   @if (canAccessPaymentTerms()) {
     <ng-container
-      *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.paymentTermsStatus() }"
+      *ngTemplateOutlet="
+        statusTag;
+        context: { $implicit: finesMacStore.paymentTermsStatus(), statusId: 'paymentTermsStatus' }
+      "
     ></ng-container>
   } @else {
     Cannot start yet
@@ -403,7 +425,10 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.accountCommentsNotesStatus() }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: { $implicit: finesMacStore.accountCommentsNotesStatus(), statusId: 'accountCommentsAndNotesStatus' }
+        "
       ></ng-container>
     </ng-container>
   </opal-lib-govuk-task-list-item>

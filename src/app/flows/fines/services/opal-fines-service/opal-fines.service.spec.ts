@@ -689,11 +689,11 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountParty', () => {
     const account_id: number = 77;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_account_party_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
     service
-      .getDefendantAccountParty(account_id, FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id)
+      .getDefendantAccountParty(account_id, FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_account_party_id)
       .subscribe((response) => {
         response.version = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.version;
         expect(response).toEqual(expectedResponse);
@@ -707,7 +707,7 @@ describe('OpalFines', () => {
 
   it('should getParentOrGuardianAccountParty', () => {
     const account_id: number = 77;
-    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_party_id}`;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_account_party_id}`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK;
 
     service

@@ -336,10 +336,13 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     When I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     And I navigate to Create and Manage Draft Accounts
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
     Then I click on the "Rejected" link
 
     # PO-1809 AC1 - Navigate to 'Reason for rejection' screen when selecting defendant name hyperlink
     And I click on the "SMITH, John" link
+    Then I see "Mr John SMITH" on the page header
 
 
     # PO-1809 AC2a - Fixed Penalty Details form is pre-populated with existing data

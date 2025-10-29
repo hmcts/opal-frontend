@@ -55,7 +55,6 @@ import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fi
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
-import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
 
@@ -64,7 +63,6 @@ import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
-  private readonly dateService = inject(DateService);
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$!: Observable<IOpalFinesBusinessUnitRefData>;
   private businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
@@ -668,11 +666,6 @@ export class OpalFines {
       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
         const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
         const version = this.extractEtagVersion(response.headers);
-        // Temporarily calculate debtor type and youth status until endpoint is updated to provide them.
-        payload.debtor_type = payload.parent_guardian_party_id ? 'Parent/Guardian' : 'Defendant';
-        payload.is_youth = payload.party_details?.individual_details?.date_of_birth
-          ? this.dateService.getAgeObject(payload.party_details.individual_details.date_of_birth)?.group === 'Youth'
-          : false;
         return {
           ...payload,
           version,

@@ -1,7 +1,11 @@
 <opal-lib-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact-details">
   @if (!isReadOnly) {
     <ng-container actions>
-      <li app-fines-mac-review-account-change-link (emitChange)="changeContactDetails()"></li>
+      <li
+        app-fines-mac-review-account-change-link
+        visuallyHiddenTextChange="Contact details"
+        (emitChange)="changeContactDetails()"
+      ></li>
     </ng-container>
   }
   <ng-container content>

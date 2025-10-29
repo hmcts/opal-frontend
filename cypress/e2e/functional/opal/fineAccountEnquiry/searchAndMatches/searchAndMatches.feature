@@ -558,7 +558,7 @@ Feature: Account Search and Matches
     And I enter "<reference_value>" into the "Reference or case number" field
     And I click the "Search" button
     And I see "Search results" on the page header
-    And I see the "Individuals" tab is selected
+    And I see the "Companies" tab is selected
     And I see "<reference_value>" is present in column "Ref"
 
     Examples:
@@ -599,7 +599,7 @@ Feature: Account Search and Matches
 
     # --- Step 3: Verify results show only exact match ---
     Then I see "Search results" on the page header
-    And I see the "Individuals" tab is selected
+    And I see the "Companies" tab is selected
     And I see "PCRAUTO010" is present in column "Ref"
     And I do not see "PCRAUTO010A" in column "Ref"
 

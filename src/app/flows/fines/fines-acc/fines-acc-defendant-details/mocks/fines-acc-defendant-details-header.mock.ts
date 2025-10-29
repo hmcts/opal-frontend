@@ -3,7 +3,8 @@ import { IOpalFinesAccountDefendantDetailsHeader } from '../interfaces/fines-acc
 export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   version: '1',
   account_number: '177A',
-  defendant_party_id: '77',
+  defendant_account_id: '77',
+  defendant_account_party_id: '77',
   parent_guardian_party_id: '77',
   account_type: 'Fine',
   prosecutor_case_reference: '090A',
