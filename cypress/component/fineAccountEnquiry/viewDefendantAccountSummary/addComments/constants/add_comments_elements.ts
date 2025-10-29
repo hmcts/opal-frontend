@@ -13,6 +13,8 @@ export const DOM_ELEMENTS = {
   freeText1Error: '#facc_add_free_text_1-error-message',
   freeText2Error: '#facc_add_free_text_2-error-message',
   freeText3Error: '#facc_add_free_text_3-error-message',
-  commentCharacterCount: '.govuk-form-group > :nth-child(4)',
-  freeTextCharacterCount: 'div[class="govuk-hint govuk-character-count__message govuk-character-count__status"]',
+  commentCharacterCount: '#facc_add_comment ~ .govuk-character-count__message.govuk-character-count__status',
+  freeText1CharacterCount: '#facc_add_free_text_1 ~ .govuk-character-count__message.govuk-character-count__status',
+  freeText2CharacterCount: '#facc_add_free_text_2 ~ .govuk-character-count__message.govuk-character-count__status',
+  freeText3CharacterCount: '#facc_add_free_text_3 ~ .govuk-character-count__message.govuk-character-count__status',
 };
