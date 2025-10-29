@@ -1,5 +1,10 @@
 import { defineStep } from '@badeball/cypress-cucumber-preprocessor';
-import { installDraftAccountCleanup, recordCreatedId, readDraftIdFromBody } from '../../../support/draftAccounts';
+import {
+  installDraftAccountCleanup,
+  recordCreatedId,
+  readDraftIdFromBody,
+  aliasDraftAccountPut,
+} from '../../../support/draftAccounts';
 
 installDraftAccountCleanup();
 
@@ -32,6 +37,7 @@ function clickAndCapture(buttonText: string) {
     recordCreatedId(id);
     cy.log(`Created Account ID: ${id}`);
   });
+  aliasDraftAccountPut();
 }
 
 // single registration to avoid duplicates
