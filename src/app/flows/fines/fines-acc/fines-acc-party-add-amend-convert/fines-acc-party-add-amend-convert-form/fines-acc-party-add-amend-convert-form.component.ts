@@ -359,6 +359,19 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
+   * Sets up party-specific error messages for parent/guardian fields.
+   */
+  private setupPartySpecificErrorMessages(): void {
+    if (this.partyType === this.partyTypes.PARENT_GUARDIAN) {
+      // Override error messages for parent/guardian fields
+      this.fieldErrors['facc_party_add_amend_convert_forenames'] =
+        this.fieldErrors['facc_party_add_amend_convert_forenames_parent_guardian'];
+      this.fieldErrors['facc_party_add_amend_convert_surname'] =
+        this.fieldErrors['facc_party_add_amend_convert_surname_parent_guardian'];
+    }
+  }
+
+  /**
    * Returns true if the party type is company.
    */
   public get isCompanyPartyType(): boolean {
@@ -366,10 +379,24 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
-   * Returns true if the party type is individual.
+   * Returns true if the party type is individual or parent/guardian.
+   * Both types use the same form structure with individual-specific fields.
    */
   public get isIndividualPartyType(): boolean {
-    return this.partyType === this.partyTypes.INDIVIDUAL;
+    return this.partyType === this.partyTypes.INDIVIDUAL || this.partyType === this.partyTypes.PARENT_GUARDIAN;
+  }
+
+  /**
+   * Returns the appropriate heading text based on party type.
+   */
+  public get headingText(): string {
+    if (this.partyType === this.partyTypes.COMPANY) {
+      return 'Company details';
+    } else if (this.partyType === this.partyTypes.PARENT_GUARDIAN) {
+      return 'Parent or guardian details';
+    } else {
+      return 'Defendant details';
+    }
   }
 
   public override ngOnInit(): void {
@@ -380,5 +407,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
 
     this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
+    this.setupPartySpecificErrorMessages();
   }
 }

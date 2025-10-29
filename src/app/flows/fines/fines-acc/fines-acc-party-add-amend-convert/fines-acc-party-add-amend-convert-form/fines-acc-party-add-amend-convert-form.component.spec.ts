@@ -605,6 +605,63 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
   });
 
+  describe('Parent/Guardian party type tests', () => {
+    beforeEach(() => {
+      component.partyType = 'parentGuardian';
+      fixture.detectChanges();
+    });
+
+    it('should have isIndividualPartyType getter return true for parent/guardian party type', () => {
+      expect(component.isIndividualPartyType).toBe(true);
+    });
+
+    it('should return correct heading text for parent/guardian party type', () => {
+      expect(component.headingText).toBe('Parent or guardian details');
+    });
+
+    it('should have individual form controls for parent/guardian party type', () => {
+      // Check individual fields exist
+      expect(component.form.get('facc_party_add_amend_convert_title')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_surname')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_dob')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeDefined();
+
+      // Check company fields don't exist
+      expect(component.form.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+      expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+    });
+
+    it('should require title, forenames and surname for parent/guardian party type', () => {
+      const titleControl = component.form.get('facc_party_add_amend_convert_title');
+      const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
+      const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
+
+      expect(titleControl?.hasError('required')).toBe(true);
+      expect(forenamesControl?.hasError('required')).toBe(true);
+      expect(surnameControl?.hasError('required')).toBe(true);
+
+      titleControl?.setValue('Mrs');
+      forenamesControl?.setValue('Jane');
+      surnameControl?.setValue('Smith');
+
+      expect(titleControl?.hasError('required')).toBe(false);
+      expect(forenamesControl?.hasError('required')).toBe(false);
+      expect(surnameControl?.hasError('required')).toBe(false);
+    });
+
+    it('should use parent/guardian specific error messages', () => {
+      // Call the setup method to ensure error messages are configured
+      (component as any)['setupPartySpecificErrorMessages']();
+
+      const forenamesErrors = component.fieldErrors['facc_party_add_amend_convert_forenames'];
+      const surnameErrors = component.fieldErrors['facc_party_add_amend_convert_surname'];
+
+      expect(forenamesErrors?.['required']?.message).toBe('Enter parent or guardian first name(s)');
+      expect(surnameErrors?.['required']?.message).toBe('Enter parent or guardian last name');
+    });
+  });
+
   it('should create base form group with shared fields', () => {
     const baseForm = (component as any)['createBaseFormGroup']();
 
