@@ -6,22 +6,30 @@ import { clickLinkAcrossPages } from '../../../step_definitions/genericSteps/lin
  * ----------------------------------------------------------------------------------------------*/
 
 Then('I click on the {string} link', (linkText: string) => {
-  cy.get('a').then((links) => {
-    const link = links.filter(`:contains(${linkText})`).first();
-    if (link.length) {
-      cy.wrap(link).click();
+  const opts = {
+    waitAfterPageMs: 200,
+    maxPages: 30,
+    paginationRetries: 5,
+    paginationRetryDelayMs: 500,
+    singlePageRetries: 6,
+    singlePageRetryDelayMs: 500,
+    singlePageRefreshSelector: '.moj-sub-navigation__link[aria-current="page"]',
+  };
+
+  const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(escapeRegex(linkText), 'i');
+
+  // Wait for the page to render *something*, but don't fail if the link isn't there yet.
+  cy.get('body', { timeout: 5000 }).then(($body) => {
+    const $match = $body.find('a').filter((_, el) => re.test(el.textContent || ''));
+    if ($match.length) {
+      cy.wrap($match.first())
+        .scrollIntoView({ offset: { top: -100, left: 0 } })
+        .should('be.visible')
+        .click();
     } else {
-      cy.log(`Link with text "${linkText}" not found`);
-      clickLinkAcrossPages(linkText, {
-        waitAfterPageMs: 200,
-        maxPages: 30,
-        paginationRetries: 5,
-        paginationRetryDelayMs: 500,
-        singlePageRetries: 6,
-        singlePageRetryDelayMs: 500,
-        // For tabs like “Rejected/Failed”, refreshing the current tab can help on slow renders:
-        singlePageRefreshSelector: '.moj-sub-navigation__link[aria-current="page"]',
-      });
+      cy.log(`Link "${linkText}" not on this page — trying pagination…`);
+      clickLinkAcrossPages(linkText, opts);
     }
   });
 });
