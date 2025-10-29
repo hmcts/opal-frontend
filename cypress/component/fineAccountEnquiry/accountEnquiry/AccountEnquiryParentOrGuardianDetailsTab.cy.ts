@@ -22,9 +22,9 @@ const componentProperties: IComponentProperties = {
   interceptedRoutes: [
     '/access-denied',
     '../note/add',
-    '../debtor/individual/amend',
-    '../debtor/company/amend',
-    '../debtor/parentGuardian/amend',
+    '../individual/amend',
+    '../company/amend',
+    '../parentGuardian/amend',
     // Add more routes here as needed
   ],
 };
@@ -451,7 +451,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // // Click Change button and verify it navigates to the change screen
       cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
 
-      cy.get('@routerNavigate').should('have.been.calledWith', ['../debtor/parentGuardian/amend']);
+      cy.get('@routerNavigate').should('have.been.calledWith', ['../parentGuardian/amend']);
     },
   );
 

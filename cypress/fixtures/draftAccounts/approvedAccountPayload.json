@@ -4,7 +4,7 @@
   "submitted_by": "L077JG",
   "business_unit_id": 77,
   "account_snapshot": {
-    "account_type": "fine",
+    "account_type": "Fine",
     "created_date": "2025-07-01",
     "submitted_by": "L077JG",
     "defendant_name": "adultName",
@@ -13,7 +13,7 @@
     "date_of_birth": "1990-05-15",
     "defendant_type": "adultOrYouthOnly"
   },
-  "account_type": "fine",
+  "account_type": "Fine",
   "account_status": "Published",
   "account_status_date": "2025-07-01",
   "account_number": "FINE123456"
