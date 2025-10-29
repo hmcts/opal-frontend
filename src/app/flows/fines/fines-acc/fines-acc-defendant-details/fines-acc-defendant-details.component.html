@@ -68,15 +68,15 @@
 <div class="govuk-grid-column-three-quarters">
   <opal-lib-custom-account-information>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>Account type:</h3>
+      <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
+      <h2 opal-lib-custom-account-information-item-label>PCR or case number:</h2>
       <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
+      <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value>
         {{ accountData.business_unit_summary.business_unit_name }} ({{
           accountData.business_unit_summary.business_unit_id
