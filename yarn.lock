@@ -3258,15 +3258,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.42":
-  version: 0.0.42
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.42"
+"@hmcts/opal-frontend-common@npm:^0.0.44":
+  version: 0.0.44
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.44"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/dbf2366146b988f17d082b8aec83e0ec3b0ba3ec2de1cc8a355826ccc794f1c99fd631a8913987876921ba039fe7a358379455b390468cac1729b2b82f2239d9
+  checksum: 10/833d85b8b537083d98f8cf87862baddcf643c951d3329c887a7b524b371358d732d3c7d85ce9c6642c1cf70572b665f2cd1de5a80cd182181bb92521aaed5eea
   languageName: node
   linkType: hard
 
@@ -3977,13 +3977,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@ministryofjustice/frontend@npm:6.0.0"
+"@ministryofjustice/frontend@npm:^7.0.0":
+  version: 7.1.0
+  resolution: "@ministryofjustice/frontend@npm:7.1.0"
   peerDependencies:
     govuk-frontend: ^5.11.2
     moment: 2.30.1
-  checksum: 10/64a04edeb9f525fd17c04f393d09150ca3b9ad9263b9b3335c1748f6b8682a6600ed0dbf99351197046f2ca1231c1191b0442dc901c0adbb4fe7ac9b79ea0061
+  checksum: 10/b4aa5a92502d26b6ded9e1f442b898c7bf5ef6a0b544d873479f25746f17a88f31d88ea861511c736170cf1d794db32e0460816a98ac43178b232901b4092171
   languageName: node
   linkType: hard
 
@@ -5423,21 +5423,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=10.0.0":
+"@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^24.0.0":
   version: 24.9.2
   resolution: "@types/node@npm:24.9.2"
   dependencies:
     undici-types: "npm:~7.16.0"
   checksum: 10/3e76ad89cca317c0886deedab0245b6b2a04ef6c47362bd3918020296f3e9630334795af9cee8c6633eae774c85d848ff2e6bed5a7c3133fc94968364fc3ee36
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.0.0":
-  version: 22.18.13
-  resolution: "@types/node@npm:22.18.13"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10/a0e8632a3eeeed3986f3b0b170187f67c0f0bb0d4fbbf9627af5c9bf81e2836bb64aa6f3bdab1c00658cb7911d8c231d7d6db853ae643edcd41f383c86f349e6
   languageName: node
   linkType: hard
 
@@ -13662,11 +13653,11 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.42"
+    "@hmcts/opal-frontend-common": "npm:^0.0.44"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.16"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
-    "@ministryofjustice/frontend": "npm:^6.0.0"
+    "@ministryofjustice/frontend": "npm:^7.0.0"
     "@ngrx/signals": "npm:^20.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
@@ -13675,7 +13666,7 @@ __metadata:
     "@types/jasmine": "npm:^5.1.4"
     "@types/lodash": "npm:^4.17.20"
     "@types/luxon": "npm:^3.4.2"
-    "@types/node": "npm:^22.0.0"
+    "@types/node": "npm:^24.0.0"
     "@types/session-file-store": "npm:^1.2.5"
     "@typescript-eslint/eslint-plugin": "npm:8.46.2"
     "@typescript-eslint/parser": "npm:8.46.2"
@@ -16963,13 +16954,6 @@ __metadata:
   dependencies:
     random-bytes: "npm:~1.0.0"
   checksum: 10/07536043da9a026f4a2bc397543d0ace7587449afa1d9d2c4fd3ce76af8a5263a678788bcc429dff499ef29d45843cd5ee9d05434450fcfc19cc661229f703d1
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
   languageName: node
   linkType: hard
 
