@@ -1,7 +1,6 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-const globalErrorBannerText =
-  'You can try again. If the problem persists, contact the service desk.';
+const globalErrorBannerText = 'You can try again. If the problem persists, contact the service desk.';
 const globalRetriableWarningBannerText = 'Please try again later or contact the help desk.';
 
 Given(
