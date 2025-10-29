@@ -24,3 +24,18 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       | 415       |
       | 503       |
       | 500       |
+
+  @PO-2107
+  Scenario Outline: Error Handling banner is triggered for <errorCode> error code
+    ## AC1
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
+    When I click the Manual account creation link and trigger a 500 retriable error for the get businessUnits API
+    Then I should see the retriable global warning banner
+    And I see "Dashboard" on the page header
+    And I reload the page
+    And I see "Dashboard" on the page header
+    And I should not see the global error banner
+
+
