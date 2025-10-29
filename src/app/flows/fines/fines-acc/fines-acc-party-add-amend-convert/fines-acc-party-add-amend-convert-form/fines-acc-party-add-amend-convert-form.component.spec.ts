@@ -162,11 +162,28 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(mockDateService.getAgeObject).toHaveBeenCalledWith('invalid-date');
   });
 
+  it('should not set up dateOfBirthListener for company party type', () => {
+    component.partyType = 'company';
+    fixture.detectChanges();
+
+    mockDateService.getAgeObject.calls.reset();
+    (component as any)['dateOfBirthListener']();
+    expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
+  });
+
+  it('should handle missing DOB control gracefully', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    component.form.removeControl('facc_party_add_amend_convert_dob');
+    mockDateService.getAgeObject.calls.reset();
+    (component as any)['dateOfBirthListener']();
+    expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
+  });
+
   it('should require title field', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any)['setupPartyTypeValidation']();
 
     const titleControl = component.form.get('facc_party_add_amend_convert_title');
     // Ensure the control value is null/empty to trigger required validation
@@ -182,8 +199,6 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   it('should require forenames field with max length validation', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any)['setupPartyTypeValidation']();
 
     const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
     // Ensure the control value is null/empty to trigger required validation
@@ -202,8 +217,6 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   it('should require surname field with max length validation', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any)['setupPartyTypeValidation']();
 
     const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
     // Ensure the control value is null/empty to trigger required validation
@@ -247,8 +260,6 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES;
     fixture.detectChanges();
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any)['setupPartyTypeValidation']();
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['rePopulateForm'](component.initialFormData?.formData || null);
@@ -356,7 +367,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   describe('Employer fields validation', () => {
     it('should not require employer company name and reference when no employer fields are filled', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const companyNameControl = component.form.get('facc_party_add_amend_convert_employer_company_name');
@@ -367,7 +378,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should require employer company name when employer email is provided but company name is empty', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
@@ -380,7 +391,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should require employer reference when employer telephone is provided but reference is empty', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const telephoneControl = component.form.get('facc_party_add_amend_convert_employer_telephone_number');
@@ -393,7 +404,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should require both employer company name and reference when any employer address field is provided', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const addressControl = component.form.get('facc_party_add_amend_convert_employer_address_line_1');
@@ -409,7 +420,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should not show validation errors when both company name and reference are provided with other employer fields', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
@@ -425,7 +436,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should trigger validation when employer post code is provided', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const postCodeControl = component.form.get('facc_party_add_amend_convert_employer_post_code');
@@ -441,7 +452,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
 
     it('should require employer address line 1 when other employer fields are provided but address line 1 is empty', () => {
-      component.partyType = 'Adult';
+      component.partyType = 'individual';
       fixture.detectChanges();
 
       const emailControl = component.form.get('facc_party_add_amend_convert_employer_email_address');
@@ -480,22 +491,14 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(organisationNameControl?.valid).toBe(true);
     });
 
-    it('should not require individual fields for company party type', () => {
+    it('should not have individual fields for company party type', () => {
       const titleControl = component.form.get('facc_party_add_amend_convert_title');
       const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
       const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
 
-      titleControl?.setValue('');
-      forenamesControl?.setValue('');
-      surnameControl?.setValue('');
-
-      titleControl?.markAsTouched();
-      forenamesControl?.markAsTouched();
-      surnameControl?.markAsTouched();
-
-      expect(titleControl?.valid).toBe(true);
-      expect(forenamesControl?.valid).toBe(true);
-      expect(surnameControl?.valid).toBe(true);
+      expect(titleControl).toBeNull();
+      expect(forenamesControl).toBeNull();
+      expect(surnameControl).toBeNull();
     });
 
     it('should initialize organization aliases form array for company party type', () => {
@@ -507,13 +510,12 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(organisationAliasesFormArray.length).toBe(0);
     });
 
-    it('should initialize individual aliases form array as empty for company party type', () => {
+    it('should not have individual aliases form array for company party type', () => {
       const individualAliasesFormArray = component.form.get(
         'facc_party_add_amend_convert_individual_aliases',
       ) as FormArray;
 
-      expect(individualAliasesFormArray).toBeDefined();
-      expect(individualAliasesFormArray.length).toBe(0);
+      expect(individualAliasesFormArray).toBeNull();
     });
 
     it('should populate form with company data when valid formData is provided', () => {
@@ -601,5 +603,171 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(organisationNameControl?.valid).toBe(true);
       expect(addressLine1Control?.valid).toBe(true);
     });
+  });
+
+  it('should create base form group with shared fields', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+
+    // Check shared fields exist
+    expect(baseForm.get('facc_party_add_amend_convert_add_alias')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_address_line_1')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_address_line_2')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_address_line_3')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_post_code')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_contact_email_address_1')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_contact_email_address_2')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_contact_telephone_number_mobile')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_contact_telephone_number_home')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_contact_telephone_number_business')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_vehicle_make')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_vehicle_registration_mark')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_language_preferences_document_language')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_language_preferences_hearing_language')).toBeDefined();
+
+    // Check individual-specific fields don't exist
+    expect(baseForm.get('facc_party_add_amend_convert_title')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_forenames')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_surname')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_dob')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
+
+    // Check company-specific fields don't exist
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+  });
+
+  it('should set required validation on address line 1', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    const addressLine1Control = baseForm.get('facc_party_add_amend_convert_address_line_1');
+
+    expect(addressLine1Control?.hasError('required')).toBe(true);
+
+    addressLine1Control?.setValue('123 Test Street');
+    expect(addressLine1Control?.hasError('required')).toBe(false);
+  });
+
+  it('should add individual-specific form controls to base form', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addIndividualFormControls'](baseForm);
+
+    // Check individual fields exist
+    expect(baseForm.get('facc_party_add_amend_convert_title')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_forenames')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_surname')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_dob')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_national_insurance_number')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_individual_aliases')).toBeDefined();
+
+    // Check employer fields exist
+    expect(baseForm.get('facc_party_add_amend_convert_employer_company_name')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_employer_reference')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_employer_email_address')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_employer_telephone_number')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_employer_address_line_1')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_employer_post_code')).toBeDefined();
+
+    // Check company fields don't exist
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+  });
+
+  it('should set required validation on individual fields', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addIndividualFormControls'](baseForm);
+
+    const titleControl = baseForm.get('facc_party_add_amend_convert_title');
+    const forenamesControl = baseForm.get('facc_party_add_amend_convert_forenames');
+    const surnameControl = baseForm.get('facc_party_add_amend_convert_surname');
+
+    expect(titleControl?.hasError('required')).toBe(true);
+    expect(forenamesControl?.hasError('required')).toBe(true);
+    expect(surnameControl?.hasError('required')).toBe(true);
+
+    titleControl?.setValue('Mr');
+    forenamesControl?.setValue('John');
+    surnameControl?.setValue('Doe');
+
+    expect(titleControl?.hasError('required')).toBe(false);
+    expect(forenamesControl?.hasError('required')).toBe(false);
+    expect(surnameControl?.hasError('required')).toBe(false);
+  });
+
+  it('should initialize individual aliases as empty FormArray', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addIndividualFormControls'](baseForm);
+
+    const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
+    expect(aliasesControl).toBeDefined();
+    expect(aliasesControl.length).toBe(0);
+  });
+
+  it('should add company-specific form controls to base form', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addCompanyFormControls'](baseForm);
+
+    // Check company fields exist
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_name')).toBeDefined();
+    expect(baseForm.get('facc_party_add_amend_convert_organisation_aliases')).toBeDefined();
+
+    // Check individual fields don't exist
+    expect(baseForm.get('facc_party_add_amend_convert_title')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_forenames')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_surname')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_dob')).toBeNull();
+    expect(baseForm.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
+  });
+
+  it('should set required validation on organisation name', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addCompanyFormControls'](baseForm);
+
+    const organisationNameControl = baseForm.get('facc_party_add_amend_convert_organisation_name');
+    expect(organisationNameControl?.hasError('required')).toBe(true);
+
+    organisationNameControl?.setValue('Test Company Ltd');
+    expect(organisationNameControl?.hasError('required')).toBe(false);
+  });
+
+  it('should initialize organisation aliases as empty FormArray', () => {
+    const baseForm = (component as any)['createBaseFormGroup']();
+    (component as any)['addCompanyFormControls'](baseForm);
+
+    const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
+    expect(aliasesControl).toBeDefined();
+    expect(aliasesControl.length).toBe(0);
+  });
+
+  it('should create form with individual controls for individual party type', () => {
+    component.partyType = 'individual';
+    (component as any)['setupPartyAddAmendConvertForm']();
+
+    // Check base fields exist
+    expect(component.form.get('facc_party_add_amend_convert_address_line_1')).toBeDefined();
+
+    // Check individual fields exist
+    expect(component.form.get('facc_party_add_amend_convert_title')).toBeDefined();
+    expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeDefined();
+    expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeDefined();
+
+    // Check company fields don't exist
+    expect(component.form.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+  });
+
+  it('should create form with company controls for company party type', () => {
+    component.partyType = 'company';
+    (component as any)['setupPartyAddAmendConvertForm']();
+
+    // Check base fields exist
+    expect(component.form.get('facc_party_add_amend_convert_address_line_1')).toBeDefined();
+
+    // Check company fields exist
+    expect(component.form.get('facc_party_add_amend_convert_organisation_name')).toBeDefined();
+    expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeDefined();
+
+    // Check individual fields don't exist
+    expect(component.form.get('facc_party_add_amend_convert_title')).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeNull();
+    expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
   });
 });
