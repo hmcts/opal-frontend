@@ -17,15 +17,16 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   private readonly partyPayload: IOpalFinesAccountDefendantAccountParty =
     this['activatedRoute'].snapshot.data['partyAddAmendConvertData'];
 
+  protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
+
   protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
     formData:
-      this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload) || FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE,
+      this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload, this.partyType) ||
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE,
     nestedFlow: false,
   };
 
   protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
-
-  protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
 
   /**
    * Handles the form submission event from the child form component.

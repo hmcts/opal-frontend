@@ -86,6 +86,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     component.isDebtor = true;
     // Explicitly set initialFormData to undefined to test the fallback
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     component.initialFormData = undefined as any;
     fixture.detectChanges();
 

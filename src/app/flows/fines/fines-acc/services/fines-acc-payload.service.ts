@@ -136,11 +136,13 @@ export class FinesAccPayloadService {
    * Transforms the given IOpalFinesAccountDefendantAccountParty into IFinesAccPartyAddAmendConvertState for the party Amend form
    *
    * @param defendantData - The defendant tab data from the API.
+   * @param partyType - The party type (company, individual, parentGuardian) to determine which fields to return
    * @returns The transformed form state object for debtor add/amend form.
    */
   public mapDebtorAccountPartyPayload(
     defendantData: IOpalFinesAccountDefendantAccountParty,
+    partyType?: string,
   ): IFinesAccPartyAddAmendConvertState {
-    return transformDefendantAccountPartyPayload(defendantData);
+    return transformDefendantAccountPartyPayload(defendantData, partyType);
   }
 }
