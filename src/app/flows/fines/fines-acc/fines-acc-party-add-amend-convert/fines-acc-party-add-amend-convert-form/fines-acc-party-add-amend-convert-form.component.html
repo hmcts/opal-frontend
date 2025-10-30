@@ -235,7 +235,9 @@
         [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_national_insurance_number')!"
       ></opal-lib-govuk-text-input>
     }
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+    @if (isCompanyPartyType) {
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+    }
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
       <opal-lib-govuk-text-input
@@ -271,53 +273,56 @@
       ></opal-lib-govuk-text-input>
     </fieldset>
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    <!-- Contact details - Only show for debtor or company party types -->
+    @if (isCompanyPartyType || isDebtor) {
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Contact details</legend>
-      <opal-lib-govuk-text-input
-        labelText="Primary email address"
-        inputId="facc_party_add_amend_convert_contact_email_address_1"
-        inputName="facc_party_add_amend_convert_contact_email_address_1"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_contact_email_address_1')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_email_address_1']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Secondary email address"
-        inputId="facc_party_add_amend_convert_contact_email_address_2"
-        inputName="facc_party_add_amend_convert_contact_email_address_2"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_contact_email_address_2')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_email_address_2']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Mobile telephone number"
-        inputId="facc_party_add_amend_convert_contact_telephone_number_mobile"
-        inputName="facc_party_add_amend_convert_contact_telephone_number_mobile"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_mobile')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_mobile']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Home telephone number"
-        inputId="facc_party_add_amend_convert_contact_telephone_number_home"
-        inputName="facc_party_add_amend_convert_contact_telephone_number_home"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_home')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_home']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Work telephone number"
-        inputId="facc_party_add_amend_convert_contact_telephone_number_business"
-        inputName="facc_party_add_amend_convert_contact_telephone_number_business"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_business')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_business']"
-      ></opal-lib-govuk-text-input>
-    </fieldset>
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Contact details</legend>
+        <opal-lib-govuk-text-input
+          labelText="Primary email address"
+          inputId="facc_party_add_amend_convert_contact_email_address_1"
+          inputName="facc_party_add_amend_convert_contact_email_address_1"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_contact_email_address_1')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_email_address_1']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Secondary email address"
+          inputId="facc_party_add_amend_convert_contact_email_address_2"
+          inputName="facc_party_add_amend_convert_contact_email_address_2"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_contact_email_address_2')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_email_address_2']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Mobile telephone number"
+          inputId="facc_party_add_amend_convert_contact_telephone_number_mobile"
+          inputName="facc_party_add_amend_convert_contact_telephone_number_mobile"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_mobile')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_mobile']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Home telephone number"
+          inputId="facc_party_add_amend_convert_contact_telephone_number_home"
+          inputName="facc_party_add_amend_convert_contact_telephone_number_home"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_home')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_home']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Work telephone number"
+          inputId="facc_party_add_amend_convert_contact_telephone_number_business"
+          inputName="facc_party_add_amend_convert_contact_telephone_number_business"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_contact_telephone_number_business')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_contact_telephone_number_business']"
+        ></opal-lib-govuk-text-input>
+      </fieldset>
+    }
 
-    @if (showLanguagePreferences()) {
+    @if (showLanguagePreferences() && (isCompanyPartyType || isDebtor)) {
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
       <fieldset class="govuk-fieldset">
@@ -358,35 +363,40 @@
       </fieldset>
     }
 
+    <!-- Vehicle details - Only show for debtor or company party types -->
+    @if (isCompanyPartyType || isDebtor) {
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
+        <opal-lib-govuk-text-input
+          labelText="Make and model"
+          inputId="facc_party_add_amend_convert_vehicle_make"
+          inputName="facc_party_add_amend_convert_vehicle_make"
+          inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_vehicle_make')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_make']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Registration number"
+          inputId="facc_party_add_amend_convert_vehicle_registration_mark"
+          inputName="facc_party_add_amend_convert_vehicle_registration_mark"
+          inputClasses="govuk-input--width-10"
+          labelClasses="govuk-label--s"
+          [control]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark']"
+          [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')!"
+        ></opal-lib-govuk-text-input>
+      </fieldset>
+    }
+
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
-      <opal-lib-govuk-text-input
-        labelText="Make and model"
-        inputId="facc_party_add_amend_convert_vehicle_make"
-        inputName="facc_party_add_amend_convert_vehicle_make"
-        inputClasses="govuk-input--width-20"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_vehicle_make')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_make']"
-      ></opal-lib-govuk-text-input>
-      <opal-lib-govuk-text-input
-        labelText="Registration number"
-        inputId="facc_party_add_amend_convert_vehicle_registration_mark"
-        inputName="facc_party_add_amend_convert_vehicle_registration_mark"
-        inputClasses="govuk-input--width-10"
-        labelClasses="govuk-label--s"
-        [control]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark']"
-        [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')!"
-      ></opal-lib-govuk-text-input>
-    </fieldset>
+    <!-- Employer Details - Only for individual party type and debtor -->
+    @if (isIndividualPartyType && isDebtor) {
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-
-    <!-- Employer Details - Only for individual party type -->
-    @if (isIndividualPartyType) {
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Employer details</legend>
         <opal-lib-govuk-text-input

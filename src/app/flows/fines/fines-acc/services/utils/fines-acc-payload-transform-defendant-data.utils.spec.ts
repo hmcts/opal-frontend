@@ -455,4 +455,174 @@ describe('transformDefendantAccountPartyPayload', () => {
     ).toBe('Valid Name');
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
+
+  describe('Party type specific field filtering', () => {
+    it('should return only company fields when partyType is "company"', () => {
+      // Create a mock with both individual and organization data
+      const mockCompanyData = {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
+        defendant_account_party: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
+          party_details: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Test Company Ltd',
+              organisation_aliases: [
+                {
+                  alias_id: 'ORG-1',
+                  sequence_number: 1,
+                  organisation_name: 'Test Corp',
+                },
+              ],
+            },
+          },
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'company');
+
+      // Company-specific fields should be populated
+      expect(result.facc_party_add_amend_convert_organisation_name).toBe('Test Company Ltd');
+      expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(1);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
+
+      // Individual-specific fields should be null
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull();
+      expect(result.facc_party_add_amend_convert_surname).toBeNull();
+      expect(result.facc_party_add_amend_convert_dob).toBeNull();
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_reference).toBeNull();
+
+      // Common fields (address, contact, vehicle, language) should be populated
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBe('Ford Focus');
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBe('CY');
+    });
+
+    it('should return individual fields (excluding organisation) when partyType is "individual"', () => {
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual');
+
+      // Individual-specific fields should be populated
+      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
+      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
+      expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
+
+      // Employer fields should be populated for individuals
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Tech Solutions Ltd');
+      expect(result.facc_party_add_amend_convert_employer_reference).toBe('EMP-001234');
+
+      // Organisation-specific fields should be null
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+
+      // Common fields should be populated
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBe('sarah.thompson@example.com');
+    });
+
+    it('should return individual fields (excluding organisation) when partyType is "parentGuardian"', () => {
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'parentGuardian');
+
+      // Individual-specific fields should be populated (same as individual)
+      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
+      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
+      expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+
+      // Employer fields should be populated for parent/guardian
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Tech Solutions Ltd');
+
+      // Organisation-specific fields should be null
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+    });
+
+    it('should fallback to organisation_flag when partyType is undefined', () => {
+      // Test with organisation_flag = true (should behave like company)
+      const mockCompanyData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true,
+            organisation_details: {
+              organisation_name: 'Fallback Company',
+              organisation_aliases: [],
+            },
+          },
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockCompanyData);
+
+      // Should return all fields (fallback behavior)
+      expect(result.facc_party_add_amend_convert_organisation_name).toBe('Fallback Company');
+      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
+      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      // Aliases are based on organisation_flag, not partyType, so individual aliases won't be processed when org flag is true
+      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
+    });
+
+    it('should handle company data with individual flag correctly when partyType is specified', () => {
+      // Test edge case: organisation_flag is false but partyType is "company"
+      const mockMixedData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: false, // Individual flag but company party type
+            organisation_details: {
+              organisation_name: 'Override Company',
+              organisation_aliases: [],
+            },
+          },
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockMixedData, 'company');
+
+      // Should respect partyType parameter over organisation_flag
+      expect(result.facc_party_add_amend_convert_organisation_name).toBe('Override Company');
+      expect(result.facc_party_add_amend_convert_title).toBeNull();
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+    });
+
+    it('should handle individual data with organisation flag correctly when partyType is specified', () => {
+      // Test edge case: organisation_flag is true but partyType is "individual"
+      const mockMixedData = {
+        ...mockDefendantData,
+        defendant_account_party: {
+          ...mockDefendantData.defendant_account_party,
+          party_details: {
+            ...mockDefendantData.defendant_account_party.party_details,
+            organisation_flag: true, // Company flag but individual party type
+          },
+        },
+      };
+
+      const result = transformDefendantAccountPartyPayload(mockMixedData, 'individual');
+
+      // Should respect partyType parameter over organisation_flag
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
+      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      // Individual aliases won't be processed because organisation_flag is true
+      // This is expected behavior as alias processing depends on organisation_flag
+      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
+    });
+  });
 });

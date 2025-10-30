@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form/fines-acc-party-add-amend-convert-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-add-amend-convert-form.interface';
+import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE } from './constants/fines-acc-party-add-amend-convert-state.constant';
 
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
@@ -9,10 +12,21 @@ import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-
   templateUrl: './fines-acc-party-add-amend-convert.component.html',
 })
 export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponent {
-  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm =
-    this['activatedRoute'].snapshot.data['partyAmendFormData'];
+  private readonly payloadService = inject(FinesAccPayloadService);
+
+  private readonly partyPayload: IOpalFinesAccountDefendantAccountParty =
+    this['activatedRoute'].snapshot.data['partyAddAmendConvertData'];
 
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
+
+  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
+    formData:
+      this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload, this.partyType) ||
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE,
+    nestedFlow: false,
+  };
+
+  protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
 
   /**
    * Handles the form submission event from the child form component.

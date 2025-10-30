@@ -103,6 +103,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   protected readonly accountStore = this.finesAccountStore;
 
+  @Input({ required: true }) public isDebtor!: boolean;
   @Input({ required: true }) public partyType!: string;
   @Input({ required: false }) public initialFormData: IFinesAccPartyAddAmendConvertForm =
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
