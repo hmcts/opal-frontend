@@ -25,8 +25,8 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
       | 503       |
       | 500       |
 
-  @PO-2107 @PO-2109
-  Scenario Outline: Global warning banner is displayed for retriable and no-response backend errors
+  @PO-2109
+  Scenario Outline: Global warning banner is displayed for retriable backend errors
 
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -39,6 +39,13 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     And I see "Dashboard" on the page header
     And I should not see the global error banner
 
+
+  @PO-2109
+  Scenario Outline: Global warning banner is displayed with no-response backend errors
+
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
     ## 2109 AC1 - No response recieved
     When I trigger a network failure for the get businessUnits API
     Then I should see the generic global warning banner
@@ -46,4 +53,3 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     And I reload the page
     And I see "Dashboard" on the page header
     And I should not see the global error banner
-
