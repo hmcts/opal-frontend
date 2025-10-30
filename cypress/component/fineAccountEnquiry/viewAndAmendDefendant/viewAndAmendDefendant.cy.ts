@@ -606,7 +606,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       ...maxLengthMock.formData,
       facc_party_add_amend_convert_forenames: 'A'.repeat(21),
       facc_party_add_amend_convert_surname: 'B'.repeat(31),
-      facc_party_add_amend_convert_aliases: [
+      facc_party_add_amend_convert_individual_aliases: [
         {
           facc_party_add_amend_convert_alias_forenames_0: 'C'.repeat(21),
           facc_party_add_amend_convert_alias_surname_0: 'D'.repeat(31),
@@ -677,7 +677,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       ...dataTypeValidationMock.formData,
       facc_party_add_amend_convert_forenames: 'John123',
       facc_party_add_amend_convert_surname: 'Doe@Smith',
-      facc_party_add_amend_convert_aliases: [
+      facc_party_add_amend_convert_individual_aliases: [
         {
           facc_party_add_amend_convert_alias_forenames_0: 'Johnny$',
           facc_party_add_amend_convert_alias_surname_0: 'Smith#Brown',
