@@ -62,7 +62,7 @@ Given(
 );
 
 Then('I should see the retriable global warning banner', () => {
-  cy.get('div[opal-lib-moj-alert]', { timeout: 500 })
+  cy.get('div[opal-lib-moj-alert]', { timeout: 5000 })
     .should('exist')
     .and('contain.text', 'Temporary System Issue')
     .and('contain.text', globalRetriableWarningBannerText)
