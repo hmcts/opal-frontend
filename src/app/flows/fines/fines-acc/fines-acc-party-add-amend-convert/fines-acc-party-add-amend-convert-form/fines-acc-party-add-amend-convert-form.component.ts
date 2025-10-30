@@ -399,6 +399,14 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
   }
 
+  /**
+   * Returns true if the current party is the debtor.
+   * Used to determine whether to show full form or reduced form.
+   */
+  public get isDebtor(): boolean {
+    return this.initialFormData?.isDebtor ?? false;
+  }
+
   public override ngOnInit(): void {
     // Ensure initialFormData is set with default values if undefined
     if (!this.initialFormData) {

@@ -57,6 +57,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccPartyAddAmendConv
         map((defendantData) => ({
           formData: payloadService.mapDebtorAccountPartyPayload(defendantData),
           nestedFlow: false,
+          isDebtor: defendantData.defendant_account_party.is_debtor,
         })),
         catchError(() => {
           return of(createDefendantDetailsRedirect(router));

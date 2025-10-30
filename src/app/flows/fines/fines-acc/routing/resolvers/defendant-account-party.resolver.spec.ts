@@ -67,8 +67,13 @@ describe('defendantAccountPartyResolver', () => {
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDefendantData = {} as any;
+    const mockDefendantData = {
+      defendant_account_party: {
+        is_debtor: true,
+      },
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
@@ -93,6 +98,7 @@ describe('defendantAccountPartyResolver', () => {
     expect(emittedValue).toEqual({
       formData: mockTransformedData,
       nestedFlow: false,
+      isDebtor: true,
     });
   });
 
@@ -146,8 +152,12 @@ describe('defendantAccountPartyResolver', () => {
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDefendantData = {} as any;
+    const mockDefendantData = {
+      defendant_account_party: {
+        is_debtor: false,
+      },
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
@@ -173,6 +183,7 @@ describe('defendantAccountPartyResolver', () => {
     expect(emittedValue).toEqual({
       formData: mockTransformedData,
       nestedFlow: false,
+      isDebtor: false,
     });
   });
 
