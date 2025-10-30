@@ -148,6 +148,7 @@ Feature: Check and Validate - Checker
     And I see "Review accounts" on the page header
     And I click on the "Failed" link
     And I see "Review accounts" on the page header
+    And I see "GREEN, Oliver" text on the page
     And I click on the "GREEN, Oliver" link
     Then I see "Mr Oliver GREEN" on the page header
 
