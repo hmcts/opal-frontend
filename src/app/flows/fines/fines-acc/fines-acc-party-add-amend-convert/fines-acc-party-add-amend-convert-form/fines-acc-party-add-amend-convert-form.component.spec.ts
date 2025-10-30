@@ -82,6 +82,19 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_dob')?.value).toBe('1990-01-01');
   });
 
+  it('should set initialFormData to default constant when initialFormData is undefined', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    // Explicitly set initialFormData to undefined to test the fallback
+    component.initialFormData = undefined as any;
+    fixture.detectChanges();
+
+    // After ngOnInit, initialFormData should be set to the default constant
+    expect(component.initialFormData).toBeDefined();
+    expect(component.initialFormData.formData).toBeDefined();
+    expect(component.initialFormData.nestedFlow).toBe(false);
+  });
+
   it('should populate National Insurance number and other fields correctly', () => {
     component.partyType = 'individual';
     component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA;

@@ -37,7 +37,6 @@ export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA: IFinesAccPartyAdd
     facc_party_add_amend_convert_employer_post_code: 'BU5 1NE',
   },
   nestedFlow: false,
-  isDebtor: true,
 };
 
 export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES: IFinesAccPartyAddAmendConvertForm = {
@@ -52,7 +51,6 @@ export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES: IFin
     facc_party_add_amend_convert_add_alias: true, // Checkbox should be checked when aliases exist
   },
   nestedFlow: false,
-  isDebtor: false,
 };
 
 export const MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA: IFinesAccPartyAddAmendConvertForm = {
@@ -61,5 +59,4 @@ export const MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA: IFinesAccPa
     facc_party_add_amend_convert_add_alias: false,
   },
   nestedFlow: false,
-  isDebtor: false,
 };

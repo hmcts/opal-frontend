@@ -4,5 +4,4 @@ import { IFinesAccPartyAddAmendConvertState } from './fines-acc-party-add-amend-
 export interface IFinesAccPartyAddAmendConvertForm extends IAbstractFormBaseForm<IFinesAccPartyAddAmendConvertState> {
   formData: IFinesAccPartyAddAmendConvertState;
   nestedFlow: boolean;
-  isDebtor?: boolean;
 }
