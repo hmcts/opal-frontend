@@ -3,13 +3,12 @@ import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 Then('I see the error message {string} at the top of the page', (errorMessage: string) => {
   cy.get('.govuk-error-summary').should('contain', errorMessage);
 });
+
 Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
-  cy.contains('label', fieldName)
-    .closest('div')
-    .parent()
-    .within(() => {
-      cy.get('p.govuk-error-message').should('exist').and('contain.text', errorMessage);
-    });
+  cy.contains('.govuk-error-message', errorMessage)
+    .closest('.govuk-form-group')
+    .find('label, h1')
+    .should('contain', fieldName);
 });
 
 Then('I see the error message {string} above the {string} payment field', (errorMessage: string, fieldName: string) => {
