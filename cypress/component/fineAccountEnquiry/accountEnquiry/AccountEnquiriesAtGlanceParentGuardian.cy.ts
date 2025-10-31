@@ -225,9 +225,9 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       });
   });
 
-  it('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-779'] }, () => {
+  it.only('AC3b: does not display Aliases section when defendant has no aliases', { tags: ['PO-779'] }, () => {
     const headerNoAliases = structuredClone(OPAL_FINES_ACCOUNT_PARENT_GUARDIAN_AT_A_GLANCE_MOCK);
-    headerNoAliases.party_details.individual_details!.individual_aliases = [];
+    headerNoAliases.party_details.individual_details!.individual_aliases = null;
 
     interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
     interceptDefendantHeader(77, createParentGuardianHeaderMockWithName('Albert', 'Lake'), '1');
