@@ -1,6 +1,90 @@
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 
 export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAmendConvertFieldErrors = {
+  facc_party_add_amend_convert_organisation_name: {
+    required: {
+      message: `Enter company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Company name must be 50 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_0: {
+    required: {
+      message: `Enter alias 1 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 1 company name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_1: {
+    required: {
+      message: `Enter alias 2 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 2 company name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_2: {
+    required: {
+      message: `Enter alias 3 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 3 company name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_3: {
+    required: {
+      message: `Enter alias 4 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 4 company name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_4: {
+    required: {
+      message: `Enter alias 5 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 5 company name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
   facc_party_add_amend_convert_title: {
     required: {
       message: 'Select a title',

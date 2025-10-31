@@ -4,6 +4,12 @@ import {
 } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 
 export interface IFinesAccPartyAddAmendConvertFieldErrors extends IAbstractFormBaseFieldErrors {
+  facc_party_add_amend_convert_organisation_name: IAbstractFormBaseFieldError;
+  facc_party_add_amend_convert_alias_organisation_name_0: IAbstractFormBaseFieldError;
+  facc_party_add_amend_convert_alias_organisation_name_1: IAbstractFormBaseFieldError;
+  facc_party_add_amend_convert_alias_organisation_name_2: IAbstractFormBaseFieldError;
+  facc_party_add_amend_convert_alias_organisation_name_3: IAbstractFormBaseFieldError;
+  facc_party_add_amend_convert_alias_organisation_name_4: IAbstractFormBaseFieldError;
   facc_party_add_amend_convert_title: IAbstractFormBaseFieldError;
   facc_party_add_amend_convert_forenames: IAbstractFormBaseFieldError;
   facc_party_add_amend_convert_surname: IAbstractFormBaseFieldError;

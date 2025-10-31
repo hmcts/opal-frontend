@@ -1,10 +1,12 @@
 import { IFinesAccPartyAddAmendConvertState } from '../interfaces/fines-acc-party-add-amend-convert-state.interface';
 
 export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE_MOCK: IFinesAccPartyAddAmendConvertState = {
+  facc_party_add_amend_convert_organisation_name: null,
   facc_party_add_amend_convert_title: null,
   facc_party_add_amend_convert_forenames: null,
   facc_party_add_amend_convert_surname: null,
-  facc_party_add_amend_convert_aliases: [],
+  facc_party_add_amend_convert_individual_aliases: [],
+  facc_party_add_amend_convert_organisation_aliases: [],
   facc_party_add_amend_convert_add_alias: null,
   facc_party_add_amend_convert_dob: null,
   facc_party_add_amend_convert_national_insurance_number: null,

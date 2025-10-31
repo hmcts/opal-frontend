@@ -1,11 +1,15 @@
 import { IFinesAccPartyAddAmendConvertForm } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
 
+// Base mock (Correct) - includes individual aliases mapped to the current alias structure
 export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: null,
     facc_party_add_amend_convert_title: 'Mr',
     facc_party_add_amend_convert_forenames: 'John',
     facc_party_add_amend_convert_surname: 'Doe',
-    facc_party_add_amend_convert_aliases: [
+    facc_party_add_amend_convert_dob: '01/01/1990',
+    facc_party_add_amend_convert_national_insurance_number: 'AB123456C',
+    facc_party_add_amend_convert_individual_aliases: [
       {
         facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
         facc_party_add_amend_convert_alias_surname_0: 'Smith',
@@ -27,9 +31,8 @@ export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccPartyAddAmendCo
         facc_party_add_amend_convert_alias_surname_4: 'Smith3',
       },
     ],
-    facc_party_add_amend_convert_add_alias: true, // Must be true when aliases exist
-    facc_party_add_amend_convert_dob: '01/01/1990',
-    facc_party_add_amend_convert_national_insurance_number: 'AB123456C',
+    facc_party_add_amend_convert_organisation_aliases: [],
+    facc_party_add_amend_convert_add_alias: true,
     facc_party_add_amend_convert_address_line_1: '123 Test Street',
     facc_party_add_amend_convert_address_line_2: 'Second Floor',
     facc_party_add_amend_convert_address_line_3: 'City Center',
@@ -41,8 +44,8 @@ export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccPartyAddAmendCo
     facc_party_add_amend_convert_contact_telephone_number_business: '02087654321',
     facc_party_add_amend_convert_vehicle_make: 'Toyota Corolla',
     facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123',
-    facc_party_add_amend_convert_language_preferences_document_language: 'English',
-    facc_party_add_amend_convert_language_preferences_hearing_language: 'English',
+    facc_party_add_amend_convert_language_preferences_document_language: 'EN',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'EN',
     facc_party_add_amend_convert_employer_company_name: 'Test Company',
     facc_party_add_amend_convert_employer_reference: 'EMP123',
     facc_party_add_amend_convert_employer_email_address: 'hr@company.com',
@@ -57,15 +60,18 @@ export const MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA: IFinesAccPartyAddAmendCo
   nestedFlow: false,
 };
 
+// Company mock (organisation defendant)
 export const VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: 'XYZ Limited',
     facc_party_add_amend_convert_title: null,
     facc_party_add_amend_convert_forenames: null,
-    facc_party_add_amend_convert_surname: 'XYZ Limited',
-    facc_party_add_amend_convert_aliases: [],
-    facc_party_add_amend_convert_add_alias: false,
+    facc_party_add_amend_convert_surname: null,
     facc_party_add_amend_convert_dob: null,
     facc_party_add_amend_convert_national_insurance_number: null,
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [],
+    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_address_line_1: '789 Corporate Avenue',
     facc_party_add_amend_convert_address_line_2: 'Floor 15',
     facc_party_add_amend_convert_address_line_3: 'Business District',
@@ -77,8 +83,8 @@ export const VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK: IFinesAccPartyAddAmendConver
     facc_party_add_amend_convert_contact_telephone_number_business: '02034567890',
     facc_party_add_amend_convert_vehicle_make: null,
     facc_party_add_amend_convert_vehicle_registration_mark: null,
-    facc_party_add_amend_convert_language_preferences_document_language: 'English',
-    facc_party_add_amend_convert_language_preferences_hearing_language: 'English',
+    facc_party_add_amend_convert_language_preferences_document_language: 'EN',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'EN',
     facc_party_add_amend_convert_employer_company_name: null,
     facc_party_add_amend_convert_employer_reference: null,
     facc_party_add_amend_convert_employer_email_address: null,
@@ -93,15 +99,18 @@ export const VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK: IFinesAccPartyAddAmendConver
   nestedFlow: false,
 };
 
+// Welsh language mock (individual defendant)
 export const VIEW_AND_AMEND_DEFENDANT_WELSH_MOCK: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: null,
     facc_party_add_amend_convert_title: 'Mrs',
     facc_party_add_amend_convert_forenames: 'Megan Elen',
     facc_party_add_amend_convert_surname: 'Jones',
-    facc_party_add_amend_convert_aliases: [],
-    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_dob: '22/08/1975',
     facc_party_add_amend_convert_national_insurance_number: 'CD987654B',
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [],
+    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_address_line_1: '25 Heol y Castell',
     facc_party_add_amend_convert_address_line_2: 'Pentref Bach',
     facc_party_add_amend_convert_address_line_3: null,
@@ -113,14 +122,14 @@ export const VIEW_AND_AMEND_DEFENDANT_WELSH_MOCK: IFinesAccPartyAddAmendConvertF
     facc_party_add_amend_convert_contact_telephone_number_business: null,
     facc_party_add_amend_convert_vehicle_make: 'Volkswagen Golf',
     facc_party_add_amend_convert_vehicle_registration_mark: 'CY65 WLS',
-    facc_party_add_amend_convert_language_preferences_document_language: 'Welsh',
-    facc_party_add_amend_convert_language_preferences_hearing_language: 'Welsh',
+    facc_party_add_amend_convert_language_preferences_document_language: 'CY',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'CY',
     facc_party_add_amend_convert_employer_company_name: 'Cwmni Cymru Cyf',
     facc_party_add_amend_convert_employer_reference: 'CC-001',
     facc_party_add_amend_convert_employer_email_address: 'swyddfa@cwmnicymru.cymru',
-    facc_party_add_amend_convert_employer_telephone_number: '01222123456',
-    facc_party_add_amend_convert_employer_address_line_1: '100 Stryd Fawr',
-    facc_party_add_amend_convert_employer_address_line_2: 'Canol y Dref',
+    facc_party_add_amend_convert_employer_telephone_number: null,
+    facc_party_add_amend_convert_employer_address_line_1: null,
+    facc_party_add_amend_convert_employer_address_line_2: null,
     facc_party_add_amend_convert_employer_address_line_3: null,
     facc_party_add_amend_convert_employer_address_line_4: null,
     facc_party_add_amend_convert_employer_address_line_5: null,
@@ -129,15 +138,18 @@ export const VIEW_AND_AMEND_DEFENDANT_WELSH_MOCK: IFinesAccPartyAddAmendConvertF
   nestedFlow: false,
 };
 
+// Minimal mock (individual defendant with minimal data)
 export const VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: null,
     facc_party_add_amend_convert_title: 'Ms',
     facc_party_add_amend_convert_forenames: 'Jane',
     facc_party_add_amend_convert_surname: 'Doe',
-    facc_party_add_amend_convert_aliases: [],
-    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_dob: '01/12/1990',
     facc_party_add_amend_convert_national_insurance_number: null,
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [],
+    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_address_line_1: '10 Short Street',
     facc_party_add_amend_convert_address_line_2: null,
     facc_party_add_amend_convert_address_line_3: null,
@@ -165,15 +177,18 @@ export const VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK: IFinesAccPartyAddAmendConver
   nestedFlow: false,
 };
 
+// Nested flow mock (individual defendant inside nested flow)
 export const VIEW_AND_AMEND_DEFENDANT_NESTED_FLOW_MOCK: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: null,
     facc_party_add_amend_convert_title: 'Dr',
     facc_party_add_amend_convert_forenames: 'Sarah Elizabeth',
     facc_party_add_amend_convert_surname: 'Williams',
-    facc_party_add_amend_convert_aliases: [],
-    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_dob: '30/06/1982',
     facc_party_add_amend_convert_national_insurance_number: 'EF456789A',
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [],
+    facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_address_line_1: '55 Academic Road',
     facc_party_add_amend_convert_address_line_2: 'University Quarter',
     facc_party_add_amend_convert_address_line_3: null,
@@ -185,12 +200,12 @@ export const VIEW_AND_AMEND_DEFENDANT_NESTED_FLOW_MOCK: IFinesAccPartyAddAmendCo
     facc_party_add_amend_convert_contact_telephone_number_business: '01865123456',
     facc_party_add_amend_convert_vehicle_make: 'BMW 3 Series',
     facc_party_add_amend_convert_vehicle_registration_mark: 'OX18 UNI',
-    facc_party_add_amend_convert_language_preferences_document_language: 'English',
-    facc_party_add_amend_convert_language_preferences_hearing_language: 'English',
-    facc_party_add_amend_convert_employer_company_name: 'Oxford University',
-    facc_party_add_amend_convert_employer_reference: 'OU-789',
-    facc_party_add_amend_convert_employer_email_address: 'hr@ox.ac.uk',
-    facc_party_add_amend_convert_employer_telephone_number: '01865270000',
+    facc_party_add_amend_convert_language_preferences_document_language: 'EN',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'EN',
+    facc_party_add_amend_convert_employer_company_name: 'University Offices',
+    facc_party_add_amend_convert_employer_reference: null,
+    facc_party_add_amend_convert_employer_email_address: null,
+    facc_party_add_amend_convert_employer_telephone_number: null,
     facc_party_add_amend_convert_employer_address_line_1: 'University Offices',
     facc_party_add_amend_convert_employer_address_line_2: 'Wellington Square',
     facc_party_add_amend_convert_employer_address_line_3: null,
@@ -199,4 +214,59 @@ export const VIEW_AND_AMEND_DEFENDANT_NESTED_FLOW_MOCK: IFinesAccPartyAddAmendCo
     facc_party_add_amend_convert_employer_post_code: 'OX1 2JD',
   },
   nestedFlow: true,
+};
+
+// Full Company mock with all possible fields populated including aliases
+export const VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK: IFinesAccPartyAddAmendConvertForm = {
+  formData: {
+    facc_party_add_amend_convert_organisation_name: 'ABC Corporation Ltd',
+    facc_party_add_amend_convert_title: null,
+    facc_party_add_amend_convert_forenames: null,
+    facc_party_add_amend_convert_surname: null,
+    facc_party_add_amend_convert_dob: null,
+    facc_party_add_amend_convert_national_insurance_number: null,
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [
+      {
+        facc_party_add_amend_convert_alias_organisation_name_0: 'ABC Corp',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_1: 'ABC Limited',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_2: 'ABC Trading',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_3: 'ABC Enterprises',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_4: 'ABC Holdings',
+      },
+    ],
+    facc_party_add_amend_convert_add_alias: true,
+    facc_party_add_amend_convert_address_line_1: '100 Corporate Plaza',
+    facc_party_add_amend_convert_address_line_2: '25th Floor',
+    facc_party_add_amend_convert_address_line_3: 'Financial',
+    facc_party_add_amend_convert_post_code: 'EC2Y 8DS',
+    facc_party_add_amend_convert_contact_email_address_1: 'contact@abccorporation.co.uk',
+    facc_party_add_amend_convert_contact_email_address_2: 'legal@abccorporation.co.uk',
+    facc_party_add_amend_convert_contact_telephone_number_mobile: '07900123456',
+    facc_party_add_amend_convert_contact_telephone_number_home: '02071234567',
+    facc_party_add_amend_convert_contact_telephone_number_business: '02071234567',
+    facc_party_add_amend_convert_vehicle_make: 'Mercedes Sprinter',
+    facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123D',
+    facc_party_add_amend_convert_language_preferences_document_language: 'EN',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'EN',
+    facc_party_add_amend_convert_employer_company_name: null,
+    facc_party_add_amend_convert_employer_reference: null,
+    facc_party_add_amend_convert_employer_email_address: null,
+    facc_party_add_amend_convert_employer_telephone_number: null,
+    facc_party_add_amend_convert_employer_address_line_1: null,
+    facc_party_add_amend_convert_employer_address_line_2: null,
+    facc_party_add_amend_convert_employer_address_line_3: null,
+    facc_party_add_amend_convert_employer_address_line_4: null,
+    facc_party_add_amend_convert_employer_address_line_5: null,
+    facc_party_add_amend_convert_employer_post_code: null,
+  },
+  nestedFlow: false,
 };
