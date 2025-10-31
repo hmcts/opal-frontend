@@ -978,11 +978,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^4.11.0":
-  version: 4.24.0
-  resolution: "@azure/msal-browser@npm:4.24.0"
+  version: 4.25.1
+  resolution: "@azure/msal-browser@npm:4.25.1"
   dependencies:
     "@azure/msal-common": "npm:15.13.0"
-  checksum: 10/db35c3b4ed12b42d6aa553bdedc646de8d9a3f40483c5049ba7c26f44121a2da124bf13c8cdb4fa52ed7f8b536c03c5b8baa2be304905aadcdef520e1cd9e885
+  checksum: 10/09f8fc7356e733d4aacd09aebc7d8b50091c0b926457fe1a4b7c5b4e202855b8fe9148a8b2d290e8700b1b9d681c1ccda59304703b12e90ba58f9f617bc4ccba
   languageName: node
   linkType: hard
 
