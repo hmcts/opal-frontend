@@ -5,7 +5,6 @@ import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fine
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
