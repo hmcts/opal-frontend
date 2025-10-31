@@ -71,6 +71,23 @@ export function createDefendantHeaderMockWithName(
   };
 }
 
+export function createParentGuardianHeaderMockWithName(
+  forenames: string,
+  surname: string,
+): IOpalFinesAccountDefendantDetailsHeader {
+  return {
+    ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
+    party_details: {
+      ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details,
+      individual_details: {
+        ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details?.individual_details!,
+        forenames,
+        surname,
+      },
+    },
+  };
+}
+
 export const DEFENDANT_HEADER_YOUTH_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   ...DEFENDANT_HEADER_MOCK,
   is_youth: true,
