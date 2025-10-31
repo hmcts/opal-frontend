@@ -5,6 +5,7 @@ import { map, catchError, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccPartyAddAmendConvertForm } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
 
 /**
  * Creates a redirect command to the defendant details page
@@ -52,6 +53,7 @@ export const defendantAccountPartyResolver: ResolveFn<IFinesAccPartyAddAmendConv
 
       // Fetch defendant account party data using the determined party ID
       return opalFinesService.getDefendantAccountParty(Number(accountId), partyId).pipe(
+        map((data) => payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
         map((defendantData) => ({
           formData: payloadService.mapDebtorAccountPartyPayload(defendantData),
           nestedFlow: false,

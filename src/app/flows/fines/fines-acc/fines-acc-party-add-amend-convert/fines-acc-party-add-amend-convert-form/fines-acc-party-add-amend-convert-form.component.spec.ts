@@ -15,8 +15,11 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockFinesAccountStore: any;
+  let mockFinesAccountStore: {
+    welsh_speaking: ReturnType<typeof signal>;
+    account_number: ReturnType<typeof signal>;
+    party_name: ReturnType<typeof signal>;
+  };
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj('DateService', [
@@ -118,8 +121,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should hide language preferences when welsh_speaking is undefined', () => {
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockFinesAccountStore.welsh_speaking.set(undefined as any);
+    mockFinesAccountStore.welsh_speaking.set(undefined);
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -167,6 +169,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.detectChanges();
 
     mockDateService.getAgeObject.calls.reset();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['dateOfBirthListener']();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
@@ -177,6 +180,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     component.form.removeControl('facc_party_add_amend_convert_dob');
     mockDateService.getAgeObject.calls.reset();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['dateOfBirthListener']();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
@@ -264,8 +268,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['rePopulateForm'](component.initialFormData?.formData || null);
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const aliasArray = component.form.get('facc_party_add_amend_convert_individual_aliases') as any;
+    const aliasArray = component.form.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     // The form sets up the correct number of alias controls based on the mock data
     expect(aliasArray.length).toBeGreaterThanOrEqual(1);
 
@@ -605,7 +608,66 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     });
   });
 
+  describe('Parent/Guardian party type tests', () => {
+    beforeEach(() => {
+      component.partyType = 'parentGuardian';
+      fixture.detectChanges();
+    });
+
+    it('should have isIndividualPartyType getter return true for parent/guardian party type', () => {
+      expect(component.isIndividualPartyType).toBe(true);
+    });
+
+    it('should return correct heading text for parent/guardian party type', () => {
+      expect(component.headingText).toBe('Parent or guardian details');
+    });
+
+    it('should have individual form controls for parent/guardian party type', () => {
+      // Check individual fields exist
+      expect(component.form.get('facc_party_add_amend_convert_title')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_surname')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_dob')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeDefined();
+
+      // Check company fields don't exist
+      expect(component.form.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+      expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+    });
+
+    it('should require title, forenames and surname for parent/guardian party type', () => {
+      const titleControl = component.form.get('facc_party_add_amend_convert_title');
+      const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
+      const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
+
+      expect(titleControl?.hasError('required')).toBe(true);
+      expect(forenamesControl?.hasError('required')).toBe(true);
+      expect(surnameControl?.hasError('required')).toBe(true);
+
+      titleControl?.setValue('Mrs');
+      forenamesControl?.setValue('Jane');
+      surnameControl?.setValue('Smith');
+
+      expect(titleControl?.hasError('required')).toBe(false);
+      expect(forenamesControl?.hasError('required')).toBe(false);
+      expect(surnameControl?.hasError('required')).toBe(false);
+    });
+
+    it('should use parent/guardian specific error messages', () => {
+      // Call the setup method to ensure error messages are configured
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (component as any)['setupPartySpecificErrorMessages']();
+
+      const forenamesErrors = component.fieldErrors['facc_party_add_amend_convert_forenames'];
+      const surnameErrors = component.fieldErrors['facc_party_add_amend_convert_surname'];
+
+      expect(forenamesErrors?.['required']?.message).toBe('Enter parent or guardian first name(s)');
+      expect(surnameErrors?.['required']?.message).toBe('Enter parent or guardian last name');
+    });
+  });
+
   it('should create base form group with shared fields', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
 
     // Check shared fields exist
@@ -637,6 +699,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on address line 1', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
     const addressLine1Control = baseForm.get('facc_party_add_amend_convert_address_line_1');
 
@@ -647,7 +710,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should add individual-specific form controls to base form', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addIndividualFormControls'](baseForm);
 
     // Check individual fields exist
@@ -672,7 +737,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on individual fields', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addIndividualFormControls'](baseForm);
 
     const titleControl = baseForm.get('facc_party_add_amend_convert_title');
@@ -693,7 +760,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should initialize individual aliases as empty FormArray', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addIndividualFormControls'](baseForm);
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
@@ -702,7 +771,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should add company-specific form controls to base form', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addCompanyFormControls'](baseForm);
 
     // Check company fields exist
@@ -718,7 +789,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on organisation name', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addCompanyFormControls'](baseForm);
 
     const organisationNameControl = baseForm.get('facc_party_add_amend_convert_organisation_name');
@@ -729,7 +802,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should initialize organisation aliases as empty FormArray', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const baseForm = (component as any)['createBaseFormGroup']();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['addCompanyFormControls'](baseForm);
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
@@ -739,6 +814,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   it('should create form with individual controls for individual party type', () => {
     component.partyType = 'individual';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['setupPartyAddAmendConvertForm']();
 
     // Check base fields exist
@@ -756,6 +832,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   it('should create form with company controls for company party type', () => {
     component.partyType = 'company';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['setupPartyAddAmendConvertForm']();
 
     // Check base fields exist

@@ -18,7 +18,10 @@ describe('defendantAccountPartyResolver', () => {
       'getDefendantAccountParty',
       'getDefendantAccountHeadingData',
     ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['mapDebtorAccountPartyPayload']);
+    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
+      'mapDebtorAccountPartyPayload',
+      'transformPayload',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
 
     TestBed.configureTestingModule({
@@ -71,6 +74,7 @@ describe('defendantAccountPartyResolver', () => {
 
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -149,6 +153,7 @@ describe('defendantAccountPartyResolver', () => {
 
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,6 +168,7 @@ describe('defendantAccountPartyResolver', () => {
 
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(123);
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalledWith(123, 'GUARDIAN456');
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(mockDefendantData, jasmine.any(Object));
     expect(mockPayloadService.mapDebtorAccountPartyPayload).toHaveBeenCalledWith(mockDefendantData);
     expect(emittedValue).toEqual({
       formData: mockTransformedData,
