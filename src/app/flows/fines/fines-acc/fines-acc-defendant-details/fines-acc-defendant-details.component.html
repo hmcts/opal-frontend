@@ -72,8 +72,13 @@
       <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
-      <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+      @if (accountData.account_type === accountTypes.fixedPenalty) {
+        <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
+        <p opal-lib-custom-account-information-item-value>{{ accountData.fixed_penalty_ticket_number | uppercase }}</p>
+      } @else {
+        <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
+        <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+      }
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
       <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
@@ -140,6 +145,15 @@
         [activeSubNavItemFragment]="activeTab"
         subNavItemFragment="parent-or-guardian"
         [subNavItemText]="tabs['parent-or-guardian']"
+      ></li>
+    }
+    @if (accountData.account_type === accountTypes.fixedPenalty) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="fixed-penalty-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="fixed-penalty"
+        [subNavItemText]="tabs['fixed-penalty']"
       ></li>
     }
     <li
