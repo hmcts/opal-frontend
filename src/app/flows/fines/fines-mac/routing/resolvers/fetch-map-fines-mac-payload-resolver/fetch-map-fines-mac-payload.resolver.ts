@@ -7,6 +7,7 @@ import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-paylo
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,
@@ -67,6 +68,7 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     globalStore.setError({
       ...GLOBAL_ERROR_STATE,
       error: true,
+      title: 'There was a problem',
       message: error instanceof Error ? error.message : 'An unexpected error occurred',
     });
     throw error;

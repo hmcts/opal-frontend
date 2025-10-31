@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesMacOffenceDetailsSearchOffencesStore } from './stores/fines-mac-offence-details-search-offences.store';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
-
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
   imports: [RouterOutlet],
