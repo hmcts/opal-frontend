@@ -28,8 +28,8 @@ export const DOM_ELEMENTS = {
   organisationAliasLabel2: 'label[for="facc_party_add_amend_convert_alias_organisation_name_2"]',
   organisationAliasLabel3: 'label[for="facc_party_add_amend_convert_alias_organisation_name_3"]',
   organisationAliasLabel4: 'label[for="facc_party_add_amend_convert_alias_organisation_name_4"]',
-  addOrganisationAliasButton: '#addOrganisationAlias',
-  removeOrganisationAliasButton: '.remove-organisation-alias-button',
+  addOrganisationAliasButton: '#addAlias',
+  removeOrganisationAliasButton: '.govuk-\\!-margin-bottom-3 > .govuk-link',
 
   
   // Form elements - Individual fields
@@ -168,6 +168,18 @@ export const DOM_ELEMENTS = {
   ageDisplay: '.moj-ticket-panel',
   ageValue: '.moj-ticket-panel strong',
   ageGroup: '.moj-ticket-panel p',
+
+  // Language preferences - Radio buttons (not input fields)
+  documentLanguageRadioEN: 'input[id="ENDocumentRadioOption"]',
+  documentLanguageRadioCY: 'input[id="CYDocumentRadioOption"]',
+  hearingLanguageRadioEN: 'input[id="ENCourtHearingRadioOption"]',
+  hearingLanguageRadioCY: 'input[id="CYCourtHearingRadioOption"]',
+  
+  // Language preference labels
+  documentLanguageRadioLabelEN: 'label[for="ENDocumentRadioOption"]',
+  documentLanguageRadioLabelCY: 'label[for="CYDocumentRadioOption"]',
+  hearingLanguageRadioLabelEN: 'label[for="ENCourtHearingRadioOption"]',
+  hearingLanguageRadioLabelCY: 'label[for="CYCourtHearingRadioOption"]',
 };
 
 // Helper functions for dynamic element selection
