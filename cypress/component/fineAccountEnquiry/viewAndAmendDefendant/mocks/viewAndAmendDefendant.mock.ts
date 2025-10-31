@@ -215,3 +215,58 @@ export const VIEW_AND_AMEND_DEFENDANT_NESTED_FLOW_MOCK: IFinesAccPartyAddAmendCo
   },
   nestedFlow: true,
 };
+
+// Full Company mock with all possible fields populated including aliases
+export const VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK: IFinesAccPartyAddAmendConvertForm = {
+  formData: {
+    facc_party_add_amend_convert_organisation_name: 'ABC Corporation Ltd',
+    facc_party_add_amend_convert_title: null,
+    facc_party_add_amend_convert_forenames: null,
+    facc_party_add_amend_convert_surname: null,
+    facc_party_add_amend_convert_dob: null,
+    facc_party_add_amend_convert_national_insurance_number: null,
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [
+      {
+        facc_party_add_amend_convert_alias_organisation_name_0: 'ABC Corp',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_1: 'ABC Limited',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_2: 'ABC Trading',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_3: 'ABC Enterprises',
+      },
+      {
+        facc_party_add_amend_convert_alias_organisation_name_4: 'ABC Holdings',
+      },
+    ],
+    facc_party_add_amend_convert_add_alias: true,
+    facc_party_add_amend_convert_address_line_1: '100 Corporate Plaza',
+    facc_party_add_amend_convert_address_line_2: '25th Floor',
+    facc_party_add_amend_convert_address_line_3: 'Financial District',
+    facc_party_add_amend_convert_post_code: 'EC2Y 8DS',
+    facc_party_add_amend_convert_contact_email_address_1: 'contact@abccorporation.co.uk',
+    facc_party_add_amend_convert_contact_email_address_2: 'legal@abccorporation.co.uk',
+    facc_party_add_amend_convert_contact_telephone_number_mobile: '07900123456',
+    facc_party_add_amend_convert_contact_telephone_number_home: '02071234567',
+    facc_party_add_amend_convert_contact_telephone_number_business: '02071234567',
+    facc_party_add_amend_convert_vehicle_make: 'Mercedes Sprinter',
+    facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123D',
+    facc_party_add_amend_convert_language_preferences_document_language: 'English',
+    facc_party_add_amend_convert_language_preferences_hearing_language: 'English',
+    facc_party_add_amend_convert_employer_company_name: null,
+    facc_party_add_amend_convert_employer_reference: null,
+    facc_party_add_amend_convert_employer_email_address: null,
+    facc_party_add_amend_convert_employer_telephone_number: null,
+    facc_party_add_amend_convert_employer_address_line_1: null,
+    facc_party_add_amend_convert_employer_address_line_2: null,
+    facc_party_add_amend_convert_employer_address_line_3: null,
+    facc_party_add_amend_convert_employer_address_line_4: null,
+    facc_party_add_amend_convert_employer_address_line_5: null,
+    facc_party_add_amend_convert_employer_post_code: null,
+  },
+  nestedFlow: false,
+};

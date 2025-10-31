@@ -13,6 +13,8 @@ import {
 import {
   MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
   VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK,
+  VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK,
+  VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK,
 } from './mocks/viewAndAmendDefendant.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 
@@ -739,5 +741,132 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     allExpectedErrors.forEach((message) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
     });
+  });
+
+  it('AC1. Amend Company Details screen opens successfully', { tags: ['@PO-1111'] }, () => {
+    setupComponent('COMPANY', VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK);
+
+    // Verify the page loads successfully
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    // === Company Details Section ===
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('exist');
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('have.value', 'ABC Corporation Ltd');
+    cy.get(DOM_ELEMENTS.organisationNameLabel).should('contain', 'Company name');
+
+    // Verify company aliases checkbox (ticked when aliases are present)
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+
+    // Verify all 5 organisation aliases from mock data
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'ABC Corp');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'ABC Limited');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'ABC Trading');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel2).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'ABC Enterprises');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel3).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).should('have.value', 'ABC Holdings');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel4).should('contain', 'Company name'); 
+
+    // === Individual fields should NOT be present for company ===
+    cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
+    cy.get(DOM_ELEMENTS.forenamesInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.surnameInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('not.exist');
+
+    // === Address Information ===
+    cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
+
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '100 Corporate Plaza');
+    cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
+
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '25th Floor');
+    cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
+
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'Financial District');
+    cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
+
+    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'EC2Y 8DS');
+    cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
+
+    // === Contact Information ===
+    cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
+
+    cy.get(DOM_ELEMENTS.email1Input).should('exist');
+    cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'contact@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
+
+    cy.get(DOM_ELEMENTS.email2Input).should('exist');
+    cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'legal@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
+
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07900123456');
+    cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
+
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
+
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
+
+    // Should not be present for non-Welsh speaking BU
+    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+
+    // === Vehicle Information ===
+    cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
+
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Mercedes Sprinter');
+    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
+
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123D');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
+
+    // Employer section is not relevant for companies
+    cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
+  });
+
+  it('AC1b. Company Details screen shows language preferences for Welsh speaking business units', { tags: ['@PO-1111'] }, () => {
+    setupComponent('COMPANY', VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK, 'Y');
+
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.languagePreferencesLegend).should('contain', 'Language preferences');
+
+    cy.get(DOM_ELEMENTS.documentLanguageFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
+    cy.get(DOM_ELEMENTS.documentLanguageSelect).should('exist');
+
+    cy.get(DOM_ELEMENTS.documentLanguageSelect).find('option').should('contain', 'English');
+    cy.get(DOM_ELEMENTS.documentLanguageSelect).should('have.value', 'English');
+
+    cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
+    cy.get(DOM_ELEMENTS.hearingLanguageSelect).should('exist');
+
+    cy.get(DOM_ELEMENTS.hearingLanguageSelect).find('option').should('contain', 'English');
+    cy.get(DOM_ELEMENTS.hearingLanguageSelect).should('have.value', 'English');
   });
 });
