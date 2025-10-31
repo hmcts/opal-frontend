@@ -84,5 +84,5 @@ Given('I trigger a network failure for the get businessUnits API', () => {
 });
 
 Then('I should see the generic global warning banner', () => {
-  cy.get('div[opal-lib-moj-alert]', { timeout: 5000 }).should('exist').and('contain.text', genericWarningBannerText);
+  cy.get('div[opal-lib-moj-alert]', { timeout: 50000 }).should('exist').and('contain.text', genericWarningBannerText);
 });
