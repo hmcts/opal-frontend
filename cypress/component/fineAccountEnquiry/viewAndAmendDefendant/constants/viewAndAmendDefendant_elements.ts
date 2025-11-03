@@ -31,7 +31,6 @@ export const DOM_ELEMENTS = {
   addOrganisationAliasButton: '#addAlias',
   removeOrganisationAliasButton: '.govuk-\\!-margin-bottom-3 > .govuk-link',
 
-  
   // Form elements - Individual fields
   titleSelect: 'select[id="facc_party_add_amend_convert_title"]',
   forenamesInput: 'input[id="facc_party_add_amend_convert_forenames"]',
@@ -56,7 +55,7 @@ export const DOM_ELEMENTS = {
   vehicleMakeInput: 'input[id="facc_party_add_amend_convert_vehicle_make"]',
   vehicleRegistrationInput: 'input[id="facc_party_add_amend_convert_vehicle_registration_mark"]',
 
-  // Language 
+  // Language
   documentLanguageSelect: 'input[id="facc_party_add_amend_convert_language_preferences_document_language"]',
   hearingLanguageSelect: 'input[id="facc_party_add_amend_convert_language_preferences_hearing_language"]',
 
@@ -174,7 +173,7 @@ export const DOM_ELEMENTS = {
   documentLanguageRadioCY: 'input[id="CYDocumentRadioOption"]',
   hearingLanguageRadioEN: 'input[id="ENCourtHearingRadioOption"]',
   hearingLanguageRadioCY: 'input[id="CYCourtHearingRadioOption"]',
-  
+
   // Language preference labels
   documentLanguageRadioLabelEN: 'label[for="ENDocumentRadioOption"]',
   documentLanguageRadioLabelCY: 'label[for="CYDocumentRadioOption"]',
