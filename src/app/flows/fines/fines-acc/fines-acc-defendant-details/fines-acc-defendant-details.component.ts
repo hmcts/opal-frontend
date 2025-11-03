@@ -54,6 +54,7 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@servic
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 
 @Component({
@@ -108,6 +109,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
+  public debtorTypes = FINES_ACC_DEBTOR_TYPES;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.

@@ -117,7 +117,7 @@
     <ng-container row>
       @for (row of paginatedTableDataComputed(); track row['Account']) {
         <tr opal-lib-moj-sortable-table-row>
-          <td opal-lib-moj-sortable-table-row-data id="accountNumber">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAccountNumber">
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -134,14 +134,14 @@
               }
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="name">
+          <td opal-lib-moj-sortable-table-row-data id="defendantName">
             @if (row['Name'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Name'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="aliases">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAliases">
             @if (row['Aliases'] === null || row['Aliases'].length === 0) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -149,7 +149,7 @@
             }
           </td>
           @if (!isCompany) {
-            <td opal-lib-moj-sortable-table-row-data id="dateOfBirth">
+            <td opal-lib-moj-sortable-table-row-data id="defendantDateOfBirth">
               @if (row['Date of birth'] === null) {
                 <ng-container *ngTemplateOutlet="noData"></ng-container>
               } @else {
@@ -157,14 +157,14 @@
               }
             </td>
           }
-          <td opal-lib-moj-sortable-table-row-data id="addressLine1">
+          <td opal-lib-moj-sortable-table-row-data id="defendantAddressLine1">
             @if (row['Address line 1'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Address line 1'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="postcode">
+          <td opal-lib-moj-sortable-table-row-data id="defendantPostcode">
             @if (row['Postcode'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -172,14 +172,14 @@
             }
           </td>
           @if (!isCompany) {
-            <td opal-lib-moj-sortable-table-row-data id="nationalInsuranceNumber">
+            <td opal-lib-moj-sortable-table-row-data id="defendantNationalInsuranceNumber">
               @if (row['NI number'] === null) {
                 <ng-container *ngTemplateOutlet="noData"></ng-container>
               } @else {
                 {{ row['NI number'] | nationalInsurance }}
               }
             </td>
-            <td opal-lib-moj-sortable-table-row-data id="parentOrGuardian">
+            <td opal-lib-moj-sortable-table-row-data id="defendantParentOrGuardian">
               @if (row['Parent or guardian'] === null) {
                 <ng-container *ngTemplateOutlet="noData"></ng-container>
               } @else {
@@ -187,24 +187,24 @@
               }
             </td>
           }
-          <td opal-lib-moj-sortable-table-row-data id="businessUnit">
+          <td opal-lib-moj-sortable-table-row-data id="defendantBusinessUnit">
             {{ row['Business unit'] }}
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="ref">
+          <td opal-lib-moj-sortable-table-row-data id="defendantRef">
             @if (row['Ref'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Ref'] }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="enf">
+          <td opal-lib-moj-sortable-table-row-data id="defendantEnf">
             @if (row['Enf'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
               {{ row['Enf'] | uppercase }}
             }
           </td>
-          <td opal-lib-moj-sortable-table-row-data id="balance">
+          <td opal-lib-moj-sortable-table-row-data id="defendantBalance">
             @if (row['Balance'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
@@ -216,6 +216,7 @@
     </ng-container>
     <ng-container status>
       <opal-lib-moj-sortable-table-status
+        class="defendant-table-status"
         [columnTitle]="sortedColumnTitleSignal()"
         [sortDirection]="sortedColumnDirectionSignal()"
       />
@@ -224,7 +225,7 @@
 </opal-lib-custom-horizontal-scroll-pane>
 @if (filteredTableDataSignal().length > this.paginatedTableDataComputed().length) {
   <opal-lib-moj-pagination
-    id="fines-draft-table-pagination"
+    id="defendant-table-wrapper-pagination"
     [currentPage]="currentPageSignal()"
     [limit]="itemsPerPageSignal()"
     [total]="filteredTableDataSignal().length"
@@ -233,9 +234,5 @@
 }
 
 <ng-template #noData>
-  <p
-    class="govuk-!-margin-0"
-    [innerHTML]="finesDefaultValues.notProvidedLabel"
-    [ariaLabel]="finesDefaultValues.notProvidedAriaLabel"
-  ></p>
+  <app-fines-not-provided class="defendant-no-data-provided"></app-fines-not-provided>
 </ng-template>

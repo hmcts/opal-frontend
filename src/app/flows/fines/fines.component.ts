@@ -18,9 +18,6 @@ export class FinesComponent implements OnDestroy {
     this.finesMacStore.resetFinesMacStore();
 
     // Clear any errors...
-    this.globalStore.setError({
-      error: false,
-      message: '',
-    });
+    this.globalStore.resetError();
   }
 }

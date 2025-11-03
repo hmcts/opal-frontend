@@ -11,6 +11,27 @@ export const DOM_ELEMENTS = {
   pageTitle: 'h1.govuk-heading-l',
   pageSubtitle: '.govuk-body-l',
 
+  // Form elements - Organisation/Company fields
+  organisationNameInput: 'input[id="facc_party_add_amend_convert_organisation_name"]',
+  organisationNameLabel: 'label[for="facc_party_add_amend_convert_organisation_name"]',
+
+  // Organisation aliases
+  organisationAliasCheckbox: 'input[id="facc_party_add_amend_convert_add_alias"]',
+  organisationAliasSection: '[opal-lib-govuk-checkboxes-conditional]',
+  organisationAliasInput0: 'input[id="facc_party_add_amend_convert_alias_organisation_name_0"]',
+  organisationAliasInput1: 'input[id="facc_party_add_amend_convert_alias_organisation_name_1"]',
+  organisationAliasInput2: 'input[id="facc_party_add_amend_convert_alias_organisation_name_2"]',
+  organisationAliasInput3: 'input[id="facc_party_add_amend_convert_alias_organisation_name_3"]',
+  organisationAliasInput4: 'input[id="facc_party_add_amend_convert_alias_organisation_name_4"]',
+  organisationAliasLabel0: 'label[for="facc_party_add_amend_convert_alias_organisation_name_0"]',
+  organisationAliasLabel1: 'label[for="facc_party_add_amend_convert_alias_organisation_name_1"]',
+  organisationAliasLabel2: 'label[for="facc_party_add_amend_convert_alias_organisation_name_2"]',
+  organisationAliasLabel3: 'label[for="facc_party_add_amend_convert_alias_organisation_name_3"]',
+  organisationAliasLabel4: 'label[for="facc_party_add_amend_convert_alias_organisation_name_4"]',
+  addOrganisationAliasButton: '#addAlias',
+  removeOrganisationAliasButton: '.govuk-\\!-margin-bottom-3 > .govuk-link',
+
+  
   // Form elements - Individual fields
   titleSelect: 'select[id="facc_party_add_amend_convert_title"]',
   forenamesInput: 'input[id="facc_party_add_amend_convert_forenames"]',
@@ -35,9 +56,9 @@ export const DOM_ELEMENTS = {
   vehicleMakeInput: 'input[id="facc_party_add_amend_convert_vehicle_make"]',
   vehicleRegistrationInput: 'input[id="facc_party_add_amend_convert_vehicle_registration_mark"]',
 
-  // Language preferences
-  documentLanguageSelect: 'select[id="facc_party_add_amend_convert_language_preferences_document_language"]',
-  hearingLanguageSelect: 'select[id="facc_party_add_amend_convert_language_preferences_hearing_language"]',
+  // Language 
+  documentLanguageSelect: 'input[id="facc_party_add_amend_convert_language_preferences_document_language"]',
+  hearingLanguageSelect: 'input[id="facc_party_add_amend_convert_language_preferences_hearing_language"]',
 
   // Employer details
   employerCompanyInput: 'input[id="facc_party_add_amend_convert_employer_company_name"]',
@@ -147,6 +168,18 @@ export const DOM_ELEMENTS = {
   ageDisplay: '.moj-ticket-panel',
   ageValue: '.moj-ticket-panel strong',
   ageGroup: '.moj-ticket-panel p',
+
+  // Language preferences - Radio buttons (not input fields)
+  documentLanguageRadioEN: 'input[id="ENDocumentRadioOption"]',
+  documentLanguageRadioCY: 'input[id="CYDocumentRadioOption"]',
+  hearingLanguageRadioEN: 'input[id="ENCourtHearingRadioOption"]',
+  hearingLanguageRadioCY: 'input[id="CYCourtHearingRadioOption"]',
+  
+  // Language preference labels
+  documentLanguageRadioLabelEN: 'label[for="ENDocumentRadioOption"]',
+  documentLanguageRadioLabelCY: 'label[for="CYDocumentRadioOption"]',
+  hearingLanguageRadioLabelEN: 'label[for="ENCourtHearingRadioOption"]',
+  hearingLanguageRadioLabelCY: 'label[for="CYCourtHearingRadioOption"]',
 };
 
 // Helper functions for dynamic element selection
@@ -155,6 +188,12 @@ export const getAliasForenamesInput = (index: number) =>
 
 export const getAliasSurnameInput = (index: number) =>
   `input[id="facc_party_add_amend_convert_alias_surname_${index}"]`;
+
+export const getOrganisationAliasInput = (index: number) =>
+  `input[id="facc_party_add_amend_convert_alias_organisation_name_${index}"]`;
+
+export const getOrganisationAliasLabel = (index: number) =>
+  `label[for="facc_party_add_amend_convert_alias_organisation_name_${index}"]`;
 
 export const getAliasContainer = (index: number) => `.alias-container[data-index="${index}"]`;
 
