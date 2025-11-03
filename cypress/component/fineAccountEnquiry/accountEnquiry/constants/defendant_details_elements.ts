@@ -25,6 +25,10 @@ export const DEFENDANT_DETAILS = {
   defendantEmployerPhone: '[summaryListRowId="employer_telephone_number"]',
   defendantEmployerAddress: '#employerDetailsEmployer_addressValue',
 
+  // Parent/Guardian details table
+  parentGuardianTag: '#status',
+  parentGuardianTableSections: '.govuk-\\!-margin-top-2',
+
   // Visible labels used in assertions
   labelAccountType: 'Account type:',
   labelCaseNumber: 'PCR or case number:',

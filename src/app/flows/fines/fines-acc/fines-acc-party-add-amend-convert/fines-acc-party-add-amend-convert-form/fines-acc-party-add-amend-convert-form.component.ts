@@ -166,7 +166,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(20),
+        optionalMaxLengthValidator(11),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
@@ -326,17 +326,12 @@ export class FinesAccPartyAddAmendConvertFormComponent
   private initialPartyAddAmendConvertSetup(): void {
     this.setupPartyAddAmendConvertForm();
     this.setupAliasConfiguration();
-
     // Setup alias form controls based on party type
     if (this.isIndividualPartyType) {
       const individualAliasesLength =
         this.initialFormData?.formData?.facc_party_add_amend_convert_individual_aliases?.length || 0;
       this.setupAliasFormControls(
         [...new Array(individualAliasesLength).keys()],
-        'facc_party_add_amend_convert_individual_aliases',
-      );
-      this.setUpAliasCheckboxListener(
-        'facc_party_add_amend_convert_add_alias',
         'facc_party_add_amend_convert_individual_aliases',
       );
     } else if (this.isCompanyPartyType) {
@@ -346,15 +341,22 @@ export class FinesAccPartyAddAmendConvertFormComponent
         [...new Array(organisationAliasesLength).keys()],
         'facc_party_add_amend_convert_organisation_aliases',
       );
+    }
+
+    this.rePopulateForm(this.initialFormData?.formData || null);
+    this.setInitialErrorMessages();
+    this.dateOfBirthListener();
+    if (this.isIndividualPartyType) {
+      this.setUpAliasCheckboxListener(
+        'facc_party_add_amend_convert_add_alias',
+        'facc_party_add_amend_convert_individual_aliases',
+      );
+    } else if (this.isCompanyPartyType) {
       this.setUpAliasCheckboxListener(
         'facc_party_add_amend_convert_add_alias',
         'facc_party_add_amend_convert_organisation_aliases',
       );
     }
-
-    this.setInitialErrorMessages();
-    this.rePopulateForm(this.initialFormData?.formData || null);
-    this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
