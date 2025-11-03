@@ -12,7 +12,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS: IAbstractFormArray
   {
     controlName: 'facc_party_add_amend_convert_alias_organisation_name',
     validators: [
-      Validators.maxLength(30),
+      Validators.maxLength(20),
       Validators.required,
       ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
     ],

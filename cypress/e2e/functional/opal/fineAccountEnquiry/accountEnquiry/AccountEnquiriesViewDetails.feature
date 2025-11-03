@@ -57,7 +57,7 @@ Feature: Account Enquiries - View Account Details
     Then I click "Cancel", a window pops up and I click Ok
     Then I see "Mr John ACCDETAILSURNAME" on the page header
 
-  @967
+  @967 @PO-1111
   Scenario: As a user I can view account details of a company account
     And I create a "company" draft account with the following details:
       | Account_status                      | Submitted              |
@@ -76,3 +76,34 @@ Feature: Account Enquiries - View Account Details
     And I click the "Search" button
     Then I click the latest published account link
     And I see "Accdetail comp" on the page header
+
+
+    When I click on the "Defendant" link
+    Then I click on the "Change" link
+    And I see "Company details" on the page header
+
+    # AC4 - Route Guard
+    When I enter "Test" into the "Company name" field
+    Then I click Cancel, a window pops up and I click Cancel
+    Then I see 'Test' in the 'Company name' field
+
+    When I click Cancel, a window pops up and I click Ok
+    Then I see "Accdetail comp" on the page header
+
+
+    # AC3 - Cancel Changes
+    When I click on the "Defendant" link
+    Then I click on the "Change" link
+    And I see "Company details" on the page header
+    When I click on the "Cancel" link
+    Then I see "Accdetail comp" on the page header
+
+    When I click on the "Defendant" link
+    And I click on the "Change" link
+    And I enter "Test" into the "Company name" field
+
+    Then I click "Cancel", a window pops up and I click Cancel
+    Then I see "Test" in the "Company name" field
+
+    Then I click "Cancel", a window pops up and I click Ok
+    Then I see "Accdetail comp" on the page header
