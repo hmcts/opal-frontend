@@ -19,7 +19,7 @@ import {
   IOpalFinesProsecutor,
   IOpalFinesProsecutorRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -46,7 +46,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   public sendingCourt!: string | null;
   public prosecutor!: string | null;
   public issuingAuthority!: string | null;
-  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
+  public accountTypesKeys = FINES_ACCOUNT_TYPES;
   public cardTitle = 'Court Details';
 
   /**
