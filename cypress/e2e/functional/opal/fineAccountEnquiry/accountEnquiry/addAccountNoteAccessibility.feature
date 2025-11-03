@@ -38,8 +38,7 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
         Then I click the "Save note" button
 
         Then I see "Mr James GRAHAMADDNOTESURNAME" on the page header
-    # To be uncommented once PO-2342 is complete
-    # Then I check accessibility
+        Then I check accessibility
 
     Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
         And I create a "company" draft account with the following details:
@@ -70,5 +69,4 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
         Then I click the "Save note" button
 
         Then I see "AccNote comp" on the page header
-# To be uncommented once PO-2342 is complete
-# Then I check accessibility
+        Then I check accessibility

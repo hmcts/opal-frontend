@@ -69,7 +69,7 @@
               <br />
             }
           } @else {
-            <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -155,5 +155,5 @@
 </ng-template>
 
 <ng-template #notProvided>
-  <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
+  <app-fines-not-provided></app-fines-not-provided>
 </ng-template>
