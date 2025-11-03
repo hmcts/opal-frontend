@@ -72,7 +72,7 @@
       <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      @if (accountData.account_type === accountTypes.fixedPenalty) {
+      @if (accountData.account_type === accountTypes['Fixed Penalty']) {
         <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
         <p opal-lib-custom-account-information-item-value>{{ accountData.fixed_penalty_ticket_number | uppercase }}</p>
       } @else {
@@ -147,7 +147,7 @@
         [subNavItemText]="tabs['parent-or-guardian']"
       ></li>
     }
-    @if (accountData.account_type === accountTypes.fixedPenalty) {
+    @if (accountData.account_type === accountTypes['Fixed Penalty']) {
       <li
         opal-lib-moj-sub-navigation-item
         subNavItemId="fixed-penalty-tab"
