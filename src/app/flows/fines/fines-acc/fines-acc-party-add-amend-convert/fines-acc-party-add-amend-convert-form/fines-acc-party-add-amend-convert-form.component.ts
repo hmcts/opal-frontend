@@ -166,7 +166,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(20),
+        optionalMaxLengthValidator(11),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),

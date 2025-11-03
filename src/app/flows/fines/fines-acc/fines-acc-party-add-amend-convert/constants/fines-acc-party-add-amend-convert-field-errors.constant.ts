@@ -385,7 +385,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
   },
   facc_party_add_amend_convert_vehicle_registration_mark: {
     maxlength: {
-      message: `Vehicle registration must be 20 characters or fewer`,
+      message: `Vehicle registration must be 11 characters or fewer`,
       priority: 1,
     },
     alphanumericTextPattern: {
