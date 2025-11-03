@@ -345,7 +345,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
 
     this.rePopulateForm(this.initialFormData?.formData || null);
     this.setInitialErrorMessages();
-    this.dateOfBirthListener();
     if (this.isIndividualPartyType) {
       this.setUpAliasCheckboxListener(
         'facc_party_add_amend_convert_add_alias',
@@ -358,6 +357,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       );
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+    this.dateOfBirthListener();
   }
 
   /**
