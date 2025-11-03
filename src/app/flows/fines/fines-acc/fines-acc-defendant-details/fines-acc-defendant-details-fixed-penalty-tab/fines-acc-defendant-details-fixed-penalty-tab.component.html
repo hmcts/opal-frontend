@@ -1,0 +1,103 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-summary-card-list cardTitle="Fixed Penalty details" summaryCardListId="fixed-penalty-details">
+    <ng-container content>
+      <opal-lib-govuk-summary-list summaryListId="fixedPenaltyDetails">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fixedPenaltyDetails"
+          summaryListRowId="issuing_authority"
+        >
+          <ng-container name>Issuing Authority</ng-container>
+          <ng-container value>{{ tabData.fixed_penalty_ticket_details.issuing_authority }}</ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fixedPenaltyDetails"
+          summaryListRowId="ticket_number"
+        >
+          <ng-container name>Ticket Number</ng-container>
+          <ng-container value>{{ tabData.fixed_penalty_ticket_details.ticket_number }}</ng-container>
+        </div>
+        @if (tabData.vehicle_fixed_penalty_flag) {
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="fixedPenaltyDetails"
+            summaryListRowId="registration_number"
+          >
+            <ng-container name>Registration Number</ng-container>
+            @if (tabData.vehicle_fixed_penalty_details?.vehicle_registration_number) {
+              <ng-container value>{{
+                tabData.vehicle_fixed_penalty_details?.vehicle_registration_number
+              }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="fixedPenaltyDetails"
+            summaryListRowId="licence_number"
+          >
+            <ng-container name>Driving licence</ng-container>
+
+            @if (tabData.vehicle_fixed_penalty_details?.vehicle_drivers_license) {
+              <ng-container value>{{ tabData.vehicle_fixed_penalty_details?.vehicle_drivers_license }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="fixedPenaltyDetails"
+            summaryListRowId="notice_number"
+          >
+            <ng-container name>Notice to owner or hirer number (NTO/NTH)</ng-container>
+            @if (tabData.vehicle_fixed_penalty_details?.notice_number) {
+              <ng-container value>{{ tabData.vehicle_fixed_penalty_details?.notice_number }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="fixedPenaltyDetails"
+            summaryListRowId="issued_date"
+          >
+            <ng-container name>Date notice to owner was issued</ng-container>
+            @if (tabData.vehicle_fixed_penalty_details?.date_notice_issued) {
+              <ng-container value>{{
+                tabData.vehicle_fixed_penalty_details?.date_notice_issued | date: 'dd MMMM yyyy'
+              }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+        }
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fixedPenaltyDetails"
+          summaryListRowId="time_of_offence"
+        >
+          <ng-container name>Time of offence</ng-container>
+          <ng-container value>{{ tabData.fixed_penalty_ticket_details.time_of_offence }}</ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fixedPenaltyDetails"
+          summaryListRowId="place_of_offence"
+        >
+          <ng-container name>Place of offence</ng-container>
+          <ng-container value>{{ tabData.fixed_penalty_ticket_details.place_of_offence }}</ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
+    </ng-container>
+  </opal-lib-govuk-summary-card-list>
+</div>

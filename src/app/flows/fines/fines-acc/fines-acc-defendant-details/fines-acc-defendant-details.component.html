@@ -222,6 +222,14 @@
       ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
   }
+  @case ('fixed-penalty') {
+    @if (tabFixedPenalty$ | async; as tabData) {
+      <app-fines-acc-defendant-details-fixed-penalty-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-fixed-penalty-tab>
+    }
+  }
   @case ('payment-terms') {
     <div class="govuk-grid-column-full"></div>
   }
