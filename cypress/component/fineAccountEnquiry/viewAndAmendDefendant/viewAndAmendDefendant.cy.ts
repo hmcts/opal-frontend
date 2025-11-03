@@ -1179,7 +1179,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       const expectedCompanyErrors = [
         'Company name must be 50 characters or fewer',
-        'Alias 1 company name must be 30 characters or fewer',
+        'Alias 1 company name must be 20 characters or fewer',
         'Alias 2 company name must be 20 characters or fewer',
         'Address line 1 must be 30 characters or fewer',
         'Address line 2 must be 30 characters or fewer',
