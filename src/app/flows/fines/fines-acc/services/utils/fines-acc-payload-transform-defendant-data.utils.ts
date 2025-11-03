@@ -188,9 +188,7 @@ export const transformDefendantAccountPartyPayload = (
 
   if (isCompany) {
     return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
-  }
-
-  if (isIndividualOrParentGuardian) {
+  } else if (isIndividualOrParentGuardian) {
     return getIndividualOrParentGuardianParty(
       baseState,
       individualDetails,
@@ -198,17 +196,17 @@ export const transformDefendantAccountPartyPayload = (
       hasAliases,
       employer_details,
     );
-  }
-
-  if (organisation_flag) {
-    return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
   } else {
-    return getIndividualOrParentGuardianParty(
-      baseState,
-      individualDetails,
-      individualAliases,
-      hasAliases,
-      employer_details,
-    );
+    if (organisation_flag) {
+      return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
+    } else {
+      return getIndividualOrParentGuardianParty(
+        baseState,
+        individualDetails,
+        individualAliases,
+        hasAliases,
+        employer_details,
+      );
+    }
   }
 };
