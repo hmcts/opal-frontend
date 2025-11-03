@@ -186,6 +186,7 @@ export const transformDefendantAccountPartyPayload = (
   // Create base state with common fields
   const baseState = createBaseState(address, contact_details, vehicle_details, language_preferences);
 
+  // If partyType is specified, prioritize it over organisation_flag
   if (isCompany) {
     return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
   } else if (isIndividualOrParentGuardian) {
@@ -196,17 +197,15 @@ export const transformDefendantAccountPartyPayload = (
       hasAliases,
       employer_details,
     );
-  } else {
-    if (organisation_flag) {
-      return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
-    } else {
-      return getIndividualOrParentGuardianParty(
-        baseState,
-        individualDetails,
-        individualAliases,
-        hasAliases,
-        employer_details,
-      );
-    }
+  } else if (organisation_flag) {
+    return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
   }
+
+  return getIndividualOrParentGuardianParty(
+    baseState,
+    individualDetails,
+    individualAliases,
+    hasAliases,
+    employer_details,
+  );
 };
