@@ -567,10 +567,10 @@ describe('transformDefendantAccountPartyPayload', () => {
 
       const result = transformDefendantAccountPartyPayload(mockCompanyData);
 
-      // Should return all fields (fallback behavior)
+      // Should return company fields only when organisation_flag is true (fallback behavior)
       expect(result.facc_party_add_amend_convert_organisation_name).toBe('Fallback Company');
-      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
-      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      expect(result.facc_party_add_amend_convert_title).toBeNull(); // Individual fields should be null for company
+      expect(result.facc_party_add_amend_convert_forenames).toBeNull(); // Individual fields should be null for company
       // Aliases are based on organisation_flag, not partyType, so individual aliases won't be processed when org flag is true
       expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
     });

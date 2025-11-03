@@ -1,4 +1,15 @@
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import {
+  IOpalFinesDefendantAccountAddress,
+  IOpalFinesDefendantAccountContactDetails,
+  IOpalFinesDefendantAccountVehicleDetails,
+  IOpalFinesDefendantAccountEmployerDetails,
+  IOpalFinesDefendantAccountLanguagePreferences,
+  IOpalFinesDefendantAccountIndividualDetails,
+  IOpalFinesDefendantAccountOrganisationDetails,
+  IOpalFinesDefendantAccountIndividualAlias,
+  IOpalFinesDefendantAccountOrganisationAlias,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { IFinesAccPartyAddAmendConvertIndividualAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-individual-alias-state.interface';
 import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-organisation-alias-state.interface';
@@ -6,17 +17,18 @@ import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines
 /**
  * Maps an array of individual aliases to the array structure used by the party add/amend form
  */
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapIndividualAliasesToArrayStructure = (aliases: any[]): IFinesAccPartyAddAmendConvertIndividualAliasState[] => {
+const mapIndividualAliasesToArrayStructure = (
+  aliases: IOpalFinesDefendantAccountIndividualAlias[],
+): IFinesAccPartyAddAmendConvertIndividualAliasState[] => {
   const result: IFinesAccPartyAddAmendConvertIndividualAliasState[] = [];
 
   for (const [index, alias] of aliases.entries()) {
     if (index < 5) {
       const aliasObject: IFinesAccPartyAddAmendConvertIndividualAliasState = {};
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (aliasObject as any)[`facc_party_add_amend_convert_alias_forenames_${index}`] = alias.forenames || null;
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (aliasObject as any)[`facc_party_add_amend_convert_alias_surname_${index}`] = alias.surname || null;
+      (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_forenames_${index}`] =
+        alias.forenames || null;
+      (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_surname_${index}`] =
+        alias.surname || null;
 
       result.push(aliasObject);
     }
@@ -29,16 +41,14 @@ const mapIndividualAliasesToArrayStructure = (aliases: any[]): IFinesAccPartyAdd
  * Maps an array of organisation aliases to the array structure used by the party add/amend form
  */
 const mapOrganisationAliasesToArrayStructure = (
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  aliases: any[],
+  aliases: IOpalFinesDefendantAccountOrganisationAlias[],
 ): IFinesAccPartyAddAmendConvertOrganisationAliasState[] => {
   const result: IFinesAccPartyAddAmendConvertOrganisationAliasState[] = [];
 
   for (const [index, alias] of aliases.entries()) {
     if (index < 5) {
       const aliasObject: IFinesAccPartyAddAmendConvertOrganisationAliasState = {};
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (aliasObject as any)[`facc_party_add_amend_convert_alias_organisation_name_${index}`] =
+      (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_organisation_name_${index}`] =
         alias.organisation_name || null;
 
       result.push(aliasObject);
@@ -47,6 +57,96 @@ const mapOrganisationAliasesToArrayStructure = (
 
   return result;
 };
+
+/**
+ * Creates the base state object with common fields for all party types
+ */
+const createBaseState = (
+  address: IOpalFinesDefendantAccountAddress,
+  contact_details: IOpalFinesDefendantAccountContactDetails | null,
+  vehicle_details: IOpalFinesDefendantAccountVehicleDetails | null,
+  language_preferences: IOpalFinesDefendantAccountLanguagePreferences | null,
+): IFinesAccPartyAddAmendConvertState => ({
+  facc_party_add_amend_convert_organisation_name: null,
+  facc_party_add_amend_convert_title: null,
+  facc_party_add_amend_convert_forenames: null,
+  facc_party_add_amend_convert_surname: null,
+  facc_party_add_amend_convert_dob: null,
+  facc_party_add_amend_convert_national_insurance_number: null,
+  facc_party_add_amend_convert_individual_aliases: [],
+  facc_party_add_amend_convert_organisation_aliases: [],
+  facc_party_add_amend_convert_add_alias: false,
+  facc_party_add_amend_convert_address_line_1: address?.address_line_1 || null,
+  facc_party_add_amend_convert_address_line_2: address?.address_line_2 || null,
+  facc_party_add_amend_convert_address_line_3: address?.address_line_3 || null,
+  facc_party_add_amend_convert_post_code: address?.postcode || null,
+  facc_party_add_amend_convert_contact_email_address_1: contact_details?.primary_email_address || null,
+  facc_party_add_amend_convert_contact_email_address_2: contact_details?.secondary_email_address || null,
+  facc_party_add_amend_convert_contact_telephone_number_mobile: contact_details?.mobile_telephone_number || null,
+  facc_party_add_amend_convert_contact_telephone_number_home: contact_details?.home_telephone_number || null,
+  facc_party_add_amend_convert_contact_telephone_number_business: contact_details?.work_telephone_number || null,
+  facc_party_add_amend_convert_vehicle_make: vehicle_details?.vehicle_make_and_model || null,
+  facc_party_add_amend_convert_vehicle_registration_mark: vehicle_details?.vehicle_registration || null,
+  facc_party_add_amend_convert_language_preferences_document_language:
+    language_preferences?.document_language_preference?.language_code || null,
+  facc_party_add_amend_convert_language_preferences_hearing_language:
+    language_preferences?.hearing_language_preference?.language_code || null,
+  facc_party_add_amend_convert_employer_company_name: null,
+  facc_party_add_amend_convert_employer_reference: null,
+  facc_party_add_amend_convert_employer_email_address: null,
+  facc_party_add_amend_convert_employer_telephone_number: null,
+  facc_party_add_amend_convert_employer_address_line_1: null,
+  facc_party_add_amend_convert_employer_address_line_2: null,
+  facc_party_add_amend_convert_employer_address_line_3: null,
+  facc_party_add_amend_convert_employer_address_line_4: null,
+  facc_party_add_amend_convert_employer_address_line_5: null,
+  facc_party_add_amend_convert_employer_post_code: null,
+});
+
+/**
+ * Gets company party state with company-specific fields only
+ */
+const getCompanyParty = (
+  baseState: IFinesAccPartyAddAmendConvertState,
+  organisationDetails: IOpalFinesDefendantAccountOrganisationDetails | null,
+  organisationAliases: IFinesAccPartyAddAmendConvertOrganisationAliasState[],
+  hasAliases: boolean,
+): IFinesAccPartyAddAmendConvertState => ({
+  ...baseState,
+  facc_party_add_amend_convert_organisation_name: organisationDetails?.organisation_name || null,
+  facc_party_add_amend_convert_organisation_aliases: organisationAliases,
+  facc_party_add_amend_convert_add_alias: hasAliases,
+});
+
+/**
+ * Gets individual or parent/guardian party state with all fields except organisation-specific ones
+ */
+const getIndividualOrParentGuardianParty = (
+  baseState: IFinesAccPartyAddAmendConvertState,
+  individualDetails: IOpalFinesDefendantAccountIndividualDetails | null,
+  individualAliases: IFinesAccPartyAddAmendConvertIndividualAliasState[],
+  hasAliases: boolean,
+  employer_details: IOpalFinesDefendantAccountEmployerDetails | null,
+): IFinesAccPartyAddAmendConvertState => ({
+  ...baseState,
+  facc_party_add_amend_convert_title: individualDetails?.title || null,
+  facc_party_add_amend_convert_forenames: individualDetails?.forenames || null,
+  facc_party_add_amend_convert_surname: individualDetails?.surname || null,
+  facc_party_add_amend_convert_dob: individualDetails?.date_of_birth || null,
+  facc_party_add_amend_convert_national_insurance_number: individualDetails?.national_insurance_number || null,
+  facc_party_add_amend_convert_individual_aliases: individualAliases,
+  facc_party_add_amend_convert_add_alias: hasAliases,
+  facc_party_add_amend_convert_employer_company_name: employer_details?.employer_name || null,
+  facc_party_add_amend_convert_employer_reference: employer_details?.employer_reference || null,
+  facc_party_add_amend_convert_employer_email_address: employer_details?.employer_email_address || null,
+  facc_party_add_amend_convert_employer_telephone_number: employer_details?.employer_telephone_number || null,
+  facc_party_add_amend_convert_employer_address_line_1: employer_details?.employer_address?.address_line_1 || null,
+  facc_party_add_amend_convert_employer_address_line_2: employer_details?.employer_address?.address_line_2 || null,
+  facc_party_add_amend_convert_employer_address_line_3: employer_details?.employer_address?.address_line_3 || null,
+  facc_party_add_amend_convert_employer_address_line_4: employer_details?.employer_address?.address_line_4 || null,
+  facc_party_add_amend_convert_employer_address_line_5: employer_details?.employer_address?.address_line_5 || null,
+  facc_party_add_amend_convert_employer_post_code: employer_details?.employer_address?.postcode || null,
+});
 
 /**
  * Transforms defendant account party data from the API into the party add/amend form state.
@@ -80,101 +180,35 @@ export const transformDefendantAccountPartyPayload = (
     hasAliases = individualDetails.individual_aliases.length > 0;
   }
 
-  // Determine party type logic
   const isCompany = partyType === 'company';
   const isIndividualOrParentGuardian = partyType === 'individual' || partyType === 'parentGuardian';
 
-  // Base object with all possible fields
-  const baseState: IFinesAccPartyAddAmendConvertState = {
-    facc_party_add_amend_convert_organisation_name: null,
-    facc_party_add_amend_convert_title: null,
-    facc_party_add_amend_convert_forenames: null,
-    facc_party_add_amend_convert_surname: null,
-    facc_party_add_amend_convert_dob: null,
-    facc_party_add_amend_convert_national_insurance_number: null,
-    facc_party_add_amend_convert_individual_aliases: [],
-    facc_party_add_amend_convert_organisation_aliases: [],
-    facc_party_add_amend_convert_add_alias: false,
-    facc_party_add_amend_convert_address_line_1: address?.address_line_1 || null,
-    facc_party_add_amend_convert_address_line_2: address?.address_line_2 || null,
-    facc_party_add_amend_convert_address_line_3: address?.address_line_3 || null,
-    facc_party_add_amend_convert_post_code: address?.postcode || null,
-    facc_party_add_amend_convert_contact_email_address_1: contact_details?.primary_email_address || null,
-    facc_party_add_amend_convert_contact_email_address_2: contact_details?.secondary_email_address || null,
-    facc_party_add_amend_convert_contact_telephone_number_mobile: contact_details?.mobile_telephone_number || null,
-    facc_party_add_amend_convert_contact_telephone_number_home: contact_details?.home_telephone_number || null,
-    facc_party_add_amend_convert_contact_telephone_number_business: contact_details?.work_telephone_number || null,
-    facc_party_add_amend_convert_vehicle_make: vehicle_details?.vehicle_make_and_model || null,
-    facc_party_add_amend_convert_vehicle_registration_mark: vehicle_details?.vehicle_registration || null,
-    facc_party_add_amend_convert_language_preferences_document_language:
-      language_preferences?.document_language_preference?.language_code || null,
-    facc_party_add_amend_convert_language_preferences_hearing_language:
-      language_preferences?.hearing_language_preference?.language_code || null,
-    facc_party_add_amend_convert_employer_company_name: null,
-    facc_party_add_amend_convert_employer_reference: null,
-    facc_party_add_amend_convert_employer_email_address: null,
-    facc_party_add_amend_convert_employer_telephone_number: null,
-    facc_party_add_amend_convert_employer_address_line_1: null,
-    facc_party_add_amend_convert_employer_address_line_2: null,
-    facc_party_add_amend_convert_employer_address_line_3: null,
-    facc_party_add_amend_convert_employer_address_line_4: null,
-    facc_party_add_amend_convert_employer_address_line_5: null,
-    facc_party_add_amend_convert_employer_post_code: null,
-  };
+  // Create base state with common fields
+  const baseState = createBaseState(address, contact_details, vehicle_details, language_preferences);
 
   if (isCompany) {
-    // For company: return only company-specific fields
-    return {
-      ...baseState,
-      facc_party_add_amend_convert_organisation_name: organisationDetails?.organisation_name || null,
-      facc_party_add_amend_convert_organisation_aliases: organisationAliases,
-      facc_party_add_amend_convert_add_alias: hasAliases,
-    };
-  } else if (isIndividualOrParentGuardian) {
-    // For individual/parent/guardian: return all fields except organisation name and organisation aliases
-    return {
-      ...baseState,
-      facc_party_add_amend_convert_title: individualDetails?.title || null,
-      facc_party_add_amend_convert_forenames: individualDetails?.forenames || null,
-      facc_party_add_amend_convert_surname: individualDetails?.surname || null,
-      facc_party_add_amend_convert_dob: individualDetails?.date_of_birth || null,
-      facc_party_add_amend_convert_national_insurance_number: individualDetails?.national_insurance_number || null,
-      facc_party_add_amend_convert_individual_aliases: individualAliases,
-      facc_party_add_amend_convert_add_alias: hasAliases,
-      facc_party_add_amend_convert_employer_company_name: employer_details?.employer_name || null,
-      facc_party_add_amend_convert_employer_reference: employer_details?.employer_reference || null,
-      facc_party_add_amend_convert_employer_email_address: employer_details?.employer_email_address || null,
-      facc_party_add_amend_convert_employer_telephone_number: employer_details?.employer_telephone_number || null,
-      facc_party_add_amend_convert_employer_address_line_1: employer_details?.employer_address?.address_line_1 || null,
-      facc_party_add_amend_convert_employer_address_line_2: employer_details?.employer_address?.address_line_2 || null,
-      facc_party_add_amend_convert_employer_address_line_3: employer_details?.employer_address?.address_line_3 || null,
-      facc_party_add_amend_convert_employer_address_line_4: employer_details?.employer_address?.address_line_4 || null,
-      facc_party_add_amend_convert_employer_address_line_5: employer_details?.employer_address?.address_line_5 || null,
-      facc_party_add_amend_convert_employer_post_code: employer_details?.employer_address?.postcode || null,
-    };
+    return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
   }
 
-  // Fallback: return all fields (backward compatibility)
-  return {
-    ...baseState,
-    facc_party_add_amend_convert_organisation_name: organisationDetails?.organisation_name || null,
-    facc_party_add_amend_convert_title: individualDetails?.title || null,
-    facc_party_add_amend_convert_forenames: individualDetails?.forenames || null,
-    facc_party_add_amend_convert_surname: individualDetails?.surname || null,
-    facc_party_add_amend_convert_dob: individualDetails?.date_of_birth || null,
-    facc_party_add_amend_convert_national_insurance_number: individualDetails?.national_insurance_number || null,
-    facc_party_add_amend_convert_individual_aliases: individualAliases,
-    facc_party_add_amend_convert_organisation_aliases: organisationAliases,
-    facc_party_add_amend_convert_add_alias: hasAliases,
-    facc_party_add_amend_convert_employer_company_name: employer_details?.employer_name || null,
-    facc_party_add_amend_convert_employer_reference: employer_details?.employer_reference || null,
-    facc_party_add_amend_convert_employer_email_address: employer_details?.employer_email_address || null,
-    facc_party_add_amend_convert_employer_telephone_number: employer_details?.employer_telephone_number || null,
-    facc_party_add_amend_convert_employer_address_line_1: employer_details?.employer_address?.address_line_1 || null,
-    facc_party_add_amend_convert_employer_address_line_2: employer_details?.employer_address?.address_line_2 || null,
-    facc_party_add_amend_convert_employer_address_line_3: employer_details?.employer_address?.address_line_3 || null,
-    facc_party_add_amend_convert_employer_address_line_4: employer_details?.employer_address?.address_line_4 || null,
-    facc_party_add_amend_convert_employer_address_line_5: employer_details?.employer_address?.address_line_5 || null,
-    facc_party_add_amend_convert_employer_post_code: employer_details?.employer_address?.postcode || null,
-  };
+  if (isIndividualOrParentGuardian) {
+    return getIndividualOrParentGuardianParty(
+      baseState,
+      individualDetails,
+      individualAliases,
+      hasAliases,
+      employer_details,
+    );
+  }
+
+  if (organisation_flag) {
+    return getCompanyParty(baseState, organisationDetails, organisationAliases, hasAliases);
+  } else {
+    return getIndividualOrParentGuardianParty(
+      baseState,
+      individualDetails,
+      individualAliases,
+      hasAliases,
+      employer_details,
+    );
+  }
 };

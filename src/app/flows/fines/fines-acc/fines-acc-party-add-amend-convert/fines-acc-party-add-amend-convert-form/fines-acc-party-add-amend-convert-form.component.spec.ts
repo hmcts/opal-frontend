@@ -10,6 +10,7 @@ import {
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
 } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
@@ -92,7 +93,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     // After ngOnInit, initialFormData should be set to the default constant
     expect(component.initialFormData).toBeDefined();
-    expect(component.initialFormData.formData).toBeDefined();
+    expect(component.initialFormData).toEqual(FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM);
     expect(component.initialFormData.nestedFlow).toBe(false);
   });
 

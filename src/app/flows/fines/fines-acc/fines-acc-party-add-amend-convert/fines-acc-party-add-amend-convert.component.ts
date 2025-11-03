@@ -4,7 +4,6 @@ import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/com
 import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
-import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE } from './constants/fines-acc-party-add-amend-convert-state.constant';
 
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
@@ -20,9 +19,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
 
   protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
-    formData:
-      this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload, this.partyType) ||
-      FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE,
+    formData: this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload, this.partyType),
     nestedFlow: false,
   };
 
