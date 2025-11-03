@@ -9,6 +9,7 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './opal-
 export interface IOpalFinesAccountDefendantDetailsTabsCache {
   'at-a-glance': Observable<IOpalFinesAccountDefendantAtAGlance>;
   defendant: Observable<IOpalFinesAccountDefendantAccountParty>;
+  'parent-or-guardian': Observable<IOpalFinesAccountDefendantAccountParty>;
   'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData>;
   enforcement: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>;
   impositions: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>;

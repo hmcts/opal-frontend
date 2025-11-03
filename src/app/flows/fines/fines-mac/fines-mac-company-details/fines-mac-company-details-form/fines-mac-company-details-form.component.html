@@ -23,6 +23,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_company_details_add_alias')?.value === true) {
+    <span id="company-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_company_details_add_alias"
@@ -30,10 +31,11 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <h2 class="govuk-label-wrapper">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-          </h2>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
+          </legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
             [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"
@@ -64,9 +66,10 @@
             class="govuk-link govuk-link--no-visited-state"
             (click)="removeAlias(aliasControls.length - 1, 'fm_company_details_aliases')"
             (keyup.enter)="removeAlias(aliasControls.length - 1, 'fm_company_details_aliases')"
+            [attr.aria-label]="'Remove alias ' + aliasControls.length"
             tabindex="0"
           >
-            Remove
+            Remove <span class="govuk-visually-hidden">alias {{ aliasControls.length }}</span>
           </a>
         </div>
       }
@@ -83,7 +86,9 @@
   }
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</h2>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Address</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_company_details_address_line_1"

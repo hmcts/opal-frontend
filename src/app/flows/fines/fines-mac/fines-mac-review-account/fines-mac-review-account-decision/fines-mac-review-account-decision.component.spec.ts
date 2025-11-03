@@ -161,10 +161,10 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should clean up subscriptions and reset error on ngOnDestroy', () => {
     const globalStore = component['globalStore'];
-    const setErrorSpy = spyOn(globalStore, 'setError');
+    const setErrorSpy = spyOn(globalStore, 'resetError');
 
     component.ngOnDestroy();
 
-    expect(setErrorSpy).toHaveBeenCalledWith({ error: false, message: '' });
+    expect(setErrorSpy).toHaveBeenCalled();
   });
 });

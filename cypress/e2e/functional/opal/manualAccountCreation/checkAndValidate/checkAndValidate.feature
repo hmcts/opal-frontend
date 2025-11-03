@@ -14,6 +14,9 @@ Feature: Navigate and edit sections from task list
       | account.defendant.company_name | TEST Rejected-PO-640-company |
     When I update the last created draft account with status "Rejected"
 
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
     Then I click on the "Rejected" link
 
     ### PO-618 AC1 - All rejected accounts navigation test ###
@@ -114,6 +117,7 @@ Feature: Navigate and edit sections from task list
     # Offence Details section
     When I click on the "Offence details" link
     Then I see "Offences and impositions" on the page header
+    And I see "Riding a bicycle on a footpath" text on the page
 
     When I click on the "Change" link
 
@@ -128,6 +132,8 @@ Feature: Navigate and edit sections from task list
     # Test cancel functionality for Offence Details
     When I click on the "Offence details" link
     Then I see "Offences and impositions" on the page header
+    And I see "Riding a bicycle on a footpath" text on the page
+
     When I click on the "Change" link
     When I enter "HY80508" into the "Offence code" field
     Then I click "Cancel", a window pops up and I click Ok
@@ -294,6 +300,7 @@ Feature: Navigate and edit sections from task list
     # Offence Details section
     When I click on the "Offence details" link
     Then I see "Offences and impositions" on the page header
+    And I see "Riding a bicycle on a footpath" text on the page
 
     When I click on the "Change" link
 
@@ -421,6 +428,7 @@ Feature: Navigate and edit sections from task list
       | account.defendant.surname   | TEST                    |
       | account.defendant.forenames | Rejected-PO-640-pgToPay |
     When I update the last created draft account with status "Rejected"
+    And I see "Rejected" text on the page
 
     Then I click on the "Rejected" link
     Then I click on the "TEST, Rejected-PO-640-pgToPay" link
@@ -515,6 +523,7 @@ Feature: Navigate and edit sections from task list
     # Offence Details section
     When I click on the "Offence details" link
     Then I see "Offences and impositions" on the page header
+    And I see "Riding a bicycle on a footpath" text on the page
 
     When I click on the "Change" link
 
@@ -630,6 +639,10 @@ Feature: Navigate and edit sections from task list
       | account.defendant.company_name | TEST Rejected-PO-640-BackButton |
     When I update the last created draft account with status "Rejected"
 
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
+
     Then I click on the "Rejected" link
     Then I click on the "TEST Rejected-PO-640-BackButton" link
 
@@ -674,6 +687,10 @@ Feature: Navigate and edit sections from task list
       | account.defendant.forenames | Mike     |
       | account.defendant.surname   | Mills    |
     And I update the last created draft account with status "Rejected"
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
+
     And I click on the "Rejected" link
     And I click on the "Mills, Mike" link
     Then I see "Mr Mike MILLS" on the page header
@@ -725,6 +742,10 @@ Feature: Navigate and edit sections from task list
       | account.defendant.forenames | Samantha |
       | account.defendant.surname   | Sellers  |
     And I update the last created draft account with status "Rejected"
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
+
     And I click on the "Rejected" link
     And I click on the "Sellers, Samantha" link
     Then I see "Miss Samantha SELLERS" on the page header
@@ -780,6 +801,10 @@ Feature: Navigate and edit sections from task list
       | Account_status                 | Rejected                     |
       | account.defendant.company_name | TEST Rejected PO-657-Company |
     And I update the last created draft account with status "Rejected"
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
+
     And I click on the "Rejected" link
     And I click on the "TEST Rejected PO-657-Company" link
     Then I see "TEST Rejected PO-657-Company" on the page header
@@ -828,6 +853,10 @@ Feature: Navigate and edit sections from task list
       | account.defendant.surname               | Lincoln                   |
       | account.defendant.email_address_1       | larry.lincoln@outlook.com |
       | account.defendant.telephone_number_home | 02078219385               |
+    Then I see "Create accounts" on the page header
+    And I see "Rejected" text on the page
+
+
 
     Then I click on the "Rejected" link
     And I click on the "In review" link
@@ -871,6 +900,8 @@ Feature: Navigate and edit sections from task list
       | account_snapshot.defendant_name | James, Smith |
 
     Given I navigate to Create and Manage Draft Accounts
+    Then I see "Create accounts" on the page header
+
     When I click on the "Approved" link
 
     And I see "Showing accounts Approved in the past 7 days" text on the page

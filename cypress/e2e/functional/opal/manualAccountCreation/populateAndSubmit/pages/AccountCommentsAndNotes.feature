@@ -48,6 +48,7 @@ Feature: Manual account creation - Account Comments and Notes
     And I see "" in the "Add comment" text field
     And I see "" in the "Add account notes" text field
 
+
   Scenario: (AC.6, AC.7) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     And I enter "Test comments" into the "Add comment" text field
     And I enter "Test notes" into the "Add account notes" text field

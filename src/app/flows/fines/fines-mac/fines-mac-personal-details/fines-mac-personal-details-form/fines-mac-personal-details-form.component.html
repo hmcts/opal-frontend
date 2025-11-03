@@ -43,6 +43,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_personal_details_add_alias')?.value === true) {
+    <span id="personal-details-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add Alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_personal_details_add_alias"
@@ -50,10 +51,11 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <h2 class="govuk-label-wrapper">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
-          </h2>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
+          </legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="First names"
             [inputId]="aliasControl['fm_personal_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_personal_details_alias_forenames'].inputName"
@@ -97,9 +99,10 @@
             class="govuk-link govuk-link--no-visited-state"
             (click)="removeAlias(aliasControls.length - 1, 'fm_personal_details_aliases')"
             (keyup.enter)="removeAlias(aliasControls.length - 1, 'fm_personal_details_aliases')"
+            [attr.aria-label]="'Remove alias ' + aliasControls.length"
             tabindex="0"
           >
-            Remove
+            Remove <span class="govuk-visually-hidden">alias {{ aliasControls.length }}</span>
           </a>
         </div>
       }
@@ -148,9 +151,9 @@
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <h2 class="govuk-label-wrapper">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
-    </h2>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Address</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_personal_details_address_line_1"
@@ -186,9 +189,9 @@
   @if (defendantType === defendantTypesKeys.adultOrYouthOnly) {
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <fieldset class="govuk-fieldset">
-      <h2 class="govuk-label-wrapper">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
-      </h2>
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h2 class="govuk-heading-m govuk-!-margin-0">Vehicle details</h2>
+      </legend>
       <opal-lib-govuk-text-input
         labelText="Make and model"
         inputId="fm_personal_details_vehicle_make"

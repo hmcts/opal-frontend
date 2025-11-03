@@ -1,8 +1,9 @@
 export interface IComponentProperties {
-  accountId: `${number}`;
+  accountId: String | `${number}`;
   fragments:
     | 'at-a-glance'
     | 'defendant'
+    | 'parent-or-guardian'
     | 'payment-terms'
     | 'enforcement'
     | 'impositions'

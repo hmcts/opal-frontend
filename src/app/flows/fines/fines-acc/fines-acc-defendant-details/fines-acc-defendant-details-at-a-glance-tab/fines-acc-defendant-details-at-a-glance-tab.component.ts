@@ -8,6 +8,7 @@ import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/mo
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
+import { FINES_ACC_DEBTOR_TYPES } from '../../constants/fines-acc-debtor-types.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-at-a-glance-tab',
@@ -19,8 +20,13 @@ export class FinesAccDefendantDetailsAtAGlanceTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantAtAGlance;
   @Input() hasAccountMaintenencePermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() addComments = new EventEmitter<Event>();
+  @Output() addComments = new EventEmitter<void>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+  public readonly debtorTypes = FINES_ACC_DEBTOR_TYPES;
+
+  public handleAddComments(): void {
+    this.addComments.emit();
+  }
 }

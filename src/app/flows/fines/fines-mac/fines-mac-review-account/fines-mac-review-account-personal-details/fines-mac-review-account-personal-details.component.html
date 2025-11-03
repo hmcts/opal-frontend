@@ -6,7 +6,7 @@
     <ng-container actions>
       <li
         app-fines-mac-review-account-change-link
-        [visuallyHiddenTextChange]="showVehicleDetails ? 'Personal details' : 'Defendant details'"
+        visuallyHiddenTextChange="Personal details"
         (emitChange)="changePersonalDetails()"
       ></li>
     </ng-container>
