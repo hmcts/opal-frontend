@@ -599,30 +599,5 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
     });
-
-    it('should handle individual data with organisation flag correctly when partyType is specified', () => {
-      // Test edge case: organisation_flag is true but partyType is "individual"
-      const mockMixedData = {
-        ...mockDefendantData,
-        defendant_account_party: {
-          ...mockDefendantData.defendant_account_party,
-          party_details: {
-            ...mockDefendantData.defendant_account_party.party_details,
-            organisation_flag: true, // Company flag but individual party type
-          },
-        },
-      };
-
-      const result = transformDefendantAccountPartyPayload(mockMixedData, 'individual');
-
-      // Should respect partyType parameter over organisation_flag
-      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
-      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
-      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
-      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
-      // Individual aliases won't be processed because organisation_flag is true
-      // This is expected behavior as alias processing depends on organisation_flag
-      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
-    });
   });
 });
