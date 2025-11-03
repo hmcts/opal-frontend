@@ -13,7 +13,8 @@ const ORGANISATION_ALIASES: IOpalFinesDefendantAccountAlias[] = [
 export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   version: '1',
   account_number: '177A',
-  defendant_party_id: '77',
+  defendant_account_id: '77',
+  defendant_account_party_id: '77',
   parent_guardian_party_id: null,
   account_status_reference: {
     account_status_code: 'L',
