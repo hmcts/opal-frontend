@@ -21,7 +21,6 @@ import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-cr
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -37,6 +36,7 @@ import {
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { IFinesMacAccountTypeDefendantTypes } from '../../interfaces/fines-mac-account-type-defendant-types.interface';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 @Component({
   selector: 'app-fines-mac-create-account-form',
   imports: [
@@ -118,7 +118,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private handleAccountTypeChange(accountType: string): void {
     const { fieldName, validators, fieldsToRemove } =
-      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? {};
+      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesAccountTypes] ?? {};
 
     if (fieldsToRemove) {
       for (const field of fieldsToRemove) {
@@ -136,10 +136,10 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private setDefendantType(): void {
     const accountType = this.form.get('fm_create_account_account_type')?.value;
-    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? '';
+    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
 
-    const defendantTypeMap: IFinesMacAccountTypes = {
+    const defendantTypeMap: IFinesAccountTypes = {
       Fine: fieldValue,
       'Fixed Penalty': fieldValue,
       'Conditional Caution': this.conditionalCautionPenaltyDefendantTypes[0].key,
@@ -147,7 +147,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
 
     this.form
       .get('fm_create_account_defendant_type')
-      ?.setValue(defendantTypeMap[accountType as keyof IFinesMacAccountTypes]);
+      ?.setValue(defendantTypeMap[accountType as keyof IFinesAccountTypes]);
   }
 
   /**
