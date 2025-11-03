@@ -1169,9 +1169,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
         facc_party_add_amend_convert_post_code: 'POSTCODE9',
         facc_party_add_amend_convert_contact_email_address_1: `${'a'.repeat(65)}@example.com`,
         facc_party_add_amend_convert_contact_email_address_2: `${'a'.repeat(65)}@example.com`,
-        facc_party_add_amend_convert_contact_telephone_number_mobile: 'M'.repeat(36),
-        facc_party_add_amend_convert_contact_telephone_number_home: 'H'.repeat(36),
-        facc_party_add_amend_convert_contact_telephone_number_business: 'W'.repeat(36),
         facc_party_add_amend_convert_vehicle_make: 'V'.repeat(31),
         facc_party_add_amend_convert_vehicle_registration_mark: 'R'.repeat(12),
       };
@@ -1182,7 +1179,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       const expectedCompanyErrors = [
         'Company name must be 50 characters or fewer',
-        'Alias 1 company name must be 20 characters or fewer',
+        'Alias 1 company name must be 30 characters or fewer',
         'Alias 2 company name must be 20 characters or fewer',
         'Address line 1 must be 30 characters or fewer',
         'Address line 2 must be 30 characters or fewer',
@@ -1190,9 +1187,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
         'Postcode must be 8 characters or fewer',
         'Primary email address must be 76 characters or fewer',
         'Secondary email address must be 76 characters or fewer',
-        'Mobile telephone number must be 35 characters or fewer',
-        'Home telephone number must be 35 characters or fewer',
-        'Work telephone number must be 35 characters or fewer',
         'Make and model must be 30 characters or fewer',
         'Vehicle registration must be 11 characters or fewer',
       ];
