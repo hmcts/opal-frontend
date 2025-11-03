@@ -35,7 +35,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 1,
     },
     maxlength: {
-      message: `Alias 2 company name must be 30 characters or fewer`,
+      message: `Alias 2 company name must be 20 characters or fewer`,
       priority: 2,
     },
     alphanumericWithHyphensSpacesApostrophesDotPattern: {
