@@ -104,6 +104,9 @@ export class FinesAccPartyAddAmendConvertFormComponent
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   protected readonly accountStore = this.finesAccountStore;
+  protected readonly FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES = {
+    hr: 'govuk-section-break govuk-section-break--xl govuk-section-break--visible',
+  };
 
   @Input({ required: true }) public isDebtor!: boolean;
   @Input({ required: true }) public partyType!: string;

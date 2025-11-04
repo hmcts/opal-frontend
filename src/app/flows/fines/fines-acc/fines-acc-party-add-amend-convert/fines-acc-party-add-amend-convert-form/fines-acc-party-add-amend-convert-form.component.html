@@ -177,7 +177,7 @@
     }
 
     @if (isCompanyPartyType) {
-      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
     }
 
     <app-fines-acc-party-add-amend-convert-address
@@ -187,7 +187,7 @@
 
     <!-- Contact details - Only show for debtor or company party types -->
     @if (checkCompanyOrDebtor) {
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
       <app-fines-acc-party-add-amend-convert-cd
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -196,7 +196,7 @@
 
     <!-- Language preferences - Only show for debtor or company party types -->
     @if (showLanguagePreferences() && checkCompanyOrDebtor) {
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
       <app-fines-acc-party-add-amend-convert-lp
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -206,24 +206,24 @@
 
     <!-- Vehicle details - Only show for debtor or company party types -->
     @if (checkCompanyOrDebtor) {
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
       <app-fines-acc-party-add-amend-convert-vd
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-vd>
     }
 
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-
     <!-- Employer Details - Only for individual party type and debtor -->
     @if (isIndividualPartyType && isDebtor) {
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
 
       <app-fines-acc-party-add-amend-convert-ed
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
       ></app-fines-acc-party-add-amend-convert-ed>
     }
+
+    <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
