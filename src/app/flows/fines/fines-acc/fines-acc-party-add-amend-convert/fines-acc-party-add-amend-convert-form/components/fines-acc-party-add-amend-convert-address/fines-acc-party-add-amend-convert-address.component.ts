@@ -17,7 +17,7 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
 @Component({
   selector: 'app-fines-acc-party-add-amend-convert-address',
   imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective],
-  templateUrl: './fines-acc-party-add-amend-convert-address.html',
+  templateUrl: './fines-acc-party-add-amend-convert-address.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccPartyAddAmendConvertAddress extends AbstractNestedFormBaseComponent {

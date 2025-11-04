@@ -49,13 +49,13 @@ import {
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-convert-validators.constant';
-import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed';
-import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details';
-import { FinesAccPartyAddAmendConvertLp } from './components/fines-acc-party-add-amend-convert-lp/fines-acc-party-add-amend-convert-lp';
-import { FinesAccPartyAddAmendConvertAddress } from './components/fines-acc-party-add-amend-convert-address/fines-acc-party-add-amend-convert-address';
-import { FinesAccPartyAddAmendConvertCd } from './components/fines-acc-party-add-amend-convert-cd/fines-acc-party-add-amend-convert-cd';
-import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add-amend-convert-vd/fines-acc-party-add-amend-convert-vd';
-import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni';
+import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
+import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
+import { FinesAccPartyAddAmendConvertLp } from './components/fines-acc-party-add-amend-convert-lp/fines-acc-party-add-amend-convert-lp.component';
+import { FinesAccPartyAddAmendConvertAddress } from './components/fines-acc-party-add-amend-convert-address/fines-acc-party-add-amend-convert-address.component';
+import { FinesAccPartyAddAmendConvertCd } from './components/fines-acc-party-add-amend-convert-cd/fines-acc-party-add-amend-convert-cd.component';
+import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add-amend-convert-vd/fines-acc-party-add-amend-convert-vd.component';
+import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
