@@ -76,9 +76,11 @@
         </div>
 
         @if (party.vehicle_details; as vehicle) {
-          <ng-container
-            *ngTemplateOutlet="vehicleDetailsTemplate; context: { vehicle: vehicle, summaryListId: summaryListId }"
-          ></ng-container>
+          @if (party.is_debtor) {
+            <ng-container
+              *ngTemplateOutlet="vehicleDetailsTemplate; context: { vehicle: vehicle, summaryListId: summaryListId }"
+            ></ng-container>
+          }
         }
       </opal-lib-govuk-summary-list>
     </ng-container>
