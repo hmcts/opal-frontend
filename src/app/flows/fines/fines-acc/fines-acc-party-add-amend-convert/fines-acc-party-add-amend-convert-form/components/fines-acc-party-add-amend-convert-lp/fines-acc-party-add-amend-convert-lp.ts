@@ -13,6 +13,7 @@ import {
   templateUrl: './fines-acc-party-add-amend-convert-lp.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+// Language preference sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertLp extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;

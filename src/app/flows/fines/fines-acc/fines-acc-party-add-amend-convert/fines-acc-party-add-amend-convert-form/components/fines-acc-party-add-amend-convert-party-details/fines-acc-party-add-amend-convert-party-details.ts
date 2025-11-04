@@ -13,6 +13,7 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
   templateUrl: './fines-acc-party-add-amend-convert-party-details.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+// Party Details sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertPartyDetails extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;

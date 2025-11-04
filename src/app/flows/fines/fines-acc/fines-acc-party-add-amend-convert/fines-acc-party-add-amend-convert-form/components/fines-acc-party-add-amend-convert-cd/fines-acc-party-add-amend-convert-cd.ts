@@ -19,6 +19,7 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
   templateUrl: './fines-acc-party-add-amend-convert-cd.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+//Contact details sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertCd extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;

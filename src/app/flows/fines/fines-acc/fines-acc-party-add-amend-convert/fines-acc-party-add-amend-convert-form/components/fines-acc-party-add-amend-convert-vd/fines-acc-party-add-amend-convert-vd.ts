@@ -11,6 +11,7 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   templateUrl: './fines-acc-party-add-amend-convert-vd.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+// Vehicle details sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertVd extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
