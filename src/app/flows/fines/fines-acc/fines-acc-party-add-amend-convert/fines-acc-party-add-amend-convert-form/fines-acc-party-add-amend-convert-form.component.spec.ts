@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -10,6 +10,15 @@ import {
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
 } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+
+// Type interface for accessing private methods in tests
+interface ComponentWithPrivateMethods {
+  createBaseFormGroup(): FormGroup;
+  addIndividualFormControls(formGroup: FormGroup): void;
+  addCompanyFormControls(formGroup: FormGroup): void;
+  setupPartyAddAmendConvertForm(): void;
+  dateOfBirthListener(): void;
+}
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
@@ -167,7 +176,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.detectChanges();
 
     mockDateService.getAgeObject.calls.reset();
-    (component as any)['dateOfBirthListener']();
+    (component as unknown as ComponentWithPrivateMethods).dateOfBirthListener();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
 
@@ -177,7 +186,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     component.form.removeControl('facc_party_add_amend_convert_dob');
     mockDateService.getAgeObject.calls.reset();
-    (component as any)['dateOfBirthListener']();
+    (component as unknown as ComponentWithPrivateMethods).dateOfBirthListener();
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
 
@@ -606,7 +615,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should create base form group with shared fields', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
 
     // Check shared fields exist
     expect(baseForm.get('facc_party_add_amend_convert_add_alias')).toBeDefined();
@@ -637,7 +646,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on address line 1', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
     const addressLine1Control = baseForm.get('facc_party_add_amend_convert_address_line_1');
 
     expect(addressLine1Control?.hasError('required')).toBe(true);
@@ -647,8 +656,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should add individual-specific form controls to base form', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addIndividualFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addIndividualFormControls(baseForm);
 
     // Check individual fields exist
     expect(baseForm.get('facc_party_add_amend_convert_title')).toBeDefined();
@@ -672,8 +681,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on individual fields', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addIndividualFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addIndividualFormControls(baseForm);
 
     const titleControl = baseForm.get('facc_party_add_amend_convert_title');
     const forenamesControl = baseForm.get('facc_party_add_amend_convert_forenames');
@@ -693,8 +702,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should initialize individual aliases as empty FormArray', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addIndividualFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addIndividualFormControls(baseForm);
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
@@ -702,8 +711,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should add company-specific form controls to base form', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addCompanyFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addCompanyFormControls(baseForm);
 
     // Check company fields exist
     expect(baseForm.get('facc_party_add_amend_convert_organisation_name')).toBeDefined();
@@ -718,8 +727,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should set required validation on organisation name', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addCompanyFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addCompanyFormControls(baseForm);
 
     const organisationNameControl = baseForm.get('facc_party_add_amend_convert_organisation_name');
     expect(organisationNameControl?.hasError('required')).toBe(true);
@@ -729,8 +738,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should initialize organisation aliases as empty FormArray', () => {
-    const baseForm = (component as any)['createBaseFormGroup']();
-    (component as any)['addCompanyFormControls'](baseForm);
+    const baseForm = (component as unknown as ComponentWithPrivateMethods).createBaseFormGroup();
+    (component as unknown as ComponentWithPrivateMethods).addCompanyFormControls(baseForm);
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
@@ -739,7 +748,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   it('should create form with individual controls for individual party type', () => {
     component.partyType = 'individual';
-    (component as any)['setupPartyAddAmendConvertForm']();
+    (component as unknown as ComponentWithPrivateMethods).setupPartyAddAmendConvertForm();
 
     // Check base fields exist
     expect(component.form.get('facc_party_add_amend_convert_address_line_1')).toBeDefined();
@@ -756,7 +765,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
   it('should create form with company controls for company party type', () => {
     component.partyType = 'company';
-    (component as any)['setupPartyAddAmendConvertForm']();
+    (component as unknown as ComponentWithPrivateMethods).setupPartyAddAmendConvertForm();
 
     // Check base fields exist
     expect(component.form.get('facc_party_add_amend_convert_address_line_1')).toBeDefined();
