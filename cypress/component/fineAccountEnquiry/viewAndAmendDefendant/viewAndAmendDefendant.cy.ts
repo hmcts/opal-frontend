@@ -13,16 +13,20 @@ import {
 import {
   MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
   VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK,
+  VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK,
+  VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK,
 } from './mocks/viewAndAmendDefendant.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 
 describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
   let fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
   let minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
+  let companyfullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK);
 
   beforeEach(() => {
     fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
     minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
+    companyfullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK);
   });
   const setupComponent = (
     partyType: string = 'INDIVIDUAL',
@@ -606,7 +610,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       ...maxLengthMock.formData,
       facc_party_add_amend_convert_forenames: 'A'.repeat(21),
       facc_party_add_amend_convert_surname: 'B'.repeat(31),
-      facc_party_add_amend_convert_aliases: [
+      facc_party_add_amend_convert_individual_aliases: [
         {
           facc_party_add_amend_convert_alias_forenames_0: 'C'.repeat(21),
           facc_party_add_amend_convert_alias_surname_0: 'D'.repeat(31),
@@ -650,7 +654,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       'Primary email address must be 76 characters or fewer',
       'Secondary email address must be 76 characters or fewer',
       'Make and model must be 30 characters or fewer',
-      'Vehicle registration must be 20 characters or fewer',
+      'Vehicle registration must be 11 characters or fewer',
       'Employer name must be 50 characters or fewer',
       'Employee reference must be 20 characters or fewer',
       'Employer email address must be 76 characters or fewer',
@@ -677,7 +681,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       ...dataTypeValidationMock.formData,
       facc_party_add_amend_convert_forenames: 'John123',
       facc_party_add_amend_convert_surname: 'Doe@Smith',
-      facc_party_add_amend_convert_aliases: [
+      facc_party_add_amend_convert_individual_aliases: [
         {
           facc_party_add_amend_convert_alias_forenames_0: 'Johnny$',
           facc_party_add_amend_convert_alias_surname_0: 'Smith#Brown',
@@ -740,4 +744,519 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
     });
   });
+
+  it('AC1. Amend Company Details screen opens successfully', { tags: ['@PO-1111'] }, () => {
+    setupComponent('COMPANY', companyfullMock);
+
+    // Verify the page loads successfully
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    // === Company Details Section ===
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('exist');
+    cy.get(DOM_ELEMENTS.organisationNameInput).should('have.value', 'ABC Corporation Ltd');
+    cy.get(DOM_ELEMENTS.organisationNameLabel).should('contain', 'Company name');
+
+    // Verify company aliases checkbox (ticked when aliases are present)
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('exist');
+    cy.get(DOM_ELEMENTS.aliasCheckbox).should('be.checked');
+    cy.get(DOM_ELEMENTS.aliasSection).should('exist');
+
+    // Verify all 5 organisation aliases from mock data
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'ABC Corp');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'ABC Limited');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'ABC Trading');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel2).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'ABC Enterprises');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel3).should('contain', 'Company name');
+
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).should('have.value', 'ABC Holdings');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel4).should('contain', 'Company name');
+
+    // === Individual fields should NOT be present for company ===
+    cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
+    cy.get(DOM_ELEMENTS.forenamesInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.surnameInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.dobInput).should('not.exist');
+    cy.get(DOM_ELEMENTS.niNumberInput).should('not.exist');
+
+    // === Address Information ===
+    cy.get(DOM_ELEMENTS.addressFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.addressLegend).should('contain', 'Address');
+
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '100 Corporate Plaza');
+    cy.get(DOM_ELEMENTS.addressLine1Label).should('contain', 'Address line 1');
+
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '25th Floor');
+    cy.get(DOM_ELEMENTS.addressLine2Label).should('contain', 'Address line 2');
+
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('exist');
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', 'Financial');
+    cy.get(DOM_ELEMENTS.addressLine3Label).should('contain', 'Address line 3');
+
+    cy.get(DOM_ELEMENTS.postcodeInput).should('exist');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', 'EC2Y 8DS');
+    cy.get(DOM_ELEMENTS.postcodeLabel).should('contain', 'Postcode');
+
+    // === Contact Information ===
+    cy.get(DOM_ELEMENTS.contactFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.contactLegend).should('contain', 'Contact details');
+
+    cy.get(DOM_ELEMENTS.email1Input).should('exist');
+    cy.get(DOM_ELEMENTS.email1Input).should('have.value', 'contact@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email1Label).should('contain', 'Primary email address');
+
+    cy.get(DOM_ELEMENTS.email2Input).should('exist');
+    cy.get(DOM_ELEMENTS.email2Input).should('have.value', 'legal@abccorporation.co.uk');
+    cy.get(DOM_ELEMENTS.email2Label).should('contain', 'Secondary email address');
+
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '07900123456');
+    cy.get(DOM_ELEMENTS.mobilePhoneLabel).should('contain', 'Mobile telephone number');
+
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.homePhoneLabel).should('contain', 'Home telephone number');
+
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '02071234567');
+    cy.get(DOM_ELEMENTS.businessPhoneLabel).should('contain', 'Work telephone number');
+
+    // Should not be present for non-Welsh speaking BU
+    cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('not.exist');
+
+    // === Vehicle Information ===
+    cy.get(DOM_ELEMENTS.vehicleFieldset).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleLegend).should('contain', 'Vehicle details');
+
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', 'Mercedes Sprinter');
+    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
+
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('exist');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', 'ABC123D');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationLabel).should('contain', 'Registration number');
+
+    // Employer section is not relevant for companies
+    cy.get(DOM_ELEMENTS.employerFieldset).should('not.exist');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('exist').should('contain', 'Save changes');
+  });
+
+  it(
+    'AC1b. Company Details screen shows language preferences for Welsh speaking business units',
+    { tags: ['@PO-1111'] },
+    () => {
+      setupComponent('COMPANY', companyfullMock, 'Y');
+
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+      cy.get(DOM_ELEMENTS.languagePreferencesFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.languagePreferencesLegend).should('contain', 'Language preferences');
+
+      cy.get(DOM_ELEMENTS.documentLanguageFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.documentLanguageLegend).should('contain', 'Documents');
+
+      // Check for radio buttons instead of input fields
+      cy.get(DOM_ELEMENTS.documentLanguageRadioEN).should('exist');
+      cy.get(DOM_ELEMENTS.documentLanguageRadioCY).should('exist');
+      cy.get(DOM_ELEMENTS.documentLanguageRadioLabelEN).should('contain', 'English only');
+      cy.get(DOM_ELEMENTS.documentLanguageRadioLabelCY).should('contain', 'Welsh and English');
+
+      cy.get(DOM_ELEMENTS.hearingLanguageFieldset).should('exist');
+      cy.get(DOM_ELEMENTS.hearingLanguageLegend).should('contain', 'Court hearings');
+
+      cy.get(DOM_ELEMENTS.hearingLanguageRadioEN).should('exist');
+      cy.get(DOM_ELEMENTS.hearingLanguageRadioCY).should('exist');
+      cy.get(DOM_ELEMENTS.hearingLanguageRadioLabelEN).should('contain', 'English only');
+      cy.get(DOM_ELEMENTS.hearingLanguageRadioLabelCY).should('contain', 'Welsh and English');
+
+      // Verify the "English" radio button is selected by default
+      cy.get(DOM_ELEMENTS.documentLanguageRadioEN).should('be.checked');
+      cy.get(DOM_ELEMENTS.hearingLanguageRadioEN).should('be.checked');
+    },
+  );
+
+  it('AC1d. Optional fields display as blank when no data is entered for company', { tags: ['@PO-1111'] }, () => {
+    const companyMinimalMock = structuredClone(companyfullMock);
+
+    companyMinimalMock.formData.facc_party_add_amend_convert_organisation_aliases = [];
+    companyMinimalMock.formData.facc_party_add_amend_convert_add_alias = false;
+    companyMinimalMock.formData.facc_party_add_amend_convert_address_line_2 = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_address_line_3 = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_post_code = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_contact_email_address_1 = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_contact_email_address_2 = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_mobile = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_home = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_business = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_vehicle_make = null;
+    companyMinimalMock.formData.facc_party_add_amend_convert_vehicle_registration_mark = null;
+
+    setupComponent('COMPANY', companyMinimalMock);
+
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    // Verify company aliases checkbox is unchecked and alias section not visible
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.exist');
+
+    // Verify optional address fields are blank
+    cy.get(DOM_ELEMENTS.addressLine2Input).should('have.value', '');
+    cy.get(DOM_ELEMENTS.addressLine3Input).should('have.value', '');
+    cy.get(DOM_ELEMENTS.postcodeInput).should('have.value', '');
+
+    // Verify optional contact fields are blank
+    cy.get(DOM_ELEMENTS.email1Input).should('have.value', '');
+    cy.get(DOM_ELEMENTS.email2Input).should('have.value', '');
+    cy.get(DOM_ELEMENTS.mobilePhoneInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.homePhoneInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.businessPhoneInput).should('have.value', '');
+
+    // Verify optional vehicle fields are blank
+    cy.get(DOM_ELEMENTS.vehicleMakeInput).should('have.value', '');
+    cy.get(DOM_ELEMENTS.vehicleRegistrationInput).should('have.value', '');
+  });
+
+  it('AC2. Company alias add/remove and clear behaviour', { tags: ['@PO-1111'] }, () => {
+    // Start with company mock without aliases
+    const testMock = structuredClone(companyfullMock);
+    testMock.formData.facc_party_add_amend_convert_add_alias = false;
+    testMock.formData.facc_party_add_amend_convert_organisation_aliases = [];
+
+    setupComponent('COMPANY', testMock);
+
+    // AC2 - Initially, alias checkbox should be unchecked and alias section hidden
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).should('not.be.checked');
+
+    // AC2a - Check the "Add aliases" checkbox to reveal alias section
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+
+    // AC2a - Verify "Alias 1" subheading is displayed in bold
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+
+    // AC2b - Verify "Company name" field is displayed below subheading
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('exist');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel0).should('contain', 'Company name');
+
+    // AC2c - Verify "Add another alias" button is displayed
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('contain', 'Add another alias');
+
+    // AC2d - Click "Add another alias" for the first time
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click();
+
+    // AC2di - Verify "Alias 2" subheading is displayed
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('exist');
+    cy.get(DOM_ELEMENTS.organisationAliasLabel1).should('contain', 'Company name');
+
+    // AC2e, AC2ei - Verify remove button exists for Alias 2 but not for Alias 1
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 1);
+
+    // Add more aliases to test incremental numbering
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 3
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('exist');
+
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 4
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('exist');
+
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).click(); // Add Alias 5
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 5');
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).should('exist');
+
+    // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
+
+    // Fill in some test data for alias removal test
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Company Two', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).type('Company Three', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).type('Company Four', { delay: 0 });
+    cy.get(DOM_ELEMENTS.organisationAliasInput4).type('Company Five', { delay: 0 });
+
+    // AC2eii - Test removing and verify renumbering
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
+
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 4');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
+
+    // Verify data has been adjusted accordingly
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'COMPANY TWO');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'COMPANY THREE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
+
+    // Verify "Add another alias" button reappears since we're now under 5 aliases
+    cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
+
+    // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
+
+    // Re-check to verify all alias data has been wiped
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('be.visible');
+
+    // Should only show Alias 1 with empty data
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
+    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 2');
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', '');
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('not.exist');
+  });
+
+  it('AC3. Required field validation for company mandatory fields', { tags: ['@PO-1111'] }, () => {
+    const testMock = structuredClone(companyfullMock);
+    testMock.formData.facc_party_add_amend_convert_organisation_name = '';
+    testMock.formData.facc_party_add_amend_convert_address_line_1 = '';
+    testMock.formData.facc_party_add_amend_convert_add_alias = true;
+    testMock.formData.facc_party_add_amend_convert_organisation_aliases = [
+      { facc_party_add_amend_convert_alias_organisation_name_0: '' },
+      { facc_party_add_amend_convert_alias_organisation_name_1: '' },
+    ];
+
+    setupComponent('COMPANY', testMock);
+
+    cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    // AC3a. Verify Company name error message
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter company name');
+
+    // AC3b. Verify Address Line 1 error message
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter address line 1, typically the building and street');
+
+    // AC3c. Verify Alias Company name error messages for each alias row
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 1 company name');
+
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 2 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 4);
+
+    cy.get(DOM_ELEMENTS.organisationNameInput).type('Test Company Ltd');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Enter company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter address line 1, typically the building and street');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 1 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 2 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 3);
+
+    cy.get(DOM_ELEMENTS.addressLine1Input).type('123 Business Street');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // Verify address error is gone but alias errors remain
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'not.contain',
+      'Enter address line 1, typically the building and street',
+    );
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 1 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 2 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 2);
+
+    // Fix first alias
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).type('First Alias Company');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // Verify first alias error is gone but second alias error remains
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('not.contain', 'Enter alias 1 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should('contain', 'Enter alias 2 company name');
+    cy.get(DOM_ELEMENTS.errorSummaryList).find('li').should('have.length', 1);
+
+    // Fix second alias
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Second Alias Company');
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // Verify all errors are gone
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+  });
+
+  it('AC4. Email format validation for company forms', { tags: ['@PO-1111'] }, () => {
+    const testMock = structuredClone(companyfullMock);
+    testMock.formData.facc_party_add_amend_convert_contact_email_address_1 = 'invalid-email-no-at';
+    testMock.formData.facc_party_add_amend_convert_contact_email_address_2 = 'missing-domain@';
+
+    setupComponent('COMPANY', testMock);
+
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+
+    // AC4a. Verify Primary email address error message
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter primary email address in the correct format, like name@example.com',
+    );
+
+    // AC4b. Verify Secondary email address error message
+    cy.get(DOM_ELEMENTS.errorSummaryList).should(
+      'contain',
+      'Enter secondary email address in the correct format, like name@example.com',
+    );
+
+    cy.get(DOM_ELEMENTS.email1Input).clear();
+    cy.get(DOM_ELEMENTS.email2Input).clear();
+    cy.get(DOM_ELEMENTS.submitButton).click();
+
+    // Verify all errors are gone
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+  });
+
+  it('AC5a. Home telephone invalid format shows home telephone error for company', { tags: ['@PO-1111'] }, () => {
+    companyfullMock.formData.facc_party_add_amend_convert_contact_telephone_number_home = '01632A960001'; // alpha char
+    setupComponent('COMPANY', companyfullMock);
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain.text', 'Enter a valid home telephone number, like 01632 960 001');
+  });
+
+  it('AC5b. Work telephone invalid format shows work telephone error for company', { tags: ['@PO-1111'] }, () => {
+    companyfullMock.formData.facc_party_add_amend_convert_contact_telephone_number_business = '01632-960-001X'; // invalid char X
+    setupComponent('COMPANY', companyfullMock);
+    cy.get(DOM_ELEMENTS.submitButton).click();
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('exist')
+      .and('contain.text', 'Enter a valid work telephone number, like 01632 960 001 or 07700 900 982');
+  });
+
+  it(
+    'AC5c. Mobile telephone invalid length/format shows mobile telephone error for company',
+    { tags: ['@PO-1111'] },
+    () => {
+      companyfullMock.formData.facc_party_add_amend_convert_contact_telephone_number_mobile = '0770090098'; // 10 digits (should be 11)
+      setupComponent('COMPANY', companyfullMock);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('exist')
+        .and('contain.text', 'Enter a valid mobile telephone number, like 07700 900 982');
+    },
+  );
+
+  it(
+    'AC6. Max length validation for company forms retains user on form and shows per-field errors',
+    { tags: ['@PO-1111'] },
+    () => {
+      const maxLengthCompanyMock = structuredClone(companyfullMock);
+
+      maxLengthCompanyMock.formData = {
+        ...maxLengthCompanyMock.formData,
+        facc_party_add_amend_convert_organisation_name: 'C'.repeat(51),
+        facc_party_add_amend_convert_organisation_aliases: [
+          {
+            facc_party_add_amend_convert_alias_organisation_name_0: 'A'.repeat(21),
+          },
+          {
+            facc_party_add_amend_convert_alias_organisation_name_1: 'B'.repeat(21),
+          },
+        ],
+        facc_party_add_amend_convert_add_alias: true,
+        facc_party_add_amend_convert_address_line_1: 'D'.repeat(31),
+        facc_party_add_amend_convert_address_line_2: 'E'.repeat(31),
+        facc_party_add_amend_convert_address_line_3: 'F'.repeat(17),
+        facc_party_add_amend_convert_post_code: 'POSTCODE9',
+        facc_party_add_amend_convert_contact_email_address_1: `${'a'.repeat(65)}@example.com`,
+        facc_party_add_amend_convert_contact_email_address_2: `${'a'.repeat(65)}@example.com`,
+        facc_party_add_amend_convert_vehicle_make: 'V'.repeat(31),
+        facc_party_add_amend_convert_vehicle_registration_mark: 'R'.repeat(12),
+      };
+
+      setupComponent('COMPANY', maxLengthCompanyMock);
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      const expectedCompanyErrors = [
+        'Company name must be 50 characters or fewer',
+        'Alias 1 company name must be 20 characters or fewer',
+        'Alias 2 company name must be 20 characters or fewer',
+        'Address line 1 must be 30 characters or fewer',
+        'Address line 2 must be 30 characters or fewer',
+        'Address line 3 must be 16 characters or fewer',
+        'Postcode must be 8 characters or fewer',
+        'Primary email address must be 76 characters or fewer',
+        'Secondary email address must be 76 characters or fewer',
+        'Make and model must be 30 characters or fewer',
+        'Vehicle registration must be 11 characters or fewer',
+      ];
+
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+      expectedCompanyErrors.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
+
+  it(
+    'AC7. Data type validation for alphabetical and alphanumeric fields in company forms',
+    { tags: ['@PO-1111'] },
+    () => {
+      const dataTypeCompanyMock = structuredClone(companyfullMock);
+
+      dataTypeCompanyMock.formData = {
+        ...dataTypeCompanyMock.formData,
+        facc_party_add_amend_convert_organisation_name: 'ABC Company Ltd @#$',
+        facc_party_add_amend_convert_organisation_aliases: [
+          {
+            facc_party_add_amend_convert_alias_organisation_name_0: 'Alias One Corp 123!',
+          },
+          {
+            facc_party_add_amend_convert_alias_organisation_name_1: 'Alias Two Ltd %^&',
+          },
+        ],
+        facc_party_add_amend_convert_add_alias: true,
+        // AC7b: Alphanumeric fields (letters, numbers, hyphens, spaces, apostrophes only)
+        facc_party_add_amend_convert_address_line_1: '123 Main St @#$',
+        facc_party_add_amend_convert_address_line_2: 'Suite 4B %^&',
+        facc_party_add_amend_convert_address_line_3: 'Building C *()+=',
+        facc_party_add_amend_convert_post_code: 'M1& 1AA',
+        facc_party_add_amend_convert_vehicle_make: 'Mercedes Sprinter <>?/',
+        facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123~`',
+      };
+
+      setupComponent('COMPANY', dataTypeCompanyMock);
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      // AC7a: Alphabetical field error messages
+      const alphabeticalFieldErrors = [
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      ];
+
+      // AC7b: Alphanumeric field error messages
+      const alphanumericFieldErrors = [
+        'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      ];
+
+      const allCompanyExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
+
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+      // Verify all expected error messages appear
+      allCompanyExpectedErrors.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
 });
