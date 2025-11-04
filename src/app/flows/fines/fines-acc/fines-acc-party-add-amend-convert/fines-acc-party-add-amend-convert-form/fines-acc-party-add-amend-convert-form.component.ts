@@ -15,6 +15,7 @@ import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-ac
 import { IFinesAccPartyAddAmendConvertForm } from '../interfaces/fines-acc-party-add-amend-convert-form.interface';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fines-acc-party-add-amend-convert-field-errors.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../constants/fines-acc-party-add-amend-convert-alias.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../constants/fines-acc-party-add-amend-convert-company-alias.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
@@ -50,13 +51,17 @@ import {
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   LETTERS_WITH_SPACES_PATTERN,
   EMAIL_ADDRESS_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-convert-validators.constant';
 
-// regex pattern validators for the form controls
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+);
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -114,27 +119,11 @@ export class FinesAccPartyAddAmendConvertFormComponent
   ).map(([key, value]) => ({ key, value }));
 
   /**
-   * Sets up the debtor add/amend form structure without populating data.
+   * Creates the base form group with fields shared by all party types.
    */
-  private setupDebtorAddAmendForm(): void {
-    this.form = new FormGroup({
-      facc_party_add_amend_convert_title: new FormControl(null, [Validators.required]),
-      facc_party_add_amend_convert_forenames: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(20),
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_surname: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_aliases: new FormArray([]),
+  private createBaseFormGroup(): FormGroup {
+    return new FormGroup({
       facc_party_add_amend_convert_add_alias: new FormControl(null),
-      facc_party_add_amend_convert_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      facc_party_add_amend_convert_national_insurance_number: new FormControl(null, [
-        nationalInsuranceNumberValidator(),
-      ]),
       facc_party_add_amend_convert_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -177,70 +166,144 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(20),
+        optionalMaxLengthValidator(11),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
       facc_party_add_amend_convert_language_preferences_hearing_language: new FormControl(null),
-      facc_party_add_amend_convert_employer_company_name: new FormControl(null, [
-        optionalMaxLengthValidator(50),
-        employerFieldsValidator,
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_reference: new FormControl(null, [
-        optionalMaxLengthValidator(20),
-        employerFieldsValidator,
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_email_address: new FormControl(null, [
-        optionalMaxLengthValidator(76),
-        EMAIL_ADDRESS_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_telephone_number: new FormControl(null, [
-        optionalMaxLengthValidator(35),
-        optionalPhoneNumberValidator(),
-      ]),
-      facc_party_add_amend_convert_employer_address_line_1: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-        employerFieldsValidator,
-      ]),
-      facc_party_add_amend_convert_employer_address_line_2: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_address_line_3: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_address_line_4: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_address_line_5: new FormControl(null, [
-        optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
-      facc_party_add_amend_convert_employer_post_code: new FormControl(null, [
-        optionalMaxLengthValidator(8),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-      ]),
     });
   }
 
   /**
-   * Sets up the alias configuration for the debtor add/amend form.
+   * Adds individual-specific form controls to the base form group.
+   */
+  private addIndividualFormControls(formGroup: FormGroup): void {
+    formGroup.addControl('facc_party_add_amend_convert_title', new FormControl(null, [Validators.required]));
+    formGroup.addControl(
+      'facc_party_add_amend_convert_forenames',
+      new FormControl(null, [Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_surname',
+      new FormControl(null, [Validators.required, Validators.maxLength(30), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_dob',
+      new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_national_insurance_number',
+      new FormControl(null, [nationalInsuranceNumberValidator()]),
+    );
+    formGroup.addControl('facc_party_add_amend_convert_individual_aliases', new FormArray([]));
+
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_company_name',
+      new FormControl(null, [
+        optionalMaxLengthValidator(50),
+        employerFieldsValidator,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_reference',
+      new FormControl(null, [
+        optionalMaxLengthValidator(20),
+        employerFieldsValidator,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+      ]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_email_address',
+      new FormControl(null, [optionalMaxLengthValidator(76), EMAIL_ADDRESS_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_telephone_number',
+      new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_address_line_1',
+      new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        employerFieldsValidator,
+      ]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_address_line_2',
+      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_address_line_3',
+      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_address_line_4',
+      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_address_line_5',
+      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+    formGroup.addControl(
+      'facc_party_add_amend_convert_employer_post_code',
+      new FormControl(null, [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+    );
+  }
+
+  /**
+   * Adds company-specific form controls to the base form group.
+   */
+  private addCompanyFormControls(formGroup: FormGroup): void {
+    formGroup.addControl(
+      'facc_party_add_amend_convert_organisation_name',
+      new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(50),
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+      ]),
+    );
+    formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', new FormArray([]));
+  }
+
+  /**
+   * Sets up the party add/amend form structure based on party type.
+   */
+  private setupPartyAddAmendConvertForm(): void {
+    this.form = this.createBaseFormGroup();
+
+    if (this.isIndividualPartyType) {
+      this.addIndividualFormControls(this.form);
+    } else if (this.isCompanyPartyType) {
+      this.addCompanyFormControls(this.form);
+    }
+  }
+
+  /**
+   * Sets up the alias configuration for company/individual form.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
-    this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
+    if (this.isCompanyPartyType) {
+      this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS.map((control) => control.controlName);
+      this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS;
+    } else {
+      this.aliasFields = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS.map((control) => control.controlName);
+      this.aliasControlsValidation = FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS;
+    }
   }
 
   /**
    * Listens for changes in the date of birth control and updates the age and label accordingly.
+   * Only applicable for individual party types.
    */
   private dateOfBirthListener(): void {
+    if (!this.isIndividualPartyType) {
+      return;
+    }
     const dobControl = this.form.controls['facc_party_add_amend_convert_dob'];
+    if (!dobControl) {
+      return;
+    }
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -258,56 +321,57 @@ export class FinesAccPartyAddAmendConvertFormComponent
   }
 
   /**
-   * Sets up listeners for employer fields to trigger validation when any employer field changes.
+   * Sets up the initial debtor add/amend form.
    */
-  private setupEmployerFieldsValidation(): void {
-    const employerFieldNames = [
-      'facc_party_add_amend_convert_employer_company_name',
-      'facc_party_add_amend_convert_employer_reference',
-      'facc_party_add_amend_convert_employer_email_address',
-      'facc_party_add_amend_convert_employer_telephone_number',
-      'facc_party_add_amend_convert_employer_address_line_1',
-      'facc_party_add_amend_convert_employer_address_line_2',
-      'facc_party_add_amend_convert_employer_address_line_3',
-      'facc_party_add_amend_convert_employer_address_line_4',
-      'facc_party_add_amend_convert_employer_address_line_5',
-      'facc_party_add_amend_convert_employer_post_code',
-    ];
-
-    const companyNameControl = this.form.get('facc_party_add_amend_convert_employer_company_name');
-    const employerReferenceControl = this.form.get('facc_party_add_amend_convert_employer_reference');
-    const employerAddressLine1Control = this.form.get('facc_party_add_amend_convert_employer_address_line_1');
-
-    for (const fieldName of employerFieldNames) {
-      const control = this.form.get(fieldName);
-      if (control) {
-        control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-          // Update validation for all required fields when any employer field changes
-          companyNameControl?.updateValueAndValidity({ emitEvent: false });
-          employerReferenceControl?.updateValueAndValidity({ emitEvent: false });
-          employerAddressLine1Control?.updateValueAndValidity({ emitEvent: false });
-        });
-      }
+  private initialPartyAddAmendConvertSetup(): void {
+    this.setupPartyAddAmendConvertForm();
+    this.setupAliasConfiguration();
+    // Setup alias form controls based on party type
+    if (this.isIndividualPartyType) {
+      const individualAliasesLength =
+        this.initialFormData?.formData?.facc_party_add_amend_convert_individual_aliases?.length || 0;
+      this.setupAliasFormControls(
+        [...new Array(individualAliasesLength).keys()],
+        'facc_party_add_amend_convert_individual_aliases',
+      );
+    } else if (this.isCompanyPartyType) {
+      const organisationAliasesLength =
+        this.initialFormData?.formData?.facc_party_add_amend_convert_organisation_aliases?.length || 0;
+      this.setupAliasFormControls(
+        [...new Array(organisationAliasesLength).keys()],
+        'facc_party_add_amend_convert_organisation_aliases',
+      );
     }
+
+    this.rePopulateForm(this.initialFormData?.formData || null);
+    this.setInitialErrorMessages();
+    if (this.isIndividualPartyType) {
+      this.setUpAliasCheckboxListener(
+        'facc_party_add_amend_convert_add_alias',
+        'facc_party_add_amend_convert_individual_aliases',
+      );
+    } else if (this.isCompanyPartyType) {
+      this.setUpAliasCheckboxListener(
+        'facc_party_add_amend_convert_add_alias',
+        'facc_party_add_amend_convert_organisation_aliases',
+      );
+    }
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+    this.dateOfBirthListener();
   }
 
   /**
-   * Sets up the initial debtor add/amend form.
+   * Returns true if the party type is company.
    */
-  private initialDebtorAddAmendSetup(): void {
-    this.setupDebtorAddAmendForm();
-    this.setupAliasConfiguration();
+  public get isCompanyPartyType(): boolean {
+    return this.partyType === this.partyTypes.COMPANY;
+  }
 
-    // Safe access to aliases array
-    const aliasesLength = this.initialFormData?.formData?.facc_party_add_amend_convert_aliases?.length || 0;
-    this.setupAliasFormControls([...new Array(aliasesLength).keys()], 'facc_party_add_amend_convert_aliases');
-
-    this.setInitialErrorMessages();
-    this.rePopulateForm(this.initialFormData?.formData || null);
-    this.setUpAliasCheckboxListener('facc_party_add_amend_convert_add_alias', 'facc_party_add_amend_convert_aliases');
-    this.dateOfBirthListener();
-    this.setupEmployerFieldsValidation();
-    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+  /**
+   * Returns true if the party type is individual.
+   */
+  public get isIndividualPartyType(): boolean {
+    return this.partyType === this.partyTypes.INDIVIDUAL;
   }
 
   public override ngOnInit(): void {
@@ -316,7 +380,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
       this.initialFormData = FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
     }
 
-    this.initialDebtorAddAmendSetup();
+    this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
   }
 }

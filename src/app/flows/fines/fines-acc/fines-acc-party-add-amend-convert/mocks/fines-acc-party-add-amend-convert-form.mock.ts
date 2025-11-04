@@ -3,10 +3,12 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_STATE_MOCK } from './fines-acc-party-
 
 export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA: IFinesAccPartyAddAmendConvertForm = {
   formData: {
+    facc_party_add_amend_convert_organisation_name: null,
     facc_party_add_amend_convert_title: 'Mr',
     facc_party_add_amend_convert_forenames: 'John',
     facc_party_add_amend_convert_surname: 'Doe',
-    facc_party_add_amend_convert_aliases: [],
+    facc_party_add_amend_convert_individual_aliases: [],
+    facc_party_add_amend_convert_organisation_aliases: [],
     facc_party_add_amend_convert_add_alias: false,
     facc_party_add_amend_convert_dob: '1990-01-01',
     facc_party_add_amend_convert_national_insurance_number: 'AB123456C',
@@ -40,7 +42,7 @@ export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA: IFinesAccPartyAdd
 export const MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES: IFinesAccPartyAddAmendConvertForm = {
   formData: {
     ...MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-    facc_party_add_amend_convert_aliases: [
+    facc_party_add_amend_convert_individual_aliases: [
       {
         facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
         facc_party_add_amend_convert_alias_surname_0: 'Doe',
