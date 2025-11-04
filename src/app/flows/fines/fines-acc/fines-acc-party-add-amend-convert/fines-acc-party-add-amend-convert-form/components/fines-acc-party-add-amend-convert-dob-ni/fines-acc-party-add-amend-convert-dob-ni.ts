@@ -6,8 +6,9 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+
 /**
- * Contact details sub-component for the fines account party add/amend/convert form.
+ * Date of Birth and National Insurance sub-component for the fines account party add/amend/convert form.
  *
  * This component extends AbstractNestedFormBaseComponent which provides the infrastructure
  * for handling form and formControlErrorMessages from the parent component.
@@ -27,7 +28,6 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   templateUrl: './fines-acc-party-add-amend-convert-dob-ni.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-//Date of Birth and National Insurance sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertDobNi extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;

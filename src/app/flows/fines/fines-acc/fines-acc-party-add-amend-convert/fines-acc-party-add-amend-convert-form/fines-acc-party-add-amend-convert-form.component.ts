@@ -404,7 +404,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Returns true if the party type is parent/guardian.
    */
-
   public get isParentGuardianPartyType(): boolean {
     return this.partyType === this.partyTypes.PARENT_GUARDIAN;
   }

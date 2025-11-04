@@ -5,13 +5,21 @@ import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/com
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 
+/**
+ * Address sub-component for the fines account party add/amend/convert form.
+ *
+ * This component extends AbstractNestedFormBaseComponent which provides the infrastructure
+ * for handling form and formControlErrorMessages from the parent component.
+ *
+ * The parent component is the single source of truth for field error templates and computed messages.
+ * This sub-form only receives `form` and `formControlErrorMessages` and does not emit error maps.
+ */
 @Component({
   selector: 'app-fines-acc-party-add-amend-convert-address',
   imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective],
   templateUrl: './fines-acc-party-add-amend-convert-address.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-//Address sub-component for the fines account party add/amend/convert form.
 export class FinesAccPartyAddAmendConvertAddress extends AbstractNestedFormBaseComponent {
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
