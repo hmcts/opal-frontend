@@ -399,6 +399,11 @@ export class FinesAccPartyAddAmendConvertFormComponent
    */
   public get checkCompanyOrDebtor(): boolean {
     return this.isCompanyPartyType || this.isDebtor;
+   * Returns true if the party type is parent/guardian.
+   */
+    
+  public get isParentGuardianPartyType(): boolean {
+    return this.partyType === this.partyTypes.PARENT_GUARDIAN;
   }
 
   /**

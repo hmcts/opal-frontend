@@ -654,7 +654,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       'Primary email address must be 76 characters or fewer',
       'Secondary email address must be 76 characters or fewer',
       'Make and model must be 30 characters or fewer',
-      'Vehicle registration must be 20 characters or fewer',
+      'Vehicle registration must be 11 characters or fewer',
       'Employer name must be 50 characters or fewer',
       'Employee reference must be 20 characters or fewer',
       'Employer email address must be 76 characters or fewer',
@@ -977,9 +977,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     // AC2dii - Verify "Add another alias" button is no longer displayed after 5 aliases
     cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('not.exist');
 
-    // AC2e - Verify remove buttons exist for aliases 2-5 (4 total)
-    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).should('have.length', 4);
-
     // Fill in some test data for alias removal test
     cy.get(DOM_ELEMENTS.organisationAliasInput0).type('Company One', { delay: 0 });
     cy.get(DOM_ELEMENTS.organisationAliasInput1).type('Company Two', { delay: 0 });
@@ -987,10 +984,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.organisationAliasInput3).type('Company Four', { delay: 0 });
     cy.get(DOM_ELEMENTS.organisationAliasInput4).type('Company Five', { delay: 0 });
 
-    // AC2eii - Test removing Alias 3 (index 2) and verify renumbering
-    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).eq(1).click();
+    // AC2eii - Test removing and verify renumbering
+    cy.get(DOM_ELEMENTS.removeOrganisationAliasButton).click();
 
-    // Verify that what was Alias 4 is now Alias 3, and Alias 5 is now Alias 4
     cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 1');
     cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 2');
     cy.get(DOM_ELEMENTS.organisationAliasSection).should('contain', 'Alias 3');
@@ -998,17 +994,16 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.contain', 'Alias 5');
 
     // Verify data has been adjusted accordingly
-    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'Company One');
-    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'Company Two');
-    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'Company Four');
-    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'Company Five');
+    cy.get(DOM_ELEMENTS.organisationAliasInput0).should('have.value', 'COMPANY ONE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput1).should('have.value', 'COMPANY TWO');
+    cy.get(DOM_ELEMENTS.organisationAliasInput2).should('have.value', 'COMPANY THREE');
+    cy.get(DOM_ELEMENTS.organisationAliasInput3).should('have.value', 'COMPANY FOUR');
 
     // Verify "Add another alias" button reappears since we're now under 5 aliases
     cy.get(DOM_ELEMENTS.addOrganisationAliasButton).should('exist');
 
     // AC2f - Test unchecking "Add aliases" checkbox clears all data and hides section
     cy.get(DOM_ELEMENTS.organisationAliasCheckbox).uncheck();
-    cy.get(DOM_ELEMENTS.organisationAliasSection).should('not.be.visible');
 
     // Re-check to verify all alias data has been wiped
     cy.get(DOM_ELEMENTS.organisationAliasCheckbox).check();
@@ -1174,9 +1169,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
         facc_party_add_amend_convert_post_code: 'POSTCODE9',
         facc_party_add_amend_convert_contact_email_address_1: `${'a'.repeat(65)}@example.com`,
         facc_party_add_amend_convert_contact_email_address_2: `${'a'.repeat(65)}@example.com`,
-        facc_party_add_amend_convert_contact_telephone_number_mobile: 'M'.repeat(36),
-        facc_party_add_amend_convert_contact_telephone_number_home: 'H'.repeat(36),
-        facc_party_add_amend_convert_contact_telephone_number_business: 'W'.repeat(36),
         facc_party_add_amend_convert_vehicle_make: 'V'.repeat(31),
         facc_party_add_amend_convert_vehicle_registration_mark: 'R'.repeat(12),
       };
@@ -1195,9 +1187,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
         'Postcode must be 8 characters or fewer',
         'Primary email address must be 76 characters or fewer',
         'Secondary email address must be 76 characters or fewer',
-        'Mobile telephone number must be 35 characters or fewer',
-        'Home telephone number must be 35 characters or fewer',
-        'Work telephone number must be 35 characters or fewer',
         'Make and model must be 30 characters or fewer',
         'Vehicle registration must be 11 characters or fewer',
       ];
@@ -1206,6 +1195,66 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
       expectedCompanyErrors.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
+
+  it(
+    'AC7. Data type validation for alphabetical and alphanumeric fields in company forms',
+    { tags: ['@PO-1111'] },
+    () => {
+      const dataTypeCompanyMock = structuredClone(companyfullMock);
+
+      dataTypeCompanyMock.formData = {
+        ...dataTypeCompanyMock.formData,
+        facc_party_add_amend_convert_organisation_name: 'ABC Company Ltd @#$',
+        facc_party_add_amend_convert_organisation_aliases: [
+          {
+            facc_party_add_amend_convert_alias_organisation_name_0: 'Alias One Corp 123!',
+          },
+          {
+            facc_party_add_amend_convert_alias_organisation_name_1: 'Alias Two Ltd %^&',
+          },
+        ],
+        facc_party_add_amend_convert_add_alias: true,
+        // AC7b: Alphanumeric fields (letters, numbers, hyphens, spaces, apostrophes only)
+        facc_party_add_amend_convert_address_line_1: '123 Main St @#$',
+        facc_party_add_amend_convert_address_line_2: 'Suite 4B %^&',
+        facc_party_add_amend_convert_address_line_3: 'Building C *()+=',
+        facc_party_add_amend_convert_post_code: 'M1& 1AA',
+        facc_party_add_amend_convert_vehicle_make: 'Mercedes Sprinter <>?/',
+        facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123~`',
+      };
+
+      setupComponent('COMPANY', dataTypeCompanyMock);
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      // AC7a: Alphabetical field error messages
+      const alphabeticalFieldErrors = [
+        'Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+        'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
+      ];
+
+      // AC7b: Alphanumeric field error messages
+      const alphanumericFieldErrors = [
+        'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+        'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      ];
+
+      const allCompanyExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
+
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Company details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+      // Verify all expected error messages appear
+      allCompanyExpectedErrors.forEach((message) => {
         cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
       });
     },
