@@ -19,7 +19,11 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
 
   protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
-    formData: this.payloadService.mapDebtorAccountPartyPayload(this.partyPayload, this.partyType),
+    formData: this.payloadService.mapDebtorAccountPartyPayload(
+      this.partyPayload,
+      this.partyType,
+      this.partyPayload.defendant_account_party.is_debtor,
+    ),
     nestedFlow: false,
   };
 

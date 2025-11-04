@@ -13,7 +13,11 @@ describe('transformDefendantAccountPartyPayload', () => {
   });
 
   it('should transform defendant data to debtor form state correctly', () => {
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDefendantData);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
 
     // Test basic personal details (using mock data values)
     expect(result.facc_party_add_amend_convert_title).toBe('Ms');
@@ -58,7 +62,11 @@ describe('transformDefendantAccountPartyPayload', () => {
   });
 
   it('should transform aliases correctly into array structure', () => {
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDefendantData);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
 
@@ -78,6 +86,8 @@ describe('transformDefendantAccountPartyPayload', () => {
   it('should handle null or undefined values correctly', () => {
     const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
       OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
+      'individual',
+      true,
     );
 
     // All fields should be null when the mock has empty strings or null values
@@ -103,7 +113,11 @@ describe('transformDefendantAccountPartyPayload', () => {
   it('should handle empty aliases array', () => {
     mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = [];
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDefendantData);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
   });
@@ -118,7 +132,11 @@ describe('transformDefendantAccountPartyPayload', () => {
 
     mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = manyAliases;
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDefendantData);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
 
     // Should only have 5 aliases
     expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(5);
@@ -138,7 +156,11 @@ describe('transformDefendantAccountPartyPayload', () => {
   it('should handle missing individual_details', () => {
     mockDefendantData.defendant_account_party.party_details.individual_details = null;
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDefendantData);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_title).toBeNull();
     expect(result.facc_party_add_amend_convert_forenames).toBeNull();
@@ -171,7 +193,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result = transformDefendantAccountPartyPayload(minimalData);
+    const result = transformDefendantAccountPartyPayload(minimalData, 'individual', true);
 
     expect(result.facc_party_add_amend_convert_title).toBe('Mr');
     expect(result.facc_party_add_amend_convert_forenames).toBe('John');
@@ -215,7 +237,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result = transformDefendantAccountPartyPayload(customizedMockData);
+    const result = transformDefendantAccountPartyPayload(customizedMockData, 'individual', true);
 
     expect(result.facc_party_add_amend_convert_title).toBe('Dr');
     expect(result.facc_party_add_amend_convert_forenames).toBe('Jane');
@@ -257,7 +279,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDataWithOrgAliases);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithOrgAliases,
+      'company',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
@@ -287,8 +313,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState =
-      transformDefendantAccountPartyPayload(mockDataWithEmptyOrgAliases);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithEmptyOrgAliases,
+      'company',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(0);
     expect(result.facc_party_add_amend_convert_add_alias).toBe(false);
@@ -318,8 +347,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState =
-      transformDefendantAccountPartyPayload(mockDataWithManyOrgAliases);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithManyOrgAliases,
+      'company',
+      true,
+    );
 
     // Should only have 5 aliases
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(5);
@@ -363,7 +395,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDataWithNullOrgName);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithNullOrgName,
+      'company',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
     // Empty string becomes null due to || null logic in the function
@@ -401,8 +437,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState =
-      transformDefendantAccountPartyPayload(mockDataWithUndefinedOrgName);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithUndefinedOrgName,
+      'company',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(1);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
@@ -441,7 +480,11 @@ describe('transformDefendantAccountPartyPayload', () => {
       },
     };
 
-    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(mockDataWithEmptyOrgName);
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDataWithEmptyOrgName,
+      'company',
+      true,
+    );
 
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
     // Empty string should become null due to the `|| null` logic in the function
@@ -480,7 +523,7 @@ describe('transformDefendantAccountPartyPayload', () => {
         },
       };
 
-      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'company');
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'company', true);
 
       // Company-specific fields should be populated
       expect(result.facc_party_add_amend_convert_organisation_name).toBe('Test Company Ltd');
@@ -505,7 +548,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     });
 
     it('should return individual fields (excluding organisation) when partyType is "individual"', () => {
-      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual');
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual', true);
 
       // Individual-specific fields should be populated
       expect(result.facc_party_add_amend_convert_title).toBe('Ms');
@@ -530,7 +573,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     });
 
     it('should return individual fields (excluding organisation) when partyType is "parentGuardian"', () => {
-      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'parentGuardian');
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'parentGuardian', true);
 
       // Individual-specific fields should be populated (same as individual)
       expect(result.facc_party_add_amend_convert_title).toBe('Ms');
@@ -565,7 +608,7 @@ describe('transformDefendantAccountPartyPayload', () => {
         },
       };
 
-      const result = transformDefendantAccountPartyPayload(mockCompanyData);
+      const result = transformDefendantAccountPartyPayload(mockCompanyData, 'company', true);
 
       // Should return company fields only when organisation_flag is true (fallback behavior)
       expect(result.facc_party_add_amend_convert_organisation_name).toBe('Fallback Company');
@@ -592,7 +635,7 @@ describe('transformDefendantAccountPartyPayload', () => {
         },
       };
 
-      const result = transformDefendantAccountPartyPayload(mockMixedData, 'company');
+      const result = transformDefendantAccountPartyPayload(mockMixedData, 'company', true);
 
       // Should respect partyType parameter over organisation_flag
       expect(result.facc_party_add_amend_convert_organisation_name).toBe('Override Company');

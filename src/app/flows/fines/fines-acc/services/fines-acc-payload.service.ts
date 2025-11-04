@@ -142,7 +142,8 @@ export class FinesAccPayloadService {
   public mapDebtorAccountPartyPayload(
     defendantData: IOpalFinesAccountDefendantAccountParty,
     partyType: string,
+    isDebtor: boolean,
   ): IFinesAccPartyAddAmendConvertState {
-    return transformDefendantAccountPartyPayload(defendantData, partyType);
+    return transformDefendantAccountPartyPayload(defendantData, partyType, isDebtor);
   }
 }
