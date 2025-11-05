@@ -1,3 +1,5 @@
+@let headingText = partyType === 'company' ? 'Company details' : 'Defendant details';
+
 <opal-lib-govuk-heading-with-caption
   [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
   [headingText]="headingText"
