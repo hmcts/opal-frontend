@@ -79,11 +79,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
 
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mr');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mrs');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Miss');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Ms');
-
+      cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
       cy.get(DOM_ELEMENTS.forenamesInput).should('exist');
       cy.get(DOM_ELEMENTS.forenamesLabel).should('contain', 'First names');
       cy.get(DOM_ELEMENTS.forenamesHint).should('contain', 'Include their middle names');
@@ -342,7 +338,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.titleSelect).should('have.value', '');
     cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
@@ -350,7 +345,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     const coreRequiredMessages = [
-      'Select a title',
       'Enter parent or guardian first name(s)',
       'Enter parent or guardian last name',
       'Enter address line 1, typically the building and street',
