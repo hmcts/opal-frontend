@@ -56,6 +56,7 @@ import { FinesAccPartyAddAmendConvertAddress } from './components/fines-acc-part
 import { FinesAccPartyAddAmendConvertCd } from './components/fines-acc-party-add-amend-convert-cd/fines-acc-party-add-amend-convert-cd.component';
 import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add-amend-convert-vd/fines-acc-party-add-amend-convert-vd.component';
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
+import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
@@ -104,9 +105,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
   protected readonly finesAccRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   protected readonly accountStore = this.finesAccountStore;
-  protected readonly FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES = {
-    hr: 'govuk-section-break govuk-section-break--xl govuk-section-break--visible',
-  };
 
   @Input({ required: true }) public isDebtor!: boolean;
   @Input({ required: true }) public partyType!: string;
@@ -123,6 +121,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
+  public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
 
   /**
    * Creates the base form group with fields shared by all party types.

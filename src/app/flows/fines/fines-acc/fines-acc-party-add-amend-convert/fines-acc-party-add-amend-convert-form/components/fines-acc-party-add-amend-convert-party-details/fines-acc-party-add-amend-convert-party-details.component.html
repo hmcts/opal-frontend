@@ -1,45 +1,45 @@
 <!-- Company Name - Only for company party type -->
 @if (isCompanyPartyType) {
-<opal-lib-govuk-text-input
-  labelText="Company name"
-  inputId="facc_party_add_amend_convert_organisation_name"
-  inputName="facc_party_add_amend_convert_organisation_name"
-  inputClasses="govuk-input--width-20"
-  labelClasses="govuk-label--s"
-  [control]="form.get('facc_party_add_amend_convert_organisation_name')"
-  [errors]="formControlErrorMessages['facc_party_add_amend_convert_organisation_name']"
-></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Company name"
+    inputId="facc_party_add_amend_convert_organisation_name"
+    inputName="facc_party_add_amend_convert_organisation_name"
+    inputClasses="govuk-input--width-20"
+    labelClasses="govuk-label--s"
+    [control]="form.get('facc_party_add_amend_convert_organisation_name')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_organisation_name']"
+  ></opal-lib-govuk-text-input>
 }
 
 <!-- Individual Details - Only for individual party type -->
 @if (isIndividualPartyType) {
-<opal-lib-govuk-select
-  labelText="Title"
-  labelClasses="govuk-label--s"
-  selectId="facc_party_add_amend_convert_title"
-  selectName="facc_party_add_amend_convert_title"
-  [options]="titleOptions"
-  [control]="form.get('facc_party_add_amend_convert_title')!"
-  [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
-></opal-lib-govuk-select>
-<opal-lib-govuk-text-input
-  labelText="First names"
-  inputId="facc_party_add_amend_convert_forenames"
-  inputName="facc_party_add_amend_convert_forenames"
-  inputClasses="govuk-input--width-20"
-  labelClasses="govuk-label--s"
-  hintText="Include their middle names"
-  [control]="form.get('facc_party_add_amend_convert_forenames')"
-  [errors]="formControlErrorMessages['facc_party_add_amend_convert_forenames']"
-></opal-lib-govuk-text-input>
-<opal-lib-govuk-text-input
-  labelText="Last name"
-  inputId="facc_party_add_amend_convert_surname"
-  inputName="facc_party_add_amend_convert_surname"
-  inputClasses="govuk-input--width-20"
-  labelClasses="govuk-label--s"
-  [control]="form.get('facc_party_add_amend_convert_surname')"
-  [errors]="formControlErrorMessages['facc_party_add_amend_convert_surname']"
-  [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_surname')!"
-></opal-lib-govuk-text-input>
+  <opal-lib-govuk-select
+    labelText="Title"
+    labelClasses="govuk-label--s"
+    selectId="facc_party_add_amend_convert_title"
+    selectName="facc_party_add_amend_convert_title"
+    [options]="titleOptions"
+    [control]="form.get('facc_party_add_amend_convert_title')!"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
+  ></opal-lib-govuk-select>
+  <opal-lib-govuk-text-input
+    labelText="First names"
+    inputId="facc_party_add_amend_convert_forenames"
+    inputName="facc_party_add_amend_convert_forenames"
+    inputClasses="govuk-input--width-20"
+    labelClasses="govuk-label--s"
+    hintText="Include their middle names"
+    [control]="form.get('facc_party_add_amend_convert_forenames')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_forenames']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Last name"
+    inputId="facc_party_add_amend_convert_surname"
+    inputName="facc_party_add_amend_convert_surname"
+    inputClasses="govuk-input--width-20"
+    labelClasses="govuk-label--s"
+    [control]="form.get('facc_party_add_amend_convert_surname')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_surname']"
+    [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_surname')!"
+  ></opal-lib-govuk-text-input>
 }

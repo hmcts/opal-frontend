@@ -11,14 +11,14 @@
   [errors]="formControlErrorMessages['facc_party_add_amend_convert_dob']"
 ></opal-lib-moj-date-picker>
 @if (age && ageLabel) {
-<opal-lib-moj-ticket-panel
-  componentClasses="govuk-!-width-one-third"
-  sectionClasses="moj-ticket-panel__content--blue"
-  [alert]="true"
->
-  <strong>Age: {{ age }}</strong>
-  <p>{{ ageLabel }}</p>
-</opal-lib-moj-ticket-panel>
+  <opal-lib-moj-ticket-panel
+    componentClasses="govuk-!-width-one-third"
+    sectionClasses="moj-ticket-panel__content--blue"
+    [alert]="true"
+  >
+    <strong>Age: {{ age }}</strong>
+    <p>{{ ageLabel }}</p>
+  </opal-lib-moj-ticket-panel>
 }
 <opal-lib-govuk-text-input
   labelText="National Insurance number"

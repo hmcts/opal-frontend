@@ -178,7 +178,7 @@
     }
 
     @if (isCompanyPartyType) {
-      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+      <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
     }
 
     <!-- Address -->
@@ -189,7 +189,7 @@
 
     <!-- Contact details - Only show for debtor or company party types -->
     @if (checkCompanyOrDebtor) {
-      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+      <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-cd
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -198,7 +198,7 @@
 
     <!-- Language preferences - Only show for debtor or company party types -->
     @if (showLanguagePreferences() && checkCompanyOrDebtor) {
-      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+      <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-lp
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -208,7 +208,7 @@
 
     <!-- Vehicle details - Only show for debtor or company party types -->
     @if (checkCompanyOrDebtor) {
-      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+      <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
       <app-fines-acc-party-add-amend-convert-vd
         [form]="form"
         [formControlErrorMessages]="formControlErrorMessages"
@@ -217,7 +217,7 @@
 
     <!-- Employer Details - Only for individual party type and debtor -->
     @if (isIndividualPartyType && isDebtor) {
-      <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+      <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
       <app-fines-acc-party-add-amend-convert-ed
         [form]="form"
@@ -225,7 +225,7 @@
       ></app-fines-acc-party-add-amend-convert-ed>
     }
 
-    <hr class="{{ FINES_ACC_PARTY_ADD_AMEND_CONTENT_STYLES.hr }}" />
+    <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
