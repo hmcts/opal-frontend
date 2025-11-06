@@ -326,7 +326,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     emptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
     emptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
     emptyCoreMock.defendant_account_party.address!.address_line_1 = '';
-    
+
     setupComponent('parentGuardian', emptyCoreMock);
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
@@ -660,11 +660,16 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '456 Business Park !@#';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'Suite 200 $%^';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 = 'Industrial Estate &*()';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 = 'Business District +={}';
-      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 = 'Metropolitan Area []|\\';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
+        '456 Business Park !@#';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 =
+        'Suite 200 $%^';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 =
+        'Industrial Estate &*()';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 =
+        'Business District +={}';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 =
+        'Metropolitan Area []|\\';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.postcode = 'BU5& 1NE';
 
       setupComponent('parentGuardian', dataTypeValidationMock);

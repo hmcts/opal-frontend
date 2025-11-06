@@ -386,10 +386,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
     // Employer required errors should NOT appear because no employer fields were interacted with (conditional requirement)
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_EMPLOYER_NAME);
-    cy.get(DOM_ELEMENTS.errorSummary).should(
-      'not.contain.text',
-      ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI,
-    );
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_EMPLOYER_REFERENCE_OR_NI);
   });
 
   it('AC5. Required field validation (employer name)', { tags: ['@PO-1110'] }, () => {
@@ -474,7 +471,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
     }
 
     for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
+      cy.get(DOM_ELEMENTS.errorSummary).should(
+        'not.contain.text',
+        ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber),
+      );
     }
 
     // AC5j: Test partial completion - clear first names, fill only last names
@@ -1423,7 +1423,10 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       }
 
       for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-        cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber));
+        cy.get(DOM_ELEMENTS.errorSummary).should(
+          'not.contain.text',
+          ERROR_MESSAGES.REQUIRED_ALIAS_FORENAMES(aliasNumber),
+        );
       }
 
       // AC5j: Test partial completion - clear first names, fill only last names
@@ -1441,25 +1444,30 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       }
 
       for (let aliasNumber = 1; aliasNumber <= 5; aliasNumber++) {
-        cy.get(DOM_ELEMENTS.errorSummary).should('not.contain.text', ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber));
+        cy.get(DOM_ELEMENTS.errorSummary).should(
+          'not.contain.text',
+          ERROR_MESSAGES.REQUIRED_ALIAS_SURNAME(aliasNumber),
+        );
       }
     },
   );
 
-  it('AC6a. DOB with non-numerical characters shows format error for non-paying defendant', { tags: ['@PO-2315'] }, () => {
-    const nonPayingMinimalMock = structuredClone(minimalMock);
-    nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingMinimalMock.defendant_account_party.is_debtor = false;
-    nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
+  it(
+    'AC6a. DOB with non-numerical characters shows format error for non-paying defendant',
+    { tags: ['@PO-2315'] },
+    () => {
+      const nonPayingMinimalMock = structuredClone(minimalMock);
+      nonPayingMinimalMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingMinimalMock.defendant_account_party.is_debtor = false;
+      nonPayingMinimalMock.defendant_account_party.party_details.individual_details!.date_of_birth = 'AA/BB/CCCC';
 
-    setupComponent('INDIVIDUAL', nonPayingMinimalMock);
+      setupComponent('INDIVIDUAL', nonPayingMinimalMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_DOB_INVALID);
+    },
+  );
 
   it('AC6b. DOB in the future shows past-date error for non-paying defendant', { tags: ['@PO-2315'] }, () => {
     const nonPayingMinimalMock = structuredClone(minimalMock);
@@ -1484,77 +1492,83 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('exist')
-      .and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist').and('contain.text', ERROR_MESSAGES.FORMAT_NI_NUMBER);
   });
 
-  it('AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant', { tags: ['@PO-2315'] }, () => {
-    const nonPayingMaxLengthMock = structuredClone(minimalMock);
-    nonPayingMaxLengthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingMaxLengthMock.defendant_account_party.is_debtor = false;
+  it(
+    'AC7. Max length validation retains user on form and shows per-field errors for non-paying defendant',
+    { tags: ['@PO-2315'] },
+    () => {
+      const nonPayingMaxLengthMock = structuredClone(minimalMock);
+      nonPayingMaxLengthMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingMaxLengthMock.defendant_account_party.is_debtor = false;
 
-    // Set up data with values exceeding max length
-    nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.forenames = 'A'.repeat(21);
-    nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.surname = 'B'.repeat(31);
-    nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
-      {
-        alias_id: '1',
-        sequence_number: 1,
-        forenames: 'C'.repeat(21),
-        surname: 'D'.repeat(31),
-      },
-    ];
-    nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number =
-      'AB123456CD';
-    nonPayingMaxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
-    nonPayingMaxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
-    nonPayingMaxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
-    nonPayingMaxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
+      // Set up data with values exceeding max length
+      nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.forenames = 'A'.repeat(21);
+      nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.surname = 'B'.repeat(31);
+      nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'C'.repeat(21),
+          surname: 'D'.repeat(31),
+        },
+      ];
+      nonPayingMaxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number =
+        'AB123456CD';
+      nonPayingMaxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
+      nonPayingMaxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
+      nonPayingMaxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
+      nonPayingMaxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
 
-    setupComponent('INDIVIDUAL', nonPayingMaxLengthMock);
+      setupComponent('INDIVIDUAL', nonPayingMaxLengthMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    NON_PAYING_MAX_LENGTH_ERRORS.forEach((message) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
-    });
-  });
+      NON_PAYING_MAX_LENGTH_ERRORS.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
 
-  it('AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant', { tags: ['@PO-2315'] }, () => {
-    const nonPayingDataTypeValidationMock = structuredClone(minimalMock);
-    nonPayingDataTypeValidationMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
-    nonPayingDataTypeValidationMock.defendant_account_party.is_debtor = false;
+  it(
+    'AC9. Data type validation for alphabetical and alphanumeric fields for non-paying defendant',
+    { tags: ['@PO-2315'] },
+    () => {
+      const nonPayingDataTypeValidationMock = structuredClone(minimalMock);
+      nonPayingDataTypeValidationMock.defendant_account_party.defendant_account_party_type = 'ADULT_YOUTH_ONLY';
+      nonPayingDataTypeValidationMock.defendant_account_party.is_debtor = false;
 
-    // Set up data with invalid characters for validation testing
-    nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
-    nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
-    nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
-      {
-        alias_id: '1',
-        sequence_number: 1,
-        forenames: 'Johnny$',
-        surname: 'Smith#Brown',
-      },
-    ];
-    nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
-    nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
-    nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
-    nonPayingDataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
+      // Set up data with invalid characters for validation testing
+      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
+      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      nonPayingDataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'Johnny$',
+          surname: 'Smith#Brown',
+        },
+      ];
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      nonPayingDataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
 
-    setupComponent('INDIVIDUAL', nonPayingDataTypeValidationMock);
+      setupComponent('INDIVIDUAL', nonPayingDataTypeValidationMock);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
-    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant details');
+      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    // Verify all expected error messages appear
-    NON_PAYING_ALL_DATA_TYPE_ERRORS.forEach((message) => {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
-    });
-  });
+      // Verify all expected error messages appear
+      NON_PAYING_ALL_DATA_TYPE_ERRORS.forEach((message) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', message);
+      });
+    },
+  );
 });
