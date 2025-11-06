@@ -12971,8 +12971,8 @@ __metadata:
   linkType: hard
 
 "mochawesome-report-generator@npm:^6.2.0, mochawesome-report-generator@npm:^6.3.0":
-  version: 6.3.1
-  resolution: "mochawesome-report-generator@npm:6.3.1"
+  version: 6.3.2
+  resolution: "mochawesome-report-generator@npm:6.3.2"
   dependencies:
     chalk: "npm:^4.1.2"
     dateformat: "npm:^4.5.1"
@@ -12987,7 +12987,7 @@ __metadata:
     yargs: "npm:^17.2.1"
   bin:
     marge: bin/cli.js
-  checksum: 10/1921555431abdeb57000a0ab93a3d5d89d9db3efba6499bb6ce2a75cc199455fafec095c7a7d38b9ac6ced347a9ebf15f2f01583a619e113b6c48fac10261608
+  checksum: 10/7c2c81d9512a1c005a62da020b6749af08c1e6930604db2bf3ed1c9b125cce77bb4037d7e280837f536be0b6083bfb86ebea0bf3448868ad2c8d427b261ab00b
   languageName: node
   linkType: hard
 
