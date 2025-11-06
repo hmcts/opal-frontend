@@ -1151,7 +1151,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       const maxLengthCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields to exceed max length using API structure
-      maxLengthCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_name = 'C'.repeat(51);
+      maxLengthCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_name = 'C'.repeat(
+        51,
+      );
       maxLengthCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
         {
           alias_id: '1',
@@ -1207,7 +1209,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       const dataTypeCompanyMock = structuredClone(companyfullMock);
 
       // Set all fields with invalid characters using API structure
-      dataTypeCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_name = 'ABC Company Ltd @#$';
+      dataTypeCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_name =
+        'ABC Company Ltd @#$';
       dataTypeCompanyMock.defendant_account_party.party_details.organisation_details!.organisation_aliases = [
         {
           alias_id: '1',
