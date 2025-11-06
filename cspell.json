@@ -3,7 +3,7 @@
   "version": "0.2",
   "language": "en-GB",
   "words": [
-  "AYG",
+    "AYG",
     "AYPG",
     "Authorised",
     "bacs",
@@ -36,7 +36,8 @@
     "PRIS",
     "prisonandprisonnumber",
     "Serde",
-    "Typecheck"
+    "Typecheck",
+    "Unauthorised"
   ],
   "ignorePaths": [
     "node_modules",
