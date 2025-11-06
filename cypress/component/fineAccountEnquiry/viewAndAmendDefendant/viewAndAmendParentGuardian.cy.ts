@@ -17,20 +17,22 @@ import {
   VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK,
 } from './mocks/viewAndAmendDefendant.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
+import { IFinesAccPartyAddAmendConvertForm } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
+import { coreRequiredMessages } from './constants/viewAndAmendDefendant_elements';
+import { expectedErrors } from './constants/viewAndAmendDefendant_elements';
+import { allExpectedErrors } from './constants/viewAndAmendDefendant_elements';
 
-describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
-  let fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
-  let minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
-  let companyfullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK);
+describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () => {
+  let fullMock: IFinesAccPartyAddAmendConvertForm;
+  let minimalMock: IFinesAccPartyAddAmendConvertForm;
 
   beforeEach(() => {
     fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
     minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
-    companyfullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK);
   });
   const setupComponent = (
-    partyType: string = 'INDIVIDUAL',
-    formData = MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
+    partyType: string,
+    formData: IFinesAccPartyAddAmendConvertForm,
     welshSpeaking: string = 'N',
   ) => {
     mount(FinesAccPartyAddAmendConvert, {
@@ -60,16 +62,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
                 partyType: partyType,
               },
             },
-            data: of({}),
           },
         },
       ],
     });
   };
-
-  afterEach(() => {
-    cy.then(() => {});
-  });
 
   it(
     'AC1a. The "Parent Guardian Details (Change)" screen will be built as per the design artefacts provided with aliases in mock data',
@@ -79,11 +76,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
 
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mr');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Mrs');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Miss');
-      cy.get(DOM_ELEMENTS.titleSelect).find('option').should('contain', 'Ms');
-
+      cy.get(DOM_ELEMENTS.titleSelect).should('not.exist');
       cy.get(DOM_ELEMENTS.forenamesInput).should('exist');
       cy.get(DOM_ELEMENTS.forenamesLabel).should('contain', 'First names');
       cy.get(DOM_ELEMENTS.forenamesHint).should('contain', 'Include their middle names');
@@ -342,19 +335,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.titleSelect).should('have.value', '');
     cy.get(DOM_ELEMENTS.forenamesInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.surnameInput).should('have.value', '');
     cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', '');
 
     cy.get(DOM_ELEMENTS.submitButton).click();
-
-    const coreRequiredMessages = [
-      'Select a title',
-      'Enter parent or guardian first name(s)',
-      'Enter parent or guardian last name',
-      'Enter address line 1, typically the building and street',
-    ];
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
     coreRequiredMessages.forEach((msg) => {
@@ -633,31 +618,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      const expectedErrors = [
-        'Parent or guardian first name(s) must be 20 characters or fewer',
-        'Parent or guardian last name must be 30 characters or fewer',
-        'Alias 1 first name(s) must be 20 characters or fewer',
-        'Alias 1 last name must be 30 characters or fewer',
-        'Enter a National Insurance number in the format AANNNNNNA',
-        'Address line 1 must be 30 characters or fewer',
-        'Address line 2 must be 30 characters or fewer',
-        'Address line 3 must be 16 characters or fewer',
-        'Postcode must be 8 characters or fewer',
-        'Primary email address must be 76 characters or fewer',
-        'Secondary email address must be 76 characters or fewer',
-        'Make and model must be 30 characters or fewer',
-        'Vehicle registration must be 11 characters or fewer',
-        'Employer name must be 50 characters or fewer',
-        'Employee reference must be 20 characters or fewer',
-        'Employer email address must be 76 characters or fewer',
-        'Address line 1 must be 30 characters or fewer',
-        'Address line 2 must be 30 characters or fewer',
-        'Address line 3 must be 30 characters or fewer',
-        'Address line 4 must be 30 characters or fewer',
-        'Address line 5 must be 30 characters or fewer',
-        'Postcode must be 8 characters or fewer',
-      ];
-
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
@@ -704,31 +664,6 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
       setupComponent('parentGuardian', dataTypeValidationMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
-
-      const alphabeticalFieldErrors = [
-        'Parent or guardian first name(s) must only contain letters',
-        'Parent or guardian last name must only contain letters',
-        'Alias 1 first name(s) must only contain letters',
-        'Alias 1 last name must only contain letters',
-      ];
-
-      const alphanumericFieldErrors = [
-        'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-        'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      ];
-      const allExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
 
       cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Parent or guardian details');
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');

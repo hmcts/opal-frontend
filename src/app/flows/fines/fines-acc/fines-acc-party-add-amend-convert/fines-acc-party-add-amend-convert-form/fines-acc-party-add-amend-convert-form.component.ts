@@ -376,6 +376,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
       this.fieldErrors['facc_party_add_amend_convert_surname'] =
         this.fieldErrors['facc_party_add_amend_convert_surname_parent_guardian'];
     }
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+    this.dateOfBirthListener();
   }
 
   /**
