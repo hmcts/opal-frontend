@@ -105,6 +105,20 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 3,
     },
   },
+  facc_party_add_amend_convert_forenames_parent_guardian: {
+    required: {
+      message: `Enter parent or guardian first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Parent or guardian first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Parent or guardian first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
   facc_party_add_amend_convert_surname: {
     required: {
       message: `Enter defendant's last name`,
@@ -116,6 +130,20 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
     },
     lettersWithSpacesPattern: {
       message: `Defendant's last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_surname_parent_guardian: {
+    required: {
+      message: `Enter parent or guardian last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Parent or guardian last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Parent or guardian last name must only contain letters`,
       priority: 3,
     },
   },
