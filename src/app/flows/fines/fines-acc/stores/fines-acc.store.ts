@@ -68,7 +68,7 @@ export const FinesAccountStore = signalStore(
         if (store.base_version() !== version) {
           patchState(store, { hasVersionMismatch: true });
         }
-      }
+      },
     };
   }),
 );
