@@ -1,5 +1,3 @@
-@let headingText = partyType === 'company' ? 'Company details' : 'Defendant details';
-
 <opal-lib-govuk-heading-with-caption
   [captionText]="accountStore.account_number()! + ' - ' + accountStore.party_name()!"
   [headingText]="headingText"
@@ -26,15 +24,17 @@
 
     <!-- Individual Details - Only for individual party type -->
     @if (isIndividualPartyType) {
-      <opal-lib-govuk-select
-        labelText="Title"
-        labelClasses="govuk-label--s"
-        selectId="facc_party_add_amend_convert_title"
-        selectName="facc_party_add_amend_convert_title"
-        [options]="titleOptions"
-        [control]="form.get('facc_party_add_amend_convert_title')!"
-        [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
-      ></opal-lib-govuk-select>
+      @if (!isParentGuardianPartyType) {
+        <opal-lib-govuk-select
+          labelText="Title"
+          labelClasses="govuk-label--s"
+          selectId="facc_party_add_amend_convert_title"
+          selectName="facc_party_add_amend_convert_title"
+          [options]="titleOptions"
+          [control]="form.get('facc_party_add_amend_convert_title')!"
+          [errors]="formControlErrorMessages['facc_party_add_amend_convert_title']"
+        ></opal-lib-govuk-select>
+      }
       <opal-lib-govuk-text-input
         labelText="First names"
         inputId="facc_party_add_amend_convert_forenames"
