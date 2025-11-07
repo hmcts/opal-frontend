@@ -359,5 +359,3 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     And I see "This is a test comment" in the Account comments and notes section
     When I click the "Submit for review" button
     Then I see "You have submitted John SMITH's account for review." text on the page
-
-
