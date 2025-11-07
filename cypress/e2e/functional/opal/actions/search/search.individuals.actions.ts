@@ -1,10 +1,8 @@
-import { AccountSearchLocators as L } from '../../../../shared/selectors/account.search.locators';
-import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/accountEnquiryResults.locators';
+import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account.search.individuals.locators';
+import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/accountEnquiryResults.locators';
 
-export class AccountSearchActions {
+export class AccountSearchIndividualsActions {
   byLastName(lastName: string): void {
-    cy.get(L.root, { timeout: 10000 }).should('be.visible');
-    cy.get(L.individualsTab, { timeout: 10000 }).click(); // safe if already selected
     cy.get(L.lastNameInput, { timeout: 10000 }).clear().type(lastName);
     cy.get(L.searchButton).should('be.enabled').click();
 

@@ -1,38 +1,10 @@
 // cypress/e2e/functional/opal/actions/account.details.actions.ts
-import { AccountDetailsLocators as L } from '../../../../shared/selectors/account.details.locators';
+import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/accountDetails/account.defendant.details.locators';
+import { AccountNavDetailsLocators as N } from '../../../../../shared/selectors/accountDetails/account.nav.details.locators';
+import { CommonActions } from '../common/common.actions';
 
-export class AccountDetailsActions {
-  /** Helper: find an input by its visible label text */
-  private getInputByLabel(labelText: string) {
-    return cy
-      .contains('label', labelText, { matchCase: false })
-      .invoke('attr', 'for')
-      .then((forId) => {
-        if (forId) return cy.get(`#${forId}`);
-        // Fallback: label wraps the input
-        return cy.contains('label', labelText, { matchCase: false }).find('input, textarea, select');
-      });
-  }
-
-  /** Click Cancel and handle the confirm-leave dialog
-   *  confirmLeave = true  -> click "OK" (leave edit, return to details)
-   *  confirmLeave = false -> click "Cancel" (stay on edit page)
-   */
-  cancelEditing(confirmLeave: boolean): void {
-    // Prepare the confirm response BEFORE clicking Cancel
-    cy.window().then(() => {
-      cy.once('window:confirm', (msg) => {
-        // Optional: assert the prompt text is what you expect
-        expect(msg).to.contain('You have unsaved changes');
-        return confirmLeave; // true = OK (leave), false = Cancel (stay)
-      });
-    });
-
-    // Click the Cancel control (link/button)
-    cy.contains('a.govuk-link, button, [role="button"]', 'Cancel', { matchCase: false })
-      .should('be.visible')
-      .click({ force: true });
-  }
+export class AccountDetailsDefendantActions {
+  readonly common = new CommonActions();
 
   /** After leaving the edit form, ensure we’re back on details */
   assertReturnedToAccountDetails(): void {
@@ -50,7 +22,7 @@ export class AccountDetailsActions {
 
   /** Assert the First name field’s value */
   assertFirstNameValue(expected: string): void {
-    this.getInputByLabel('First name').should('have.value', expected);
+    this.common.getInputByLabel('First name').should('have.value', expected);
   }
 
   /** Reuse: header contains */
@@ -59,7 +31,7 @@ export class AccountDetailsActions {
   }
 
   goToDefendantTab(): void {
-    cy.get(L.tabs.defendant, { timeout: 10000 })
+    cy.get(N.subNav.defendantTab, { timeout: 10000 })
       .should('be.visible')
       .within(() => {
         cy.contains('a.moj-sub-navigation__link', 'Defendant', { matchCase: false }).click();
@@ -82,14 +54,14 @@ export class AccountDetailsActions {
   startEditingDefendantDetails(): void {
     this.goToDefendantTab();
     this.assertSectionHeader('Defendant');
-    cy.contains(L.view.changeLink, 'Change', { matchCase: false }).click({ force: true });
+    cy.contains(N.changeLink, 'Change', { matchCase: false }).click({ force: true });
     cy.get(L.edit.form, { timeout: 10000 }).should('be.visible');
   }
 
   /** Update First name on edit form */
   updateFirstName(value: string): void {
     cy.get(L.edit.form, { timeout: 10000 }).should('be.visible');
-    this.getInputByLabel('First name').then(($input) => {
+    this.common.getInputByLabel('First name').then(($input) => {
       cy.wrap($input).clear().type(value).blur();
     });
   }

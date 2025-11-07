@@ -1,16 +1,18 @@
-import { AccountSearchActions } from '../actions/account.search.actions';
-import { AccountDetailsActions } from '../actions/account.details.actions';
+import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
+import { AccountDetailsDefendantActions } from '../actions/account details/details.defendant.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
-import { AccountSearchLocators as L } from '../../../../shared/selectors/account.search.locators';
+import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account.search.individuals.locators';
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/accountEnquiryResults.locators';
 import { forceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { hasAccountLinkOnPage } from '../../../../support/utils/results';
 import { clickLinkAcrossPages } from '../../../../support/utils/linkHelpers';
+import { CommonActions } from '../actions/common/common.actions';
 
 export class AccountEnquiryFlow {
-  private readonly search = new AccountSearchActions();
-  private readonly details = new AccountDetailsActions();
+  private readonly search = new AccountSearchIndividualsActions();
+  private readonly details = new AccountDetailsDefendantActions();
   private readonly dashboard = new DashboardActions();
+  private readonly common = new CommonActions();
 
   private ensureOnSearchPage() {
     cy.get('body').then(($b) => {
@@ -93,13 +95,13 @@ export class AccountEnquiryFlow {
 
   /** User cancels editing but chooses “Cancel” in the confirmation dialog. */
   public cancelEditAndStay(): void {
-    this.details.cancelEditing(false);
+    this.common.cancelEditing(false);
     this.details.assertStillOnEditPage();
   }
 
   /** User cancels editing and chooses “OK” in the confirmation dialog. */
   public cancelEditAndLeave(): void {
-    this.details.cancelEditing(true);
+    this.common.cancelEditing(true);
     this.details.assertReturnedToAccountDetails();
   }
 }

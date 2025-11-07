@@ -40,4 +40,39 @@ Feature: Account Enquiries – View Account Details
     Then I should return to the account details page
     And I should see the account header contains "Mr John ACCDETAILSURNAME"
 
+  @967 @PO-1111
+  Scenario: As a user I can view account details of a company account
+    Given a company draft account exists with details:
+      | Account_status                      | Submitted              |
+      | account.defendant.company_name      | Accdetail comp         |
+      | account.defendant.email_address_1   | Accdetailcomp@test.com |
+      | account.defendant.post_code         | AB23 4RN               |
+      | account.account_type                | Fine                   |
+      | account.prosecutor_case_reference   | PCR-AUTO-003           |
+      | account.collection_order_made       | false                  |
+      | account.collection_order_made_today | false                  |
+      | account.payment_card_request        | false                  |
+
+    When I publish the last draft account to "Publishing Pending" (assert strong ETag)
+    And I open and verify company account details for "Accdetail comp"
+
+    # AC4 - Route Guard
+    When I edit company defendant "Company name" to "Test"
+    And I cancel editing (dismiss confirmation)
+    Then the "Company name" field shows "Test"
+
+    When I cancel editing (accept confirmation)
+    Then I am on the account details page headed "Accdetail comp"
+
+    # AC3 - Cancel Changes
+    When I edit company defendant "Company name" to "Test"
+    And I cancel editing via the link
+    Then I am on the account details page headed "Accdetail comp"
+
+    When I edit company defendant "Company name" to "Test"
+    And I cancel editing (dismiss confirmation)
+    Then the "Company name" field shows "Test"
+
+    When I cancel editing (accept confirmation)
+    Then I am on the account details page headed "Accdetail comp"
 

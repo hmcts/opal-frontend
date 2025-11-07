@@ -1,14 +1,14 @@
 // cypress/support/step_definitions/newStyleSteps/accountEnquiry.steps.ts
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/accountEnquiry.flow';
-import { AccountDetailsActions } from '../../../e2e/functional/opal/actions/account.details.actions';
-import { AccountSearchActions } from '../../../e2e/functional/opal/actions/account.search.actions';
+import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account details/details.defendant.actions';
+import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
 
 const flow = () => new AccountEnquiryFlow();
 
 // Direct actions for the two “not flows” steps
-const details = () => new AccountDetailsActions();
-const search = () => new AccountSearchActions();
+const details = () => new AccountDetailsDefendantActions();
+const search = () => new AccountSearchIndividualsActions();
 
 /* ---------- Test data setup ---------- */
 
