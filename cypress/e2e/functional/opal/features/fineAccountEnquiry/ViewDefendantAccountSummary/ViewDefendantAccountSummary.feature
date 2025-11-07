@@ -194,3 +194,53 @@ Feature: View Defendant Account Summary - Add Comments
         And I see "Parent Guardian Line1" in the "Line 1" text field
         And I see "Parent Guardian Line2" in the "Line 2" text field
         And I see "Parent Guardian Line3" in the "Line 3" text field
+
+    @PO-1112
+    Scenario: As a user I can view account details of a Parent/Guardian account
+        When I create a "pgToPay" draft account with the following details:
+            | Account_status                          | Submitted                |
+            | account.defendant.forenames             | Catherine                |
+            | account.defendant.surname               | Green                    |
+            | account.defendant.email_address_1       | Catherine.Green@test.com |
+            | account.defendant.telephone_number_home | 02078217943              |
+            | account.account_type                    | Fine                     |
+            | account.prosecutor_case_reference       | PCR-AUTO-008             |
+            | account.collection_order_made           | false                    |
+            | account.collection_order_made_today     | false                    |
+            | account.payment_card_request            | false                    |
+            | account.defendant.dob                   | 2010-05-15               |
+        And I update the last created draft account with status "Publishing Pending"
+        And the update should succeed and return a new strong ETag
+        And I enter "Green" into the "Last name" field
+        And I click the "Search" button
+        Then I click the latest published account link
+        And I see "Miss Catherine GREEN" on the page header
+
+        When I click on the "Parent or guardian" link
+        And I click on the "Change" link
+        Then I see "Parent or guardian details" on the page header
+
+        # AC4 - Route Guard
+        When I enter "FNAMECHANGE" into the "First names" field
+        And I click Cancel, a window pops up and I click Cancel
+        Then I see 'FNAMECHANGE' in the 'First names' field
+
+        When I click Cancel, a window pops up and I click Ok
+        Then I see "Miss Catherine GREEN" on the page header
+
+        # AC3 - Cancel Changes
+        When I click on the "Parent or guardian" link
+        Then I click on the "Change" link
+        And I see "Parent or guardian details" on the page header
+        When I click on the "Cancel" link
+        Then I see "Miss Catherine GREEN" on the page header
+
+        When I click on the "Parent or guardian" link
+        And I click on the "Change" link
+        And I enter "LNAMEALTERED" into the "Last name" field
+
+        Then I click "Cancel", a window pops up and I click Cancel
+        Then I see "LNAMEALTERED" in the "Last name" field
+
+        Then I click "Cancel", a window pops up and I click Ok
+        Then I see "Miss Catherine GREEN" on the page header

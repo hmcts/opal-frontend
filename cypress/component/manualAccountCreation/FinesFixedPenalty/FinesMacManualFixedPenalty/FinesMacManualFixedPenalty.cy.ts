@@ -960,4 +960,40 @@ describe('FinesMacManualFixedPenalty', () => {
       );
     },
   );
+
+  it(
+    '(AC1a) If a user selects the "Search the offence list" link from the Fixed Penalty Details screen - a new tab will open within the relevant browser, displaying the "Search Offences" screen',
+    { tags: ['@PO-1104'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('be.visible');
+    },
+  );
+
+  it('(AC2) AC1 will hold true whether the defendant is an Adult or Youth defendant', { tags: ['@PO-1104'] }, () => {
+    // Test with Adult/Youth defendant (default defendant type)
+    setupComponent(null);
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+  });
+
+  it('(AC2) AC1 will hold true whether the defendant is a Company defendant', { tags: ['@PO-1104'] }, () => {
+    // Test with Company defendant
+    fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+  });
 });
