@@ -1,33 +1,52 @@
 /**
- * @file navigation.steps.ts
+ * @file dashboardsteps.ts
  * @description
- * Step definitions related to **navigation within the Opal application**,
- * particularly high-level dashboard and feature entry points.
+ * Step definitions for **Dashboard navigation** within the Opal application.
+ * Covers high-level actions such as opening the Manual Account Creation page
+ * or navigating to other dashboard-linked areas.
  *
- * These steps map natural-language navigation actions in Cucumber
- * scenarios to executable Cypress commands that perform the equivalent UI navigation.
+ * These steps bridge Gherkin syntax (Cucumber) and Cypress Actions,
+ * delegating actual behavior to the {@link DashboardActions} class.
  *
  * @remarks
- * - The steps are intentionally minimal and delegate logic to **Action classes**.
- * - Logging can be extended later (e.g., `Cypress.log`) if additional navigation flows are added.
+ * - Steps remain intentionally lightweight to keep logic centralized in actions.
+ * - Logs navigation events using `Cypress.log` for clear runner visibility.
  *
  * @example
- *   When I open Manual Account Creation
+ * ```gherkin
+ * When I open Manual Account Creation
+ * ```
  *
- * @see {@link goToManualAccountCreation}
+ * @see {@link DashboardActions}
  */
 
 import { When } from '@badeball/cypress-cucumber-preprocessor';
-import { goToManualAccountCreation } from '../../../e2e/functional/opal/actions/dashboard.actions';
+import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
+
+/**
+ * Returns a new instance of {@link DashboardActions}.
+ * This factory ensures that each step runs in isolation.
+ */
+const dashboard = () => new DashboardActions();
 
 /**
  * @step Opens the **Manual Account Creation** page via the dashboard.
  *
  * @details
- * - Uses the `goToManualAccountCreation()` action helper from `dashboard.actions`.
- * - This step is typically used at the start of test scenarios that validate
- *   account creation workflows.
+ * - Calls {@link DashboardActions.goToManualAccountCreation} internally.
+ * - Typically used at the start of scenarios that create new accounts.
+ *
+ * @example
+ * ```gherkin
+ * When I open Manual Account Creation
+ * ```
  */
 When('I open Manual Account Creation', () => {
-  goToManualAccountCreation();
+  Cypress.log({
+    name: 'navigate',
+    displayName: 'Dashboard',
+    message: 'Opening Manual Account Creation from Dashboard',
+  });
+
+  dashboard().goToManualAccountCreation();
 });
