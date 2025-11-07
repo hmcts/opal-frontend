@@ -107,3 +107,46 @@ Feature: Account Enquiries - View Account Details
 
     Then I click "Cancel", a window pops up and I click Ok
     Then I see "Accdetail comp" on the page header
+
+  @PO-2315
+  Scenario: As a user I can view account details of a non-paying defendant account
+    And I create a "pgToPay" draft account with the following details:
+      | account.defendant.forenames       | Jane         |
+      | account.defendant.surname         | TestNonPayee |
+      | account.prosecutor_case_reference | PCR-AUTO-004 |
+    When I update the last created draft account with status "Publishing Pending"
+    And the update should succeed and return a new strong ETag
+    And I enter "TestNonPayee" into the "Last name" field
+    And I click the "Search" button
+    Then I click the latest published account link
+    And I see "Miss Jane TESTNONPAYE" on the page header
+
+    When I click on the "Defendant" link
+    Then I click on the "Change" link
+    And I see "Defendant details" on the page header
+
+    # AC4 - Route Guard
+    When I enter "Test" into the "First name" field
+    Then I click Cancel, a window pops up and I click Cancel
+    Then I see 'Test' in the 'First name' field
+
+    When I click Cancel, a window pops up and I click Ok
+    Then I see "Miss Jane TESTNONPAYE" on the page header
+
+
+    # AC3 - Cancel Changes
+    When I click on the "Defendant" link
+    Then I click on the "Change" link
+    And I see "Defendant details" on the page header
+    When I click on the "Cancel" link
+    Then I see "Miss Jane TESTNONPAYE" on the page header
+
+    When I click on the "Defendant" link
+    And I click on the "Change" link
+    And I enter "Test" into the "First name" field
+
+    Then I click "Cancel", a window pops up and I click Cancel
+    Then I see "Test" in the "First name" field
+
+    Then I click "Cancel", a window pops up and I click Ok
+    Then I see "Miss John TESTNONPAYE" on the page header
