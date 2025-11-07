@@ -6,3 +6,6 @@ Then('I navigate to Create and Manage Draft Accounts', () => {
 Then('I navigate to Check and Validate Draft Accounts', () => {
   cy.get('#finesCavCheckerLink').should('contain', 'Check and Validate Draft Accounts').click();
 });
+Then('I navigate to the {string} tab', (tabName: string) => {
+  cy.contains('a', tabName).click();
+});

@@ -359,3 +359,35 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     And I see "This is a test comment" in the Account comments and notes section
     When I click the "Submit for review" button
     Then I see "You have submitted John SMITH's account for review." text on the page
+
+  @PO-1800
+  Scenario: Input user can view Fixed Penalty accounts in Check and Validate tabs
+    Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
+    Then I am on the dashboard
+    When I intercept the get draft accounts for Fixed Penalty type
+    And I navigate to Create and Manage Draft Accounts
+
+    And I navigate to the "In review" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Rejected" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Approved" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Deleted" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+
+  @PO-1800
+  Scenario: Checker user can view Fixed Penalty accounts in Check and Validate tabs
+    Given I am on the Opal Frontend and I sign in as "opal-test-4@hmcts.net"
+    When I intercept the get draft accounts for Fixed Penalty type
+    And I navigate to Check and Validate Draft Accounts
+
+    And I navigate to the "To review" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Rejected" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Deleted" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+    And I navigate to the "Failed" tab
+    And I see "Fixed Penalty" is present in column "Account type"
+
