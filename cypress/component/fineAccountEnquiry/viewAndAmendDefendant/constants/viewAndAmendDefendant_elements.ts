@@ -197,3 +197,61 @@ export const getOrganisationAliasLabel = (index: number) =>
 export const getAliasContainer = (index: number) => `.alias-container[data-index="${index}"]`;
 
 export const getFieldErrorFor = (fieldId: string) => `#${fieldId}-error`;
+
+// Error messages
+export const coreRequiredMessages = [
+  'Enter parent or guardian first name(s)',
+  'Enter parent or guardian last name',
+  'Enter address line 1, typically the building and street',
+];
+
+export const expectedErrors = [
+  'Parent or guardian first name(s) must be 20 characters or fewer',
+  'Parent or guardian last name must be 30 characters or fewer',
+  'Alias 1 first name(s) must be 20 characters or fewer',
+  'Alias 1 last name must be 30 characters or fewer',
+  'Enter a National Insurance number in the format AANNNNNNA',
+  'Address line 1 must be 30 characters or fewer',
+  'Address line 2 must be 30 characters or fewer',
+  'Address line 3 must be 16 characters or fewer',
+  'Postcode must be 8 characters or fewer',
+  'Primary email address must be 76 characters or fewer',
+  'Secondary email address must be 76 characters or fewer',
+  'Make and model must be 30 characters or fewer',
+  'Vehicle registration must be 11 characters or fewer',
+  'Employer name must be 50 characters or fewer',
+  'Employee reference must be 20 characters or fewer',
+  'Employer email address must be 76 characters or fewer',
+  'Address line 1 must be 30 characters or fewer',
+  'Address line 2 must be 30 characters or fewer',
+  'Address line 3 must be 30 characters or fewer',
+  'Address line 4 must be 30 characters or fewer',
+  'Address line 5 must be 30 characters or fewer',
+  'Postcode must be 8 characters or fewer',
+];
+
+export const alphabeticalFieldErrors = [
+  'Parent or guardian first name(s) must only contain letters',
+  'Parent or guardian last name must only contain letters',
+  'Alias 1 first name(s) must only contain letters',
+  'Alias 1 last name must only contain letters',
+];
+
+export const alphanumericFieldErrors = [
+  'Address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer address line 1 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer address line 2 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer address line 3 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer address line 4 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer address line 5 must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+  'Employer postcode must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+];
+
+export const allExpectedErrors = [...alphabeticalFieldErrors, ...alphanumericFieldErrors];
