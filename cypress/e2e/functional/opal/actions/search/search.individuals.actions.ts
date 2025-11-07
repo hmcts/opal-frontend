@@ -1,49 +1,43 @@
+/**
+ * @fileoverview AccountSearchIndividualsActions
+ * High-level actions for the “Search for an account” ➜ Individuals tab.
+ * Now includes shared search-page assertion logic.
+ */
+
 import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account.search.individuals.locators';
-import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/accountEnquiryResults.locators';
+import { ResultsActions } from '../search.results.actions';
 
 export class AccountSearchIndividualsActions {
+  private readonly results = new ResultsActions();
+
+  /**
+   * Asserts that the user is on the “Search for an Account” page.
+   * Steps:
+   *  1. Verifies the current URL includes `/fines/search-accounts/search`.
+   *  2. Ensures the search form root component is visible.
+   *
+   * @example
+   *   searchIndividuals.assertOnSearchPage();
+   */
+  assertOnSearchPage(): void {
+    Cypress.log({ name: 'assert', message: 'Verifying Search for an Account page URL' });
+    cy.location('pathname', { timeout: 10000 }).should('include', '/fines/search-accounts/search');
+
+    Cypress.log({ name: 'assert', message: 'Ensuring search form is visible' });
+    cy.get(L.searchFormRoot, { timeout: 10000 }).should('be.visible');
+
+    Cypress.log({ name: 'done', message: 'Search for an Account page is ready' });
+  }
+
+  /**
+   * Performs a search by last name and waits for results to load.
+   *
+   * @param {string} lastName - The last name to search for.
+   */
   byLastName(lastName: string): void {
     cy.get(L.lastNameInput, { timeout: 10000 }).clear().type(lastName);
     cy.get(L.searchButton).should('be.enabled').click();
 
-    // Wait for results page & table
-    cy.location('pathname', { timeout: 15000 }).should('include', '/fines/search-accounts/results');
-    cy.get(R.page.heading, { timeout: 15000 }).should('contain.text', 'Search results');
-    cy.get(R.table.root, { timeout: 15000 }).should('be.visible');
-    cy.get(R.table.rows, { timeout: 15000 }).should('have.length.greaterThan', 0);
-  }
-
-  openLatestPublished(): void {
-    // 👉 DO NOT assert .have.attr('href') — anchors don’t have one here
-    cy.get(R.table.rows, { timeout: 15000 })
-      .first()
-      .within(() => {
-        cy.get(R.cols.accountLink, { timeout: 10000 })
-          .scrollIntoView()
-          .should('be.visible')
-          .then(($a) => {
-            const acctNo = $a.text().trim();
-            cy.wrap(acctNo, { log: false }).as('openedAccountNumber');
-          })
-          .click({ force: true }); // force because visibility can be flaky in tables
-      });
-
-    // wait for details route OR details shell to appear
-    cy.location('pathname', { timeout: 15000 }).should((p) => {
-      expect(p, 'navigated to details').to.match(/\/fines\/(accounts|draft-accounts)\/[A-Za-z0-9-]+/);
-    });
-  }
-
-  openByAccountNumber(accountNumber: string): void {
-    cy.get(R.table.root, { timeout: 15000 }).should('be.visible');
-    // dynamic locator lives in locators file
-    cy.get(R.linkByAccountNumber(accountNumber), { timeout: 8000 })
-      .scrollIntoView()
-      .should('be.visible')
-      .click({ force: true });
-
-    cy.location('pathname', { timeout: 15000 }).should((p) => {
-      expect(p).to.match(/\/fines\/(accounts|draft-accounts)\/[A-Za-z0-9-]+/);
-    });
+    this.results.assertOnResults();
   }
 }

@@ -1,28 +1,66 @@
-// cypress/shared/selectors/accountEnquiryResults.locators.ts
-
 /**
- * Account Enquiry – Results table (Search results)
+ * @file accountEnquiryResults.locators.ts
+ * @description
+ * Selector map for the **Account Enquiry – Search Results Table**.
+ * Defines reusable, scoped locators for page headings, table regions,
+ * sortable headers, and per-row data cells.
  *
- * Notes:
- * - IDs like "defendantName" are repeated per row, so always scope by row.
- * - Prefer row-scoped selectors (e.g., row().find(Locators.cols.name)).
+ * @remarks
+ * - Always scope selectors by row — many IDs (e.g., `#defendantName`) repeat per record.
+ * - Designed for use with Cypress `within()` or chained `.find()` calls in
+ *   ResultsActions, AccountEnquiryFlow, and related test utilities.
+ * - Provides dynamic selector helpers for row matching and account-specific links.
+ *
+ * @example
+ * ```ts
+ * // Click first result’s account link
+ * cy.get(AccountEnquiryResultsLocators.table.rows)
+ *   .first()
+ *   .find(AccountEnquiryResultsLocators.cols.accountLink)
+ *   .click();
+ * ```
+ *
+ * @see {@link ResultsActions}
  */
+
 export const AccountEnquiryResultsLocators = {
-  // Page-level
+  // ──────────────────────────────
+  // Page-level selectors
+  // ──────────────────────────────
+
+  /** Elements that exist at the page level (outside the table). */
   page: {
-    heading: 'h1.govuk-heading-l', // "Search results"
+    /** The main page heading (e.g., “Search results”). */
+    heading: 'h1.govuk-heading-l',
+
+    /** Back link to return to the Account Search page. */
     backLink: 'a.govuk-back-link',
   },
 
-  // Table
+  // ──────────────────────────────
+  // Table structure
+  // ──────────────────────────────
+
+  /** Root, head, body, and row selectors for the results table. */
   table: {
+    /** Root table element inside its wrapper component. */
     root: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table',
+
+    /** Table head (sortable columns). */
     head: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table thead',
+
+    /** Table body containing all result rows. */
     body: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table tbody',
+
+    /** All visible result rows within the table body. */
     rows: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table tbody > tr.govuk-table__row',
   },
 
-  // Column headers (sortable buttons) – addressed by their columnkey
+  // ──────────────────────────────
+  // Column header selectors
+  // ──────────────────────────────
+
+  /** Sortable column header buttons, keyed by their `columnkey` attribute. */
   headers: {
     account: 'thead [columnkey="Account"] button',
     name: 'thead [columnkey="Name"] button',
@@ -38,42 +76,88 @@ export const AccountEnquiryResultsLocators = {
     balance: 'thead [columnkey="Balance"] button',
   },
 
+  // ──────────────────────────────
+  // Row-level cell selectors
+  // ──────────────────────────────
+
   /**
    * Row-scoped cell selectors.
-   * Use like: cy.get(Loc.table.rows).first().find(Loc.cols.name)
+   * Use like:
+   * ```ts
+   * cy.get(AccountEnquiryResultsLocators.table.rows)
+   *   .first()
+   *   .find(AccountEnquiryResultsLocators.cols.name)
+   * ```
    */
   cols: {
-    accountLink: 'td#defendantAccountNumber a.govuk-link', // clickable account number
-    accountCell: 'td#defendantAccountNumber', // cell root if you need the TD
+    /** Clickable account link cell (anchors only). */
+    accountLink: 'td#defendantAccountNumber a.govuk-link',
+
+    /** TD element for the account cell, if text extraction is needed. */
+    accountCell: 'td#defendantAccountNumber',
+
+    /** Defendant name column. */
     name: 'td#defendantName',
+
+    /** Aliases column (if present). */
     aliases: 'td#defendantAliases',
+
+    /** Date of birth column. */
     dob: 'td#defendantDateOfBirth',
+
+    /** Address line 1 column. */
     addr1: 'td#defendantAddressLine1',
+
+    /** Postcode column. */
     postcode: 'td#defendantPostcode',
+
+    /** National Insurance number column. */
     ni: 'td#defendantNationalInsuranceNumber',
+
+    /** Parent or guardian column. */
     parentGuard: 'td#defendantParentOrGuardian',
+
+    /** Business unit column. */
     businessUnit: 'td#defendantBusinessUnit',
+
+    /** Reference column. */
     ref: 'td#defendantRef',
+
+    /** Enforcement column. */
     enf: 'td#defendantEnf',
+
+    /** Balance column. */
     balance: 'td#defendantBalance',
   },
 
+  // ──────────────────────────────
+  // Convenience string selectors
+  // ──────────────────────────────
+
   /**
-   * Convenience helpers (string selectors only).
-   * Example usage:
-   *   cy.get(AccountEnquiryResultsLocators.table.rows)
-   *     .filter(AccountEnquiryResultsLocators.rowWithSurname('AccDetailSurname'))
-   *     .first()
-   *     .find(AccountEnquiryResultsLocators.cols.accountLink)
-   *     .click();
+   * Filters for rows containing a given surname.
+   * @param surname - Visible defendant surname text.
+   * @example
+   * ```ts
+   * cy.get(AccountEnquiryResultsLocators.table.rows)
+   *   .filter(AccountEnquiryResultsLocators.rowWithSurname('Smith'));
+   * ```
    */
   rowWithSurname: (surname: string) => `:has(td#defendantName:contains("${surname}"))`,
+
+  /**
+   * Filters for rows containing a specific account number.
+   * @param accountNo - Visible account number text.
+   */
   rowWithAccount: (accountNo: string) => `:has(td#defendantAccountNumber a:contains("${accountNo}"))`,
 
   /**
-   * Dynamic selector for a results-table link by account number text.
-   * Example usage:
-   *   cy.get(AccountEnquiryResultsLocators.linkByAccountNumber('25000001E')).click();
+   * Builds a dynamic selector for a clickable account link by its visible text.
+   * @param accountNumber - Account number text displayed in the link.
+   * @example
+   * ```ts
+   * cy.get(AccountEnquiryResultsLocators.linkByAccountNumber('25000001E')).click();
+   * ```
    */
   linkByAccountNumber: (accountNumber: string) =>
     `app-fines-sa-results-defendant-table-wrapper a.govuk-link:contains("${accountNumber}")`,
