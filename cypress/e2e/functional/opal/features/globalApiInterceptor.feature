@@ -31,7 +31,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    ## 2107 AC1 - Retriable error response recieved
+    ## Retriable error response recieved
     When I click the Manual account creation link and trigger a 500 retriable error for the get businessUnits API
     Then I should see the retriable global warning banner
     And I see "Dashboard" on the page header
@@ -46,7 +46,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    ## 2109 AC1 - No response recieved
+    ## No response recieved
     When I trigger a network failure for the get businessUnits API
     Then I should see the generic global warning banner
     And I see "Dashboard" on the page header
@@ -60,7 +60,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    ## 2108 AC1 - Non-retriable (HTTP 500) error response received
+    ## Non-retriable (HTTP 500) error response received
     When I click the Manual account creation link and trigger a 500 non-retriable error for the get businessUnits API
     Then I see "Sorry, there is a problem with the service" on the page header
     And I see "Error code: OP67890." text on the page
@@ -72,7 +72,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    ## 2110 AC1 - Non-retriable concurrency (HTTP 409) error response received
+    ## Non-retriable concurrency (HTTP 409) error response received
     When I click the Manual account creation link and trigger a 409 non-retriable error for the get businessUnits API
     Then I see "Sorry, there is a problem" on the page header
     And I see "Something else was changed while you were doing this." text on the page
@@ -85,7 +85,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
-    ## 2111 AC1 - Non-retriable permission (HTTP 403) error response received
+    ## Non-retriable permission (HTTP 403) error response received
     When I click the Manual account creation link and trigger a 403 non-retriable error for the get businessUnits API
     Then I see "You do not have permission for this" on the page header
     And I see "the account is outside your business unit and some features are restricted" text on the page
