@@ -12,7 +12,10 @@ export const ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS = {
   summaryMetricBar: 'opal-lib-custom-summary-metric-bar',
   accountInfo: 'opal-lib-custom-account-information',
 
-  // Visible labels used in assertions
+  // Tabs
+  tabName: '[subnavitemid="fixed-penalty-tab"] > .moj-sub-navigation__link',
+
+  // Table labels
   tableTitle: '.govuk-summary-card__title',
   labelIssuingAuthority: '#fixedPenaltyDetailsIssuing_authorityValue',
   labelTicketNumber: '#fixedPenaltyDetailsTicket_numberValue',
