@@ -20,6 +20,7 @@ Given(
     });
   },
 );
+
 Then('I should see the global error banner', () => {
   cy.get('div[opal-lib-moj-alert]', { timeout: 20_000 }).should('exist').and('contain.text', globalErrorBannerText);
 });
@@ -57,6 +58,39 @@ Given(
       expect(interception.response.body.title).to.equal('Temporary System Issue');
       expect(interception.response.body.detail).to.include('contact the help desk');
       expect(interception.response.body.operation_id).to.equal('OP12345');
+    });
+  },
+);
+
+Given(
+  'I click the Manual account creation link and trigger a {int} non-retriable error for the get businessUnits API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/opal-fines-service/business-units**',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: false,
+          title: 'Internal Server Error',
+          detail: 'An unexpected error occurred. Please report this issue using the Operation ID.',
+          operation_id: 'OP67890',
+        },
+      },
+    ).as('getBusinessUnitsNonRetriableError');
+
+    cy.get('button, a').contains('Manual Account Creation').click();
+
+    cy.wait('@getBusinessUnitsNonRetriableError');
+
+    cy.get('@getBusinessUnitsNonRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.false;
+      expect(interception.response.body.title).to.equal('Internal Server Error');
+      expect(interception.response.body.detail).to.include('Operation ID');
+      expect(interception.response.body.operation_id).to.equal('OP67890');
     });
   },
 );

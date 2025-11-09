@@ -1,0 +1,90 @@
+{
+    "count": 6,
+    "summaries": [
+      {
+        "draft_account_id": 1001,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "SMITH, Jane",
+          "date_of_birth": "1985-04-15",
+          "business_unit_name": "Birmingham Court",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Submitted",
+        "account_status_date": "2025-06-03T00:00:00Z",
+        "submitted_by": "L077JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      },
+      {
+        "draft_account_id": 1002,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "DOE, John",
+          "date_of_birth": "1990-08-22",
+          "business_unit_name": "Manchester Court",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Resubmitted",
+        "account_status_date": "2025-06-05T00:00:00Z",
+        "submitted_by": "L077JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      },
+      {
+        "draft_account_id": 1003,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "BROWN, Emma",
+          "date_of_birth": "1989-02-17",
+          "business_unit_name": "Camberwell Green",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Rejected",
+        "account_status_date": "2025-06-06T00:00:00Z",
+        "submitted_by": "L077JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      },
+      {
+        "draft_account_id": 1004,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "GREEN, Oliver",
+          "date_of_birth": "1999-09-09",
+          "business_unit_name": "Leeds Magistrates",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Deleted",
+        "account_status_date": "2025-06-08T00:00:00Z",
+        "submitted_by": "L077JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      },
+      {
+        "draft_account_id": 1005,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "WILLIAMS, Alice",
+          "date_of_birth": "1992-11-11",
+          "business_unit_name": "Liverpool Court",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Publishing Failed",
+        "account_status_date": "2025-06-09T00:00:00Z",
+        "submitted_by": "L099JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      },
+      {
+        "draft_account_id": 1006,
+        "account_snapshot": {
+          "account_type": "Fixed Penalty",
+          "defendant_name": "MARTIN, Sarah",
+          "date_of_birth": "1993-03-03",
+          "business_unit_name": "Cardiff Court",
+          "submitted_by_name": "opal-test@hmcts.net"
+        },
+        "account_status": "Published",
+        "account_status_date": "2025-06-10T00:00:00Z",
+        "submitted_by": "L099JG",
+        "submitted_by_name": "opal-test@hmcts.net"
+      }
+    ]
+  }
+  
