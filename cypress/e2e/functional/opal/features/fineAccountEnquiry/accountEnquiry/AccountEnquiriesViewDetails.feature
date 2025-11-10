@@ -43,11 +43,11 @@ Feature: Account Enquiries – View Account Details
   @967 @PO-1111
   Scenario: As a user, I can view and manage company account details
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
-      | company_name   | Accdetail comp         |
-      | email_address  | Accdetailcomp@test.com |
-      | post_code      | AB23 4RN               |
-      | prosecutor_ref | PCR-AUTO-003           |
-      | account_type   | Fine                   |
+      | account.defendant.company_name | Accdetail comp         |
+      | email_address                  | Accdetailcomp@test.com |
+      | post_code                      | AB23 4RN               |
+      | prosecutor_ref                 | PCR-AUTO-003           |
+      | account_type                   | Fine                   |
     When I open the company account details for "Accdetail comp"
     # AC4 - Route Guard
     And I verify route guard behaviour when cancelling company edits
