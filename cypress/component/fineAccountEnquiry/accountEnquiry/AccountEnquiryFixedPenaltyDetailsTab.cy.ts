@@ -31,7 +31,6 @@ describe('Account Enquiry Fixed Penalty', () => {
     { tags: ['@PO-994', '@PO-1818'] },
     () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-      // TODO: Change to company for other tests, change above to add company name
       headerMock.debtor_type = 'individual';
       headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
@@ -63,7 +62,7 @@ describe('Account Enquiry Fixed Penalty', () => {
         .should('exist')
         .and('contain.text', 'LIC-789012');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
-      //cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01/05/2023');
+      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
         .should('exist')
@@ -146,7 +145,6 @@ describe('Account Enquiry Fixed Penalty', () => {
     { tags: ['@PO-994', '@PO-1818'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-      // TODO: Change to company for other tests, change above to add company name
       //headerMock.debtor_type = 'company';
       headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
@@ -179,7 +177,7 @@ describe('Account Enquiry Fixed Penalty', () => {
         .should('exist')
         .and('contain.text', 'LIC-789012');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
-      //cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01/05/2023');
+      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
       cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
         .should('exist')
@@ -189,7 +187,6 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it('AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view', { tags: ['@PO-994'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    // TODO: Change to company for other tests, change above to add company name
     //headerMock.debtor_type = 'company';
     headerMock.account_type = 'Fixed Penalty';
     let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
@@ -222,7 +219,6 @@ describe('Account Enquiry Fixed Penalty', () => {
 
   it('AC2: Company - Fixed Penalty details tab, show em-dash for missing fields', { tags: ['@PO-994'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    // TODO: Change to company for other tests, change above to add company name
     //headerMock.debtor_type = 'company';
     headerMock.account_type = 'Fixed Penalty';
     let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
