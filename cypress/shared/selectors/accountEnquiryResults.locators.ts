@@ -44,16 +44,16 @@ export const AccountEnquiryResultsLocators = {
   /** Root, head, body, and row selectors for the results table. */
   table: {
     /** Root table element inside its wrapper component. */
-    root: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table',
+    root: 'table.govuk-table',
 
     /** Table head (sortable columns). */
-    head: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table thead',
+    head: 'table.govuk-table thead',
 
     /** Table body containing all result rows. */
-    body: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table tbody',
+    body: 'table.govuk-table tbody',
 
     /** All visible result rows within the table body. */
-    rows: 'app-fines-sa-results-defendant-table-wrapper table.govuk-table tbody > tr.govuk-table__row',
+    rows: 'table.govuk-table tbody > tr.govuk-table__row',
   },
 
   // ──────────────────────────────
