@@ -390,8 +390,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
   /**
    * Returns true if the party type is individual or parent/guardian.
    * Both types use the same form structure with individual-specific fields.
-   * Returns true if the party type is individual or parent/guardian.
-   * Both types use the same form structure with individual-specific fields.
    */
   public get isIndividualPartyType(): boolean {
     return this.partyType === this.partyTypes.INDIVIDUAL || this.partyType === this.partyTypes.PARENT_GUARDIAN;
@@ -432,7 +430,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
 
     this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
-    this.setupPartySpecificErrorMessages();
     this.setupPartySpecificErrorMessages();
   }
 }

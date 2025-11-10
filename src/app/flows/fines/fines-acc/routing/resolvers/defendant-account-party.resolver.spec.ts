@@ -23,10 +23,6 @@ describe('defendantAccountPartyResolver', () => {
       'mapDebtorAccountPartyPayload',
       'transformPayload',
     ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
-      'mapDebtorAccountPartyPayload',
-      'transformPayload',
-    ]);
     mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
 
     TestBed.configureTestingModule({
@@ -84,7 +80,6 @@ describe('defendantAccountPartyResolver', () => {
 
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
-    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
