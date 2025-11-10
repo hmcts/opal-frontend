@@ -49,19 +49,26 @@ Given('a {string} account exists and is published with:', (type: string, table: 
 });
 
 /**
- * @step Searches for an account by last name using the AccountEnquiryFlow.
- * Opens the latest published result automatically.
+ * @step Selects the latest account and verifies the header.
  */
-When('I search for the account by last name {string}', (surname: string) => {
-  flow().searchAndClickLatestBySurname(surname);
+When('I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME"', (header: string) => {
+  flow().clickLatestPublishedFromResultsOrAcrossPages();
+  details().assertHeaderContains(header);
 });
 
 /**
- * @step Explicit variant — performs the same behaviour as above,
- * explicitly mentioning “open the latest result” in the Gherkin.
+ * @step Searches for an account by last name using the AccountEnquiryFlow.
+ */
+When('I search for the account by last name {string}', (surname: string) => {
+  flow().searchBySurname(surname);
+});
+
+/**
+ * @step Explicit variant — performs the similar behaviour as above but actually
+ * “opens the latest result”
  */
 When('I search for the account by last name {string} and open the latest result', (surname: string) => {
-  flow().searchAndClickLatestBySurname(surname);
+  flow().searchAndClickLatestBySurnameOpenLatestResult(surname);
 });
 
 /**

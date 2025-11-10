@@ -160,10 +160,19 @@ export class AccountEnquiryFlow {
    *
    * @param surname - Surname to search for.
    */
-  public searchAndClickLatestBySurname(surname: string): void {
+  public searchBySurname(surname: string): void {
     this.log('method', 'searchAndClickLatestBySurname()');
     this.log('flow', 'Search and open latest by surname', { surname });
     this.searchByLastName(surname);
+  }
+
+  /**
+   * Convenience flow: search by surname then open the latest matching account.
+   *
+   * @param surname - Surname to search for.
+   */
+  public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
+    this.searchBySurname(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
