@@ -4,6 +4,8 @@ export const ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS = {
   headingWithCaption: 'opal-lib-govuk-heading-with-caption',
   headingName: 'h1.govuk-heading-l',
   pageHeader: 'opal-lib-custom-page-header',
+  headerLabel: '[opal-lib-custom-account-information-item-label]',
+  headerValue: '[opal-lib-custom-account-information-item-value]',
 
   // Buttons
   addNoteButton: 'button#addAccountNote',

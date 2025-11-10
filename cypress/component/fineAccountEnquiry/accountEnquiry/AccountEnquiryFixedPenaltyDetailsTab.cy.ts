@@ -7,10 +7,7 @@ import {
 } from './mocks/defendant_details_mock';
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
-import {
-  ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS,
-  ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as DOM,
-} from './constants/account_enquiry_fixed_penalty_elements';
+import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from './constants/account_enquiry_fixed_penalty_elements';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
 import { IComponentProperties } from './setup/setupComponent.interface';
 
@@ -44,29 +41,25 @@ describe('Account Enquiry Fixed Penalty', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
 
-      cy.get('h3').contains('PCR or ticket number').should('be.visible').next().should('contain.text', '888');
-      cy.get('h3').should('not.contain', 'PCR or case number');
-      cy.get('h2').contains('Account type').should('be.visible').next().should('contain.text', 'Fixed Penalty');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tabName).should('exist').and('contain.text', 'Fixed penalty');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-        .should('exist')
-        .and('contain.text', 'Fixed Penalty details');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelIssuingAuthority)
-        .should('exist')
-        .and('contain.text', 'City of Metropolis');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber)
-        .should('exist')
-        .and('contain.text', 'XY21 ABC');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence)
-        .should('exist')
-        .and('contain.text', 'LIC-789012');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
-        .should('exist')
-        .and('contain.text', 'Main Street, Metropolis');
+      cy.contains(FIXED_PENALTY_TAB.headerLabel, 'PCR or ticket number')
+        .should('be.visible')
+        .next(FIXED_PENALTY_TAB.headerValue)
+        .should('contain.text', headerMock.fixed_penalty_ticket_number);
+      cy.get(FIXED_PENALTY_TAB.headerLabel).should('not.contain', 'PCR or case number');
+      cy.contains(FIXED_PENALTY_TAB.headerLabel, 'Account type')
+        .should('be.visible')
+        .next(FIXED_PENALTY_TAB.headerValue)
+        .should('contain.text', headerMock.account_type);
+      cy.get(FIXED_PENALTY_TAB.tabName).should('exist').and('contain.text', 'Fixed penalty');
+      cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+      cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
+      cy.get(FIXED_PENALTY_TAB.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
+      cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', 'LIC-789012');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
+      cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
+      cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
     },
   );
 
@@ -87,21 +80,15 @@ describe('Account Enquiry Fixed Penalty', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
 
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-        .should('exist')
-        .and('contain.text', 'Fixed Penalty details');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelIssuingAuthority)
-        .should('exist')
-        .and('contain.text', 'City of Metropolis');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber).should('not.exist');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence).should('not.exist');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('not.exist');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('not.exist');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
-        .should('exist')
-        .and('contain.text', 'Main Street, Metropolis');
+      cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+      cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
+      cy.get(FIXED_PENALTY_TAB.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
+      cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('not.exist');
+      cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('not.exist');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('not.exist');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('not.exist');
+      cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
+      cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
     },
   );
 
@@ -130,13 +117,11 @@ describe('Account Enquiry Fixed Penalty', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
 
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-        .should('exist')
-        .and('contain.text', 'Fixed Penalty details');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber).should('exist').and('contain.text', '—');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence).should('exist').and('contain.text', '—');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', '—');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '—');
+      cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+      cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', '—');
+      cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', '—');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', '—');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '—');
     },
   );
 
@@ -145,10 +130,8 @@ describe('Account Enquiry Fixed Penalty', () => {
     { tags: ['@PO-994', '@PO-1818'] },
     () => {
       let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-      //headerMock.debtor_type = 'company';
       headerMock.account_type = 'Fixed Penalty';
       let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
-      //headerMock.party_details.organisation_flag = true;
       fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
       const accountId = headerMock.defendant_account_party_id;
@@ -159,38 +142,32 @@ describe('Account Enquiry Fixed Penalty', () => {
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
       cy.get('router-outlet').should('exist');
 
-      cy.get('h3').contains('PCR or ticket number').should('be.visible').next().should('contain.text', '888');
-      cy.get('h3').should('not.contain', 'PCR or case number');
-      cy.get('h2').contains('Account type').should('be.visible').next().should('contain.text', 'Fixed Penalty');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tabName).should('exist').and('contain.text', 'Fixed penalty');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-        .should('exist')
-        .and('contain.text', 'Fixed Penalty details');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelIssuingAuthority)
-        .should('exist')
-        .and('contain.text', 'City of Metropolis');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber)
-        .should('exist')
-        .and('contain.text', 'XY21 ABC');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence)
-        .should('exist')
-        .and('contain.text', 'LIC-789012');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
-      cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
-        .should('exist')
-        .and('contain.text', 'Main Street, Metropolis');
+      cy.contains(FIXED_PENALTY_TAB.headerLabel, 'PCR or ticket number')
+        .should('be.visible')
+        .next(FIXED_PENALTY_TAB.headerValue)
+        .should('contain.text', headerMock.fixed_penalty_ticket_number);
+      cy.get(FIXED_PENALTY_TAB.headerLabel).should('not.contain', 'PCR or case number');
+      cy.contains(FIXED_PENALTY_TAB.headerLabel, 'Account type')
+        .should('be.visible')
+        .next(FIXED_PENALTY_TAB.headerValue)
+        .should('contain.text', headerMock.account_type);
+      cy.get(FIXED_PENALTY_TAB.tabName).should('exist').and('contain.text', 'Fixed penalty');
+      cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+      cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
+      cy.get(FIXED_PENALTY_TAB.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
+      cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', 'XY21 ABC');
+      cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', 'LIC-789012');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', 'NT-345678');
+      cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '01 May 2023');
+      cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
+      cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
     },
   );
 
   it('AC2: Company - Fixed Penalty details tab, non-vehicle fixed penalty, partial view', { tags: ['@PO-994'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    //headerMock.debtor_type = 'company';
     headerMock.account_type = 'Fixed Penalty';
     let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
-    //headerMock.party_details.organisation_flag = true;
 
     const accountId = headerMock.defendant_account_party_id;
     interceptAuthenticatedUser();
@@ -200,29 +177,21 @@ describe('Account Enquiry Fixed Penalty', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
     cy.get('router-outlet').should('exist');
 
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-      .should('exist')
-      .and('contain.text', 'Fixed Penalty details');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelIssuingAuthority)
-      .should('exist')
-      .and('contain.text', 'City of Metropolis');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber).should('not.exist');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence).should('not.exist');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('not.exist');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('not.exist');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelPlaceOfOffence)
-      .should('exist')
-      .and('contain.text', 'Main Street, Metropolis');
+    cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+    cy.get(FIXED_PENALTY_TAB.labelIssuingAuthority).should('exist').and('contain.text', 'City of Metropolis');
+    cy.get(FIXED_PENALTY_TAB.labelTicketNumber).should('exist').and('contain.text', 'FP-123456');
+    cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('not.exist');
+    cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('not.exist');
+    cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('not.exist');
+    cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('not.exist');
+    cy.get(FIXED_PENALTY_TAB.labelTimeOfOffence).should('exist').and('contain.text', '14:30');
+    cy.get(FIXED_PENALTY_TAB.labelPlaceOfOffence).should('exist').and('contain.text', 'Main Street, Metropolis');
   });
 
   it('AC2: Company - Fixed Penalty details tab, show em-dash for missing fields', { tags: ['@PO-994'] }, () => {
     let headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
-    //headerMock.debtor_type = 'company';
     headerMock.account_type = 'Fixed Penalty';
     let fixedPenaltyDetailsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
-    //headerMock.party_details.organisation_flag = true;
     fixedPenaltyDetailsMock.vehicle_fixed_penalty_flag = true;
 
     // Used to test null fields without errors
@@ -240,12 +209,10 @@ describe('Account Enquiry Fixed Penalty', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
     cy.get('router-outlet').should('exist');
 
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.tableTitle)
-      .should('exist')
-      .and('contain.text', 'Fixed Penalty details');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelRegistrationNumber).should('exist').and('contain.text', '—');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelDrivingLicence).should('exist').and('contain.text', '—');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeNumber).should('exist').and('contain.text', '—');
-    cy.get(ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS.labelNoticeDate).should('exist').and('contain.text', '—');
+    cy.get(FIXED_PENALTY_TAB.tableTitle).should('exist').and('contain.text', 'Fixed Penalty details');
+    cy.get(FIXED_PENALTY_TAB.labelRegistrationNumber).should('exist').and('contain.text', '—');
+    cy.get(FIXED_PENALTY_TAB.labelDrivingLicence).should('exist').and('contain.text', '—');
+    cy.get(FIXED_PENALTY_TAB.labelNoticeNumber).should('exist').and('contain.text', '—');
+    cy.get(FIXED_PENALTY_TAB.labelNoticeDate).should('exist').and('contain.text', '—');
   });
 });
