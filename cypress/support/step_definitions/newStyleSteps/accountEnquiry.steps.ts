@@ -18,11 +18,15 @@ import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preproc
 import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/accountEnquiry.flow';
 import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account details/details.defendant.actions';
 import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
+import { AccountDetailsNotesActions } from '../../../e2e/functional/opal/actions/account details/details.notes.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
 const details = () => new AccountDetailsDefendantActions();
 const search = () => new AccountSearchIndividualsActions();
+const notes = () => new AccountDetailsNotesActions();
+const common = () => new CommonActions();
 
 /**
  * @step Clears any approved draft accounts via a Cypress task.
@@ -62,6 +66,18 @@ When('I select the latest published account and verify the header is {string}', 
 When('I search for the account by last name {string}', (surname: string) => {
   flow().searchBySurname(surname);
 });
+
+/**
+ * @step Searches for an account by last name using the AccountEnquiryFlow and select the latest result.
+ */
+When(
+  'I search for the account by last name {string} and verify the page header is {string}',
+  (surname: string, header: string) => {
+    flow().searchBySurname(surname);
+    flow().clickLatestPublishedFromResultsOrAcrossPages();
+    details().assertHeaderContains(header);
+  },
+);
 
 /**
  * @step Explicit variant — performs the similar behaviour as above but actually
@@ -178,3 +194,33 @@ When('I search for the account by company name {string}', (companyName: string) 
 When('I open the company account details for {string}', (companyName: string) => {
   flow().openCompanyAccountDetailsByNameAndSelectLatest(companyName);
 });
+
+When('I open the "Add account note" screen and verify the header is "Add account note"', () => {
+  flow().openAddAccountNoteAndVerifyHeader();
+});
+
+When('I enter "Valid test account note" into the "notes" field and save the note', () => {
+  flow().enterAccountNoteAndSave('Valid test account note');
+});
+
+/**
+ * Opens a screen, enters text, and cancels.
+ * @example
+ * When I open the "Add account note" screen, enter "This is a test account note for validation", and cancel
+ */
+When('I open the {string} screen, enter {string}, and cancel', (screenName: string, noteText: string) => {
+  flow().openScreenEnterTextAndCancel(screenName, noteText);
+});
+
+/**
+ * Opens a screen, enters text, and navigates back (confirming the unsaved changes warning).
+ *
+ * @example
+ * When I open the "Add account note" screen, enter "This is a test account note for back button", and navigate back with confirmation
+ */
+When(
+  'I open the {string} screen, enter {string}, and navigate back with confirmation',
+  (screenName: string, noteText: string) => {
+    flow().openScreenEnterTextAndNavigateBackWithConfirmation(screenName, noteText);
+  },
+);
