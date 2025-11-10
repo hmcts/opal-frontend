@@ -16,9 +16,9 @@ import {
 } from './mocks/viewAndAmendDefendant-api.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { coreRequiredMessages } from './constants/viewAndAmendDefendant_elements';
-import { expectedErrors } from './constants/viewAndAmendDefendant_elements';
-import { allExpectedErrors } from './constants/viewAndAmendDefendant_elements';
+import { coreRequiredMessages } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
+import { expectedErrors } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
+import { allExpectedErrors } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 
 describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () => {
   let fullMock: IOpalFinesAccountDefendantAccountParty;
@@ -338,6 +338,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+    
+    // Verify parent/guardian specific error messages
     coreRequiredMessages.forEach((msg) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
     });

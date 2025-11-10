@@ -305,6 +305,19 @@ export const ERROR_MESSAGES = {
     'Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)',
 };
 
+// Parent/Guardian specific error messages
+export const PARENT_GUARDIAN_ERROR_MESSAGES = {
+  REQUIRED_FORENAMES: 'Enter parent or guardian first name(s)',
+  REQUIRED_SURNAME: 'Enter parent or guardian last name',
+  REQUIRED_ADDRESS_LINE_1: 'Enter address line 1, typically the building and street',
+  
+  MAX_LENGTH_FORENAMES: 'Parent or guardian first name(s) must be 20 characters or fewer',
+  MAX_LENGTH_SURNAME: 'Parent or guardian last name must be 30 characters or fewer',
+  
+  DATA_TYPE_FORENAMES: 'Parent or guardian first name(s) must only contain letters',
+  DATA_TYPE_SURNAME: 'Parent or guardian last name must only contain letters',
+};
+
 // Pre-defined error message arrays for common test scenarios
 export const INDIVIDUAL_REQUIRED_MESSAGES = [
   ERROR_MESSAGES.REQUIRED_TITLE,
@@ -423,16 +436,16 @@ export const COMPANY_ALPHANUMERIC_ERRORS = [
 
 export const COMPANY_ALL_DATA_TYPE_ERRORS = [...COMPANY_ALPHABETICAL_ERRORS, ...COMPANY_ALPHANUMERIC_ERRORS];
 
-// Parent/Guardian error messages (legacy compatibility)
+// Parent/Guardian error message arrays
 export const PARENT_GUARDIAN_REQUIRED_MESSAGES = [
-  ERROR_MESSAGES.REQUIRED_FORENAMES,
-  ERROR_MESSAGES.REQUIRED_SURNAME,
-  ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1,
+  PARENT_GUARDIAN_ERROR_MESSAGES.REQUIRED_FORENAMES,
+  PARENT_GUARDIAN_ERROR_MESSAGES.REQUIRED_SURNAME,
+  PARENT_GUARDIAN_ERROR_MESSAGES.REQUIRED_ADDRESS_LINE_1,
 ];
 
 export const PARENT_GUARDIAN_MAX_LENGTH_ERRORS = [
-  ERROR_MESSAGES.MAX_LENGTH_FORENAMES,
-  ERROR_MESSAGES.MAX_LENGTH_SURNAME,
+  PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_FORENAMES,
+  PARENT_GUARDIAN_ERROR_MESSAGES.MAX_LENGTH_SURNAME,
   ERROR_MESSAGES.MAX_LENGTH_ALIAS_FORENAMES,
   ERROR_MESSAGES.MAX_LENGTH_ALIAS_SURNAME,
   ERROR_MESSAGES.MAX_LENGTH_NI_NUMBER,
@@ -455,13 +468,27 @@ export const PARENT_GUARDIAN_MAX_LENGTH_ERRORS = [
   ERROR_MESSAGES.MAX_LENGTH_EMPLOYER_POSTCODE,
 ];
 
-export const PARENT_GUARDIAN_ALL_DATA_TYPE_ERRORS = INDIVIDUAL_ALL_DATA_TYPE_ERRORS;
+// Parent/Guardian alphabetical field errors (for data type validation)
+const PARENT_GUARDIAN_ALPHABETICAL_ERRORS = [
+  PARENT_GUARDIAN_ERROR_MESSAGES.DATA_TYPE_FORENAMES,
+  PARENT_GUARDIAN_ERROR_MESSAGES.DATA_TYPE_SURNAME,
+  ERROR_MESSAGES.DATA_TYPE_ALIAS_FORENAMES,
+  ERROR_MESSAGES.DATA_TYPE_ALIAS_SURNAME,
+];
+
+// Parent/Guardian uses same alphanumeric errors as individual
+const PARENT_GUARDIAN_ALPHANUMERIC_ERRORS = INDIVIDUAL_ALPHANUMERIC_ERRORS;
+
+export const PARENT_GUARDIAN_ALL_DATA_TYPE_ERRORS = [
+  ...PARENT_GUARDIAN_ALPHABETICAL_ERRORS,
+  ...PARENT_GUARDIAN_ALPHANUMERIC_ERRORS,
+];
 
 // Legacy exports for backward compatibility
 export const coreRequiredMessages = PARENT_GUARDIAN_REQUIRED_MESSAGES;
 export const expectedErrors = PARENT_GUARDIAN_MAX_LENGTH_ERRORS;
-export const alphabeticalFieldErrors = INDIVIDUAL_ALPHABETICAL_ERRORS;
-export const alphanumericFieldErrors = INDIVIDUAL_ALPHANUMERIC_ERRORS;
+export const alphabeticalFieldErrors = PARENT_GUARDIAN_ALPHABETICAL_ERRORS;
+export const alphanumericFieldErrors = PARENT_GUARDIAN_ALPHANUMERIC_ERRORS;
 export const allExpectedErrors = PARENT_GUARDIAN_ALL_DATA_TYPE_ERRORS;
 
 export const cancelLink = 'a';
