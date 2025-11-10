@@ -18,7 +18,7 @@ import {
   COMPANY_ALL_DATA_TYPE_ERRORS,
   NON_PAYING_MAX_LENGTH_ERRORS,
   NON_PAYING_ALL_DATA_TYPE_ERRORS,
-} from './constants/viewAndAmendDefendant_elements';
+} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 import {
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,

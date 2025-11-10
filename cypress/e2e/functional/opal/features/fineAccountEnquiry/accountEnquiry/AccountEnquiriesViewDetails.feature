@@ -32,30 +32,10 @@ Feature: Account Enquiries - View Account Details
     And I see "Defendant details" on the page header
 
     # AC4 - Route Guard
-    When I enter "Test" into the "First name" field
-    Then I click Cancel, a window pops up and I click Cancel
-    Then I see 'Test' in the 'First name' field
-
-    When I click Cancel, a window pops up and I click Ok
-    Then I see "Mr John ACCDETAILSURNAME" on the page header
-
+    When I trigger the route guard for a "individual" defendant named "Mr John ACCDETAILSURNAME"
 
     # AC3 - Cancel Changes
-    When I click on the "Defendant" link
-    Then I click on the "Change" link
-    And I see "Defendant details" on the page header
-    When I click on the "Cancel" link
-    Then I see "Mr John ACCDETAILSURNAME" on the page header
-
-    When I click on the "Defendant" link
-    And I click on the "Change" link
-    And I enter "Test" into the "First name" field
-
-    Then I click "Cancel", a window pops up and I click Cancel
-    Then I see "Test" in the "First name" field
-
-    Then I click "Cancel", a window pops up and I click Ok
-    Then I see "Mr John ACCDETAILSURNAME" on the page header
+    When I test cancel changes for a "individual" defendant named "Mr John ACCDETAILSURNAME"
 
   @967 @PO-1111
   Scenario: As a user I can view account details of a company account
@@ -83,30 +63,11 @@ Feature: Account Enquiries - View Account Details
     And I see "Company details" on the page header
 
     # AC4 - Route Guard
-    When I enter "Test" into the "Company name" field
-    Then I click Cancel, a window pops up and I click Cancel
-    Then I see 'Test' in the 'Company name' field
-
-    When I click Cancel, a window pops up and I click Ok
-    Then I see "Accdetail comp" on the page header
+    When I trigger the route guard for a "company" defendant named "Accdetail comp"
 
 
     # AC3 - Cancel Changes
-    When I click on the "Defendant" link
-    Then I click on the "Change" link
-    And I see "Company details" on the page header
-    When I click on the "Cancel" link
-    Then I see "Accdetail comp" on the page header
-
-    When I click on the "Defendant" link
-    And I click on the "Change" link
-    And I enter "Test" into the "Company name" field
-
-    Then I click "Cancel", a window pops up and I click Cancel
-    Then I see "Test" in the "Company name" field
-
-    Then I click "Cancel", a window pops up and I click Ok
-    Then I see "Accdetail comp" on the page header
+    When I test cancel changes for a "company" defendant named "Accdetail comp"
 
   @PO-2315
   Scenario: As a user I can view account details of a non-paying defendant account
@@ -126,27 +87,7 @@ Feature: Account Enquiries - View Account Details
     And I see "Defendant details" on the page header
 
     # AC4 - Route Guard
-    When I enter "Test" into the "First name" field
-    Then I click Cancel, a window pops up and I click Cancel
-    Then I see 'Test' in the 'First name' field
-
-    When I click Cancel, a window pops up and I click Ok
-    Then I see "Miss Jane TESTNONPAYE" on the page header
-
+    When I trigger the route guard for a "non-paying" defendant named "Miss Jane TESTNONPAYE"
 
     # AC3 - Cancel Changes
-    When I click on the "Defendant" link
-    Then I click on the "Change" link
-    And I see "Defendant details" on the page header
-    When I click on the "Cancel" link
-    Then I see "Miss Jane TESTNONPAYE" on the page header
-
-    When I click on the "Defendant" link
-    And I click on the "Change" link
-    And I enter "Test" into the "First name" field
-
-    Then I click "Cancel", a window pops up and I click Cancel
-    Then I see "Test" in the "First name" field
-
-    Then I click "Cancel", a window pops up and I click Ok
-    Then I see "Miss John TESTNONPAYE" on the page header
+    When I test cancel changes for a "non-paying" defendant named "Miss Jane TESTNONPAYE"

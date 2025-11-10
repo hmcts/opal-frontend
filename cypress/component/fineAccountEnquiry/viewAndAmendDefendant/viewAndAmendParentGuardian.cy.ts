@@ -9,7 +9,7 @@ import {
   getAliasForenamesInput,
   getAliasSurnameInput,
   getFieldErrorFor,
-} from './constants/viewAndAmendDefendant_elements';
+} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 import {
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,
