@@ -2859,8 +2859,8 @@ __metadata:
   linkType: hard
 
 "@cypress/webpack-preprocessor@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "@cypress/webpack-preprocessor@npm:7.0.1"
+  version: 7.0.2
+  resolution: "@cypress/webpack-preprocessor@npm:7.0.2"
   dependencies:
     bluebird: "npm:3.7.1"
     debug: "npm:^4.3.4"
@@ -2871,7 +2871,7 @@ __metadata:
     "@babel/preset-env": ^7.26.0
     babel-loader: ^9 || ^10
     webpack: ^5
-  checksum: 10/e8aceec7c105765adf5889ba10a276ee8fedde61feadf21bb931ac89f544b74cb9377bfe571834d736cc0fe65e6422edcdd67fbc9ff02937c75ab213505ae1fe
+  checksum: 10/39bac93c08bb39850c236a2facd5fd107f05bd48eae7944a44cd93d26f3ced9d5a9046294e86398d9aed5e1f0bff1ffa93d152f9df941afc750a14b83ce41479
   languageName: node
   linkType: hard
 
