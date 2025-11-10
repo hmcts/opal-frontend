@@ -310,10 +310,10 @@ export const PARENT_GUARDIAN_ERROR_MESSAGES = {
   REQUIRED_FORENAMES: 'Enter parent or guardian first name(s)',
   REQUIRED_SURNAME: 'Enter parent or guardian last name',
   REQUIRED_ADDRESS_LINE_1: 'Enter address line 1, typically the building and street',
-  
+
   MAX_LENGTH_FORENAMES: 'Parent or guardian first name(s) must be 20 characters or fewer',
   MAX_LENGTH_SURNAME: 'Parent or guardian last name must be 30 characters or fewer',
-  
+
   DATA_TYPE_FORENAMES: 'Parent or guardian first name(s) must only contain letters',
   DATA_TYPE_SURNAME: 'Parent or guardian last name must only contain letters',
 };

@@ -338,7 +338,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-    
+
     // Verify parent/guardian specific error messages
     coreRequiredMessages.forEach((msg) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
