@@ -5,6 +5,7 @@ import { ResultsActions } from '../actions/search.results.actions';
 import { AccountDetailsDefendantActions } from '../actions/account details/details.defendant.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account.search.individuals.locators';
+import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account.search.companies.locators';
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/accountEnquiryResults.locators';
 import { forceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { hasAccountLinkOnPage } from '../../../../support/utils/results';
@@ -55,7 +56,7 @@ export class AccountEnquiryFlow {
    * Ensures the test is on the Account Search page.
    * If not, it navigates via the dashboard.
    */
-  private ensureOnSearchPage(): void {
+  private ensureOnIndividualSearchPage(): void {
     this.log('method', 'ensureOnSearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
@@ -98,21 +99,8 @@ export class AccountEnquiryFlow {
   public searchByLastName(surname: string): void {
     this.log('method', 'searchByLastName()');
     this.log('search', 'Searching by last name', { surname });
-    this.ensureOnSearchPage();
+    this.ensureOnIndividualSearchPage();
     this.searchIndividuals.byLastName(surname);
-  }
-
-  /**
-   * Performs a Companies search by company name.
-   *
-   * @param companyName - Company name to search for.
-   */
-  public searchByCompanyName(companyName: string): void {
-    this.log('method', 'searchByCompanyName()');
-    this.log('search', 'Searching by company name', { companyName });
-    this.ensureOnSearchPage();
-    this.searchCompany.byCompanyName(companyName);
-    this.results.assertOnResults();
   }
 
   /**
@@ -265,16 +253,44 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Opens company account details by name using the Companies tab workflow.
+   * Ensures the test is on the Account Search page.
+   * If not, it navigates via the dashboard.
+   */
+  private ensureOnCompanySearchPage(): void {
+    this.log('method', 'ensureOnCompanySearchPage()');
+    cy.get('body').then(($b) => {
+      const onSearch = $b.find(C.root).length > 0;
+      if (!onSearch) {
+        this.log('navigate', 'Navigating to Account Search dashboard');
+        this.dashboard.goToAccountSearch();
+        this.searchNav.goToCompaniesTab();
+      }
+    });
+  }
+
+  /**
+   * Performs a Companies search by company name.
+   *
+   * @param companyName - Company name to search for.
+   */
+  public searchByCompanyName(companyName: string): void {
+    this.log('method', 'searchByCompanyName()');
+    this.dashboard.goToAccountSearch();
+    this.searchNav.goToCompaniesTab();
+    this.ensureOnCompanySearchPage();
+    this.log('search', 'Searching by company name', { companyName });
+    this.searchCompany.byCompanyName(companyName);
+    this.results.assertOnResults();
+  }
+
+  /**
+   * Opens company account details by name using the Companies tab and selecting the latest.
    *
    * @param companyName - Company name to search and open.
    */
-  public openCompanyAccountDetailsByName(companyName: string): void {
-    this.log('method', 'openCompanyAccountDetailsByName()');
-    this.log('flow', 'Opening company account details', { companyName });
-    this.ensureOnSearchPage();
-    this.searchNav.goToCompaniesTab();
+  public openCompanyAccountDetailsByNameAndSelectLatest(companyName: string): void {
     this.searchByCompanyName(companyName);
+    this.log('results', 'Select Latest published company account from results', { companyName });
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 }

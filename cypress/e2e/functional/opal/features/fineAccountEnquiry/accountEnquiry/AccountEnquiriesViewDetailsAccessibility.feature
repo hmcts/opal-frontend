@@ -24,7 +24,7 @@ Feature: Account Enquiries - View Account Details Accessibility
     ## Check Accessibility on Account Details Page
     Then I check accessibility
 
-    # Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
+  Scenario: Check Account Details View Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
       | Account_status                      | Submitted              |
       | account.defendant.company_name      | Accdetail comp         |
@@ -35,14 +35,9 @@ Feature: Account Enquiries - View Account Details Accessibility
       | account.collection_order_made       | false                  |
       | account.collection_order_made_today | false                  |
       | account.payment_card_request        | false                  |
-    #     And I click on the "Companies" link
-    #     And I enter "Accdetail comp" into the "Company name" field
-    #     And I click the "Search" button
-
-    ## Check Accessibility on Company Search Results Page
+    When I search for the account by company name "Accdetail comp"
+    # Check Accessibility on Company Search Results Page
     Then I check accessibility
-
-    #     ## Check Accessibility on Company Account Details Page
-    #     Then I click the latest published account link
-    And I see "Accdetail comp" on the page header
+    # Check Accessibility on Company Account Details Page
+    And I select the latest published account and verify the header is "Accdetail comp"
     Then I check accessibility

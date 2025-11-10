@@ -51,7 +51,7 @@ Given('a {string} account exists and is published with:', (type: string, table: 
 /**
  * @step Selects the latest account and verifies the header.
  */
-When('I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME"', (header: string) => {
+When('I select the latest published account and verify the header is {string}', (header: string) => {
   flow().clickLatestPublishedFromResultsOrAcrossPages();
   details().assertHeaderContains(header);
 });
@@ -164,10 +164,17 @@ When('I verify cancel-changes behaviour for company edits', () => {
 });
 
 /**
+ * @step Searches for an account by company name
+ */
+When('I search for the account by company name {string}', (companyName: string) => {
+  flow().searchByCompanyName(companyName);
+});
+
+/**
  * @step Opens a company account details page by company name.
  *
  * @param companyName - The visible company name to locate and open.
  */
 When('I open the company account details for {string}', (companyName: string) => {
-  flow().openCompanyAccountDetailsByName(companyName);
+  flow().openCompanyAccountDetailsByNameAndSelectLatest(companyName);
 });
