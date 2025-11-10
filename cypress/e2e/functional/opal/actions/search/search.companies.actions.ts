@@ -18,8 +18,5 @@ export class AccountSearchCompanyActions {
   byCompanyName(companyName: string): void {
     cy.get(L.companyNameInput, { timeout: 10000 }).clear().type(companyName);
     cy.get(L.searchButton).should('be.enabled').click();
-
-    // Centralised results wait/assertions
-    this.results.assertOnResults();
   }
 }

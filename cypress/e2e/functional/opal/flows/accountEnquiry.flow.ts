@@ -112,6 +112,7 @@ export class AccountEnquiryFlow {
     this.log('search', 'Searching by company name', { companyName });
     this.ensureOnSearchPage();
     this.searchCompany.byCompanyName(companyName);
+    this.results.assertOnResults();
   }
 
   /**
