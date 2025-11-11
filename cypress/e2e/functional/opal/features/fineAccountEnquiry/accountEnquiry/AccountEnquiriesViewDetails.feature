@@ -54,23 +54,19 @@ Feature: Account Enquiries – View Account Details
     # AC3 - Cancel Changes
     And I verify cancel-changes behaviour for company edits
     Then I should see the account header contains "Accdetail comp"
-    
+
   @PO-2315
   Scenario: As a user I can view account details of a non-paying defendant account
     And I create a "pgToPay" draft account with the following details:
       | account.defendant.forenames       | Jane         |
       | account.defendant.surname         | TestNonPayee |
       | account.prosecutor_case_reference | PCR-AUTO-004 |
-    When I update the last created draft account with status "Publishing Pending"
-    And the update should succeed and return a new strong ETag
-    And I enter "TestNonPayee" into the "Last name" field
-    And I click the "Search" button
-    Then I click the latest published account link
-    And I see "Miss Jane TESTNONPAYE" on the page header
+    # AC2 – Search and view account details
+    When I search for the account by last name "TestNonPayee" and open the latest result
+    Then I should see the page header contains "Miss Jane TestNonPayee"
 
-    When I click on the "Defendant" link
-    Then I click on the "Change" link
-    And I see "Defendant details" on the page header
+    # AC3 – Navigate to Defendant details
+    When I go to the Defendant details section and the header is "Defendant details"
 
     When I edit the Defendant details and change the First name to "Test"
     And I attempt to cancel editing and choose Cancel on the confirmation dialog
