@@ -1,10 +1,13 @@
 import { AccountSearchIndividualsActions } from '../actions/search/search.individuals.actions';
 import { AccountSearchCompanyActions } from '../actions/search/search.companies.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
+import { AccountDetailsNotesActions } from '../actions/account details/details.notes.actions';
 import { ResultsActions } from '../actions/search.results.actions';
 import { AccountDetailsDefendantActions } from '../actions/account details/details.defendant.actions';
+import { AccountDetailsNavActions } from '../actions/account details/details.nav.actions';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account.search.individuals.locators';
+import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account.search.companies.locators';
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/accountEnquiryResults.locators';
 import { forceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { hasAccountLinkOnPage } from '../../../../support/utils/results';
@@ -32,6 +35,8 @@ export class AccountEnquiryFlow {
   private readonly searchNav = new AccountSearchNavActions();
   private readonly results = new ResultsActions();
   private readonly details = new AccountDetailsDefendantActions();
+  private readonly detailsNav = new AccountDetailsNavActions();
+  private readonly notes = new AccountDetailsNotesActions();
   private readonly dashboard = new DashboardActions();
   private readonly common = new CommonActions();
 
@@ -52,15 +57,15 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Ensures the test is on the Account Search page.
+   * Ensures the test is on the Individuals Account Search page.
    * If not, it navigates via the dashboard.
    */
-  private ensureOnSearchPage(): void {
-    this.log('method', 'ensureOnSearchPage()');
+  private ensureOnIndividualSearchPage(): void {
+    this.log('method', 'ensureOnIndividualSearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
-        this.log('navigate', 'Navigating to Account Search dashboard');
+        this.log('navigate', 'Navigating to Account Search dashboard (Individuals)');
         this.dashboard.goToAccountSearch();
       }
     });
@@ -98,21 +103,8 @@ export class AccountEnquiryFlow {
   public searchByLastName(surname: string): void {
     this.log('method', 'searchByLastName()');
     this.log('search', 'Searching by last name', { surname });
-    this.ensureOnSearchPage();
+    this.ensureOnIndividualSearchPage();
     this.searchIndividuals.byLastName(surname);
-  }
-
-  /**
-   * Performs a Companies search by company name.
-   *
-   * @param companyName - Company name to search for.
-   */
-  public searchByCompanyName(companyName: string): void {
-    this.log('method', 'searchByCompanyName()');
-    this.log('search', 'Searching by company name', { companyName });
-    this.ensureOnSearchPage();
-    this.searchCompany.byCompanyName(companyName);
-    this.results.assertOnResults();
   }
 
   /**
@@ -156,14 +148,25 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Convenience flow: search by surname (no automatic click).
+   *
+   * @param surname - Surname to search for.
+   */
+  public searchBySurname(surname: string): void {
+    this.log('method', 'searchBySurname()');
+    this.log('flow', 'Search by surname', { surname });
+    this.searchByLastName(surname);
+  }
+
+  /**
    * Convenience flow: search by surname then open the latest matching account.
    *
    * @param surname - Surname to search for.
    */
-  public searchAndClickLatestBySurname(surname: string): void {
-    this.log('method', 'searchAndClickLatestBySurname()');
+  public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
+    this.log('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
     this.log('flow', 'Search and open latest by surname', { surname });
-    this.searchByLastName(surname);
+    this.searchBySurname(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
@@ -237,6 +240,7 @@ export class AccountEnquiryFlow {
     this.common.cancelEditing(false);
     this.common.verifyFieldValue('Company name', tempName);
     this.common.cancelEditing(true);
+    // If header assertion is now common across the app, prefer this.common.assertHeaderContains(companyName);
     this.details.assertHeaderContains(companyName);
   }
 
@@ -252,21 +256,135 @@ export class AccountEnquiryFlow {
     this.log('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
     this.details.editCompanyDefendantField('Company name', tempName);
     this.common.cancelEditing(false);
+    // If header assertion is common, swap to this.common.assertHeaderContains(companyName);
     this.details.assertHeaderContains(companyName);
   }
 
   /**
-   * Opens company account details by name using the Companies tab workflow.
+   * Ensures the test is on the Companies Account Search page.
+   * If not, it navigates via the dashboard and Companies tab.
+   */
+  private ensureOnCompanySearchPage(): void {
+    this.log('method', 'ensureOnCompanySearchPage()');
+    cy.get('body').then(($b) => {
+      const onSearch = $b.find(C.root).length > 0;
+      if (!onSearch) {
+        this.log('navigate', 'Navigating to Account Search dashboard (Companies)');
+        this.dashboard.goToAccountSearch();
+        this.searchNav.goToCompaniesTab();
+      }
+    });
+  }
+
+  /**
+   * Performs a Companies search by company name.
+   *
+   * @param companyName - Company name to search for.
+   */
+  public searchByCompanyName(companyName: string): void {
+    this.log('method', 'searchByCompanyName()');
+    this.dashboard.goToAccountSearch();
+    this.searchNav.goToCompaniesTab();
+    this.ensureOnCompanySearchPage();
+    this.log('search', 'Searching by company name', { companyName });
+    this.searchCompany.byCompanyName(companyName);
+    this.results.assertOnResults();
+  }
+
+  /**
+   * Opens company account details by name using the Companies tab and selecting the latest.
    *
    * @param companyName - Company name to search and open.
    */
-  public openCompanyAccountDetailsByName(companyName: string): void {
-    this.log('method', 'openCompanyAccountDetailsByName()');
-    this.log('flow', 'Opening company account details', { companyName });
-    this.ensureOnSearchPage();
-    this.searchNav.goToCompaniesTab();
+  public openCompanyAccountDetailsByNameAndSelectLatest(companyName: string): void {
+    this.log('method', 'openCompanyAccountDetailsByNameAndSelectLatest()');
     this.searchByCompanyName(companyName);
+    this.log('results', 'Select Latest published company account from results', { companyName });
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the "Add account note" screen and verifies the header.
+   *
+   * Idempotent: if already on the Add Note screen, it will not click the nav button again.
+   */
+  public openAddAccountNoteAndVerifyHeader(): void {
+    this.log('method', 'openAddAccountNoteAndVerifyHeader()');
+
+    // If we're already on the Add Note screen, skip the button click.
+    cy.get('body').then(($b) => {
+      const headerText = $b.find('[data-testid="page-header"], h1[class*="govuk-heading"], h1').first().text().trim();
+      const alreadyOnAddNote = /add account note/i.test(headerText);
+
+      if (alreadyOnAddNote) {
+        this.log('navigate', 'Already on "Add account note" screen, skipping nav button');
+      } else {
+        this.log('navigate', 'Opening "Add account note" screen');
+        this.detailsNav.clickAddAccountNoteButton();
+      }
+    });
+
+    // In all cases, confirm we are on the correct screen
+    this.common.assertHeaderContains('Add account note');
+  }
+
+  /**
+   * Opens Notes screen and enters text into its primary field(s).
+   * @param text - Text to enter.
+   * @throws Error if the screen is not recognised.
+   */
+  private openNotesScreenAndEnterText(text: string): void {
+    this.log('method', 'openNotesScreenAndEnterText()');
+
+    this.openAddAccountNoteAndVerifyHeader();
+    this.log('input', 'Typing note text');
+    this.notes.enterAccountNote(text);
+  }
+
+  /**
+   * Enters an account note and saves it (reusing the generic open+enter helper).
+   *
+   * @param note - The note text to enter.
+   */
+  public enterAccountNoteAndSave(note: string): void {
+    this.log('method', 'enterAccountNoteAndSave()');
+    this.log('input', 'Preparing to enter and save account note', { length: note?.length });
+    this.openNotesScreenAndEnterText(note);
+    this.log('save', 'Saving account note');
+    this.notes.save();
+  }
+
+  /**
+   * Opens the notes screen, enters text, and cancels the edit (confirming leave).
+   *
+   * Currently supports:
+   *  - "Add account note"
+   *
+   * @param text - The text to enter before cancelling.
+   */
+  public openNotesScreenEnterTextAndCancel(text: string): void {
+    this.log('method', 'openScreenEnterTextAndCancel()');
+    this.log('flow', 'Open → enter text → cancel');
+
+    this.openNotesScreenAndEnterText(text);
+    this.log('cancel', 'Cancelling edit and confirming leave');
+    this.common.cancelEditing(true);
+  }
+
+  /**
+   * Opens a screen, enters text, triggers browser back, and confirms the unsaved changes warning.
+   *
+   * @param text - The text to enter before navigating back.
+   */
+  public openScreenEnterTextAndNavigateBackWithConfirmation(text: string): void {
+    this.log('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
+    this.log('flow', 'Open → enter text → browser back → confirm');
+
+    // 1. Navigate and enter note text
+    this.openNotesScreenAndEnterText(text);
+
+    // 2. Simulate browser back and confirm the warning
+    this.common.navigateBrowserBackWithConfirmation(/\/details$/);
   }
 }
 
