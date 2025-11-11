@@ -20,22 +20,22 @@ Feature: Add Account Note - View Defendant Account Details
       | account.defendant.dob                   | 2002-05-15                          |
     When I search for the account by last name "GrahamAddNoteSurname" and verify the page header is "Mr James GRAHAMADDNOTESURNAME"
     # (AC4) Add a valid note
-    When I open the "Add account note" screen and verify the header is "Add account note"
-    And I enter "Valid test account note" into the "notes" field and save the note
+    When I open the Add account note screen and verify the header is Add account note
+    And I enter "Valid test account note" into the notes field and save the note
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME" and the URL should contain "details"
 
     # (AC5) Cancel button without entering data
-    When I open the "Add account note" screen and verify the header is "Add account note"
+    When I open the Add account note screen and verify the header is Add account note
     And I cancel without entering data
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME" and the URL should contain "details"
 
     # (AC5a) Cancel button after entering data
-    When I open the "Add account note" screen, enter "This is a test account note for validation", and cancel
+    When I open the Add account note screen, enter "This is a test account note for validation", and cancel
     Then I confirm the unsaved changes warning by clicking OK
     And I should see the header containing text "Mr James GRAHAMADDNOTESURNAME"
 
     # (AC5b) Browser back button after entering data
-    When I open the "Add account note" screen, enter "This is a test account note for back button", and navigate back with confirmation
+    When I open the Add account note screen, enter "This is a test account note for back button", and navigate back with confirmation
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME" and the URL should contain "details"
 
   # @809
@@ -53,22 +53,22 @@ Feature: Add Account Note - View Defendant Account Details
     When I open the company account details for "AccNote comp"
 
     # (AC.1) Navigate to Add account note screen
-    When I open the "Add account note" screen and verify the header is "Add account note"
+    When I open the Add account note screen and verify the header is Add account note
 
     #(AC4) valid data
-    And I enter "Valid test account note" into the "notes" field and save the note
+    And I enter "Valid test account note" into the notes field and save the note
     Then the URL should contain "details"
 
     # #(AC5) Cancel button without entering data
-    When I open the "Add account note" screen and verify the header is "Add account note"
+    When I open the Add account note screen and verify the header is Add account note
     And I cancel without entering data
     Then the URL should contain "details"
 
     #(AC5a) Cancel button after entering data
-    When I open the "Add account note" screen, enter "This is a test account note for validation", and cancel
+    When I open the Add account note screen, enter "This is a test account note for validation", and cancel
     Then I confirm the unsaved changes warning by clicking OK
     And I should see the header containing text "AccNote comp"
 
     # #(AC5b) Browser back button after entering data
-    When I open the "Add account note" screen, enter "This is a test account note for back button", and navigate back with confirmation
+    When I open the Add account note screen, enter "This is a test account note for back button", and navigate back with confirmation
     Then I should see the header "AccNote comp" and the URL should contain "details"

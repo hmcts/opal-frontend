@@ -329,22 +329,16 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Opens a screen and enters text into its primary field(s).
-   * @param screenName - Screen name (e.g., "Add account note").
+   * Opens Notes screen and enters text into its primary field(s).
    * @param text - Text to enter.
    * @throws Error if the screen is not recognised.
    */
-  private openScreenAndEnterText(screenName: string, text: string): void {
-    this.log('method', 'openScreenAndEnterText()', { screenName, preview: text?.slice(0, 30) });
+  private openNotesScreenAndEnterText(text: string): void {
+    this.log('method', 'openNotesScreenAndEnterText()');
 
-    if (screenName === 'Add account note') {
-      this.openAddAccountNoteAndVerifyHeader();
-      this.log('input', 'Typing note text');
-      this.notes.enterAccountNote(text);
-      return;
-    }
-
-    throw new Error(`Unknown screen name: ${screenName}`);
+    this.openAddAccountNoteAndVerifyHeader();
+    this.log('input', 'Typing note text');
+    this.notes.enterAccountNote(text);
   }
 
   /**
@@ -355,25 +349,24 @@ export class AccountEnquiryFlow {
   public enterAccountNoteAndSave(note: string): void {
     this.log('method', 'enterAccountNoteAndSave()');
     this.log('input', 'Preparing to enter and save account note', { length: note?.length });
-    this.openScreenAndEnterText('Add account note', note);
+    this.openNotesScreenAndEnterText(note);
     this.log('save', 'Saving account note');
     this.notes.save();
   }
 
   /**
-   * Opens a screen, enters text, and cancels the edit (confirming leave).
+   * Opens the notes screen, enters text, and cancels the edit (confirming leave).
    *
    * Currently supports:
    *  - "Add account note"
    *
-   * @param screenName - The screen name (e.g., "Add account note").
    * @param text - The text to enter before cancelling.
    */
-  public openScreenEnterTextAndCancel(screenName: string, text: string): void {
+  public openNotesScreenEnterTextAndCancel(text: string): void {
     this.log('method', 'openScreenEnterTextAndCancel()');
-    this.log('flow', 'Open → enter text → cancel', { screenName, preview: text?.slice(0, 30) });
+    this.log('flow', 'Open → enter text → cancel');
 
-    this.openScreenAndEnterText(screenName, text);
+    this.openNotesScreenAndEnterText(text);
     this.log('cancel', 'Cancelling edit and confirming leave');
     this.common.cancelEditing(true);
   }
@@ -381,18 +374,14 @@ export class AccountEnquiryFlow {
   /**
    * Opens a screen, enters text, triggers browser back, and confirms the unsaved changes warning.
    *
-   * Currently supports:
-   *  - "Add account note"
-   *
-   * @param screenName - The screen name (e.g., "Add account note").
    * @param text - The text to enter before navigating back.
    */
-  public openScreenEnterTextAndNavigateBackWithConfirmation(screenName: string, text: string): void {
+  public openScreenEnterTextAndNavigateBackWithConfirmation(text: string): void {
     this.log('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
-    this.log('flow', 'Open → enter text → browser back → confirm', { screenName, preview: text?.slice(0, 30) });
+    this.log('flow', 'Open → enter text → browser back → confirm');
 
     // 1. Navigate and enter note text
-    this.openScreenAndEnterText(screenName, text);
+    this.openNotesScreenAndEnterText(text);
 
     // 2. Simulate browser back and confirm the warning
     this.common.navigateBrowserBackWithConfirmation(/\/details$/);

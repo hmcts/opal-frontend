@@ -14,7 +14,7 @@
  * - Tasks (e.g., `clearApprovedDrafts`, `createAndPublishAccount`) are run via Cypress plugins.
  */
 
-import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/accountEnquiry.flow';
 import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account details/details.defendant.actions';
 import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
@@ -34,22 +34,6 @@ const common = () => new CommonActions();
  */
 Given('any approved draft accounts are cleared', () => {
   cy.task('clearApprovedDrafts');
-});
-
-/**
- * @step Creates and publishes an account of a given type using tabular data.
- *
- * @example
- *   Given a "company" account exists and is published with:
- *     | Name | Example Ltd |
- *     | Type | Company     |
- *
- * @param type - The account type (e.g., "company" or "individual")
- * @param table - DataTable containing field/value pairs for account creation
- */
-Given('a {string} account exists and is published with:', (type: string, table: DataTable) => {
-  const data = table.rowsHash();
-  cy.task('createAndPublishAccount', { type, ...data });
 });
 
 /**
@@ -115,10 +99,10 @@ When('I edit the Defendant details and change the First name to {string}', (valu
 });
 
 /**
- * @step Attempts to cancel editing and chooses “Cancel” on the confirmation dialog.
+ * @step Attempts to cancel editing and chooses Cancel on the confirmation dialog.
  * Expected result: remain on the edit page.
  */
-When('I attempt to cancel editing and choose "Cancel" on the confirmation dialog', () => {
+When('I attempt to cancel editing and choose Cancel on the confirmation dialog', () => {
   flow().cancelEditAndStay();
 });
 
@@ -135,7 +119,7 @@ Then('I should see the First name field still contains {string}', (expected: str
  * @step Attempts to cancel editing and chooses “OK” (confirm leave).
  * Expected result: navigate back to the account details page.
  */
-When('I attempt to cancel editing and choose "OK" on the confirmation dialog', () => {
+When('I attempt to cancel editing and choose OK on the confirmation dialog', () => {
   flow().cancelEditAndLeave();
 });
 
@@ -180,7 +164,9 @@ When('I verify cancel-changes behaviour for company edits', () => {
 });
 
 /**
- * @step Searches for an account by company name
+ * @step Searches for an account by company name.
+ *
+ * @param companyName - Company name to search by.
  */
 When('I search for the account by company name {string}', (companyName: string) => {
   flow().searchByCompanyName(companyName);
@@ -195,32 +181,46 @@ When('I open the company account details for {string}', (companyName: string) =>
   flow().openCompanyAccountDetailsByNameAndSelectLatest(companyName);
 });
 
-When('I open the "Add account note" screen and verify the header is "Add account note"', () => {
+/**
+ * @step Opens the Add account note screen and verifies that the header text is correct.
+ *
+ * @example
+ * When I open the Add account note screen and verify the header is Add account note
+ */
+When('I open the Add account note screen and verify the header is Add account note', () => {
   flow().openAddAccountNoteAndVerifyHeader();
 });
 
-When('I enter "Valid test account note" into the "notes" field and save the note', () => {
-  flow().enterAccountNoteAndSave('Valid test account note');
-});
-
 /**
- * Opens a screen, enters text, and cancels.
- * @example
- * When I open the "Add account note" screen, enter "This is a test account note for validation", and cancel
- */
-When('I open the {string} screen, enter {string}, and cancel', (screenName: string, noteText: string) => {
-  flow().openScreenEnterTextAndCancel(screenName, noteText);
-});
-
-/**
- * Opens a screen, enters text, and navigates back (confirming the unsaved changes warning).
+ * @step Enters text into the notes field and saves it.
  *
+ * @param note - The note text to input and save.
  * @example
- * When I open the "Add account note" screen, enter "This is a test account note for back button", and navigate back with confirmation
+ * When I enter "This is a test note" into the notes field and save the note
  */
-When(
-  'I open the {string} screen, enter {string}, and navigate back with confirmation',
-  (screenName: string, noteText: string) => {
-    flow().openScreenEnterTextAndNavigateBackWithConfirmation(screenName, noteText);
-  },
-);
+When('I enter {string} into the notes field and save the note', (note: string) => {
+  flow().enterAccountNoteAndSave(note);
+});
+
+/**
+ * @step Opens the Add account note screen, enters text, and cancels (discarding changes).
+ *
+ * @param noteText - The note text to input before cancelling.
+ * @example
+ * When I open the Add account note screen, enter "This is a test account note for validation", and cancel
+ */
+When('I open the Add account note screen, enter {string}, and cancel', (noteText: string) => {
+  flow().openNotesScreenEnterTextAndCancel(noteText);
+});
+
+/**
+ * @step Opens the Add account note screen, enters text, and navigates back,
+ * confirming the unsaved changes warning.
+ *
+ * @param noteText - The note text to input before navigating back.
+ * @example
+ * When I open the Add account note screen, enter "This is a test account note for back button", and navigate back with confirmation
+ */
+When('I open the Add account note screen, enter {string}, and navigate back with confirmation', (noteText: string) => {
+  flow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
+});
