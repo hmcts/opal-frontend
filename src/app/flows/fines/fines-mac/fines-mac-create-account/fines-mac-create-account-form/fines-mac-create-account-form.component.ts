@@ -68,7 +68,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
-      key: key.replace(/\s+/g, ''),
+      key: key.replaceAll(/\s+/g, ''),
       value,
     }),
   );
@@ -120,9 +120,11 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
     const { fieldName, validators, fieldsToRemove } =
       this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? {};
 
-    fieldsToRemove?.forEach((field) => {
-      this.removeControl(field);
-    });
+    if (fieldsToRemove) {
+      for (const field of fieldsToRemove) {
+        this.removeControl(field);
+      }
+    }
 
     if (fieldName && accountType !== FINES_MAC_ACCOUNT_TYPES['Conditional Caution']) {
       this.createControl(fieldName, validators);

@@ -53,6 +53,7 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 import { FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS } from '../constants/fines-mac-fixed-penalty-details-form-validators';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { FinesMacOffenceCodeHintComponent } from '../../components/fines-mac-offence-code-hint/fines-mac-offence-code-hint.component';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -75,6 +76,7 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
     CapitalisationDirective,
     AlphagovAccessibleAutocompleteComponent,
     GovukBackLinkComponent,
+    FinesMacOffenceCodeHintComponent,
   ],
   templateUrl: './fines-mac-fixed-penalty-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -323,7 +325,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
    */
   private setProsecutorName(): void {
     const idControl = this.form.controls[`${this.fixedPenaltyPrefix}court_details_originator_id`];
-    const idValue = idControl?.value != null ? idControl.value.toString() : '';
+    const idValue = idControl?.value ? idControl.value.toString() : '';
     const prosecutor = this.getProsecutorFromId(idValue);
 
     if (prosecutor && typeof prosecutor.name === 'string') {

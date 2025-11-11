@@ -141,9 +141,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * Iterates over the FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS array and creates a control for each field.
    */
   private addVehicleDetailsControls(): void {
-    FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
+    for (const control of FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS) {
       this.createControl(control.controlName, control.validators);
-    });
+    }
   }
 
   /**
@@ -190,7 +190,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...Array(formData.fm_personal_details_aliases.length).keys()],
+      [...new Array(formData.fm_personal_details_aliases.length).keys()],
       'fm_personal_details_aliases',
     );
     if (key === FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly) {

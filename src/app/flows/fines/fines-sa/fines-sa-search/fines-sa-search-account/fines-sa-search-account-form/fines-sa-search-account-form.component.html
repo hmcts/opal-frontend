@@ -103,7 +103,11 @@
         @case ('majorCreditors') {
           <opal-lib-govuk-tabs-panel id="major-creditors">
             <app-fines-sa-search-account-form-major-creditors
-              [form]="form"
+              [form]="searchCriteriaForm"
+              [formControlErrorMessages]="formControlErrorMessages"
+              [majorCreditorsAutoCompleteItems]="majorCreditors()"
+              (formErrorSummaryMessagesChange)="updateFormErrorSummaryMessages($event)"
+              (filterBusinessUnitClicked)="goToFilterBusinessUnits()"
             ></app-fines-sa-search-account-form-major-creditors>
           </opal-lib-govuk-tabs-panel>
         }

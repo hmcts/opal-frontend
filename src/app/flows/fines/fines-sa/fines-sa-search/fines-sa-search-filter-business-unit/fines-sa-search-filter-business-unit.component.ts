@@ -25,8 +25,8 @@ export class FinesSaSearchFilterBusinessUnitComponent extends AbstractFormParent
    *
    * Reads the resolver payload at `activatedRoute.snapshot.data['businessUnits']`, expects a
    * `refData` property of type `IOpalFinesBusinessUnit[] | undefined`, and sets `this.businessUnits`
-   * to the filtered array of business units that have a truthy `opal_domain`. If `refData` is not
-   * an array or is undefined, `this.businessUnits` is set to an empty array.
+   * to the filtered array of business units that have `Accounting Division` as their type of `business_unit_type`.
+   * If `refData` is not an array or is undefined, `this.businessUnits` is set to an empty array.
    *
    * @private
    * @returns void
@@ -34,7 +34,9 @@ export class FinesSaSearchFilterBusinessUnitComponent extends AbstractFormParent
   private populateBusinessUnitFromResolver(): void {
     const resolverData = this['activatedRoute']?.snapshot?.data?.['businessUnits'];
     const refData = resolverData?.refData as IOpalFinesBusinessUnit[] | undefined;
-    this.businessUnits = Array.isArray(refData) ? refData.filter((bu) => Boolean(bu?.opal_domain)) : [];
+    this.businessUnits = Array.isArray(refData)
+      ? refData.filter((bu) => bu.business_unit_type === 'Accounting Division')
+      : [];
   }
 
   /**

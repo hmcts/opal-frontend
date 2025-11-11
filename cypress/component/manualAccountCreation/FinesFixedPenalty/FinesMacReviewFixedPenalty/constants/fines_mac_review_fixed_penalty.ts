@@ -66,7 +66,7 @@ export const DOM_ELEMENTS = {
   accountNotes: '#accountCommentsAndNotesAccountNoteValue',
 
   // Not provided placeholder
-  notProvided: 'app-fines-mac-review-account-not-provided',
+  notProvided: 'app-fines-not-provided',
 
   // Change links
   changeLinks: 'app-fines-mac-review-account-change-link',

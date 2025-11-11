@@ -1,1 +1,5 @@
-<h1>Add Comments Note</h1>
+<app-fines-acc-comments-add-form
+  [initialFormData]="prefilledFormData"
+  (formSubmit)="handleAddNoteSubmit($event)"
+  (unsavedChanges)="handleUnsavedChanges($event)"
+></app-fines-acc-comments-add-form>

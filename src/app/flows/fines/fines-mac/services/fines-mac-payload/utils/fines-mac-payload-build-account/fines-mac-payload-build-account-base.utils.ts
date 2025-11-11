@@ -30,8 +30,8 @@ const sortOffenceDetailsByDate = (
       : null;
 
     // Check if the dates are valid
-    const isDateAInvalid = !dateA || isNaN(dateA.getTime());
-    const isDateBInvalid = !dateB || isNaN(dateB.getTime());
+    const isDateAInvalid = !dateA || Number.isNaN(dateA.getTime());
+    const isDateBInvalid = !dateB || Number.isNaN(dateB.getTime());
 
     // Handle missing or invalid dates
     if (isDateAInvalid && isDateBInvalid) return 0; // Both dates are invalid, maintain current order

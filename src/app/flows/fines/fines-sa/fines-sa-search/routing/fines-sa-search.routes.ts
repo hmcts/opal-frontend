@@ -7,6 +7,7 @@ import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-busin
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { finesSaFlowStateGuard } from '../../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
+import { finesSaSearchFetchMajorCreditorsResolver } from './resolvers/fines-sa-seach-fetch-major-creditors-resolver/fines-sa-search-fetch-major-creditors.resolver';
 
 const finesPermissions = FINES_PERMISSIONS;
 
@@ -25,6 +26,7 @@ export const routing: Routes = [
     resolve: {
       title: TitleResolver,
       businessUnits: fetchBusinessUnitsResolver,
+      majorCreditors: finesSaSearchFetchMajorCreditorsResolver,
     },
   },
   {

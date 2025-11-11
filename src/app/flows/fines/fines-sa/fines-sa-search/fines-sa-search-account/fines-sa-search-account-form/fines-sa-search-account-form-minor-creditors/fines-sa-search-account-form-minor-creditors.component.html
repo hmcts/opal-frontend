@@ -14,6 +14,9 @@
     ></div>
     @if (minorCreditorType.key === 'individual') {
       @if (form.get('fsa_search_account_minor_creditors_minor_creditor_type')!.value === minorCreditorType.key) {
+        <span id="minor-creditor-individual-search-conditional-label" class="govuk-visually-hidden">
+          Options for Minor Creditor Individual Search
+        </span>
         <div opal-lib-govuk-radios-conditional conditionalId="fsa_search_account_minor_creditors_minor_creditor_type">
           <div class="govuk-form-group">
             <div class="no-margin-bottom">
@@ -87,6 +90,9 @@
       }
     } @else if (minorCreditorType.key === 'company') {
       @if (form.get('fsa_search_account_minor_creditors_minor_creditor_type')!.value === minorCreditorType.key) {
+        <span id="minor-creditor-company-search-conditional-label" class="govuk-visually-hidden">
+          Options for Minor Creditor Company Search
+        </span>
         <div opal-lib-govuk-radios-conditional conditionalId="fsa_search_account_minor_creditors_minor_creditor_type">
           <div class="govuk-form-group">
             <div class="no-margin-bottom">

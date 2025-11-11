@@ -14,7 +14,7 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
   const emptyResult = { searchData: [], count: 0 };
 
   // Access the router state to retrieve navigation extras passed from the previous component
-  const nav = router.getCurrentNavigation();
+  const nav = router.currentNavigation();
   const state = nav?.extras.state as {
     payload?: Record<string, unknown>;
   };

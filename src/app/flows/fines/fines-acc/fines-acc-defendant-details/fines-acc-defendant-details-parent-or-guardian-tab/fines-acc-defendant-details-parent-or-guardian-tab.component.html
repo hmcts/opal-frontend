@@ -1,0 +1,42 @@
+@if (tabData?.defendant_account_party; as party) {
+  <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h2 [class]="style.heading">Parent or guardian details</h2>
+      </div>
+      @if (hasAccountMaintenencePermission) {
+        <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
+          <a
+            tabindex="0"
+            [class]="style.changeLink"
+            (click)="handleChangeParentOrGuardianDetails()"
+            (keyup.enter)="handleChangeParentOrGuardianDetails()"
+            >Change</a
+          >
+        </div>
+      }
+    </div>
+    <hr [class]="style.hr" />
+
+    <app-fines-acc-party-details
+      [party]="party"
+      cardTitle="Parent or guardian details"
+      summaryCardListId="parent-or-guardian-details"
+      summaryListId="parentOrGuardianDetails"
+    ></app-fines-acc-party-details>
+  </div>
+  @if (party.is_debtor) {
+    <div class="govuk-grid-column-one-third">
+      <hr [class]="style.hr" />
+      <h2 [class]="style.heading">Actions</h2>
+      <p>
+        <a
+          tabindex="0"
+          (click)="handleRemoveParentOrGuardianDetails()"
+          (keyup.enter)="handleRemoveParentOrGuardianDetails()"
+          >Remove Parent or guardian details</a
+        >
+      </p>
+    </div>
+  }
+}

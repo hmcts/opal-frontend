@@ -123,7 +123,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
-      [...Array(formData['fm_company_details_aliases'].length).keys()],
+      [...new Array(formData['fm_company_details_aliases'].length).keys()],
       'fm_company_details_aliases',
     );
     this.setInitialErrorMessages();

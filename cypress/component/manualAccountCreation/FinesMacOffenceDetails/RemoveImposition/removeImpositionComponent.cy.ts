@@ -16,11 +16,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('FinesRemoveImpositionComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  let setDraftSpy: sinon.SinonSpy;
 
   // Updated setupComponent for AC.4 test: allows spying on setOffenceDetailsDraft
   const setupComponent = () => {
     let offenceDetailsStoreSpy;
-    mount(FinesMacOffenceDetailsRemoveImpositionComponent, {
+    return mount(FinesMacOffenceDetailsRemoveImpositionComponent, {
       providers: [
         provideHttpClient(),
         provideRouter([{ path: 'add-offence', component: FinesMacOffenceDetailsRemoveImpositionComponent }]),
@@ -38,7 +39,7 @@ describe('FinesRemoveImpositionComponent', () => {
           provide: FinesMacOffenceDetailsStore,
           useFactory: () => {
             offenceDetailsStoreSpy = new FinesMacOffenceDetailsStore();
-            cy.spy(offenceDetailsStoreSpy, 'setOffenceDetailsDraft').as('setDraft');
+            setDraftSpy = Cypress.sinon.spy(offenceDetailsStoreSpy, 'setOffenceDetailsDraft');
             offenceDetailsStoreSpy.setOffenceDetailsDraft(finesMacOffenceDetailsDraftState.offenceDetailsDraft);
             offenceDetailsStoreSpy.setRowIndex(0);
             offenceDetailsStoreSpy.setRemoveMinorCreditor(
@@ -111,9 +112,9 @@ describe('FinesRemoveImpositionComponent', () => {
     () => {
       setupComponent();
 
-      cy.get('@setDraft').should('have.been.calledOnce');
+      cy.wrap(setDraftSpy).should('have.been.calledOnce');
 
-      cy.get('@setDraft').then((setDraft: any) => {
+      cy.wrap(setDraftSpy).then((setDraft: any) => {
         const beforeDraft = structuredClone(setDraft.firstCall.args[0]);
 
         // Assert the impositions before removal
@@ -146,9 +147,9 @@ describe('FinesRemoveImpositionComponent', () => {
         cy.get(DOM_ELEMENTS.removeImpositionButton).click();
 
         // Wait for the second store update
-        cy.get('@setDraft').should('have.been.calledTwice');
+        cy.wrap(setDraftSpy).should('have.been.calledTwice');
 
-        cy.get('@setDraft').then((updated: any) => {
+        cy.wrap(setDraftSpy).then((updated: any) => {
           const afterDraft = updated.secondCall.args[0];
           const impositionsAfter = afterDraft[0].formData.fm_offence_details_impositions;
 

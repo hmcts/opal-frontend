@@ -1,7 +1,11 @@
 <opal-lib-govuk-summary-card-list cardTitle="Account comments and notes" summaryCardListId="account-comments-and-notes">
   @if (!isReadOnly) {
     <ng-container actions>
-      <li app-fines-mac-review-account-change-link (emitChange)="changeAccountCommentsAndNotesDetails()"></li>
+      <li
+        app-fines-mac-review-account-change-link
+        visuallyHiddenTextChange="Account comments and notes"
+        (emitChange)="changeAccountCommentsAndNotesDetails()"
+      ></li>
     </ng-container>
   }
   <ng-container content>
@@ -17,7 +21,7 @@
           @if (accountCommentsAndNotes.fm_account_comments_notes_comments) {
             {{ accountCommentsAndNotes.fm_account_comments_notes_comments }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>
@@ -32,7 +36,7 @@
           @if (accountCommentsAndNotes.fm_account_comments_notes_notes) {
             {{ accountCommentsAndNotes.fm_account_comments_notes_notes }}
           } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            <app-fines-not-provided></app-fines-not-provided>
           }
         </ng-container>
       </div>

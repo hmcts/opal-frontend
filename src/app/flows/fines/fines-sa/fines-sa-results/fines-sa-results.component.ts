@@ -25,6 +25,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/const
 import {
   IOpalFinesCreditorAccountResponse,
   IOpalFinesCreditorAccount,
+  IOpalFinesCreditorAccountDefendant,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-creditor-accounts.interface';
 import { IFinesSaResultsMinorCreditorTableWrapperTableData } from './fines-sa-results-minor-creditor-table-wrapper/interfaces/fines-sa-results-minor-creditor-table-wrapper-table-data.interface';
 import { FinesSaResultsMinorCreditorTableWrapperComponent } from './fines-sa-results-minor-creditor-table-wrapper/fines-sa-results-minor-creditor-table-wrapper.component';
@@ -139,7 +140,49 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Builds the defendant name string from defendant data
+   */
+  private buildDefendantName(defendant: IOpalFinesCreditorAccountDefendant | null): string | null {
+    if (!defendant) {
+      return null;
+    }
+
+    if (defendant.organisation_name) {
+      return defendant.organisation_name;
+    }
+
+    if (defendant.surname || defendant.firstnames) {
+      const surname = defendant.surname ?? '';
+      const firstnames = defendant.firstnames ?? '';
+      const separator = defendant.surname && defendant.firstnames ? ', ' : '';
+      return `${surname}${separator}${firstnames}`;
+    }
+
+    return null;
+  }
+
+  /**
+   * Builds the parent/guardian name string from defendant account data
+   */
+  private buildParentGuardianName(defendantAccount: IOpalFinesDefendantAccount): string | null {
+    const surname = defendantAccount.parent_guardian_surname;
+    const firstnames = defendantAccount.parent_guardian_firstnames;
+
+    if (!surname && !firstnames) {
+      return null;
+    }
+
+    const surnameText = surname ?? '';
+    const firstnamesText = firstnames ?? '';
+    const separator = surname && firstnames ? ', ' : '';
+
+    return `${surnameText}${separator}${firstnamesText}`;
+  }
+
+  /**
    * Builds a table data object containing common creditor fields for a given creditor account.
+   *
+   * @param account - The creditor data ob object containing account and ect conta details.i   * @returns An object representing the table data for the minor creditor, populated with fields such as account ID, ds for  number, address, business unit, defendant information, and  given .reditor account.
    *
    * @param account - The creditor account object containing account and defendant details.
    * @returns An object representing the table data for the minor creditor, populated with fields such as account ID, account number, address, business unit, defendant information, and balance.
@@ -155,13 +198,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
       Postcode: account.postcode,
       'Business unit': account.business_unit_name,
       'Defendant account id': account.defendant_account_id,
-      Defendant: account.defendant
-        ? account.defendant.organisation_name
-          ? `${account.defendant.organisation_name}`
-          : account.defendant.surname || account.defendant.firstnames
-            ? `${account.defendant.surname ?? ''}${account.defendant.surname && account.defendant.firstnames ? ', ' : ''}${account.defendant.firstnames ?? ''}`
-            : null
-        : null,
+      Defendant: this.buildDefendantName(account.defendant),
       Balance: account.account_balance,
     };
   }
@@ -245,10 +282,7 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
         : null,
       'Date of birth': defendantAccount.birth_date,
       'NI number': defendantAccount.national_insurance_number,
-      'Parent or guardian':
-        defendantAccount.parent_guardian_surname || defendantAccount.parent_guardian_firstnames
-          ? `${defendantAccount.parent_guardian_surname ?? ''}${defendantAccount.parent_guardian_surname && defendantAccount.parent_guardian_firstnames ? ', ' : ''}${defendantAccount.parent_guardian_firstnames ?? ''}`
-          : null,
+      'Parent or guardian': this.buildParentGuardianName(defendantAccount),
     };
   }
 

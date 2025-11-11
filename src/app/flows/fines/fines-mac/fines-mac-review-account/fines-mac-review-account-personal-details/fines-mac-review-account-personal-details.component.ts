@@ -7,11 +7,11 @@ import {
 import { IFinesMacPersonalDetailsState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
-import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
@@ -20,7 +20,7 @@ import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.co
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
-    FinesMacReviewAccountNotProvidedComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-personal-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

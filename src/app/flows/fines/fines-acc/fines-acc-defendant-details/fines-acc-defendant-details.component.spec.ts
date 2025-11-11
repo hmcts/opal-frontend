@@ -10,8 +10,17 @@ import {
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from './mocks/fines-acc-defendant-details-header.mock';
 import { of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-details-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -20,6 +29,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   let activatedRouteStub: Partial<ActivatedRoute>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockPayloadService: jasmine.SpyObj<InstanceType<typeof FinesAccPayloadService>>;
 
   beforeEach(async () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
@@ -34,15 +44,48 @@ describe('FinesAccDefendantDetailsComponent', () => {
       } as any as ActivatedRouteSnapshot, // Using 'as any' to avoid type issues
     };
 
+    mockPayloadService = jasmine.createSpyObj<FinesAccPayloadService>('FinesAccPayloadService', [
+      'transformAccountHeaderForStore',
+      'transformPayload',
+    ]);
+    mockPayloadService.transformAccountHeaderForStore.and.returnValue(MOCK_FINES_ACCOUNT_STATE);
+    mockPayloadService.transformPayload.and.callFake((...args) => {
+      return args[0]; // returns the first argument = payload
+    });
+
     mockUtilsService = jasmine.createSpyObj<UtilsService>('UtilsService', ['convertToMonetaryString']);
     mockUtilsService.convertToMonetaryString.and.callFake((value: number) => `£${value.toFixed(2)}`);
 
     mockOpalFinesService = jasmine.createSpyObj<OpalFines>('OpalFines', [
+      'getDefendantAccountHeadingData',
       'getDefendantAccountAtAGlance',
+      'getDefendantAccountImpositionsTabData',
+      'getDefendantAccountHistoryAndNotesTabData',
+      'getDefendantAccountEnforcementTabData',
+      'getDefendantAccountPaymentTermsTabData',
+      'getDefendantAccountParty',
+      'getParentOrGuardianAccountParty',
       'clearAccountDetailsCache',
     ]);
+    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
-      of(OPAL_FINES_ACCOUNT_DETAILS_AT_A_GLANCE_TAB_REF_DATA_MOCK),
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK));
+    mockOpalFinesService.getParentOrGuardianAccountParty.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountPaymentTermsTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
+    );
+    mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
 
     await TestBed.configureTestingModule({
@@ -57,6 +100,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: FinesAccPayloadService, useValue: mockPayloadService },
       ],
     }).compileComponents();
 
@@ -72,7 +116,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should default to at-a-glance tab if no fragment is present', () => {
     const activatedRoute = TestBed.inject(ActivatedRoute);
     activatedRoute.snapshot.fragment = null; // Simulate no fragment
-    component['getDataFromRoute']();
+    component['getHeaderDataFromRoute']();
     expect(component.activeTab).toBe('at-a-glance');
   });
 
@@ -94,9 +138,116 @@ describe('FinesAccDefendantDetailsComponent', () => {
     });
   });
 
-  it('should navigate to access-denied if user lacks permission', () => {
+  it('should call router.navigate when navigateToAddCommentsPage is called', () => {
+    component.navigateToAddCommentsPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.comments}/add`], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should fetch the defendant tab data when fragment is changed to defendant', () => {
+    component['refreshFragment$'].next('defendant');
+    // Subscribe to trigger the pipe execution
+    component.tabDefendant$.subscribe();
+    expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('should fetch the parent or guardian tab data when fragment is changed to parent-or-guardian', () => {
+    component['refreshFragment$'].next('parent-or-guardian');
+    // Subscribe to trigger the pipe execution
+    component.tabParentOrGuardian$.subscribe();
+    expect(mockOpalFinesService.getParentOrGuardianAccountParty).toHaveBeenCalled();
+    expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('should fetch the enforcement tab data when fragment is changed to enforcement', () => {
+    component['refreshFragment$'].next('enforcement');
+    expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+  });
+
+  it('should fetch the payment terms tab data when fragment is changed to payment-terms', () => {
+    component['refreshFragment$'].next('payment-terms');
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsTabData).toHaveBeenCalled();
+  });
+
+  it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
+    component['refreshFragment$'].next('history-and-notes');
+    expect(mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData).toHaveBeenCalled();
+  });
+
+  it('should fetch the impositions tab data when fragment is changed to impositions', () => {
+    component['refreshFragment$'].next('impositions');
+    expect(mockOpalFinesService.getDefendantAccountImpositionsTabData).toHaveBeenCalled();
+  });
+
+  it('should refresh the data for the header and current tab when refreshPage is called', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    component.refreshPage();
+    expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(
+      Number(MOCK_FINES_ACCOUNT_STATE.account_id),
+    );
+  });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a parent/guardian', () => {
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+    component.navigateToAmendPartyDetailsPage(partyType);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is a company', () => {
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
+    component.navigateToAmendPartyDetailsPage(partyType);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to change defendant details page when navigateToChangeDefendantDetailsPage is called and the defendant type is an individual', () => {
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
+    component.navigateToAmendPartyDetailsPage(partyType);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should compare versions and if they are different, set hasVersionMismatch to true', () => {
+    component.accountStore.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    component['compareVersion']('different-version');
+    expect(component.accountStore.hasVersionMismatch()).toBeTrue();
+  });
+
+  it('should navigate to access-denied if user lacks permission for the add account note page', () => {
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
     component.navigateToAddAccountNotePage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks permission for the add comments page', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAddCommentsPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
+      relativeTo: component['activatedRoute'],
+    });
+  });
+
+  it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
+    const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });

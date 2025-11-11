@@ -34,6 +34,7 @@
     ></div>
   </opal-lib-govuk-checkboxes>
   @if (form.get('fm_parent_guardian_details_add_alias')?.value === true) {
+    <span id="parent-guardian-add-alias-conditional-label" class="govuk-visually-hidden"> Options for Add alias </span>
     <div
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_parent_guardian_details_add_alias"
@@ -41,8 +42,11 @@
     >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
+          </legend>
           <opal-lib-govuk-text-input
+            #aliasFirstField
             labelText="First names"
             [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
             [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
@@ -86,9 +90,10 @@
             class="govuk-link govuk-link--no-visited-state"
             (click)="removeAlias(aliasControls.length - 1, 'fm_parent_guardian_details_aliases')"
             (keyup.enter)="removeAlias(aliasControls.length - 1, 'fm_parent_guardian_details_aliases')"
+            [attr.aria-label]="'Remove alias ' + aliasControls.length"
             tabindex="0"
           >
-            Remove
+            Remove <span class="govuk-visually-hidden">alias {{ aliasControls.length }}</span>
           </a>
         </div>
       }
@@ -137,7 +142,9 @@
   ></opal-lib-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian address</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Parent or guardian address</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Address line 1"
       inputId="fm_parent_guardian_details_address_line_1"
@@ -173,7 +180,9 @@
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Parent or guardian vehicle details</legend>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Parent or guardian vehicle details</h2>
+    </legend>
     <opal-lib-govuk-text-input
       labelText="Make and model"
       inputId="fm_parent_guardian_details_vehicle_make"

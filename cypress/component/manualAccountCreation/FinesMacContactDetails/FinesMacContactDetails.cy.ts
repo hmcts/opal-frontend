@@ -6,12 +6,14 @@ import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.st
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
 import { DOM_ELEMENTS } from './constants/fines_mac_contact_details_elements';
+import { of } from 'rxjs';
 
 describe('FinesMacContactDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-  const setupComponent = (formSubmit: any, defendantType: string = '') => {
-    mount(FinesMacContactDetailsComponent, {
+  const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+    return mount(FinesMacContactDetailsComponent, {
       providers: [
         OpalFines,
         {
@@ -25,18 +27,22 @@ describe('FinesMacContactDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],
       componentProperties: {
-        handleContactDetailsSubmit: formSubmit,
         defendantType: defendantType,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) return;
+      const comp: any = fixture.componentInstance as any;
+      if (comp?.handleContactDetailsSubmit?.subscribe) {
+        comp.handleContactDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleContactDetailsSubmit === 'function') {
+        comp.handleContactDetailsSubmit = formSubmit;
+      }
+      fixture.detectChanges();
     });
   };
   afterEach(() => {
@@ -90,24 +96,24 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.2) should not have any mandatory inputs - Return to account details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
     },
   );
 
   it('(AC.2) should not have any mandatory inputs - Add employer details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    const formSubmitSpy = Cypress.sinon.spy();
 
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
 
-    cy.get('@formSubmitSpy').should('have.been.called');
+    cy.wrap(formSubmitSpy).should('have.been.called');
   });
 
   it('(AC.3) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-370'] }, () => {
@@ -126,9 +132,9 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: 'name@example.com',
@@ -140,11 +146,11 @@ describe('FinesMacContactDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
 
       cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
     },
   );
 
@@ -152,9 +158,9 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
@@ -166,11 +172,11 @@ describe('FinesMacContactDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
 
       cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
     },
   );
 
@@ -178,9 +184,9 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.6) should accept valid contact details - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: 'primary@email.com',
@@ -192,11 +198,11 @@ describe('FinesMacContactDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
 
       cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
 
-      cy.get('@formSubmitSpy').should('have.been.called');
+      cy.wrap(formSubmitSpy).should('have.been.called');
     },
   );
 
@@ -294,9 +300,9 @@ describe('FinesMacContactDetailsComponent', () => {
     '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      setupComponent(formSubmitSpy, 'adultOrYouthOnly');
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: 'bad-data',
         fm_contact_details_email_address_2: 'bad-data',
@@ -310,7 +316,7 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
       cy.then(() => {
-        setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+        setupComponent(formSubmitSpy, 'adultOrYouthOnly');
         finesMacState.contactDetails.formData = {
           fm_contact_details_email_address_1: 'p@email.com',
           fm_contact_details_email_address_2: 's@email.com',
@@ -319,9 +325,9 @@ describe('FinesMacContactDetailsComponent', () => {
           fm_contact_details_telephone_number_business: '01234 567890',
         };
         cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get('@formSubmitSpy').should('have.been.called');
+        cy.wrap(formSubmitSpy).should('have.been.called');
         cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-        cy.get('@formSubmitSpy').should('have.been.called');
+        cy.wrap(formSubmitSpy).should('have.been.called');
       });
     },
   );

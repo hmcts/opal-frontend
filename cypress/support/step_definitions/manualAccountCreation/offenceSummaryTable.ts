@@ -74,7 +74,7 @@ Then('I do not see the offence details for offence {string}', (offenceCode: stri
 Then('the summary list should contain the following data:', (dataTable: any) => {
   const expectedData: string[][] = dataTable.raw();
 
-  cy.get('h1')
+  cy.get('h1, h2')
     .contains('Totals')
     .parent()
     .parent()

@@ -26,8 +26,8 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
    * Calculates the total amounts for the offences.
    */
   private getTotals(): void {
-    this.offences.forEach((offence) => {
-      offence.formData.fm_offence_details_impositions.forEach((imposition) => {
+    for (const offence of this.offences) {
+      for (const imposition of offence.formData.fm_offence_details_impositions) {
         if (imposition.fm_offence_details_amount_imposed && imposition.fm_offence_details_balance_remaining) {
           const amountImposed: number = +imposition.fm_offence_details_amount_imposed;
           const amountPaid: number = +imposition.fm_offence_details_amount_paid!;
@@ -37,8 +37,8 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
           this.totalAmountPaid += amountPaid;
           this.totalBalanceRemaining += balanceRemaining;
         }
-      });
-    });
+      }
+    }
 
     this.totals = {
       amountImposedTotal: this.utilsService.convertToMonetaryString(this.totalAmountImposed),

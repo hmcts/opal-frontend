@@ -12,13 +12,13 @@ import { DOM_ELEMENTS } from './constants/fines_mac_manual_fixed_penalty_element
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '../../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { calculateWeeksInFuture } from '../../../../support/utils/dateUtils';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 
 describe('FinesMacManualFixedPenalty', () => {
   let fixedPenaltyMock = structuredClone(FINES_FIXED_PENALTY_MOCK);
 
-  const setupComponent = (formSubmit: any = null) => {
-    mount(FinesMacFixedPenaltyDetailsComponent, {
+  const setupComponent = (formSubmit?: any) => {
+    return mount(FinesMacFixedPenaltyDetailsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -46,9 +46,21 @@ describe('FinesMacManualFixedPenalty', () => {
           },
         },
       ],
-      componentProperties: {
-        handleFixedPenaltyDetailsSubmit: formSubmit,
-      },
+      componentProperties: {},
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleFixedPenaltyDetailsSubmit?.subscribe) {
+        comp.handleFixedPenaltyDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleFixedPenaltyDetailsSubmit === 'function') {
+        comp.handleFixedPenaltyDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
   beforeEach(() => {
@@ -948,4 +960,40 @@ describe('FinesMacManualFixedPenalty', () => {
       );
     },
   );
+
+  it(
+    '(AC1a) If a user selects the "Search the offence list" link from the Fixed Penalty Details screen - a new tab will open within the relevant browser, displaying the "Search Offences" screen',
+    { tags: ['@PO-1104'] },
+    () => {
+      setupComponent(null);
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+
+      cy.get(DOM_ELEMENTS.searchOffenceListLink).should('be.visible');
+    },
+  );
+
+  it('(AC2) AC1 will hold true whether the defendant is an Adult or Youth defendant', { tags: ['@PO-1104'] }, () => {
+    // Test with Adult/Youth defendant (default defendant type)
+    setupComponent(null);
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+  });
+
+  it('(AC2) AC1 will hold true whether the defendant is a Company defendant', { tags: ['@PO-1104'] }, () => {
+    // Test with Company defendant
+    fixedPenaltyMock.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('exist');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('contain.text', 'search the offence list');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'target', '_blank');
+    cy.get(DOM_ELEMENTS.searchOffenceListLink).should('have.attr', 'href').and('include', 'search-offences');
+  });
 });

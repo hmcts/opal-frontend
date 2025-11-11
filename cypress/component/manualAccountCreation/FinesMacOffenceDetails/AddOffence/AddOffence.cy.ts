@@ -60,8 +60,9 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   });
 
-  const setupComponent = (formSubmit: any, defendantType: string = '') => {
-    mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
+  const setupComponent = (formSubmit?: any, defendantType: string = '') => {
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+    return mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -98,9 +99,22 @@ describe('FinesMacAddOffenceComponent', () => {
         },
       ],
       componentProperties: {
-        handleOffenceDetailsSubmit: formSubmit,
         defendantType: defendantType,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) {
+        return;
+      }
+
+      const comp: any = fixture.componentInstance as any;
+
+      if (comp?.handleOffenceDetailsSubmit?.subscribe) {
+        comp.handleOffenceDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleOffenceDetailsSubmit === 'function') {
+        comp.handleOffenceDetailsSubmit = formSubmit;
+      }
+
+      fixture.detectChanges();
     });
   };
 
@@ -182,8 +196,8 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.8)should allow form to be submitted with required fields filled in',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit);
+      const formSubmitSpy = Cypress.sinon.spy();
+      setupComponent(formSubmitSpy);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_3);
 
@@ -194,7 +208,7 @@ describe('FinesMacAddOffenceComponent', () => {
         structuredClone(Imposition);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -489,9 +503,9 @@ describe('FinesMacAddOffenceComponent', () => {
     '(AC.6, AC.8) should allow form submission with multiple impositions',
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      const formSubmitSpy = Cypress.sinon.spy();
 
-      setupComponent(mockFormSubmit);
+      setupComponent(formSubmitSpy);
 
       let Imposition = structuredClone(IMPOSITION_MOCK_2);
       Imposition[0] = {
@@ -523,7 +537,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.wrap(formSubmitSpy).should('have.been.calledOnce');
     },
   );
 
@@ -601,57 +615,4 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMinorCreditor);
     },
   );
-
-  it('Verify major creditor options for FCOMP', { tags: ['@PO-2127'] }, () => {
-    setupComponent(null);
-
-    const imposition_1 = impostitionSelectors(0);
-    const expectedOptions = [
-      'Abellio Greater Anglia (AGAL)',
-      'Aberdeen JP Court (ABJP)',
-      'Aldi Stores Ltd (ALDI)',
-      'Arriva Rail North (ARVA)',
-    ];
-
-    cy.get(imposition_1.resultCodeInput).click();
-    cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-    cy.get(imposition_1.resultCodeInput).clear().type(`FCOMP`, { delay: 0, force: true });
-    cy.get(imposition_1.resultCodeAutoCompleteValues).click();
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorRadioButton).click();
-    cy.get(imposition_1.majorCreditorDropdown).should('exist');
-    cy.get(imposition_1.majorCreditorDropdown).click();
-    cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
-      .should('have.length', expectedOptions.length)
-      .then((items) => {
-        const actual = [...items].map((i) => i.textContent?.trim());
-        expect(actual).to.deep.equal(expectedOptions);
-      });
-  });
-
-  it('Verify major creditor options for FCOST', { tags: ['@PO-2127'] }, () => {
-    setupComponent(null);
-
-    const imposition_1 = impostitionSelectors(0);
-    const expectedOptions = ['Aberdeen JP Court (ABJP)', 'Aldi Stores Ltd (ALDI)', 'Arriva Rail North (ARVA)'];
-
-    cy.get(imposition_1.resultCodeInput).click();
-    cy.get(imposition_1.resultCodeAutoComplete).find('li').should('have.length.greaterThan', 0);
-    cy.get(imposition_1.resultCodeInput).clear().type(`FCOST`, { delay: 0, force: true });
-    cy.get(imposition_1.resultCodeAutoCompleteValues).click();
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorRadioButton).click();
-    cy.get(imposition_1.majorCreditorDropdown).should('exist');
-    cy.get(imposition_1.majorCreditorDropdown).click();
-    cy.get('li[id^="fm_offence_details_major_creditor_id_0-autocomplete__option--"]')
-      .should('have.length', expectedOptions.length)
-      .then((items) => {
-        const actual = [...items].map((i) => i.textContent?.trim());
-        expect(actual).to.deep.equal(expectedOptions);
-      });
-  });
 });

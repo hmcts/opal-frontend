@@ -8,20 +8,37 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FINES_SA_SEARCH_ACCOUNT_FORM_INDIVIDUALS_STATE_MOCK } from './fines-sa-search-account-form-individuals/mocks/fines-sa-search-account-form-individuals-state.mock';
 import { FINES_SA_SEARCH_ACCOUNT_STATE } from '../constants/fines-sa-search-account-state.constant';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 
 describe('FinesSaSearchAccountFormComponent', () => {
   let component: FinesSaSearchAccountFormComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormComponent>;
+  let mockOpalFinesService: Partial<OpalFines>;
   let routerSpy: jasmine.SpyObj<Router>;
   let mockFinesSaStore: FinesSaStoreType;
 
   beforeEach(async () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
+    mockOpalFinesService = {
+      getMajorCreditorPrettyName: jasmine
+        .createSpy('getMajorCreditorPrettyName')
+        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+    };
+
     await TestBed.configureTestingModule({
       imports: [FinesSaSearchAccountFormComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: { fragment: of('individuals'), parent: 'search' } },
+        { provide: OpalFines, useValue: mockOpalFinesService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of('individuals'),
+            parent: 'search',
+          },
+        },
         { provide: Router, useValue: routerSpy },
       ],
     }).compileComponents();
@@ -30,6 +47,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
     component = fixture.componentInstance;
 
     component.businessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
     mockFinesSaStore = TestBed.inject(FinesSaStore);
 
     fixture.detectChanges();
@@ -82,7 +100,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
       'fsa_search_account_individuals_search_criteria',
       'fsa_search_account_companies_search_criteria',
       'fsa_search_account_minor_creditors_search_criteria',
-      'fsa_search_account_major_creditor_search_criteria',
+      'fsa_search_account_major_creditors_search_criteria',
     ];
 
     tabKeys.forEach((key) => {
@@ -140,7 +158,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
   it('should return majorCreditors FormGroup when activeTab is majorCreditors', () => {
     component.finesSaStore.setActiveTab('majorCreditors');
     expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup,
+      component.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup,
     );
   });
 
@@ -154,7 +172,7 @@ describe('FinesSaSearchAccountFormComponent', () => {
   it('should select the majorCreditors FormGroup when switching to that tab', () => {
     component['switchTab']('majorCreditors');
     expect(component.searchCriteriaForm).toBe(
-      component.form.get('fsa_search_account_major_creditor_search_criteria') as FormGroup,
+      component.form.get('fsa_search_account_major_creditors_search_criteria') as FormGroup,
     );
   });
 

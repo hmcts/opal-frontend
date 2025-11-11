@@ -13,7 +13,8 @@ const ORGANISATION_ALIASES: IOpalFinesDefendantAccountAlias[] = [
 export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   version: '1',
   account_number: '177A',
-  defendant_party_id: '77',
+  defendant_account_id: '77',
+  defendant_account_party_id: '77',
   parent_guardian_party_id: null,
   account_status_reference: {
     account_status_code: 'L',
@@ -38,7 +39,7 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
     organisation_flag: false,
     organisation_details: null,
     individual_details: {
-      title: 'Ms',
+      title: 'Mr',
       forenames: 'Anna',
       surname: 'Graham',
       date_of_birth: '1980-02-03',
@@ -50,6 +51,43 @@ export const DEFENDANT_HEADER_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   is_youth: false,
   debtor_type: 'Defendant',
 };
+
+/**
+ * Utility to create a custom defendant header mock with overridden forenames and surname.
+ */
+export function createDefendantHeaderMockWithName(
+  forenames: string,
+  surname: string,
+): IOpalFinesAccountDefendantDetailsHeader {
+  return {
+    ...DEFENDANT_HEADER_MOCK,
+    party_details: {
+      ...DEFENDANT_HEADER_MOCK.party_details,
+      individual_details: {
+        ...DEFENDANT_HEADER_MOCK.party_details?.individual_details!,
+        forenames,
+        surname,
+      },
+    },
+  };
+}
+
+export function createParentGuardianHeaderMockWithName(
+  forenames: string,
+  surname: string,
+): IOpalFinesAccountDefendantDetailsHeader {
+  return {
+    ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK,
+    party_details: {
+      ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details,
+      individual_details: {
+        ...DEFENDANT_HEADER_PARENT_GUARDIAN_MOCK.party_details?.individual_details!,
+        forenames,
+        surname,
+      },
+    },
+  };
+}
 
 export const DEFENDANT_HEADER_YOUTH_MOCK: IOpalFinesAccountDefendantDetailsHeader = {
   ...DEFENDANT_HEADER_MOCK,
@@ -111,6 +149,10 @@ export const USER_STATE_MOCK_NO_PERMISSION: IOpalUserState = {
           permission_id: 5,
           permission_name: 'Check and Validate Draft Accounts',
         },
+        {
+          permission_id: 6,
+          permission_name: 'Search and view accounts',
+        },
       ],
     },
   ],
@@ -140,8 +182,16 @@ export const USER_STATE_MOCK_PERMISSION_BU17: IOpalUserState = {
           permission_name: 'Check and Validate Draft Accounts',
         },
         {
+          permission_id: 6,
+          permission_name: 'Search and view accounts',
+        },
+        {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
+        },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
         },
       ],
     },
@@ -171,8 +221,16 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
           permission_name: 'Check and Validate Draft Accounts',
         },
         {
+          permission_id: 6,
+          permission_name: 'Search and view accounts',
+        },
+        {
           permission_id: 8,
           permission_name: 'Add Account Activity Notes',
+        },
+        {
+          permission_id: 7,
+          permission_name: 'Account Maintenance',
         },
       ],
     },

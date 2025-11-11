@@ -106,10 +106,8 @@ const getNeedsCreditor = (impositionResultId: string | null): boolean => {
  * @param {number | null} amountPaid - The total amount paid. If null, it defaults to 0.
  * @returns {number} The remaining balance after subtracting the amount paid from the amount imposed.
  */
-const getBalanceRemaining = (amountImposed: number | null, amountPaid: number | null): number => {
-  const imposed = amountImposed ?? 0;
-  const paid = amountPaid ?? 0;
-  return imposed - paid;
+const getBalanceRemaining = (amountImposed: number = 0, amountPaid: number = 0): number => {
+  return amountImposed - amountPaid;
 };
 
 /**
@@ -127,7 +125,7 @@ const mapAccountOffencesImpositionsState = (
 
   const creditor = getCreditor(major_creditor_id, minor_creditor);
   const needsCreditor = getNeedsCreditor(result_id);
-  const balanceRemaining = getBalanceRemaining(amount_imposed, amount_paid);
+  const balanceRemaining = getBalanceRemaining(amount_imposed!, amount_paid!);
 
   return {
     fm_offence_details_imposition_id: index,
@@ -247,7 +245,8 @@ const mapAccountOffencesPayload = (
     return mappedFinesMacState;
   }
 
-  offences.forEach((offence, index) => {
+  let index = 0;
+  for (const offence of offences) {
     // Initialize offence details form state
     const offenceDetailsFormState: IFinesMacOffenceDetailsForm = buildDefaultOffenceDetailsFormState();
 
@@ -278,7 +277,9 @@ const mapAccountOffencesPayload = (
 
     // Append the mapped offence to the main state
     mappedFinesMacState.offenceDetails.push(offenceDetailsFormState);
-  });
+
+    index++;
+  }
 
   return mappedFinesMacState;
 };

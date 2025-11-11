@@ -36,7 +36,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
@@ -63,7 +63,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
@@ -96,7 +96,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: min,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
@@ -140,7 +140,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: min,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: [1],
       fsa_search_account_active_accounts_only: false,
     });
@@ -172,7 +172,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: null,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: null,
       fsa_search_account_active_accounts_only: null,
     });
@@ -192,7 +192,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
       fsa_search_account_individuals_search_criteria: null,
       fsa_search_account_companies_search_criteria: null,
       fsa_search_account_minor_creditors_search_criteria: {} as IFinesSaSearchAccountFormMinorCreditorsState,
-      fsa_search_account_major_creditor_search_criteria: null,
+      fsa_search_account_major_creditors_search_criteria: null,
       fsa_search_account_business_unit_ids: null,
       fsa_search_account_active_accounts_only: null,
     });

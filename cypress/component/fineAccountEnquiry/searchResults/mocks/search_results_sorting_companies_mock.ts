@@ -4,7 +4,7 @@ export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountRe
   count: 5,
   defendant_accounts: [
     {
-      defendant_account_id: '6',
+      defendant_account_id: 6,
       account_number: '13006BU',
       organisation_flag: true,
       organisation_name: 'ACME LTD',
@@ -25,7 +25,7 @@ export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountRe
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '7',
+      defendant_account_id: 7,
       account_number: '13007BU',
       organisation_flag: true,
       organisation_name: 'ZENITH CORP',
@@ -46,7 +46,7 @@ export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountRe
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '8',
+      defendant_account_id: 8,
       account_number: '13008BU',
       organisation_flag: true,
       organisation_name: 'BETA LTD',
@@ -67,7 +67,7 @@ export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountRe
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '9',
+      defendant_account_id: 9,
       account_number: '13009BU',
       organisation_flag: true,
       organisation_name: 'OMEGA INC',
@@ -88,7 +88,7 @@ export const SORTING_SEARCH_RESULTS_MOCK_COMPANIES: IOpalFinesDefendantAccountRe
       parent_guardian_firstnames: null,
     },
     {
-      defendant_account_id: '10',
+      defendant_account_id: 10,
       account_number: '13010BU',
       organisation_flag: true,
       organisation_name: 'DELTA PLC',

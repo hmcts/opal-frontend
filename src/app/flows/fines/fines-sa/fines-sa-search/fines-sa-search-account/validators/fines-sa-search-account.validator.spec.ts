@@ -37,7 +37,7 @@ describe('atLeastOneCriteriaValidator', () => {
         fsa_search_account_individuals_search_criteria: makeGroup(individuals),
         fsa_search_account_companies_search_criteria: makeGroup(companies),
         fsa_search_account_minor_creditors_search_criteria: makeGroup(minorCreditors),
-        fsa_search_account_major_creditor_search_criteria: makeGroup(majorCreditors),
+        fsa_search_account_major_creditors_search_criteria: makeGroup(majorCreditors),
       },
       { validators: atLeastOneCriteriaValidator },
     );

@@ -11,6 +11,7 @@ import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-ser
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-state.mock';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { of } from 'rxjs';
 
 describe('ReviewOffenceComponent', () => {
   let finesMacOffenceDetailsDraftState = {
@@ -33,11 +34,7 @@ describe('ReviewOffenceComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
-              },
-            },
+            parent: of('manual-account-creation'),
           },
         },
       ],

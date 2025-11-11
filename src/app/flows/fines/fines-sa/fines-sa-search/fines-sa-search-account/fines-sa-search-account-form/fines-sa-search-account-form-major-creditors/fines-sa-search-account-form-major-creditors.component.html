@@ -1,1 +1,24 @@
-<h1 class="govuk-heading-l">Minor creditors</h1>
+<h1 class="govuk-heading-l">Major creditors</h1>
+@if (finesSaStore.searchAccount().fsa_search_account_business_unit_ids!.length === 1) {
+  <opal-lib-alphagov-accessible-autocomplete
+    [control]="form.get('fsa_search_account_major_creditors_major_creditor_id')"
+    labelText=""
+    inputId="fsa_search_account_major_creditors_major_creditor_id"
+    inputName="fsa_search_account_major_creditors_major_creditor_id"
+    label=""
+    hintText="Search using creditor name or code"
+    [autoCompleteItems]="majorCreditorsAutoCompleteItems"
+    [errors]="formControlErrorMessages['fsa_search_account_major_creditors_major_creditor_id']"
+  ></opal-lib-alphagov-accessible-autocomplete>
+} @else {
+  <p class="govuk-body">
+    To search major creditors,
+    <a
+      class="govuk-link"
+      (click)="filterBusinessUnitClicked.emit()"
+      tabindex="0"
+      (keydown.enter)="filterBusinessUnitClicked.emit()"
+      >filter by a single business unit</a
+    >
+  </p>
+}

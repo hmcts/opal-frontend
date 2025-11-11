@@ -17,7 +17,7 @@ export const finesMacPayloadMapAccountAccountNotesPayload = (
     return mappedFinesMacState;
   }
 
-  payload.forEach(({ account_note_text, account_note_serial, note_type }) => {
+  for (const { account_note_text, account_note_serial, note_type } of payload) {
     switch (note_type) {
       case 'AC':
         mappedFinesMacState.accountCommentsNotes.formData.fm_account_comments_notes_comments = account_note_text;
@@ -31,7 +31,7 @@ export const finesMacPayloadMapAccountAccountNotesPayload = (
         }
         break;
     }
-  });
+  }
 
   return mappedFinesMacState;
 };

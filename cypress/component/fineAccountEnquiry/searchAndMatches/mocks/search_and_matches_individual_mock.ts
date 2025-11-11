@@ -17,6 +17,6 @@ export const INDIVIDUAL_SEARCH_STATE_MOCK: IFinesSaSearchAccountState = {
   },
   fsa_search_account_companies_search_criteria: null,
   fsa_search_account_minor_creditors_search_criteria: null,
-  fsa_search_account_major_creditor_search_criteria: null,
+  fsa_search_account_major_creditors_search_criteria: null,
   fsa_search_account_active_accounts_only: true,
 };

@@ -23,7 +23,9 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    </h2>
     <opal-lib-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
@@ -57,23 +59,17 @@
       </a></opal-lib-govuk-text-input
     >
     @if (offenceCode$ | async; as offenceCode) {
-      @if (selectedOffenceConfirmation) {
-        @if (offenceCode.count === 1) {
-          <ng-container
-            *ngTemplateOutlet="
-              offenceCodeHint;
-              context: { found: true, offenceTitle: offenceCode.refData[0].offence_title }
-            "
-          ></ng-container>
-        } @else {
-          <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: false }"></ng-container>
-        }
-      }
+      <app-fines-mac-offence-code-hint
+        [offenceCode]="offenceCode"
+        [selectedOffenceConfirmation]="selectedOffenceConfirmation"
+      ></app-fines-mac-offence-code-hint>
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    <h2 class="govuk-label-wrapper">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    </h2>
     @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
       <opal-lib-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
@@ -146,7 +142,9 @@
             <div class="govuk-grid-column-full">
               @if (minorCreditors[rowIndex]) {
                 <fieldset class="govuk-fieldset">
-                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
+                  <h3 class="govuk-label-wrapper">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
+                  </h3>
                   <app-fines-mac-offence-details-minor-creditor-information
                     [minorCreditor]="minorCreditors[rowIndex]!"
                     [showActions]="true"
@@ -185,6 +183,9 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'major'
                         ) {
+                          <span id="major-creditor-conditional-label" class="govuk-visually-hidden">
+                            Options for Major Creditor
+                          </span>
                           <opal-lib-alphagov-accessible-autocomplete
                             [control]="
                               form.get([
@@ -216,6 +217,9 @@
                             formArrayControl['fm_offence_details_creditor'].controlName,
                           ])?.value === 'minor'
                         ) {
+                          <span id="minor-creditor-conditional-label" class="govuk-visually-hidden">
+                            Options for Minor Creditor
+                          </span>
                           <a
                             class="govuk-link govuk-link--no-visited-state"
                             (click)="goToMinorCreditor(rowIndex)"
@@ -276,18 +280,3 @@
     </div>
   </div>
 </form>
-
-<ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
-  <opal-lib-moj-ticket-panel
-    [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
-    [alert]="true"
-  >
-    @let offenceFound = found ? 'Offence found' : 'Offence not found';
-    <strong>{{ offenceFound }}</strong>
-    @if (found) {
-      <p>{{ offenceTitle }}</p>
-    } @else {
-      <p>Enter a valid offence code</p>
-    }
-  </opal-lib-moj-ticket-panel>
-</ng-template>

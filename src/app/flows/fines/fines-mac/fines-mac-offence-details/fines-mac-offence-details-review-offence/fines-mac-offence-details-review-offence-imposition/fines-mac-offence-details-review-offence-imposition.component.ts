@@ -22,6 +22,7 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FinesNotProvidedComponent } from 'src/app/flows/fines/components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -33,6 +34,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
     GovukTableBodyRowDataComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -230,9 +232,9 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       this.totalAmountPaid += amountPaid;
       this.totalBalanceRemaining += balanceRemaining;
 
-      const resultCodeImposition = this.impositionRefData.refData.filter(
+      const resultCodeImposition = this.impositionRefData.refData.find(
         (refData) => refData.result_id === imposition.fm_offence_details_result_id,
-      )[0];
+      )!;
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,

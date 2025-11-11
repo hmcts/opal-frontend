@@ -22,7 +22,7 @@ export const finesMacPayloadMapAccountFixedPenalty = (
   const fp_ticket_detail = payloadAccount.fp_ticket_detail;
   const offence = payloadAccount.offences?.[0];
 
-  if (fp_ticket_detail !== null && offence !== undefined && offence.impositions !== null) {
+  if (fp_ticket_detail && offence?.impositions) {
     let offenceRefData;
     if (offencesRefData) {
       offenceRefData = offencesRefData.find((refData) => refData.offenceId === offence.offence_id);

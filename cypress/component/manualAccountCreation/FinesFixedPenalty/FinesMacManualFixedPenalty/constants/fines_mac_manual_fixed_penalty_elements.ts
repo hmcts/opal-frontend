@@ -34,6 +34,7 @@ export const DOM_ELEMENTS = {
   dateNtoIssuedInput: 'input[id="fm_fp_offence_details_date_nto_issued"]',
   dateOfOffenceInput: 'input[id="fm_fp_offence_details_date_of_offence"]',
   offenceCodeInput: 'input[id="fm_fp_offence_details_offence_cjs_code"]',
+  searchOffenceListLink: 'a[href*="search-offences"]',
   timeOfOffenceInput: 'input[id="fm_fp_offence_details_time_of_offence"]',
   placeOfOffenceInput: 'textarea[id="fm_fp_offence_details_place_of_offence"]',
   placeOfOffenceInputHint: '#fm_fp_offence_details_place_of_offence-hint',
@@ -42,9 +43,9 @@ export const DOM_ELEMENTS = {
   offenceStatusMessage: 'strong',
 
   commentsInput: 'textarea[id="fm_fp_account_comments_notes_comments"]',
-  commentsInputHint: '[labeltext="Add comment"] > .govuk-form-group > :nth-child(4)',
+  commentsInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
   accountNoteInput: 'textarea[id="fm_fp_account_comments_notes_notes"]',
-  accountNoteInputHint: '[labeltext="Add account notes"] > .govuk-form-group > :nth-child(4)',
+  accountNoteInputHint: 'div.govuk-character-count__message.govuk-character-count__status',
 
   documentLanguageSelect: '#fm_language_preferences_document_language',
   hearingLanguageSelect: '#fm_language_preferences_hearing_language',

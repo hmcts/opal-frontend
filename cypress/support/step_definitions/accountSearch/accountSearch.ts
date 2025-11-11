@@ -72,6 +72,7 @@ When('I intercept the {string} account search API call', (accountType) => {
   let mockResponse;
 
   switch (accountType) {
+    case 'reference':
     case 'account number': {
       let defCount = 0;
 
@@ -96,7 +97,6 @@ When('I intercept the {string} account search API call', (accountType) => {
         });
       }).as('minorCreditorSearch');
 
-      // handled here; skip the generic single-intercept logic below
       return;
     }
     case 'defendant':
@@ -242,7 +242,7 @@ const verifyDefendantBody = (body: any, expected: Record<string, any>, expectedO
   expect(body.defendant, 'defendant').to.equal(parseVal(expected['defendant']));
   expect(body.reference_number, 'reference_number').to.be.an('object');
   expect(body.reference_number.account_number, 'reference_number.account_number').to.equal(
-    String(expected['account_number']),
+    parseVal(expected['account_number']),
   );
   expect(body.reference_number.prosecutor_case_reference, 'reference_number.prosecutor_case_reference').to.equal(
     parseVal(expected['prosecutor_case_reference']),

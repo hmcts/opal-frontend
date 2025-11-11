@@ -52,8 +52,6 @@ export const impostitionSelectors = (number: number) => ({
   amountPaidLabel: `label[for = "fm_offence_details_amount_paid_${number}"]`,
   majorCreditor: `input[id = "major_${number}"]`,
   majorCreditorLabel: `label[for = "major_${number}"]`,
-  majorCreditorRadioButton: `input[id = "major_${number}"]`,
-  majorCreditorDropdown: `input[id = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,
   minorCreditor: `input[id = "minor_${number}"]`,
   minorCreditorLabel: `label[for = "minor_${number}"]`,
   majorCreditorCode: `input[id = "fm_offence_details_major_creditor_id_${number}-autocomplete"]`,

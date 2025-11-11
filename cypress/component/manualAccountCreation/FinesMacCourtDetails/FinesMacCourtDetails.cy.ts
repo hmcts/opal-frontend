@@ -13,14 +13,18 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesMacReviewAccountComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
 import { data } from 'cypress/types/jquery';
+import { of } from 'rxjs';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
-  const setupComponent = (formSubmit: any, defType?: string) => {
+  const setupComponent = (formSubmit?: any, defType?: string) => {
     finesMacState.businessUnit.business_unit_id = 73;
+    if (defType) {
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = defType;
+    }
 
-    mount(FinesMacCourtDetailsComponent, {
+    return mount(FinesMacCourtDetailsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
@@ -37,6 +41,7 @@ describe('FinesMacCourtDetailsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            parent: of('manual-account-creation'),
             snapshot: {
               data: {
                 localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
@@ -47,9 +52,18 @@ describe('FinesMacCourtDetailsComponent', () => {
         },
       ],
       componentProperties: {
-        handleCourtDetailsSubmit: formSubmit,
+        // Only Inputs here
         defendantType: defType,
       },
+    }).then(({ fixture }) => {
+      if (!formSubmit) return;
+      const comp: any = fixture.componentInstance as any;
+      if (comp?.handleCourtDetailsSubmit?.subscribe) {
+        comp.handleCourtDetailsSubmit.subscribe((...args: any[]) => (formSubmit as any)(...args));
+      } else if (typeof comp?.handleCourtDetailsSubmit === 'function') {
+        comp.handleCourtDetailsSubmit = formSubmit;
+      }
+      fixture.detectChanges();
     });
   };
   //Clean up after each test
@@ -82,8 +96,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('(AC.1, AC.4) should be created as per the design artifacts', { tags: ['@PO-272', '@PO-389'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     // Verify the page text
     //title
@@ -250,8 +264,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('(AC.8) should clear errors when validation is passed', { tags: ['@PO-272', '@PO-389'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
     cy.get(DOM_ELEMENTS.returnToACDetails).click();
@@ -281,8 +295,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('(AC.9) should clear errors when validation is passed', { tags: ['@PO-272', '@PO-389'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'adultOrYouthOnly');
 
     //Submit without input
     cy.get(DOM_ELEMENTS.addPersonalDetails).click();
@@ -321,8 +335,8 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('Prosecutor Case Reference should capitalise - AYPG', { tags: ['@PO-344', '@PO-1449'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit, 'pgToPay');
+    const formSubmitSpy = Cypress.sinon.spy();
+    setupComponent(formSubmitSpy, 'pgToPay');
 
     cy.get(DOM_ELEMENTS.ljaInput).focus().type('Asylum', { delay: 0 });
     cy.get(DOM_ELEMENTS.ljaAutocomplete).find('li').first().click();

@@ -97,7 +97,7 @@ Then(
   'I enter {string} into the {string} field for imposition {int}',
   (value: string, labelText: string, index: number) => {
     cy.contains('legend', 'Impositions')
-      .parent()
+      .closest('fieldset')
       .find('opal-lib-moj-ticket-panel')
       .eq(index - 1)
       .contains('label', labelText)
@@ -107,7 +107,7 @@ Then(
 );
 Then('I clear the {string} field for imposition {int}', (labelText: string, index: number) => {
   cy.contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .contains('label', labelText)
@@ -118,7 +118,7 @@ Then('I clear the {string} field for imposition {int}', (labelText: string, inde
 
 Then('I see {string} in the {string} field for imposition {int}', (value: string, labelText: string, index: number) => {
   cy.contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .contains('label', labelText)
@@ -129,7 +129,7 @@ Then('I see {string} in the {string} field for imposition {int}', (value: string
 
 Then('I see {string} link for imposition {int}', (labelText: string, index: number) => {
   cy.contains('legend', 'Impositions')
-    .parent()
+    .closest('fieldset')
     .find('opal-lib-moj-ticket-panel')
     .eq(index - 1)
     .contains(labelText);

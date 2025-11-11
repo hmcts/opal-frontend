@@ -59,6 +59,8 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
 
     cy.get(DOM_ELEMENTS.heading).should('exist').and('contain', 'Review accounts');
 
+    cy.get(DOM_ELEMENTS.navigationLinks).contains('To review').click();
+
     cy.get(DOM_ELEMENTS.navigationLinks).each((link, index) => {
       const expectedLink = NAVIGATION_LINKS[index];
       cy.wrap(link).should('contain', expectedLink);

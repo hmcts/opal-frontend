@@ -11,6 +11,7 @@ import {
   MojAlertContentComponent,
   MojAlertTextComponent,
   MojAlertIconComponent,
+  MojAlertHeadingComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { GovukFooterComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-footer';
 import { HEADER_LINKS, FOOTER_LINKS } from '@hmcts/opal-frontend-common/constants';
@@ -33,6 +34,7 @@ import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch
     MojAlertContentComponent,
     MojAlertTextComponent,
     MojAlertIconComponent,
+    MojAlertHeadingComponent,
     GovukFooterComponent,
   ],
   templateUrl: './app.component.html',
@@ -184,10 +186,10 @@ export class AppComponent implements OnInit, OnDestroy {
    * Handles the authentication dependent on whether the user is already authenticated
    */
   public handleAuthentication(): void {
-    if (!this.globalStore.authenticated()) {
-      this.handleRedirect(SSO_ENDPOINTS.login);
-    } else {
+    if (this.globalStore.authenticated()) {
       this.handleRedirect(SSO_ENDPOINTS.logout);
+    } else {
+      this.handleRedirect(SSO_ENDPOINTS.login);
     }
   }
 }

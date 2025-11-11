@@ -11,7 +11,7 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offence_mock';
 import { DOM_ELEMENTS } from './constants/review_summary_elements';
-import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts.cy';
+import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
 
 describe('ReviewSummaryComponent', () => {

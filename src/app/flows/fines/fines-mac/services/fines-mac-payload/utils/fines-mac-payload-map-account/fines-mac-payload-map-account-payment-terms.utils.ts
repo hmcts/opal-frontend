@@ -1,7 +1,79 @@
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
+import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
+import { IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement-result-response.interface';
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
+import { IFinesMacPayloadAccountPaymentTerms } from '../interfaces/fines-mac-payload-account-payment-terms.interface';
+
+/**
+ * Safely converts a nullable boolean to boolean or preserves null
+ */
+const convertNullableBooleanToBoolean = (value: boolean | null): boolean | null => {
+  return value === null ? null : Boolean(value);
+};
+
+/**
+ * Maps a single enforcement response parameter to the appropriate form field.
+ */
+const mapEnforcementResponseParameter = (
+  formData: IFinesMacPaymentTermsState,
+  parameterName: string,
+  response: string,
+): void => {
+  const parameterMap: Record<string, keyof IFinesMacPaymentTermsState> = {
+    earliestreleasedate: 'fm_payment_terms_earliest_release_date',
+    prisonandprisonnumber: 'fm_payment_terms_prison_and_prison_number',
+    reason: 'fm_payment_terms_reason_account_is_on_noenf',
+  };
+
+  const fieldName = parameterMap[parameterName];
+  if (fieldName) {
+    // Use bracket notation with type assertion for safe dynamic property assignment
+    (formData as Record<keyof IFinesMacPaymentTermsState, unknown>)[fieldName] = response;
+  }
+};
+
+/**
+ * Processes enforcement responses and maps them to form data.
+ * Filters out responses with null parameter names or null responses.
+ */
+const processEnforcementResponses = (
+  formData: IFinesMacPaymentTermsState,
+  responses: IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse[],
+): void => {
+  const validResponses = responses.filter(
+    (
+      response,
+    ): response is IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse & {
+      parameter_name: string;
+      response: string;
+    } => response.parameter_name !== null && response.response !== null,
+  );
+
+  for (const { parameter_name, response } of validResponses) {
+    mapEnforcementResponseParameter(formData, parameter_name, response);
+  }
+};
+
+/**
+ * Processes a single enforcement action and updates the payment terms form data.
+ */
+const processEnforcementAction = (
+  mappedFinesMacState: IFinesMacState,
+  enforcement: IFinesMacPayloadAccountPaymentTermsEnforcement,
+): void => {
+  const { enforcement_result_responses: responses, result_id: resultId } = enforcement;
+  const formData = mappedFinesMacState.paymentTerms.formData;
+
+  formData.fm_payment_terms_enforcement_action = resultId;
+  formData.fm_payment_terms_hold_enforcement_on_account = resultId === 'NOENF';
+  formData.fm_payment_terms_add_enforcement_action = Boolean(responses?.length);
+
+  if (responses?.length) {
+    processEnforcementResponses(formData, responses);
+  }
+};
 
 /**
  * Maps enforcement actions to the fines MAC state.
@@ -18,30 +90,50 @@ const mapEnforcementActions = (
     return mappedFinesMacState;
   }
 
-  enforcements.forEach(({ enforcement_result_responses: responses, result_id: resultId }) => {
-    if (resultId !== 'COLLO') {
-      mappedFinesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = resultId;
-      mappedFinesMacState.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account = resultId === 'NOENF';
-      mappedFinesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action =
-        responses && responses.length > 0;
+  const validEnforcements = enforcements.filter(({ result_id }) => result_id !== 'COLLO');
 
-      if (responses?.length) {
-        responses.forEach(({ parameter_name, response }) => {
-          const formData = mappedFinesMacState.paymentTerms.formData;
-
-          if (parameter_name === 'earliestreleasedate') {
-            formData.fm_payment_terms_earliest_release_date = response;
-          } else if (parameter_name === 'prisonandprisonnumber') {
-            formData.fm_payment_terms_prison_and_prison_number = response;
-          } else if (parameter_name === 'reason') {
-            formData.fm_payment_terms_reason_account_is_on_noenf = response;
-          }
-        });
-      }
-    }
-  });
+  for (const enforcement of validEnforcements) {
+    processEnforcementAction(mappedFinesMacState, enforcement);
+  }
 
   return mappedFinesMacState;
+};
+
+/**
+ * Builds the payment terms form data object.
+ */
+const buildPaymentTermsFormData = (
+  currentFormData: IFinesMacPaymentTermsState,
+  paymentTerms: IFinesMacPayloadAccountPaymentTerms,
+  paymentCardRequest: boolean | null,
+  suspendedCommittalDate: string | null,
+  collectionOrderMade: boolean | null,
+  collectionOrderMadeToday: boolean | null,
+): IFinesMacPaymentTermsState => {
+  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
+  const paymentTermsType = getPaymentTermsType(
+    paymentTerms.payment_terms_type_code,
+    paymentTerms.lump_sum_amount,
+    paymentTerms.instalment_amount,
+  );
+
+  const isPayInFull = paymentTermsType === paymentTermOptions[0];
+
+  return {
+    ...currentFormData,
+    fm_payment_terms_payment_terms: paymentTermsType,
+    fm_payment_terms_pay_by_date: isPayInFull ? paymentTerms.effective_date : null,
+    fm_payment_terms_start_date: isPayInFull ? null : paymentTerms.effective_date,
+    fm_payment_terms_instalment_period: paymentTerms.instalment_period ?? null,
+    fm_payment_terms_lump_sum_amount: paymentTerms.lump_sum_amount ?? null,
+    fm_payment_terms_instalment_amount: paymentTerms.instalment_amount ?? null,
+    fm_payment_terms_has_days_in_default: Boolean(paymentTerms.default_days_in_jail),
+    fm_payment_terms_default_days_in_jail: paymentTerms.default_days_in_jail ?? null,
+    fm_payment_terms_payment_card_request: convertNullableBooleanToBoolean(paymentCardRequest),
+    fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
+    fm_payment_terms_collection_order_made: convertNullableBooleanToBoolean(collectionOrderMade),
+    fm_payment_terms_collection_order_made_today: convertNullableBooleanToBoolean(collectionOrderMadeToday),
+  };
 };
 
 /**
@@ -79,13 +171,11 @@ const getPaymentTermsType = (
  * @param mappedFinesMacState - The current state of the fines MAC.
  * @param payload - The payload containing the account payment terms data.
  * @returns The updated fines MAC state with the mapped payment terms data.
- *
  */
 export const finesMacPayloadMapAccountPaymentTerms = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
-  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
   const {
     payment_terms: paymentTerms,
     payment_card_request: paymentCardRequest,
@@ -94,31 +184,14 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     collection_order_made_today: collectionOrderMadeToday,
   } = payload;
 
-  const paymentTermsType = getPaymentTermsType(
-    paymentTerms.payment_terms_type_code,
-    paymentTerms.lump_sum_amount,
-    paymentTerms.instalment_amount,
+  mappedFinesMacState.paymentTerms.formData = buildPaymentTermsFormData(
+    mappedFinesMacState.paymentTerms.formData,
+    paymentTerms,
+    paymentCardRequest,
+    suspendedCommittalDate,
+    collectionOrderMade,
+    collectionOrderMadeToday,
   );
-
-  const isPayInFull = paymentTermsType === paymentTermOptions[0];
-  const payByDate = isPayInFull ? paymentTerms.effective_date : null;
-  const startDate = !isPayInFull ? paymentTerms.effective_date : null;
-
-  mappedFinesMacState.paymentTerms.formData = {
-    ...mappedFinesMacState.paymentTerms.formData,
-    fm_payment_terms_payment_terms: paymentTermsType,
-    fm_payment_terms_pay_by_date: payByDate,
-    fm_payment_terms_start_date: startDate,
-    fm_payment_terms_instalment_period: paymentTerms.instalment_period ?? null,
-    fm_payment_terms_lump_sum_amount: paymentTerms.lump_sum_amount ?? null,
-    fm_payment_terms_instalment_amount: paymentTerms.instalment_amount ?? null,
-    fm_payment_terms_has_days_in_default: !!paymentTerms.default_days_in_jail,
-    fm_payment_terms_default_days_in_jail: paymentTerms.default_days_in_jail ?? null,
-    fm_payment_terms_payment_card_request: paymentCardRequest,
-    fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
-    fm_payment_terms_collection_order_made: collectionOrderMade,
-    fm_payment_terms_collection_order_made_today: collectionOrderMadeToday,
-  };
 
   return mapEnforcementActions(mappedFinesMacState, paymentTerms.enforcements);
 };

@@ -41,7 +41,7 @@ export class FinesMacOffenceDetailsService {
     if (!offence.childFormData) return;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    offence.childFormData.forEach((child: any) => {
+    for (const child of offence.childFormData) {
       if (child.formData.fm_offence_details_imposition_position === removedIndex) {
         // Remove the childFormData entry if it matches the removed index
         offence.childFormData = offence.childFormData.filter(
@@ -52,7 +52,7 @@ export class FinesMacOffenceDetailsService {
         // Decrement imposition_position for remaining childFormData
         child.formData.fm_offence_details_imposition_position--;
       }
-    });
+    }
   }
 
   /**
@@ -100,11 +100,11 @@ export class FinesMacOffenceDetailsService {
           fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const cleanedImposition: any = {};
-            Object.keys(imposition).forEach((key) => {
+            for (const key of Object.keys(imposition)) {
               // Use regex to remove the _{{index}} from the key
               const newKey = key.replace(/_\d+$/, '');
               cleanedImposition[newKey] = imposition[key];
-            });
+            }
             return cleanedImposition;
           }),
           show_date_of_sentence,
@@ -144,7 +144,7 @@ export class FinesMacOffenceDetailsService {
       if (code?.length >= 7 && code?.length <= 8) {
         const result$ = getOffenceByCjsCode(code).pipe(
           tap((response) => {
-            codeControl.setErrors(response.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
+            codeControl.setErrors(response.count === 0 ? { invalidOffenceCode: true } : null, { emitEvent: false });
             idControl.setValue(response.count === 1 ? response.refData[0].offence_id : null, { emitEvent: false });
 
             if (typeof onResult === 'function') {
