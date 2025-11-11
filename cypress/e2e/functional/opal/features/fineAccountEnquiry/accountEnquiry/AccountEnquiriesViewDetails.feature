@@ -57,13 +57,13 @@ Feature: Account Enquiries – View Account Details
 
   @PO-2315
   Scenario: As a user I can view account details of a non-paying defendant account
-    And I create a "pgToPay" draft account with the following details:
+    And I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
       | account.defendant.forenames       | Jane         |
       | account.defendant.surname         | TestNonPayee |
       | account.prosecutor_case_reference | PCR-AUTO-004 |
     # AC2 – Search and view account details
     When I search for the account by last name "TestNonPayee" and open the latest result
-    Then I should see the page header contains "Miss Jane TestNonPayee"
+    Then I should see the page header contains "Miss Jane TESTNONPAYEE"
 
     # AC3 – Navigate to Defendant details
     When I go to the Defendant details section and the header is "Defendant details"
@@ -75,5 +75,5 @@ Feature: Account Enquiries – View Account Details
 
     When I attempt to cancel editing and choose OK on the confirmation dialog
     Then I should return to the account details page
-    And I should see the account header contains "Miss Jane TestNonPayee"
+    And I should see the account header contains "Miss Jane TESTNONPAYEE"
 
