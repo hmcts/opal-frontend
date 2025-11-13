@@ -17,8 +17,6 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS } from '../constants/fin
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../constants/fines-acc-party-add-amend-convert-alias.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../constants/fines-acc-party-add-amend-convert-company-alias.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
-import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
-import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { takeUntil } from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/fines-mac-title-dropdown-options.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
@@ -31,17 +29,12 @@ import {
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
-import {
-  GovukRadioComponent,
-  GovukRadiosItemComponent,
-} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { nationalInsuranceNumberValidator } from '@hmcts/opal-frontend-common/validators/national-insurance-number';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
-import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-select/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
@@ -56,6 +49,14 @@ import {
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { employerFieldsValidator } from '../constants/fines-acc-party-add-amend-convert-validators.constant';
+import { FinesAccPartyAddAmendConvertEd } from './components/fines-acc-party-add-amend-convert-ed/fines-acc-party-add-amend-convert-ed.component';
+import { FinesAccPartyAddAmendConvertPartyDetails } from './components/fines-acc-party-add-amend-convert-party-details/fines-acc-party-add-amend-convert-party-details.component';
+import { FinesAccPartyAddAmendConvertLp } from './components/fines-acc-party-add-amend-convert-lp/fines-acc-party-add-amend-convert-lp.component';
+import { FinesAccPartyAddAmendConvertAddress } from './components/fines-acc-party-add-amend-convert-address/fines-acc-party-add-amend-convert-address.component';
+import { FinesAccPartyAddAmendConvertCd } from './components/fines-acc-party-add-amend-convert-cd/fines-acc-party-add-amend-convert-cd.component';
+import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add-amend-convert-vd/fines-acc-party-add-amend-convert-vd.component';
+import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
+import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 
 const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
 const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
@@ -75,18 +76,20 @@ const EMAIL_ADDRESS_PATTERN_VALIDATOR = patternValidator(EMAIL_ADDRESS_PATTERN, 
     ReactiveFormsModule,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    GovukSelectComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukTextInputComponent,
-    GovukRadioComponent,
-    GovukRadiosItemComponent,
     GovukHeadingWithCaptionComponent,
     GovukCancelLinkComponent,
-    MojDatePickerComponent,
-    MojTicketPanelComponent,
     CapitalisationDirective,
+    FinesAccPartyAddAmendConvertPartyDetails,
+    FinesAccPartyAddAmendConvertAddress,
+    FinesAccPartyAddAmendConvertVd,
+    FinesAccPartyAddAmendConvertCd,
+    FinesAccPartyAddAmendConvertEd,
+    FinesAccPartyAddAmendConvertLp,
+    FinesAccPartyAddAmendConvertDobNi,
   ],
   templateUrl: './fines-acc-party-add-amend-convert-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,6 +106,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   protected readonly showLanguagePreferences = computed(() => this.finesAccountStore.welsh_speaking() === 'Y');
   protected readonly accountStore = this.finesAccountStore;
 
+  @Input({ required: true }) public isDebtor!: boolean;
   @Input({ required: true }) public partyType!: string;
   @Input({ required: false }) public initialFormData: IFinesAccPartyAddAmendConvertForm =
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
@@ -117,6 +121,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   public readonly languageOptions: { key: string; value: string }[] = Object.entries(
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
+  public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
 
   /**
    * Creates the base form group with fields shared by all party types.
@@ -388,6 +393,13 @@ export class FinesAccPartyAddAmendConvertFormComponent
    */
   public get isIndividualPartyType(): boolean {
     return this.partyType === this.partyTypes.INDIVIDUAL || this.partyType === this.partyTypes.PARENT_GUARDIAN;
+  }
+
+  /**
+   * Returns true if the party type is company or isDebtor.
+   */
+  public get checkCompanyOrDebtor(): boolean {
+    return this.isCompanyPartyType || this.isDebtor;
   }
 
   /**

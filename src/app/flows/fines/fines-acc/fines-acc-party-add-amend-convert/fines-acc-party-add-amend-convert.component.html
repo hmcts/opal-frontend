@@ -1,6 +1,7 @@
 <div class="govuk-grid-column-two-thirds">
   <app-fines-acc-debtor-add-amend-form
     [partyType]="partyType"
+    [isDebtor]="isDebtor"
     [initialFormData]="prefilledFormData"
     (formSubmit)="handleFormSubmit($event)"
     (unsavedChanges)="handleUnsavedChanges($event)"
