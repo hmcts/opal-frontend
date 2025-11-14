@@ -42,6 +42,8 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
             globalStore.setError({
               error: false,
               message: '',
+              title: null,
+              operationId: null,
             });
             return globalStore;
           },
