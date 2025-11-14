@@ -1,6 +1,6 @@
 import { getDaysAgo, getToday } from '../../../../../../support/utils/dateUtils';
 import { IOpalFinesDraftAccountsResponse } from '../../../../../../../src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
   count: 2,
@@ -12,7 +12,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
       submitted_by: 'user1',
       business_unit_id: 77,
       account_snapshot: {
-        account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
+        account_type: FINES_ACCOUNT_TYPES.Fine,
         created_date: getToday(),
         submitted_by: 'user1',
         defendant_name: 'DOE, John',
@@ -20,7 +20,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
         business_unit_name: 'Business Unit A',
         date_of_birth: '1990-05-15',
       },
-      account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
+      account_type: FINES_ACCOUNT_TYPES.Fine,
       account_status: 'ACTIVE',
       account_status_date: getToday(),
     },
@@ -31,7 +31,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
       submitted_by: 'user2',
       business_unit_id: 17,
       account_snapshot: {
-        account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
+        account_type: FINES_ACCOUNT_TYPES['Fixed Penalty'],
         created_date: getDaysAgo(4),
         submitted_by: 'user2',
         defendant_name: 'SMITH, Jane',
@@ -39,7 +39,7 @@ export const OPAL_FINES_DRAFT_VALIDATE_ACCOUNTS_MOCK: IOpalFinesDraftAccountsRes
         business_unit_name: 'Business Unit B',
         date_of_birth: null,
       },
-      account_type: FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
+      account_type: FINES_ACCOUNT_TYPES['Fixed Penalty'],
       account_status: 'PENDING',
       account_status_date: getDaysAgo(4),
     },

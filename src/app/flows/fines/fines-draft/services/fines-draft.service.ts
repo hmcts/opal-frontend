@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../fines-mac/constants/fines-mac-account-types';
 import { IFinesDraftTableWrapperTableData } from '../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,7 @@ export class FinesDraftService {
         'Date of birth': date_of_birth,
         CreatedDate: created_date,
         Created: this.dateService.getDaysAgo(created_date),
-        'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
+        'Account type': FINES_ACCOUNT_TYPES[account_type as keyof typeof FINES_ACCOUNT_TYPES],
         'Business unit': business_unit_name,
         'Submitted by': submitted_by_name,
       };
