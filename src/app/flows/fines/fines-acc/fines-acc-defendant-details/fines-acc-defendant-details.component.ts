@@ -191,22 +191,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     return serviceCall.pipe(
       map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
       tap((data) => {
-        this.compareVersion(data.version);
+        this.accountStore.compareVersion(data.version);
       }),
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     );
-  }
-
-  /**
-   * Compares the version of the fetched data with the current version in the store.
-   * If there is a mismatch, it triggers a warning banner
-   * @param version the version of the fetched data
-   */
-  private compareVersion(version: string | null): void {
-    if (version !== this.accountStore.base_version()) {
-      this.accountStore.setHasVersionMismatch(true);
-    }
   }
 
   /**

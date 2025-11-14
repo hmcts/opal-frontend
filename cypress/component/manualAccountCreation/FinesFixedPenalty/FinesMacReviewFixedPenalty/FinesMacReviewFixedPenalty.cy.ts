@@ -19,7 +19,6 @@ import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_fixed_penalty';
-import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FinesMacSubmitConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
@@ -94,6 +93,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
             store.setError({
               error: false,
               message: '',
+              title: null,
+              operationId: null,
             });
             return store;
           },
