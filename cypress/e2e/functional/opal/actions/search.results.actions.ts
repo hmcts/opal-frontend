@@ -5,7 +5,7 @@
  * and opening by a specific account number.
  */
 
-import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/accountEnquiryResults.locators';
+import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 
 /**
  * High-level Actions for the Search Results page.

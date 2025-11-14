@@ -1,5 +1,5 @@
 /**
- * @file fines.acc.note.add.locators.ts
+ * @file account.notes.details.locators.ts
  * @description
  * Selector map for the **Add account note** page within the HMCTS Opal Fines flow.
  * Defines stable, ID-first selectors for the page heading, textarea, helper text,

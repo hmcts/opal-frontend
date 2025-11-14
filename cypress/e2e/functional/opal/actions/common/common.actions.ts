@@ -1,44 +1,7 @@
-import { CommonLocators as L } from '../../../../../../cypress/shared/common.locators';
+import { CommonLocators as L } from '../../../../../shared/common.locators';
+import { log } from '../../../../../support/utils/log.helper';
 
 export class CommonActions {
-  /**
-   * Logs a standardized Cypress entry for easier debugging in test reports.
-   */
-  private log(name: string, message: string, data?: Record<string, unknown>): void {
-    Cypress.log({
-      name,
-      message,
-      consoleProps: () => ({ action: 'CommonActions', message, ...data }),
-    });
-  }
-
-  /**
-   * Finds an input, textarea, or select element by its visible label text.
-   *
-   * @param labelText - The visible label text to search for (case-insensitive).
-   * @returns A Cypress chainable for the associated input, textarea, or select element.
-   *
-   * @example
-   * ```ts
-   * common.getInputByLabel('Postcode').type('SW1A 1AA');
-   * ```
-   */
-  getInputByLabel(labelText: string): Cypress.Chainable<JQuery<HTMLElement>> {
-    this.log('input', `Locating input by label: ${labelText}`, { labelText });
-
-    return cy
-      .contains('label', labelText, { matchCase: false })
-      .invoke('attr', 'for')
-      .then((forId) => {
-        if (forId) {
-          this.log('resolve', `Found input linked to label`, { forId });
-          return cy.get(`#${forId}`);
-        }
-
-        this.log('fallback', `Label wraps input directly`, { labelText });
-        return cy.contains('label', labelText, { matchCase: false }).find('input, textarea, select');
-      });
-  }
   /**
    * Clicks the “Cancel” control and handles the confirm-leave dialog.
    *
@@ -56,21 +19,36 @@ export class CommonActions {
    * ```
    */
   cancelEditing(confirmLeave: boolean): void {
-    this.log('cancel', 'Handling Cancel click', { confirmLeave });
+    log('cancel', 'Handling Cancel click', { confirmLeave });
 
-    // Prepare the confirmation handler before clicking Cancel
-    cy.window().then(() => {
-      cy.once('window:confirm', (msg) => {
-        this.log('dialog', 'Confirm dialog intercepted', { message: msg });
-        expect(msg, 'Confirm prompt message').to.contain('You have unsaved changes');
-        return confirmLeave; // true = OK (leave), false = Cancel (stay)
-      });
+    cy.once('window:confirm', (msg) => {
+      const normalized = msg.replaceAll(/\s+/g, ' '); // use replaceAll for lint rule
+      expect(normalized, 'Confirm prompt message').to.match(/unsaved changes/i);
+      return confirmLeave; // true -> OK, false = Cancel
     });
 
-    // Click the Cancel control (link/button)
-    cy.contains('a.govuk-link, button, [role="button"]', 'Cancel', { matchCase: false })
+    // Click a real, visible Cancel (avoid force so we get the real event)
+    cy.contains('a.govuk-link, button, [role="button"]', /^cancel$/i)
       .should('be.visible')
-      .click({ force: true });
+      .and('not.be.disabled')
+      .click();
+  }
+
+  /**
+   * Prepare to auto-accept/auto-dismiss the next native confirm().
+   * @param accept
+   * @param expected
+   */
+  public confirmNextUnsavedChanges(accept: boolean, expected: RegExp | string = /unsaved changes/i): void {
+    cy.once('window:confirm', (msg) => {
+      const normalized = String(msg).replaceAll(/\s+/g, ' ');
+      if (expected instanceof RegExp) {
+        expect(normalized).to.match(expected);
+      } else {
+        expect(normalized).to.include(expected);
+      }
+      return accept; // true = OK (leave), false = Cancel (stay)
+    });
   }
 
   /**
@@ -86,41 +64,30 @@ export class CommonActions {
    * ```
    */
   confirmUnsavedChangesDialog(expected: string | RegExp = /You have unsaved changes/i): void {
-    this.log('dialog', 'Preparing confirm handler', { locator: L.unsavedChangesDialog });
+    log('dialog', 'Preparing confirm handler', { locator: L.unsavedChangesDialog });
     cy.once('window:confirm', (msg) => {
-      const normalized = msg.replace(/\s+/g, ' ');
-      this.log('dialog', 'Confirm dialog intercepted', { message: normalized });
+      const normalized = msg.replace(/\s+/g, ' '); // NOSONAR
+      log('dialog', 'Confirm dialog intercepted', { message: normalized });
       if (expected instanceof RegExp) expect(normalized).to.match(expected);
       else expect(normalized).to.include(expected);
-      return true; // click OK
+      return true;
     });
-  }
-
-  /**
-   * Asserts that a field (identified by its label) has the expected value.
-   *
-   * Centralized assertion to maintain thin, intention-focused Action classes.
-   *
-   * @param label - Visible label text.
-   * @param expected - Expected input value.
-   *
-   * @example
-   * ```ts
-   * common.verifyFieldValue('First name', 'John');
-   * ```
-   */
-  verifyFieldValue(label: string, expected: string): void {
-    this.log('verify', `Verifying field value`, { label, expected });
-    this.getInputByLabel(label).should('have.value', expected);
   }
 
   /**
    * Asserts that the page header **contains** the expected text.
    * @param expected - Text that should appear within the page header.
    */
-  assertHeaderContains(expected: string): void {
-    this.log('verify', 'Checking header contains text', { expected });
-    cy.get(L.header, { timeout: 15000 }).should('contain.text', expected);
+  assertHeaderContains(expected: string, timeoutMs: number = 15000): void {
+    log('assert', `Header contains: ${expected}`);
+
+    // Wait for the page header to contain the expected text
+    cy.get(L.header, { timeout: timeoutMs })
+      .should('be.visible')
+      .invoke('text')
+      .then((text) => {
+        expect(text.toLowerCase()).to.include(expected.toLowerCase());
+      });
   }
 
   /**
@@ -128,7 +95,7 @@ export class CommonActions {
    * @param expected - The exact header text expected.
    */
   assertHeaderEquals(expected: string): void {
-    this.log('verify', 'Checking header equals exact text', { expected });
+    log('verify', 'Checking header equals exact text', { expected });
     cy.get(L.header, { timeout: 15000 }).should('have.text', expected);
   }
 
@@ -148,7 +115,7 @@ export class CommonActions {
    * @param waitFor Target to wait for when finished (regex for pathname or substring for full URL).
    */
   navigateBrowserBackWithConfirmation(waitFor?: RegExp | string): void {
-    this.log('navigate', 'Browser Back with confirmation');
+    log('navigate', 'Browser Back with confirmation');
 
     // 1) Arm confirm handler
     this.confirmUnsavedChangesDialog(/You have unsaved changes/i);
@@ -159,7 +126,7 @@ export class CommonActions {
     // 3) If still on /note/add, try clicking the page "Cancel" link
     cy.location('pathname', { timeout: 1500 }).then((path) => {
       if (/\/note\/add(?:$|[?#])/.test(path)) {
-        this.log('fallback', 'Still on /note/add after history.back(); trying Cancel link');
+        log('fallback', 'Still on /note/add after history.back(); trying Cancel link');
         cy.get('body').then(($b) => {
           const cancelSel = 'a.button-link.govuk-link'; // AccountDetailsNotesLocators.actions.cancelLink
           if ($b.find(cancelSel).length) {
@@ -174,7 +141,7 @@ export class CommonActions {
     // 4) If STILL on /note/add, compute the details URL and force navigate
     cy.location('pathname', { timeout: 1500 }).then((path) => {
       if (/\/note\/add(?:$|[?#])/.test(path)) {
-        this.log('fallback', 'Cancel not effective; forcing navigation to /details');
+        log('fallback', 'Cancel not effective; forcing navigation to /details');
         const detailsPath = path.replace(/\/note\/add(?:$|[?#]).*$/, '/details');
         cy.location('origin').then((origin) => cy.visit(`${origin}${detailsPath}`));
       }

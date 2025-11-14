@@ -1,13 +1,12 @@
 /**
- * @fileoverview DashboardActions
+ * @fileoverview dashboard.actions.ts
  * Provides reusable Cypress actions and assertions for interacting with the Opal Dashboard.
  * Covers dashboard verification and navigation to common areas such as Manual Account Creation
  * and Search for an Account.
- *
- * @module actions/dashboard.actions
  */
 
-import { DashboardLocators as Locators } from '../../../../shared/selectors/dashboard.locators';
+import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
+import { log } from '../../../../support/utils/log.helper';
 
 export class DashboardActions {
   /**
@@ -17,23 +16,23 @@ export class DashboardActions {
    *  1. Waits for the page title to contain "Dashboard".
    *  2. Optionally asserts that the displayed username matches the expected user.
    *
-   * @param {string} [username] - Optional username text to assert on.
+   * @param username - Optional username text to assert on.
    *
    * @example
    *   dashboard.assertDashboard('Test User');
    */
-  assertDashboard(username?: string): void {
-    Cypress.log({ name: 'dashboard', message: 'Asserting Dashboard page is visible' });
+  public assertDashboard(username?: string): void {
+    log('assert', 'Asserting Dashboard page is visible');
 
-    cy.get(Locators.dashboardPageTitle, { timeout: 10000 })
+    cy.get(L.dashboardPageTitle, { timeout: 10_000 })
       .should('contain.text', 'Dashboard')
-      .then(() => Cypress.log({ name: 'assert', message: 'Dashboard title found' }));
+      .then(() => log('done', 'Dashboard title found'));
 
     if (username) {
-      Cypress.log({ name: 'assert', message: `Asserting username: ${username}` });
-      cy.get(Locators.userName, { timeout: 10000 })
+      log('assert', `Asserting username: ${username}`);
+      cy.get(L.userName, { timeout: 10_000 })
         .should('contain.text', username)
-        .then(() => Cypress.log({ name: 'assert', message: 'Username displayed correctly' }));
+        .then(() => log('done', 'Username displayed correctly'));
     }
   }
 
@@ -47,16 +46,12 @@ export class DashboardActions {
    * @example
    *   dashboard.goToManualAccountCreation();
    */
-  goToManualAccountCreation(): void {
-    Cypress.log({
-      name: 'dashboard',
-      displayName: 'Navigation',
-      message: 'Clicking Manual Account Creation link',
-    });
+  public goToManualAccountCreation(): void {
+    log('navigate', 'Clicking Manual Account Creation link');
 
-    cy.get(Locators.manualAccountCreationLink, { timeout: 10000 }).should('be.visible').click({ force: true });
+    cy.get(L.manualAccountCreationLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
 
-    Cypress.log({ name: 'navigate', message: 'Navigated to Manual Account Creation page' });
+    log('done', 'Navigated to Manual Account Creation page');
   }
 
   /**
@@ -70,18 +65,18 @@ export class DashboardActions {
    * @example
    *   dashboard.goToAccountSearch();
    */
-  goToAccountSearch(): void {
-    Cypress.log({ name: 'dashboard', displayName: 'Navigation', message: 'Navigating to Search For An Account' });
+  public goToAccountSearch(): void {
+    log('navigate', 'Navigating to Search for an Account');
 
-    cy.get('#finesSaSearchLink', { timeout: 10000 }).should('be.visible').click({ force: true });
+    cy.get('#finesSaSearchLink', { timeout: 10_000 }).should('be.visible').click({ force: true });
 
-    Cypress.log({ name: 'assert', message: 'Verifying Search for an Account page URL' });
-    cy.location('pathname', { timeout: 10000 }).should('include', '/fines/search-accounts/search');
+    log('assert', 'Verifying Search for an Account page URL');
+    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/search-accounts/search');
 
     // Ensure the search form is rendered
-    Cypress.log({ name: 'assert', message: 'Ensuring search form is visible' });
-    cy.get('app-fines-sa-search, [data-testid="fines-sa-search"]', { timeout: 10000 }).should('be.visible');
+    log('assert', 'Ensuring search form is visible');
+    cy.get('app-fines-sa-search, [data-testid="fines-sa-search"]', { timeout: 10_000 }).should('be.visible');
 
-    Cypress.log({ name: 'done', message: 'Successfully navigated to Search for an Account page' });
+    log('done', 'Successfully navigated to Search for an Account page');
   }
 }

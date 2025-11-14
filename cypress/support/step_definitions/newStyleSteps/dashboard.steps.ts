@@ -1,5 +1,5 @@
 /**
- * @file dashboardsteps.ts
+ * @file dashboard.steps.ts
  * @description
  * Step definitions for **Dashboard navigation** within the Opal application.
  * Covers high-level actions such as opening the Manual Account Creation page

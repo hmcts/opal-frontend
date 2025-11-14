@@ -1,5 +1,5 @@
 /**
- * @file accountNavDetails.locators.ts
+ * @file account.nav.details.locators.ts
  * @description
  * Selector map for the **Account Details Shell** — including the header,
  * navigation links, sub-navigation tabs, and top-level widgets.
@@ -82,6 +82,9 @@ export const AccountNavDetailsLocators = {
     /** Tab link for “Defendant.” */
     defendantTab: 'li[subnavitemid="defendant-tab"] > a.moj-sub-navigation__link',
 
+    /** Tab link for “Parent or guardian.” */
+    parentOrGuardianTab: 'li[subnavitemid="parent-or-guardian-tab"] > a.moj-sub-navigation__link',
+
     /** Tab link for “Payment terms.” */
     paymentTermsTab: 'li[subnavitemid="payment-terms-tab"] > a.moj-sub-navigation__link',
 
@@ -115,6 +118,11 @@ export const AccountNavDetailsLocators = {
   edit: {
     /** Root form selector for edit mode (covers multiple layout variants). */
     form: 'form, .account-details__form',
+  },
+
+  actions: {
+    /** Link or button to open the Comments (Add comments) page from the summary. */
+    addCommentsLink: 'a.govuk-link[href*="comments"], a.govuk-link:contains("Add comments")',
   },
 
   // ──────────────────────────────
