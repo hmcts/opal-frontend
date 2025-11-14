@@ -9458,7 +9458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.15.2, express@npm:^4.21.2":
+"express@npm:^4.21.2":
   version: 4.21.2
   resolution: "express@npm:4.21.2"
   dependencies:
@@ -13686,7 +13686,7 @@ __metadata:
     cypress-parallel: "npm:^0.15.0"
     domino-ext: "npm:^2.1.4"
     eslint: "npm:^9.0.0"
-    express: "npm:^4.15.2"
+    express: "npm:^5.0.0"
     express-session: "npm:^1.17.3"
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^5.0.0"
