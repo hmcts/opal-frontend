@@ -27,7 +27,7 @@ import {
   assertAccessDeniedPage,
   assertErrorMessage,
   assertBackToDashboardAction,
-} from '../../../e2e/functional/opal/actions/accessDenied.actions';
+} from '../../../e2e/functional/opal/actions/access-denied.actions';
 
 /**
  * @step Asserts that the **Access Denied** page is displayed.
