@@ -50,12 +50,13 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab/fines-acc-defendant-details-payment-terms-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -64,6 +65,7 @@ import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fine
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     FinesAccDefendantDetailsDefendantTabComponent,
     FinesAccDefendantDetailsParentOrGuardianTabComponent,
+    FinesAccDefendantDetailsPaymentTermsTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     CustomSummaryMetricBarComponent,
@@ -105,7 +107,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabAtAGlance$: Observable<IOpalFinesAccountDefendantAtAGlance> = EMPTY;
   public tabDefendant$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
   public tabParentOrGuardian$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
-  public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> = EMPTY;
+  public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> = EMPTY;
   public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
@@ -155,7 +157,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'payment-terms':
-          this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
+          this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id));
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
@@ -312,5 +314,26 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         relativeTo: this.activatedRoute,
       });
     }
+  }
+
+  public navigateToAmendPaymentTermsPage(id: string): void {
+    this.opalFinesService.getResults([id]).pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      console.log(res); // Get flag from endpoint results.extend_ttp_disallow to add to check
+      if (
+        this.permissionsService.hasBusinessUnitPermissionAccess(
+          FINES_PERMISSIONS['amend-payment-terms'],
+          Number(this.accountStore.business_unit_id()!),
+          this.userState.business_unit_users,
+        )
+      ) {
+        this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
+          relativeTo: this.activatedRoute,
+        });
+      } else {
+        this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
+          relativeTo: this.activatedRoute,
+        });
+      }
+    });
   }
 }

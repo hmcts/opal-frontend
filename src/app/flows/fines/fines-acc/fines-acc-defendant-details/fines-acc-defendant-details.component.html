@@ -209,7 +209,14 @@
     }
   }
   @case ('payment-terms') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabPaymentTerms$ | async; as tabData) {
+      <app-fines-acc-defendant-details-payment-terms-tab
+        [tabData]="tabData"
+        [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
+        [style]="tabContentStyles"
+        (changePaymentTerms)="navigateToAmendPaymentTermsPage($event)"
+      ></app-fines-acc-defendant-details-payment-terms-tab>
+    }
   }
   @case ('enforcement') {
     <div class="govuk-grid-column-full"></div>

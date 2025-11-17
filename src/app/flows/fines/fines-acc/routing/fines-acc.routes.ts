@@ -77,6 +77,32 @@ export const routing: Routes = [
         },
       },
       {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-terms-amend/fines-acc-payment-terms-amend.component').then(
+            (c) => c.FinesAccPaymentTermsAmendComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['amend-payment-terms']],
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-terms'],
+        },
+        resolve: {
+          title: TitleResolver
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`,
+
+        loadComponent: () =>
+          import('../fines-acc-payment-terms-amend-denied/fines-acc-payment-terms-amend-denied.component').then(
+            (c) => c.FinesAccPaymentTermsAmendDeniedComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+      },
+      {
         path: `:partyType/amend`,
 
         loadComponent: () =>
@@ -93,7 +119,7 @@ export const routing: Routes = [
           title: TitleResolver,
           partyAmendFormData: defendantAccountPartyResolver,
         },
-      },
+      }
     ],
   },
 ];

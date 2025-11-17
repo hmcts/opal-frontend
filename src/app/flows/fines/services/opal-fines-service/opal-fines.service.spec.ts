@@ -746,14 +746,21 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountPaymentTermsTabData', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
+    const account_id: number = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
 
-    service.getDefendantAccountPaymentTermsTabData().subscribe((response) => {
-      expect(response).toEqual(expectedResponse);
-    });
+    service
+      .getDefendantAccountPaymentTermsLatest(account_id)
+      .subscribe((response) => {
+        response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK.version;
+        expect(response).toEqual(expectedResponse);
+      });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccountHistoryAndNotesTabData', () => {

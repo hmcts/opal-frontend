@@ -4,13 +4,13 @@ import { IOpalFinesAccountDefendantAccountParty } from './opal-fines-account-def
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from './opal-fines-account-defendant-details-payment-terms-latest.interface';
 
 export interface IOpalFinesAccountDefendantDetailsTabsCache {
   'at-a-glance': Observable<IOpalFinesAccountDefendantAtAGlance>;
   defendant: Observable<IOpalFinesAccountDefendantAccountParty>;
   'parent-or-guardian': Observable<IOpalFinesAccountDefendantAccountParty>;
-  'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData>;
+  'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>;
   enforcement: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>;
   impositions: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>;
   'history-and-notes': Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData>;
