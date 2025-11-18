@@ -176,6 +176,7 @@ describe('defendantAccountPartyResolver', () => {
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
     mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any

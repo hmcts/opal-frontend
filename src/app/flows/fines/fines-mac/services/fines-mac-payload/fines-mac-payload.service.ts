@@ -32,8 +32,8 @@ import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-se
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-fixed-penalty.utils';
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -97,7 +97,7 @@ export class FinesMacPayloadService {
       parentGuardianDetailsState,
     );
     let fp_ticket_detail = null;
-    if (accountDetailsState.fm_create_account_account_type === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
+    if (accountDetailsState.fm_create_account_account_type === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
       fp_ticket_detail = finesMacPayloadBuildAccountFixedPenalty(fixedPenaltyDetails);
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);

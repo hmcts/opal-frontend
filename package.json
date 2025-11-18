@@ -87,7 +87,7 @@
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
-    "@hmcts/opal-frontend-common": "^0.0.46",
+    "@hmcts/opal-frontend-common": "^0.0.48",
     "@hmcts/opal-frontend-common-node": "^0.0.16",
     "@hmcts/properties-volume": "^1.1.0",
     "@microsoft/applicationinsights-web": "^3.3.5",
@@ -125,11 +125,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.3.1",
-    "@angular-eslint/builder": "20.5.1",
-    "@angular-eslint/eslint-plugin": "20.5.1",
-    "@angular-eslint/eslint-plugin-template": "20.5.1",
-    "@angular-eslint/schematics": "20.5.1",
-    "@angular-eslint/template-parser": "20.5.1",
+    "@angular-eslint/builder": "20.6.0",
+    "@angular-eslint/eslint-plugin": "20.6.0",
+    "@angular-eslint/eslint-plugin-template": "20.6.0",
+    "@angular-eslint/schematics": "20.6.0",
+    "@angular-eslint/template-parser": "20.6.0",
     "@angular/cli": "^20.3.1",
     "@angular/compiler-cli": "^20.3.0",
     "@cypress/grep": "^4.1.0",
@@ -142,8 +142,8 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^24.0.0",
     "@types/session-file-store": "^1.2.5",
-    "@typescript-eslint/eslint-plugin": "8.46.2",
-    "@typescript-eslint/parser": "8.46.2",
+    "@typescript-eslint/eslint-plugin": "8.46.4",
+    "@typescript-eslint/parser": "8.46.4",
     "axe-core": "^4.8.4",
     "browser-sync": "^3.0.2",
     "cypress": "^15.0.0",
@@ -167,7 +167,7 @@
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "~5.9.0"
   },
-  "packageManager": "yarn@4.10.3",
+  "packageManager": "yarn@4.11.0",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
@@ -177,6 +177,6 @@
     "on-headers": "^1.1.0",
     "brace-expansion": "^4.0.0",
     "tmp": "^0.2.4",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.27.0"
   }
 }

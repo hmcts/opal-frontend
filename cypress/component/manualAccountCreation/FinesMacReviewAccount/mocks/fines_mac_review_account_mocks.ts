@@ -14,7 +14,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../../../../../src/app/flows/fi
 import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
   accountDetails: {
@@ -23,7 +23,7 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_business_unit_id: 61,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
-      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
+      fm_create_account_account_type: FINES_ACCOUNT_TYPES.Fine,
     },
   },
   employerDetails: {

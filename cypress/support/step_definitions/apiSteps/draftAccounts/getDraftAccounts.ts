@@ -133,3 +133,22 @@ When('I intercept the get failed account details to ensure there is an account r
     }).as('getFailedDraftAccountDetails');
   });
 });
+When('I intercept the get draft accounts for Fixed Penalty type', () => {
+  cy.fixture('getDraftAccounts/fixedPenaltyAccounts.json').then((accounts) => {
+    cy.intercept('GET', '/opal-fines-service/draft-accounts?*', (req) => {
+      const url = new URL(req.url, 'http://localhost');
+      const statuses = url.searchParams.getAll('status').map((s) => s.toLowerCase());
+
+      // Filter summaries based on status query param
+      const filteredSummaries = accounts.summaries.filter((acc) => {
+        return statuses.includes(acc.account_status.toLowerCase());
+      });
+
+      // Respond with a filtered copy of the fixture
+      req.reply({
+        count: filteredSummaries.length,
+        summaries: filteredSummaries,
+      });
+    }).as('getFixedPenaltyAccounts');
+  });
+});

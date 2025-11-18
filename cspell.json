@@ -3,7 +3,9 @@
   "version": "0.2",
   "language": "en-GB",
   "words": [
-  "AYG",
+    "Accdetail",
+    "ACCDETAILSURNAME",
+    "AYG",
     "AYPG",
     "Authorised",
     "bacs",
@@ -14,16 +16,19 @@
     "COLLO",
     "cyroute",
     "datepicker",
+    "dialog",
+    "dialogs",
     "earliestreleasedate",
     "elem",
     "FCOST",
     "finesmac",
     "forenames",
+    "govuk",
     "Grandtotal",
     "HMCTS",
     "impositions",
     "lastname",
-    "linters"
+    "linters",
     "LJA",
     "macreview",
     "mockable",
@@ -36,7 +41,9 @@
     "PRIS",
     "prisonandprisonnumber",
     "Serde",
-    "Typecheck"
+    "subnavitemfragment",
+    "Typecheck",
+    "Unauthorised"
   ],
   "ignorePaths": [
     "node_modules",

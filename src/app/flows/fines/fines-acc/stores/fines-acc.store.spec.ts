@@ -117,4 +117,16 @@ describe('FinesAccountStore', () => {
     store.clearSuccessMessage();
     expect(store.successMessage()).toBe(null);
   });
+
+  it('should set hasVersionMismatch to true if versions do not match', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.compareVersion('different-version');
+    expect(store.hasVersionMismatch()).toBeTrue();
+  });
+
+  it('should not set hasVersionMismatch to true if versions match', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.compareVersion(MOCK_FINES_ACCOUNT_STATE.base_version);
+    expect(store.hasVersionMismatch()).toBeFalse();
+  });
 });
