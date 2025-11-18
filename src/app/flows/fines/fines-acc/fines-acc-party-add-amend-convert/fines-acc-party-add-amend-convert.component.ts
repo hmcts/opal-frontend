@@ -38,8 +38,19 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
    * @param formData - The form data submitted from the child component
    */
   public handleFormSubmit(formData: IFinesAccPartyAddAmendConvertForm): void {
+    // Defensive checks for required store values
+    const accountId = this.finesAccStore.account_id();
+    const businessUnitId = this.finesAccStore.business_unit_id();
     const partyId =
-      this.partyType === 'parentGuardian' ? this.finesAccStore.pg_party_id()! : this.finesAccStore.party_id()!;
+      this.partyType === 'parentGuardian' ? this.finesAccStore.pg_party_id() : this.finesAccStore.party_id();
+
+    // If any required store values are missing, redirect back to defendant details
+    if (!accountId || !businessUnitId || !partyId) {
+      this['router'].navigate(['../../details'], {
+        relativeTo: this['activatedRoute'],
+      });
+      return;
+    }
 
     const builtPayload = this.payloadService.buildAccountPartyPayload(
       formData.formData,
@@ -49,13 +60,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
     );
 
     this.opalFinesService
-      .putDefendantAccountParty(
-        this.finesAccStore.account_id()!,
-        partyId,
-        builtPayload,
-        this.partyPayload.version!,
-        this.finesAccStore.business_unit_id()!,
-      )
+      .putDefendantAccountParty(accountId, partyId, builtPayload, this.partyPayload.version!, businessUnitId)
       .pipe(
         tap(() => {
           const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
