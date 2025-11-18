@@ -17,4 +17,5 @@ export const OPAL_FINES_CACHE_DEFAULTS: IOpalFinesCache = {
   defendantAccountImpositionsCache$: null,
   defendantAccountHistoryAndNotesCache$: null,
   defendantAccountPaymentTermsLatestCache$: null,
+  defendantAccountFixedPenaltyCache$: null,
 };

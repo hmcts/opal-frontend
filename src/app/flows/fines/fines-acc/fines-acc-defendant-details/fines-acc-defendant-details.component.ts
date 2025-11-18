@@ -59,6 +59,9 @@ import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fine
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab/fines-acc-defendant-details-payment-terms-tab.component';
 import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
 import { IFinesAccDefendantAccountTabsCacheMap } from './interfaces/fines-acc-defendant-account-tabs-cache-map.interface';
+import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from './fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -68,6 +71,7 @@ import { IFinesAccDefendantAccountTabsCacheMap } from './interfaces/fines-acc-de
     FinesAccDefendantDetailsDefendantTabComponent,
     FinesAccDefendantDetailsParentOrGuardianTabComponent,
     FinesAccDefendantDetailsPaymentTermsTabComponent,
+    FinesAccDefendantDetailsFixedPenaltyTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
     CustomSummaryMetricBarComponent,
@@ -113,7 +117,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
+  public tabFixedPenalty$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
+  public accountTypes = FINES_ACCOUNT_TYPES;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -160,6 +166,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.opalFinesService.getParentOrGuardianAccountParty(account_id, parent_guardian_party_id),
           );
           break;
+        case 'fixed-penalty':
+          this.tabFixedPenalty$ = this.fetchTabData(this.opalFinesService.getDefendantAccountFixedPenalty(account_id));
+          break;
         case 'payment-terms':
           this.tabPaymentTerms$ = this.fetchTabData(
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id),
@@ -190,22 +199,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     return serviceCall.pipe(
       map((data) => this.payloadService.transformPayload(data, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
       tap((data) => {
-        this.compareVersion(data.version);
+        this.accountStore.compareVersion(data.version);
       }),
       distinctUntilChanged(),
       takeUntil(this.destroy$),
     );
-  }
-
-  /**
-   * Compares the version of the fetched data with the current version in the store.
-   * If there is a mismatch, it triggers a warning banner
-   * @param version the version of the fetched data
-   */
-  private compareVersion(version: string | null): void {
-    if (version !== this.accountStore.base_version()) {
-      this.accountStore.setHasVersionMismatch(true);
-    }
   }
 
   /**

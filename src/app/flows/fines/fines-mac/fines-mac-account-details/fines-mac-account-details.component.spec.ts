@@ -26,7 +26,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
-import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -138,7 +138,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
-      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES['Conditional Caution'],
+      fm_create_account_account_type: FINES_ACCOUNT_TYPES['Conditional Caution'],
     };
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -146,7 +146,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['setAccountType']();
 
     expect(component.defendantType).toEqual('Adult or youth only');
-    expect(component.accountType).toEqual(FINES_MAC_ACCOUNT_TYPES['Conditional Caution']);
+    expect(component.accountType).toEqual(FINES_ACCOUNT_TYPES['Conditional Caution']);
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
@@ -258,7 +258,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     finesMacState.accountDetails.formData = {
       ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay,
-      fm_create_account_account_type: FINES_MAC_ACCOUNT_TYPES.Fine,
+      fm_create_account_account_type: FINES_ACCOUNT_TYPES.Fine,
       fm_create_account_business_unit_id: 1,
     };
     finesMacState.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);

@@ -13,6 +13,7 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './opal-f
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from './opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 
 export interface IOpalFinesCache {
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
@@ -31,4 +32,5 @@ export interface IOpalFinesCache {
   defendantAccountImpositionsCache$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
   defendantAccountPaymentTermsLatestCache$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> | null;
+  defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;
 }

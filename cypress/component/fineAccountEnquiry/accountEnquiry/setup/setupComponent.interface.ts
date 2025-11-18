@@ -8,6 +8,7 @@ export interface IComponentProperties {
     | 'enforcement'
     | 'impositions'
     | 'history-and-notes'
+    | 'fixed-penalty'
     | undefined;
   interceptedRoutes: string[];
 }
