@@ -378,7 +378,7 @@ export class OpalFines {
     if (cacheKey in OPAL_FINES_CACHE_DEFAULTS) {
       /*eslint-disable @typescript-eslint/no-explicit-any */
       this.cache[cacheKey] = structuredClone(OPAL_FINES_CACHE_DEFAULTS as any)[cacheKey];
-    } 
+    }
   }
 
   /**

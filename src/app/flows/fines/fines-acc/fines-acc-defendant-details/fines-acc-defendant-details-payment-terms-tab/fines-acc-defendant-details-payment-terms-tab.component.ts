@@ -41,8 +41,8 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
         : 'Instalments only';
   }
 
-  public handleChangePaymentTerms(id: string): void {
-    this.changePaymentTerms.emit(id);
+  public handleChangePaymentTerms(lastEnforcementId: string): void {
+    this.changePaymentTerms.emit(lastEnforcementId);
   }
 
   public handleRequestPaymentCard(): void {

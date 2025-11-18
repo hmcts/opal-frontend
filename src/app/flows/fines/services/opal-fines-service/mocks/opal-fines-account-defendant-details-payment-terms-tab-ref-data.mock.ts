@@ -1,6 +1,6 @@
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '../interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 
-export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK: IOpalFinesAccountDefendantDetailsPaymentTermsLatest =
+export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK: IOpalFinesAccountDefendantDetailsPaymentTermsLatest =
   {
     version: null,
     payment_terms: {

@@ -322,12 +322,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
-  public navigateToAmendPaymentTermsPage(id: string): void {
+  public navigateToAmendPaymentTermsPage(lastEnforcementId: string): void {
     this.opalFinesService
-      .getResults([id])
+      .getResults([lastEnforcementId])
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        // Get flag from endpoint results.extend_ttp_disallow to add to check
+      .subscribe(() => {
+        // TODO: Get flag from endpoint results.extend_ttp_disallow to add to check
         if (
           this.permissionsService.hasBusinessUnitPermissionAccess(
             FINES_PERMISSIONS['amend-payment-terms'],
