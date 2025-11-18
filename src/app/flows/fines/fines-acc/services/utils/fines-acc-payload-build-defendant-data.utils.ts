@@ -13,6 +13,7 @@ import {
 import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { IFinesAccPartyAddAmendConvertIndividualAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-individual-alias-state.interface';
 import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-organisation-alias-state.interface';
+import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 
 /**
  * Builds individual aliases array from form state
@@ -198,10 +199,17 @@ const buildEmployerDetails = (
  */
 const createLanguagePreference = (
   languageCode: string,
-): { language_code: 'CY' | 'EN'; language_display_name: 'Welsh and English' | 'English only' } => ({
-  language_code: languageCode as 'CY' | 'EN',
-  language_display_name: languageCode === 'CY' ? 'Welsh and English' : 'English only',
-});
+): { language_code: 'CY' | 'EN'; language_display_name: 'Welsh and English' | 'English only' } => {
+  const validLanguageCode = languageCode as keyof typeof FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
+  const displayName = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[validLanguageCode];
+
+  return {
+    language_code: languageCode as 'CY' | 'EN',
+    language_display_name: (displayName || FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS.EN) as
+      | 'Welsh and English'
+      | 'English only',
+  };
+};
 
 /**
  * Builds language preferences from form state

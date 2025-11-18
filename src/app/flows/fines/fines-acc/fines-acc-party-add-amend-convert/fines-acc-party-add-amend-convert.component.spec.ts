@@ -218,4 +218,197 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
     expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
+
+  it('should redirect to defendant details when account_id is missing', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup missing account_id
+    mockFinesAccStore.account_id.and.returnValue(null);
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when business_unit_id is missing', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup missing business_unit_id
+    mockFinesAccStore.business_unit_id.and.returnValue(null);
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when party_id is missing for individual party type', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup missing party_id (individual type uses party_id)
+    mockFinesAccStore.party_id.and.returnValue(null);
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when pg_party_id is missing for parentGuardian party type', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Override partyType for this test and setup missing pg_party_id
+    Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
+    mockFinesAccStore.pg_party_id.and.returnValue(null);
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when account_id is undefined', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup undefined account_id
+    mockFinesAccStore.account_id.and.returnValue(undefined);
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when account_id is empty string', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup empty string account_id
+    mockFinesAccStore.account_id.and.returnValue('');
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should redirect to defendant details when multiple store values are missing', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Setup multiple missing values
+    mockFinesAccStore.account_id.and.returnValue(null);
+    mockFinesAccStore.business_unit_id.and.returnValue(undefined);
+    mockFinesAccStore.party_id.and.returnValue('');
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+    });
+    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
+  });
+
+  it('should proceed with API call when all store values are present and valid', () => {
+    // Arrange
+    const mockFormData = {
+      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+      nestedFlow: false,
+    };
+
+    // Ensure all store values are valid
+    mockFinesAccStore.account_id.and.returnValue(123);
+    mockFinesAccStore.business_unit_id.and.returnValue('bu-123');
+    mockFinesAccStore.party_id.and.returnValue('party-123');
+    mockRouter.navigate.calls.reset();
+
+    // Act
+    component.handleFormSubmit(mockFormData);
+
+    // Assert
+    expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+      relativeTo: jasmine.any(Object),
+      fragment: 'defendant',
+    });
+  });
+
+  it('should set stateUnsavedChanges when handleUnsavedChanges is called with true', () => {
+    component.handleUnsavedChanges(true);
+    expect(component.stateUnsavedChanges).toBe(true);
+  });
+
+  it('should set stateUnsavedChanges when handleUnsavedChanges is called with false', () => {
+    component.handleUnsavedChanges(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+  });
+
+  it('should update stateUnsavedChanges value correctly when toggling', () => {
+    component.handleUnsavedChanges(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+    component.handleUnsavedChanges(true);
+    expect(component.stateUnsavedChanges).toBe(true);
+    component.handleUnsavedChanges(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+  });
 });
