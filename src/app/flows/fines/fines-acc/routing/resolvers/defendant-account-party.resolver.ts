@@ -41,12 +41,10 @@ export const defendantAccountPartyResolver: ResolveFn<IOpalFinesAccountDefendant
    */
   return opalFinesService.getDefendantAccountHeadingData(Number(accountId)).pipe(
     switchMap((headingData) => {
-      const partyTypeCheck = headingData.debtor_type === 'Parent/Guardian' && partyType === 'parentGuardian';
-      // Determine which party ID to use based on debtor_type
-      const partyId = partyTypeCheck ? headingData.parent_guardian_party_id : headingData.defendant_account_party_id;
+      const partyId =
+        partyType === 'parentGuardian' ? headingData.parent_guardian_party_id : headingData.defendant_account_party_id;
 
       if (!partyId) {
-        // If no valid party ID found, redirect back to defendant details
         return of(createDefendantDetailsRedirect(router));
       }
 
