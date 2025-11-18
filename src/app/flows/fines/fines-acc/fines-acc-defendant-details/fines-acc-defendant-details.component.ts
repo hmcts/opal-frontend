@@ -57,6 +57,8 @@ import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@ser
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab/fines-acc-defendant-details-payment-terms-tab.component';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
+import { IFinesAccDefendantAccountTabsCacheMap } from './interfaces/fines-acc-defendant-account-tabs-cache-map.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -133,7 +135,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private setupTabDataStream(): void {
     const fragment$ = merge(
       this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
-        this.opalFinesService.clearAccountDetailsCache(),
+        this.opalFinesService.clearCache(
+          FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP[this.activeTab as keyof IFinesAccDefendantAccountTabsCacheMap],
+        ),
       ),
       this.refreshFragment$,
     );
@@ -157,7 +161,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           );
           break;
         case 'payment-terms':
-          this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id));
+          this.tabPaymentTerms$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id),
+          );
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
@@ -317,23 +323,26 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public navigateToAmendPaymentTermsPage(id: string): void {
-    this.opalFinesService.getResults([id]).pipe(takeUntil(this.destroy$)).subscribe((res) => {
-      console.log(res); // Get flag from endpoint results.extend_ttp_disallow to add to check
-      if (
-        this.permissionsService.hasBusinessUnitPermissionAccess(
-          FINES_PERMISSIONS['amend-payment-terms'],
-          Number(this.accountStore.business_unit_id()!),
-          this.userState.business_unit_users,
-        )
-      ) {
-        this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
-          relativeTo: this.activatedRoute,
-        });
-      } else {
-        this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
-          relativeTo: this.activatedRoute,
-        });
-      }
-    });
+    this.opalFinesService
+      .getResults([id])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        // Get flag from endpoint results.extend_ttp_disallow to add to check
+        if (
+          this.permissionsService.hasBusinessUnitPermissionAccess(
+            FINES_PERMISSIONS['amend-payment-terms'],
+            Number(this.accountStore.business_unit_id()!),
+            this.userState.business_unit_users,
+          )
+        ) {
+          this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
+            relativeTo: this.activatedRoute,
+          });
+        } else {
+          this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
+            relativeTo: this.activatedRoute,
+          });
+        }
+      });
   }
 }

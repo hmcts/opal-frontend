@@ -90,7 +90,7 @@ export const routing: Routes = [
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-terms'],
         },
         resolve: {
-          title: TitleResolver
+          title: TitleResolver,
         },
       },
       {
@@ -119,7 +119,7 @@ export const routing: Routes = [
           title: TitleResolver,
           partyAmendFormData: defendantAccountPartyResolver,
         },
-      }
+      },
     ],
   },
 ];

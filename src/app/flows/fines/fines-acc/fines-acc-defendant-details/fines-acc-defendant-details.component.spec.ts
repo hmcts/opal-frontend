@@ -66,8 +66,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'getDefendantAccountPaymentTermsLatest',
       'getDefendantAccountParty',
       'getParentOrGuardianAccountParty',
-      'clearAccountDetailsCache',
-      'getResults'
+      'clearCache',
+      'getResults',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
@@ -89,9 +89,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getResults.and.returnValue(
-      of(OPAL_FINES_RESULTS_REF_DATA_MOCK),
-    );
+    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -261,16 +259,22 @@ describe('FinesAccDefendantDetailsComponent', () => {
   it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
     component.navigateToAmendPaymentTermsPage('123');
-    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
-      relativeTo: component['activatedRoute'],
-    });
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 
   it('should navigate to the change defendant payment terms page if user has the relevant permission', () => {
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
     component.navigateToAmendPaymentTermsPage('123');
-    expect(routerSpy.navigate).toHaveBeenCalledWith([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
-      relativeTo: component['activatedRoute'],
-    });
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 });

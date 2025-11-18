@@ -39,7 +39,6 @@ import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-a
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
-import { of } from 'rxjs';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
@@ -50,8 +49,8 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOC
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
-import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
+import { of } from 'rxjs';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -428,7 +427,7 @@ describe('OpalFines', () => {
     httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
 
     // Clear the cache
-    service.clearDraftAccountsCache();
+    service.clearCache('draftAccountsCache$');
 
     // After clearing, a new request should be made and return correct data
     service.getDraftAccounts(filters).subscribe((response) => {
@@ -750,12 +749,10 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK;
 
-    service
-      .getDefendantAccountPaymentTermsLatest(account_id)
-      .subscribe((response) => {
-        response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK.version;
-        expect(response).toEqual(expectedResponse);
-      });
+    service.getDefendantAccountPaymentTermsLatest(account_id).subscribe((response) => {
+      response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK.version;
+      expect(response).toEqual(expectedResponse);
+    });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
@@ -849,13 +846,12 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
-  it('should clear account details cache', () => {
-    const tab = 'at-a-glance';
-    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    service.clearAccountDetailsCache();
+  it('should clear the cache using clearCache method', () => {
+    service['cache']['defendantAccountAtAGlanceCache$'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    service.clearCache('defendantAccountAtAGlanceCache$');
 
     // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$']).toEqual({} as IOpalFinesAccountDefendantDetailsTabsCache);
+    expect(service['cache']['defendantAccountAtAGlanceCache$']).toBeNull();
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {

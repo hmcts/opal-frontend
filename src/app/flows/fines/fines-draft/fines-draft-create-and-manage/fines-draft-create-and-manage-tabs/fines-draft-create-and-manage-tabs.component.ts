@@ -88,7 +88,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    */
   private setupTabDataStream(): void {
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('review', this.destroy$), () =>
-      this.opalFinesService.clearDraftAccountsCache(),
+      this.opalFinesService.clearCache('draftAccountsCache$'),
     );
 
     this.tabData$ = this.createTabDataStream(
@@ -140,7 +140,7 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    */
   private setupRejectedCountStream(): void {
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('review', this.destroy$), () =>
-      this.opalFinesService.clearDraftAccountsCache(),
+      this.opalFinesService.clearCache('draftAccountsCache$'),
     );
 
     this.rejectedCount$ = this.createCountStream(

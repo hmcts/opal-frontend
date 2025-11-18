@@ -1,24 +1,25 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
-import { UpperCasePipe } from '@angular/common';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { GovukTagComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tag';
-import { MojBadgeComponent } from '@hmcts/opal-frontend-common/components/moj/moj-badge';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
-import { GovukSummaryListComponent, GovukSummaryListRowComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import {
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
-  imports: [ FinesNotProvidedComponent,
+  imports: [
+    FinesNotProvidedComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    GovukSummaryCardListComponent],
+    GovukSummaryCardListComponent,
+  ],
   templateUrl: './fines-acc-defendant-details-payment-terms-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -35,7 +36,9 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   public cardTitle(): string {
     return this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B'
       ? 'Pay in full'
-      : this.tabData.payment_terms.lump_sum_amount ? 'Lump sum plus instalments' : 'Instalments only';
+      : this.tabData.payment_terms.lump_sum_amount
+        ? 'Lump sum plus instalments'
+        : 'Instalments only';
   }
 
   public handleChangePaymentTerms(id: string): void {

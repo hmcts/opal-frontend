@@ -81,7 +81,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    */
   private setupTabDataStream(): void {
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearDraftAccountsCache(),
+      this.opalFinesService.clearCache('draftAccountsCache$'),
     );
 
     this.tabData$ = this.createTabDataStream<IOpalFinesDraftAccountsResponse, IFinesDraftTableWrapperTableData[]>(
@@ -127,7 +127,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
    */
   private setupFailedCountStream(): void {
     const fragment$ = this.clearCacheOnTabChange(this.getFragmentStream('to-review', this.destroy$), () =>
-      this.opalFinesService.clearDraftAccountsCache(),
+      this.opalFinesService.clearCache('draftAccountsCache$'),
     );
 
     this.failedCount$ = this.createCountStream(
