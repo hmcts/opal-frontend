@@ -20,7 +20,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay, tap } from 'rxjs';
 import {
   IOpalFinesOffencesNonSnakeCase,
   IOpalFinesOffencesRefData,
@@ -806,6 +806,10 @@ export class OpalFines {
       headers['Business-Unit-Id'] = businessUnitId;
     }
 
-    return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
+    return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers }).pipe(
+      tap(() => {
+        this.clearAccountDetailsCache();
+      }),
+    );
   }
 }
