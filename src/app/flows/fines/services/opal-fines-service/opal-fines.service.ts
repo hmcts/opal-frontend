@@ -60,6 +60,7 @@ import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defe
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
 import { IOpalFinesMinorCreditorAccountsResponse } from './interfaces/opal-fines-minor-creditors-accounts.interface';
 import { IOpalFinesCreditorAccountsSearchParams } from './interfaces/opal-fines-creditor-accounts-search-params.interface';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -592,6 +593,35 @@ export class OpalFines {
         );
     }
     return this.accountDetailsCache$['parent-or-guardian'];
+  }
+
+  /**
+   * Retrieves the defendant account fixed penalty details tab data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @returns An Observable that emits the account's fixed penalty details.
+   */
+  public getDefendantAccountFixedPenalty(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> {
+    if (!this.accountDetailsCache$['fixed-penalty']) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/fixed-penalty`;
+      this.accountDetailsCache$['fixed-penalty'] = this.http
+        .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.accountDetailsCache$['fixed-penalty'];
   }
 
   /**

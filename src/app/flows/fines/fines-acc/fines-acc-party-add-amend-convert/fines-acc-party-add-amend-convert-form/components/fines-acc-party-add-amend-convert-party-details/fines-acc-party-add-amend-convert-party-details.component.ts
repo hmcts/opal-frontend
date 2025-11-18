@@ -27,5 +27,6 @@ export class FinesAccPartyAddAmendConvertPartyDetails extends AbstractNestedForm
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Input({ required: true }) public isCompanyPartyType!: boolean;
   @Input({ required: true }) public isIndividualPartyType!: boolean;
+  @Input({ required: true }) public isParentGuardianPartyType!: boolean;
   @Input({ required: true }) public titleOptions!: IGovUkSelectOptions[];
 }

@@ -5,11 +5,13 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './opal-f
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 
 export interface IOpalFinesAccountDefendantDetailsTabsCache {
   'at-a-glance': Observable<IOpalFinesAccountDefendantAtAGlance>;
   defendant: Observable<IOpalFinesAccountDefendantAccountParty>;
   'parent-or-guardian': Observable<IOpalFinesAccountDefendantAccountParty>;
+  'fixed-penalty': Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>;
   'payment-terms': Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData>;
   enforcement: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>;
   impositions: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>;

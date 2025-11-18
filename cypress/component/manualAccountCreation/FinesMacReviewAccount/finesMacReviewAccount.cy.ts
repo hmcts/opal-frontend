@@ -19,7 +19,7 @@ import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -301,7 +301,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
       cy.get(DOM_ELEMENTS.accountTypeData)
         .should('contain', 'Account type')
-        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+        .should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData)
         .should('contain', 'Defendant type')
         .should('contain', 'Adult or youth only');
@@ -507,9 +507,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -725,7 +723,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
       cy.get(DOM_ELEMENTS.accountTypeData)
         .should('contain', 'Account type')
-        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+        .should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');
@@ -912,9 +910,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Adult or youth only');
 
     cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
@@ -1028,9 +1024,7 @@ describe('FinesMacReviewAccountComponent', () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -1145,7 +1139,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
       cy.get(DOM_ELEMENTS.accountTypeData)
         .should('contain', 'Account type')
-        .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+        .should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
       cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');

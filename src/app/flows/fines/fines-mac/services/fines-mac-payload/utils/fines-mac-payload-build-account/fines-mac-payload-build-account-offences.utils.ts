@@ -1,4 +1,4 @@
-import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
@@ -131,7 +131,7 @@ export const finesMacPayloadBuildAccountOffences = (
   accountType?: string | null,
 ): IFinesMacPayloadAccountOffences[] => {
   // If fixed penalty details are provided, use them to build and return a single offence payload
-  if (fixedPenaltyDetails && accountType && accountType === FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']) {
+  if (fixedPenaltyDetails && accountType && accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
     return [
       {
         date_of_sentence: fixedPenaltyDetails.fm_offence_details_date_of_offence,
