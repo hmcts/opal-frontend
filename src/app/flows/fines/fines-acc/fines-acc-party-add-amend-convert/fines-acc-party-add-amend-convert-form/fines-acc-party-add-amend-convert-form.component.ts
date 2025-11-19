@@ -378,8 +378,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.dateOfBirthListener();
-    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
-    this.dateOfBirthListener();
   }
 
   /**
