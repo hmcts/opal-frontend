@@ -412,3 +412,46 @@ Feature: Check and Validate - Checker
     #AC.8 Back button
     When I click on the "Back" link
     And I see "Review accounts" on the page header
+
+  @PO-1804
+  Scenario: As a user I can view Fixed Penalty Details when selecting defendant name link under To Review tab
+    And I create a "fixedPenalty" draft account with the following details:
+      | account.defendant.forenames | John     |
+      | account.defendant.surname   | TestLast |
+    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
+    Then I am on the dashboard
+
+    Given I navigate to Check and Validate Draft Accounts
+    And I see "Review accounts" on the page header
+
+    And I see "To review" on the status heading
+
+    # Click on the defendant name link
+    When I click on the "TestLast, John" link
+    Then I see "Mr John TESTLAST" on the page header
+
+    # Verify all Fixed Penalty sections and fields are displayed correctly
+    Then I verify all Fixed Penalty account summary sections and values are displayed in order
+
+
+  @PO-1804
+  Scenario: AC1 - As a user I can view Fixed Penalty Details when selecting company defendant name link under To Review tab
+
+    # Create a Fixed Penalty company account
+    Given I create a "fixedPenaltyCompany" draft account with the following details:
+      | account.defendant.company_name | TEST Fixed-Penalty-Company-Ltd |
+    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
+    Then I am on the dashboard
+
+    Given I navigate to Check and Validate Draft Accounts
+    And I see "Review accounts" on the page header
+
+    And I see "To review" on the status heading
+    # Click on the company name link
+    Then I click on the "TEST Fixed-Penalty-Company-Ltd" link
+    And I see "TEST Fixed-Penalty-Company-Ltd" on the page header
+
+    # Verify all Fixed Penalty sections and fields are displayed correctly for company
+    Then I verify all Fixed Penalty company account summary sections and values are displayed in order
+
+

@@ -1,0 +1,131 @@
+{
+  "draft_account_id": null,
+  "created_at": null,
+  "account_snapshot": null,
+  "account_status_date": null,
+  "business_unit_id": 77,
+  "submitted_by": "L077JG",
+  "submitted_by_name": "opal-test",
+  "account": {
+    "account_type": "Fixed Penalty",
+    "defendant_type": "adultOrYouthOnly",
+    "originator_name": "Fixed Penalty Office",
+    "originator_id": 9225,
+    "prosecutor_case_reference": "AADS",
+    "enforcement_court_id": 770000000001,
+    "collection_order_made": null,
+    "collection_order_made_today": null,
+    "collection_order_date": null,
+    "suspended_committal_date": null,
+    "payment_card_request": null,
+    "account_sentence_date": "15/05/2025",
+    "defendant": {
+      "company_flag": false,
+      "title": "Mr",
+      "surname": "TestLast",
+      "forenames": "John",
+      "company_name": null,
+      "dob": "01/01/1990",
+      "address_line_1": "123 Test Street",
+      "address_line_2": null,
+      "address_line_3": null,
+      "address_line_4": null,
+      "address_line_5": null,
+      "post_code": "TE1 1ST",
+      "telephone_number_home": null,
+      "telephone_number_business": null,
+      "telephone_number_mobile": null,
+      "email_address_1": "john.test@example.com",
+      "email_address_2": null,
+      "national_insurance_number": "AA123456A",
+      "driving_licence_number": "ABCDE123456AA1B1",
+      "pnc_id": null,
+      "nationality_1": null,
+      "nationality_2": null,
+      "ethnicity_self_defined": null,
+      "ethnicity_observed": null,
+      "cro_number": null,
+      "occupation": null,
+      "gender": "Male",
+      "custody_status": null,
+      "prison_number": null,
+      "interpreter_lang": null,
+      "debtor_detail": {
+        "vehicle_make": "Ford Focus",
+        "vehicle_registration_mark": "AB12 CDE",
+        "document_language": "English",
+        "hearing_language": "English",
+        "employee_reference": null,
+        "employer_company_name": null,
+        "employer_address_line_1": null,
+        "employer_address_line_2": null,
+        "employer_address_line_3": null,
+        "employer_address_line_4": null,
+        "employer_address_line_5": null,
+        "employer_post_code": null,
+        "employer_telephone_number": null,
+        "employer_email_address": null,
+        "aliases": null
+      },
+      "parent_guardian": null
+    },
+    
+    "offences": [
+      {
+        "offence_type": "Vehicle",
+        "date_of_sentence": "15/05/2025",
+        "imposing_court_id": 770000000001,
+        "offence_id": 33369,
+        "impositions": [
+          {
+            "result_id": "FCOST",
+            "amount_imposed": 2200,
+            "amount_paid": 100,
+            "major_creditor_id": 770000000001,
+            "minor_creditor": null
+          }
+        ]
+      }
+    ],
+    "fp_ticket_detail": {
+      "ticket_number": "FP123456789",
+      "vehicle_registration": "AB12 CDE",
+      "offence_location": "High Street, Test Town",
+      "notice_type": "Fixed Penalty Notice",
+      "date_of_notice": "15/05/2025",
+      "offence_type": "Vehicle",
+      "notice_to_hirer_number": "NTH123456",
+      "date_notice_to_owner_issued": "10/05/2025",
+      "time_of_offence": "14:30",
+      "driving_licence_number": "ABCDE123456AA1B1",
+      "fp_registration_number": "AB12 CDE",
+      "fp_driving_licence_number": "ABCDE123456AA1B1",
+      "notice_number": "FP123456789",
+      "place_of_offence": "High Street, Test Town",
+      "date_of_issue": "15/05/2025",
+      "time_of_issue": "14:30",
+      "notice_to_owner_hirer": "NTH123456"
+    },
+    "payment_terms": {
+      "payment_terms_type_code": "B",
+      "effective_date": "15/06/2025",
+      "instalment_period": null,
+      "lump_sum_amount": null,
+      "instalment_amount": null,
+      "default_days_in_jail": null,
+      "enforcements": null
+    },
+    "account_notes": null
+  },
+  "account_type": "Fixed Penalty",
+  "account_status": "Submitted",
+  "timeline_data": [
+    {
+      "username": "opal-test",
+      "status": "Submitted",
+      "status_date": "17/11/2025",
+      "reason_text": "Created for testing Fixed Penalty functionality"
+    }
+  ],
+  "version": 0
+}
