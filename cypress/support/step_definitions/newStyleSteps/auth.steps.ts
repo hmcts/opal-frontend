@@ -35,7 +35,7 @@ Given('I am logged in with email {string}', (email: string) => {
     name: 'auth',
     displayName: 'Login',
     message: `Logging in as ${email}`,
-    consoleProps: () => ({ email }),
+    consoleProps: () => ({ user: email }),
   });
 
   loginAndLandOnDashboard(email);

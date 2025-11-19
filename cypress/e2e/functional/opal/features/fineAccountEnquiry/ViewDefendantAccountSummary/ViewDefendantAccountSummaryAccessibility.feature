@@ -1,117 +1,95 @@
 @PO-777
 Feature: View Defendant Account Summary - Add Comments Accessibility
 
-    Background:
-        Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-        Then I am on the dashboard
-        And I clear all approved draft accounts
-        When I navigate to Search For An Account
+  Background:
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    And I clear all approved draft accounts
 
-    Scenario: Check View Defendant Account Summary and Comments Accessibility with Axe-Core for Individual Account
-        # Create & publish an individual (adultOrYouthOnly) account then check accessibility
-        And I create a "adultOrYouthOnly" draft account with the following details:
-            | Account_status                          | Submitted                      |
-            | account.defendant.forenames             | John                           |
-            | account.defendant.surname               | AccDetailSurname               |
-            | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
-            | account.defendant.telephone_number_home | 02078259314                    |
-            | account.account_type                    | Fine                           |
-            | account.prosecutor_case_reference       | PCR-AUTO-002                   |
-            | account.collection_order_made           | false                          |
-            | account.collection_order_made_today     | false                          |
-            | account.payment_card_request            | false                          |
-            | account.defendant.dob                   | 2002-05-15                     |
-        When I update the last created draft account with status "Publishing Pending"
-        And the update should succeed and return a new strong ETag
-        And I enter "AccDetailSurname" into the "Last name" field
-        And I click the "Search" button
-        Then I click the latest published account link
-        And I see "Mr John ACCDETAILSURNAME" on the page header
+  @PO-777
+  Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
+    # Create & publish an individual (adultOrYouthOnly) account then check accessibility
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending":
+      | Account_status                          | Submitted                      |
+      | account.defendant.forenames             | John                           |
+      | account.defendant.surname               | AccDetailSurname               |
+      | account.defendant.email_address_1       | John.AccDetailSurname@test.com |
+      | account.defendant.telephone_number_home | 02078259314                    |
+      | account.account_type                    | Fine                           |
+      | account.prosecutor_case_reference       | PCR-AUTO-002                   |
+      | account.collection_order_made           | false                          |
+      | account.collection_order_made_today     | false                          |
+      | account.payment_card_request            | false                          |
+      | account.defendant.dob                   | 2002-05-15                     |
+    And I search for the account by last name "AccDetailSurname" and verify the page header is "Mr John ACCDETAILSURNAME"
 
-        ## Check Accessibility on Add Comments Page
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        Then I check accessibility
+    #  Check Accessibility on Add Comments Page
+    When I open the Comments page from the defendant summary and verify the page contents
+    Then I check the page for accessibility and navigate back
 
-        ## Check Accessibility with Form Data Entered
-        And I enter "Comment Test" into the "comment" text field
-        And I enter "Line1 Test" into the "Line 1" text field
-        And I enter "Line2 Test" into the "Line 2" text field
-        And I enter "Line3 Test" into the "Line 3" text field
+    # Check Accessibility with Form Data Entered
+    When I save the following comments and verify the account header is "Mr John ACCDETAILSURNAME":
+      | field   | text         |
+      | Comment | Comment Test |
+      | Line 1  | Line1 Test   |
+      | Line 2  | Line2 Test   |
+      | Line 3  | Line3 Test   |
+    Then I check the page for accessibility
 
-        ## Save comments and check accessibility with populated comments
-        And I click the "Save comments" button
-        And I see "Mr John ACCDETAILSURNAME" on the page header
-        Then I check accessibility
+  Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
+    # Create & publish a company account then check accessibility
+    Given I create a "company" draft account with the following details and set status "Publishing Pending":
+      | Account_status                      | Submitted              |
+      | account.defendant.company_name      | Accdetail comp         |
+      | account.defendant.email_address_1   | Accdetailcomp@test.com |
+      | account.defendant.post_code         | AB23 4RN               |
+      | account.account_type                | Fine                   |
+      | account.prosecutor_case_reference   | PCR-AUTO-003           |
+      | account.collection_order_made       | false                  |
+      | account.collection_order_made_today | false                  |
+      | account.payment_card_request        | false                  |
+    When I open the company account details for "Accdetail comp"
 
-    Scenario: Check View Defendant Company Account Summary and Comments Accessibility with Axe-Core
-        # Create & publish a company account then check accessibility
-        And I create a "company" draft account with the following details:
-            | Account_status                      | Submitted              |
-            | account.defendant.company_name      | Accdetail comp         |
-            | account.defendant.email_address_1   | Accdetailcomp@test.com |
-            | account.defendant.post_code         | AB23 4RN               |
-            | account.account_type                | Fine                   |
-            | account.prosecutor_case_reference   | PCR-AUTO-003           |
-            | account.collection_order_made       | false                  |
-            | account.collection_order_made_today | false                  |
-            | account.payment_card_request        | false                  |
-        When I update the last created draft account with status "Publishing Pending"
-        And the update should succeed and return a new strong ETag
-        And I click on the "Companies" link
-        And I enter "Accdetail comp" into the "Company name" field
-        And I click the "Search" button
-        Then I click the latest published account link
-        And I see "Accdetail comp" on the page header
+    # Check Accessibility on Add Comments Page for Company
+    When I open the Comments page from the defendant summary and verify the page contents
+    Then I check the page for accessibility and navigate back
 
-        ## Check Accessibility on Add Comments Page for Company
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        Then I check accessibility
+    # Check Accessibility with Company Form Data Entered
+    When I save the following comments and verify the account header is "Accdetail comp":
+      | field   | text            |
+      | Comment | Company Comment |
+      | Line 1  | Company Line1   |
+      | Line 2  | Company Line2   |
+      | Line 3  | Company Line3   |
+    Then I check the page for accessibility
 
-        ## Check Accessibility with Company Form Data Entered
-        And I enter "Company Comment" into the "comment" text field
-        And I enter "Company Line1" into the "Line 1" text field
-        And I enter "Company Line2" into the "Line 2" text field
-        And I enter "Company Line3" into the "Line 3" text field
-        ## Save comments and check accessibility with populated comments
-        When I click the "Save comments" button
-        And I see "Accdetail comp" on the page header
-        Then I check accessibility
+  Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
+    # Create & publish a pgToPay account then check accessibility
+    Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
+      | Account_status                          | Submitted                       |
+      | account.defendant.forenames             | Michael                         |
+      | account.defendant.surname               | ParentGuardianSurname           |
+      | account.defendant.email_address_1       | Michael.ParentGuardian@test.com |
+      | account.defendant.telephone_number_home | 02078259318                     |
+      | account.account_type                    | Fine                            |
+      | account.prosecutor_case_reference       | PCR-AUTO-007                    |
+      | account.collection_order_made           | false                           |
+      | account.collection_order_made_today     | false                           |
+      | account.payment_card_request            | false                           |
+      | account.defendant.dob                   | 2010-05-15                      |
+    When I search for the account by last name "ParentGuardianSurname" and verify the page header is "Miss Michael PARENTGUARDIANSURNAME"
 
-    Scenario: Check View Defendant Parent Guardian Account Summary and Comments Accessibility with Axe-Core
-        # Create & publish a pgToPay account then check accessibility
-        And I create a "pgToPay" draft account with the following details:
-            | Account_status                          | Submitted                       |
-            | account.defendant.forenames             | Michael                         |
-            | account.defendant.surname               | ParentGuardianSurname           |
-            | account.defendant.email_address_1       | Michael.ParentGuardian@test.com |
-            | account.defendant.telephone_number_home | 02078259318                     |
-            | account.account_type                    | Fine                            |
-            | account.prosecutor_case_reference       | PCR-AUTO-007                    |
-            | account.collection_order_made           | false                           |
-            | account.collection_order_made_today     | false                           |
-            | account.payment_card_request            | false                           |
-            | account.defendant.dob                   | 2010-05-15                      |
-        When I update the last created draft account with status "Publishing Pending"
-        And the update should succeed and return a new strong ETag
-        And I enter "ParentGuardianSurname" into the "Last name" field
-        And I click the "Search" button
-        Then I click the latest published account link
-        And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
+    # Check Accessibility on Add Comments Page for Parent Guardian Account
+    When I open the Comments page from the defendant summary and verify the page contents
+    Then I check the page for accessibility and navigate back
 
-        ## Check Accessibility on Add Comments Page for Parent Guardian Account
-        When I click on the "Add comments" link
-        Then I see "Comments" on the page header
-        Then I check accessibility
+    # Check Accessibility with Parent Guardian Form Data Entered
+    When I save the following comments and verify the account header is "Miss Michael PARENTGUARDIANSURNAME":
+      | field   | text                    |
+      | Comment | Parent Guardian Comment |
+      | Line 1  | Parent Guardian Line1   |
+      | Line 2  | Parent Guardian Line2   |
+      | Line 3  | Parent Guardian Line3   |
 
-        ## Check Accessibility with Parent Guardian Form Data Entered
-        And I enter "Parent Guardian Comment" into the "comment" text field
-        And I enter "Parent Guardian Line1" into the "Line 1" text field
-        And I enter "Parent Guardian Line2" into the "Line 2" text field
-        And I enter "Parent Guardian Line3" into the "Line 3" text field
 
-        ## Save comments and check accessibility with populated comments
-        When I click the "Save comments" button
-        And I see "Miss Michael PARENTGUARDIANSURNAME" on the page header
-        Then I check accessibility
+    # Check accessibility with populated comments
+    Then I check the page for accessibility

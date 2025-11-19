@@ -10,27 +10,26 @@
  * - Also includes top-navigation elements required for login verification.
  *
  * @example
- * ```ts
- * cy.get(LoginLocators.usernameInput).type('qa.user@example.com');
- * cy.get(LoginLocators.submitBtn).click();
- * cy.get(LoginLocators.signOutLink).should('exist');
- * ```
+ *   cy.get(LoginLocators.usernameInput).type('qa.user@example.com');
+ *   cy.get(LoginLocators.submitBtn).click();
+ *   cy.get(LoginLocators.signOutLink).should('exist');
  */
+export const LoginLocators = {
+  /** Username input field (supports both test ID and text input fallback). */
+  usernameInput: '[data-testid="login-username"], input[type="text"]',
 
-/** Username input field (supports both test ID and text input fallback). */
-export const usernameInput = '[data-testid="login-username"], input[type="text"]';
+  /** Login/Submit button (supports both test ID and legacy form ID). */
+  submitBtn: '[data-testid="login-submit"], #submitForm',
 
-/** Login/Submit button (supports both test ID and legacy form ID). */
-export const submitBtn = '[data-testid="login-submit"], #submitForm';
+  /** Error message container shown after invalid login attempts. */
+  errorMessage: '[data-testid="login-error-message"]',
 
-/** Error message container shown after invalid login attempts. */
-export const errorMessage = '[data-testid="login-error-message"]';
+  /** “Sign out” link in the GOV.UK/MOJ global header. */
+  signOutLink: 'nav[aria-label="Account navigation"] a.moj-header__navigation-link',
 
-/** “Sign out” link in the GOV.UK/MOJ global header. */
-export const signOutLink = 'nav[aria-label="Account navigation"] a.moj-header__navigation-link';
+  /** Organisation (HMCTS) link in the header. */
+  organisationLink: 'a.moj-header__link--organisation-name',
 
-/** Organisation (HMCTS) link in the header. */
-export const organisationLink = 'a.moj-header__link--organisation-name';
-
-/** Service name (Opal) link in the header. */
-export const serviceLink = 'a.moj-header__link--service-name';
+  /** Service name (Opal) link in the header. */
+  serviceLink: 'a.moj-header__link--service-name',
+};
