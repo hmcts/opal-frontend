@@ -17,3 +17,13 @@ export function convertDataTableToNestedObject(dataTable: DataTable): Record<str
   }
   return overrides;
 }
+
+/**
+ * Converts a Cucumber DataTable into a trimmed key/value object.
+ * @param table The input DataTable.
+ * @returns A readonly hash of field names to trimmed string values.
+ */
+export const rowsHashSafe = (table: DataTable): Readonly<Record<string, string>> => {
+  const raw = table.rowsHash?.() ?? {};
+  return Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, (value ?? '').trim()]));
+};
