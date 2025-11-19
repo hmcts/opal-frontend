@@ -58,6 +58,7 @@ import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from './interface
 import { OPAL_FINES_CACHE_DEFAULTS } from './constants/opal-fines-cache-defaults.constant';
 import { IOpalFinesCache } from './interfaces/opal-fines-cache.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from './interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
+import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -268,6 +269,25 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves the Opal fines result based on the provided result ID.
+   * @param result_id - Result ID.
+   * @param refresh - Whether to refresh the cached data. Defaulted to false.
+   * @returns An Observable that emits the Opal fines results reference data.
+   */
+  public getResult(result_id: string, refresh = false): Observable<IOpalFinesResultRefData> {
+    if (refresh) {
+      this.clearCache('resultCache$', result_id);
+    }
+    if (!this.cache.resultCache$[result_id]) {
+      this.cache.resultCache$[result_id] = this.http
+        .get<IOpalFinesResultRefData>(`${OPAL_FINES_PATHS.resultsRefData}/${result_id}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.resultCache$[result_id];
+  }
+
+  /**
    * Returns the pretty name of the result.
    * @param result - The IOpalFinesResults object.
    * @returns The pretty name of the result.
@@ -374,11 +394,18 @@ export class OpalFines {
    * Clears a specific cache item, resetting to default.
    * This method is typically used to remove cached data, ensuring that subsequent operations
    * fetch fresh data or start with a clean state.
+   *
+   * @param cacheKey - The key of the cache item to be cleared.
+   * @param key - An optional specific key within the cache item to be deleted.
    */
-  public clearCache(cacheKey: keyof IOpalFinesCache): void {
+  public clearCache(cacheKey: keyof IOpalFinesCache, nestedKey?: string): void {
     if (cacheKey in OPAL_FINES_CACHE_DEFAULTS) {
-      /*eslint-disable @typescript-eslint/no-explicit-any */
-      this.cache[cacheKey] = structuredClone(OPAL_FINES_CACHE_DEFAULTS as any)[cacheKey];
+      if (nestedKey && this.cache[cacheKey]) {
+        delete this.cache[cacheKey][nestedKey as keyof (typeof this.cache)[typeof cacheKey]];
+      } else {
+        /*eslint-disable @typescript-eslint/no-explicit-any */
+        this.cache[cacheKey] = structuredClone(OPAL_FINES_CACHE_DEFAULTS as any)[cacheKey];
+      }
     }
   }
 
@@ -658,11 +685,16 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
+   * @param refresh - Whether to refresh the cached data. Defaulted to false.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountPaymentTermsLatest(
     account_id: number | null,
+    refresh = false,
   ): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> {
+    if (refresh) {
+      this.clearCache('defendantAccountPaymentTermsLatestCache$');
+    }
     if (!this.cache.defendantAccountPaymentTermsLatestCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
       this.cache.defendantAccountPaymentTermsLatestCache$ = this.http

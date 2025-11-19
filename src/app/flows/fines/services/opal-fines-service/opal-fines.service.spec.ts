@@ -18,6 +18,7 @@ import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from './mocks/opal-fines-result-ref-data.mock';
 import {
   IOpalFinesMajorCreditor,
   IOpalFinesMajorCreditorRefData,
@@ -52,6 +53,7 @@ import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './moc
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { of } from 'rxjs';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
+import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -288,6 +290,70 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request/{id} to results ref data API', () => {
+    const resultId = '1';
+    const expectedResponse: IOpalFinesResultRefData = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}/${resultId}`;
+
+    service.getResult(resultId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+  });
+
+  it('should return cached response for the same result id', () => {
+    const resultId = '1';
+    const expectedResponse: IOpalFinesResultRefData = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}/${resultId}`;
+
+    service.getResult(resultId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+
+    service.getResult(resultId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should clear cached response for the same result id when refresh is true', () => {
+    const resultId = '1';
+    const expectedResponse: IOpalFinesResultRefData = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}/${resultId}`;
+
+    // Populate cache
+    service.getResult(resultId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+
+    // Verify cache is working - second call without refresh should not trigger new request
+    service.getResult(resultId).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+    httpMock.expectNone(expectedUrl);
+
+    // Third call with refresh=true should clear cache and make new request
+    service.getResult(resultId, true).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req2 = httpMock.expectOne(expectedUrl);
+    expect(req2.request.method).toBe('GET');
+    req2.flush(expectedResponse);
   });
 
   it('should return the result name and code in a pretty format', () => {
@@ -767,6 +833,25 @@ describe('OpalFines', () => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK;
 
     service.getDefendantAccountPaymentTermsLatest(account_id).subscribe((response) => {
+      response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK.version;
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
+  });
+
+  it('should getDefendantAccountPaymentTermsTabData and clear cache', () => {
+    const account_id: number = 77;
+    service['cache']['defendantAccountPaymentTermsLatestCache$'] = of(
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK
+    );
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
+    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK;
+
+    service.getDefendantAccountPaymentTermsLatest(account_id, true).subscribe((response) => {
       response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK.version;
       expect(response).toEqual(expectedResponse);
     });

@@ -321,12 +321,18 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public navigateToAmendPaymentTermsPage(lastEnforcementId: string): void {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
     this.opalFinesService
-      .getResults([lastEnforcementId])
+      .getResult(lastEnforcementId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        // TODO: Get flag from endpoint results.extend_ttp_disallow to add to check
         if (
+          // result.extend_ttp_allowed &&
+          accountStatusCode !== 'CS' &&
+          accountStatusCode !== 'WO' &&
+          accountStatusCode !== 'TO' &&
+          accountStatusCode !== 'TS' &&
+          accountStatusCode !== 'TA' &&
           this.permissionsService.hasBusinessUnitPermissionAccess(
             FINES_PERMISSIONS['amend-payment-terms'],
             Number(this.accountStore.business_unit_id()!),

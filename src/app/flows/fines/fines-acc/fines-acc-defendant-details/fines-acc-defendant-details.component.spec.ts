@@ -21,8 +21,8 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
-import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -68,7 +68,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'getDefendantAccountParty',
       'getParentOrGuardianAccountParty',
       'clearCache',
-      'getResults',
+      'getResult',
       'getDefendantAccountFixedPenalty',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
@@ -94,7 +94,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getResult.and.returnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [
