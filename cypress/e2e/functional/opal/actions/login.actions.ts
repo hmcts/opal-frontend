@@ -4,46 +4,20 @@
  * Cypress **Action module** for performing login in the HMCTS Opal application.
  * Handles both local/PR environment authentication and Microsoft SSO login,
  * using Cypress session caching for performance optimization.
- *
- * @remarks
- * - Supports multiple environments:
- *   - Localhost/PR builds → direct form-based login.
- *   - Microsoft SSO (AAD) → handled via `cy.origin()` cross-domain flow.
- * - Uses `cy.session()` to cache authenticated sessions per email address,
- *   significantly improving test performance in CI pipelines.
- * - All UI element selectors are defined in {@link login.locators.ts}.
- *
- * @example
- * ```ts
- * // Example usage in a Flow or step file:
- * performLogin('qa.user@example.com');
- * ```
- *
- * @see {@link login.locators.ts}
  */
 
-import * as Locators from '../../../../shared/selectors/login.locators';
+import { LoginLocators as L } from '../../../../shared/selectors/login.locators';
+import { log } from '../../../../support/utils/log.helper';
 
 /**
  * Performs the full login flow for the given user.
  *
  * @param email - The email address of the user to log in.
- *
- * @details
- * - Detects environment type (local vs. Microsoft SSO) based on URL.
- * - Enters credentials via the appropriate authentication method.
- * - Verifies login success by asserting the “Sign out” link is visible.
- * - Caches the session for faster repeated test runs.
  */
 export function performLogin(email: string): void {
   const password = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
-  Cypress.log({
-    name: 'auth',
-    displayName: 'Login',
-    message: `Logging in as ${email}`,
-    consoleProps: () => ({ email }),
-  });
+  log('action', 'Logging in', { email });
 
   cy.session(
     email,
@@ -51,48 +25,56 @@ export function performLogin(email: string): void {
       cy.visit('/');
 
       cy.location('href').then((href) => {
-        if (href.includes('pr-') || href.includes('localhost')) {
-          // ──────────────────────────────
-          // Local / PR environment login
-          // ──────────────────────────────
-          cy.wait(50);
-          cy.get(Locators.usernameInput).type(email, { delay: 0 });
-          cy.get(Locators.submitBtn).click();
+        const isLocalOrPR = href.includes('pr-') || href.includes('localhost');
 
-          // Verify login success
-          cy.get(Locators.signOutLink).should('exist');
+        if (isLocalOrPR) {
+          // Local / PR environment login (form-based)
+          log('navigate', 'Detected Local/PR environment → using form-based login', { href });
+
+          cy.wait(50);
+          cy.get(L.usernameInput).type(email, { delay: 0 });
+          cy.get(L.submitBtn).click();
+
+          log('assert', 'Verifying login success (Local/PR)');
+          cy.get(L.signOutLink).should('exist');
+          log('done', 'Login successful (Local/PR)', { email });
         } else {
-          // ──────────────────────────────
           // Microsoft SSO login
-          // ──────────────────────────────
+          log('navigate', 'Detected non-local environment → using Microsoft SSO', { href });
+
           cy.origin('https://login.microsoftonline.com', { args: { email, password } }, ({ email, password }) => {
             cy.wait(500);
-            cy.get('input[type="email"]', { timeout: 12000 }).type(email, { delay: 0 });
+
+            // Email step
+            cy.get('input[type="email"]', { timeout: 12_000 }).type(email, { delay: 0 });
             cy.get('input[type="submit"]').click();
 
-            cy.get('input[type="password"]', { timeout: 12000 }).type(password, {
-              log: false,
-              delay: 0,
-            });
+            // Password step (never log password)
+            cy.get('input[type="password"]', { timeout: 12_000 }).type(password, { log: false, delay: 0 });
             cy.get('input[type="submit"]').click();
 
             // “Stay signed in?” prompt
-            cy.get('#idBtn_Back', { timeout: 12000 }).click();
+            cy.get('#idBtn_Back', { timeout: 12_000 }).click();
           });
+
+          log('assert', 'Verifying login success (SSO)');
+          cy.get(L.signOutLink).should('exist');
+          log('done', 'Login successful (SSO)', { email });
         }
       });
     },
     {
       validate() {
-        // ──────────────────────────────
         // Session validation logic
-        // ──────────────────────────────
+        log('assert', 'Validating restored session');
         cy.visit('/sign-in');
-        cy.get(Locators.signOutLink).should('be.visible');
+        cy.get(L.signOutLink).should('be.visible');
+        log('done', 'Session validation succeeded', { email });
       },
     },
   );
 
-  // Ensure dashboard is accessible after session restoration
+  // Ensure app is accessible after session restoration
+  log('navigate', 'Navigating to /sign-in after session setup');
   cy.visit('/sign-in');
 }

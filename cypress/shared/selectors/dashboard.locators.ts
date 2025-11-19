@@ -6,7 +6,6 @@
  *
  * @remarks
  * - Each key corresponds to a visible element or action entry point on the dashboard.
- * - Prefer `data-testid` attributes if available; fallback IDs are retained for legacy support.
  * - Used by DashboardActions and related navigation flows.
  *
  * @example
