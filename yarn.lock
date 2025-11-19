@@ -2769,13 +2769,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/messages@npm:^30.0.0":
-  version: 30.1.0
-  resolution: "@cucumber/messages@npm:30.1.0"
+"@cucumber/messages@npm:^31.0.0":
+  version: 31.0.0
+  resolution: "@cucumber/messages@npm:31.0.0"
   dependencies:
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-  checksum: 10/530f373e5e51ce8a82a0702153e2c47e6eabc42d6a85e2c2ef13cdf0c67d0b7927a2749d06dd67966c70c5b3c3696a82d439da5f00594c55a15b9a6657f9a06c
+  checksum: 10/f077541995e3bcfc6d075da95678b03876fa98514a660b76a580908f8025180240c083319076f1f75981f3fcb278488ddba2076ff81ce6fa14378ec09764ab6e
   languageName: node
   linkType: hard
 
