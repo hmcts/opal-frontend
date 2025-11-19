@@ -256,7 +256,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should navigate to access-denied if user lacks permission for change defendant details page', () => {
     const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    spyOn(component, 'hasPermission').and.returnValue(false);
     component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
@@ -264,7 +264,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    spyOn(component, 'hasPermission').and.returnValue(false);
     component.navigateToAmendPaymentTermsPage('123');
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`],
@@ -283,5 +283,11 @@ describe('FinesAccDefendantDetailsComponent', () => {
         relativeTo: component['activatedRoute'],
       },
     );
+  });
+
+  it('should not navigate to the change defendant payment terms page if no there is no last enforcement ID', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    component.navigateToAmendPaymentTermsPage(null as unknown as string);
+    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
   });
 });

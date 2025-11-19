@@ -846,7 +846,7 @@ describe('OpalFines', () => {
   it('should getDefendantAccountPaymentTermsTabData and clear cache', () => {
     const account_id: number = 77;
     service['cache']['defendantAccountPaymentTermsLatestCache$'] = of(
-      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK
+      OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK,
     );
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK;
