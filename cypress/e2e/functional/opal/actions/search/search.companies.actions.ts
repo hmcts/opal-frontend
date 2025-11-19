@@ -4,7 +4,7 @@
  * Delegates all results-page behaviours to ResultsActions to avoid duplication.
  */
 
-import { AccountSearchCompaniesLocators as L } from '../../../../../shared/selectors/account.search.companies.locators';
+import { AccountSearchCompaniesLocators as L } from '../../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ResultsActions } from '../search.results.actions';
 
 export class AccountSearchCompanyActions {
