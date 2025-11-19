@@ -378,6 +378,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.dateOfBirthListener();
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+    this.dateOfBirthListener();
   }
 
   /**
@@ -420,6 +422,18 @@ export class FinesAccPartyAddAmendConvertFormComponent
     } else {
       return 'Defendant details';
     }
+  }
+
+  /**
+   * Handles routing to the defendant details page with the appropriate fragment tab
+   * based on the party type being edited.
+   */
+  public handleRouteToDefendantTab(): void {
+    const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
+    this['router'].navigate(['../../details'], {
+      relativeTo: this['activatedRoute'],
+      fragment: fragment,
+    });
   }
 
   public override ngOnInit(): void {

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
 import { signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -25,6 +25,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  let mockRouter: jasmine.SpyObj<Router>;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let mockFinesAccountStore: {
     welsh_speaking: ReturnType<typeof signal>;
     account_number: ReturnType<typeof signal>;
@@ -39,6 +41,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       'getAgeObject',
     ]);
 
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], { data: of({}) });
+
     mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
       welsh_speaking: signal('N'),
       account_number: signal('1234567890'),
@@ -50,7 +55,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       providers: [
         { provide: DateService, useValue: mockDateService },
         { provide: FinesAccountStore, useValue: mockFinesAccountStore },
-        { provide: ActivatedRoute, useValue: { data: of({}) } },
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
 
@@ -852,5 +858,45 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_title')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
+  });
+
+  describe('handleRouteToDefendantTab', () => {
+    beforeEach(() => {
+      component.partyType = 'individual';
+      fixture.detectChanges();
+    });
+
+    it('should navigate to details with defendant fragment for individual party type', () => {
+      component.partyType = 'individual';
+
+      component.handleRouteToDefendantTab();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+        relativeTo: mockActivatedRoute,
+        fragment: 'defendant',
+      });
+    });
+
+    it('should navigate to details with parent-or-guardian fragment for parentGuardian party type', () => {
+      component.partyType = 'parentGuardian';
+
+      component.handleRouteToDefendantTab();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+        relativeTo: mockActivatedRoute,
+        fragment: 'parent-or-guardian',
+      });
+    });
+
+    it('should navigate to details with defendant fragment for company party type', () => {
+      component.partyType = 'company';
+
+      component.handleRouteToDefendantTab();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+        relativeTo: mockActivatedRoute,
+        fragment: 'defendant',
+      });
+    });
   });
 });
