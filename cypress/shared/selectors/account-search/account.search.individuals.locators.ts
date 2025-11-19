@@ -104,20 +104,6 @@ export const AccountSearchIndividualsLocators = {
   postcodeInput: '#fsa_search_account_individuals_post_code',
 
   // ──────────────────────────────
-  // Global filters
-  // ──────────────────────────────
-
-  /** Checkbox to restrict search results to active accounts only. */
-  activeAccountsOnlyCheckbox: '#fsa_search_account_active_accounts_only',
-
-  // ──────────────────────────────
-  // Actions
-  // ──────────────────────────────
-
-  /** Primary "Search" button that triggers the query submission. */
-  searchButton: '#submitForm',
-
-  // ──────────────────────────────
   // Dashboard navigation
   // ──────────────────────────────
 

@@ -1,4 +1,4 @@
-// common.steps.ts (ESM)
+// common.steps.ts
 // =====================
 // These steps provide generic assertions and actions reused across multiple
 // feature files. They rely on CommonActions for navigation, header checks, and
@@ -6,7 +6,7 @@
 // and Sonar-compliant documentation.
 
 import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/account-details/common.actions';
 
 /**
  * Returns a new instance of CommonActions.

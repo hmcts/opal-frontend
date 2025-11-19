@@ -14,10 +14,11 @@ import { AccountSearchCompaniesLocators as C } from '../../../../shared/selector
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { HasAccountLinkOnPage } from '../../../../support/utils/results';
-import { CommonActions } from '../actions/common/common.actions';
+import { CommonActions } from '../actions/account-details/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { log } from '../../../../support/utils/log.helper';
 
 /**
  * @file AccountEnquiryFlow
@@ -53,31 +54,15 @@ export class AccountEnquiryFlow {
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
 
   /**
-   * Standardized logger for this flow.
-   * Adds consistent `consoleProps` so logs are searchable and grouped.
-   *
-   * @param name - Short category (e.g., "method", "search", "assert").
-   * @param message - Human-readable description of the action.
-   * @param data - Optional additional context shown in the Cypress runner.
-   */
-  private log(name: string, message: string, data?: Record<string, unknown>): void {
-    Cypress.log({
-      name,
-      message,
-      consoleProps: () => ({ flow: 'AccountEnquiryFlow', message, ...data }),
-    });
-  }
-
-  /**
    * Ensures the test is on the Individuals Account Search page.
    * If not, it navigates via the dashboard.
    */
   private ensureOnIndividualSearchPage(): void {
-    this.log('method', 'ensureOnIndividualSearchPage()');
+    log('method', 'ensureOnIndividualSearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
-        this.log('navigate', 'Navigating to Account Search dashboard (Individuals)');
+        log('navigate', 'Navigating to Account Search dashboard (Individuals)');
         this.dashboard.goToAccountSearch();
       }
     });
@@ -113,8 +98,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchByLastName(surname: string): void {
-    this.log('method', 'searchByLastName()');
-    this.log('search', 'Searching by last name', { surname });
+    log('method', 'searchByLastName()');
+    log('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
     this.searchIndividuals.byLastName(surname);
   }
@@ -129,21 +114,21 @@ export class AccountEnquiryFlow {
    * No cross-page pagination (keeps control flow simple and avoids catch/overload issues).
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
-    this.log('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
-    this.log('click', 'Click latest published account or matching @etagUpdate (current page only)');
+    log('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
+    log('click', 'Click latest published account or matching @etagUpdate (current page only)');
 
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
     this.resolveAccountNumberFromAlias().then((accOrNull) => {
       if (!accOrNull) {
-        this.log('fallback', 'No @etagUpdate found → opening latest row');
+        log('fallback', 'No @etagUpdate found → opening latest row');
         this.results.openLatestPublished();
         return;
       }
 
       const acc = accOrNull;
-      this.log('match', 'Looking for account number on current page', { accountNumber: acc });
+      log('match', 'Looking for account number on current page', { accountNumber: acc });
 
       HasAccountLinkOnPage(acc).then((exists) => {
         if (exists) {
@@ -151,7 +136,7 @@ export class AccountEnquiryFlow {
           return;
         }
 
-        this.log('fallback', `Account ${acc} not found on current page; opening latest row`, {
+        log('fallback', `Account ${acc} not found on current page; opening latest row`, {
           accountNumber: acc,
         });
         this.results.openLatestPublished();
@@ -165,8 +150,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchBySurname(surname: string): void {
-    this.log('method', 'searchBySurname()');
-    this.log('flow', 'Search by surname', { surname });
+    log('method', 'searchBySurname()');
+    log('flow', 'Search by surname', { surname });
     this.searchByLastName(surname);
   }
 
@@ -176,8 +161,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
-    this.log('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
-    this.log('flow', 'Search and open latest by surname', { surname });
+    log('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
+    log('flow', 'Search and open latest by surname', { surname });
     this.searchBySurname(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
@@ -186,8 +171,8 @@ export class AccountEnquiryFlow {
    * Opens the most recent account from the results (top row) and asserts navigation.
    */
   public openMostRecentFromResults(): void {
-    this.log('method', 'openMostRecentFromResults()');
-    this.log('open', 'Opening most recent account from results');
+    log('method', 'openMostRecentFromResults()');
+    log('open', 'Opening most recent account from results');
 
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
@@ -200,8 +185,8 @@ export class AccountEnquiryFlow {
    * @param headerText - Expected section header text.
    */
   public goToDefendantDetailsAndAssert(headerText: string): void {
-    this.log('method', 'goToDefendantDetailsAndAssert()');
-    this.log('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
+    log('method', 'goToDefendantDetailsAndAssert()');
+    log('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader(headerText);
   }
@@ -212,8 +197,8 @@ export class AccountEnquiryFlow {
    * @param value - New first name value.
    */
   public editDefendantAndChangeFirstName(value: string): void {
-    this.log('method', 'editDefendantAndChangeFirstName()');
-    this.log('edit', 'Editing defendant first name', { value });
+    log('method', 'editDefendantAndChangeFirstName()');
+    log('edit', 'Editing defendant first name', { value });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader('Defendant');
     this.defendantDetails.change();
@@ -224,8 +209,8 @@ export class AccountEnquiryFlow {
    * Cancels the edit operation and asserts that we remain on the edit page.
    */
   public cancelEditAndStay(): void {
-    this.log('method', 'cancelEditAndStay()');
-    this.log('cancel', 'Cancelling edit and staying on edit page');
+    log('method', 'cancelEditAndStay()');
+    log('cancel', 'Cancelling edit and staying on edit page');
     this.common.cancelEditing(false);
     this.editDefendantDetailsActions.assertStillOnEditPage();
   }
@@ -234,8 +219,8 @@ export class AccountEnquiryFlow {
    * Cancels the edit operation
    */
   public cancelEditAndLeave(): void {
-    this.log('method', 'cancelEditAndLeave()');
-    this.log('cancel', 'Cancelling edit and returning to details page');
+    log('method', 'cancelEditAndLeave()');
+    log('cancel', 'Cancelling edit and returning to details page');
     this.common.cancelEditing(true);
   }
 
@@ -247,38 +232,38 @@ export class AccountEnquiryFlow {
    * @param tempName - Temporary value entered for the company name field.
    */
   public verifyRouteGuardBehaviour(companyName: string, tempName: string): void {
-    this.log('method', 'verifyRouteGuardBehaviour()');
-    this.log('verify', 'Verifying route guard behaviour', { companyName, tempName });
+    log('method', 'verifyRouteGuardBehaviour()');
+    log('verify', 'Verifying route guard behaviour', { companyName, tempName });
 
     // Navigate to defendant tab
-    this.log('action', 'Navigating to Defendant tab');
+    log('action', 'Navigating to Defendant tab');
     this.detailsNav.goToDefendantTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    log('action', 'Change Link');
     this.defendantDetails.change();
 
     // Edit company name
-    this.log('action', 'Editing company name', { newName: tempName });
+    log('action', 'Editing company name', { newName: tempName });
     this.editCompanyDetailsActions.editCompanyName(tempName);
 
     // Cancel edit (without saving)
-    this.log('action', 'Cancelling edit without saving');
+    log('action', 'Cancelling edit without saving');
     this.common.cancelEditing(false);
 
     // Verify temp name persisted
-    this.log('verify', 'Verifying temporary company name persisted', { expected: tempName });
+    log('verify', 'Verifying temporary company name persisted', { expected: tempName });
     this.editCompanyDetailsActions.verifyFieldValue(tempName);
 
     // Cancel edit (revert changes)
-    this.log('action', 'Cancelling edit with revert');
+    log('action', 'Cancelling edit with revert');
     this.common.cancelEditing(true);
 
     // Final verification: header restored to original
-    this.log('verify', 'Verifying header reverted to original company name', { expected: companyName });
+    log('verify', 'Verifying header reverted to original company name', { expected: companyName });
     this.atAGlanceDetails.assertHeaderContains(companyName);
 
-    this.log('complete', 'Route guard behaviour verification completed');
+    log('complete', 'Route guard behaviour verification completed');
   }
 
   /**
@@ -289,32 +274,32 @@ export class AccountEnquiryFlow {
    * @param tempName - Temporary value entered for the company name field.
    */
   public verifyCancelChangesBehaviour(companyName: string, tempName: string): void {
-    this.log('method', 'verifyCancelChangesBehaviour()');
-    this.log('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
+    log('method', 'verifyCancelChangesBehaviour()');
+    log('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
 
     // Navigate to defendant tab
-    this.log('action', 'Navigating to Defendant tab');
+    log('action', 'Navigating to Defendant tab');
     this.detailsNav.goToDefendantTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    log('action', 'Change Link');
     this.defendantDetails.change();
 
     // Begin editing company name
-    this.log('action', 'Starting edit of Company Name field', { newValue: tempName });
+    log('action', 'Starting edit of Company Name field', { newValue: tempName });
     this.editCompanyDetailsActions.editCompanyName(tempName);
 
     // Simulate cancel action but choose to stay
-    this.log('action', 'Initiating cancel edit (choosing to stay on page)');
+    log('action', 'Initiating cancel edit (choosing to stay on page)');
     this.common.cancelEditing(false);
 
     // Check that header remains unchanged
-    this.log('verify', 'Verifying header still displays original company name', { expected: companyName });
+    log('verify', 'Verifying header still displays original company name', { expected: companyName });
     this.atAGlanceDetails.assertHeaderContains(companyName);
 
     // Post-verification confirmation
-    this.log('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
-    this.log('complete', 'verifyCancelChangesBehaviour() completed');
+    log('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
+    log('complete', 'verifyCancelChangesBehaviour() completed');
   }
 
   /**
@@ -322,11 +307,11 @@ export class AccountEnquiryFlow {
    * If not, it navigates via the dashboard and Companies tab.
    */
   private ensureOnCompanySearchPage(): void {
-    this.log('method', 'ensureOnCompanySearchPage()');
+    log('method', 'ensureOnCompanySearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(C.root).length > 0;
       if (!onSearch) {
-        this.log('navigate', 'Navigating to Account Search dashboard (Companies)');
+        log('navigate', 'Navigating to Account Search dashboard (Companies)');
         this.dashboard.goToAccountSearch();
         this.searchNav.goToCompaniesTab();
       }
@@ -339,11 +324,11 @@ export class AccountEnquiryFlow {
    * @param companyName - Company name to search for.
    */
   public searchByCompanyName(companyName: string): void {
-    this.log('method', 'searchByCompanyName()');
+    log('method', 'searchByCompanyName()');
     this.dashboard.goToAccountSearch();
     this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
-    this.log('search', 'Searching by company name', { companyName });
+    log('search', 'Searching by company name', { companyName });
     this.searchCompany.byCompanyName(companyName);
     this.results.assertOnResults();
   }
@@ -354,9 +339,9 @@ export class AccountEnquiryFlow {
    * @param companyName - Company name to search and open.
    */
   public openCompanyAccountDetailsByNameAndSelectLatest(companyName: string): void {
-    this.log('method', 'openCompanyAccountDetailsByNameAndSelectLatest()');
+    log('method', 'openCompanyAccountDetailsByNameAndSelectLatest()');
     this.searchByCompanyName(companyName);
-    this.log('results', 'Select Latest published company account from results', { companyName });
+    log('results', 'Select Latest published company account from results', { companyName });
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
@@ -365,9 +350,9 @@ export class AccountEnquiryFlow {
    *
    */
   public openAddAccountNoteAndVerifyHeader(): void {
-    this.log('method', 'openAddAccountNoteAndVerifyHeader()');
+    log('method', 'openAddAccountNoteAndVerifyHeader()');
 
-    this.log('navigate', 'Opening "Add account note" screen');
+    log('navigate', 'Opening "Add account note" screen');
     this.detailsNav.clickAddAccountNoteButton();
 
     this.notes.assertHeaderContains('Add account note');
@@ -379,10 +364,10 @@ export class AccountEnquiryFlow {
    * @throws Error if the screen is not recognised.
    */
   public openNotesScreenAndEnterText(text: string): void {
-    this.log('method', 'openNotesScreenAndEnterText()');
+    log('method', 'openNotesScreenAndEnterText()');
 
     this.openAddAccountNoteAndVerifyHeader();
-    this.log('input', 'Typing note text');
+    log('input', 'Typing note text');
 
     this.notes.enterAccountNote(text);
   }
@@ -393,10 +378,10 @@ export class AccountEnquiryFlow {
    * @param note - The note text to enter.
    */
   public openAccountNoteEnterNoteAndSave(note: string): void {
-    this.log('method', 'openAccountNoteEnterNoteAndSave()');
-    this.log('input', 'Preparing to enter and save account note', { length: note?.length });
+    log('method', 'openAccountNoteEnterNoteAndSave()');
+    log('input', 'Preparing to enter and save account note', { length: note?.length });
     this.openNotesScreenAndEnterText(note);
-    this.log('save', 'Saving account note');
+    log('save', 'Saving account note');
     this.notes.save();
   }
 
@@ -419,10 +404,10 @@ export class AccountEnquiryFlow {
    *  accountDetailsActions.enterAndSaveNote('Customer requested payment extension.');
    */
   public enterAndSaveNote(note: string): void {
-    this.log('method', 'enterAndSaveNote()');
-    this.log('input', 'Typing note text');
+    log('method', 'enterAndSaveNote()');
+    log('input', 'Typing note text');
     this.notes.enterAccountNote(note);
-    this.log('save', 'Saving account note');
+    log('save', 'Saving account note');
     this.notes.save();
   }
 
@@ -430,12 +415,7 @@ export class AccountEnquiryFlow {
    * Saves the provided comment lines and verifies redirect to defendant summary.
    */
   public saveCommentsAndReturnToSummary(lines: readonly string[]): void {
-    Cypress.log({
-      name: 'flow',
-      displayName: 'Save Comments → Summary',
-      message: `Saving ${lines.length} line(s) and verifying redirect to summary`,
-      consoleProps: () => ({ lines }),
-    });
+    log('flow', 'Save Comments → Summary', { linesCount: lines.length });
 
     // Open Comments from summary and verify we're on the page
     this.atAGlanceDetails.openCommentsFromSummary();
@@ -454,15 +434,15 @@ export class AccountEnquiryFlow {
    * @param text - The text to enter before cancelling.
    */
   public openNotesScreenEnterTextAndCancel(text: string): void {
-    this.log('method', 'openScreenEnterTextAndCancel()');
-    this.log('flow', 'Open → enter text → cancel');
+    log('method', 'openScreenEnterTextAndCancel()');
+    log('flow', 'Open → enter text → cancel');
 
     this.openNotesScreenAndEnterText(text);
 
     // Ensure the value is present before we cancel (prevents stale element errors)
     this.notes.assertNoteValueEquals(text);
 
-    this.log('cancel', 'Cancelling edit and confirming leave');
+    log('cancel', 'Cancelling edit and confirming leave');
     this.common.cancelEditing(true);
 
     cy.document({ timeout: 20000 })
@@ -486,8 +466,8 @@ export class AccountEnquiryFlow {
    * @param text - The text to enter before navigating back.
    */
   public openScreenEnterTextAndNavigateBackWithConfirmation(text: string): void {
-    this.log('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
-    this.log('flow', 'Open → enter text → browser back → confirm');
+    log('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
+    log('flow', 'Open → enter text → browser back → confirm');
 
     // 1. Navigate and enter note text
     this.openNotesScreenAndEnterText(text);
@@ -504,12 +484,7 @@ export class AccountEnquiryFlow {
    * @param expectedSummaryHeader - Optional header text to assert on the summary page.
    */
   public openCommentsFromSummaryAndVerifyPageDetails(expectedSummaryHeader?: string): void {
-    Cypress.log({
-      name: 'flow',
-      displayName: 'Comments Page Verification',
-      message: 'Open → verify fields & header → cancel(dismiss) → cancel(confirm) → verify summary',
-      consoleProps: () => ({ expectedSummaryHeader }),
-    });
+    log('flow', 'Comments Page Verification', { expectedSummaryHeader });
 
     // 1) Navigate from summary to Comments (use your nav action for the "Add comments" link)
     this.atAGlanceDetails.openCommentsFromSummary();
@@ -527,12 +502,7 @@ export class AccountEnquiryFlow {
    *  Cancel (confirm) → verify returned to summary.
    */
   public verifyRouteGuardBehaviourOnComments(noteText: string): void {
-    Cypress.log({
-      name: 'flow',
-      displayName: 'Comments Route Guard',
-      message: `Open → type "${noteText}" → cancel(dismiss) → cancel(confirm)`,
-      consoleProps: () => ({ noteText }),
-    });
+    log('flow', 'Comments Route Guard', { noteText });
 
     // Open Comments from summary and verify we're on the page
     this.atAGlanceDetails.openCommentsFromSummary();
@@ -558,7 +528,7 @@ export class AccountEnquiryFlow {
    * @param expected Prefilled form values to assert
    */
   verifyPrefilledComments(expected: { comment?: string; line1?: string; line2?: string; line3?: string }): void {
-    cy.log('Flow: Verify prefilled Comments form');
+    log('flow', 'Verify prefilled Comments form', { expected });
 
     this.atAGlanceDetails.openCommentsFromSummary();
     this.comments.assertPrefilledFormValues(expected);
@@ -573,42 +543,42 @@ export class AccountEnquiryFlow {
    * @param tempFirstName - Temporary value to enter into the "First names" field (e.g. "FNAMECHANGE").
    */
   public verifyParentGuardianRouteGuardBehaviour(originalHeaderName: string, tempFirstName: string): void {
-    this.log('method', 'verifyParentGuardianRouteGuardBehaviour()');
-    this.log('verify', 'Verifying route guard behaviour (Parent/Guardian)', { originalHeaderName, tempFirstName });
+    log('method', 'verifyParentGuardianRouteGuardBehaviour()');
+    log('verify', 'Verifying route guard behaviour (Parent/Guardian)', { originalHeaderName, tempFirstName });
 
     // Navigate to Defendant tab
-    this.log('action', 'Navigating to Parent Guardian tab');
+    log('action', 'Navigating to Parent Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    log('action', 'Change Link');
     this.parentGuardianDetails.change();
 
     // Assert section header
-    this.log('verify', 'Verifying section header is "Parent or guardian details"');
+    log('verify', 'Verifying section header is "Parent or guardian details"');
     this.editParentGuardianActions.assertHeader();
 
     // Enter temporary first name
-    this.log('action', 'Editing "First names"', { newValue: tempFirstName });
+    log('action', 'Editing "First names"', { newValue: tempFirstName });
     this.editParentGuardianActions.editFirstNames(tempFirstName);
 
     // Cancel edit (user chooses to stay on page)
-    this.log('action', 'Cancelling edit without saving (stay on page)');
+    log('action', 'Cancelling edit without saving (stay on page)');
     this.common.cancelEditing(false); // maps to: click Cancel -> modal -> Cancel
 
     // Verify temp value persisted
-    this.log('verify', 'Verifying temporary first name persisted', { expected: tempFirstName });
+    log('verify', 'Verifying temporary first name persisted', { expected: tempFirstName });
     this.editParentGuardianActions.verifyFirstName(tempFirstName);
 
     // Cancel edit (user confirms leaving/reverting)
-    this.log('action', 'Cancelling edit with revert (leave)');
+    log('action', 'Cancelling edit with revert (leave)');
     this.common.cancelEditing(true); // maps to: click Cancel -> modal -> Ok
 
     // Final verification: header restored to original defendant name
-    this.log('verify', 'Verifying header reverted to original name', { expected: originalHeaderName });
+    log('verify', 'Verifying header reverted to original name', { expected: originalHeaderName });
     this.atAGlanceDetails.assertHeaderContains(originalHeaderName);
 
-    this.log('complete', 'Parent/Guardian route-guard verification completed');
+    log('complete', 'Parent/Guardian route-guard verification completed');
   }
 
   /**
@@ -617,25 +587,25 @@ export class AccountEnquiryFlow {
    * Opens the Parent/Guardian tab, starts an edit, then cancels and discards changes.
    */
   public cancelParentGuardianEditWithoutSaving(): void {
-    this.log('method', 'cancelParentGuardianEditWithoutSaving()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    log('method', 'cancelParentGuardianEditWithoutSaving()');
+    log('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    log('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    log('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
     const tempLastName = 'LNAMEALTERED';
 
-    this.log('action', 'Editing "Last name"', { newValue: tempLastName });
+    log('action', 'Editing "Last name"', { newValue: tempLastName });
     this.editParentGuardianActions.editLastName(tempLastName);
 
-    this.log('action', 'Cancelling edit without saving (discard changes)');
+    log('action', 'Cancelling edit without saving (discard changes)');
     this.common.cancelEditing(true); // "Cancel" -> Confirm "Ok"
 
-    this.log('complete', 'Parent/Guardian cancel edit without saving complete');
+    log('complete', 'Parent/Guardian cancel edit without saving complete');
   }
 
   /**
@@ -645,25 +615,25 @@ export class AccountEnquiryFlow {
    * verifies the temporary value persists, then leaves verification for later steps.
    */
   public cancelParentGuardianEditButStayOnPage(): void {
-    this.log('method', 'cancelParentGuardianEditButStayOnPage()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    log('method', 'cancelParentGuardianEditButStayOnPage()');
+    log('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    log('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    log('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
     const tempLastName = 'LNAMEALTERED';
 
-    this.log('action', 'Editing "Last name"', { newValue: tempLastName });
+    log('action', 'Editing "Last name"', { newValue: tempLastName });
     this.editParentGuardianActions.editLastName(tempLastName);
 
-    this.log('action', 'Cancelling edit but staying on the page');
+    log('action', 'Cancelling edit but staying on the page');
     this.common.cancelEditing(false); // user selects "Cancel" → "Stay"
 
-    this.log('complete', 'Stayed on page; temporary data should be retained');
+    log('complete', 'Stayed on page; temporary data should be retained');
   }
 
   /**
@@ -672,20 +642,20 @@ export class AccountEnquiryFlow {
    * Starts an edit, triggers cancel, confirms the discard
    */
   public discardParentGuardianChanges(): void {
-    this.log('method', 'discardParentGuardianChanges()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    log('method', 'discardParentGuardianChanges()');
+    log('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    log('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    log('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
-    this.log('action', 'Cancelling edit and confirming discard');
+    log('action', 'Cancelling edit and confirming discard');
     this.common.cancelEditing(true); // user selects "Cancel" → "OK" to discard
 
-    this.log('complete', 'Parent/Guardian changes discarded successfully');
+    log('complete', 'Parent/Guardian changes discarded successfully');
   }
 }
 

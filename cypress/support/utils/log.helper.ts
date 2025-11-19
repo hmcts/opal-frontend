@@ -6,17 +6,33 @@
  */
 
 export type LogScope =
-  | 'method'
-  | 'navigate'
-  | 'assert'
   | 'action'
   | 'a11y'
-  | 'wait'
-  | 'done'
+  | 'assert'
   | 'cancel'
+  | 'comments'
+  | 'click'
+  | 'complete'
+  | 'debug'
   | 'dialog'
+  | 'done'
+  | 'edit'
   | 'fallback'
-  | 'verify';
+  | 'flow'
+  | 'info'
+  | 'input'
+  | 'locator'
+  | 'match'
+  | 'method'
+  | 'navigate'
+  | 'open'
+  | 'prepare'
+  | 'results'
+  | 'save'
+  | 'search'
+  | 'verify'
+  | 'wait'
+  | 'warn';
 
 export function log(scope: LogScope, message: string, details?: Record<string, unknown>): void {
   Cypress.log({

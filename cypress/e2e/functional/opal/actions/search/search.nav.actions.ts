@@ -1,60 +1,80 @@
 /**
  * @fileoverview account-search-nav.actions.ts
- * Handles navigation to the “Companies” tab in the Account Search UI.
- * Ensures visibility of the tabbed interface, activates the tab if required,
- * and verifies that the Companies form is loaded.
+ * Navigation actions for the Account Search tabs:
+ * - Individuals
+ * - Companies
+ * - Major creditors
+ * - Minor creditors
+ *
+ * This class:
+ *  - Uses AccountSearchNavLocators (tabs only)
+ *  - Ensures each tab is visible
+ *  - Clicks the desired tab if it is not already active
+ *  - Verifies activation by checking the "selected" class
  */
 
-import { AccountSearchCompaniesLocators as L } from '../../../../../shared/selectors/account-search/account.search.companies.locators';
 import { log } from '../../../../../support/utils/log.helper';
+import { AccountSearchNavLocators as Nav } from '../../../../../shared/selectors/account-search/account.search.nav.locators';
 
 export class AccountSearchNavActions {
   /**
-   * Navigates to the Companies tab within the Account Search UI.
-   *
-   * Steps:
-   *  1. Wait for the root search component and tabs container to be visible.
-   *  2. Check if the Companies tab is already selected.
-   *  3. Click it if not selected.
-   *  4. Wait for the panel and inner form to load.
-   *
-   * @example
-   * const nav = new AccountSearchNavActions();
-   * nav.goToCompaniesTab();
+   * Reliable tab activation helper.
+   * - Clicking anchor/button inside tab (preferred)
+   * - Asserts activation by URL hash OR by selected class
+   * - Sonar-clean: no .push(), no .forEach(), uses for...of nowhere
    */
-  public goToCompaniesTab(): void {
-    log('method', 'goToCompaniesTab()');
+  private activateTab(tabSelector: string, label: string, expectedHash?: string): void {
+    log('method', `activateTab(${label})`);
 
-    // Ensure search UI and tabs are visible
-    log('assert', 'Ensuring search root and tabs are visible');
-    cy.get(L.root, { timeout: 15_000 }).should('be.visible');
-    cy.get(L.tabsContainer, { timeout: 15_000 }).should('be.visible');
-
-    // Inspect tab state
-    log('assert', 'Checking if Companies tab is already selected');
-    cy.get(L.companiesTabItem, { timeout: 15_000 })
-      .should('exist')
+    // Click the interactive element inside the tab (anchor/button)
+    cy.get(tabSelector, { timeout: 10_000 })
+      .should('be.visible')
       .then(($li) => {
-        const isSelected = $li.hasClass(L.selectedTabClass);
-        log('assert', `Companies tab currently selected? ${isSelected}`);
+        const clickable = $li.find('a, button').first();
 
-        // Early return if tab already selected
-        if (isSelected) {
-          log('action', 'Companies tab already active — skipping click');
-          return;
+        if (clickable.length) {
+          log('action', `Clicking ${label} tab (interactive element)`);
+          cy.wrap(clickable).click({ force: true });
+        } else {
+          log('action', `Clicking ${label} tab (li fallback)`);
+          cy.wrap($li).click({ force: true });
         }
-
-        // Click the tab when not selected
-        log('action', 'Clicking Companies tab to activate it');
-        cy.get(L.companiesTab).should('be.visible').click({ force: true });
       });
 
-    // Confirm activation and panel visibility
-    log('wait', 'Waiting for Companies tab selection and panel load');
-    cy.get(L.companiesTabItem, { timeout: 15_000 }).should('have.class', L.selectedTabClass);
-    cy.get(L.companiesPanel, { timeout: 15_000 }).should('be.visible');
-    cy.get(L.companiesFormHost, { timeout: 15_000 }).should('be.visible');
+    // ───── Activation checks ───────────────────────────────────────────
 
-    log('done', 'Companies tab is active and ready');
+    // 1) Check URL hash first if provided
+    if (expectedHash) {
+      cy.location('hash', { timeout: 10_000 }).should('eq', expectedHash);
+      log('assert', `${label} tab activated via URL hash (${expectedHash})`);
+      return;
+    }
+
+    // 2) Otherwise rely on GOV.UK selected class
+    cy.get(tabSelector, { timeout: 10_000 })
+      .should('have.class', 'govuk-tabs__list-item--selected')
+      .then(() => log('assert', `${label} tab activated via CSS class`));
+
+    log('done', `${label} tab activated`);
+  }
+
+  /** Navigates to the Individuals tab. */
+  public goToIndividualsTab(): void {
+    this.activateTab(Nav.individualsTab, 'Individuals');
+  }
+
+  /** Navigates to the Companies tab. */
+  public goToCompaniesTab(): void {
+    this.activateTab(Nav.companiesTab, 'Companies');
+  }
+
+  /** Navigates to the Major Creditors tab. */
+  public goToMajorCreditorsTab(): void {
+    this.activateTab(Nav.majorCreditorsTab, 'Major Creditors');
+  }
+
+  /** Navigates to the Minor Creditors tab. */
+  public goToMinorCreditorsTab(): void {
+    this.activateTab(Nav.minorCreditorsTab, 'Minor Creditors');
   }
 }
