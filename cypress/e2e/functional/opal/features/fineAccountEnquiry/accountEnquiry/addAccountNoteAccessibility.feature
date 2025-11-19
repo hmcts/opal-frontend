@@ -22,13 +22,12 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
 
     ## Check Accessibility on Add Account Note Page
     And I open the Add account note screen and verify the header is Add account note
-    Then I check accessibility
+    Then I check the page for accessibility
 
     ## Check Accessibility with Form Data Entered for Company
-    When I open the Add account note screen and verify the header is Add account note
     And I enter "Valid test account note for company accessibility testing" into the notes field and save the note
     Then I should see the header "Mr James GRAHAMADDNOTESURNAME" and the URL should contain "details"
-    Then I check accessibility
+    Then I check the page for accessibility
 
   Scenario: Check Add Account Note Accessibility with Axe-Core for Company Account
     Given I create a "company" draft account with the following details and set status "Publishing Pending":
@@ -45,9 +44,9 @@ Feature: Add Account Note - View Defendant Account Details Accessibility
 
     ## Check Accessibility on Add Account Note Page for Company
     When I open the Add account note screen and verify the header is Add account note
-    Then I check accessibility
+    Then I check the page for accessibility
 
     ## Check Accessibility with Form Data Entered for Company
     And I enter "Valid test account note for company accessibility testing" into the notes field and save the note
     Then I should see the header containing text "AccNote comp"
-    And I check accessibility
+    And I check the page for accessibility

@@ -31,7 +31,6 @@ Feature: Add Account Note - View Defendant Account Details
 
     # (AC5a) Cancel button after entering data
     When I open the Add account note screen, enter "This is a test account note for validation", and cancel
-    Then I confirm the unsaved changes warning by clicking OK
     And I should see the header containing text "Mr James GRAHAMADDNOTESURNAME"
 
     # (AC5b) Browser back button after entering data
@@ -66,7 +65,6 @@ Feature: Add Account Note - View Defendant Account Details
 
     #(AC5a) Cancel button after entering data
     When I open the Add account note screen, enter "This is a test account note for validation", and cancel
-    Then I confirm the unsaved changes warning by clicking OK
     And I should see the header containing text "AccNote comp"
 
     # #(AC5b) Browser back button after entering data

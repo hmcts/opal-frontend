@@ -1,5 +1,5 @@
 /**
- * @file draftAccount.api.ts
+ * @file draft-account.api.ts
  * @description
  * Cypress **API Action module** for creating and updating draft accounts in the
  * HMCTS Opal application. Handles account creation, ETag validation, and
@@ -10,21 +10,6 @@
  * - Enforces strong ETag semantics (`If-Match` headers) to detect stale updates.
  * - Exposes metadata via the `@etagUpdate` alias for downstream UI tests.
  * - Includes Cypress logging for traceability in test reports.
- *
- * @example
- * ```ts
- * // Create and publish a company draft account
- * createDraftAndSetStatus('company', 'Published', table);
- *
- * // Later in a flow:
- * cy.get('@etagUpdate').then((etag) => {
- *   cy.log(`Account ${etag.accountNumber} created`);
- * });
- * ```
- *
- * @see {@link convertDataTableToNestedObject}
- * @see {@link getDraftPayloadFileForAccountType}
- * @see {@link readDraftIdFromBody}
  */
 
 import merge from 'lodash/merge';
@@ -33,6 +18,7 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { convertDataTableToNestedObject } from '../../../../support/utils/table';
 import { getDraftPayloadFileForAccountType, type DefendantType } from '../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../support/draftAccounts';
+import { log } from '../../../../support/utils/log.helper';
 
 /** Path builder for a draft account resource */
 const pathForAccount = (id: number | string) => `/opal-fines-service/draft-accounts/${id}`;
@@ -70,11 +56,10 @@ export function createDraftAndSetStatus(
   const overrides = convertDataTableToNestedObject(table);
   const draftFixture = getDraftPayloadFileForAccountType(accountType);
 
-  Cypress.log({
-    name: 'api',
-    displayName: 'Draft Account',
-    message: `Creating ${accountType} draft and setting status to ${newStatus}`,
-    consoleProps: () => ({ accountType, newStatus, overrides }),
+  log('action', `Creating ${accountType} draft and setting status to ${newStatus}`, {
+    accountType,
+    newStatus,
+    overrides,
   });
 
   // Local state accumulated across steps
@@ -95,7 +80,7 @@ export function createDraftAndSetStatus(
 
       // 1) POST create
       .then(() => {
-        Cypress.log({ name: 'request', message: 'POST /draft-accounts' });
+        log('action', 'POST /draft-accounts');
         cy.request({
           method: 'POST',
           url: '/opal-fines-service/draft-accounts',
@@ -106,26 +91,23 @@ export function createDraftAndSetStatus(
           .as('postDraftAccount')
           .then((postResp) => {
             if (postResp.status !== 201) {
-              Cypress.log({
-                name: 'error',
-                message: 'POST /draft-accounts failed',
-                consoleProps: () => ({
-                  status: postResp.status,
-                  body: postResp.body,
-                  requestBody,
-                }),
+              log('assert', 'POST /draft-accounts failed', {
+                status: postResp.status,
+                body: postResp.body,
+                requestBody,
               });
             }
             expect(postResp.status, 'POST /draft-accounts').to.eq(201);
 
             createdId = readDraftIdFromBody(postResp.body);
+            log('done', 'Draft account created', { createdId });
             cy.wrap(createdId, { log: false }).as('lastCreatedDraftId');
           });
       })
 
       // 2) GET for strong ETag and prepare PATCH body
       .then(() => {
-        Cypress.log({ name: 'request', message: `GET /draft-accounts/${createdId}` });
+        log('action', `GET /draft-accounts/${createdId}`);
         cy.request({ method: 'GET', url: pathForAccount(createdId), failOnStatusCode: false })
           .as('getDraftAccount')
           .then((getResp) => {
@@ -146,12 +128,18 @@ export function createDraftAndSetStatus(
             if (Array.isArray(body['timeline_data'])) {
               patchBody['timeline_data'] = body['timeline_data'];
             }
+
+            log('done', 'Prepared PATCH body and captured strong ETag', {
+              beforeEtag,
+              business_unit_id,
+              validated_by,
+            });
           });
       })
 
       // 3) PATCH status update
       .then(() => {
-        Cypress.log({ name: 'request', message: `PATCH /draft-accounts/${createdId}` });
+        log('action', `PATCH /draft-accounts/${createdId}`);
         cy.request({
           method: 'PATCH',
           url: pathForAccount(createdId),
@@ -166,15 +154,11 @@ export function createDraftAndSetStatus(
           .as('patchDraftAccount')
           .then((patchResp) => {
             if (![200, 204].includes(patchResp.status)) {
-              Cypress.log({
-                name: 'error',
-                message: 'PATCH /draft-accounts/{id} failed',
-                consoleProps: () => ({
-                  status: patchResp.status,
-                  responseBody: patchResp.body,
-                  sentBody: patchBody,
-                  ifMatch: beforeEtag,
-                }),
+              log('assert', 'PATCH /draft-accounts/{id} failed', {
+                status: patchResp.status,
+                responseBody: patchResp.body,
+                sentBody: patchBody,
+                ifMatch: beforeEtag,
               });
             }
 
@@ -191,15 +175,12 @@ export function createDraftAndSetStatus(
             numberForUI = typeof accRaw === 'string' ? accRaw : null;
 
             // 4) Alias metadata for downstream tests
-            Cypress.log({
-              name: 'alias',
-              message: `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`,
-              consoleProps: () => ({
-                etagBefore: beforeEtag,
-                etagAfter: afterEtag,
-                accountId: createdId,
-                accountNumber: numberForUI,
-              }),
+            log('action', `Alias @etagUpdate created (Account ${numberForUI ?? 'unknown'})`, {
+              etagBefore: beforeEtag,
+              etagAfter: afterEtag,
+              accountId: createdId,
+              accountNumber: numberForUI,
+              status: patchResp.status,
             });
 
             cy.wrap(
