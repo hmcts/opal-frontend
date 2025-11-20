@@ -33,6 +33,17 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   };
   protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
 
+  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
+    formData: this.payloadService.mapDebtorAccountPartyPayload(
+      this.partyPayload,
+      this.partyType,
+      this.partyPayload.defendant_account_party.is_debtor,
+    ),
+    nestedFlow: false,
+  };
+
+  protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
+
   /**
    * Handles the form submission event from the child form component.
    * @param formData - The form data submitted from the child component
