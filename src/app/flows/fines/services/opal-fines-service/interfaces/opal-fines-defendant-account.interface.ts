@@ -35,20 +35,20 @@ export interface IOpalFinesDefendantAccountResponse {
 export interface IOpalFinesDefendantAccountOrganisationAlias {
   alias_id: string;
   sequence_number: number;
-  organisation_name: string | null;
+  organisation_name: string;
 }
 
 export interface IOpalFinesDefendantAccountIndividualAlias {
   alias_id: string;
   sequence_number: number;
-  surname: string | null;
+  surname: string;
   forenames: string | null;
 }
 
 export interface IOpalFinesDefendantAccountIndividualDetails {
   title: string | null;
   forenames: string | null;
-  surname: string | null;
+  surname: string;
   date_of_birth: string | null;
   age: string | null;
   national_insurance_number: string | null;
@@ -56,12 +56,12 @@ export interface IOpalFinesDefendantAccountIndividualDetails {
 }
 
 export interface IOpalFinesDefendantAccountOrganisationDetails {
-  organisation_name: string | null;
+  organisation_name: string;
   organisation_aliases: IOpalFinesDefendantAccountOrganisationAlias[] | null;
 }
 
 export interface IOpalFinesDefendantAccountAddress {
-  address_line_1: string | null;
+  address_line_1: string;
   address_line_2: string | null;
   address_line_3: string | null;
   address_line_4: string | null;
