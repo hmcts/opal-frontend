@@ -9,6 +9,8 @@ import {
   getAliasForenamesInput,
   getAliasSurnameInput,
   getFieldErrorFor,
+} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
+import {
   ERROR_MESSAGES,
   INDIVIDUAL_REQUIRED_MESSAGES,
   EMPLOYER_REQUIRED_MESSAGES,
@@ -18,7 +20,7 @@ import {
   COMPANY_ALL_DATA_TYPE_ERRORS,
   NON_PAYING_MAX_LENGTH_ERRORS,
   NON_PAYING_ALL_DATA_TYPE_ERRORS,
-} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
+} from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
 import {
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,

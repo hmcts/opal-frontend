@@ -11,14 +11,16 @@ import {
   getFieldErrorFor,
 } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 import {
+  coreRequiredMessages,
+  expectedErrors,
+  allExpectedErrors,
+} from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
+import {
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
   VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,
 } from './mocks/viewAndAmendDefendant-api.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { coreRequiredMessages } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
-import { expectedErrors } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
-import { allExpectedErrors } from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 
 describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () => {
   let fullMock: IOpalFinesAccountDefendantAccountParty;
