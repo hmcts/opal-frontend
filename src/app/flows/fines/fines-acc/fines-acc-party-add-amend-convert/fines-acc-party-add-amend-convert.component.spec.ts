@@ -142,7 +142,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     });
   });
 
-  it('should call utilsService.scrollToTop on API call failure', fakeAsync(() => {
+  it('should call utilsService.scrollToTop on API call failure and reset unsaved changes', fakeAsync(() => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
@@ -156,6 +156,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     tick(); // Wait for error to be handled
 
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(component.stateUnsavedChanges).toBeTrue();
   }));
 
   it('should navigate to details page on successful API call', fakeAsync(() => {

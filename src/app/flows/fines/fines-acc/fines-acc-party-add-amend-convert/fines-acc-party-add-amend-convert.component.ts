@@ -64,6 +64,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       .pipe(
         catchError(() => {
           this.utilsService.scrollToTop();
+          this.stateUnsavedChanges = true;
           return EMPTY;
         }),
         takeUntil(this.ngUnsubscribe),
