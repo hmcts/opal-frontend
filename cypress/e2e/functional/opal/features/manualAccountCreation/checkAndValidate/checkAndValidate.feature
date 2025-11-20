@@ -927,17 +927,17 @@ Feature: Navigate and edit sections from task list
 
     # Create a Fixed Penalty account for testing
     Given I create a "fixedPenalty" draft account with the following details:
-      | account.defendant.forenames | John     |
-      | account.defendant.surname   | TestLast |
+      | account.defendant.forenames | FakeFixed |
+      | account.defendant.surname   | FAKELAST  |
 
     # Check accounts in the Draft tab (default)
     Then I see "Create accounts" on the page header
 
     # Click on the defendant name link (format should be "LastName, FirstName")
-    When I click on the "TestLast, John" link
+    When I click on the "FAKELAST, FakeFixed" link
 
     # See what account details page we land on
-    Then I see "Mr John TESTLAST" on the page header
+    Then I see "Mr FakeFixed FAKELAST" on the page header
 
     # Verify all Fixed Penalty sections and fields are displayed correctly
     Then I verify all Fixed Penalty account summary sections and values are displayed in order
@@ -947,17 +947,17 @@ Feature: Navigate and edit sections from task list
 
     # Create a Fixed Penalty company account for testing
     Given I create a "fixedPenaltyCompany" draft account with the following details:
-      | account.defendant.company_name | TEST Fixed-Penalty-Company-Ltd |
+      | account.defendant.company_name | TestFixedPenaltyCompany |
 
     # Navigate to the In Review tab
     Then I see "Create accounts" on the page header
     #When I click on the "In Review" link
 
     # Click on the company name link
-    Then I click on the "TEST Fixed-Penalty-Company-Ltd" link
+    Then I click on the "TestFixedPenaltyCompany" link
 
     # Verify company account details are displayed
-    And I see "TEST Fixed-Penalty-Company-Ltd" on the page header
+    And I see "TestFixedPenaltyCompany" on the page header
 
     # Verify all Fixed Penalty sections and fields are displayed correctly for company
     Then I verify all Fixed Penalty company account summary sections and values are displayed in order

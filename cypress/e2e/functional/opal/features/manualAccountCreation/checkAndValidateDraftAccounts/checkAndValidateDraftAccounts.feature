@@ -416,8 +416,8 @@ Feature: Check and Validate - Checker
   @PO-1804
   Scenario: As a user I can view Fixed Penalty Details when selecting defendant name link under To Review tab
     And I create a "fixedPenalty" draft account with the following details:
-      | account.defendant.forenames | John     |
-      | account.defendant.surname   | TestLast |
+      | account.defendant.forenames | FakeFixed |
+      | account.defendant.surname   | FAKELAST  |
     Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
     Then I am on the dashboard
 
@@ -427,8 +427,11 @@ Feature: Check and Validate - Checker
     And I see "To review" on the status heading
 
     # Click on the defendant name link
-    When I click on the "TestLast, John" link
-    Then I see "Mr John TESTLAST" on the page header
+    # Click on the defendant name link (format should be "LastName, FirstName")
+    When I click on the "FAKELAST, FakeFixed" link
+
+    # See what account details page we land on
+    Then I see "Mr FakeFixed FAKELAST" on the page header
 
     # Verify all Fixed Penalty sections and fields are displayed correctly
     Then I verify all Fixed Penalty account summary sections and values are displayed in order
@@ -439,7 +442,8 @@ Feature: Check and Validate - Checker
 
     # Create a Fixed Penalty company account
     Given I create a "fixedPenaltyCompany" draft account with the following details:
-      | account.defendant.company_name | TEST Fixed-Penalty-Company-Ltd |
+      | account.defendant.company_name | TestFixedPenaltyCompany |
+
     Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
     Then I am on the dashboard
 
@@ -448,8 +452,10 @@ Feature: Check and Validate - Checker
 
     And I see "To review" on the status heading
     # Click on the company name link
-    Then I click on the "TEST Fixed-Penalty-Company-Ltd" link
-    And I see "TEST Fixed-Penalty-Company-Ltd" on the page header
+    Then I click on the "TestFixedPenaltyCompany" link
+
+    # Verify company account details are displayed
+    And I see "TestFixedPenaltyCompany" on the page header
 
     # Verify all Fixed Penalty sections and fields are displayed correctly for company
     Then I verify all Fixed Penalty company account summary sections and values are displayed in order
