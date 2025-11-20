@@ -5,6 +5,7 @@ import {
   IOpalFinesDefendantAccountVehicleDetails,
   IOpalFinesDefendantAccountEmployerDetails,
   IOpalFinesDefendantAccountLanguagePreferences,
+  IOpalFinesDefendantAccountLanguagePreference,
   IOpalFinesDefendantAccountIndividualDetails,
   IOpalFinesDefendantAccountOrganisationDetails,
   IOpalFinesDefendantAccountIndividualAlias,
@@ -197,17 +198,14 @@ const buildEmployerDetails = (
 /**
  * Creates a language preference object with appropriate display name
  */
-const createLanguagePreference = (
-  languageCode: string,
-): { language_code: 'CY' | 'EN'; language_display_name: 'Welsh and English' | 'English only' } => {
-  const validLanguageCode = languageCode as keyof typeof FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
-  const displayName = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[validLanguageCode];
+const createLanguagePreference = (languageCode: string): IOpalFinesDefendantAccountLanguagePreference => {
+  const displayName =
+    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[languageCode as keyof typeof FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS] ??
+    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS.EN;
 
   return {
     language_code: languageCode as 'CY' | 'EN',
-    language_display_name: (displayName || FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS.EN) as
-      | 'Welsh and English'
-      | 'English only',
+    language_display_name: displayName as 'Welsh and English' | 'English only',
   };
 };
 

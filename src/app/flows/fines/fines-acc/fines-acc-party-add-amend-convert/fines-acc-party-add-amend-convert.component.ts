@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { tap, catchError, EMPTY, takeUntil, Subject } from 'rxjs';
+import {catchError, EMPTY, takeUntil, Subject } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form/fines-acc-party-add-amend-convert-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-add-amend-convert-form.interface';
@@ -62,20 +62,21 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
     this.opalFinesService
       .putDefendantAccountParty(accountId, partyId, builtPayload, this.partyPayload.version!, businessUnitId)
       .pipe(
-        tap(() => {
-          const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
-          this['router'].navigate(['../../details'], {
-            relativeTo: this['activatedRoute'],
-            fragment: fragment,
-          });
-        }),
         catchError(() => {
           this.utilsService.scrollToTop();
           return EMPTY;
         }),
         takeUntil(this.ngUnsubscribe),
       )
-      .subscribe();
+      .subscribe({
+        next: () => {
+          const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
+          this['router'].navigate(['../../details'], {
+            relativeTo: this['activatedRoute'],
+            fragment: fragment,
+          });
+        },
+      });
   }
 
   /**
