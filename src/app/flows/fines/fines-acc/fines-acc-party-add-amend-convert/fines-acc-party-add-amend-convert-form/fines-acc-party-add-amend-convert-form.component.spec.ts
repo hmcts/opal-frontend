@@ -158,6 +158,23 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component['showLanguagePreferences']()).toBe(false);
   });
 
+  it('should resolve defendant fragment by default', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    expect(component.routeFragment).toBe('defendant');
+
+    component.partyType = 'company';
+    expect(component.routeFragment).toBe('defendant');
+  });
+
+  it('should resolve parent or guardian fragment for parent guardian party type', () => {
+    component.partyType = 'parentGuardian';
+    fixture.detectChanges();
+
+    expect(component.routeFragment).toBe('parent-or-guardian');
+  });
+
   it('should calculate age when valid date of birth is provided', () => {
     mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
     component.partyType = 'individual';
