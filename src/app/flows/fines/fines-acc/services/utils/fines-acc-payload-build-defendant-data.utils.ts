@@ -199,13 +199,10 @@ const buildEmployerDetails = (
  * Creates a language preference object with appropriate display name
  */
 const createLanguagePreference = (languageCode: string): IOpalFinesDefendantAccountLanguagePreference => {
-  const displayName =
-    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[languageCode as keyof typeof FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS] ??
-    FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS.EN;
-
+  const lc = languageCode as keyof typeof FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   return {
-    language_code: languageCode as 'CY' | 'EN',
-    language_display_name: displayName as 'Welsh and English' | 'English only',
+    language_code: lc,
+    language_display_name: FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[lc] ?? FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS.EN,
   };
 };
 
