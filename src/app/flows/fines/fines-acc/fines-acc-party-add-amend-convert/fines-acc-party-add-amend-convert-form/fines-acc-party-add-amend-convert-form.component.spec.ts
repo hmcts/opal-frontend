@@ -859,44 +859,4 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeNull();
     expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeNull();
   });
-
-  describe('handleRouteToDefendantTab', () => {
-    beforeEach(() => {
-      component.partyType = 'individual';
-      fixture.detectChanges();
-    });
-
-    it('should navigate to details with defendant fragment for individual party type', () => {
-      component.partyType = 'individual';
-
-      component.handleRouteToDefendantTab();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-        relativeTo: mockActivatedRoute,
-        fragment: 'defendant',
-      });
-    });
-
-    it('should navigate to details with parent-or-guardian fragment for parentGuardian party type', () => {
-      component.partyType = 'parentGuardian';
-
-      component.handleRouteToDefendantTab();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-        relativeTo: mockActivatedRoute,
-        fragment: 'parent-or-guardian',
-      });
-    });
-
-    it('should navigate to details with defendant fragment for company party type', () => {
-      component.partyType = 'company';
-
-      component.handleRouteToDefendantTab();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-        relativeTo: mockActivatedRoute,
-        fragment: 'defendant',
-      });
-    });
-  });
 });

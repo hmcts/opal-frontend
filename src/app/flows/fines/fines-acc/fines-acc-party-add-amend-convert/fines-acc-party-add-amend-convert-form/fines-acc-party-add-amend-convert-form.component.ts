@@ -122,6 +122,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
+  public readonly routeFragment = this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
 
   /**
    * Creates the base form group with fields shared by all party types.
@@ -420,18 +421,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
     } else {
       return 'Defendant details';
     }
-  }
-
-  /**
-   * Handles routing to the defendant details page with the appropriate fragment tab
-   * based on the party type being edited.
-   */
-  public handleRouteToDefendantTab(): void {
-    const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
-    this['router'].navigate(['../../details'], {
-      relativeTo: this['activatedRoute'],
-      fragment: fragment,
-    });
   }
 
   public override ngOnInit(): void {

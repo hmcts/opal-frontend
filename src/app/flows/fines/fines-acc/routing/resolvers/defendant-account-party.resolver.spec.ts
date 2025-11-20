@@ -263,6 +263,44 @@ describe('defendantAccountPartyResolver', () => {
     }
   });
 
+  it('should return a RedirectCommand when getDefendantAccountParty fails', async () => {
+    const route = {
+      paramMap: {
+        get: jasmine.createSpy('get').and.callFake((key: string) => {
+          if (key === 'accountId') return '123';
+          if (key === 'partyType') return 'individual';
+          return null;
+        }),
+      },
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    const mockHeaderData: IOpalFinesAccountDefendantDetailsHeader = {
+      defendant_account_party_id: 'DEFENDANT123',
+      parent_guardian_party_id: 'GUARDIAN456',
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockUrlTree = {} as any;
+    mockRouter.createUrlTree.and.returnValue(mockUrlTree);
+    mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
+    mockOpalFinesService.getDefendantAccountParty.and.returnValue(throwError(() => new Error('Party API Error')));
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = TestBed.runInInjectionContext(() => defendantAccountPartyResolver(route, {} as any));
+
+    // The result should be an observable that emits a RedirectCommand
+    if (result && typeof result === 'object' && 'subscribe' in result) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const emittedValue = await lastValueFrom(result as any);
+      expect(emittedValue).toBeInstanceOf(RedirectCommand);
+      expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
+    } else {
+      fail('Expected observable result');
+    }
+  });
+
   it('should return a RedirectCommand when requested partyType has no corresponding party ID', async () => {
     const route = {
       paramMap: {
