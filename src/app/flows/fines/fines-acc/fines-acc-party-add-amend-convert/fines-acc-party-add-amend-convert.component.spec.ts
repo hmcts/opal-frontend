@@ -216,160 +216,52 @@ describe('FinesAccPartyAddAmendConvert', () => {
     });
   }));
 
-  it('should call next and complete on ngUnsubscribe when ngOnDestroy is invoked', () => {
-    spyOn(component['ngUnsubscribe'], 'next');
-    spyOn(component['ngUnsubscribe'], 'complete');
-
-    component.ngOnDestroy();
-
-    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
-    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when account_id is missing', () => {
-    // Arrange
+  it('should redirect to details page when required store values are missing', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
 
-    // Setup missing account_id
-    mockFinesAccStore.account_id.and.returnValue(null);
-    mockRouter.navigate.calls.reset();
+    const testCases = [
+      { description: 'account_id is null', account_id: null, business_unit_id: 'bu-123', party_id: 'party-123' },
+      { description: 'business_unit_id is null', account_id: 123, business_unit_id: null, party_id: 'party-123' },
+      { description: 'party_id is null', account_id: 123, business_unit_id: 'bu-123', party_id: null },
+      {
+        description: 'account_id is undefined',
+        account_id: undefined,
+        business_unit_id: 'bu-123',
+        party_id: 'party-123',
+      },
+      { description: 'account_id is empty string', account_id: '', business_unit_id: 'bu-123', party_id: 'party-123' },
+    ];
 
-    // Act
-    component.handleFormSubmit(mockFormData);
+    testCases.forEach((testCase) => {
+      mockFinesAccStore.account_id.and.returnValue(testCase.account_id);
+      mockFinesAccStore.business_unit_id.and.returnValue(testCase.business_unit_id);
+      mockFinesAccStore.party_id.and.returnValue(testCase.party_id);
+      mockRouter.navigate.calls.reset();
 
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+      component.handleFormSubmit(mockFormData);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
+        relativeTo: jasmine.any(Object),
+      });
+      expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
     });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
 
-  it('should redirect to defendant details when business_unit_id is missing', () => {
-    // Arrange
+  it('should redirect to details page when pg_party_id is missing for parentGuardian party type', () => {
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
       nestedFlow: false,
     };
 
-    // Setup missing business_unit_id
-    mockFinesAccStore.business_unit_id.and.returnValue(null);
-    mockRouter.navigate.calls.reset();
-
-    // Act
-    component.handleFormSubmit(mockFormData);
-
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when party_id is missing for individual party type', () => {
-    // Arrange
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    // Setup missing party_id (individual type uses party_id)
-    mockFinesAccStore.party_id.and.returnValue(null);
-    mockRouter.navigate.calls.reset();
-
-    // Act
-    component.handleFormSubmit(mockFormData);
-
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when pg_party_id is missing for parentGuardian party type', () => {
-    // Arrange
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    // Override partyType for this test and setup missing pg_party_id
     Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
     mockFinesAccStore.pg_party_id.and.returnValue(null);
     mockRouter.navigate.calls.reset();
 
-    // Act
     component.handleFormSubmit(mockFormData);
 
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when account_id is undefined', () => {
-    // Arrange
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    // Setup undefined account_id
-    mockFinesAccStore.account_id.and.returnValue(undefined);
-    mockRouter.navigate.calls.reset();
-
-    // Act
-    component.handleFormSubmit(mockFormData);
-
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when account_id is empty string', () => {
-    // Arrange
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    // Setup empty string account_id
-    mockFinesAccStore.account_id.and.returnValue('');
-    mockRouter.navigate.calls.reset();
-
-    // Act
-    component.handleFormSubmit(mockFormData);
-
-    // Assert
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
-    });
-    expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to defendant details when multiple store values are missing', () => {
-    // Arrange
-    const mockFormData = {
-      formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
-      nestedFlow: false,
-    };
-
-    // Setup multiple missing values
-    mockFinesAccStore.account_id.and.returnValue(null);
-    mockFinesAccStore.business_unit_id.and.returnValue(undefined);
-    mockFinesAccStore.party_id.and.returnValue('');
-    mockRouter.navigate.calls.reset();
-
-    // Act
-    component.handleFormSubmit(mockFormData);
-
-    // Assert
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
     });
@@ -402,22 +294,17 @@ describe('FinesAccPartyAddAmendConvert', () => {
     });
   }));
 
-  it('should set stateUnsavedChanges when handleUnsavedChanges is called with true', () => {
+  it('should correctly set stateUnsavedChanges based on input value', () => {
+    // Test with true
     component.handleUnsavedChanges(true);
     expect(component.stateUnsavedChanges).toBe(true);
-  });
 
-  it('should set stateUnsavedChanges when handleUnsavedChanges is called with false', () => {
+    // Test with false
     component.handleUnsavedChanges(false);
     expect(component.stateUnsavedChanges).toBe(false);
-  });
 
-  it('should update stateUnsavedChanges value correctly when toggling', () => {
-    component.handleUnsavedChanges(false);
-    expect(component.stateUnsavedChanges).toBe(false);
+    // Test toggling
     component.handleUnsavedChanges(true);
     expect(component.stateUnsavedChanges).toBe(true);
-    component.handleUnsavedChanges(false);
-    expect(component.stateUnsavedChanges).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import { catchError, EMPTY, takeUntil, Subject } from 'rxjs';
+import { Component, inject } from '@angular/core';
+import { catchError, EMPTY } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form/fines-acc-party-add-amend-convert-form.component';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IFinesAccPartyAddAmendConvertForm } from './interfaces/fines-acc-party-add-amend-convert-form.interface';
@@ -13,8 +13,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
   imports: [FinesAccPartyAddAmendConvertFormComponent],
   templateUrl: './fines-acc-party-add-amend-convert.component.html',
 })
-export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponent implements OnDestroy {
-  private readonly ngUnsubscribe = new Subject<void>();
+export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponent {
   private readonly payloadService = inject(FinesAccPayloadService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesAccStore = inject(FinesAccountStore);
@@ -31,17 +30,6 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
     ),
     nestedFlow: false,
   };
-  protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
-
-  protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
-    formData: this.payloadService.mapDebtorAccountPartyPayload(
-      this.partyPayload,
-      this.partyType,
-      this.partyPayload.defendant_account_party.is_debtor,
-    ),
-    nestedFlow: false,
-  };
-
   protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
 
   /**
@@ -78,7 +66,6 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
           this.stateUnsavedChanges = true;
           return EMPTY;
         }),
-        takeUntil(this.ngUnsubscribe),
       )
       .subscribe({
         next: () => {
@@ -98,17 +85,5 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
-  }
-
-  /**
-   * Lifecycle hook that is called just before the component is destroyed.
-   *
-   * This method ensures that any subscriptions tied to the component lifecycle are properly terminated.
-   * It does so by emitting a value on the `ngUnsubscribe` subject, signaling any active subscriptions to complete,
-   * and then it completes the subject to free up resources.
-   */
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }
