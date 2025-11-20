@@ -71,6 +71,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       )
       .subscribe({
         next: () => {
+          this.opalFinesService.clearAccountDetailsCache();
           const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
           this['router'].navigate(['../../details'], {
             relativeTo: this['activatedRoute'],

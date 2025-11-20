@@ -41,8 +41,8 @@ export const buildIndividualAliases = (
     if (forenames || surname) {
       const aliasItem: IOpalFinesDefendantAccountIndividualAlias = {
         sequence_number: index + 1,
-        surname: surname || '',
-        forenames: forenames || null,
+        surname: surname,
+        forenames: forenames,
         alias_id: '', // Will be set below based on whether it's new or existing
       };
 
@@ -110,7 +110,7 @@ const buildIndividualDetails = (
 ): IOpalFinesDefendantAccountIndividualDetails => ({
   title: formState.facc_party_add_amend_convert_title,
   forenames: formState.facc_party_add_amend_convert_forenames,
-  surname: formState.facc_party_add_amend_convert_surname || '',
+  surname: formState.facc_party_add_amend_convert_surname,
   date_of_birth: formState.facc_party_add_amend_convert_dob,
   age: null, // Age is typically calculated server-side
   national_insurance_number: formState.facc_party_add_amend_convert_national_insurance_number,
@@ -123,7 +123,7 @@ const buildIndividualDetails = (
 const buildOrganisationDetails = (
   formState: IFinesAccPartyAddAmendConvertState,
 ): IOpalFinesDefendantAccountOrganisationDetails => ({
-  organisation_name: formState.facc_party_add_amend_convert_organisation_name || '',
+  organisation_name: formState.facc_party_add_amend_convert_organisation_name,
   organisation_aliases: buildOrganisationAliases(formState.facc_party_add_amend_convert_organisation_aliases),
 });
 
@@ -131,7 +131,7 @@ const buildOrganisationDetails = (
  * Builds address details from form state
  */
 const buildAddressDetails = (formState: IFinesAccPartyAddAmendConvertState): IOpalFinesDefendantAccountAddress => ({
-  address_line_1: formState.facc_party_add_amend_convert_address_line_1 || '',
+  address_line_1: formState.facc_party_add_amend_convert_address_line_1,
   address_line_2: formState.facc_party_add_amend_convert_address_line_2,
   address_line_3: formState.facc_party_add_amend_convert_address_line_3,
   address_line_4: null, // Not in form interface
@@ -185,7 +185,7 @@ const buildEmployerDetails = (
     employer_email_address: formState.facc_party_add_amend_convert_employer_email_address,
     employer_telephone_number: formState.facc_party_add_amend_convert_employer_telephone_number,
     employer_address: {
-      address_line_1: formState.facc_party_add_amend_convert_employer_address_line_1 || '',
+      address_line_1: formState.facc_party_add_amend_convert_employer_address_line_1,
       address_line_2: formState.facc_party_add_amend_convert_employer_address_line_2,
       address_line_3: formState.facc_party_add_amend_convert_employer_address_line_3,
       address_line_4: formState.facc_party_add_amend_convert_employer_address_line_4,

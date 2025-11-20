@@ -806,10 +806,6 @@ export class OpalFines {
       headers['Business-Unit-Id'] = businessUnitId;
     }
 
-    return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers }).pipe(
-      tap(() => {
-        this.clearAccountDetailsCache();
-      }),
-    );
+    return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
   }
 }

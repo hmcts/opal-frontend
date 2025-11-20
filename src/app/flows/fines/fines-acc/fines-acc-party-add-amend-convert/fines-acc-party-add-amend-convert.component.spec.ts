@@ -32,7 +32,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'mapDebtorAccountPartyPayload',
       'buildAccountPartyPayload',
     ]);
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountParty']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountParty', 'clearAccountDetailsCache']);
     mockFinesAccStore = {
       account_id: jasmine.createSpy().and.returnValue(123),
       party_id: jasmine.createSpy().and.returnValue('party-123'),
@@ -91,7 +91,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission for individual party type', () => {
+  it('should handle form submission for individual party type', fakeAsync(() => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -100,6 +100,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Act
     component.handleFormSubmit(mockFormData);
+    tick(); // Allow async operations to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalledWith(
@@ -109,13 +110,14 @@ describe('FinesAccPartyAddAmendConvert', () => {
       jasmine.any(String), // version
       'bu-123', // business_unit_id
     );
+    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
       fragment: 'defendant',
     });
-  });
+  }));
 
-  it('should handle form submission for parentGuardian party type', () => {
+  it('should handle form submission for parentGuardian party type', fakeAsync(() => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -127,6 +129,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Act
     component.handleFormSubmit(mockFormData);
+    tick(); // Allow async operations to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalledWith(
@@ -136,11 +139,12 @@ describe('FinesAccPartyAddAmendConvert', () => {
       jasmine.any(String), // version
       'bu-123', // business_unit_id
     );
+    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
       fragment: 'parent-or-guardian',
     });
-  });
+  }));
 
   it('should call utilsService.scrollToTop on API call failure and reset unsaved changes', fakeAsync(() => {
     const mockFormData = {
@@ -177,6 +181,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     tick(); // Wait for observable to complete
 
     // Assert
+    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
       fragment: 'defendant',
@@ -204,6 +209,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     tick(); // Wait for observable to complete
 
     // Assert
+    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
       fragment: 'parent-or-guardian',
@@ -370,7 +376,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
 
-  it('should proceed with API call when all store values are present and valid', () => {
+  it('should proceed with API call when all store values are present and valid', fakeAsync(() => {
     // Arrange
     const mockFormData = {
       formData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -385,14 +391,16 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Act
     component.handleFormSubmit(mockFormData);
+    tick(); // Wait for observable to complete
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
       relativeTo: jasmine.any(Object),
       fragment: 'defendant',
     });
-  });
+  }));
 
   it('should set stateUnsavedChanges when handleUnsavedChanges is called with true', () => {
     component.handleUnsavedChanges(true);
