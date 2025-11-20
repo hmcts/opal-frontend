@@ -33,11 +33,11 @@ Feature: Account Enquiries – View Account Details
     # AC4 – Route Guard (cancel edit flow)
     When I edit the Defendant details and change the First name to "Test"
     And I attempt to cancel editing and choose Cancel on the confirmation dialog
-    Then I should remain on the edit page
+    Then I should remain on the defendant edit page
     And I should see the First name field still contains "Test"
 
     When I attempt to cancel editing and choose OK on the confirmation dialog
-    Then I should return to the account details page
+    Then I should return to the account details page At a glance tab
     And I should see the account header contains "Mr John ACCDETAILSURNAME"
 
   @967 @PO-1111
@@ -70,10 +70,10 @@ Feature: Account Enquiries – View Account Details
 
     When I edit the Defendant details and change the First name to "Test"
     And I attempt to cancel editing and choose Cancel on the confirmation dialog
-    Then I should remain on the edit page
+    Then I should remain on the defendant edit page
     And I should see the First name field still contains "Test"
 
     When I attempt to cancel editing and choose OK on the confirmation dialog
-    Then I should return to the account details page
+    Then I should return to the account details page At a glance tab
     And I should see the account header contains "Miss Jane TESTNONPAYEE"
 
