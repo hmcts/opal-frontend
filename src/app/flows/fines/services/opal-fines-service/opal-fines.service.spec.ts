@@ -982,4 +982,118 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('PATCH');
     req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
+
+  it('should putDefendantAccountParty with required headers', () => {
+    const defendantAccountId = 123456;
+    const defendantAccountPartyId = 'PARTY789';
+    const version = '2';
+    const businessUnitId = '61';
+    const updatePayload = {
+      defendant_account_party_type: 'PRIMARY',
+      is_debtor: true,
+      party_details: {
+        party_id: defendantAccountPartyId,
+        organisation_flag: false,
+        individual_details: {
+          title: 'Mr',
+          forenames: 'John',
+          surname: 'Doe',
+          date_of_birth: '01/01/1990',
+          age: '34',
+          national_insurance_number: 'AB123456C',
+          individual_aliases: null,
+        },
+        organisation_details: null,
+      },
+      address: {
+        address_line_1: '123 Test Street',
+        address_line_2: null,
+        address_line_3: null,
+        address_line_4: null,
+        address_line_5: null,
+        postcode: 'TE5 T12',
+      },
+      contact_details: null,
+      vehicle_details: null,
+      employer_details: null,
+      language_preferences: null,
+    };
+
+    const expectedResponse = {
+      version: version,
+      defendant_account_party: updatePayload,
+    };
+
+    service
+      .putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, updatePayload, version, businessUnitId)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+    const req = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`,
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.headers.get('If-Match')).toBe(version);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(req.request.body).toEqual(updatePayload);
+
+    req.flush(expectedResponse);
+  });
+
+  it('should putDefendantAccountParty without optional headers', () => {
+    const defendantAccountId = 123456;
+    const defendantAccountPartyId = 'PARTY789';
+    const updatePayload = {
+      defendant_account_party_type: 'PRIMARY',
+      is_debtor: true,
+      party_details: {
+        party_id: defendantAccountPartyId,
+        organisation_flag: false,
+        individual_details: {
+          title: 'Mr',
+          forenames: 'John',
+          surname: 'Doe',
+          date_of_birth: '01/01/1990',
+          age: '34',
+          national_insurance_number: 'AB123456C',
+          individual_aliases: null,
+        },
+        organisation_details: null,
+      },
+      address: {
+        address_line_1: '123 Test Street',
+        address_line_2: null,
+        address_line_3: null,
+        address_line_4: null,
+        address_line_5: null,
+        postcode: 'TE5 T12',
+      },
+      contact_details: null,
+      vehicle_details: null,
+      employer_details: null,
+      language_preferences: null,
+    };
+
+    const expectedResponse = {
+      version: null,
+      defendant_account_party: updatePayload,
+    };
+
+    service
+      .putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, updatePayload)
+      .subscribe((response) => {
+        expect(response).toEqual(expectedResponse);
+      });
+
+    const req = httpMock.expectOne(
+      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`,
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.headers.has('If-Match')).toBe(false);
+    expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+    expect(req.request.body).toEqual(updatePayload);
+
+    req.flush(expectedResponse);
+  });
 });

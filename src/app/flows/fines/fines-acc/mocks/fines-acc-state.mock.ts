@@ -3,6 +3,7 @@ import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 export const MOCK_FINES_ACCOUNT_STATE: IFinesAccountState = {
   account_number: '123',
   account_id: 123,
+  pg_party_id: 'PG-PARTY-123',
   party_type: 'individual',
   party_name: 'John Doe',
   party_id: 'PARTY-123',

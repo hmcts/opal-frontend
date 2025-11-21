@@ -29,6 +29,8 @@ const mapIndividualAliasesToArrayStructure = (
         alias.forenames || null;
       (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_surname_${index}`] =
         alias.surname || null;
+      (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_id_${index}`] =
+        alias.alias_id || null;
 
       result.push(aliasObject);
     }
@@ -50,6 +52,8 @@ const mapOrganisationAliasesToArrayStructure = (
       const aliasObject: IFinesAccPartyAddAmendConvertOrganisationAliasState = {};
       (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_organisation_name_${index}`] =
         alias.organisation_name || null;
+      (aliasObject as Record<string, unknown>)[`facc_party_add_amend_convert_alias_id_${index}`] =
+        alias.alias_id || null;
 
       result.push(aliasObject);
     }
