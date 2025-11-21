@@ -95,15 +95,19 @@ function convertDataTableToNestedObject(dataTable: DataTable): Record<string, un
 }
 
 type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
+type FixedPenaltyType = 'fixedPenalty' | 'fixedPenaltyCompany';
+type AllAccountType = DefendantType | FixedPenaltyType;
 
 /**
  * Resolve payload fixture filename for a given account type.
  */
-function getPayloadFileForAccountType(accountType: DefendantType): string {
+function getPayloadFileForAccountType(accountType: AllAccountType): string {
   return {
     company: 'companyPayload.json',
     adultOrYouthOnly: 'adultOrYouthOnlyPayload.json',
     pgToPay: 'parentOrGuardianPayload.json',
+    fixedPenalty: 'fixedPenaltyPayload.json',
+    fixedPenaltyCompany: 'fixedPenaltyCompanyPayload.json',
   }[accountType];
 }
 
@@ -150,30 +154,33 @@ function timeline(username: string, status: string) {
 // Create a draft account (DataTable-driven)
 // ────────────────────────────────────────────────────────────────────────────────
 
-When('I create a {string} draft account with the following details:', (accountType: DefendantType, data: DataTable) => {
-  const overrides = convertDataTableToNestedObject(data);
-  const payloadFile = getPayloadFileForAccountType(accountType);
+When(
+  'I create a {string} draft account with the following details:',
+  (accountType: AllAccountType, data: DataTable) => {
+    const overrides = convertDataTableToNestedObject(data);
+    const payloadFile = getPayloadFileForAccountType(accountType);
 
-  return cy.fixture(`draftAccounts/${payloadFile}`).then((base) => {
-    const requestBody = merge({}, base, overrides);
+    return cy.fixture(`draftAccounts/${payloadFile}`).then((base) => {
+      const requestBody = merge({}, base, overrides);
 
-    return cy
-      .request({
-        method: 'POST',
-        url: '/opal-fines-service/draft-accounts',
-        body: requestBody,
-        failOnStatusCode: false, // assert explicitly
-      })
-      .then((response) => {
-        expect(response.status, 'POST /draft-accounts').to.eq(201);
+      return cy
+        .request({
+          method: 'POST',
+          url: '/opal-fines-service/draft-accounts',
+          body: requestBody,
+          failOnStatusCode: false, // assert explicitly
+        })
+        .then((response) => {
+          expect(response.status, 'POST /draft-accounts').to.eq(201);
 
-        // Uses bracket access internally and parses to number
-        const id = readDraftIdFromBody(response.body);
-        recordCreatedId(id);
-        cy.log(`Created draft_account_id=${id}`);
-      });
-  });
-});
+          // Uses bracket access internally and parses to number
+          const id = readDraftIdFromBody(response.body);
+          recordCreatedId(id);
+          cy.log(`Created draft_account_id=${id}`);
+        });
+    });
+  },
+);
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Update last created with status — capture before/after ETag
