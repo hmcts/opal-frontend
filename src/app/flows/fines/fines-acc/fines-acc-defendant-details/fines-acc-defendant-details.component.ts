@@ -330,7 +330,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         if (
-          !result.extendTtpDisallow &&
+          !result.extend_ttp_disallow &&
           accountStatusCode !== 'CS' &&
           accountStatusCode !== 'WO' &&
           accountStatusCode !== 'TO' &&
