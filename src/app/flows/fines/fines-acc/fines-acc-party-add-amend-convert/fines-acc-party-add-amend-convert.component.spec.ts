@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { FinesAccPartyAddAmendConvert } from './fines-acc-party-add-amend-convert.component';
 import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from './mocks/fines-acc-party-add-amend-convert-form.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK } from '../services/mocks/opal-fines-account-defendant-account-party-null-data.mock';
 
 describe('FinesAccPartyAddAmendConvert', () => {
   let component: FinesAccPartyAddAmendConvert;
@@ -16,7 +17,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
           useValue: {
             snapshot: {
               data: {
-                debtorAmendFormData: MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
+                partyAddAmendConvertData: OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK,
               },
               params: {
                 partyType: 'individual',

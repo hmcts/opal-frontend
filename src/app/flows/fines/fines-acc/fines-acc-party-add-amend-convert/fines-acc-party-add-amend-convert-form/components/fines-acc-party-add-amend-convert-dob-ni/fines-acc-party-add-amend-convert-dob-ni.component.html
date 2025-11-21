@@ -1,0 +1,32 @@
+<opal-lib-moj-date-picker
+  labelText="Date of birth"
+  labelClasses="govuk-label--s"
+  inputId="facc_party_add_amend_convert_dob"
+  inputName="facc_party_add_amend_convert_dob"
+  inputClasses="govuk-input--width-10"
+  hintText="For example, 31/01/2023"
+  [control]="form.get('facc_party_add_amend_convert_dob')!"
+  [maxDate]="yesterday"
+  (dateChange)="setInputValue($event, 'facc_party_add_amend_convert_dob')"
+  [errors]="formControlErrorMessages['facc_party_add_amend_convert_dob']"
+></opal-lib-moj-date-picker>
+@if (age && ageLabel) {
+  <opal-lib-moj-ticket-panel
+    componentClasses="govuk-!-width-one-third"
+    sectionClasses="moj-ticket-panel__content--blue"
+    [alert]="true"
+  >
+    <strong>Age: {{ age }}</strong>
+    <p>{{ ageLabel }}</p>
+  </opal-lib-moj-ticket-panel>
+}
+<opal-lib-govuk-text-input
+  labelText="National Insurance number"
+  inputId="facc_party_add_amend_convert_national_insurance_number"
+  inputName="facc_party_add_amend_convert_national_insurance_number"
+  inputClasses="govuk-input--width-10"
+  labelClasses="govuk-label--s"
+  [control]="form.get('facc_party_add_amend_convert_national_insurance_number')"
+  [errors]="formControlErrorMessages['facc_party_add_amend_convert_national_insurance_number']"
+  [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_national_insurance_number')!"
+></opal-lib-govuk-text-input>
