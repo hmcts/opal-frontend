@@ -303,7 +303,13 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   public navigateToAmendPartyDetailsPage(partyType: string): void {
-    if (this.hasPermission('account-maintenance')) {
+    if (
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['account-maintenance'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
       this['router'].navigate([`../${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
@@ -330,7 +336,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           accountStatusCode !== 'TO' &&
           accountStatusCode !== 'TS' &&
           accountStatusCode !== 'TA' &&
-          this.hasPermission('amend-payment-terms')
+          this.permissionsService.hasBusinessUnitPermissionAccess(
+            FINES_PERMISSIONS['amend-payment-terms'],
+            Number(this.accountStore.business_unit_id()!),
+            this.userState.business_unit_users,
+          )
         ) {
           this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
             relativeTo: this.activatedRoute,
