@@ -10,6 +10,7 @@ import {
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
 } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 
 // Type interface for accessing private methods in tests
 interface ComponentWithPrivateMethods {
@@ -89,6 +90,20 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_address_line_1')?.value).toBe('123 Test Street');
     expect(component.form.get('facc_party_add_amend_convert_national_insurance_number')?.value).toBe('AB123456C');
     expect(component.form.get('facc_party_add_amend_convert_dob')?.value).toBe('1990-01-01');
+  });
+
+  it('should set initialFormData to default constant when initialFormData is undefined', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    // Explicitly set initialFormData to undefined to test the fallback
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.initialFormData = undefined as any;
+    fixture.detectChanges();
+
+    // After ngOnInit, initialFormData should be set to the default constant
+    expect(component.initialFormData).toBeDefined();
+    expect(component.initialFormData).toEqual(FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM);
+    expect(component.initialFormData.nestedFlow).toBe(false);
   });
 
   it('should populate National Insurance number and other fields correctly', () => {

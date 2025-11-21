@@ -91,7 +91,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
-          partyAmendFormData: defendantAccountPartyResolver,
+          partyAddAmendConvertData: defendantAccountPartyResolver,
         },
       },
     ],
