@@ -132,7 +132,7 @@
     "@angular-eslint/template-parser": "20.6.0",
     "@angular/cli": "^20.3.1",
     "@angular/compiler-cli": "^20.3.0",
-    "@cypress/grep": "^4.1.0",
+    "@cypress/grep": "^5.0.0",
     "@types/config": "^3.3.3",
     "@types/cookie-parser": "^1.4.6",
     "@types/express": "^5.0.0",
