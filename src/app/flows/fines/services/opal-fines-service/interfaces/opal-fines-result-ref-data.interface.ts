@@ -1,9 +1,25 @@
 export interface IOpalFinesResultRefData {
+  resultId: string;
+  resultTitle: string;
+  resultTitleCy: string;
+  resultType: string;
   active: boolean;
-  imposition_allocation_order: number | null;
-  imposition_creditor: string;
-  result_id: string;
-  result_title: string;
-  result_title_cy: string | null;
-  result_type: string;
+  impositionAllocationPriority: number | null;
+  impositionCreditor: string | null;
+  imposition: boolean;
+  impositionCategory: string | null;
+  impositionAccruing: boolean;
+  enforcement: boolean;
+  enforcementOverride: boolean;
+  furtherEnforcementWarn: boolean;
+  furtherEnforcementDisallow: boolean;
+  enforcementHold: boolean;
+  requiresEnforcer: boolean;
+  generatesHearing: boolean;
+  collectionOrder: boolean;
+  extendTtpDisallow: boolean;
+  extendTtpPreserveLastEnf: boolean;
+  preventPaymentCard: boolean;
+  listsMonies: boolean;
+  resultParameters: string;
 }

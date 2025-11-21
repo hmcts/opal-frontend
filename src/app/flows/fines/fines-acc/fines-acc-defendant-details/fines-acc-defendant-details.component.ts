@@ -322,9 +322,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.opalFinesService
       .getResult(lastEnforcementId)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
+      .subscribe((result) => {
         if (
-          // result.extend_ttp_allowed &&
+          !result.extendTtpDisallow &&
           accountStatusCode !== 'CS' &&
           accountStatusCode !== 'WO' &&
           accountStatusCode !== 'TO' &&

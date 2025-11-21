@@ -34,11 +34,12 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
   public cardTitle(): string {
-    return this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B'
-      ? 'Pay in full'
-      : this.tabData.payment_terms.lump_sum_amount
-        ? 'Lump sum plus instalments'
-        : 'Instalments only';
+    if (this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
+      return 'Pay in full';
+    } else if (this.tabData.payment_terms.lump_sum_amount) {
+      return 'Lump sum plus instalments';
+    }
+    return 'Instalments only';
   }
 
   public handleChangePaymentTerms(lastEnforcementId: string): void {
