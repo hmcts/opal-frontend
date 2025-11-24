@@ -8,6 +8,7 @@ import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 @Component({
   selector: 'app-fines-acc-debtor-add-amend',
   imports: [FinesAccPartyAddAmendConvertFormComponent],
@@ -21,6 +22,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
   private readonly partyPayload: IOpalFinesAccountDefendantAccountParty =
     this['activatedRoute'].snapshot.data['partyAddAmendConvertData'];
 
+  protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
   protected readonly partyType: string = this['activatedRoute'].snapshot.params['partyType'];
   protected readonly prefilledFormData: IFinesAccPartyAddAmendConvertForm = {
     formData: this.payloadService.mapDebtorAccountPartyPayload(
@@ -31,6 +33,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
     nestedFlow: false,
   };
   protected readonly isDebtor: boolean = this.partyPayload.defendant_account_party.is_debtor;
+  protected readonly fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
 
   /**
    * Handles the form submission event from the child form component.
@@ -45,9 +48,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
 
     // If any required store values are missing, redirect back to defendant details
     if (!accountId || !businessUnitId || !partyId) {
-      this['router'].navigate(['../../details'], {
-        relativeTo: this['activatedRoute'],
-      });
+      this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, this.fragment);
       return;
     }
 
@@ -70,11 +71,13 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       .subscribe({
         next: () => {
           this.opalFinesService.clearAccountDetailsCache();
-          const fragment = this.partyType === 'parentGuardian' ? 'parent-or-guardian' : 'defendant';
-          this['router'].navigate(['../../details'], {
-            relativeTo: this['activatedRoute'],
-            fragment: fragment,
-          });
+          this.routerNavigate(
+            this.finesDefendantRoutingPaths.children.details,
+            false,
+            undefined,
+            undefined,
+            this.fragment,
+          );
         },
       });
   }

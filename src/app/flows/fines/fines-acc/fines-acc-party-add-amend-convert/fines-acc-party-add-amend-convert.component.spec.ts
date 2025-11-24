@@ -111,8 +111,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'bu-123', // business_unit_id
     );
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
       fragment: 'defendant',
     });
   }));
@@ -126,6 +126,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Override partyType for this test
     Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
+    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
 
     // Act
     component.handleFormSubmit(mockFormData);
@@ -140,8 +141,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'bu-123', // business_unit_id
     );
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
       fragment: 'parent-or-guardian',
     });
   }));
@@ -182,8 +183,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Assert
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
       fragment: 'defendant',
     });
   }));
@@ -197,6 +198,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Override partyType for this test
     Object.defineProperty(component, 'partyType', { value: 'parentGuardian', writable: true });
+    Object.defineProperty(component, 'fragment', { value: 'parent-or-guardian', writable: true });
 
     // Reset router spy and setup successful response
     mockRouter.navigate.calls.reset();
@@ -210,8 +212,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Assert
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
       fragment: 'parent-or-guardian',
     });
   }));
@@ -243,8 +245,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
       component.handleFormSubmit(mockFormData);
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-        relativeTo: jasmine.any(Object),
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+        relativeTo: undefined,
+        fragment: 'defendant',
       });
       expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
     });
@@ -262,8 +265,9 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     component.handleFormSubmit(mockFormData);
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
+      fragment: 'defendant',
     });
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
   });
@@ -288,8 +292,8 @@ describe('FinesAccPartyAddAmendConvert', () => {
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalled();
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../../details'], {
-      relativeTo: jasmine.any(Object),
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
+      relativeTo: undefined,
       fragment: 'defendant',
     });
   }));
