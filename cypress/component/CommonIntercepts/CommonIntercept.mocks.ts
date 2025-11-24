@@ -42,10 +42,22 @@ export const OPAL_OFFENCE_BY_ID_MOCK = [
     offenceOasCy: null,
     businessUnit: null,
   },
+  {
+    offenceId: 33369,
+    businessUnitId: null,
+    cjsCode: 'FP12345',
+    offenceTitle: 'Fixed penalty offence - Vehicle related',
+    offenceTitleCy: null,
+    dateUsedFrom: '2020-01-01T00:00:00',
+    dateUsedTo: null,
+    offenceOas: 'Fixed penalty notice offence under relevant regulations.',
+    offenceOasCy: null,
+    businessUnit: null,
+  },
 ];
 
 export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
-  count: 17,
+  count: 18,
   refData: [
     {
       offence_id: 314441,
@@ -69,6 +81,17 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       business_unit_id: 77,
       offence_title_cy: null,
       date_used_to: null,
+      offence_oas_cy: null,
+    },
+    {
+      offence_id: 33369,
+      get_cjs_code: 'FP12345',
+      business_unit_id: 77,
+      offence_title: 'Fixed penalty offence - Vehicle related',
+      offence_title_cy: null,
+      date_used_from: '2020-01-01T00:00:00Z',
+      date_used_to: null,
+      offence_oas: 'Fixed penalty notice offence under relevant regulations.',
       offence_oas_cy: null,
     },
     {
