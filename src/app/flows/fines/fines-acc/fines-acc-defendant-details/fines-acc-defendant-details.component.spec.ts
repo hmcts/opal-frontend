@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -182,10 +182,13 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
   });
 
-  it('should fetch the payment terms tab data when fragment is changed to payment-terms', () => {
+  it('should fetch the payment terms tab data when fragment is changed to payment-terms', fakeAsync(() => {
     component['refreshFragment$'].next('payment-terms');
+    component.tabPaymentTerms$.subscribe();
+    tick();
     expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
-  });
+    expect(mockOpalFinesService.getResult).toHaveBeenCalled();
+  }));
 
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
     component['refreshFragment$'].next('history-and-notes');
@@ -265,7 +268,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-    component.navigateToAmendPaymentTermsPage('123');
+    component.navigateToAmendPaymentTermsPage();
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`],
       {
@@ -275,19 +278,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
   });
 
   it('should navigate to the change defendant payment terms page if user has the relevant permission', () => {
+    routerSpy.navigate.calls.reset();
     spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
-    component.navigateToAmendPaymentTermsPage('123');
+    component.lastEnforcement = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    component.navigateToAmendPaymentTermsPage();
+    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
       [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
     );
-  });
-
-  it('should not navigate to the change defendant payment terms page if no there is no last enforcement ID', () => {
-    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
-    component.navigateToAmendPaymentTermsPage(null as unknown as string);
-    expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
   });
 });

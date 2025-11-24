@@ -27,7 +27,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
   @Input() hasAmendPaymentTermsPermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
-  @Output() changePaymentTerms = new EventEmitter<string>();
+  @Output() changePaymentTerms = new EventEmitter<void>();
   @Output() requestPaymentCard = new EventEmitter<void>();
   public readonly dateService = new DateService();
   public readonly utilsService = new UtilsService();
@@ -42,8 +42,8 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     return 'Instalments only';
   }
 
-  public handleChangePaymentTerms(lastEnforcementId: string): void {
-    this.changePaymentTerms.emit(lastEnforcementId);
+  public handleChangePaymentTerms(): void {
+    this.changePaymentTerms.emit();
   }
 
   public handleRequestPaymentCard(): void {

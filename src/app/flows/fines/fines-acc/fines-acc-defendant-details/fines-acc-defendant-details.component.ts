@@ -62,6 +62,7 @@ import { IFinesAccDefendantAccountTabsCacheMap } from './interfaces/fines-acc-de
 import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from './fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -120,6 +121,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabFixedPenalty$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
+  public lastEnforcement: IOpalFinesResultRefData | null = null;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -171,7 +173,15 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'payment-terms':
           this.tabPaymentTerms$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id),
+            this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
+              tap((data) => {
+                if (data.last_enforcement) {
+                  this.opalFinesService.getResult(data.last_enforcement).subscribe((result) => {
+                    this.lastEnforcement = result;
+                  });
+                }
+              }),
+            ),
           );
           break;
         case 'enforcement':
@@ -320,36 +330,28 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
-  public navigateToAmendPaymentTermsPage(lastEnforcementId: string): void {
-    if (!lastEnforcementId) {
-      return;
-    }
+  public navigateToAmendPaymentTermsPage(): void {
     const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-    this.opalFinesService
-      .getResult(lastEnforcementId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (
-          !result.extend_ttp_disallow &&
-          accountStatusCode !== 'CS' &&
-          accountStatusCode !== 'WO' &&
-          accountStatusCode !== 'TO' &&
-          accountStatusCode !== 'TS' &&
-          accountStatusCode !== 'TA' &&
-          this.permissionsService.hasBusinessUnitPermissionAccess(
-            FINES_PERMISSIONS['amend-payment-terms'],
-            Number(this.accountStore.business_unit_id()!),
-            this.userState.business_unit_users,
-          )
-        ) {
-          this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
-            relativeTo: this.activatedRoute,
-          });
-        } else {
-          this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
-            relativeTo: this.activatedRoute,
-          });
-        }
+    if (
+      (!this.lastEnforcement || !this.lastEnforcement.extend_ttp_disallow) &&
+      accountStatusCode !== 'CS' &&
+      accountStatusCode !== 'WO' &&
+      accountStatusCode !== 'TO' &&
+      accountStatusCode !== 'TS' &&
+      accountStatusCode !== 'TA' &&
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['amend-payment-terms'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    ) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
+        relativeTo: this.activatedRoute,
       });
+    } else {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
+        relativeTo: this.activatedRoute,
+      });
+    }
   }
 }

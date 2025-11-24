@@ -43,7 +43,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
   it('should handle change payment terms by emitting an event', () => {
     spyOn(component.changePaymentTerms, 'emit');
-    component.handleChangePaymentTerms('id');
+    component.handleChangePaymentTerms();
     expect(component.changePaymentTerms.emit).toHaveBeenCalled();
   });
 
