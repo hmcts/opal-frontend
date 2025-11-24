@@ -333,7 +333,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public navigateToAmendPaymentTermsPage(): void {
     const accountStatusCode = this.accountData.account_status_reference.account_status_code;
     if (
-      (!this.lastEnforcement || !this.lastEnforcement.extend_ttp_disallow) &&
+      !this.lastEnforcement?.extend_ttp_disallow &&
       accountStatusCode !== 'CS' &&
       accountStatusCode !== 'WO' &&
       accountStatusCode !== 'TO' &&
