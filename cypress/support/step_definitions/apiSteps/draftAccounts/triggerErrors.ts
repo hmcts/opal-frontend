@@ -30,6 +30,39 @@ Then('I should not see the global error banner', () => {
 });
 
 Given(
+  'I click the Search button and trigger a {int} retriable error for the defendant accounts search API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: '/opal-fines-service/defendant-accounts/search',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: true,
+          title: 'Temporary System Issue',
+          detail: 'Please try again later or contact the help desk.',
+          operation_id: 'OP12345',
+        },
+      },
+    ).as('defendantAccountsSearchRetriableError');
+
+    cy.get('#submitForm').contains('Search').click();
+
+    cy.wait('@defendantAccountsSearchRetriableError');
+
+    cy.get('@defendantAccountsSearchRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.true;
+      expect(interception.response.body.title).to.equal('Temporary System Issue');
+      expect(interception.response.body.detail).to.include('contact the help desk');
+      expect(interception.response.body.operation_id).to.equal('OP12345');
+    });
+  },
+);
+
+Given(
   'I click the Manual account creation link and trigger a {int} retriable error for the get businessUnits API',
   (statusCode: number) => {
     cy.intercept(
