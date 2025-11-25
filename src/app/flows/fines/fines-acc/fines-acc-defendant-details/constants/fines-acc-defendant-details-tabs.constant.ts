@@ -4,6 +4,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_TABS: IFinesAccountDefendantDetailsTabs
   'at-a-glance': 'At a glance',
   defendant: 'Defendant',
   'parent-or-guardian': 'Parent or guardian',
+  'fixed-penalty': 'Fixed penalty',
   'payment-terms': 'Payment terms',
   enforcement: 'Enforcement',
   impositions: 'Impositions',

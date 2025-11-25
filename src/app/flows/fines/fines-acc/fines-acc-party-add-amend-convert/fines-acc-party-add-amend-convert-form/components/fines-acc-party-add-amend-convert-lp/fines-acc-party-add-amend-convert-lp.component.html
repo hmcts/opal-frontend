@@ -1,0 +1,36 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Language preferences</legend>
+  <opal-lib-govuk-radio
+    fieldSetId="facc_party_add_amend_convert_language_preferences_document_language"
+    legendText="Documents"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    @for (languageOption of languageOptions; track languageOption.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="languageOption.value"
+        [inputId]="languageOption.key + 'DocumentRadioOption'"
+        inputName="facc_party_add_amend_convert_language_preferences_document_language"
+        [inputValue]="languageOption.key"
+        [control]="form.get('facc_party_add_amend_convert_language_preferences_document_language')"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
+
+  <opal-lib-govuk-radio
+    fieldSetId="facc_party_add_amend_convert_language_preferences_hearing_language"
+    legendText="Court hearings"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    @for (languageOption of languageOptions; track languageOption.key) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="languageOption.value"
+        [inputId]="languageOption.key + 'CourtHearingRadioOption'"
+        inputName="facc_party_add_amend_convert_language_preferences_hearing_language"
+        [inputValue]="languageOption.key"
+        [control]="form.get('facc_party_add_amend_convert_language_preferences_hearing_language')"
+      ></div>
+    }
+  </opal-lib-govuk-radio>
+</fieldset>

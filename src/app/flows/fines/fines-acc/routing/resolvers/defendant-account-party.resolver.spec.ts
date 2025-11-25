@@ -7,6 +7,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
 
 describe('defendantAccountPartyResolver', () => {
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
@@ -18,7 +19,10 @@ describe('defendantAccountPartyResolver', () => {
       'getDefendantAccountParty',
       'getDefendantAccountHeadingData',
     ]);
-    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', ['mapDebtorAccountPartyPayload']);
+    mockPayloadService = jasmine.createSpyObj('FinesAccPayloadService', [
+      'mapDebtorAccountPartyPayload',
+      'transformPayload',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
 
     TestBed.configureTestingModule({
@@ -64,13 +68,19 @@ describe('defendantAccountPartyResolver', () => {
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDefendantData = {} as any;
+    const mockDefendantData = {
+      defendant_account_party: {
+        is_debtor: true,
+      },
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,11 +95,11 @@ describe('defendantAccountPartyResolver', () => {
 
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(123);
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalledWith(123, 'DEFENDANT123');
-    expect(mockPayloadService.mapDebtorAccountPartyPayload).toHaveBeenCalledWith(mockDefendantData);
-    expect(emittedValue).toEqual({
-      formData: mockTransformedData,
-      nestedFlow: false,
-    });
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      mockDefendantData,
+      FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
+    );
+    expect(emittedValue).toEqual(mockDefendantData);
   });
 
   it('should return a RedirectCommand on API error', async () => {
@@ -142,13 +152,19 @@ describe('defendantAccountPartyResolver', () => {
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDefendantData = {} as any;
+    const mockDefendantData = {
+      defendant_account_party: {
+        is_debtor: false,
+      },
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockTransformedData = {} as any;
 
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(mockHeaderData));
     mockOpalFinesService.getDefendantAccountParty.and.returnValue(of(mockDefendantData));
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
+    mockPayloadService.transformPayload.and.returnValue(mockDefendantData);
     mockPayloadService.mapDebtorAccountPartyPayload.and.returnValue(mockTransformedData);
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,11 +179,11 @@ describe('defendantAccountPartyResolver', () => {
 
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(123);
     expect(mockOpalFinesService.getDefendantAccountParty).toHaveBeenCalledWith(123, 'GUARDIAN456');
-    expect(mockPayloadService.mapDebtorAccountPartyPayload).toHaveBeenCalledWith(mockDefendantData);
-    expect(emittedValue).toEqual({
-      formData: mockTransformedData,
-      nestedFlow: false,
-    });
+    expect(mockPayloadService.transformPayload).toHaveBeenCalledWith(
+      mockDefendantData,
+      FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG,
+    );
+    expect(emittedValue).toEqual(mockDefendantData);
   });
 
   it('should return a RedirectCommand when no valid party ID is found', async () => {

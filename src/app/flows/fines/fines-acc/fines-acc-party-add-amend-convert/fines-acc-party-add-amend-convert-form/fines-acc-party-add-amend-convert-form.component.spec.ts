@@ -10,6 +10,7 @@ import {
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA,
   MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES,
 } from '../mocks/fines-acc-party-add-amend-convert-form.mock';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 
 // Type interface for accessing private methods in tests
 interface ComponentWithPrivateMethods {
@@ -24,8 +25,11 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let mockFinesAccountStore: any;
+  let mockFinesAccountStore: {
+    welsh_speaking: ReturnType<typeof signal>;
+    account_number: ReturnType<typeof signal>;
+    party_name: ReturnType<typeof signal>;
+  };
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj('DateService', [
@@ -88,6 +92,20 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.form.get('facc_party_add_amend_convert_dob')?.value).toBe('1990-01-01');
   });
 
+  it('should set initialFormData to default constant when initialFormData is undefined', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    // Explicitly set initialFormData to undefined to test the fallback
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component.initialFormData = undefined as any;
+    fixture.detectChanges();
+
+    // After ngOnInit, initialFormData should be set to the default constant
+    expect(component.initialFormData).toBeDefined();
+    expect(component.initialFormData).toEqual(FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM);
+    expect(component.initialFormData.nestedFlow).toBe(false);
+  });
+
   it('should populate National Insurance number and other fields correctly', () => {
     component.partyType = 'individual';
     component.initialFormData = MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA;
@@ -127,8 +145,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should hide language preferences when welsh_speaking is undefined', () => {
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mockFinesAccountStore.welsh_speaking.set(undefined as any);
+    mockFinesAccountStore.welsh_speaking.set(undefined);
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -273,8 +290,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     (component as any)['rePopulateForm'](component.initialFormData?.formData || null);
 
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const aliasArray = component.form.get('facc_party_add_amend_convert_individual_aliases') as any;
+    const aliasArray = component.form.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     // The form sets up the correct number of alias controls based on the mock data
     expect(aliasArray.length).toBeGreaterThanOrEqual(1);
 
@@ -611,6 +627,64 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
       expect(organisationNameControl?.valid).toBe(true);
       expect(addressLine1Control?.valid).toBe(true);
+    });
+  });
+
+  describe('Parent/Guardian party type tests', () => {
+    beforeEach(() => {
+      component.partyType = 'parentGuardian';
+      fixture.detectChanges();
+    });
+
+    it('should have isIndividualPartyType getter return true for parent/guardian party type', () => {
+      expect(component.isIndividualPartyType).toBe(true);
+    });
+
+    it('should return correct heading text for parent/guardian party type', () => {
+      expect(component.headingText).toBe('Parent or guardian details');
+    });
+
+    it('should have individual form controls for parent/guardian party type', () => {
+      // Check individual fields exist
+      expect(component.form.get('facc_party_add_amend_convert_title')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_forenames')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_surname')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_dob')).toBeDefined();
+      expect(component.form.get('facc_party_add_amend_convert_individual_aliases')).toBeDefined();
+
+      // Check company fields don't exist
+      expect(component.form.get('facc_party_add_amend_convert_organisation_name')).toBeNull();
+      expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
+    });
+
+    it('should require title, forenames and surname for parent/guardian party type', () => {
+      const titleControl = component.form.get('facc_party_add_amend_convert_title');
+      const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
+      const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
+
+      expect(titleControl?.hasError('required')).toBe(true);
+      expect(forenamesControl?.hasError('required')).toBe(true);
+      expect(surnameControl?.hasError('required')).toBe(true);
+
+      titleControl?.setValue('Mrs');
+      forenamesControl?.setValue('Jane');
+      surnameControl?.setValue('Smith');
+
+      expect(titleControl?.hasError('required')).toBe(false);
+      expect(forenamesControl?.hasError('required')).toBe(false);
+      expect(surnameControl?.hasError('required')).toBe(false);
+    });
+
+    it('should use parent/guardian specific error messages', () => {
+      // Call the setup method to ensure error messages are configured
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (component as any)['setupPartySpecificErrorMessages']();
+
+      const forenamesErrors = component.fieldErrors['facc_party_add_amend_convert_forenames'];
+      const surnameErrors = component.fieldErrors['facc_party_add_amend_convert_surname'];
+
+      expect(forenamesErrors?.['required']?.message).toBe('Enter parent or guardian first name(s)');
+      expect(surnameErrors?.['required']?.message).toBe('Enter parent or guardian last name');
     });
   });
 

@@ -34,6 +34,7 @@ export const DOM_ELEMENTS = {
   dateNtoIssuedInput: 'input[id="fm_fp_offence_details_date_nto_issued"]',
   dateOfOffenceInput: 'input[id="fm_fp_offence_details_date_of_offence"]',
   offenceCodeInput: 'input[id="fm_fp_offence_details_offence_cjs_code"]',
+  searchOffenceListLink: 'a[href*="search-offences"]',
   timeOfOffenceInput: 'input[id="fm_fp_offence_details_time_of_offence"]',
   placeOfOffenceInput: 'textarea[id="fm_fp_offence_details_place_of_offence"]',
   placeOfOffenceInputHint: '#fm_fp_offence_details_place_of_offence-hint',
