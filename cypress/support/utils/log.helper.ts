@@ -25,6 +25,7 @@ export type LogScope =
   | 'match'
   | 'method'
   | 'navigate'
+  | 'navigation'
   | 'open'
   | 'prepare'
   | 'results'
