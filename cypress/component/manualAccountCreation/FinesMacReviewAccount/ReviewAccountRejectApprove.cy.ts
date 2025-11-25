@@ -48,7 +48,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
           useFactory: () => {
             let store = new GlobalStore();
             store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
-            store.setError({
+            store.setBannerError({
               error: false,
               message: '',
             });
