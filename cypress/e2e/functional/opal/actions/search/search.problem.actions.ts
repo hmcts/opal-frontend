@@ -2,11 +2,14 @@
 
 import { log } from '../../../../../support/utils/log.helper';
 import { AccountSearchProblemLocators as L } from '../../../../../shared/selectors/account-search/account.search.problem.locators';
+import { CommonActions } from '../common.actions';
 
 /**
  * Actions for the "There is a problem" / problem view shown when cross-section validation fails.
  */
 export class AccountSearchProblemActions {
+  private readonly common = new CommonActions();
+
   /**
    * Assert the problem page root exists and the expected main heading is visible.
    */
@@ -14,6 +17,14 @@ export class AccountSearchProblemActions {
     log('assert', 'Verifying problem page root and heading');
     cy.get(L.root, { timeout: 10_000 }).should('exist').and('be.visible');
     cy.get(L.heading, { timeout: 10_000 }).should('be.visible').and('have.text', 'There is a problem');
+  }
+
+  /**
+   * Assert generic GOV.UK “There is a problem” page is shown.
+   */
+  public assertProblemPage(): void {
+    log('assert', 'Asserting GOV.UK problem page');
+    cy.contains('h1.govuk-heading-l', 'There is a problem', this.common.getTimeoutOptions()).should('be.visible');
   }
 
   /**

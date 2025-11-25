@@ -29,4 +29,6 @@ export const AccountSearchCommonLocators = {
 
   /** Primary "Search" button shared by all tabs. */
   searchButton: '#submitForm',
+
+  businessUnitFilterChangeLink: '#accountDetailsLanguagePreferencesActions a.govuk-link',
 } as const;

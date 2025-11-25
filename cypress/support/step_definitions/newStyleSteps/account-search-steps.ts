@@ -15,8 +15,9 @@ import { AccountSearchMinorCreditorsActions } from '../../../e2e/functional/opal
 import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions/search/search.common.actions';
 import { AccountSearchNavActions } from '../../../e2e/functional/opal/actions/search/search.nav.actions';
 import { AccountSearchProblemActions } from '../../../e2e/functional/opal/actions/search/search.problem.actions';
-// Locators
-import { AccountSearchCommonLocators as C } from '../../../shared/selectors/account-search/account.search.common.locators';
+import { ResultsActions } from '../../../e2e/functional/opal/actions/search.results.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
+import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
 
 import { log } from '../../utils/log.helper';
 
@@ -31,6 +32,9 @@ const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions
 const searchCommonActions = () => new AccountSearchCommonActions();
 const searchNavActions = () => AccountSearchNavActions;
 const searchProblemActions = () => new AccountSearchProblemActions();
+const commonActions = () => new CommonActions();
+const dashboardActions = () => new DashboardActions();
+const resultsActions = () => new ResultsActions();
 
 /**
  * @step Navigates from the Dashboard to the Account Search page and verifies the Individuals form is shown by default.
@@ -41,6 +45,7 @@ const searchProblemActions = () => new AccountSearchProblemActions();
  */
 Given('I am on the Account Search page - Individuals form displayed by default', () => {
   log('navigate', 'Navigating to Account Search from dashboard and verifying Individuals form by default');
+  // perform the real navigation (should be click-based)
   searchFlow().navigateAndVerifySearchFromDashboard();
 });
 
@@ -100,6 +105,33 @@ When('I view the Companies search form', () => {
 });
 
 /**
+ * @step Switches to the Individuals search form (tab).
+ * @details Delegates to `AccountSearchFlow.viewIndividualsForm()`.
+ * @example
+ *  When I view the Individuals search form
+ */
+When('I view the Individuals search form', () => {
+  log('navigate', 'Switching to Individuals form');
+  searchFlow().viewIndividualsForm();
+});
+
+/**
+ * @step Go to search and enter individual details without clicking submit.
+ * @details Delegates to `AccountSearchFlow.enterIndividualsFormWithoutSubmit()`.
+ * @example
+ *  I view the Individuals search form and enter the following:
+ *     | account number | 12345678 |
+ */
+When('I view the Individuals search form and enter the following:', function (table: DataTable) {
+  log('navigate', 'Switching to Individuals form');
+  searchFlow().enterIndividualsFormWithoutSubmit(table);
+});
+
+When('I navigate the Individuals search form and enter the following:', function (table: DataTable) {
+  searchFlow().navigateAndEnterIndividualsFormWithoutSubmit(table);
+});
+
+/**
  * @step Switches to the Minor Creditors search form (tab).
  * @details Delegates to `AccountSearchFlow.viewSearchMinorCreditorsForm()`.
  * @example
@@ -108,6 +140,17 @@ When('I view the Companies search form', () => {
 When('I view the Minor Creditors search form', () => {
   log('navigate', 'Switching to the Minor Creditors search form');
   searchFlow().viewMinorCreditorsForm();
+});
+
+/**
+ * @step Switches to the Major Creditors search form (tab).
+ * @details Delegates to `AccountSearchFlow.viewSearchMajorCreditorsForm()`.
+ * @example
+ *  When I view the Major Creditors search form
+ */
+When('I view the Major Creditors search form', () => {
+  log('navigate', 'Switching to the Major Creditors search form');
+  searchFlow().viewMajorCreditorsForm();
 });
 
 /**
@@ -292,18 +335,7 @@ Then('the Minor creditors form is cleared to defaults', () => {
  */
 When('I attempt the search', () => {
   log('action', 'Submitting search with multiple section data');
-  searchCommonActions().submitSearch();
-});
-
-/**
- * @step Asserts that a validation message instructs the user to search using a single section.
- * @details Delegates to `AccountSearchFlow.assertCrossSectionValidationMessage()`.
- * @example
- *  Then the request is rejected with guidance to search using a single section
- */
-Then('the request is rejected with guidance to search using a single section', () => {
-  log('assert', 'Verifying validation message for multiple section input');
-  searchFlow().assertCrossSectionValidationMessage();
+  searchCommonActions().clickSearchButton();
 });
 
 /**
@@ -429,7 +461,7 @@ Then(
     }
 
     log('assert', `Verify companies page "${expectedHeader}" with map: ${JSON.stringify(map)}`);
-    searchFlow().verifyPageForCompanies(expectedHeader, map);
+    searchFlow().verifyPageForCompanies(map);
   },
 );
 
@@ -515,13 +547,301 @@ Then('the search remains on the Search Individuals form - no navigation', () => 
   searchIndividualActions().assertRemainsOnSearchFormNoNavigation();
 });
 
-/**
- * @step Verifies a validation message for a Minor Creditor Individual is visible.
- * @param expectedText The text expected to be shown (use quotes in feature files).
- * @details Delegates to `AccountSearchMinorCreditorsActions.assertValidationMessageContains()`.
- * @example And I see "Enter minor creditor first name, last name, address or postcode" validation message for an individual
+/*
+ * @step Assert we remain on the Search Companies form (no navigation occurred).
+ * @details Verifies URL still targets the Search Accounts search path and that the Companies form root is visible.
+ * @example Then the search remains on the Search Companies form - no navigation
  */
-Then('I see {string} validation message for an individual', (expectedText: string) => {
-  log('assert', `Verifying minor creditor validation message for individual: "${expectedText}"`);
+Then('the search remains on the Search Companies form - no navigation', () => {
+  log('assert', 'Verifying search remains on the Search Companies form (no navigation)');
+  searchCompanyActions().assertRemainsOnSearchFormNoNavigation();
+});
+
+/**
+ * @step Verifies a validation message is visible for a given search type (company/individual/minor/etc).
+ * @param expectedText The exact text expected (quoted in the feature).
+ * @param searchType The search type (e.g. Company, individual). Can be quoted or unquoted in the feature.
+ * @example
+ *   And I see "Reference or case number must only contain letters or numbers" validation message for a "Company"
+ *   And I see "Enter minor creditor first name, last name, address or postcode" validation message for an individual
+ */
+Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedText: string, searchType: string) => {
+  log('assert', `Verifying validation message for ${searchType}: "${expectedText}"`);
   searchCommonActions().assertValidationMessageContains(expectedText);
+});
+
+/**
+ * @step Select back → confirm navigation → assert we returned to the Search page.
+ * @description
+ * Uses the shared CommonActions.navigateBrowserBackWithConfirmation() helper
+ * to simulate a browser Back action and confirm the unsaved-changes dialog.
+ *
+ * After confirming, this step explicitly asserts that the user is returned to
+ * the Dashboard
+ *
+ * @example
+ *  When I select back and confirm I navigate to the Dashboard
+ */
+When('I select back with confirmation and verify I navigate to the Dashboard', () => {
+  log('step', 'Back → expect navigation to Dashboard');
+
+  // Accept/prepare confirm handler if the page might show an unsaved-changes dialog
+  commonActions().navigateBrowserBackWithChoice('ok');
+
+  // Assert we reached Dashboard
+  log('assert', 'Verify Dashboard is displayed');
+  dashboardActions().assertDashboard();
+});
+
+/**
+ * @step I see the Search results page
+ * @description
+ * Asserts that the Search Results page is currently displayed.
+ *
+ * This step delegates to `resultsActions().assertPageDisplayed()`,
+ * which verifies that the UI has navigated to the expected results
+ * view and all required page markers are present.
+ *
+ * Typically used after triggering a successful search.
+ *
+ * @example
+ *   Then I see the Search results page
+ */
+
+Then('I see the Search results page', () => {
+  resultsActions().assertPageDisplayed();
+});
+
+/**
+ * @step I go back from the results page
+ * @description
+ * Navigates back from the Search Results page to the Search page.
+ *
+ * This step uses `resultsActions().useBackLinkToReturnToSearch()`,
+ * which activates the page’s Back/Return navigation control and
+ * asserts that the user is returned to the Search screen.
+ *
+ * Useful for validating navigation flow and ensuring that
+ * back-navigation works consistently.
+ *
+ * @example
+ *   When I go back from the results page
+ */
+
+When('I go back from the results page', () => {
+  resultsActions().useBackLinkToReturnToSearch();
+});
+
+/**
+ * @step I intercept the "{accountType}" account search API
+ * @description
+ * Sets up Cypress network intercepts for the account search API,
+ * based on the provided `accountType`.
+ *
+ * Delegates to `searchCommonActions().interceptAccountSearch(accountType)`,
+ * which configures:
+ *   • Live capture mode for "reference" and "account number" searches
+ *   • Stubbed intercepts for "defendant" and "minor creditor" searches
+ *
+ * The resulting aliases (`@getDefendantAccounts`, `@getMinorCreditorAccounts`)
+ * are used later by assertion steps to inspect outgoing request payloads.
+ *
+ * @param accountType The type of account search being performed.
+ *                    Expected values: "reference", "account number",
+ *                    "defendant", "minor creditor".
+ *
+ * @example
+ *   When I intercept the "account number" account search API
+ */
+
+When('I intercept the {string} account search API', (accountType: string) => {
+  searchCommonActions().interceptAccountSearch(accountType);
+});
+
+/**
+ * @step The intercepted "{accountType}" account search API call will contain the following parameters:
+ * @description
+ * Validates the request body of a previously intercepted account search API call.
+ *
+ * Delegates to `searchCommonActions().interceptedSearchAccountAPIContains(accountType, table)`,
+ * which:
+ *   • Waits for the appropriate Cypress alias
+ *   • Extracts the request payload
+ *   • Uses the mapping definitions to resolve logical Gherkin keys
+ *   • Compares expected values against the actual outbound API request
+ *
+ * A Gherkin data table must be provided, where each row defines:
+ *   | logicalKey | expectedValue |
+ *
+ * This step ensures that the front-end constructs the correct payload for
+ * the given account type.
+ *
+ * @param accountType The account type whose request should be validated.
+ *                    Expected values: "defendant", "minor creditor".
+ * @param table A Gherkin DataTable of expected request parameters.
+ *
+ * @example
+ *   Then the intercepted "defendant" account search API call will contain the following parameters:
+ *     | accountNumber       | 12345678A |
+ *     | activeAccountsOnly  | false     |
+ *     | businessUnitIds     | [1,2,3]   |
+ */
+
+Then(
+  'the intercepted {string} account search API call will contain the following parameters:',
+  (accountType: string, table: DataTable) => {
+    searchCommonActions().interceptedSearchAccountAPIContains(accountType, table);
+  },
+);
+
+/**
+ * @step I see the Individuals search results:
+ * @description
+ * Composite step that:
+ *  - Asserts the Search results page is displayed.
+ *  - Asserts the "Individuals" tab is selected.
+ *  - Asserts there is at least one row in the results table whose columns
+ *    match all key/value pairs from the provided table.
+ *
+ * The DataTable is expected to be a simple key/value table where each row
+ * represents a column header and its expected value in the matching row, e.g.:
+ *
+ *   Then I see the Individuals search results:
+ *     | Ref | PCRAUTO008 |
+ *
+ * This is backed by AccountSearchFlow.assertIndividualsResultsForReference()
+ * and ResultsActions.assertResultsRowMatchesColumns().
+ *
+ * @example
+ *   Then I see the Individuals search results:
+ *     | Ref | PCRAUTO008 |
+ */
+Then('I see the Individuals search results:', (table: DataTable) => {
+  searchFlow().assertIndividualsResultsForReference(table);
+});
+
+/**
+ * @step I see the Companies search results:
+ * @description
+ * Composite step that:
+ *  - Selects the "Companies" tab.
+ *  - Asserts the "Companies" tab is selected.
+ *  - Asserts there is at least one row in the results table whose columns
+ *    match all key/value pairs from the provided table.
+ *
+ * The DataTable is expected to be a simple key/value table where each row
+ * represents a column header and its expected value in the matching row, e.g.:
+ *
+ *   When I see the Companies search results:
+ *     | Ref | PCRAUTO008 |
+ *
+ * This is backed by AccountSearchFlow.assertCompaniesResultsForReference()
+ * and ResultsActions.assertResultsRowMatchesColumns().
+ *
+ * @example
+ *   When I see the Companies search results:
+ *     | Ref | PCRAUTO008 |
+ */
+When('I see the Companies search results:', (table: DataTable) => {
+  searchFlow().assertCompaniesResultsAlreadyOnCompanies(table);
+});
+
+/**
+ * @step I see the Companies search results after switching tab:
+ * @description
+ * Verifies Companies search results after the user has switched to the
+ * Companies tab from another tab (e.g. Individuals), using:
+ *
+ *   - AccountSearchFlow.assertCompaniesResultsWithTabSwitch()
+ *
+ * The DataTable must be a two-column table where each row is:
+ *   | field | value |
+ *
+ * Example:
+ *   Then I see the Companies search results after switching tab:
+ *     | company name      | ACME LTD |
+ *     | company reference | C123456  |
+ */
+Then('I see the Companies search results after switching tab:', (table: DataTable) => {
+  searchFlow().assertCompaniesResultsWithTabSwitch(table);
+});
+
+/**
+ * @step I see the Companies search results exclude:
+ * @description
+ * Verifies that the Companies search results do NOT contain the specified
+ * values, using:
+ *
+ *   - AccountSearchFlow.assertCompaniesResultsDoNotContain()
+ *
+ * The DataTable must be a two-column table where each row is:
+ *   | field | value to exclude |
+ *
+ * Example:
+ *   Then I see the Companies search results exclude:
+ *     | company name | BLOCKED LTD |
+ *     | company name | LEGACY CO   |
+ */
+Then('I see the Companies search results exclude:', (table: DataTable) => {
+  searchFlow().assertCompaniesResultsDoNotContain(table);
+});
+
+/**
+ * @step I return to the Companies search page from the results with header "<header>" and the following values:
+ * @description
+ * Uses the Search results back link to return to the Companies account search
+ * form, then verifies the Companies search header and field values using:
+ *
+ *   - AccountSearchFlow.returnToCompaniesSearchFromResults()
+ *   - AccountSearchFlow.verifyPageForCompanies()
+ *
+ * The DataTable must be a two-column table where each row is:
+ *   | field | value |
+ *
+ * Example:
+ *   When I return to the Companies search page from the results
+ *        with header "Search accounts – Companies" and the following values:
+ *     | account number           | 25000002A  |
+ *     | reference or case number | PCRAUTO008 |
+ */
+When('I return to the Companies search page from the results it is displayed with:', (table: DataTable) => {
+  searchFlow().returnToCompaniesSearchFromResults(table);
+});
+
+/**
+ * @step I see there are no matching results and I check my search
+ * @description
+ * Verifies that no Companies search results are returned and follows the
+ * "Check your search" path to return to the search form, using:
+ *
+ *   - AccountSearchFlow.verifyNoResultsAndClickCheckYourSearch()
+ *
+ * Example:
+ *   Then I see there are no matching results and I check my search
+ */
+Then('I see there are no matching results and I check my search', () => {
+  searchFlow().verifyNoResultsAndClickCheckYourSearch();
+});
+
+/**
+ * @step I return to the dashboard using the HMCTS link
+ * @description
+ * Navigates back to the Dashboard from the Account Search area by using
+ * the HMCTS header link. This is the intent-based equivalent of a user
+ * selecting the HMCTS logo / homepage link in the global header.
+ *
+ * This step delegates the full behaviour to:
+ *
+ *   - AccountSearchFlow.returnToDashboardViaHmctsLink()
+ *
+ * Behaviour:
+ *   - Uses CommonActions.clickHmctsHomeLink() to perform the navigation.
+ *   - Verifies arrival on the dashboard using DashboardActions.assertOnDashboard().
+ *   - Does not alter any search state (navigation only).
+ *
+ * Example:
+ *   And I return to the dashboard using the HMCTS link
+ */
+When('I return to the dashboard using the HMCTS link', () => {
+  searchFlow().returnToDashboardViaHmctsLink();
 });

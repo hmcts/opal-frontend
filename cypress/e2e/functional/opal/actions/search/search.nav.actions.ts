@@ -77,4 +77,45 @@ export class AccountSearchNavActions {
   public goToMinorCreditorsTab(): void {
     this.activateTab(Nav.minorCreditorsTab, 'Minor Creditors');
   }
+
+  /**
+   * Verifies a tab is selected using CSS class or optional URL hash.
+   */
+  private verifyTabSelected(tabSelector: string, label: string, expectedHash?: string): void {
+    log('method', `verifyTabSelected(${label})`);
+
+    // URL hash check (if provided)
+    if (expectedHash) {
+      cy.location('hash', { timeout: 10_000 })
+        .should('eq', expectedHash)
+        .then(() => log('assert', `${label} tab verified via URL hash (${expectedHash})`));
+    }
+
+    // CSS class check (always required)
+    cy.get(tabSelector, { timeout: 10_000 })
+      .should('have.class', 'govuk-tabs__list-item--selected')
+      .then(() => log('assert', `${label} tab verified via selected CSS class`));
+
+    log('done', `${label} tab verification complete`);
+  }
+
+  /** Verifies Individuals tab is active. */
+  public verifyIndividualsTabActive(): void {
+    this.verifyTabSelected(Nav.individualsTab, 'Individuals');
+  }
+
+  /** Verifies Companies tab is active. */
+  public verifyCompaniesTabActive(): void {
+    this.verifyTabSelected(Nav.companiesTab, 'Companies');
+  }
+
+  /** Verifies Major Creditors tab is active. */
+  public verifyMajorCreditorsTabActive(): void {
+    this.verifyTabSelected(Nav.majorCreditorsTab, 'Major Creditors');
+  }
+
+  /** Verifies Minor Creditors tab is active. */
+  public verifyMinorCreditorsTabActive(): void {
+    this.verifyTabSelected(Nav.minorCreditorsTab, 'Minor Creditors');
+  }
 }

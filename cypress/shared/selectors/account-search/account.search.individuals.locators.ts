@@ -110,6 +110,6 @@ export const AccountSearchIndividualsLocators = {
   /** Link from Dashboard to “Search for an Account” (entry point to this form). */
   searchLinkFromDashboard: '#finesSaSearchLink',
 
-  /** Root selector for the search form component (redundant safety selector). */
+  /** Root selector for the search form component. */
   searchFormRoot: 'app-fines-sa-search, [data-testid="fines-sa-search"]',
 };

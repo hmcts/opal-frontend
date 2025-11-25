@@ -14,7 +14,7 @@ import { AccountSearchCompaniesLocators as C } from '../../../../shared/selector
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { HasAccountLinkOnPage } from '../../../../support/utils/results';
-import { CommonActions } from '../actions/account-details/common.actions';
+import { CommonActions } from '../actions/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
@@ -101,7 +101,7 @@ export class AccountEnquiryFlow {
     log('method', 'searchByLastName()');
     log('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.searchIndividuals.byLastName(surname);
+    this.searchIndividuals.searchByLastName(surname);
   }
 
   /**
@@ -213,15 +213,6 @@ export class AccountEnquiryFlow {
     log('cancel', 'Cancelling edit and staying on edit page');
     this.common.cancelEditing(false);
     this.editDefendantDetailsActions.assertStillOnEditPage();
-  }
-
-  /**
-   * Cancels the edit operation
-   */
-  public cancelEditAndLeave(): void {
-    log('method', 'cancelEditAndLeave()');
-    log('cancel', 'Cancelling edit and returning to details page');
-    this.common.cancelEditing(true);
   }
 
   /**
@@ -473,7 +464,7 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(text);
 
     // 2. Simulate browser back and confirm the warning
-    this.common.navigateBrowserBackWithConfirmation(/\/details$/);
+    this.common.navigateBrowserBackWithChoice('ok');
   }
 
   /**

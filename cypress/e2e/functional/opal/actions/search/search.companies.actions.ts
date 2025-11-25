@@ -9,16 +9,40 @@ import { AccountSearchCompaniesLocators as L } from '../../../../../shared/selec
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { ResultsActions } from '../search.results.actions';
 import { AccountSearchCommonActions } from '../search/search.common.actions';
+import { CommonActions } from '../common.actions';
 
 import { log } from '../../../../../support/utils/log.helper';
 
 export class AccountSearchCompanyActions {
   private readonly results = new ResultsActions();
   private readonly accountSearchCommonActions = new AccountSearchCommonActions();
-  private readonly TIMEOUT = 10_000;
+  private readonly commonActions = new CommonActions();
 
-  private getTimeoutOptions() {
-    return { timeout: this.TIMEOUT };
+  /**
+   * Assert we remain on the Search Companies form and no navigation occurred.
+   *
+   * Behaviour:
+   *  - Ensures the current pathname still includes the canonical search path.
+   *  - Ensures the Companies search form root is visible.
+   *
+   * This is intentionally conservative: it doesn't compare a before/after snapshot (that
+   * is done in other helpers when appropriate). Use this step where the scenario wants
+   * to assert there was no navigation away from the search page.
+   */
+  public assertRemainsOnSearchFormNoNavigation(): void {
+    log('assert', 'Asserting we remain on the Search Companies form (no navigation)');
+
+    // 1) Path check. The canonical search path used elsewhere in the suite.
+    cy.location('pathname', this.commonActions.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
+
+    // 2) Ensure Companies search form panel is visible
+    if (!L.searchFormRoot) {
+      throw new TypeError('assertRemainsOnSearchFormNoNavigation: Locator L.searchFormRoot is required but missing.');
+    }
+
+    cy.get(L.searchFormRoot, this.commonActions.getTimeoutOptions()).should('be.visible');
+
+    log('assert', 'Verified we remain on the Search Companies form and the form root is visible');
   }
 
   /**
@@ -34,15 +58,15 @@ export class AccountSearchCompanyActions {
     this.assertOnSearchPage();
 
     // Snapshot the path to confirm no redirect occurs
-    cy.location('pathname', this.getTimeoutOptions()).then((pathBefore) => {
+    cy.location('pathname', this.commonActions.getTimeoutOptions()).then((pathBefore) => {
       // Click the shared Search button (delegated shared locator)
-      cy.get(C.searchButton, this.getTimeoutOptions()).should('be.visible').and('be.enabled').click();
+      cy.get(C.searchButton, this.commonActions.getTimeoutOptions()).should('be.visible').and('be.enabled').click();
 
       // Verify no navigation
-      cy.location('pathname', this.getTimeoutOptions()).should('eq', pathBefore);
+      cy.location('pathname', this.commonActions.getTimeoutOptions()).should('eq', pathBefore);
 
       // Verify form still visible
-      cy.get(L.root, this.getTimeoutOptions()).should('be.visible');
+      cy.get(L.root, this.commonActions.getTimeoutOptions()).should('be.visible');
 
       // Assert all key fields remain blank
       this.assertAllFieldValues({
@@ -53,13 +77,16 @@ export class AccountSearchCompanyActions {
         postcode: '',
       });
     });
-
-    log('assert', 'Verified Companies form remained on page with all fields blank after empty submit');
   }
 
   /**
-   * Asserts that all Companies form fields match the provided expected values.
-   * This is a convenience that delegates to specific asserts (and shared common asserts).
+   * Asserts multiple Companies and shared fields in one call.
+   *
+   * Delegates to:
+   * - this.assertCompanyNameEquals
+   * - accountSearchCommonActions.assertSharedFieldValues
+   * - this.assertAddressLine1Equals
+   * - this.assertPostcodeEquals
    */
   public assertAllFieldValues(expected: {
     companyName?: string;
@@ -70,12 +97,16 @@ export class AccountSearchCompanyActions {
   }): void {
     // Delegate to the individual assertion helpers (which handle undefined checks)
     if (expected.companyName !== undefined) this.assertCompanyNameEquals(expected.companyName);
-    if (expected.accountNumber !== undefined)
-      this.accountSearchCommonActions.assertSharedFieldValues({ accountNumber: expected.accountNumber });
-    if (expected.referenceOrCaseNumber !== undefined)
+    if (expected.accountNumber !== undefined) {
+      this.accountSearchCommonActions.assertSharedFieldValues({
+        accountNumber: expected.accountNumber,
+      });
+    }
+    if (expected.referenceOrCaseNumber !== undefined) {
       this.accountSearchCommonActions.assertSharedFieldValues({
         referenceOrCaseNumber: expected.referenceOrCaseNumber,
       });
+    }
     if (expected.addressLine1 !== undefined) this.assertAddressLine1Equals(expected.addressLine1);
     if (expected.postcode !== undefined) this.assertPostcodeEquals(expected.postcode);
 
@@ -90,13 +121,15 @@ export class AccountSearchCompanyActions {
    */
   public byCompanyName(companyName: string): void {
     if (L.companyNameInput) {
-      cy.get(L.companyNameInput, this.getTimeoutOptions()).clear().type(companyName);
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions()).clear().type(companyName);
     } else {
       // Fallback: try a sensible selector if locator not provided
-      cy.get('input[name="companyName"], #companyName', this.getTimeoutOptions()).clear().type(companyName);
+      cy.get('input[name="companyName"], #companyName', this.commonActions.getTimeoutOptions())
+        .clear()
+        .type(companyName);
     }
 
-    cy.get(C.searchButton, this.getTimeoutOptions()).should('be.enabled').click();
+    cy.get(C.searchButton, this.commonActions.getTimeoutOptions()).should('be.enabled').click();
   }
 
   /**
@@ -106,14 +139,14 @@ export class AccountSearchCompanyActions {
   public enterCompanyName(companyName: string): void {
     log('input', `Enter company name -> ${companyName}`);
     if (L.companyNameInput) {
-      cy.get(L.companyNameInput, this.getTimeoutOptions())
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions())
         .should('be.visible')
         .clear()
         .type(companyName)
         .should('have.value', companyName);
     } else {
       // Fallback selector if locator not present
-      cy.get('input[name="companyName"], #companyName', this.getTimeoutOptions())
+      cy.get('input[name="companyName"], #companyName', this.commonActions.getTimeoutOptions())
         .should('be.visible')
         .clear()
         .type(companyName)
@@ -121,16 +154,143 @@ export class AccountSearchCompanyActions {
     }
   }
 
+  /**
+   * Sets the Companies Address Line 1 field, if a value is supplied.
+   *
+   * If the value is empty or only whitespace, the method is a no-op.
+   */
+  public setAddressLine1(value?: string): void {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) {
+      cy.log('[INPUT] Address line 1 not supplied — skipping');
+      return;
+    }
+
+    log('input', `Setting Company address line 1 to "${trimmed}"`);
+
+    if (L.addressLine1Input) {
+      cy.get(L.addressLine1Input, this.commonActions.getTimeoutOptions()).should('exist').clear().type(trimmed);
+      return;
+    }
+
+    cy.get('input[name="addressLine1"], #addressLine1', this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .clear()
+      .type(trimmed);
+  }
+
+  /**
+   * Sets the Companies Postcode field, if a value is supplied.
+   *
+   * If the value is empty or only whitespace, the method is a no-op.
+   */
+  public setPostcode(value?: string): void {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) {
+      cy.log('[INPUT] Postcode not supplied — skipping');
+      return;
+    }
+
+    log('input', `Setting Company postcode to "${trimmed}"`);
+
+    if (L.postCodeInput) {
+      cy.get(L.postCodeInput, this.commonActions.getTimeoutOptions()).should('exist').clear().type(trimmed);
+      return;
+    }
+
+    cy.get('input[name="postcode"], #postcode', this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .clear()
+      .type(trimmed);
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // Checkbox setters
+  // ──────────────────────────────────────────────────────────────
+
+  /**
+   * Sets the "Company name exact match" checkbox state.
+   *
+   * Notes:
+   * - GOV.UK checkboxes typically hide the input (`opacity: 0`), so we
+   *   assert existence, not visibility.
+   * - The method is idempotent: it only clicks when a state change is needed.
+   */
+  public setCompanyNameExactMatch(checked: boolean): void {
+    log('input', `Setting "Company name exact match" to ${checked}`);
+
+    if (!L.companyNameExactMatchCheckbox) {
+      log('warn', 'Locator for companyNameExactMatchCheckbox missing — skipping');
+      return;
+    }
+
+    cy.get(L.companyNameExactMatchCheckbox, this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .then(($el) => {
+        const isChecked = $el.prop('checked') ?? false;
+
+        if (checked !== isChecked) {
+          cy.wrap($el).click({ force: true });
+        }
+      });
+
+    cy.get(L.companyNameExactMatchCheckbox, this.commonActions.getTimeoutOptions()).should(
+      checked ? 'be.checked' : 'not.be.checked',
+    );
+  }
+
+  /**
+   * Sets the "Include aliases" checkbox state for Company searches.
+   *
+   * Notes:
+   * - Idempotent: only triggers a click when required.
+   * - Interacts with the underlying input using `{ force: true }` to
+   *   cope with hidden GOV.UK checkbox inputs.
+   */
+  public setIncludeAliases(checked: boolean): void {
+    log('input', `Setting "Include aliases" (Companies) to ${checked}`);
+
+    if (!L.includeAliasesCheckbox) {
+      log('warn', 'Locator for includeAliasesCheckbox missing — skipping');
+      return;
+    }
+
+    cy.get(L.includeAliasesCheckbox, this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .then(($el) => {
+        const isChecked = $el.prop('checked') ?? false;
+
+        if (checked !== isChecked) {
+          cy.wrap($el).click({ force: true });
+        }
+      });
+
+    cy.get(L.includeAliasesCheckbox, this.commonActions.getTimeoutOptions()).should(
+      checked ? 'be.checked' : 'not.be.checked',
+    );
+  }
+
+  /**
+   * Asserts that the Companies search tab is active and visible.
+   *
+   * This is a lightweight guard used by flows before interacting with
+   * the Companies search form. It only checks for the presence of the
+   * root form container; field-level assertions are handled elsewhere.
+   */
   public assertOnSearchPage(): void {
     log('assert', 'Companies search tab is active');
-    cy.get(L.root, this.getTimeoutOptions()).should('be.visible');
+    cy.get(L.root, this.commonActions.getTimeoutOptions()).should('be.visible');
   }
 
   /** Verify Companies form defaults (adjust fields to your locators). */
   public assertDefaults(): void {
     log('assert', 'Companies form defaults (empty fields)');
-    if (L.companyNameInput) cy.get(L.companyNameInput, this.getTimeoutOptions()).should('have.value', '');
-    if (L.postCodeInput) cy.get(L.postCodeInput, this.getTimeoutOptions()).should('have.value', '');
+    if (L.companyNameInput) {
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions()).should('have.value', '');
+    }
+    if (L.postCodeInput) {
+      cy.get(L.postCodeInput, this.commonActions.getTimeoutOptions()).should('have.value', '');
+    }
   }
 
   /**
@@ -139,8 +299,12 @@ export class AccountSearchCompanyActions {
   public prepareSample(): void {
     log('input', 'Preparing sample values in Companies form');
 
-    if (L.companyNameInput) cy.get(L.companyNameInput, this.getTimeoutOptions()).clear().type('ACME LTD');
-    if (L.postCodeInput) cy.get(L.postCodeInput, this.getTimeoutOptions()).clear().type('B1 1AA');
+    if (L.companyNameInput) {
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions()).clear().type('ACME LTD');
+    }
+    if (L.postCodeInput) {
+      cy.get(L.postCodeInput, this.commonActions.getTimeoutOptions()).clear().type('B1 1AA');
+    }
 
     // Helper: select a checkbox via its label if visible, otherwise force-check the input.
     const selectCheckbox = (checkboxSelector: string): void => {
@@ -154,12 +318,12 @@ export class AccountSearchCompanyActions {
         }
 
         if ($body.find(labelSelector).length > 0 && $body.find(labelSelector).is(':visible')) {
-          cy.get(labelSelector, this.getTimeoutOptions()).should('be.visible').click({ force: true });
+          cy.get(labelSelector, this.commonActions.getTimeoutOptions()).should('be.visible').click({ force: true });
         } else {
-          cy.get(checkboxSelector, this.getTimeoutOptions()).should('exist').check({ force: true });
+          cy.get(checkboxSelector, this.commonActions.getTimeoutOptions()).should('exist').check({ force: true });
         }
 
-        cy.get(checkboxSelector, this.getTimeoutOptions()).should('be.checked');
+        cy.get(checkboxSelector, this.commonActions.getTimeoutOptions()).should('be.checked');
       });
     };
 
@@ -194,7 +358,11 @@ export class AccountSearchCompanyActions {
         return;
       }
 
-      const fallbacks = ['#include-aliases', 'input[name="includeAliases"]', '#includeAliases'];
+      const fallbacks = [
+        '#fsa_search_account_companies_include_aliases',
+        '#include-aliases',
+        'input[name="includeAliases"]',
+      ];
 
       for (const sel of fallbacks) {
         if ($body.find(sel).length > 0) {
@@ -216,8 +384,12 @@ export class AccountSearchCompanyActions {
     log('assert', 'Companies form cleared to defaults');
 
     // Field assertions (text inputs)
-    if (L.companyNameInput) cy.get(L.companyNameInput, this.getTimeoutOptions()).should('have.value', '');
-    if (L.postCodeInput) cy.get(L.postCodeInput, this.getTimeoutOptions()).should('have.value', '');
+    if (L.companyNameInput) {
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions()).should('have.value', '');
+    }
+    if (L.postCodeInput) {
+      cy.get(L.postCodeInput, this.commonActions.getTimeoutOptions()).should('have.value', '');
+    }
 
     // Check known checkbox locators (use L values when present, else fallback selectors)
     const checkboxCandidates: string[] = [];
@@ -235,7 +407,12 @@ export class AccountSearchCompanyActions {
     if ((L as any).includeAliasesCheckbox) {
       checkboxCandidates.push((L as any).includeAliasesCheckbox);
     } else {
-      checkboxCandidates.push('#include-aliases', 'input[name="includeAliases"]', '#includeAliases');
+      checkboxCandidates.push(
+        '#fsa_search_account_companies_include_aliases',
+        '#include-aliases',
+        'input[name="includeAliases"]',
+        '#includeAliases',
+      );
     }
 
     // Assert each candidate checkbox is not checked (if present)
@@ -258,7 +435,7 @@ export class AccountSearchCompanyActions {
         return;
       }
 
-      cy.get(checkboxSelector, this.getTimeoutOptions())
+      cy.get(checkboxSelector, this.commonActions.getTimeoutOptions())
         .should('exist')
         .then(($el) => {
           const isChecked = $el.prop?.('checked') ?? false;
@@ -277,7 +454,7 @@ export class AccountSearchCompanyActions {
 
   /** Async flag used by flow branching. Use .then(active => ...) */
   public isActiveSync(): Cypress.Chainable<boolean> {
-    return cy.get('body', this.getTimeoutOptions()).then(($b) => {
+    return cy.get('body', this.commonActions.getTimeoutOptions()).then(($b) => {
       const el = $b.find(L.companyNameInput || '');
       const active = el.length > 0;
       cy.wrap(active, { log: false }).as('__coActive');
@@ -286,7 +463,7 @@ export class AccountSearchCompanyActions {
   }
 
   // ──────────────────────────────
-  // Company field asserts (mapping-driven)
+  // Company field asserts
   // ──────────────────────────────
 
   /** Asserts the Company name field equals the expected value. */
@@ -294,9 +471,12 @@ export class AccountSearchCompanyActions {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company name equals "${expectedTrim}"`);
     if (L.companyNameInput) {
-      cy.get(L.companyNameInput, this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get(L.companyNameInput, this.commonActions.getTimeoutOptions()).should('have.value', expectedTrim);
     } else {
-      cy.get('input[name="companyName"], #companyName', this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get('input[name="companyName"], #companyName', this.commonActions.getTimeoutOptions()).should(
+        'have.value',
+        expectedTrim,
+      );
     }
   }
 
@@ -305,9 +485,12 @@ export class AccountSearchCompanyActions {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company address line 1 equals "${expectedTrim}"`);
     if (L.addressLine1Input) {
-      cy.get(L.addressLine1Input, this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get(L.addressLine1Input, this.commonActions.getTimeoutOptions()).should('have.value', expectedTrim);
     } else {
-      cy.get('input[name="addressLine1"], #addressLine1', this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get('input[name="addressLine1"], #addressLine1', this.commonActions.getTimeoutOptions()).should(
+        'have.value',
+        expectedTrim,
+      );
     }
   }
 
@@ -316,9 +499,12 @@ export class AccountSearchCompanyActions {
     const expectedTrim = String(expected ?? '').trim();
     log('assert', `Asserting Company postcode equals "${expectedTrim}"`);
     if (L.postCodeInput) {
-      cy.get(L.postCodeInput, this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get(L.postCodeInput, this.commonActions.getTimeoutOptions()).should('have.value', expectedTrim);
     } else {
-      cy.get('input[name="postcode"], #postcode', this.getTimeoutOptions()).should('have.value', expectedTrim);
+      cy.get('input[name="postcode"], #postcode', this.commonActions.getTimeoutOptions()).should(
+        'have.value',
+        expectedTrim,
+      );
     }
   }
 
@@ -343,10 +529,6 @@ export class AccountSearchCompanyActions {
         action: (v: string) => this.accountSearchCommonActions.assertSharedFieldValues({ accountNumber: v }),
       },
       'reference or case number': {
-        label: 'reference or case number',
-        action: (v: string) => this.accountSearchCommonActions.assertSharedFieldValues({ referenceOrCaseNumber: v }),
-      },
-      reference: {
         label: 'reference',
         action: (v: string) => this.accountSearchCommonActions.assertSharedFieldValues({ referenceOrCaseNumber: v }),
       },

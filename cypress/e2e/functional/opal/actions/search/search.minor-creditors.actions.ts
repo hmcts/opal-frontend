@@ -13,13 +13,14 @@
 import { log } from '../../../../../support/utils/log.helper';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchMinorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.minor-creditors.locators';
-import { AccountSearchCommonActions } from '../search/search.common.actions';
+import { CommonActions } from '../common.actions';
 
 export type MinorCreditorType = 'Individual' | 'Company' | 'individual' | 'company';
 type SimpleType = 'individual' | 'company';
 
 export class AccountSearchMinorCreditorsActions {
-  private readonly accountSearchCommonActions = new AccountSearchCommonActions();
+  private readonly commonActions = new CommonActions();
+
   /**
    * Normalise a MinorCreditorType value into the simple lower-case union.
    *
@@ -50,14 +51,12 @@ export class AccountSearchMinorCreditorsActions {
       return;
     }
 
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       if ($body.find(sel).length === 0) {
         cy.log('locator', `firstNames input selector "${sel}" not present in DOM; skipping assertion`);
         return;
       }
-      cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions())
-        .should('be.visible')
-        .and('have.value', expectedTrim);
+      cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
     });
   }
 
@@ -77,14 +76,12 @@ export class AccountSearchMinorCreditorsActions {
       return;
     }
 
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       if ($body.find(sel).length === 0) {
         cy.log('locator', `lastName input selector "${sel}" not present in DOM; skipping assertion`);
         return;
       }
-      cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions())
-        .should('be.visible')
-        .and('have.value', expectedTrim);
+      cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
     });
   }
 
@@ -103,9 +100,7 @@ export class AccountSearchMinorCreditorsActions {
       throw new TypeError('assertCompanyNameEquals: Locator L.company.companyNameInput is required but missing.');
     }
 
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions())
-      .should('be.visible')
-      .and('have.value', expectedTrim);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
   }
 
   /**
@@ -125,9 +120,7 @@ export class AccountSearchMinorCreditorsActions {
       );
     }
 
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions())
-      .should('be.visible')
-      .and('have.value', expectedTrim);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
   }
 
   /**
@@ -145,9 +138,7 @@ export class AccountSearchMinorCreditorsActions {
       throw new TypeError('assertCompanyPostcodeEquals: Locator L.company.postcodeInput is required but missing.');
     }
 
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions())
-      .should('be.visible')
-      .and('have.value', expectedTrim);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
   }
 
   /**
@@ -162,18 +153,14 @@ export class AccountSearchMinorCreditorsActions {
     const indSel = L.individual.addressLine1Input;
     const coSel = L.company.companyAddressLine1Input;
 
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       if (indSel && $body.find(indSel).length > 0) {
-        cy.get(indSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('be.visible')
-          .and('have.value', expectedTrim);
+        cy.get(indSel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
         return;
       }
 
       if (coSel && $body.find(coSel).length > 0) {
-        cy.get(coSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('be.visible')
-          .and('have.value', expectedTrim);
+        cy.get(coSel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
         return;
       }
 
@@ -198,18 +185,14 @@ export class AccountSearchMinorCreditorsActions {
     const indSel = L.individual.postcodeInput;
     const coSel = L.company.companyPostcodeInput;
 
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       if (indSel && $body.find(indSel).length > 0) {
-        cy.get(indSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('be.visible')
-          .and('have.value', expectedTrim);
+        cy.get(indSel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
         return;
       }
 
       if (coSel && $body.find(coSel).length > 0) {
-        cy.get(coSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('be.visible')
-          .and('have.value', expectedTrim);
+        cy.get(coSel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', expectedTrim);
         return;
       }
 
@@ -230,7 +213,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setFirstNames: Locator L.individual.firstNamesInput is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setLastName(value: string): void {
@@ -239,7 +222,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setLastName: Locator L.individual.lastNameInput is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setIndividualAddressLine1(value: string): void {
@@ -248,7 +231,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setIndividualAddressLine1: Locator L.individual.addressLine1Input is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setIndividualPostcode(value: string): void {
@@ -257,7 +240,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setIndividualPostcode: Locator L.individual.postcodeInput is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setCompanyName(value: string): void {
@@ -266,7 +249,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setCompanyName: Locator L.company.companyNameInput is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setCompanyAddressLine1(value: string): void {
@@ -275,7 +258,7 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setCompanyAddressLine1: Locator L.company.addressLine1Input is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
   }
 
   public setCompanyPostcode(value: string): void {
@@ -284,7 +267,62 @@ export class AccountSearchMinorCreditorsActions {
     if (!sel) {
       throw new TypeError('setCompanyPostcode: Locator L.company.postcodeInput is required but missing.');
     }
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).clear().type(value);
+    cy.get(sel, this.commonActions.getTimeoutOptions()).clear().type(value);
+  }
+
+  /**
+   * Sets the "Last name exact match" checkbox for Minor Creditor Individuals.
+   *
+   * Requires locator-file entry L.individual.lastNameExactMatchCheckbox.
+   * Uses GOV.UK pattern-safe interaction (no visibility assertion on the input itself).
+   */
+  public setLastNameExactMatch(checked: boolean): void {
+    log('action', `Setting Minor Creditor last name exact match to ${checked}`);
+
+    const sel = L.individual.lastNameExactMatchCheckbox;
+    if (!sel) {
+      throw new TypeError(
+        'setLastNameExactMatch: Locator L.individual.lastNameExactMatchCheckbox is required but missing.',
+      );
+    }
+
+    cy.get(sel, this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .then(($el) => {
+        const isChecked = $el.prop('checked') ?? false;
+        if (isChecked !== checked) {
+          cy.wrap($el).click({ force: true });
+        }
+      });
+
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should(checked ? 'be.checked' : 'not.be.checked');
+  }
+
+  /**
+   * Sets the "First names exact match" checkbox for Minor Creditor Individuals.
+   *
+   * Requires locator-file entry L.individual.firstNamesExactMatchCheckbox.
+   */
+  public setFirstNamesExactMatch(checked: boolean): void {
+    log('action', `Setting Minor Creditor first names exact match to ${checked}`);
+
+    const sel = L.individual.firstNamesExactMatchCheckbox;
+    if (!sel) {
+      throw new TypeError(
+        'setFirstNamesExactMatch: Locator L.individual.firstNamesExactMatchCheckbox is required but missing.',
+      );
+    }
+
+    cy.get(sel, this.commonActions.getTimeoutOptions())
+      .should('exist')
+      .then(($el) => {
+        const isChecked = $el.prop('checked') ?? false;
+        if (isChecked !== checked) {
+          cy.wrap($el).click({ force: true });
+        }
+      });
+
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should(checked ? 'be.checked' : 'not.be.checked');
   }
 
   /**
@@ -293,7 +331,7 @@ export class AccountSearchMinorCreditorsActions {
   public assertOnSearchPage(): void {
     const sel = L.panel?.root;
     if (!sel) throw new TypeError('assertOnSearchPage: Locator L.panel.root is required but missing.');
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).should('be.visible');
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible');
   }
 
   /**
@@ -355,7 +393,7 @@ export class AccountSearchMinorCreditorsActions {
     const companyRadioSel = L.type?.companyRadio;
 
     // 1) If a radio fieldset exists in DOM, assert radios are present and not checked.
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       const hasFieldsetInDom = Boolean(fieldsetSelector && $body.find(fieldsetSelector).length > 0);
 
       if (hasFieldsetInDom) {
@@ -367,12 +405,8 @@ export class AccountSearchMinorCreditorsActions {
         }
 
         log('assert', 'Fieldset present — asserting radios are not selected');
-        cy.get(individualRadioSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('not.be.checked');
-        cy.get(companyRadioSel, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('not.be.checked');
+        cy.get(individualRadioSel, this.commonActions.getTimeoutOptions()).should('exist').and('not.be.checked');
+        cy.get(companyRadioSel, this.commonActions.getTimeoutOptions()).should('exist').and('not.be.checked');
       } else {
         log('assert', 'No radio fieldset present in DOM — falling back to visible-input emptiness checks');
       }
@@ -386,7 +420,7 @@ export class AccountSearchMinorCreditorsActions {
         }
 
         if ($body.find(sel).length > 0) {
-          cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).should('be.visible').and('have.value', '');
+          cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('have.value', '');
           log('assert', `Asserted visible ${label ?? sel} is empty`);
         } else {
           // element not in DOM — that's fine for cleared state
@@ -417,7 +451,7 @@ export class AccountSearchMinorCreditorsActions {
     this.assertOnSearchPage();
     const sel = C.searchButton;
     if (!sel) throw new TypeError('submitEmptySearch: Locator C.searchButton is required but missing.');
-    cy.get(sel, this.accountSearchCommonActions.getTimeoutOptions()).should('be.visible').and('be.enabled').click();
+    cy.get(sel, this.commonActions.getTimeoutOptions()).should('be.visible').and('be.enabled').click();
   }
 
   /**
@@ -426,7 +460,7 @@ export class AccountSearchMinorCreditorsActions {
   public assertTypeControlsNotSelected(): void {
     log('assert', 'Verifying Minor Creditor type controls are not selected');
 
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       const fieldsetSelector = L.type?.fieldset;
       const selectSelector = L.type?.selectFallback;
 
@@ -439,18 +473,14 @@ export class AccountSearchMinorCreditorsActions {
             'assertTypeControlsNotSelected: individual/company radio locators are required but missing.',
           );
         }
-        cy.get(L.type.individualRadio, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('not.be.checked');
-        cy.get(L.type.companyRadio, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('not.be.checked');
+        cy.get(L.type.individualRadio, this.commonActions.getTimeoutOptions()).should('exist').and('not.be.checked');
+        cy.get(L.type.companyRadio, this.commonActions.getTimeoutOptions()).should('exist').and('not.be.checked');
         cy.log('assert', 'Both Individual and Company radios are not selected');
       } else if (selectExists) {
         if (!L.type?.selectFallback) {
           throw new TypeError('assertTypeControlsNotSelected: type.selectFallback locator is required but missing.');
         }
-        cy.get(L.type.selectFallback, this.accountSearchCommonActions.getTimeoutOptions())
+        cy.get(L.type.selectFallback, this.commonActions.getTimeoutOptions())
           .should('exist')
           .and(($sel) => {
             const val = ($sel.val() ?? '').toString();
@@ -476,8 +506,7 @@ export class AccountSearchMinorCreditorsActions {
     const simple = this.normalizeType(type);
     log('action', `Choosing Minor Creditor type: ${simple}`);
 
-    // Only support the radio fieldset implementation — fail fast if not present.
-    cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($body) => {
+    cy.get('body', this.commonActions.getTimeoutOptions()).then(($body) => {
       const fieldsetSelector = L.type?.fieldset;
       const hasFieldset = Boolean(fieldsetSelector && $body.find(fieldsetSelector).length > 0);
 
@@ -508,25 +537,23 @@ export class AccountSearchMinorCreditorsActions {
 
     // Prefer clicking the visible label; fallback to checking the input
     if ($body.find(labelSelector).length > 0 && $body.find(labelSelector).is(':visible')) {
-      cy.get(labelSelector, this.accountSearchCommonActions.getTimeoutOptions())
-        .should('be.visible')
-        .click({ force: true });
+      cy.get(labelSelector, this.commonActions.getTimeoutOptions()).should('be.visible').click({ force: true });
     } else {
-      cy.get(radioSelector, this.accountSearchCommonActions.getTimeoutOptions()).should('exist').check({ force: true });
+      cy.get(radioSelector, this.commonActions.getTimeoutOptions()).should('exist').check({ force: true });
     }
 
     // Assert input is checked
-    cy.get(radioSelector, this.accountSearchCommonActions.getTimeoutOptions()).should('be.checked');
+    cy.get(radioSelector, this.commonActions.getTimeoutOptions()).should('be.checked');
 
     // Ensure conditional content is visible (validates the switch)
     if (simple === 'individual') {
       if (!L.type?.individualConditional) {
         throw new TypeError('chooseType: L.type.individualConditional locator is required but missing.');
       }
-      cy.get(L.type.individualConditional, this.accountSearchCommonActions.getTimeoutOptions()).should('be.visible');
+      cy.get(L.type.individualConditional, this.commonActions.getTimeoutOptions()).should('be.visible');
     } else {
       if (!L.panel?.root) throw new TypeError('chooseType: L.panel.root locator is required but missing.');
-      cy.get(L.panel.root, this.accountSearchCommonActions.getTimeoutOptions()).should('be.visible');
+      cy.get(L.panel.root, this.commonActions.getTimeoutOptions()).should('be.visible');
     }
   }
 
@@ -566,32 +593,32 @@ export class AccountSearchMinorCreditorsActions {
     log('action', 'Clearing all Minor creditors fields');
 
     if (L.individual.firstNamesInput)
-      cy.get(L.individual.firstNamesInput, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.individual.firstNamesInput, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
     if (L.individual.lastNameInput)
-      cy.get(L.individual.lastNameInput, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.individual.lastNameInput, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
     if (L.individual.addressLine1Input)
-      cy.get(L.individual.addressLine1Input, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.individual.addressLine1Input, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
     if (L.individual.postcodeInput)
-      cy.get(L.individual.postcodeInput, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.individual.postcodeInput, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
 
     if (L.company.companyNameInput)
-      cy.get(L.company.companyNameInput, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.company.companyNameInput, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
     if (L.company.companyAddressLine1Input)
-      cy.get(L.company.companyAddressLine1Input as any, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.company.companyAddressLine1Input as any, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
     if (L.company.companyPostcodeInput)
-      cy.get(L.company.companyPostcodeInput, this.accountSearchCommonActions.getTimeoutOptions()).then(
+      cy.get(L.company.companyPostcodeInput, this.commonActions.getTimeoutOptions()).then(
         ($el) => $el.length && cy.wrap($el).clear(),
       );
 
@@ -616,18 +643,14 @@ export class AccountSearchMinorCreditorsActions {
     const panelSel = L.panel?.root;
     if (!panelSel) throw new TypeError('assertTypeEquals: Locator L.panel.root is required but missing.');
 
-    cy.get(panelSel, this.accountSearchCommonActions.getTimeoutOptions()).within(() => {
+    cy.get(panelSel, this.commonActions.getTimeoutOptions()).within(() => {
       if (expected === 'Individual') {
         if (!L.type?.individualRadio)
           throw new TypeError('assertTypeEquals: Locator L.type.individualRadio is missing.');
-        cy.get(L.type.individualRadio, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('be.checked');
+        cy.get(L.type.individualRadio, this.commonActions.getTimeoutOptions()).should('exist').and('be.checked');
       } else {
         if (!L.type?.companyRadio) throw new TypeError('assertTypeEquals: Locator L.type.companyRadio is missing.');
-        cy.get(L.type.companyRadio, this.accountSearchCommonActions.getTimeoutOptions())
-          .should('exist')
-          .and('be.checked');
+        cy.get(L.type.companyRadio, this.commonActions.getTimeoutOptions()).should('exist').and('be.checked');
       }
     });
   }
@@ -636,7 +659,7 @@ export class AccountSearchMinorCreditorsActions {
    * Return whether the Minor Creditors panel is active (async).
    */
   public isActiveSync(): Cypress.Chainable<boolean> {
-    return cy.get('body', this.accountSearchCommonActions.getTimeoutOptions()).then(($b) => {
+    return cy.get('body', this.commonActions.getTimeoutOptions()).then(($b) => {
       const exists = !!(L.panel?.root && $b.find(L.panel.root).length > 0);
       cy.wrap(exists, { log: false }).as('__mcActive');
       return exists;
@@ -644,7 +667,4 @@ export class AccountSearchMinorCreditorsActions {
   }
 }
 
-/**
- * Factory for function-style consumers.
- */
 export const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions();
