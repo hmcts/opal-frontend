@@ -11833,8 +11833,8 @@ __metadata:
   linkType: hard
 
 "junit-report-merger@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "junit-report-merger@npm:8.0.0"
+  version: 8.0.1
+  resolution: "junit-report-merger@npm:8.0.1"
   dependencies:
     commander: "npm:~14.0.0"
     tinyglobby: "npm:^0.2.15"
@@ -11842,7 +11842,7 @@ __metadata:
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 10/25e467fb3fc71f16c6881fb5900221cd8de28bd49a024d14b3fdb4315a9531cf86d5e042e3977c5c63d914ed371c46de97d0145a6124b400666e6be37128697d
+  checksum: 10/7889fa899124ae5ad36838a85dd71cdea46685b664efdc390396c141a58230f69a2076c6be672396f4eb0cd9c1dd560b227e84f6a9d3b68fd537df2b68b272cf
   languageName: node
   linkType: hard
 
