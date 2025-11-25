@@ -978,11 +978,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^4.11.0":
-  version: 4.25.1
-  resolution: "@azure/msal-browser@npm:4.25.1"
+  version: 4.26.2
+  resolution: "@azure/msal-browser@npm:4.26.2"
   dependencies:
-    "@azure/msal-common": "npm:15.13.0"
-  checksum: 10/09f8fc7356e733d4aacd09aebc7d8b50091c0b926457fe1a4b7c5b4e202855b8fe9148a8b2d290e8700b1b9d681c1ccda59304703b12e90ba58f9f617bc4ccba
+    "@azure/msal-common": "npm:15.13.2"
+  checksum: 10/a6e77371bb3109e27f47355e1459a733c8f3ca2a052f502abd59a2f130958c62c3f0573407b190ae56489685c2ed9b6d126f47b98289da2634adca703574a339
   languageName: node
   linkType: hard
 
@@ -993,10 +993,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:15.13.0":
-  version: 15.13.0
-  resolution: "@azure/msal-common@npm:15.13.0"
-  checksum: 10/e1e55fd2533ab2ab6ceaf19bb69f3cd2c3bb8227efc0b96b1a4877a60d7ad43ca4024e4651655d8e6b2df42dcaada71880754295c41a28f5c20e62ef2b46f685
+"@azure/msal-common@npm:15.13.2":
+  version: 15.13.2
+  resolution: "@azure/msal-common@npm:15.13.2"
+  checksum: 10/b2eecb6502305942f4f171fffca8314b37809a297a7332d959d0786008dfa2eba70f44dca5069a557589cf05d60e024c233a97beeaab7944fd6aae3186343967
   languageName: node
   linkType: hard
 
@@ -3258,15 +3258,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.48":
-  version: 0.0.48
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.48"
+"@hmcts/opal-frontend-common@npm:^0.0.50":
+  version: 0.0.50
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.50"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/c24f2ca53a7df3ad64f849d01e22795e3c982c36a27b19996ea6d0ea698691b89cfc7d73118756afd671ab84374065d0dc54dfc6f8200f886e8d4ccd1637e092
+  checksum: 10/2da3aae9a208d95adbeec0387bed34e183671044c1f2f2807820b7d8ae3d2f8f2c4a49129f1d74715bd54ddcc2c6878b11878cf94e176ece59a3bc2e3735f06a
   languageName: node
   linkType: hard
 
@@ -13659,7 +13659,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.48"
+    "@hmcts/opal-frontend-common": "npm:^0.0.50"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.16"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"

@@ -161,7 +161,7 @@ describe('FinesMacReviewAccountDecisionComponent', () => {
 
   it('should clean up subscriptions and reset error on ngOnDestroy', () => {
     const globalStore = component['globalStore'];
-    const setErrorSpy = spyOn(globalStore, 'resetError');
+    const setErrorSpy = spyOn(globalStore, 'resetBannerError');
 
     component.ngOnDestroy();
 

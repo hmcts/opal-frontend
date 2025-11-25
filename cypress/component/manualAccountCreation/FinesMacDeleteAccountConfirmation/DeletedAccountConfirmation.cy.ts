@@ -45,7 +45,7 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
           useFactory: () => {
             let store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
-            store.setError({
+            store.setBannerError({
               error: false,
               message: '',
             });

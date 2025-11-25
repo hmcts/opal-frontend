@@ -54,7 +54,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     And I see "Dashboard" on the page header
     And I should not see the global error banner
 
-  @PO-2108 @only
+  @PO-2108
   Scenario Outline: Internal Server Error page is displayed for non-retriable backend errors
 
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
@@ -92,7 +92,7 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     And I see "you are not permitted to use this feature" text on the page
     And I see "If you think this is incorrect, contact your line manager." text on the page
 
-  @PO-2224 @only
+  @PO-2224
   Scenario Outline: Internal Server Error page is displayed for non-retriable backend errors - FAE
 
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
