@@ -33,6 +33,10 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   public readonly utilsService = new UtilsService();
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
 
+  /**
+   * Determines the card title based on the payment terms type and lump sum amount.
+   * @returns string representing the card title
+   */
   public cardTitle(): string {
     if (this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
       return 'Pay in full';
@@ -42,10 +46,16 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     return 'Instalments only';
   }
 
+  /**
+   * Emits an event to indicate a request to change payment terms.
+   */
   public handleChangePaymentTerms(): void {
     this.changePaymentTerms.emit();
   }
 
+  /**
+   * Emits an event to indicate a request for a payment card.
+   */
   public handleRequestPaymentCard(): void {
     this.requestPaymentCard.emit();
   }
