@@ -5,13 +5,9 @@
  */
 
 import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account-search/account.search.individuals.locators';
-<<<<<<< HEAD
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { ResultsActions } from '../search.results.actions';
 import { CommonActions } from '../common.actions';
-=======
-import { ResultsActions } from '../search.results.actions';
->>>>>>> origin/master
 import { log } from '../../../../../support/utils/log.helper';
 
 export class AccountSearchIndividualsActions {
@@ -34,17 +30,10 @@ export class AccountSearchIndividualsActions {
    */
   public assertOnSearchPage(): void {
     log('assert', 'Verifying Search for an Account page URL');
-<<<<<<< HEAD
     cy.location('pathname', this.common.getTimeoutOptions()).should('include', '/fines/search-accounts/search');
 
     log('assert', 'Ensuring search form is visible');
     cy.get(L.searchFormRoot, this.common.getTimeoutOptions()).should('be.visible');
-=======
-    cy.location('pathname', { timeout: 10_000 }).should('include', '/fines/search-accounts/search');
-
-    log('assert', 'Ensuring search form is visible');
-    cy.get(L.searchFormRoot, { timeout: 10_000 }).should('be.visible');
->>>>>>> origin/master
 
     log('action', 'Search for an Account page is ready');
   }
@@ -128,19 +117,11 @@ export class AccountSearchIndividualsActions {
    *
    * @param lastName - The last name to search for.
    */
-<<<<<<< HEAD
   public searchByLastName(lastName: string): void {
     log('action', `Submitting search by last name: "${lastName}"`);
     cy.get(L.lastNameInput, this.common.getTimeoutOptions()).clear().type(lastName);
 
     cy.get(C.searchButton, this.common.getTimeoutOptions()).should('be.enabled').click();
-=======
-  public byLastName(lastName: string): void {
-    log('action', `Submitting search by last name: "${lastName}"`);
-    cy.get(L.lastNameInput, { timeout: 10_000 }).clear().type(lastName);
-
-    cy.get(L.searchButton, { timeout: 10_000 }).should('be.enabled').click();
->>>>>>> origin/master
 
     log('assert', 'Verifying results are displayed');
     this.results.assertOnResults();
