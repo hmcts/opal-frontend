@@ -412,3 +412,50 @@ Feature: Check and Validate - Checker
     #AC.8 Back button
     When I click on the "Back" link
     And I see "Review accounts" on the page header
+
+  @PO-1804
+  Scenario: As a user I can view Fixed Penalty Details when selecting defendant name link under To Review tab
+    And I create a "fixedPenalty" draft account with the following details:
+      | account.defendant.forenames | FakeFixed |
+      | account.defendant.surname   | FAKELAST  |
+    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
+    Then I am on the dashboard
+
+    Given I navigate to Check and Validate Draft Accounts
+    And I see "Review accounts" on the page header
+
+    And I see "To review" on the status heading
+
+    # Click on the defendant name link
+    # Click on the defendant name link (format should be "LastName, FirstName")
+    When I click on the "FAKELAST, FakeFixed" link
+
+    # See what account details page we land on
+    Then I see "Mr FakeFixed FAKELAST" on the page header
+
+
+
+
+  @PO-1804
+  Scenario: AC1 - As a user I can view Fixed Penalty Details when selecting company defendant name link under To Review tab
+
+    # Create a Fixed Penalty company account
+    Given I create a "fixedPenaltyCompany" draft account with the following details:
+      | account.defendant.company_name | TestFixedPenaltyCompany |
+
+    Given I am on the Opal Frontend and I sign in as "opal-test-10@HMCTS.NET"
+    Then I am on the dashboard
+
+    Given I navigate to Check and Validate Draft Accounts
+    And I see "Review accounts" on the page header
+
+    And I see "To review" on the status heading
+    # Click on the company name link
+    Then I click on the "TestFixedPenaltyCompany" link
+
+    # Verify company account details are displayed
+    And I see "TestFixedPenaltyCompany" on the page header
+
+
+
+
