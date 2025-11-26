@@ -1,4 +1,5 @@
 import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance-details.locators';
+import { log } from '../../../../../support/utils/log.helper';
 
 export class AccountDetailsAtAGlanceActions {
   /** ensure we’re on at a glance */
@@ -42,11 +43,7 @@ export class AccountDetailsAtAGlanceActions {
    *   new AccountDetailsAtAGlanceActions().openCommentsFromSummary();
    */
   public openCommentsFromSummary(): void {
-    Cypress.log({
-      name: 'Navigation',
-      displayName: 'Open Comments page',
-      message: 'Opening Comments page from Defendant Summary',
-    });
+    log('navigation', 'Opening Comments page from Defendant Summary');
 
     // Save current Details URL so we can return to it later if needed
     cy.location('href').then((u) => cy.wrap(u).as('detailsUrl'));
@@ -92,7 +89,7 @@ export class AccountDetailsAtAGlanceActions {
         .should('be.visible')
         .invoke('text')
         .then((allTxt) => {
-          const normalized = String(allTxt).replaceAll(/\s+/g, ' ').trim(); // ✅ use replaceAll()
+          const normalized = String(allTxt).replaceAll(/\s+/g, ' ').trim();
           for (const line of lines) {
             expect(normalized).to.contain(line);
           }
