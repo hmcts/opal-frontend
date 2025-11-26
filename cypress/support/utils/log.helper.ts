@@ -6,17 +6,37 @@
  */
 
 export type LogScope =
-  | 'method'
-  | 'navigate'
-  | 'assert'
   | 'action'
   | 'a11y'
-  | 'wait'
-  | 'done'
+  | 'assert'
   | 'cancel'
+  | 'comments'
+  | 'click'
+  | 'complete'
+  | 'debug'
   | 'dialog'
+  | 'done'
+  | 'edit'
   | 'fallback'
-  | 'verify';
+  | 'flow'
+  | 'info'
+  | 'input'
+  | 'locator'
+  | 'match'
+  | 'method'
+  | 'navigate'
+  | 'navigation'
+  | 'open'
+  | 'prepare'
+  | 'results'
+  | 'save'
+  | 'search'
+  | 'select'
+  | 'step'
+  | 'type'
+  | 'verify'
+  | 'wait'
+  | 'warn';
 
 export function log(scope: LogScope, message: string, details?: Record<string, unknown>): void {
   Cypress.log({
@@ -28,4 +48,23 @@ export function log(scope: LogScope, message: string, details?: Record<string, u
 
   // runner UI message
   cy.log(`[${scope.toUpperCase()}] ${message}`);
+}
+
+/**
+ * Synchronous logger for Cypress callback contexts.
+ *
+ * Unlike `log()`, this version does NOT call `cy.log()`, meaning it can safely
+ * be used inside Cypress command callbacks such as:
+ *   • cy.intercept(... req.reply(...))
+ *   • cy.wait(alias).then(...)
+ *   • Promise or event handlers
+ *
+ * It uses only `Cypress.log()`, which does not enqueue Cypress commands.
+ */
+export function logSync(scope: LogScope, message: string, details?: Record<string, unknown>): void {
+  Cypress.log({
+    name: scope,
+    message,
+    consoleProps: () => details ?? {},
+  });
 }

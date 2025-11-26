@@ -1,6 +1,6 @@
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class ManualOffenceDetailsActions {
   private readonly common = new CommonActions();
@@ -36,7 +36,7 @@ export class ManualOffenceDetailsActions {
       .should('be.visible')
       .clear({ force: true })
       .type(value, { delay: 0 });
-    log('typed', `Set ${label}`, { value });
+    log('type', `Set ${label}`, { value });
   }
 
   private selectResultCode(index: number, value: string): void {

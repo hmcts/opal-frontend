@@ -2,6 +2,11 @@ import { CommonLocators as L } from '../../../../../shared/common.locators';
 import { log } from '../../../../../support/utils/log.helper';
 
 export class CommonActions {
+  private readonly TIMEOUT = 10_000;
+  public getTimeoutOptions() {
+    return { timeout: this.TIMEOUT };
+  }
+
   /**
    * Clicks the “Cancel” control and handles the confirm-leave dialog.
    *

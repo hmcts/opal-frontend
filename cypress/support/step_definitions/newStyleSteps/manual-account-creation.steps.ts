@@ -54,14 +54,6 @@ When(
   },
 );
 
-Given(
-  'I start a fine manual account for business unit {string} with defendant type {string}',
-  (businessUnit: string, defendantType: DefendantType) => {
-    log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
-  },
-);
-
 /**
  * Creates a default fine manual account and confirms the task list is visible.
  */
@@ -73,14 +65,40 @@ Given('I am viewing account details for a manual account', () => {
 /**
  * Opens a task from the account details list.
  */
-When('I view the {string} task from account details', (taskName: ManualAccountTaskName) => {
-  log('navigate', 'Opening task from account details', { taskName });
-  nav().navigateToAccountDetails();
+When('I view the {string} task', (taskName: ManualAccountTaskName) => {
+  details().assertOnAccountDetailsPage();
+  log('navigate', 'Opening task', { taskName });
   details().openTask(taskName);
   if (taskName === 'Account comments and notes') {
+    cy.location('pathname', { timeout: 20_000 }).should('include', 'account-comments');
     comments().assertHeader();
   }
 });
+
+/**
+ * Opens a task from the account details list (explicit wording variant).
+ */
+When('I view the {string} task from account details', (taskName: ManualAccountTaskName) => {
+  details().assertOnAccountDetailsPage();
+  log('navigate', 'Opening task from account details', { taskName });
+  details().openTask(taskName);
+  if (taskName === 'Account comments and notes') {
+    cy.location('pathname', { timeout: 20_000 }).should('include', 'account-comments');
+    comments().assertHeader();
+  }
+});
+
+/**
+ * Asserts the status text for a task list item.
+ */
+Then(
+  'returning to account details the {string} task the status is {string}',
+  (taskName: ManualAccountTaskName, expectedStatus: string) => {
+    nav().returnToAccountDetails();
+    log('assert', 'Checking task status', { taskName, expectedStatus });
+    details().assertTaskStatus(taskName, expectedStatus);
+  },
+);
 
 /**
  * Asserts the status text for a task list item.
@@ -101,9 +119,20 @@ When('I return to account details', () => {
 /**
  * Provides comments and notes then returns to the task list.
  */
-When('I provide account comments {string} and notes {string}', (comment: string, note: string) => {
-  log('step', 'Providing account comments and notes', { comment, note });
+When('I provide account comments {string} and notes {string} from account details', (comment: string, note: string) => {
+  log('step', 'Providing account comments and notes from account details', { comment, note });
+  details().assertOnAccountDetailsPage();
   flow().provideAccountCommentsAndNotes(comment, note);
+});
+
+/**
+ * Navigates to account comments and notes and provides account comments and notes
+ */
+When('I provide account comments {string} and notes {string}', (comment: string, note: string) => {
+  details().openTask('Account comments and notes');
+  log('step', 'Providing account comments and notes on task', { comment, note });
+  comments().setComment(comment);
+  comments().setNote(note);
 });
 
 /**
@@ -133,10 +162,13 @@ When(
 /**
  * Proceeds from comments and notes to review and asserts the destination header.
  */
-Then('I proceed to review account details from comments and notes and see the header {string}', (header: string) => {
-  log('flow', 'Proceeding to review from comments and notes', { header });
-  flow().proceedToReviewFromComments(header);
-});
+Then(
+  'I can proceed to review account details from comments and notes and see the header {string}',
+  (header: string) => {
+    log('flow', 'Proceeding to review from comments and notes', { header });
+    flow().proceedToReviewFromComments(header);
+  },
+);
 
 /**
  * Refreshes the current page.
@@ -158,10 +190,10 @@ When(
   },
 );
 
-When('I have provided manual court details from account details:', (table: DataTable) => {
+When('I have provided manual court details:', (table: DataTable) => {
   const data = table.rowsHash();
   log('step', 'Providing court details from table', data);
-  nav().navigateToAccountDetails();
+  details().assertOnAccountDetailsPage();
   details().openTask('Court details');
   courtDetails().fillCourtDetails(data['LJA'], data['PCR'], data['enforcement court']);
 });
@@ -222,6 +254,7 @@ When('I have provided offence details from account details:', (table: DataTable)
   const offenceDate = resolveRelativeDate(data['offence date']);
   log('step', 'Providing offence details from table', { ...data, offenceDate });
   nav().navigateToAccountDetails();
+  details().assertOnAccountDetailsPage();
   details().openTask('Offence details');
   offenceDetails().fillOffenceDetails({
     dateOfSentence: offenceDate,
@@ -257,7 +290,7 @@ When(
   },
 );
 
-When('I have provided manual payment terms from account details:', (table: DataTable) => {
+When('I have provided manual payment terms:', (table: DataTable) => {
   const data = table.rowsHash();
   const collectionDate = resolveRelativeDate(data['collection order date']);
   const payByDate = resolveRelativeDate(data['pay in full by']);
@@ -303,11 +336,14 @@ Then('the task statuses are:', (table: DataTable) => {
 /**
  * Asserts both comment and note fields at once.
  */
-Then('the manual account comment and note fields show {string} and {string}', (commentText: string, noteText: string) => {
-  log('assert', 'Verifying comment and note fields', { commentText, noteText });
-  comments().assertCommentValue(commentText);
-  comments().assertNoteValue(noteText);
-});
+Then(
+  'the manual account comment and note fields show {string} and {string}',
+  (commentText: string, noteText: string) => {
+    log('assert', 'Verifying comment and note fields', { commentText, noteText });
+    comments().assertCommentValue(commentText);
+    comments().assertNoteValue(noteText);
+  },
+);
 /**
  * Opens the Account comments and notes task without navigating (assumes we are already on Account details).
  */

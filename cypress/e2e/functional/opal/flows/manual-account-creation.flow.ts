@@ -5,6 +5,7 @@ import { ManualAccountCommentsNotesActions } from '../actions/manual-account-cre
 import { ManualCreateAccountLocators } from '../../../../shared/selectors/manual-account-creation/create-account.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import { log } from '../../../../support/utils/log.helper';
+import { CommonActions } from '../actions/common/common.actions';
 
 /**
  * Flow for Manual Account Creation.
@@ -18,6 +19,7 @@ export class ManualAccountCreationFlow {
   private readonly accountDetails = new ManualAccountDetailsActions();
   private readonly commentsAndNotes = new ManualAccountCommentsNotesActions();
   private readonly taskNavigation = new ManualAccountTaskNavigationActions();
+  private readonly common = new CommonActions();
 
   /**
    * Starts a Fine manual account and lands on the task list.
@@ -29,6 +31,7 @@ export class ManualAccountCreationFlow {
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
+    cy.location('pathname', { timeout: 15_000 }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -66,18 +69,14 @@ export class ManualAccountCreationFlow {
     log('flow', 'Proceed to review from comments and notes', { expectedHeader });
     this.commentsAndNotes.assertReviewAndSubmitVisible();
     this.commentsAndNotes.clickReviewAndSubmit();
-    this.accountDetails.assertOnAccountDetailsPage(expectedHeader);
+    cy.location('pathname', { timeout: 20_000 }).should((path) => {
+      expect(path).to.match(/(check-account|review-account)/i);
+    });
+    this.common.assertHeaderContains(expectedHeader, 20_000);
   }
 
   private ensureOnCreateAccountPage(): void {
-    cy.get('body').then(($body) => {
-      const isOnPage = $body.find(ManualCreateAccountLocators.businessUnit.input).length > 0;
-      if (!isOnPage) {
-        log('navigate', 'Navigating to Manual Account Creation via dashboard');
-        this.dashboard.goToManualAccountCreation();
-      }
-    });
-
+    this.dashboard.goToManualAccountCreation();
     this.createAccount.assertOnCreateAccountPage();
   }
 }

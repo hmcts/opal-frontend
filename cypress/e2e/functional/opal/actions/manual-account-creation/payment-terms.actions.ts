@@ -1,7 +1,7 @@
 import { ManualPaymentTermsLocators as L } from '../../../../../shared/selectors/manual-account-creation/payment-terms.locators';
 import { calculateWeeksInFuture, calculateWeeksInPast } from '../../../../../support/utils/dateUtils';
 import { log } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class ManualPaymentTermsActions {
   private readonly common = new CommonActions();
@@ -25,7 +25,10 @@ export class ManualPaymentTermsActions {
     const isYes = choice.toLowerCase() === 'yes';
     const selector = isYes ? L.collectionOrder.yes : L.collectionOrder.no;
     log('select', 'Setting collection order', { choice });
-    cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
 
     if (isYes) {
       const dateString = calculateWeeksInPast(weeksInPast);
@@ -39,7 +42,7 @@ export class ManualPaymentTermsActions {
 
   private selectPayInFull(): void {
     log('select', 'Selecting Pay in full');
-    cy.get(L.payInFull, this.common.getTimeoutOptions()).should('be.visible').check({ force: true });
+    cy.get(L.payInFull, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
   }
 
   private setPayByDate(weeksInFuture: number): void {

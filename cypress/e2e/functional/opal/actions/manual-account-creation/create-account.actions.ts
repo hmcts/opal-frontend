@@ -1,6 +1,6 @@
 import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
 import { log } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export type AccountType = 'Fine' | 'Fixed penalty' | 'Fixed Penalty' | 'Conditional caution' | 'Conditional Caution';
 export type DefendantType =
@@ -37,9 +37,11 @@ export class ManualCreateAccountActions {
     cy.get(L.businessUnit.listbox, this.common.getTimeoutOptions()).should('be.visible');
     cy.get(L.businessUnit.input).type('{downarrow}{enter}');
 
-    cy.get(L.businessUnit.input).invoke('val').should((val) => {
-      expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
-    });
+    cy.get(L.businessUnit.input)
+      .invoke('val')
+      .should((val) => {
+        expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
+      });
   }
 
   /**
@@ -55,7 +57,10 @@ export class ManualCreateAccountActions {
           : L.accountType.conditionalCaution;
 
     log('click', 'Selecting account type', { type });
-    cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
   }
 
   /**
@@ -63,7 +68,7 @@ export class ManualCreateAccountActions {
    */
   selectDefendantType(defendantType: DefendantType): void {
     const normalized = defendantType.toLowerCase();
-    let selector = L.defendantType.adultOrYouth;
+    let selector: string = L.defendantType.adultOrYouth;
 
     if (normalized.includes('guardian')) {
       selector = L.defendantType.parentOrGuardianToPay;
@@ -72,7 +77,10 @@ export class ManualCreateAccountActions {
     }
 
     log('click', 'Selecting defendant type', { defendantType });
-    cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
   }
 
   /**

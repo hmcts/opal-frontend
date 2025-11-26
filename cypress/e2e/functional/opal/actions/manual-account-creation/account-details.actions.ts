@@ -3,7 +3,7 @@ import {
   ManualAccountTaskName,
 } from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class ManualAccountDetailsActions {
   private readonly common = new CommonActions();

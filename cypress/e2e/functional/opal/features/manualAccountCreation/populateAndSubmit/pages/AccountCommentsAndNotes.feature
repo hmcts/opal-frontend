@@ -13,33 +13,33 @@ Feature: Manual account creation - Account Comments and Notes
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     Then the "Account comments and notes" task status is "Not provided"
     When I provide account comments "Test comments" and notes "Test notes"
-    Then the "Account comments and notes" task status is "Provided"
-    When I view the "Account comments and notes" task from account details
+    And returning to account details the "Account comments and notes" task the status is "Provided"
+    When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "Test comments" and "Test notes"
 
   Scenario: A new manual account starts with comments and notes not provided [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     Then the "Account comments and notes" task status is "Not provided"
-    When I view the "Account comments and notes" task from account details
+    When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
   Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
-    And I view the "Account comments and notes" task from account details
     And I provide account comments "Test comments" and notes "Test notes"
     And I choose "Cancel" on the unsaved changes prompt for account comments
     Then the manual account comment field shows "Test comments"
     And the manual account note field shows "Test notes"
     When I choose "Ok" on the unsaved changes prompt for account comments
     Then the "Account comments and notes" task status is "Not provided"
-    When I view the "Account comments and notes" task from account details
+    When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
+
 
   Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
-    And the "Account comments and notes" task status is "Not provided"
+    Then the "Account comments and notes" task status is "Not provided"
 
-    And I have provided manual court details from account details:
+    And I have provided manual court details:
       | field             | value             |
       | LJA               | Avon              |
       | PCR               | 1234              |
@@ -60,7 +60,7 @@ Feature: Manual account creation - Account Comments and Notes
       | amount imposed | 200                 |
       | amount paid    | 100                 |
 
-    And I have provided manual payment terms from account details:
+    And I have provided manual payment terms:
       | field                 | value                  |
       | collection order      | Yes                    |
       | collection order date | 1 weeks ago            |
@@ -73,8 +73,8 @@ Feature: Manual account creation - Account Comments and Notes
       | Offence details  | Provided |
       | Payment terms    | Provided |
 
-    When I open the Account comments and notes task
-    Then I proceed to review account details from comments and notes and see the header "Check account details"
+    And I view the "Account comments and notes" task
+    Then I can proceed to review account details from comments and notes and see the header "Check account details"
 
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"

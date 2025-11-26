@@ -1,6 +1,6 @@
 import { ManualPersonalDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/personal-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class ManualPersonalDetailsActions {
   private readonly common = new CommonActions();
@@ -26,6 +26,6 @@ export class ManualPersonalDetailsActions {
       .should('be.visible')
       .clear({ force: true })
       .type(value, { delay: 0 });
-    log('typed', `Set ${label}`, { value });
+    log('type', `Set ${label}`, { value });
   }
 }
