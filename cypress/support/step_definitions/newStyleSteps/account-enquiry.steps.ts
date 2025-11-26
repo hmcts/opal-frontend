@@ -16,17 +16,20 @@
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/account-enquiry.flow';
+import { CommonFlow } from '../../../e2e/functional/opal/flows/common-flow';
 
 // Actions
 import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account-details/details.defendant.actions';
 import { AccountDetailsAtAGlanceActions } from '../../../e2e/functional/opal/actions/account-details/details.at-a-glance.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
 import { EditDefendantDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
 import { AccountDetailsNavActions } from '../../../e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
+import { log } from '../../utils/log.helper';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
+const commonFlow = () => new CommonFlow();
 const atAGlanceDetails = () => new AccountDetailsAtAGlanceActions();
 const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
@@ -42,6 +45,7 @@ import { rowsHashSafe } from '../../../support/utils/table';
  * Typically used in background or setup scenarios to ensure a clean state.
  */
 Given('any approved draft accounts are cleared', () => {
+  log('step', 'Clearing approved draft accounts');
   cy.task('clearApprovedDrafts');
 });
 
@@ -49,6 +53,7 @@ Given('any approved draft accounts are cleared', () => {
  * @step Selects the latest account and verifies the header.
  */
 When('I select the latest published account and verify the header is {string}', (header: string) => {
+  log('step', 'Selecting latest published account', { expectedHeader: header });
   flow().clickLatestPublishedFromResultsOrAcrossPages();
   atAGlanceDetails().assertHeaderContains(header);
 });
@@ -57,6 +62,7 @@ When('I select the latest published account and verify the header is {string}', 
  * @step Searches for an account by last name using the AccountEnquiryFlow.
  */
 When('I search for the account by last name {string}', (surname: string) => {
+  log('step', 'Searching by surname', { surname });
   flow().searchBySurname(surname);
 });
 
@@ -68,12 +74,7 @@ When('I search for the account by last name {string}', (surname: string) => {
 When(
   'I search for the account by last name {string} and verify the page header is {string}',
   (surname: string, header: string) => {
-    Cypress.log({
-      name: 'search',
-      displayName: 'Account Enquiry',
-      message: `Search by surname and verify header`,
-      consoleProps: () => ({ surname, expectedHeader: header }),
-    });
+    log('step', 'Search by surname and verify header', { surname, expectedHeader: header });
 
     flow().searchBySurname(surname);
     flow().clickLatestPublishedFromResultsOrAcrossPages();
@@ -86,6 +87,7 @@ When(
  * “opens the latest result”
  */
 When('I search for the account by last name {string} and open the latest result', (surname: string) => {
+  log('step', 'Search by surname and open latest result', { surname });
   flow().searchAndClickLatestBySurnameOpenLatestResult(surname);
 });
 
@@ -102,6 +104,7 @@ When('I search for the account by last name {string} and open the latest result'
  *   Then I should see the account summary header contains "Mr John ACCDETAILSURNAME"
  */
 Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$/, (expected: string) => {
+  log('assert', 'Asserting header contains', { expected });
   atAGlanceDetails().assertHeaderContains(expected);
 });
 
@@ -111,6 +114,7 @@ Then(/^I should see the (?:page|account(?: summary)?) header contains "([^"]+)"$
  * @param expected - Expected header text for the section.
  */
 When('I go to the Defendant details section and the header is {string}', (expected: string) => {
+  log('step', 'Navigate to Defendant details', { expected });
   flow().goToDefendantDetailsAndAssert(expected);
 });
 
@@ -120,6 +124,7 @@ When('I go to the Defendant details section and the header is {string}', (expect
  * @param value - New First name to enter.
  */
 When('I edit the Defendant details and change the First name to {string}', (value: string) => {
+  log('step', 'Edit Defendant first name', { value });
   flow().editDefendantAndChangeFirstName(value);
 });
 
@@ -128,6 +133,7 @@ When('I edit the Defendant details and change the First name to {string}', (valu
  * Expected result: remain on the edit page.
  */
 When('I attempt to cancel editing and choose Cancel on the confirmation dialog', () => {
+  log('step', 'Cancel edit and choose Stay');
   flow().cancelEditAndStay();
 });
 
@@ -137,6 +143,7 @@ When('I attempt to cancel editing and choose Cancel on the confirmation dialog',
  * @param expected - The expected First name value.
  */
 Then('I should see the First name field still contains {string}', (expected: string) => {
+  log('assert', 'First name should still contain', { expected });
   editDefendantDetails().assertFirstNameValue(expected);
 });
 
@@ -145,13 +152,15 @@ Then('I should see the First name field still contains {string}', (expected: str
  * Expected result: navigate back to the account details page.
  */
 When('I attempt to cancel editing and choose OK on the confirmation dialog', () => {
-  flow().cancelEditAndLeave();
+  log('step', 'Cancel edit and leave');
+  commonFlow().cancelEditAndLeave();
 });
 
 /**
  * @step Ensures we remain on the edit page after cancelling (no navigation occurred).
  */
 Then('I should remain on the defendant edit page', () => {
+  log('assert', 'Remain on defendant edit page');
   editDefendantDetails().assertStillOnEditPage();
 });
 
@@ -159,6 +168,7 @@ Then('I should remain on the defendant edit page', () => {
  * @step Confirms the user has returned to the account details page defendant tab
  */
 Then('I should return to the account details page Defendant tab', () => {
+  log('assert', 'Return to Defendant details tab');
   navActions().assertDefendantTabIsActive();
 });
 
@@ -166,6 +176,7 @@ Then('I should return to the account details page Defendant tab', () => {
  * @step Confirms the user has returned to the account details page at a glance tab
  */
 Then('I should return to the account details page At a glance tab', () => {
+  log('assert', 'Return to At a glance tab');
   navActions().assertAtAGlanceTabIsActive();
 });
 
@@ -175,6 +186,7 @@ Then('I should return to the account details page At a glance tab', () => {
  * then cancels again to revert to the original.
  */
 When('I verify route guard behaviour when cancelling company edits', () => {
+  log('step', 'Verify route guard for company edits');
   flow().verifyRouteGuardBehaviour('Accdetail comp', 'Test');
 });
 
@@ -183,6 +195,7 @@ When('I verify route guard behaviour when cancelling company edits', () => {
  * Edits the company name, cancels, and verifies no persisted changes.
  */
 When('I verify cancel-changes behaviour for company edits', () => {
+  log('step', 'Verify cancel-changes behaviour for company edits');
   flow().verifyCancelChangesBehaviour('Accdetail comp', 'Test');
 });
 
@@ -192,6 +205,7 @@ When('I verify cancel-changes behaviour for company edits', () => {
  * @param companyName - Company name to search by.
  */
 When('I search for the account by company name {string}', (companyName: string) => {
+  log('step', 'Search by company name', { companyName });
   flow().searchByCompanyName(companyName);
 });
 
@@ -201,6 +215,7 @@ When('I search for the account by company name {string}', (companyName: string) 
  * @param companyName - The visible company name to locate and open.
  */
 When('I open the company account details for {string}', (companyName: string) => {
+  log('step', 'Open company account details', { companyName });
   flow().openCompanyAccountDetailsByNameAndSelectLatest(companyName);
 });
 
@@ -211,6 +226,7 @@ When('I open the company account details for {string}', (companyName: string) =>
  * When I open the Add account note screen and verify the header is Add account note
  */
 When('I open the Add account note screen and verify the header is Add account note', () => {
+  log('step', 'Open Add account note screen');
   cy.location('pathname', { timeout: 10000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   flow().openAddAccountNoteAndVerifyHeader();
 });
@@ -223,6 +239,7 @@ When('I open the Add account note screen and verify the header is Add account no
  * When I enter "This is a test note" into the notes field and save the note
  */
 When('I enter {string} into the notes field and save the note', (note: string) => {
+  log('step', 'Enter and save note', { note });
   flow().enterAndSaveNote(note);
 });
 
@@ -234,6 +251,7 @@ When('I enter {string} into the notes field and save the note', (note: string) =
  * When I open the Add account note screen, enter "This is a test account note for validation", and cancel
  */
 When('I open the Add account note screen, enter {string}, and cancel', (noteText: string) => {
+  log('step', 'Open add note screen, enter text, cancel', { noteText });
   flow().openNotesScreenEnterTextAndCancel(noteText);
 });
 
@@ -253,7 +271,10 @@ When(
   (expectedHeader: string, table: DataTable) => {
     const rows = (table.hashes?.() ?? []) as CommentRow[];
     const texts = rows.map((r) => (r['text'] ?? '').trim()).filter((t) => t.length > 0);
+
+    log('step', 'Save comments and verify header', { expectedHeader });
     flow().saveCommentsAndReturnToSummary(texts);
+
     atAGlanceDetails().assertHeaderContains(expectedHeader);
   },
 );
@@ -267,19 +288,17 @@ When(
  * When I open the Add account note screen, enter "This is a test account note for back button", and navigate back with confirmation
  */
 When('I open the Add account note screen, enter {string}, and navigate back with confirmation', (noteText: string) => {
+  log('step', 'Open notes, enter text, navigate back w/ confirmation', { noteText });
   flow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
 });
 
 When('I open the Comments page from the defendant summary and verify the page contents', () => {
+  log('step', 'Open Comments from summary');
   flow().openCommentsFromSummaryAndVerifyPageDetails();
 });
 
 When('I cancel with confirmation on the Comments page', () => {
-  Cypress.log({
-    name: 'comments',
-    displayName: 'Cancel With Confirmation',
-    message: 'Cancel on Comments screen → confirm leave → return to summary',
-  });
+  log('step', 'Cancel Comments and confirm leave');
 
   // Click Cancel and confirm the unsaved-changes dialog
   // comments().clickCancelLink();
@@ -300,6 +319,7 @@ When('I cancel with confirmation on the Comments page', () => {
  *   And I verify route guard behaviour when cancelling comments with "Comment Test"
  */
 When('I verify route guard behaviour when cancelling comments with {string}', (noteText: string) => {
+  log('step', 'Verify Comments route guard', { noteText });
   flow().verifyRouteGuardBehaviourOnComments(noteText);
 });
 
@@ -318,6 +338,7 @@ Then('Verify updated comments display in Comments section:', (table: DataTable) 
   const comment = (hash['Comment'] ?? '').trim();
   const lines = ['Line 1', 'Line 2', 'Line 3'].map((k) => (hash[k] ?? '').trim()).filter((v) => v.length > 0);
 
+  log('assert', 'Verify comments display', { comment, lines });
   atAGlanceDetails().assertCommentsSection({ comment, lines });
 });
 
@@ -334,13 +355,7 @@ Then('I should see the following values on the Comments form:', (table: DataTabl
     line3: hash['Line 3'],
   } as const;
 
-  Cypress.log({
-    name: 'assert',
-    displayName: 'Comments Prefill',
-    message: 'Expect prefilled values',
-    consoleProps: () => expected,
-  });
-
+  log('assert', 'Verify Comments form prefill', expected);
   flow().verifyPrefilledComments(expected);
 });
 
@@ -350,6 +365,7 @@ Then('I should see the following values on the Comments form:', (table: DataTabl
  * then cancels again to revert to the original.
  */
 When('I verify route guard behaviour when cancelling Parent or guardian edits', () => {
+  log('step', 'Verify Parent/Guardian route guard');
   flow().verifyParentGuardianRouteGuardBehaviour('Miss Catherine GREEN', 'FNAMECHANGE');
 });
 
@@ -358,6 +374,7 @@ When('I verify route guard behaviour when cancelling Parent or guardian edits', 
  * Thin step → delegates to a single flow.
  */
 When('I edit Parent or guardian details but cancel without saving', () => {
+  log('step', 'Edit Parent/Guardian → cancel without saving');
   flow().cancelParentGuardianEditWithoutSaving();
 });
 
@@ -366,6 +383,7 @@ When('I edit Parent or guardian details but cancel without saving', () => {
  * Covers the route-guard "Cancel → Stay" path where the temporary value persists.
  */
 When('I partially edit Parent or guardian details and choose to stay on the page', () => {
+  log('step', 'Partially edit Parent/Guardian → stay on page');
   flow().cancelParentGuardianEditButStayOnPage();
 });
 
@@ -373,6 +391,7 @@ When('I partially edit Parent or guardian details and choose to stay on the page
  * @step Verifies the unsaved temporary value remains after Cancel → Stay.
  */
 Then('I should see the unsaved value retained for Last name as {string}', (expected: string) => {
+  log('assert', 'Verify unsaved PG last name retained', { expected });
   editParentGuardianDetails().verifyLastName(expected);
 });
 
@@ -381,5 +400,6 @@ Then('I should see the unsaved value retained for Last name as {string}', (expec
  * Covers the route-guard "Cancel → Discard" behaviour where edits are reverted.
  */
 When('I discard Parent or guardian changes', () => {
+  log('step', 'Discard Parent/Guardian changes');
   flow().discardParentGuardianChanges();
 });
