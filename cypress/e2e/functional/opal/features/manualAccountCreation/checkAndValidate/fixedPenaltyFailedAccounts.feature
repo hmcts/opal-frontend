@@ -34,6 +34,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
         And I see "GREEN, Oliver" is present in column "Defendant"
         # AC1aii - Verify Date of Birth - displayed as 'DD MMM YYYY' for individual defendants
         And I see "01 Nov 2004" is present in column "Date of birth"
+        And I see "Today" is present in column "Date failed"
         # AC1aiii - Verify Account type - displayed as 'Fixed Penalty' for individual defendants
         And I see "Fixed Penalty" is present in column "Account type"
         And I see "Camberwell Green" is present in column "Business unit"
@@ -69,8 +70,9 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
             | Submitted by  |
 
         # AC1ai - Verify defendant name format: <LAST NAME>, <forenames> for individual defendants
-        And I see "Argent Oak Solutions Ltd " is present in column "Defendant"
-        # AC1aii - Verify Date of Birth - displayed as 'DD MMM YYYY' for individual defendants
+        And I see "Argent Oak Solutions Ltd comp" is present in column "Defendant"
+        # AC1aiii - Verify Date of Birth - blank for company defendants
+        And I see "—" is present in column "Date of birth"
 
         And I see "Today" is present in column "Date failed"
         # AC1aiii - Verify Account type - displayed as 'Fixed Penalty' for individual defendants
@@ -78,7 +80,8 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
         And I see "Camberwell Green" is present in column "Business unit"
         And I see "opal-test" is present in column "Submitted by"
 
-        When I click on the "Argent Oak Solutions Ltd" link
-        And I see "Argent Oak Solutions Ltd " on the page header
+        When I click on the "Argent Oak Solutions Ltd comp" link
+        And I see "Argent Oak Solutions Ltd comp" on the page header
+
 
 
