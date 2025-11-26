@@ -57,10 +57,7 @@ export class ManualCreateAccountActions {
           : L.accountType.conditionalCaution;
 
     log('click', 'Selecting account type', { type });
-    cy.get(selector, this.common.getTimeoutOptions())
-      .should('exist')
-      .scrollIntoView()
-      .check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
   }
 
   /**
@@ -77,10 +74,7 @@ export class ManualCreateAccountActions {
     }
 
     log('click', 'Selecting defendant type', { defendantType });
-    cy.get(selector, this.common.getTimeoutOptions())
-      .should('exist')
-      .scrollIntoView()
-      .check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
   }
 
   /**

@@ -25,10 +25,7 @@ export class ManualPaymentTermsActions {
     const isYes = choice.toLowerCase() === 'yes';
     const selector = isYes ? L.collectionOrder.yes : L.collectionOrder.no;
     log('select', 'Setting collection order', { choice });
-    cy.get(selector, this.common.getTimeoutOptions())
-      .should('exist')
-      .scrollIntoView()
-      .check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
 
     if (isYes) {
       const dateString = calculateWeeksInPast(weeksInPast);
