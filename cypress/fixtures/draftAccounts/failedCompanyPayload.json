@@ -8,7 +8,7 @@
   "submitted_by_name": "opal-test",
   "account": {
     "account_type": "Fixed Penalty",
-    "defendant_type": "adultOrYouthOnly",
+    "defendant_type": "company",
     "originator_name": "Aberdeen Sheriff Court District",
     "originator_id": 9701,
     "prosecutor_case_reference": null,
@@ -20,18 +20,18 @@
     "payment_card_request": null,
     "account_sentence_date": "2025-11-01",
     "defendant": {
-      "company_flag": false,
-      "title": "Mr",
-      "surname": "GREEN",
-      "forenames": "Oliver",
-      "company_name": null,
-      "dob": "2004-11-01",
-      "address_line_1": "Kempton Avenue",
+      "company_flag": true,
+      "title": null,
+      "surname": null,
+      "forenames": null,
+      "company_name": "Argent Oak Solutions Ltd",
+      "dob": null,
+      "address_line_1": "Fake company",
       "address_line_2": null,
       "address_line_3": null,
       "address_line_4": null,
       "address_line_5": null,
-      "post_code": "UB34DF",
+      "post_code": "AB12CD",
       "telephone_number_home": null,
       "telephone_number_business": null,
       "telephone_number_mobile": null,
@@ -77,7 +77,7 @@
         "impositions": [
           {
             "result_id": "FO",
-            "amount_imposed": 2000,
+            "amount_imposed": 200,
             "amount_paid": 0,
             "major_creditor_id": null,
             "minor_creditor": null
@@ -87,11 +87,11 @@
     ],
     "fp_ticket_detail": {
       "notice_number": "12345",
-      "date_of_issue": "2025-11-13",
-      "time_of_issue": "05:00",
-      "fp_registration_number": "FV53TCO",
-      "notice_to_owner_hirer": "123343",
-      "place_of_offence": "William Street",
+      "date_of_issue": "2025-11-01",
+      "time_of_issue": "05:40",
+      "fp_registration_number": "FV53RTO",
+      "notice_to_owner_hirer": "45678",
+      "place_of_offence": "Fake Street",
       "fp_driving_licence_number": "ABCDE123456AA1B1"
     },
     "payment_terms": {
@@ -106,12 +106,12 @@
     "account_notes": [
       {
         "account_note_serial": 3,
-        "account_note_text": "Add comment",
+        "account_note_text": "Add Comment ",
         "note_type": "AC"
       },
       {
         "account_note_serial": 2,
-        "account_note_text": "Add Account Notes",
+        "account_note_text": "Add Account note",
         "note_type": "AA"
       }
     ]
