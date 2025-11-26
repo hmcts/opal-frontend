@@ -104,26 +104,12 @@ export const AccountSearchIndividualsLocators = {
   postcodeInput: '#fsa_search_account_individuals_post_code',
 
   // ──────────────────────────────
-  // Global filters
-  // ──────────────────────────────
-
-  /** Checkbox to restrict search results to active accounts only. */
-  activeAccountsOnlyCheckbox: '#fsa_search_account_active_accounts_only',
-
-  // ──────────────────────────────
-  // Actions
-  // ──────────────────────────────
-
-  /** Primary "Search" button that triggers the query submission. */
-  searchButton: '#submitForm',
-
-  // ──────────────────────────────
   // Dashboard navigation
   // ──────────────────────────────
 
   /** Link from Dashboard to “Search for an Account” (entry point to this form). */
   searchLinkFromDashboard: '#finesSaSearchLink',
 
-  /** Root selector for the search form component (redundant safety selector). */
+  /** Root selector for the search form component. */
   searchFormRoot: 'app-fines-sa-search, [data-testid="fines-sa-search"]',
 };

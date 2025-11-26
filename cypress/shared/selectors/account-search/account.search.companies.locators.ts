@@ -138,17 +138,6 @@ export const AccountSearchCompaniesLocators = {
   /** Postcode input field. */
   postCodeInput: '#fsa_search_account_companies_post_code',
 
-  // ──────────────────────────────
-  // Global filters
-  // ──────────────────────────────
-
-  /** Checkbox to filter results by active accounts only. */
-  activeAccountsOnlyCheckbox: '#fsa_search_account_active_accounts_only',
-
-  // ──────────────────────────────
-  // Actions
-  // ──────────────────────────────
-
-  /** Primary "Search" button to trigger the query. */
-  searchButton: '#submitForm',
+  /** Root selector for the search form component. */
+  searchFormRoot: 'app-fines-sa-search, [data-testid="fines-sa-search"]',
 };

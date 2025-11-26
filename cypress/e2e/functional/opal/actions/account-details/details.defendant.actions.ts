@@ -6,7 +6,7 @@
  * @module actions/account.details.actions
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
-import { CommonActions } from '../common/common.actions';
+import { CommonActions } from '../common.actions';
 
 export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();

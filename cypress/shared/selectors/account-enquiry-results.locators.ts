@@ -38,6 +38,19 @@ export const AccountEnquiryResultsLocators = {
   },
 
   // ──────────────────────────────
+  // No-results / message selectors
+  // ──────────────────────────────
+
+  /** No-results banner / message area (e.g. "There are no matching results"). */
+  messages: {
+    /** Heading that appears when there are no matching results. */
+    noResultsHeading: 'h2.govuk-heading-m',
+
+    /** "Check your search" link in the no-results paragraph. */
+    checkYourSearchLink: 'p.govuk-body-m a.govuk-link',
+  },
+
+  // ──────────────────────────────
   // Table structure
   // ──────────────────────────────
 
