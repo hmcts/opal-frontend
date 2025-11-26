@@ -272,7 +272,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Navigates to the add comments page.
-   * @param event The click event that triggered the navigation.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddCommentsPage(): void {
     if (
