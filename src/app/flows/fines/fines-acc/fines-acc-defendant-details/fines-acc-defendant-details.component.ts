@@ -332,6 +332,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
+  /**
+   * Navigates to the amend party details page for the specified party type.
+   * Or navigates to the access-denied page if the user lacks the required permission in this BU.
+   * @param partyType
+   */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
@@ -350,6 +355,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
+  /**
+   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
+   */
   public navigateToAmendPaymentTermsPage(): void {
     if (this.canAmendPaymentTerms()) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
