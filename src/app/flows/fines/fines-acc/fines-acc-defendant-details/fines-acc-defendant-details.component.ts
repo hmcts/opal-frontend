@@ -196,9 +196,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
               tap((data) => {
                 if (data.last_enforcement) {
-                  this.opalFinesService.getResult(data.last_enforcement).subscribe((result) => {
-                    this.lastEnforcement = result;
-                  });
+                  this.opalFinesService
+                    .getResult(data.last_enforcement)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((result) => {
+                      this.lastEnforcement = result;
+                    });
                 }
               }),
             ),
