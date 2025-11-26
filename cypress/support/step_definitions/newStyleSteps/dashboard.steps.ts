@@ -42,11 +42,5 @@ const dashboard = () => new DashboardActions();
  * ```
  */
 When('I open Manual Account Creation', () => {
-  Cypress.log({
-    name: 'navigate',
-    displayName: 'Dashboard',
-    message: 'Opening Manual Account Creation from Dashboard',
-  });
-
   dashboard().goToManualAccountCreation();
 });
