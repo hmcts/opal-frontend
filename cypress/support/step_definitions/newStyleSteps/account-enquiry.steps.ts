@@ -21,7 +21,7 @@ import { CommonFlow } from '../../../e2e/functional/opal/flows/common-flow';
 // Actions
 import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account-details/details.defendant.actions';
 import { AccountDetailsAtAGlanceActions } from '../../../e2e/functional/opal/actions/account-details/details.at-a-glance.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
 import { AccountDetailsNavActions } from '../../../e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
