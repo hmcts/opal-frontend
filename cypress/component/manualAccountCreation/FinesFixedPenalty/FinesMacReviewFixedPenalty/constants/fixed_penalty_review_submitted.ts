@@ -31,6 +31,7 @@ export const DOM_ELEMENTS = {
   drivingLicenceNumber: '[summaryListRowId="drivingLicenceNumber"] dd',
   noticeDate: '[summaryListRowId="noticeDate"] dd',
   dateOfOffence: '[summaryListRowId="dateOfOffence"] dd',
+
   offenceCode: '[summaryListRowId="offenceCode"] dd',
   timeOfOffence: '[summaryListRowId="timeOfOffence"] dd',
   placeOfOffence: '[summaryListRowId="placeOfOffence"] dd',
@@ -39,4 +40,10 @@ export const DOM_ELEMENTS = {
   // Comments and Notes section
   accountComment: '[summaryListRowId="accountComment"] dd',
   accountNote: '[summaryListRowId="accountNote"] dd',
+
+  // Publish Error section
+  publishErrorBanner: 'div[type="warning"]',
+  defendantName: '[data-cy="defendant-name"]',
+  statusLabel: '#status',
+  reviewHistoryEntries: 'div.moj-timeline__item',
 };
