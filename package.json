@@ -175,7 +175,7 @@
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "~5.9.0"
   },
-  "packageManager": "yarn@4.10.3",
+  "packageManager": "yarn@4.11.0",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
