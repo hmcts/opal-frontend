@@ -3,9 +3,12 @@ import { DefendantType, ManualCreateAccountActions } from '../actions/manual-acc
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
 import { ManualCreateAccountLocators } from '../../../../shared/selectors/manual-account-creation/create-account.locators';
+import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import { log } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
+import { ManualCompanyDetailsActions } from '../actions/manual-account-creation/company-details.actions';
+import { AccountType } from '../actions/manual-account-creation/create-account.actions';
 
 /**
  * Flow for Manual Account Creation.
@@ -18,6 +21,7 @@ export class ManualAccountCreationFlow {
   private readonly createAccount = new ManualCreateAccountActions();
   private readonly accountDetails = new ManualAccountDetailsActions();
   private readonly commentsAndNotes = new ManualAccountCommentsNotesActions();
+  private readonly companyDetails = new ManualCompanyDetailsActions();
   private readonly taskNavigation = new ManualAccountTaskNavigationActions();
   private readonly common = new CommonActions();
 
@@ -33,6 +37,60 @@ export class ManualAccountCreationFlow {
     this.createAccount.continueToAccountDetails();
     cy.location('pathname', { timeout: 15_000 }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Starts a fine manual account and opens the requested task.
+   */
+  startFineAccountAndOpenTask(
+    businessUnit: string,
+    defendantType: DefendantType,
+    taskName: ManualAccountTaskName,
+  ): void {
+    log('flow', 'Start fine account and open task', { businessUnit, defendantType, taskName });
+    this.startFineAccount(businessUnit, defendantType);
+    this.openTaskFromAccountDetails(taskName);
+  }
+
+  /**
+   * Reloads the create account page and restarts manual account creation.
+   */
+  restartManualAccount(businessUnit: string, accountType: AccountType, defendantType: DefendantType): void {
+    log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
+    cy.reload();
+    this.createAccount.assertOnCreateAccountPage();
+    this.createAccount.selectBusinessUnit(businessUnit);
+    this.createAccount.selectAccountType(accountType);
+    this.createAccount.selectDefendantType(defendantType);
+    this.goToAccountDetails();
+  }
+
+  /**
+   * Continues from the create account page to the account details task list.
+   */
+  goToAccountDetails(): void {
+    log('flow', 'Continue to account details task list');
+    this.createAccount.continueToAccountDetails();
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Opens a task from account details and asserts the destination page.
+   */
+  openTaskFromAccountDetails(taskName: ManualAccountTaskName): void {
+    this.accountDetails.assertOnAccountDetailsPage();
+    this.accountDetails.openTask(taskName);
+
+    if (taskName === 'Company details') {
+      this.companyDetails.assertOnCompanyDetailsPage();
+      return;
+    }
+
+    if (taskName === 'Account comments and notes') {
+      cy.location('pathname', { timeout: 20_000 }).should('include', 'account-comments');
+      this.commentsAndNotes.assertHeader();
+    }
   }
 
   /**
@@ -56,10 +114,29 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Opens the Company details task and asserts the destination.
+   */
+  openCompanyDetailsTask(): void {
+    log('flow', 'Opening Company details task');
+    this.accountDetails.openTask('Company details');
+    this.companyDetails.assertOnCompanyDetailsPage();
+  }
+
+  /**
    * Returns to account details from the current manual account form.
    */
   returnToAccountDetails(): void {
     this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Navigates from the dashboard to the Manual Account Creation start page.
+   * Asserts both the dashboard and the target page.
+   */
+  goToManualAccountCreationFromDashboard(): void {
+    log('flow', 'Navigate to Manual Account Creation from dashboard');
+    this.dashboard.assertDashboard();
+    this.ensureOnCreateAccountPage();
   }
 
   /**

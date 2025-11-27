@@ -1,13 +1,21 @@
 export type ManualAccountTaskName =
   | 'Account comments and notes'
+  | 'Company details'
+  | 'Contact details'
   | 'Court details'
+  | 'Employer details'
+  | 'Parent or guardian details'
   | 'Personal details'
   | 'Offence details'
   | 'Payment terms';
 
 const TASK_IDS: Record<ManualAccountTaskName, string> = {
   'Account comments and notes': 'accountCommentsAndNotesItem',
+  'Company details': 'companyDetailsItem',
+  'Contact details': 'contactDetailsItem',
   'Court details': 'courtDetailsItem',
+  'Employer details': 'employerDetailsItem',
+  'Parent or guardian details': 'parentOrGuardianDetailsItem',
   'Personal details': 'personalDetailsItem',
   'Offence details': 'offenceDetailsItem',
   'Payment terms': 'paymentTermsItem',

@@ -6,8 +6,7 @@ Feature: Manual account creation - Account Comments and Notes
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    Then I should be on the dashboard
-    When I open Manual Account Creation
+    And I open Manual Account Creation from the dashboard
 
   Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
@@ -78,5 +77,5 @@ Feature: Manual account creation - Account Comments and Notes
 
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
-    When I view the "Account comments and notes" task from account details
+    When I view the "Account comments and notes" task
     Then I check accessibility
