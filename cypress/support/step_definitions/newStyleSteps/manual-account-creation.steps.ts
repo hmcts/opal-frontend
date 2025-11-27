@@ -39,6 +39,12 @@ import {
 } from '../../../e2e/functional/opal/actions/manual-account-creation/contact-details.actions';
 import { CompanyAliasRow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
+import {
+  LanguageOption,
+  LanguageSection,
+  ManualLanguagePreferencesActions,
+} from '../../../e2e/functional/opal/actions/manual-account-creation/language-preferences.actions';
+import { accessibilityActions } from '../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
@@ -54,6 +60,7 @@ const companyDetails = () => new ManualCompanyDetailsActions();
 const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
+const languagePreferences = () => new ManualLanguagePreferencesActions();
 
 /**
  * @description Normalises a company details label to its logical field key.
@@ -132,6 +139,27 @@ const resolveEmployerFieldKey = (field: string): ManualEmployerFieldKey => {
   throw new Error(`Unknown employer details field: ${field}`);
 };
 
+type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
+
+/**
+ * @description Maps a section label to its logical Language preferences section.
+ * @param section - Section text from the feature (e.g., "Documents", "Court hearings").
+ * @returns The canonical language section name.
+ */
+const resolveLanguageSection = (section: string): LanguageSection => {
+  const normalized = section.toLowerCase();
+  return normalized.includes('court') ? 'Court hearings' : 'Documents';
+};
+
+/**
+ * @description Normalises a section label to the Account details language row label.
+ * @param section - Section text from the feature (e.g., "Documents", "Court hearings").
+ * @returns The Account details summary row label.
+ */
+const resolveLanguageLabel = (section: string): LanguagePreferenceLabel => {
+  return resolveLanguageSection(section) === 'Court hearings' ? 'Hearing language' : 'Document language';
+};
+
 /**
  * @step Confirms the user is on the dashboard.
  */
@@ -182,6 +210,33 @@ When(
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType });
     flow().startFineAccount(businessUnit, defendantType);
+  },
+);
+
+/**
+ * @step Starts a fine manual account using the default business unit visible on the page.
+ * @description Handles single-business-unit users where the business unit is preselected/displayed.
+ * @param businessUnit - Expected business unit (for logging/clarity).
+ * @param defendantType - Defendant type option to choose.
+ */
+When(
+  'I start a fine manual account using the default business unit {string} with defendant type {string}',
+  (businessUnit: string, defendantType: DefendantType) => {
+    log('step', 'Starting manual account creation with default business unit', { businessUnit, defendantType });
+    flow().startFineAccount(businessUnit, defendantType);
+  },
+);
+
+/**
+ * @step Starts a fine manual account relying on the default/only business unit.
+ * @description For single-BU users where the business unit is preselected; skips explicit BU entry.
+ * @param defendantType - Defendant type option to choose.
+ */
+When(
+  'I start a fine manual account using the default business unit with defendant type {string}',
+  (defendantType: DefendantType) => {
+    log('step', 'Starting manual account creation with default business unit (no BU provided)', { defendantType });
+    flow().startFineAccount('default business unit', defendantType);
   },
 );
 
@@ -279,6 +334,18 @@ When(
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Restarting manual fine account after refresh', { businessUnit, defendantType });
     flow().restartManualAccount(businessUnit, 'Fine', defendantType);
+  },
+);
+
+/**
+ * @step Restarts a fine manual account using the default/only business unit after a refresh.
+ * @param defendantType - Defendant type to re-select.
+ */
+When(
+  'I restart manual fine account using the default business unit with defendant type {string}',
+  (defendantType: DefendantType) => {
+    log('step', 'Restarting manual fine account with default business unit after refresh', { defendantType });
+    flow().restartManualAccount('default business unit', 'Fine', defendantType);
   },
 );
 
@@ -785,6 +852,224 @@ Then('I am viewing manual account creation start', () => {
   cy.location('pathname', { timeout: 20_000 }).should('include', 'create-account');
   createAccount().assertOnCreateAccountPage();
 });
+
+/**
+ * @step Asserts the language preference summary rows on Account details.
+ * @description Uses the Account details summary list to verify Document/Hearing language values.
+ * @param table - DataTable mapping section to expected value.
+ * @remarks Normalises table keys/values before asserting to avoid whitespace sensitivity.
+ * @example
+ *   Then the manual language preferences in account details are:
+ *     | Documents      | English only      |
+ *     | Court hearings | Welsh and English |
+ */
+Then('the manual language preferences in account details are:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(Object.entries(hash).map(([key, value]) => [key.trim(), value.trim()]));
+
+  log('assert', 'Checking account language preferences summary', { preferences: normalized });
+
+  Object.entries(normalized).forEach(([section, value]) => {
+    const label = resolveLanguageLabel(section);
+    flow().assertLanguagePreferenceSummary(label, value);
+  });
+});
+
+/**
+ * @step Opens the Language preferences page via the Account details change link.
+ * @description Clicks the Change link for the specified language row and asserts the destination page.
+ * @param section - Section text (e.g., "Documents" or "Court hearings").
+ * @remarks Guards with pathname + header assertions to avoid stale content.
+ * @example When I open manual language preferences from account details for "Documents"
+ */
+When('I open manual language preferences from account details for {string}', (section: string) => {
+  const label = resolveLanguageLabel(section);
+  log('navigate', 'Opening language preferences from Account details', { section, label });
+  flow().openLanguagePreferencesFromAccountDetails(label);
+});
+
+/**
+ * @step Alias: view the Language preferences page from Account details.
+ * @description Opens the Language preferences change link for the given section.
+ * @param section - Section text (e.g., "Documents" or "Court hearings").
+ */
+When('I view manual language preferences from account details for {string}', (section: string) => {
+  const label = resolveLanguageLabel(section);
+  log('navigate', 'Viewing language preferences from Account details', { section, label });
+  flow().openLanguagePreferencesFromAccountDetails(label);
+});
+
+/**
+ * @step Confirms we are on the Language preferences page.
+ * @description Guards against stale headers by asserting pathname and header text.
+ * @example Then I am viewing manual language preferences
+ */
+Then('I am viewing manual language preferences', () => {
+  log('assert', 'Asserting Language preferences page');
+  languagePreferences().assertOnLanguagePreferencesPage();
+});
+
+/**
+ * @step Asserts specific language preference options are visible.
+ * @description Accepts a two-column table of section and option labels.
+ * @param table - DataTable with section/option pairs.
+ * @remarks Header rows labelled "Section | Option" are ignored automatically.
+ * @example
+ *   Then the manual language preference options are visible:
+ *     | Section   | Option            |
+ *     | Documents | Welsh and English |
+ */
+Then('the manual language preference options are visible:', (table: DataTable) => {
+  const rows = table
+    .rows()
+    .map(([section, option]) => [section.trim(), option.trim()] as [string, string])
+    .filter(([section, option]) => {
+      const isHeader = section.toLowerCase() === 'section' && option.toLowerCase() === 'option';
+      return !isHeader && section !== '' && option !== '';
+    })
+    .map(([section, option]) => ({
+      section: resolveLanguageSection(section),
+      option: option as LanguageOption,
+    }));
+
+  log('assert', 'Asserting language preference option visibility', { rows });
+
+  rows.forEach(({ section, option }) => languagePreferences().assertOptionVisible(section, option));
+});
+
+/**
+ * @step Sets language preferences using a data table.
+ * @description Maps section labels to Document/Hearing selections and applies them on the page.
+ * @param table - DataTable mapping section to desired option.
+ * @remarks Logs and skips when the table produces an empty payload.
+ * @example
+ *   When I set manual language preferences:
+ *     | Documents      | Welsh and English |
+ *     | Court hearings | Welsh and English |
+ */
+When('I set manual language preferences:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(Object.entries(hash).map(([section, value]) => [section.trim(), value.trim()]));
+
+  const payload = Object.entries(normalized).reduce<Partial<Record<LanguagePreferenceLabel, LanguageOption>>>(
+    (acc, [section, value]) => {
+      const label = resolveLanguageLabel(section);
+      acc[label] = value as LanguageOption;
+      return acc;
+    },
+    {},
+  );
+
+  log('step', 'Setting language preferences from table', { payload: { ...payload } });
+  if (Object.keys(payload).length === 0) {
+    log('warn', 'Language preferences payload is empty; no selections will be made');
+    return;
+  }
+  flow().setLanguagePreferences(payload);
+});
+
+/**
+ * @step Updates language preferences and saves.
+ * @description Maps table entries to preferences, applies them, and saves to return to Account details.
+ * @param table - DataTable mapping section to desired option.
+ */
+When('I update manual language preferences to:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(Object.entries(hash).map(([section, value]) => [section.trim(), value.trim()]));
+
+  const payload = Object.entries(normalized).reduce<Partial<Record<LanguagePreferenceLabel, LanguageOption>>>(
+    (acc, [section, value]) => {
+      const label = resolveLanguageLabel(section);
+      acc[label] = value as LanguageOption;
+      return acc;
+    },
+    {},
+  );
+
+  log('step', 'Updating language preferences and saving', { payload: { ...payload } });
+
+  if (Object.keys(payload).length === 0) {
+    log('warn', 'Language preferences payload is empty; no selections will be made');
+    return;
+  }
+
+  flow().setLanguagePreferences(payload);
+  flow().saveLanguagePreferencesAndReturn();
+});
+
+/**
+ * @step Asserts language selections on the Language preferences page.
+ * @description Uses a three-column table: Section | Option | State ("selected"/"not selected").
+ * @param table - DataTable detailing expected selection state.
+ * @remarks Interprets any state containing "not" as not selected; all others must be selected.
+ * @example
+ *   Then the manual language preference selections are:
+ *     | section        | option            | state    |
+ *     | Documents      | Welsh and English | selected |
+ */
+Then('the manual language preference selections are:', (table: DataTable) => {
+  const expectations = table.hashes().map((row) => ({
+    section: resolveLanguageSection((row['section'] ?? row['Section'] ?? '').trim()),
+    option: (row['option'] ?? row['Option'] ?? '').trim() as LanguageOption,
+    state: (row['state'] ?? row['State'] ?? '').trim().toLowerCase(),
+  }));
+
+  log('assert', 'Asserting language preference selections', { expectations });
+
+  expectations.forEach(({ section, option, state }) => {
+    const shouldBeSelected = !state.includes('not');
+    languagePreferences().assertLanguageSelected(section, option, shouldBeSelected);
+  });
+});
+
+/**
+ * @step Saves language preferences and returns to Account details.
+ * @remarks Asserts the Account details header after saving to avoid stale content.
+ * @example When I save manual language preferences
+ */
+When('I save manual language preferences', () => {
+  log('navigate', 'Saving language preferences');
+  flow().saveLanguagePreferencesAndReturn();
+});
+
+/**
+ * @step Opens Language preferences from Account details and runs accessibility checks.
+ * @param section - Section to open from Account details.
+ */
+When('I view manual language preferences from account details for {string} and check accessibility', (section: string) => {
+  const label = resolveLanguageLabel(section);
+  log('a11y', 'Opening language preferences for accessibility check', { section, label });
+  flow().openLanguagePreferencesFromAccountDetails(label);
+  accessibilityActions().checkAccessibilityOnly();
+});
+
+/**
+ * @step Cancels out of language preferences with a chosen dialog response.
+ * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+ * @remarks Use this when remaining on the page or when the navigation outcome is asserted separately.
+ * @example When I cancel manual language preferences choosing "Cancel"
+ */
+When('I cancel manual language preferences choosing {string}', (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
+  log('cancel', 'Cancelling language preferences', { choice });
+  flow().cancelLanguagePreferences(choice);
+});
+
+/**
+ * @step Cancels language preferences, confirms leaving, and asserts return to Account details.
+ * @param choice - Confirmation choice (Ok/Leave).
+ * @remarks Throws if a non-confirm choice is supplied to keep intent explicit.
+ * @example When I cancel manual language preferences choosing "Ok" and return to account details
+ */
+When(
+  'I cancel manual language preferences choosing {string} and return to account details',
+  (choice: 'Ok' | 'Leave') => {
+    if (!/ok|leave/i.test(choice)) {
+      throw new Error('This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.');
+    }
+    log('cancel', 'Cancelling language preferences and returning to Account details', { choice });
+    flow().cancelLanguagePreferencesAndReturn(choice);
+  },
+);
 
 /**
  * @step Asserts multiple task statuses using a table.

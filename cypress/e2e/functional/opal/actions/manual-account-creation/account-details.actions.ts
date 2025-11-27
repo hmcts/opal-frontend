@@ -43,4 +43,35 @@ export class ManualAccountDetailsActions {
   assertOnAccountDetailsPage(expectedHeader: string = 'Account details'): void {
     this.common.assertHeaderContains(expectedHeader);
   }
+
+  /**
+   * Asserts a language preference value in the Account details summary list.
+   * @param label - Row label ("Document language" or "Hearing language").
+   * @param expectedValue - Expected value text.
+   */
+  assertLanguagePreference(label: 'Document language' | 'Hearing language', expectedValue: string): void {
+    log('assert', 'Checking account language preference', { label, expectedValue });
+
+    cy.contains(L.summaryList.languageRow, label, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .within(() => {
+        cy.get(L.summaryList.value)
+          .invoke('text')
+          .should((text) => expect(text.trim()).to.equal(expectedValue));
+      });
+  }
+
+  /**
+   * Opens the Change link for a language preference row.
+   * @param label - Row label ("Document language" or "Hearing language").
+   */
+  openLanguagePreference(label: 'Document language' | 'Hearing language'): void {
+    log('navigate', 'Opening language preference change link', { label });
+
+    cy.contains(L.summaryList.languageRow, label, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .within(() => {
+        cy.get(L.summaryList.changeLink).should('contain.text', 'Change').scrollIntoView().click({ force: true });
+      });
+  }
 }

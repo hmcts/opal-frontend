@@ -23,8 +23,13 @@ import {
 import { ManualPersonalDetailsActions } from '../actions/manual-account-creation/personal-details.actions';
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
 import { ManualPaymentTermsActions } from '../actions/manual-account-creation/payment-terms.actions';
+import {
+  LanguageOption,
+  ManualLanguagePreferencesActions,
+} from '../actions/manual-account-creation/language-preferences.actions';
 
 export type CompanyAliasRow = { alias: string; name: string };
+type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
 
 /**
  * Flow for Manual Account Creation.
@@ -46,6 +51,7 @@ export class ManualAccountCreationFlow {
   private readonly personalDetails = new ManualPersonalDetailsActions();
   private readonly offenceDetails = new ManualOffenceDetailsActions();
   private readonly paymentTerms = new ManualPaymentTermsActions();
+  private readonly languagePreferences = new ManualLanguagePreferencesActions();
 
   /**
    * Starts a Fine manual account and lands on the task list.
@@ -93,6 +99,96 @@ export class ManualAccountCreationFlow {
   goToAccountDetails(): void {
     log('flow', 'Continue to account details task list');
     this.createAccount.continueToAccountDetails();
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Opens the Language preferences change link from Account details and asserts the destination page.
+   * @param label - The language row to open (Document language or Hearing language).
+   */
+  openLanguagePreferencesFromAccountDetails(label: LanguagePreferenceLabel): void {
+    log('flow', 'Opening language preferences from Account details', { label });
+    this.accountDetails.assertOnAccountDetailsPage();
+    this.accountDetails.openLanguagePreference(label);
+    this.languagePreferences.assertOnLanguagePreferencesPage();
+  }
+
+  /**
+   * Asserts a language preference value on Account details.
+   * @param label - Language row label.
+   * @param expectedValue - Expected value text.
+   */
+  assertLanguagePreferenceSummary(label: LanguagePreferenceLabel, expectedValue: string): void {
+    this.accountDetails.assertLanguagePreference(label, expectedValue);
+  }
+
+  /**
+   * Updates language preferences while on the Language preferences page.
+   * @param payload - Document and hearing language selections.
+   */
+  setLanguagePreferences(payload: Partial<Record<LanguagePreferenceLabel, LanguageOption>>): void {
+    const document = payload['Document language'] ?? (payload as any).document;
+    const hearing = payload['Hearing language'] ?? (payload as any).hearing;
+
+    log('flow', 'Setting language preferences', { document, hearing });
+    this.languagePreferences.assertOnLanguagePreferencesPage();
+
+    if (document) {
+      this.languagePreferences.selectLanguage('Documents', document);
+    }
+
+    if (hearing) {
+      this.languagePreferences.selectLanguage('Court hearings', hearing);
+    }
+  }
+
+  /**
+   * Asserts language selections on the Language preferences page.
+   * @param expectations - Expected selections for document/hearing.
+   */
+  assertLanguageSelections(expectations: Partial<Record<LanguagePreferenceLabel, LanguageOption>>): void {
+    const document = expectations['Document language'] ?? (expectations as any).document;
+    const hearing = expectations['Hearing language'] ?? (expectations as any).hearing;
+
+    log('assert', 'Asserting language selections', { document, hearing });
+    this.languagePreferences.assertOnLanguagePreferencesPage();
+
+    if (document) {
+      this.languagePreferences.assertLanguageSelected('Documents', document, true);
+    }
+    if (hearing) {
+      this.languagePreferences.assertLanguageSelected('Court hearings', hearing, true);
+    }
+  }
+
+  /**
+   * Saves language preferences and asserts return to Account details.
+   */
+  saveLanguagePreferencesAndReturn(): void {
+    log('flow', 'Saving language preferences and returning to Account details');
+    this.languagePreferences.saveChanges();
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Cancels language preferences with a chosen dialog response.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+   */
+  cancelLanguagePreferences(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    log('flow', 'Cancelling language preferences', { choice });
+    this.languagePreferences.assertOnLanguagePreferencesPage();
+    this.languagePreferences.cancelAndChoose(choice);
+  }
+
+  /**
+   * Cancels language preferences, confirms leaving, and asserts Account details is shown.
+   * @param choice - Confirmation choice (Ok/Leave).
+   */
+  cancelLanguagePreferencesAndReturn(choice: 'Ok' | 'Leave'): void {
+    log('flow', 'Cancelling language preferences and returning to Account details', { choice });
+    this.cancelLanguagePreferences(choice);
     cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }

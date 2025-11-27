@@ -33,19 +33,28 @@ export class ManualCreateAccountActions {
   selectBusinessUnit(businessUnit: string): void {
     log('type', 'Selecting business unit', { businessUnit });
 
-    cy.get(L.businessUnit.input, this.common.getTimeoutOptions())
-      .should('be.visible')
-      .clear({ force: true })
-      .type(businessUnit, { delay: 0 });
+    cy.get('body').then(($body) => {
+      const inputEl = $body.find(L.businessUnit.input).first();
 
-    cy.get(L.businessUnit.listbox, this.common.getTimeoutOptions()).should('be.visible');
-    cy.get(L.businessUnit.input).type('{downarrow}{enter}');
+      if (!inputEl.length) {
+        log('info', 'Business unit input not present; single unit assumed by application');
+        return;
+      }
 
-    cy.get(L.businessUnit.input)
-      .invoke('val')
-      .should((val) => {
-        expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
-      });
+      cy.wrap(inputEl)
+        .should('be.visible')
+        .clear({ force: true })
+        .type(businessUnit, { delay: 0 });
+
+      cy.get(L.businessUnit.listbox, this.common.getTimeoutOptions()).should('be.visible');
+      cy.wrap(inputEl).type('{downarrow}{enter}');
+
+      cy.wrap(inputEl)
+        .invoke('val')
+        .should((val) => {
+          expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
+        });
+    });
   }
 
   /**

@@ -37,4 +37,10 @@ export const ManualAccountDetailsLocators = {
     status: '.govuk-task-list__status',
     name: '.govuk-task-list__name-and-hint',
   },
+  summaryList: {
+    languageRow: '[summarylistid="accountDetails"][summarylistrowid="languagePreferences"]',
+    key: '.govuk-summary-list__key',
+    value: '.govuk-summary-list__value',
+    changeLink: '.govuk-summary-list__actions a',
+  },
 } as const;
