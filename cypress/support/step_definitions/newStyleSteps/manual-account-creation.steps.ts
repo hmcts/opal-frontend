@@ -26,6 +26,11 @@ import { log } from '../../utils/log.helper';
 import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
 import { ManualAccountTaskNavigationActions } from '../../../e2e/functional/opal/actions/manual-account-creation/task-navigation.actions';
 import { ManualCompanyDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/company-details.actions';
+import {
+  ManualContactDetailsActions,
+  ManualContactFieldKey,
+} from '../../../e2e/functional/opal/actions/manual-account-creation/contact-details.actions';
+import { CompanyAliasRow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 
 const flow = () => new ManualAccountCreationFlow();
@@ -38,6 +43,7 @@ const dashboard = () => new DashboardActions();
 const details = () => new ManualAccountDetailsActions();
 const nav = () => new ManualAccountTaskNavigationActions();
 const companyDetails = () => new ManualCompanyDetailsActions();
+const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
 
@@ -49,6 +55,18 @@ const resolveCompanyFieldKey = (field: string): 'company' | 'address1' | 'addres
   if (normalized.includes('address line 3')) return 'address3';
   if (normalized.includes('postcode')) return 'postcode';
   throw new Error(`Unknown company details field: ${field}`);
+};
+
+const resolveContactFieldKey = (field: string): ManualContactFieldKey => {
+  const normalized = field.toLowerCase();
+
+  if (normalized.includes('primary email')) return 'primaryEmail';
+  if (normalized.includes('secondary email')) return 'secondaryEmail';
+  if (normalized.includes('mobile')) return 'mobileNumber';
+  if (normalized.includes('home')) return 'homeNumber';
+  if (normalized.includes('work')) return 'workNumber';
+
+  throw new Error(`Unknown contact details field: ${field}`);
 };
 
 /**
@@ -142,6 +160,17 @@ When(
 );
 
 /**
+ * @step Restarts a fine manual account after refresh using the provided business unit and defendant type.
+ */
+When(
+  'I restart manual fine account for business unit {string} with defendant type {string}',
+  (businessUnit: string, defendantType: DefendantType) => {
+    log('step', 'Restarting manual fine account after refresh', { businessUnit, defendantType });
+    flow().restartManualAccount(businessUnit, 'Fine', defendantType);
+  },
+);
+
+/**
  * @step Continues to the manual account details task list.
  */
 When('I continue to manual account details', () => {
@@ -171,9 +200,8 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
 Then(
   'returning to account details the {string} task the status is {string}',
   (taskName: ManualAccountTaskName, expectedStatus: string) => {
-    nav().returnToAccountDetails();
-    log('assert', 'Checking task status', { taskName, expectedStatus });
-    details().assertTaskStatus(taskName, expectedStatus);
+    log('assert', 'Returning to Account details and checking task status', { taskName, expectedStatus });
+    flow().returnToAccountDetailsAndAssertStatus(taskName, expectedStatus);
   },
 );
 
@@ -198,7 +226,6 @@ When('I return to account details', () => {
  */
 When('I provide account comments {string} and notes {string} from account details', (comment: string, note: string) => {
   log('step', 'Providing account comments and notes from account details', { comment, note });
-  details().assertOnAccountDetailsPage();
   flow().provideAccountCommentsAndNotes(comment, note);
 });
 
@@ -206,10 +233,8 @@ When('I provide account comments {string} and notes {string} from account detail
  * @step Navigates to account comments and notes and provides account comments and notes.
  */
 When('I provide account comments {string} and notes {string}', (comment: string, note: string) => {
-  details().openTask('Account comments and notes');
   log('step', 'Providing account comments and notes on task', { comment, note });
-  comments().setComment(comment);
-  comments().setNote(note);
+  flow().setAccountCommentsAndNotes(comment, note);
 });
 
 /**
@@ -262,8 +287,7 @@ When(
   'I complete manual court details with LJA {string}, PCR {string}, enforcement court {string}',
   (lja: string, pcr: string, enforcementCourt: string) => {
     log('step', 'Completing court details', { lja, pcr, enforcementCourt });
-    details().assertOnAccountDetailsPage();
-    courtDetails().fillCourtDetails(lja, pcr, enforcementCourt);
+    flow().completeCourtDetails(lja, pcr, enforcementCourt);
   },
 );
 
@@ -273,9 +297,7 @@ When(
 When('I have provided manual court details:', (table: DataTable) => {
   const data = table.rowsHash();
   log('step', 'Providing court details from table', data);
-  details().assertOnAccountDetailsPage();
-  details().openTask('Court details');
-  courtDetails().fillCourtDetails(data['LJA'], data['PCR'], data['enforcement court']);
+  flow().provideCourtDetailsFromAccountDetails(data['LJA'], data['PCR'], data['enforcement court']);
 });
 
 /**
@@ -285,8 +307,7 @@ When(
   'I complete manual personal details with title {string}, first names {string}, last name {string}, address line 1 {string}',
   (title: string, firstNames: string, lastName: string, addressLine1: string) => {
     log('step', 'Completing personal details', { title, firstNames, lastName, addressLine1 });
-    details().assertOnAccountDetailsPage();
-    personalDetails().fillBasicDetails({ title, firstNames, lastName, addressLine1 });
+    flow().completePersonalDetails({ title, firstNames, lastName, addressLine1 });
   },
 );
 
@@ -296,9 +317,7 @@ When(
 When('I have provided manual personal details from account details:', (table: DataTable) => {
   const data = table.rowsHash();
   log('step', 'Providing personal details from table', data);
-  nav().navigateToAccountDetails();
-  details().openTask('Personal details');
-  personalDetails().fillBasicDetails({
+  flow().providePersonalDetailsFromAccountDetails({
     title: data['title'],
     firstNames: data['first names'],
     lastName: data['last name'],
@@ -339,17 +358,13 @@ When('I have provided offence details from account details:', (table: DataTable)
   const data = table.rowsHash();
   const offenceDate = resolveRelativeDate(data['offence date']);
   log('step', 'Providing offence details from table', { ...data, offenceDate });
-  nav().navigateToAccountDetails();
-  details().assertOnAccountDetailsPage();
-  details().openTask('Offence details');
-  offenceDetails().fillOffenceDetails({
+  flow().provideOffenceDetailsFromAccountDetails({
     dateOfSentence: offenceDate,
     offenceCode: data['offence code'],
     resultCode: data['result code'],
     amountImposed: data['amount imposed'],
     amountPaid: data['amount paid'],
   });
-  offenceDetails().clickReviewOffence();
 });
 
 /**
@@ -391,12 +406,10 @@ When('I have provided manual payment terms:', (table: DataTable) => {
     payByDate,
   });
 
-  nav().navigateToAccountDetails();
-  details().openTask('Payment terms');
   const collectionWeeks = parseWeeksValue(data['collection order date']).weeks;
   const payByWeeks = parseWeeksValue(data['pay in full by']).weeks;
 
-  paymentTerms().completePayInFullWithCollectionOrder({
+  flow().providePaymentTermsFromAccountDetails({
     collectionOrder: collectionChoice,
     collectionOrderWeeksInPast: collectionWeeks,
     payByWeeksInFuture: payByWeeks,
@@ -424,11 +437,12 @@ Then('I am viewing manual account creation start', () => {
  * @step Asserts multiple task statuses using a table.
  */
 Then('the task statuses are:', (table: DataTable) => {
-  nav().navigateToAccountDetails();
-  table.rows().forEach(([task, status]) => {
-    log('assert', 'Checking task status from table', { task, status });
-    details().assertTaskStatus(task as ManualAccountTaskName, status);
-  });
+  const statuses = table.rows().map(([task, status]) => ({
+    task: task as ManualAccountTaskName,
+    status,
+  }));
+  log('assert', 'Checking task status from table', { statuses });
+  flow().assertTaskStatuses(statuses);
 });
 
 /**
@@ -438,8 +452,7 @@ Then(
   'the manual account comment and note fields show {string} and {string}',
   (commentText: string, noteText: string) => {
     log('assert', 'Verifying comment and note fields', { commentText, noteText });
-    comments().assertCommentValue(commentText);
-    comments().assertNoteValue(noteText);
+    flow().assertAccountCommentsAndNotes(commentText, noteText);
   },
 );
 /**
@@ -447,8 +460,7 @@ Then(
  */
 When('I open the Account comments and notes task', () => {
   log('navigate', 'Opening Account comments and notes task (no navigation)');
-  details().openTask('Account comments and notes');
-  comments().assertHeader();
+  flow().openAccountCommentsAndNotesTask();
 });
 
 /**
@@ -463,22 +475,7 @@ When('I open the Account comments and notes task', () => {
 When('I complete manual company details:', (table: DataTable) => {
   const data = table.rowsHash();
   log('step', 'Completing company details', data);
-
-  if (data['company name'] !== undefined) {
-    companyDetails().setCompanyName(data['company name']);
-  }
-  if (data['address line 1'] !== undefined) {
-    companyDetails().setAddressLine1(data['address line 1']);
-  }
-  if (data['address line 2'] !== undefined) {
-    companyDetails().setAddressLine2(data['address line 2']);
-  }
-  if (data['address line 3'] !== undefined) {
-    companyDetails().setAddressLine3(data['address line 3']);
-  }
-  if (data['postcode'] !== undefined) {
-    companyDetails().setPostcode(data['postcode']);
-  }
+  flow().fillCompanyDetailsFromTable(data);
 });
 
 /**
@@ -489,29 +486,18 @@ When('I complete manual company details:', (table: DataTable) => {
  * | 2     | Alias Two |
  */
 When('I add manual company aliases:', (table: DataTable) => {
-  const aliases = table.hashes();
-  log('step', 'Adding company aliases', aliases);
-  companyDetails().toggleAddAliases(true);
-
-  aliases.forEach((row, index) => {
-    if (index > 0) {
-      companyDetails().addAnotherAlias();
-    }
-    companyDetails().setAliasCompanyName(Number(row.alias), row.name);
-  });
+  const aliases = table.hashes() as CompanyAliasRow[];
+  log('step', 'Adding company aliases', { aliases });
+  flow().addCompanyAliases(aliases);
 });
 
 /**
  * @step Asserts alias values.
  */
 Then('the manual company aliases are:', (table: DataTable) => {
-  const aliases = table.hashes();
-  log('assert', 'Asserting company aliases', aliases);
-  companyDetails().assertAddAliasesChecked(true);
-
-  aliases.forEach((row) => {
-    companyDetails().assertAliasCompanyName(Number(row.alias), row.name);
-  });
+  const aliases = table.hashes() as CompanyAliasRow[];
+  log('assert', 'Asserting company aliases', { aliases });
+  flow().assertCompanyAliases(aliases);
 });
 
 /**
@@ -526,22 +512,7 @@ Then('the manual company aliases are:', (table: DataTable) => {
 Then('the manual company details fields are:', (table: DataTable) => {
   const data = table.rowsHash();
   log('assert', 'Asserting company details fields', data);
-
-  if (data['company name'] !== undefined) {
-    companyDetails().assertFieldValue('company', data['company name']);
-  }
-  if (data['address line 1'] !== undefined) {
-    companyDetails().assertFieldValue('address1', data['address line 1']);
-  }
-  if (data['address line 2'] !== undefined) {
-    companyDetails().assertFieldValue('address2', data['address line 2']);
-  }
-  if (data['address line 3'] !== undefined) {
-    companyDetails().assertFieldValue('address3', data['address line 3']);
-  }
-  if (data['postcode'] !== undefined) {
-    companyDetails().assertFieldValue('postcode', data['postcode']);
-  }
+  flow().assertCompanyDetailsFields(data);
 });
 
 /**
@@ -575,9 +546,7 @@ Then('I see a manual company inline error {string} for {string}', (message: stri
  */
 When('I continue to defendant contact details from company details', () => {
   log('navigate', 'Going to defendant contact details from company details');
-  companyDetails().clickAddContactDetails();
-  cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
-  common().assertHeaderContains('Defendant contact details', 20_000);
+  flow().continueToContactDetailsFromCompany();
 });
 
 /**
@@ -597,9 +566,7 @@ When('I cancel company details choosing {string} and return to account details',
     throw new Error('This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.');
   }
   log('cancel', 'Cancelling company details and returning to account details', { choice });
-  common().cancelEditing(true);
-  cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
-  details().assertOnAccountDetailsPage();
+  flow().cancelCompanyDetailsAndReturn(choice);
 });
 
 /**
@@ -608,4 +575,112 @@ When('I cancel company details choosing {string} and return to account details',
 Then('I am viewing company details', () => {
   log('assert', 'Asserting Company details page');
   companyDetails().assertOnCompanyDetailsPage();
+});
+
+/**
+ * @step Completes contact details using provided fields.
+ *
+ * | primary email   | P@EMAIL.COM |
+ * | secondary email | S@EMAIL.COM |
+ * | mobile number   | 07123 456 789 |
+ */
+When('I complete manual contact details:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(
+    Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]),
+  );
+
+  log('debug', 'Contact details table map', { hash: normalized });
+
+  const payload = Object.entries(normalized).reduce<Partial<Record<ManualContactFieldKey, string>>>(
+    (acc, [field, value]) => {
+      if (!field) {
+        return acc;
+      }
+      const key = resolveContactFieldKey(field);
+      acc[key] = value;
+      return acc;
+    },
+    {},
+  );
+
+  log('step', 'Completing contact details', { payload: { ...payload } });
+  contactDetails().fillContactDetails(payload);
+});
+
+/**
+ * @step Asserts contact details fields match the expected values.
+ */
+Then('the manual contact details fields are:', (table: DataTable) => {
+  log('assert', 'Checking contact details field values');
+
+  table.rows().forEach(([field, expected]) => {
+    if (field.toLowerCase() === 'field' && expected.toLowerCase() === 'value') {
+      return;
+    }
+
+    const key = resolveContactFieldKey(field);
+    contactDetails().assertFieldValue(key, expected);
+  });
+});
+
+/**
+ * @step Clears a specific contact details field.
+ */
+When('I clear the manual contact {string} field', (fieldLabel: string) => {
+  const key = resolveContactFieldKey(fieldLabel);
+  log('clear', 'Clearing contact field', { fieldLabel, key });
+  contactDetails().clearField(key);
+});
+
+/**
+ * @step Handles Cancel on contact details with a given choice.
+ */
+When('I cancel manual contact details choosing {string}', (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
+  log('cancel', 'Cancelling from contact details', { choice });
+  flow().cancelContactDetails(choice);
+});
+
+/**
+ * @step Confirms cancel on contact details and asserts navigation to account details.
+ */
+When(
+  'I confirm cancellation of manual contact details {string} and I am taken to account details',
+  (choice: 'Ok' | 'Leave') => {
+    log('cancel', 'Confirming cancel and returning to account details', { choice });
+    flow().confirmContactDetailsCancellation(choice);
+  },
+);
+
+/**
+ * @step Navigates from contact details to employer details.
+ */
+When('I continue to employer details from contact details', () => {
+  log('navigate', 'Going to employer details from contact details');
+  flow().continueToEmployerDetailsFromContact();
+});
+
+/**
+ * @step Navigates from contact details to offence details.
+ */
+When('I continue to offence details from contact details', () => {
+  log('navigate', 'Going to offence details from contact details');
+  flow().continueToOffenceDetailsFromContact();
+});
+
+/**
+ * @step Asserts inline error on contact details.
+ */
+Then('I see a manual contact inline error {string} for {string}', (message: string, fieldLabel: string) => {
+  const key = resolveContactFieldKey(fieldLabel);
+  log('assert', 'Checking inline error for contact details', { fieldLabel, message });
+  contactDetails().assertInlineError(key, message);
+});
+
+/**
+ * @step Confirms we are on the Contact details page.
+ */
+Then('I am viewing contact details', () => {
+  log('assert', 'Asserting Contact details page');
+  contactDetails().assertOnContactDetailsPage();
 });

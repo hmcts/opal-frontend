@@ -1,3 +1,11 @@
+/**
+ * @file create-account.locators.ts
+ * @description Selector map for the Manual Account Creation **Business unit and defendant type** start page.
+ *
+ * @remarks
+ * - Covers business unit autocomplete, account type/defendant type radios, and navigation CTAs.
+ * - Used by Cypress actions/flows to keep feature steps selector-free.
+ */
 export const ManualCreateAccountLocators = {
   pageHeader: 'h1.govuk-heading-l',
   businessUnit: {

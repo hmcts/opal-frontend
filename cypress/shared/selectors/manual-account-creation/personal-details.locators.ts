@@ -1,3 +1,11 @@
+/**
+ * @file personal-details.locators.ts
+ * @description Selector map for the Manual Account Creation **Personal details** task.
+ *
+ * @remarks
+ * - Includes title dropdown, name/address inputs, and navigation CTA.
+ * - For Cypress actions/flows; keep selectors out of specs.
+ */
 export const ManualPersonalDetailsLocators = {
   pageHeader: 'h1.govuk-heading-l',
   titleSelect: 'select[id="fm_personal_details_title"]',

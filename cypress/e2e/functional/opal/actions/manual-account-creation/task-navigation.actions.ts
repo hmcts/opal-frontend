@@ -12,7 +12,7 @@ export class ManualAccountTaskNavigationActions {
    */
   returnToAccountDetails(): void {
     log('navigate', 'Returning to account details task list');
-    cy.contains('button', 'Return to account details', this.common.getTimeoutOptions())
+    cy.contains('button', /return to account details/i, this.common.getTimeoutOptions())
       .should('exist')
       .scrollIntoView()
       .click({ force: true });

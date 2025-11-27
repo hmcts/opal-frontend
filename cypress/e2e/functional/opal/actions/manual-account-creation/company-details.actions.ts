@@ -152,6 +152,13 @@ export class ManualCompanyDetailsActions {
       .click({ force: true });
   }
 
+  /**
+   * Clears and types into a Company details field.
+   *
+   * @param selector - CSS selector for the input.
+   * @param value - Text to enter.
+   * @param label - Human-friendly label for logging.
+   */
   private typeText(selector: string, value: string, label: string): void {
     log('type', `Setting ${label}`, { value });
     cy.get(selector, this.common.getTimeoutOptions()).should('exist').clear({ force: true }).type(value, { delay: 0 });

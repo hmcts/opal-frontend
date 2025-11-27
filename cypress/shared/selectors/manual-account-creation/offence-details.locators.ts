@@ -1,3 +1,11 @@
+/**
+ * @file offence-details.locators.ts
+ * @description Selector map for the Manual Account Creation **Offence details** task.
+ *
+ * @remarks
+ * - Includes offence/imposition inputs, autocomplete listboxes, and navigation CTAs.
+ * - Keep selectors centralized for Cypress actions/flows.
+ */
 export const ManualOffenceDetailsLocators = {
   pageHeader: 'h1.govuk-heading-l',
   dateOfSentenceInput: 'input[id = "fm_offence_details_date_of_sentence"]',

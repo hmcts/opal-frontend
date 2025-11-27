@@ -1,3 +1,11 @@
+/**
+ * @file company-details.locators.ts
+ * @description Selector map for the Manual Account Creation **Company details** task.
+ *
+ * @remarks
+ * - Includes alias controls, address inputs, navigation CTAs, and inline error hooks.
+ * - Consumed by Cypress actions/flows; keep selectors centralized here.
+ */
 export const ManualCompanyDetailsLocators = {
   pageHeader: 'h1.govuk-heading-l',
   companyNameInput: 'input[id="fm_company_details_company_name"]',

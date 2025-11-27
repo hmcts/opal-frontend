@@ -1,3 +1,11 @@
+/**
+ * @file account-details.locators.ts
+ * @description Task list selectors for Manual Account Creation **Account details** page.
+ *
+ * @remarks
+ * - Maps task display names to stable taskListItemId attributes.
+ * - Used by Cypress flows/actions to open tasks and assert statuses.
+ */
 export type ManualAccountTaskName =
   | 'Account comments and notes'
   | 'Company details'
