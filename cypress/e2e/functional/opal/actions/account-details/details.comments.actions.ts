@@ -1,5 +1,6 @@
 // e2e/functional/opal/actions/account details/details.comments.actions.ts
 import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments-details.locators';
+import { log } from '../../../../../support/utils/log.helper';
 
 export class AccountDetailsCommentsActions {
   /** Assert we're on the Comments page **/
@@ -26,12 +27,7 @@ export class AccountDetailsCommentsActions {
    * - Clicks the "Save comments" button and waits for POST.
    */
   public enterAndSaveComments(lines: readonly string[]): void {
-    Cypress.log({
-      name: 'comments',
-      displayName: 'Save Comments',
-      message: `Saving ${lines.length} line(s)`,
-      consoleProps: () => ({ lines }),
-    });
+    log('comments', `Saving ${lines.length} line(s)`);
 
     // Ensure the form is ready
     cy.get(L.form, { timeout: 10_000 }).should('be.visible');
@@ -74,24 +70,24 @@ export class AccountDetailsCommentsActions {
 
   /** Verify all four fields exist with expected maxlengths and Save/Cancel are visible. */
   public assertFormFieldsPresent(): void {
-    cy.get(L.form, { timeout: 10000 }).should('be.visible');
+    cy.get(L.form, { timeout: 10_000 }).should('be.visible');
 
-    cy.get(L.fields.comment, { timeout: 10000 }).should('be.visible').and('have.attr', 'maxlength', '30');
+    cy.get(L.fields.comment, { timeout: 10_000 }).should('be.visible').and('have.attr', 'maxlength', '30');
 
-    cy.get(L.fields.line1, { timeout: 10000 }).should('be.visible').and('have.attr', 'maxlength', '76');
+    cy.get(L.fields.line1, { timeout: 10_000 }).should('be.visible').and('have.attr', 'maxlength', '76');
 
-    cy.get(L.fields.line2, { timeout: 10000 }).should('be.visible').and('have.attr', 'maxlength', '76');
+    cy.get(L.fields.line2, { timeout: 10_000 }).should('be.visible').and('have.attr', 'maxlength', '76');
 
-    cy.get(L.fields.line3, { timeout: 10000 }).should('be.visible').and('have.attr', 'maxlength', '76');
+    cy.get(L.fields.line3, { timeout: 10_000 }).should('be.visible').and('have.attr', 'maxlength', '76');
 
-    cy.get(L.actions.saveButton, { timeout: 10000 }).should('be.visible').and('not.be.disabled');
+    cy.get(L.actions.saveButton, { timeout: 10_000 }).should('be.visible').and('not.be.disabled');
 
-    cy.get(L.actions.cancelLink, { timeout: 10000 }).should('be.visible');
+    cy.get(L.actions.cancelLink, { timeout: 10_000 }).should('be.visible');
   }
 
   /** Clicks the Cancel control (does not handle the confirm dialog). */
   public clickCancelLink(): void {
-    cy.get(L.actions.cancelLink, { timeout: 10000 }).should('be.visible').click();
+    cy.get(L.actions.cancelLink, { timeout: 10_000 }).should('be.visible').click();
   }
 
   /**
@@ -100,7 +96,7 @@ export class AccountDetailsCommentsActions {
    * @param text - Parameter.
    */
   public setComment(text: string): void {
-    cy.get(L.fields.comment, { timeout: 10000 })
+    cy.get(L.fields.comment, { timeout: 10_000 })
       .should('be.visible')
       .then(($el) => {
         const el = cy.wrap($el);
@@ -117,7 +113,7 @@ export class AccountDetailsCommentsActions {
    * @param text - Parameter.
    */
   public assertCommentValueEquals(text: string): void {
-    cy.get(L.fields.comment, { timeout: 10000 })
+    cy.get(L.fields.comment, { timeout: 10_000 })
       .should('be.visible')
       .invoke('val')
       .then((val) => expect((val ?? '').toString()).to.eq(text));
@@ -161,7 +157,7 @@ export class AccountDetailsCommentsActions {
    * @param payload Object with expected field text values
    */
   assertPrefilledFormValues(payload: { comment?: string; line1?: string; line2?: string; line3?: string }): void {
-    cy.log('Assert Comments form prefilled values', payload);
+    log('assert', 'Assert Comments form prefilled values');
 
     if (payload.comment) {
       cy.get(L.fields.comment).should('be.visible').and('have.value', payload.comment);

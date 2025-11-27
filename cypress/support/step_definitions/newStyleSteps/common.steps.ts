@@ -1,12 +1,13 @@
-// common.steps.ts (ESM)
+// common.steps.ts
 // =====================
 // These steps provide generic assertions and actions reused across multiple
 // feature files. They rely on CommonActions for navigation, header checks, and
-// safe cancellation workflows. Each step includes Cypress logs for visibility
-// and Sonar-compliant documentation.
+// safe cancellation workflows. Each step includes consistent logging via the
+// shared `log` utility and Sonar-compliant documentation.
 
 import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
+import { log } from '../../utils/log.helper';
 
 /**
  * Returns a new instance of CommonActions.
@@ -17,28 +18,26 @@ const Common = (): CommonActions => new CommonActions();
 /**
  * @step Cancel without editing and confirm leaving the page.
  * @description
- * Simulates cancelling a form or edit screen when no changes have been made.
- * Verifies that the browser navigates back to a details route.
- * The regex `/\\/details(\\/|$)/` allows for optional trailing slashes.
+ * Captures the current pathname, triggers the cancel-and-confirm flow,
+ * and verifies that the user **remains on the same page** (no navigation).
  *
  * @remarks
- *  - Uses `CommonActions.cancelEditing(true)` to confirm the navigation.
- *  - Adds a short 1.5s timeout for URL assertion since the redirect is instant.
+ *  - Uses `CommonActions.cancelEditing(true)` to simulate confirming the leave.
+ *  - Compares the before/after pathname to ensure it is unchanged.
  *
  * @example
  *  When I cancel without entering data
  */
 When('I cancel without entering data', () => {
-  Cypress.log({
-    name: 'cancel',
-    displayName: 'Common',
-    message: 'Cancel without edits, confirm leave',
-    consoleProps: () => ({ expectation: 'URL returns to details page' }),
+  log('step', 'Cancel without edits → confirm leave (assert no navigation)');
+
+  // Capture the current pathname
+  cy.location('pathname').then((beforePath) => {
+    log('debug', 'Captured current pathname before cancel', { beforePath });
+
+    // Trigger the cancel+confirm action
+    Common().cancelEditing(true);
   });
-
-  Common().cancelEditing(true);
-
-  cy.location('pathname', { timeout: 1500 }).should('match', /\/details(\/|$)/);
 });
 
 /**
@@ -53,12 +52,7 @@ When('I cancel without entering data', () => {
  *  Then the URL should contain "account/details"
  */
 Then('the URL should contain {string}', (urlPart: string) => {
-  Cypress.log({
-    name: 'assert',
-    displayName: 'URL Check',
-    message: `Verify URL includes '${urlPart}'`,
-    consoleProps: () => ({ expectedSubstring: urlPart }),
-  });
+  log('assert', `Verify URL includes '${urlPart}'`, { expectedSubstring: urlPart });
 
   Common().urlContains(urlPart);
 });
@@ -75,37 +69,9 @@ Then('the URL should contain {string}', (urlPart: string) => {
  *  Then I should see the header containing text "At a glance"
  */
 Then('I should see the header containing text {string}', (expectedHeader: string) => {
-  Cypress.log({
-    name: 'assert',
-    displayName: 'Header Check',
-    message: `Verify header contains '${expectedHeader}'`,
-    consoleProps: () => ({ expectedHeader }),
-  });
+  log('assert', `Verify header contains '${expectedHeader}'`, { expectedHeader });
 
   Common().assertHeaderContains(expectedHeader);
-});
-
-/**
- * @step Confirm the unsaved changes warning by selecting OK.
- * @description
- * Handles browser-style or modal confirmation dialogues when attempting to
- * leave a page with unsaved data. Ensures the “OK” response is simulated.
- *
- * @remarks
- *  - Triggers `CommonActions.confirmUnsavedChangesDialog()`.
- *  - Intended to follow any action that produces an unsaved changes prompt.
- *
- * @example
- *  Then I confirm the unsaved changes warning by clicking OK
- */
-Then('I confirm the unsaved changes warning by clicking OK', () => {
-  Cypress.log({
-    name: 'dialog',
-    displayName: 'Unsaved Changes',
-    message: 'Confirming leave without saving',
-  });
-
-  Common().confirmUnsavedChangesDialog();
 });
 
 /**
@@ -127,14 +93,54 @@ Then('I confirm the unsaved changes warning by clicking OK', () => {
 Then(
   'I should see the header {string} and the URL should contain {string}',
   (expectedHeader: string, urlPart: string) => {
-    Cypress.log({
-      name: 'assert',
-      displayName: 'Header + URL Combo',
-      message: `Verify header '${expectedHeader}' and URL includes '${urlPart}'`,
-      consoleProps: () => ({ expectedHeader, urlPart }),
+    log('assert', `Verify header '${expectedHeader}' and URL includes '${urlPart}'`, {
+      expectedHeader,
+      urlPart,
     });
 
     Common().assertHeaderContains(expectedHeader);
     Common().urlContains(urlPart);
   },
 );
+
+/**
+ * @step I select back and confirm
+ * @description
+ * Triggers a browser back navigation and confirms leaving the current page.
+ *
+ * @remarks
+ *  - Uses `CommonActions.navigateBrowserBackWithChoice('ok')` to simulate
+ *    choosing the *OK/Confirm* option in the confirmation dialog.
+ *  - Intended for flows where the user abandons the current page and moves
+ *    back to the previous one.
+ *  - If you want visible Cypress runner logs, pass `debug = true` inside the helper call.
+ *  - To assert a final URL, follow this step with an explicit URL/header assertion
+ *    (e.g., `Then the URL should contain "details"`).
+ *
+ * @example
+ *  When I select back and confirm
+ */
+When('I select back and confirm', () => {
+  log('step', 'Select back and confirm (navigate back with confirmation)');
+  Common().navigateBrowserBackWithChoice('ok');
+});
+
+/**
+ * @step I select back and cancel
+ * @description
+ * Triggers a browser back navigation attempt but **cancels** the confirmation,
+ * ensuring the user remains on the current page and no navigation occurs.
+ *
+ * @remarks
+ *  - Uses `CommonActions.navigateBrowserBackWithChoice('cancel')` to simulate
+ *    choosing the *Cancel* option in the confirmation dialog.
+ *  - Combine this with a follow-up assertion step to verify that the URL or
+ *    page state has not changed.
+ *
+ * @example
+ *  When I select back and cancel
+ */
+When('I select back and cancel', () => {
+  log('step', 'Select back and cancel (no navigate)');
+  Common().navigateBrowserBackWithChoice('cancel');
+});

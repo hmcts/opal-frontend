@@ -10,6 +10,13 @@ export const CommonLocators = {
   /** Logical identifier for the unsaved changes confirmation dialog.
    *  Usage: `cy.on(commonLocators.unsavedChangesDialog, (msg) => { ... })` */
   unsavedChangesDialog: 'window:confirm', // not an element selector — used for logging
+
+  /**
+   * Global HMCTS header link (organisation name) that routes back to the
+   * application root ("/"). Used by flows that "return to the dashboard"
+   * via the HMCTS link.
+   */
+  hmctsHomeLink: 'a.moj-header__link--organisation-name[href="/"]',
 } as const;
 
 export type CommonLocatorKey = keyof typeof CommonLocators;
