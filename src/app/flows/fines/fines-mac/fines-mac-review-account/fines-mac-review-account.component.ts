@@ -397,11 +397,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    if (this.finesMacStore.getAccountType() === this.accountTypesKeys['Fixed Penalty']) {
-      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
-      return;
-    }
-
     if (this.isReadOnly) {
       this.handleReadOnlyNavigation();
       return;
