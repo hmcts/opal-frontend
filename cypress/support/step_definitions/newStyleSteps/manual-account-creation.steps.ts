@@ -20,6 +20,10 @@ import {
   ManualCourtDetailsActions,
   ManualCourtFieldKey,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
+import {
+  ManualEmployerDetailsActions,
+  ManualEmployerFieldKey,
+} from '../../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
 import { ManualPersonalDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/personal-details.actions';
 import { ManualOffenceDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';
 import { ManualPaymentTermsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/payment-terms.actions';
@@ -39,6 +43,7 @@ import { CommonActions } from '../../../e2e/functional/opal/actions/common/commo
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const courtDetails = () => new ManualCourtDetailsActions();
+const employerDetails = () => new ManualEmployerDetailsActions();
 const personalDetails = () => new ManualPersonalDetailsActions();
 const offenceDetails = () => new ManualOffenceDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
@@ -101,6 +106,30 @@ const resolveCourtFieldKey = (field: string): ManualCourtFieldKey => {
   if (normalized.includes('enforcement court')) return 'enforcementCourt';
 
   throw new Error(`Unknown court details field: ${field}`);
+};
+
+/**
+ * @description Normalises an employer details label to its logical field key.
+ * @param field - Table or step label text (case-insensitive).
+ * @returns Employer field key recognised by EmployerDetails actions.
+ * @remarks Throws on unknown labels to prevent selector drift.
+ * @example resolveEmployerFieldKey('Employer telephone') // returns 'employerTelephone'
+ */
+const resolveEmployerFieldKey = (field: string): ManualEmployerFieldKey => {
+  const normalized = field.toLowerCase();
+
+  if (normalized.includes('employer name')) return 'employerName';
+  if (normalized.includes('employee reference')) return 'employeeReference';
+  if (normalized.includes('email')) return 'employerEmail';
+  if (normalized.includes('telephone') || normalized.includes('phone')) return 'employerTelephone';
+  if (normalized.includes('address line 1')) return 'addressLine1';
+  if (normalized.includes('address line 2')) return 'addressLine2';
+  if (normalized.includes('address line 3')) return 'addressLine3';
+  if (normalized.includes('address line 4')) return 'addressLine4';
+  if (normalized.includes('address line 5')) return 'addressLine5';
+  if (normalized.includes('postcode')) return 'postcode';
+
+  throw new Error(`Unknown employer details field: ${field}`);
 };
 
 /**
@@ -1101,4 +1130,140 @@ Then('I see a manual contact inline error {string} for {string}', (message: stri
 Then('I am viewing contact details', () => {
   log('assert', 'Asserting Contact details page');
   contactDetails().assertOnContactDetailsPage();
+});
+
+/**
+ * @step Completes employer details from a data table while on the Employer details task.
+ * @description Maps table labels to employer field keys and fills values.
+ * @param table - DataTable of employer detail fields/values.
+ * @remarks Fails on unknown labels to avoid selector drift.
+ * @example
+ *   When I complete manual employer details:
+ *     | Employer name      | Test Corp |
+ *     | Employer telephone | 0123      |
+ */
+When('I complete manual employer details:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+
+  log('debug', 'Employer details table map', { hash: normalized });
+
+  const payload = Object.entries(normalized).reduce<Partial<Record<ManualEmployerFieldKey, string>>>(
+    (acc, [field, value]) => {
+      if (!field) {
+        return acc;
+      }
+
+      const key = resolveEmployerFieldKey(field);
+      acc[key] = value;
+      return acc;
+    },
+    {},
+  );
+
+  log('step', 'Completing employer details from table', { payload: { ...payload } });
+  employerDetails().assertOnEmployerDetailsPage();
+  employerDetails().fillEmployerDetails(payload);
+});
+
+/**
+ * @step Populates employer details by opening the task from Account details.
+ * @description Navigates to Employer details and fills fields from a table.
+ * @param table - DataTable of employer detail fields/values.
+ * @remarks Use when starting on Account details; navigation handled by flow.
+ * @example
+ *   When I have provided manual employer details:
+ *     | Employer name | Test Corp |
+ */
+When('I have provided manual employer details:', (table: DataTable) => {
+  const hash = table.rowsHash();
+  const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
+
+  const payload = Object.entries(normalized).reduce<Partial<Record<ManualEmployerFieldKey, string>>>(
+    (acc, [field, value]) => {
+      if (!field) {
+        return acc;
+      }
+      const key = resolveEmployerFieldKey(field);
+      acc[key] = value;
+      return acc;
+    },
+    {},
+  );
+
+  log('step', 'Providing employer details from table', { payload: { ...payload } });
+  flow().provideEmployerDetailsFromAccountDetails(payload);
+});
+
+/**
+ * @step Asserts employer details field values.
+ * @description Validates employer field values using a table map.
+ * @param table - DataTable of expected field/value pairs.
+ * @remarks Header rows like "Field | Value" will be ignored.
+ * @example
+ *   Then the manual employer details fields are:
+ *     | Employer name | Test Corp |
+ */
+Then('the manual employer details fields are:', (table: DataTable) => {
+  const expected = table.rows().reduce<Partial<Record<ManualEmployerFieldKey, string>>>((acc, [field, value]) => {
+    if (field.toLowerCase() === 'field' && value.toLowerCase() === 'value') {
+      return acc;
+    }
+
+    const key = resolveEmployerFieldKey(field);
+    acc[key] = value.trim();
+    return acc;
+  }, {});
+
+  log('assert', 'Checking employer details field values', { expected });
+  flow().assertEmployerDetailsFields(expected);
+});
+
+/**
+ * @step Handles Cancel on employer details with a given choice.
+ * @description Triggers the unsaved changes prompt and responds with choice.
+ * @param choice - Cancel/Ok/Stay/Leave selection.
+ * @remarks Accept choices will leave the page; cancel choices keep the user on Employer details.
+ * @example When I cancel manual employer details choosing "Cancel"
+ */
+When('I cancel manual employer details choosing {string}', (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
+  log('cancel', 'Cancelling employer details', { choice });
+  flow().cancelEmployerDetails(choice);
+});
+
+/**
+ * @step Cancels employer details and asserts navigation to Account details.
+ * @description Accepts the confirm dialog (Ok/Leave) and checks Account details.
+ * @param choice - Confirmation choice (Ok/Leave).
+ * @remarks Throws if a non-confirm choice is supplied.
+ * @example When I cancel manual employer details choosing "Ok" and return to account details
+ */
+When('I cancel manual employer details choosing {string} and return to account details', (choice: 'Ok' | 'Leave') => {
+  if (!/ok|leave/i.test(choice)) {
+    throw new Error('This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.');
+  }
+
+  log('cancel', 'Cancelling employer details and returning to account details', { choice });
+  flow().cancelEmployerDetailsAndReturn(choice);
+});
+
+/**
+ * @step Confirms we are on the Employer details page.
+ * @description Asserts pathname and header for Employer details.
+ * @example Then I am viewing employer details
+ */
+Then('I am viewing employer details', () => {
+  log('assert', 'Asserting Employer details page');
+  employerDetails().assertOnEmployerDetailsPage();
+});
+
+/**
+ * @step Navigates from Employer details to Offence details using the grey CTA.
+ * @description Clicks the nested flow button to reach Offence details.
+ * @remarks Includes pathname + header guard to avoid stale assertions.
+ * @example When I continue to offence details from employer details
+ */
+When('I continue to offence details from employer details', () => {
+  log('navigate', 'Continuing to offence details from Employer details');
+  flow().continueToOffenceDetailsFromEmployer();
 });

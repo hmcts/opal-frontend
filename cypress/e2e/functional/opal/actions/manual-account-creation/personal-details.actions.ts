@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Personal details task.
+ * Handles entry of required personal fields.
+ */
 import { ManualPersonalDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/personal-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Offence details task.
+ * Handles offence entry, review navigation, and basic field typing.
+ */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';

@@ -9,6 +9,10 @@ import { ManualAccountCommentsNotesActions } from '../actions/manual-account-cre
 import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import { ManualContactDetailsActions } from '../actions/manual-account-creation/contact-details.actions';
+import {
+  ManualEmployerDetailsActions,
+  ManualEmployerFieldKey,
+} from '../actions/manual-account-creation/employer-details.actions';
 import { log } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
 import { ManualCompanyDetailsActions } from '../actions/manual-account-creation/company-details.actions';
@@ -36,6 +40,7 @@ export class ManualAccountCreationFlow {
   private readonly companyDetails = new ManualCompanyDetailsActions();
   private readonly taskNavigation = new ManualAccountTaskNavigationActions();
   private readonly contactDetails = new ManualContactDetailsActions();
+  private readonly employerDetails = new ManualEmployerDetailsActions();
   private readonly common = new CommonActions();
   private readonly courtDetails = new ManualCourtDetailsActions();
   private readonly personalDetails = new ManualPersonalDetailsActions();
@@ -113,6 +118,12 @@ export class ManualAccountCreationFlow {
     if (taskName === 'Contact details') {
       cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
       this.contactDetails.assertOnContactDetailsPage();
+      return;
+    }
+
+    if (taskName === 'Employer details') {
+      cy.location('pathname', { timeout: 20_000 }).should('include', '/employer-details');
+      this.employerDetails.assertOnEmployerDetailsPage();
       return;
     }
 
@@ -225,6 +236,65 @@ export class ManualAccountCreationFlow {
     log('flow', 'Complete court details (navigation handled by caller)', { lja, pcr, enforcementCourt });
     this.courtDetails.assertOnCourtDetailsPage();
     this.courtDetails.fillCourtDetails({ lja, pcr, enforcementCourt });
+  }
+
+  /**
+   * Provides employer details by opening the task from Account details.
+   */
+  provideEmployerDetailsFromAccountDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
+    log('flow', 'Provide employer details from Account details', { payload });
+    this.openTaskFromAccountDetails('Employer details');
+    this.employerDetails.fillEmployerDetails(payload);
+  }
+
+  /**
+   * Completes Employer details assuming navigation is handled by the caller.
+   */
+  completeEmployerDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
+    log('flow', 'Complete employer details (navigation handled by caller)', { payload });
+    this.employerDetails.assertOnEmployerDetailsPage();
+    this.employerDetails.fillEmployerDetails(payload);
+  }
+
+  /**
+   * Asserts Employer details field values on the task.
+   */
+  assertEmployerDetailsFields(expected: Partial<Record<ManualEmployerFieldKey, string>>): void {
+    log('flow', 'Asserting Employer details field values', { expected });
+    this.employerDetails.assertOnEmployerDetailsPage();
+    Object.entries(expected).forEach(([field, value]) => {
+      this.employerDetails.assertFieldValue(field as ManualEmployerFieldKey, value as string);
+    });
+  }
+
+  /**
+   * Cancels out of Employer details with a given choice.
+   */
+  cancelEmployerDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    log('flow', 'Cancel Employer details', { choice });
+    this.employerDetails.assertOnEmployerDetailsPage();
+    this.employerDetails.cancelAndChoose(choice);
+  }
+
+  /**
+   * Cancels Employer details and asserts return to Account details.
+   */
+  cancelEmployerDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
+    log('flow', 'Cancel Employer details and return to Account details', { choice });
+    this.cancelEmployerDetails(choice);
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Navigates from Employer details to Offence details using the nested CTA.
+   */
+  continueToOffenceDetailsFromEmployer(expectedHeader: string = 'Add an offence'): void {
+    log('flow', 'Continue to Offence details from Employer details', { expectedHeader });
+    this.employerDetails.assertOnEmployerDetailsPage();
+    this.employerDetails.clickNestedFlowButton('Add offence details');
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/offence-details');
+    this.common.assertHeaderContains(expectedHeader, 20_000);
   }
 
   /**

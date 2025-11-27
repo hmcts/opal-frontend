@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Contact details task.
+ * Manages contact field entry, navigation CTAs, cancel handling, and inline errors.
+ */
 import { ManualContactDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/contact-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';

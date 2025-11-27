@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Create account page.
+ * Encapsulates business unit selection, account type/defendant type selection, and navigation to task list.
+ */
 import { ManualCreateAccountLocators as L } from '../../../../../shared/selectors/manual-account-creation/create-account.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
