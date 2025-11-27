@@ -14,4 +14,6 @@ export const ManualCourtDetailsLocators = {
   enforcementCourtInput: 'input[id="fm_court_details_imposing_court_id-autocomplete"]',
   enforcementCourtListbox: 'ul[id="fm_court_details_imposing_court_id-autocomplete__listbox"]',
   returnToAccountDetailsButton: 'button[type="submit"]:contains("Return to account details")',
+  nestedFlowButton: 'button.nested-flow',
+  cancelLink: 'a.govuk-link.button-link',
 } as const;

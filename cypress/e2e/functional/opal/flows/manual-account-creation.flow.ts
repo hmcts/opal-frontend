@@ -1,5 +1,9 @@
 import { DashboardActions } from '../actions/dashboard.actions';
-import { AccountType, DefendantType, ManualCreateAccountActions } from '../actions/manual-account-creation/create-account.actions';
+import {
+  AccountType,
+  DefendantType,
+  ManualCreateAccountActions,
+} from '../actions/manual-account-creation/create-account.actions';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
 import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
@@ -8,7 +12,10 @@ import { ManualContactDetailsActions } from '../actions/manual-account-creation/
 import { log } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
 import { ManualCompanyDetailsActions } from '../actions/manual-account-creation/company-details.actions';
-import { ManualCourtDetailsActions } from '../actions/manual-account-creation/court-details.actions';
+import {
+  ManualCourtDetailsActions,
+  ManualCourtFieldKey,
+} from '../actions/manual-account-creation/court-details.actions';
 import { ManualPersonalDetailsActions } from '../actions/manual-account-creation/personal-details.actions';
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
 import { ManualPaymentTermsActions } from '../actions/manual-account-creation/payment-terms.actions';
@@ -106,6 +113,11 @@ export class ManualAccountCreationFlow {
     if (taskName === 'Contact details') {
       cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
       this.contactDetails.assertOnContactDetailsPage();
+      return;
+    }
+
+    if (taskName === 'Court details') {
+      this.courtDetails.assertOnCourtDetailsPage();
     }
   }
 
@@ -200,11 +212,10 @@ export class ManualAccountCreationFlow {
   /**
    * Provides court details by opening the task from Account details.
    */
-  provideCourtDetailsFromAccountDetails(lja: string, pcr: string, enforcementCourt: string): void {
-    log('flow', 'Provide court details from Account details', { lja, pcr, enforcementCourt });
-    this.accountDetails.assertOnAccountDetailsPage();
-    this.accountDetails.openTask('Court details');
-    this.courtDetails.fillCourtDetails(lja, pcr, enforcementCourt);
+  provideCourtDetailsFromAccountDetails(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
+    log('flow', 'Provide court details from Account details', { payload });
+    this.openTaskFromAccountDetails('Court details');
+    this.courtDetails.fillCourtDetails(payload);
   }
 
   /**
@@ -212,8 +223,56 @@ export class ManualAccountCreationFlow {
    */
   completeCourtDetails(lja: string, pcr: string, enforcementCourt: string): void {
     log('flow', 'Complete court details (navigation handled by caller)', { lja, pcr, enforcementCourt });
+    this.courtDetails.assertOnCourtDetailsPage();
+    this.courtDetails.fillCourtDetails({ lja, pcr, enforcementCourt });
+  }
+
+  /**
+   * Asserts Court details field values on the task.
+   */
+  assertCourtDetailsFields(expected: Partial<Record<ManualCourtFieldKey, string>>): void {
+    log('flow', 'Asserting Court details field values', { expected });
+    this.courtDetails.assertOnCourtDetailsPage();
+
+    if (expected.lja !== undefined) {
+      this.courtDetails.assertFieldValue('lja', expected.lja);
+    }
+    if (expected.pcr !== undefined) {
+      this.courtDetails.assertFieldValue('pcr', expected.pcr);
+    }
+    if (expected.enforcementCourt !== undefined) {
+      this.courtDetails.assertFieldValue('enforcementCourt', expected.enforcementCourt);
+    }
+  }
+
+  /**
+   * Cancels out of Court details with a given choice.
+   */
+  cancelCourtDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    log('flow', 'Cancel Court details', { choice });
+    this.courtDetails.assertOnCourtDetailsPage();
+    this.courtDetails.cancelAndChoose(choice);
+  }
+
+  /**
+   * Cancels Court details and asserts return to Account details.
+   */
+  cancelCourtDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
+    log('flow', 'Cancel Court details and return to Account details', { choice });
+    this.cancelCourtDetails(choice);
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
-    this.courtDetails.fillCourtDetails(lja, pcr, enforcementCourt);
+  }
+
+  /**
+   * Navigates to Personal details via the Court details nested CTA.
+   */
+  continueToPersonalDetailsFromCourt(expectedHeader: string = 'Personal details'): void {
+    log('flow', 'Continue to Personal details from Court details', { expectedHeader });
+    this.courtDetails.assertOnCourtDetailsPage();
+    this.courtDetails.clickNestedFlowButton('Add personal details');
+    cy.location('pathname', { timeout: 20_000 }).should('include', '/personal-details');
+    this.common.assertHeaderContains(expectedHeader, 20_000);
   }
 
   /**
