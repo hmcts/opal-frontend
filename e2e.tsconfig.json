@@ -3,6 +3,9 @@
   "compilerOptions": {
     "outDir": "./out-tsc/e2e",
     "types": ["cypress", "node"],
+    "sourceMap": false,
+    "inlineSourceMap": false,
+    "inlineSources": false,
     "baseUrl": ".",
     "paths": {
       "@e2e/*": ["cypress/e2e/*"]
