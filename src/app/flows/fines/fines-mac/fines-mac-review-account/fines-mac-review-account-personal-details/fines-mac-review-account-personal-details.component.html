@@ -85,7 +85,7 @@
           <ng-container name>National Insurance number</ng-container>
           <ng-container value>
             @if (personalDetails.fm_personal_details_national_insurance_number) {
-              {{ personalDetails.fm_personal_details_national_insurance_number }}
+              {{ personalDetails.fm_personal_details_national_insurance_number | nationalInsurance }}
             } @else {
               <app-fines-not-provided></app-fines-not-provided>
             }
