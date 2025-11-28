@@ -24,7 +24,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
     expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
     expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
-    expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+    expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true); // Should be true when aliases exist
 
     // Test address details
@@ -555,7 +555,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
       expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
       expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
-      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
       expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
 
@@ -580,7 +580,7 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
       expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
       expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
-      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ123456C');
       expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
 
       // Employer fields should be populated for parent/guardian

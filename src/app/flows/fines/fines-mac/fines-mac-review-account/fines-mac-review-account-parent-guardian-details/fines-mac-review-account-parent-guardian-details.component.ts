@@ -11,6 +11,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 
 @Component({
   selector: 'app-fines-mac-review-account-parent-guardian-details',
@@ -20,6 +21,7 @@ import { FinesNotProvidedComponent } from '../../../components/fines-not-provide
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
     FinesNotProvidedComponent,
+    NationalInsurancePipe,
   ],
   templateUrl: './fines-mac-review-account-parent-guardian-details.component.html',
   styles: ``,

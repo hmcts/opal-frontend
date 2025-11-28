@@ -54,7 +54,7 @@
         >
           <ng-container name>National Insurance number</ng-container>
           @if (individualDetails.national_insurance_number; as nationalInsuranceNumber) {
-            <ng-container value>{{ nationalInsuranceNumber | uppercase }}</ng-container>
+            <ng-container value>{{ nationalInsuranceNumber | nationalInsurance }}</ng-container>
           } @else {
             <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
           }
