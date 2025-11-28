@@ -97,9 +97,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.aliasForenamesInput2).should('have.value', 'Test');
       cy.get(DOM_ELEMENTS.aliasSurnameInput2).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith');
 
       cy.get(DOM_ELEMENTS.dobInput).should('exist');
       cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');

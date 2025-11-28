@@ -131,4 +131,12 @@ export class EditParentGuardianDetailsActions {
 
     log('done', `Verified Last name -> "${expectedLastName}"`);
   }
+
+  /**
+   * Clicks the Save changes button on the Parent/Guardian edit form.
+   */
+  public saveChanges(): void {
+    log('action', 'Saving Parent/Guardian details');
+    cy.get(L.actions.saveButton, { timeout: 10_000 }).should('be.visible').click();
+  }
 }

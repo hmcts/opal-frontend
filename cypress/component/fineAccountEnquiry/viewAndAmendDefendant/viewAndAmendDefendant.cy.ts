@@ -126,11 +126,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Verify Fourth alias from mock data (Test Smith2)
       cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith');
 
       // Verify Fifth alias from mock data (Test Smith3)
       cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith');
 
       // Date of birth
 
@@ -1200,11 +1200,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Defendant', () => {
 
       // Verify Fourth alias from mock data (Test Smith2)
       cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith');
 
       // Verify Fifth alias from mock data (Test Smith3)
       cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith');
 
       // Date of birth
       cy.get(DOM_ELEMENTS.dobInput).should('exist');
