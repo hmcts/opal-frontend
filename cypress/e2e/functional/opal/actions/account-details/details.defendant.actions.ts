@@ -54,4 +54,12 @@ export class AccountDetailsDefendantActions {
       cy.get(opts.formSelector, { timeout }).should('be.visible');
     }
   }
+
+  /**
+   * Asserts the defendant name on the summary card contains the expected value.
+   * @param expected text expected in the name field
+   */
+  assertDefendantNameContains(expected: string): void {
+    cy.get(L.defendant.fields.name, { timeout: 10000 }).should('contain.text', expected);
+  }
 }

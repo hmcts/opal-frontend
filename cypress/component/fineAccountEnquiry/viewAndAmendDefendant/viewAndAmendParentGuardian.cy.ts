@@ -2,6 +2,7 @@ import { mount } from 'cypress/angular';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
 import {
@@ -37,6 +38,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   ) => {
     mount(FinesAccPartyAddAmendConvert, {
       providers: [
+        provideHttpClient(),
         DateService,
         {
           provide: FinesAccountStore,
@@ -95,9 +97,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.aliasForenamesInput2).should('have.value', 'Test');
       cy.get(DOM_ELEMENTS.aliasSurnameInput2).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith');
 
       cy.get(DOM_ELEMENTS.dobInput).should('exist');
       cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');

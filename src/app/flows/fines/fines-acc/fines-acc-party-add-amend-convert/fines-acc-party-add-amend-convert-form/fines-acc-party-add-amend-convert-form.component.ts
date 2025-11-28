@@ -422,6 +422,13 @@ export class FinesAccPartyAddAmendConvertFormComponent
     }
   }
 
+  /**
+   * Resolves the defendant-details fragment to use when navigating back from the form.
+   */
+  public get routeFragment(): string {
+    return this.partyType === this.partyTypes.PARENT_GUARDIAN ? 'parent-or-guardian' : 'defendant';
+  }
+
   public override ngOnInit(): void {
     // Ensure initialFormData is set with default values if undefined
     if (!this.initialFormData) {

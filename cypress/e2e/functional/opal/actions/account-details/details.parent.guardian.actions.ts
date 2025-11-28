@@ -34,4 +34,25 @@ export class AccountDetailsParentGuardianActions {
       cy.get(opts.formSelector, { timeout }).should('be.visible');
     }
   }
+
+  /**
+   * Asserts the Parent/Guardian name on the summary card contains the expected value.
+   *
+   * @param expected Text expected in the name field.
+   */
+  public assertNameContains(expected: string): void {
+    cy.get(L.parentOrGuardian.fields.name, { timeout: 10_000 }).should('contain.text', expected);
+  }
+
+  /**
+   * Asserts the Parent/Guardian section header contains expected text.
+   *
+   * @param expected Expected header text.
+   */
+  public assertSectionHeader(expected: string): void {
+    cy.get(L.parentOrGuardianTabHeader.title, { timeout: 10_000 })
+      .should('be.visible')
+      .invoke('text')
+      .then((t) => expect(t.trim().toLowerCase()).to.contain(expected.trim().toLowerCase()));
+  }
 }

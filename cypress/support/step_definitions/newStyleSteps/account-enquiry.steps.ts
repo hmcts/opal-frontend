@@ -118,6 +118,11 @@ When('I go to the Defendant details section and the header is {string}', (expect
   flow().goToDefendantDetailsAndAssert(expected);
 });
 
+When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
+  log('step', 'Navigate to Parent/Guardian details', { expected });
+  flow().goToParentGuardianDetailsAndAssert(expected);
+});
+
 /**
  * @step Edits the Defendant details, changing the First name to a given value.
  *
@@ -126,6 +131,36 @@ When('I go to the Defendant details section and the header is {string}', (expect
 When('I edit the Defendant details and change the First name to {string}', (value: string) => {
   log('step', 'Edit Defendant first name', { value });
   flow().editDefendantAndChangeFirstName(value);
+});
+
+When('I edit the Defendant details without making changes', () => {
+  log('step', 'Edit Defendant details without making changes');
+  flow().editDefendantWithoutChanges();
+});
+
+When('I edit the Parent or guardian details and change the First name to {string}', (value: string) => {
+  log('step', 'Edit Parent/Guardian first name', { value });
+  flow().editParentGuardianAndChangeFirstName(value);
+});
+
+When('I edit the Company details and change the Company name to {string}', (value: string) => {
+  log('step', 'Edit Company name', { value });
+  flow().editCompanyDetailsAndChangeName(value);
+});
+
+When('I save the defendant details', () => {
+  log('step', 'Save defendant details');
+  flow().saveDefendantDetails();
+});
+
+When('I save the parent or guardian details', () => {
+  log('step', 'Save parent or guardian details');
+  flow().saveParentGuardianDetails();
+});
+
+When('I save the company details', () => {
+  log('step', 'Save company details');
+  flow().saveCompanyDetails();
 });
 
 /**
@@ -172,12 +207,52 @@ Then('I should return to the account details page Defendant tab', () => {
   navActions().assertDefendantTabIsActive();
 });
 
+Then('I should return to the account details page Parent or guardian tab', () => {
+  log('assert', 'Return to Parent/Guardian details tab');
+  navActions().assertParentGuardianTabIsActive();
+});
+
 /**
  * @step Confirms the user has returned to the account details page at a glance tab
  */
 Then('I should return to the account details page At a glance tab', () => {
   log('assert', 'Return to At a glance tab');
   navActions().assertAtAGlanceTabIsActive();
+});
+
+Then('I should see the defendant name contains {string}', (expected: string) => {
+  log('assert', 'Defendant name contains', { expected });
+  flow().assertDefendantNameContains(expected);
+});
+
+Then('I should see the parent or guardian name contains {string}', (expected: string) => {
+  log('assert', 'Parent or guardian name contains', { expected });
+  flow().assertParentGuardianNameContains(expected);
+});
+
+Then('I should see the company name contains {string}', (expected: string) => {
+  log('assert', 'Company name contains', { expected });
+  flow().assertCompanyNameContains(expected);
+});
+
+Then('I verify defendant amendments via API for first name {string}', (expectedForename: string) => {
+  log('step', 'Verify defendant amendments via API', { expectedForename });
+  flow().verifyDefendantAmendmentsViaApi(expectedForename);
+});
+
+Then('I verify Company amendments via API for company name {string}', (expectedCompanyName: string) => {
+  log('assert', 'Verify company amendments via API', { expectedCompanyName });
+  flow().verifyCompanyAmendmentsViaApi(expectedCompanyName);
+});
+
+Then('I verify parent or guardian amendments via API for guardian name {string}', (expectedGuardianName: string) => {
+  log('assert', 'Verify parent/guardian amendments via API', { expectedGuardianName });
+  flow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
+});
+
+Then('I verify no amendments were created via API', () => {
+  log('assert', 'Verify no amendments were created via API');
+  flow().verifyNoDefendantAmendments();
 });
 
 /**

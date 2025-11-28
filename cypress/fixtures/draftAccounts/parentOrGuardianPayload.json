@@ -53,6 +53,7 @@
       "debtor_detail": null,
       "parent_guardian": {
         "company_flag": false,
+        "title": "Miss",
         "company_name": null,
         "surname": "LNAME",
         "forenames": "FNAME",
@@ -86,8 +87,8 @@
           "employer_email_address": null,
           "aliases": [
             {
-              "alias_forenames": "fname1",
-              "alias_surname": "LNAME1",
+              "alias_forenames": "fname",
+              "alias_surname": "LNAME",
               "alias_company_name": null
             }
           ]

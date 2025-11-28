@@ -17,4 +17,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS: IAbstractFormArray
       ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
     ],
   },
+  {
+    controlName: 'facc_party_add_amend_convert_alias_id',
+    validators: [], // No validation needed for hidden ID field
+  },
 ];
