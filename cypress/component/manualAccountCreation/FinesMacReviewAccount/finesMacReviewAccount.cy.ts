@@ -58,7 +58,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             const store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
-            store.setError({ error: false, message: '' });
+            store.setBannerError({ error: false, message: '' });
             return store;
           },
         },
