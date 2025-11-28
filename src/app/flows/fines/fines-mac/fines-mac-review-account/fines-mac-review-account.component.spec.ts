@@ -113,7 +113,7 @@ function createTestModule(snapshotData?: any) {
   const component = fixture.componentInstance;
   const globalStore = TestBed.inject(GlobalStore);
   globalStore.setUserState(OPAL_USER_STATE_MOCK);
-  globalStore.setError({
+  globalStore.setBannerError({
     ...GLOBAL_ERROR_STATE,
   });
   const finesMacStore = TestBed.inject(FinesMacStore);

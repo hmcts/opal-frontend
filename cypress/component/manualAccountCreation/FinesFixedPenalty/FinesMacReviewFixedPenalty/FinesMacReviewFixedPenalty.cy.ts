@@ -90,7 +90,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           useFactory: () => {
             let store = new GlobalStore();
             store.setUserState(ACCOUNT_SESSION_USER_STATE_MOCK);
-            store.setError({
+            store.setBannerError({
               error: false,
               message: '',
               title: null,
