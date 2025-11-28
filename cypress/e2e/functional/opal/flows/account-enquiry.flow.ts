@@ -332,7 +332,7 @@ export class AccountEnquiryFlow {
     this.parentGuardianDetails.assertNameContains(expected);
   }
 
-    /**
+  /**
    * Asserts the company summary name contains the expected value.
    * @param expected text expected in name field
    */
@@ -360,7 +360,7 @@ export class AccountEnquiryFlow {
     this.log('cancel', 'Cancelling edit and returning to details page');
     this.common.cancelEditing(true);
   }
-  
+
   /**
    * Verifies route guard behaviour for a Company defendant by editing a field,
    * choosing to stay, then confirming the temporary value is retained until leaving.
@@ -924,9 +924,12 @@ export class AccountEnquiryFlow {
 
         this.log('action', `Found party ID: ${partyId}`);
 
-        return cy.wrap(lastChangedDate).as('lastChangedDateBaseline').then(() => {
-          return { defendantAccountId, partyId: partyId as string };
-        });
+        return cy
+          .wrap(lastChangedDate)
+          .as('lastChangedDateBaseline')
+          .then(() => {
+            return { defendantAccountId, partyId: partyId as string };
+          });
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -961,9 +964,7 @@ export class AccountEnquiryFlow {
           .and.include(expectedForename);
 
         // AC2b: Verify old_value exists and differs from new_value
-        expect(match?.['old_value'], 'old_value should exist and be a string')
-          .to.be.a('string')
-          .and.not.be.empty;
+        expect(match?.['old_value'], 'old_value should exist and be a string').to.be.a('string').and.not.be.empty;
         expect(match?.['old_value'], 'old_value should differ from new_value').to.not.eq(match?.['new_value']);
 
         this.log('done', 'Amendment verified in amendments log', {
@@ -1098,7 +1099,9 @@ export class AccountEnquiryFlow {
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
-          expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(expectedGuardianName);
+          expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
+            expectedGuardianName,
+          );
           this.log('assert', 'Guardian forename verified in party details', { forenames: individual?.['forenames'] });
           return data.defendantAccountId;
         }),

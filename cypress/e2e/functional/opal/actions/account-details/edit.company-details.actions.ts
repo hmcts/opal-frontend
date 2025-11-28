@@ -93,9 +93,7 @@ export class EditCompanyDetailsActions {
    */
   assertCompanyNameContains(expected: string): void {
     log('assert', `Asserting company name summary contains "${expected}"`);
-    cy.get(SummaryL.fields.name, { timeout: 10000 })
-      .should('be.visible')
-      .and('contain.text', expected);
+    cy.get(SummaryL.fields.name, { timeout: 10000 }).should('be.visible').and('contain.text', expected);
     log('done', `Verified company name contains "${expected}"`);
   }
 }
