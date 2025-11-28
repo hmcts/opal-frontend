@@ -14,7 +14,7 @@ import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountSearchIndividualsActions } from './search.individuals.actions';
 import { AccountSearchCompanyActions } from './search.companies.actions';
 import { AccountSearchMinorCreditorsActions } from './search.minor-creditors.actions';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 
 type Entity = 'individual' | 'company' | 'minorCreditor';

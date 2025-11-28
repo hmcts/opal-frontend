@@ -13,7 +13,7 @@
 import { log } from '../../../../../support/utils/log.helper';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchMinorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.minor-creditors.locators';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export type MinorCreditorType = 'Individual' | 'Company' | 'individual' | 'company';
 type SimpleType = 'individual' | 'company';

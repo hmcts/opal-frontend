@@ -16,7 +16,7 @@ import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions
 import { AccountSearchNavActions } from '../../../e2e/functional/opal/actions/search/search.nav.actions';
 import { AccountSearchProblemActions } from '../../../e2e/functional/opal/actions/search/search.problem.actions';
 import { ResultsActions } from '../../../e2e/functional/opal/actions/search.results.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
 
 import { log } from '../../utils/log.helper';

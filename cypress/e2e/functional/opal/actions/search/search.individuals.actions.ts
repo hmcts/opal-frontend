@@ -7,7 +7,7 @@
 import { AccountSearchIndividualsLocators as L } from '../../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { ResultsActions } from '../search.results.actions';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 import { log } from '../../../../../support/utils/log.helper';
 
 export class AccountSearchIndividualsActions {

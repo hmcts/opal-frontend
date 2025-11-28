@@ -11,7 +11,7 @@ import { AccountSearchMajorCreditorsActions } from '../actions/search/search.maj
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { AccountSearchProblemActions } from '../actions/search/search.problem.actions';
 import { ResultsActions } from '../actions/search.results.actions';
-import { CommonActions } from '../actions/common.actions';
+import { CommonActions } from '../actions/common/common.actions';
 
 type MinorCreditorType = 'Individual' | 'Company';
 

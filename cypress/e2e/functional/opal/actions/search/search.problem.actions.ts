@@ -2,7 +2,7 @@
 
 import { log } from '../../../../../support/utils/log.helper';
 import { AccountSearchProblemLocators as L } from '../../../../../shared/selectors/account-search/account.search.problem.locators';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 /**
  * Actions for the "There is a problem" / problem view shown when cross-section validation fails.

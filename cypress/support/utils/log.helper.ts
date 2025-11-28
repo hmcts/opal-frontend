@@ -31,7 +31,9 @@ export type LogScope =
   | 'results'
   | 'save'
   | 'search'
+  | 'select'
   | 'step'
+  | 'type'
   | 'verify'
   | 'wait'
   | 'warn';

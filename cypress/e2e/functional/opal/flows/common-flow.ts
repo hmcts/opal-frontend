@@ -10,7 +10,7 @@
  */
 
 import { log } from '../../../../support/utils/log.helper';
-import { CommonActions } from '../actions/common.actions';
+import { CommonActions } from '../actions/common/common.actions';
 
 export class CommonFlow {
   private readonly common = new CommonActions();
