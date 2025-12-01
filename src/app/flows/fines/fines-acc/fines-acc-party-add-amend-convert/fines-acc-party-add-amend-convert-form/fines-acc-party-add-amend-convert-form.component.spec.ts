@@ -230,7 +230,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
 
-  it('should require title field', () => {
+  it('should require title field for individual party type', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -240,6 +240,21 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     titleControl?.markAsTouched();
     titleControl?.updateValueAndValidity();
     expect(titleControl?.hasError('required')).toBe(true);
+
+    titleControl?.setValue('Mr');
+    expect(titleControl?.hasError('required')).toBe(false);
+  });
+
+  it('should not require title field for parent/guardian party type', () => {
+    component.partyType = 'parentGuardian';
+    fixture.detectChanges();
+
+    const titleControl = component.form.get('facc_party_add_amend_convert_title');
+    // Ensure the control value is null/empty and check it's not required
+    titleControl?.setValue(null);
+    titleControl?.markAsTouched();
+    titleControl?.updateValueAndValidity();
+    expect(titleControl?.hasError('required')).toBe(false);
 
     titleControl?.setValue('Mr');
     expect(titleControl?.hasError('required')).toBe(false);
@@ -680,12 +695,12 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
     });
 
-    it('should require title, forenames and surname for parent/guardian party type', () => {
+    it('should require forenames and surname but not title for parent/guardian party type', () => {
       const titleControl = component.form.get('facc_party_add_amend_convert_title');
       const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
       const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
 
-      expect(titleControl?.hasError('required')).toBe(true);
+      expect(titleControl?.hasError('required')).toBe(false); // Title should not be required for parent/guardian
       expect(forenamesControl?.hasError('required')).toBe(true);
       expect(surnameControl?.hasError('required')).toBe(true);
 

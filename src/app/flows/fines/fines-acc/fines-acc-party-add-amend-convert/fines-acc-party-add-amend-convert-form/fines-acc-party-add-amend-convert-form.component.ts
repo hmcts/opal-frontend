@@ -183,7 +183,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
    * Adds individual-specific form controls to the base form group.
    */
   private addIndividualFormControls(formGroup: FormGroup): void {
-    formGroup.addControl('facc_party_add_amend_convert_title', new FormControl(null, [Validators.required]));
+    const titleValidator = this.isParentGuardianPartyType ? [] : [Validators.required];
+    formGroup.addControl('facc_party_add_amend_convert_title', new FormControl(null, titleValidator));
     formGroup.addControl(
       'facc_party_add_amend_convert_forenames',
       new FormControl(null, [Validators.required, Validators.maxLength(20), LETTERS_WITH_SPACES_PATTERN_VALIDATOR]),
