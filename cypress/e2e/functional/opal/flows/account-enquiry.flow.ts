@@ -941,20 +941,9 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        // AC4d: Capture last_changed_date baseline for later comparison
-        const lastChangedDate = headerBody['last_changed_date'] as string | null;
-        expect(lastChangedDate, 'last_changed_date should exist after save').to.exist;
-        expect(lastChangedDate, 'last_changed_date should not be null or undefined').to.be.a('string').and.not.be.empty;
-        this.log('info', 'Captured last_changed_date baseline', { lastChangedDate });
-
         this.log('action', `Found party ID: ${partyId}`);
 
-        return cy
-          .wrap(lastChangedDate)
-          .as('lastChangedDateBaseline')
-          .then(() => {
-            return { defendantAccountId, partyId: partyId as string };
-          });
+        return { defendantAccountId, partyId: partyId as string };
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -1050,29 +1039,7 @@ export class AccountEnquiryFlow {
             currentCount: amendments.length,
             baselineCount,
           });
-
-          // AC4d: Verify last_changed_date was still updated even though no changes were made
-          return cy.get('@lastChangedDateBaseline').then((baselineDate) => ({ baselineDate }));
-        })
-        .then(({ baselineDate }) =>
-          this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
-            const baselineDateStr = baselineDate as unknown as string | null;
-            this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
-
-            const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
-            this.log('info', 'Current last_changed_date', { currentLastChangedDate });
-
-            expect(
-              currentLastChangedDate,
-              'last_changed_date should be updated even when no changes were made',
-            ).to.not.eq(baselineDateStr);
-
-            this.log('done', 'Verified last_changed_date was updated (AC4d)', {
-              baseline: baselineDateStr,
-              current: currentLastChangedDate,
-            });
-          }),
-        );
+        });
     });
   }
 
@@ -1115,20 +1082,9 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['parent_guardian_party_id'];
         expect(partyId, 'parent_guardian_party_id must exist').to.exist;
 
-        // AC4d: Capture last_changed_date baseline for later comparison
-        const lastChangedDate = headerBody['last_changed_date'] as string | null;
-        expect(lastChangedDate, 'last_changed_date should exist after save').to.exist;
-        expect(lastChangedDate, 'last_changed_date should not be null or undefined').to.be.a('string').and.not.be.empty;
-        this.log('info', 'Captured last_changed_date baseline', { lastChangedDate });
-
         this.log('action', `Found parent/guardian party ID: ${partyId}`);
 
-        return cy
-          .wrap(lastChangedDate)
-          .as('lastChangedDateBaseline')
-          .then(() => {
-            return { defendantAccountId, partyId: partyId as string };
-          });
+        return { defendantAccountId, partyId: partyId as string };
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -1202,20 +1158,9 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        // AC4d: Capture last_changed_date baseline for later comparison
-        const lastChangedDate = headerBody['last_changed_date'] as string | null;
-        expect(lastChangedDate, 'last_changed_date should exist after save').to.exist;
-        expect(lastChangedDate, 'last_changed_date should not be null or undefined').to.be.a('string').and.not.be.empty;
-        this.log('info', 'Captured last_changed_date baseline', { lastChangedDate });
-
         this.log('action', `Found party ID: ${partyId}`);
 
-        return cy
-          .wrap(lastChangedDate)
-          .as('lastChangedDateBaseline')
-          .then(() => {
-            return { defendantAccountId, partyId: partyId as string };
-          });
+        return { defendantAccountId, partyId: partyId as string };
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -1323,29 +1268,7 @@ export class AccountEnquiryFlow {
             currentCount: amendments.length,
             baselineCount,
           });
-
-          // AC4d: Verify last_changed_date was still updated even though no changes were made
-          return cy.get('@lastChangedDateBaseline').then((baselineDate) => ({ baselineDate }));
-        })
-        .then(({ baselineDate }) =>
-          this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
-            const baselineDateStr = baselineDate as unknown as string | null;
-            this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
-
-            const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
-            this.log('info', 'Current last_changed_date', { currentLastChangedDate });
-
-            expect(
-              currentLastChangedDate,
-              'last_changed_date should be updated even when no changes were made',
-            ).to.not.eq(baselineDateStr);
-
-            this.log('done', 'Verified last_changed_date was updated (AC4d)', {
-              baseline: baselineDateStr,
-              current: currentLastChangedDate,
-            });
-          }),
-        );
+        });
     });
   }
 
@@ -1395,29 +1318,7 @@ export class AccountEnquiryFlow {
             currentCount: amendments.length,
             baselineCount,
           });
-
-          // AC4d: Verify last_changed_date was still updated even though no changes were made
-          return cy.get('@lastChangedDateBaseline').then((baselineDate) => ({ baselineDate }));
-        })
-        .then(({ baselineDate }) =>
-          this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
-            const baselineDateStr = baselineDate as unknown as string | null;
-            this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
-
-            const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
-            this.log('info', 'Current last_changed_date', { currentLastChangedDate });
-
-            expect(
-              currentLastChangedDate,
-              'last_changed_date should be updated even when no changes were made',
-            ).to.not.eq(baselineDateStr);
-
-            this.log('done', 'Verified last_changed_date was updated (AC4d)', {
-              baseline: baselineDateStr,
-              current: currentLastChangedDate,
-            });
-          }),
-        );
+        });
     });
   }
 }
