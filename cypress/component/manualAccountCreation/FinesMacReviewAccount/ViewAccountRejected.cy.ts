@@ -49,7 +49,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
           useFactory: () => {
             let globalStore = new GlobalStore();
             globalStore.setUserState(ACCOUNT_SESSION_USER_STATE_MOCK);
-            globalStore.setError({
+            globalStore.setBannerError({
               error: false,
               message: '',
             });
