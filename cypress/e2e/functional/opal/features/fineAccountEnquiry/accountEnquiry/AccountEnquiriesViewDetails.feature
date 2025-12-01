@@ -82,6 +82,13 @@ Feature: Account Enquiries – View Account Details
     # AC3/4 - Verify via API
     And I verify Company amendments via API for company name "Accdetail comp updated"
 
+    # AC4 – Save without making changes (no new amendments created)
+    When I go to the Defendant details section and the header is "Company details"
+    And I edit the Company details without making changes
+    And I save the company details
+    Then I should return to the account details page Defendant tab
+    And I should see the account header contains "Accdetail comp updated"
+    And I verify no amendments were created via API for company details
 
 
   @PO-2315 @PO-1663
@@ -112,6 +119,14 @@ Feature: Account Enquiries – View Account Details
     # AC3/4 - Verify via API
     And I verify defendant amendments via API for first name "Updated"
 
+    # AC4 – Save without making changes (no new amendments created)
+    When I go to the Defendant details section and the header is "Defendant details"
+    And I edit the Defendant details without making changes
+    And I save the defendant details
+    Then I should return to the account details page Defendant tab
+    And I should see the account header contains "Miss Updated TESTNONPAYEE"
+    And I verify no amendments were created via API
+
   @PO-1129
   Scenario: As a user I can edit defendant details for a Parent/Guardian to pay account
     Given I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
@@ -137,3 +152,11 @@ Feature: Account Enquiries – View Account Details
     And I should see the parent or guardian name contains "Updated"
     # AC3/4 - Verify via API
     And I verify parent or guardian amendments via API for guardian name "Updated"
+
+    # AC4 – Save without making changes (no new amendments created)
+    When I go to the Parent or guardian details section and the header is "Parent or guardian details"
+    And I edit the Parent or guardian details without making changes
+    And I save the parent or guardian details
+    Then I should return to the account details page Parent or guardian tab
+    And I should see the parent or guardian name contains "Updated LNAME"
+    And I verify no amendments were created via API for parent or guardian details

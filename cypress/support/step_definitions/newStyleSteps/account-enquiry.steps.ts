@@ -143,9 +143,19 @@ When('I edit the Parent or guardian details and change the First name to {string
   flow().editParentGuardianAndChangeFirstName(value);
 });
 
+When('I edit the Parent or guardian details without making changes', () => {
+  log('step', 'Edit Parent or guardian details without making changes');
+  flow().editParentGuardianDetailsWithoutChanges();
+});
+
 When('I edit the Company details and change the Company name to {string}', (value: string) => {
   log('step', 'Edit Company name', { value });
   flow().editCompanyDetailsAndChangeName(value);
+});
+
+When('I edit the Company details without making changes', () => {
+  log('step', 'Edit Company details without making changes');
+  flow().editCompanyDetailsWithoutChanges();
 });
 
 When('I save the defendant details', () => {
@@ -253,6 +263,16 @@ Then('I verify parent or guardian amendments via API for guardian name {string}'
 Then('I verify no amendments were created via API', () => {
   log('assert', 'Verify no amendments were created via API');
   flow().verifyNoDefendantAmendments();
+});
+
+Then('I verify no amendments were created via API for company details', () => {
+  log('assert', 'Verify no amendments were created via API for company details');
+  flow().verifyNoCompanyAmendments();
+});
+
+Then('I verify no amendments were created via API for parent or guardian details', () => {
+  log('assert', 'Verify no amendments were created via API for parent or guardian details');
+  flow().verifyNoParentGuardianAmendments();
 });
 
 /**

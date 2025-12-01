@@ -262,6 +262,18 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens parent/guardian details edit mode without making any changes.
+   * Used to test AC4: saving without amendments should not create amendment records.
+   */
+  public editParentGuardianDetailsWithoutChanges(): void {
+    this.log('method', 'editParentGuardianDetailsWithoutChanges()');
+    this.log('action', 'Opening parent/guardian details edit mode without making changes');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.change();
+    this.editParentGuardianActions.assertStillOnEditPage();
+  }
+
+  /**
    * Starts editing company details and changes the company name field.
    *
    * @param value - New company name value.
@@ -274,6 +286,19 @@ export class AccountEnquiryFlow {
     this.defendantDetails.assertSectionHeader('Company');
     this.defendantDetails.change();
     this.editCompanyDetailsActions.editCompanyName(value);
+  }
+
+  /**
+   * Opens company details edit mode without making any changes.
+   * Used to test AC4: saving without amendments should not create amendment records.
+   */
+  public editCompanyDetailsWithoutChanges(): void {
+    this.log('method', 'editCompanyDetailsWithoutChanges()');
+    this.log('action', 'Opening company details edit mode without making changes');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertSectionHeader('Company');
+    this.defendantDetails.change();
+    this.editCompanyDetailsActions.assertStillOnEditPage();
   }
 
   /**
@@ -556,7 +581,7 @@ export class AccountEnquiryFlow {
           searchDataLength: amendments.length,
         });
 
-        return { amendments, count };
+        return { amendments, count } as { amendments: Array<Record<string, unknown>>; count?: number };
       });
   }
 
@@ -991,7 +1016,7 @@ export class AccountEnquiryFlow {
 
     // Get the baseline amendment count from the previous verification step
     cy.get('@amendmentBaseline').then((baseline) => {
-      const baselineCount = (baseline as { amendmentCount: number })?.amendmentCount ?? 0;
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
       this.log('info', 'Retrieved amendment baseline', { baselineCount });
 
       let defendantAccountId: number;
@@ -1031,7 +1056,7 @@ export class AccountEnquiryFlow {
         })
         .then(({ baselineDate }) =>
           this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
-            const baselineDateStr = baselineDate as string | null;
+            const baselineDateStr = baselineDate as unknown as string | null;
             this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
 
             const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
@@ -1087,11 +1112,23 @@ export class AccountEnquiryFlow {
         this.fetchHeaderSummary(defendantAccountId).then((headerBody) => ({ defendantAccountId, headerBody })),
       )
       .then(({ defendantAccountId, headerBody }) => {
-        const partyId = headerBody['parent_guardian_account_party_id'];
-        expect(partyId, 'parent_guardian_account_party_id must exist').to.exist;
+        const partyId = headerBody['parent_guardian_party_id'];
+        expect(partyId, 'parent_guardian_party_id must exist').to.exist;
+
+        // AC4d: Capture last_changed_date baseline for later comparison
+        const lastChangedDate = headerBody['last_changed_date'] as string | null;
+        expect(lastChangedDate, 'last_changed_date should exist after save').to.exist;
+        expect(lastChangedDate, 'last_changed_date should not be null or undefined').to.be.a('string').and.not.be.empty;
+        this.log('info', 'Captured last_changed_date baseline', { lastChangedDate });
 
         this.log('action', `Found parent/guardian party ID: ${partyId}`);
-        return { defendantAccountId, partyId: partyId as string };
+
+        return cy
+          .wrap(lastChangedDate)
+          .as('lastChangedDateBaseline')
+          .then(() => {
+            return { defendantAccountId, partyId: partyId as string };
+          });
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -1141,6 +1178,10 @@ export class AccountEnquiryFlow {
           oldValue: oldValue || '(empty)',
           newValue,
         });
+
+        // Store the current amendment count for later comparison
+        cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
+        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
       });
   }
 
@@ -1161,8 +1202,20 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
+        // AC4d: Capture last_changed_date baseline for later comparison
+        const lastChangedDate = headerBody['last_changed_date'] as string | null;
+        expect(lastChangedDate, 'last_changed_date should exist after save').to.exist;
+        expect(lastChangedDate, 'last_changed_date should not be null or undefined').to.be.a('string').and.not.be.empty;
+        this.log('info', 'Captured last_changed_date baseline', { lastChangedDate });
+
         this.log('action', `Found party ID: ${partyId}`);
-        return { defendantAccountId, partyId: partyId as string };
+
+        return cy
+          .wrap(lastChangedDate)
+          .as('lastChangedDateBaseline')
+          .then(() => {
+            return { defendantAccountId, partyId: partyId as string };
+          });
       })
       .then((data) =>
         this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
@@ -1217,7 +1270,155 @@ export class AccountEnquiryFlow {
           oldValue: oldValue || '(empty)',
           newValue,
         });
+
+        // Store the current amendment count for later comparison
+        cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
+        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
       });
+  }
+
+  /**
+   * Verifies that NO company amendments were created.
+   * Used for AC4: saving without making changes should not create amendment records.
+   *
+   * Extracts the defendant account ID from the current URL and queries the amendments API
+   * to verify no amendment records exist for company details.
+   */
+  public verifyNoCompanyAmendments(): void {
+    this.log('method', 'verifyNoCompanyAmendments()');
+
+    // Get the baseline amendment count from the previous verification step
+    cy.get('@amendmentBaseline').then((baseline) => {
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
+      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+
+      let defendantAccountId: number;
+
+      this.extractDefendantAccountIdFromUrl()
+        .then((id) => {
+          defendantAccountId = id;
+          return this.fetchHeaderSummary(id);
+        })
+        .then((headerBody) => {
+          const partyId = headerBody['defendant_account_party_id'];
+          expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+          this.log('info', `Found party ID: ${partyId}`);
+          return defendantAccountId;
+        })
+        .then((id) => this.searchAmendmentsForAccount(id))
+        .then(({ amendments }) => {
+          this.log('info', 'Amendments search result', {
+            searchDataLength: amendments.length,
+            baselineCount,
+          });
+
+          // AC4c: No NEW amendments should have been created since the baseline
+          expect(
+            amendments.length,
+            `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
+          ).to.eq(baselineCount);
+
+          this.log('done', 'Verified no new amendments were created', {
+            currentCount: amendments.length,
+            baselineCount,
+          });
+
+          // AC4d: Verify last_changed_date was still updated even though no changes were made
+          return cy.get('@lastChangedDateBaseline').then((baselineDate) => ({ baselineDate }));
+        })
+        .then(({ baselineDate }) =>
+          this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
+            const baselineDateStr = baselineDate as unknown as string | null;
+            this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
+
+            const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
+            this.log('info', 'Current last_changed_date', { currentLastChangedDate });
+
+            expect(
+              currentLastChangedDate,
+              'last_changed_date should be updated even when no changes were made',
+            ).to.not.eq(baselineDateStr);
+
+            this.log('done', 'Verified last_changed_date was updated (AC4d)', {
+              baseline: baselineDateStr,
+              current: currentLastChangedDate,
+            });
+          }),
+        );
+    });
+  }
+
+  /**
+   * Verifies that NO parent/guardian amendments were created.
+   * Used for AC4: saving without making changes should not create amendment records.
+   *
+   * Extracts the defendant account ID from the current URL and queries the amendments API
+   * to verify no amendment records exist for parent/guardian details.
+   */
+  public verifyNoParentGuardianAmendments(): void {
+    this.log('method', 'verifyNoParentGuardianAmendments()');
+
+    // Get the baseline amendment count from the previous verification step
+    cy.get('@amendmentBaseline').then((baseline) => {
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
+      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+
+      let defendantAccountId: number;
+
+      this.extractDefendantAccountIdFromUrl()
+        .then((id) => {
+          defendantAccountId = id;
+          return this.fetchHeaderSummary(id);
+        })
+        .then((headerBody) => {
+          const partyId = headerBody['defendant_account_party_id'];
+          expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+          this.log('info', `Found party ID: ${partyId}`);
+          return defendantAccountId;
+        })
+        .then((id) => this.searchAmendmentsForAccount(id))
+        .then(({ amendments }) => {
+          this.log('info', 'Amendments search result', {
+            searchDataLength: amendments.length,
+            baselineCount,
+          });
+
+          // AC4c: No NEW amendments should have been created since the baseline
+          expect(
+            amendments.length,
+            `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
+          ).to.eq(baselineCount);
+
+          this.log('done', 'Verified no new amendments were created', {
+            currentCount: amendments.length,
+            baselineCount,
+          });
+
+          // AC4d: Verify last_changed_date was still updated even though no changes were made
+          return cy.get('@lastChangedDateBaseline').then((baselineDate) => ({ baselineDate }));
+        })
+        .then(({ baselineDate }) =>
+          this.fetchHeaderSummary(defendantAccountId).then((currentHeaderBody) => {
+            const baselineDateStr = baselineDate as unknown as string | null;
+            this.log('info', 'Retrieved last_changed_date baseline', { baselineDateStr });
+
+            const currentLastChangedDate = currentHeaderBody['last_changed_date'] as string | null;
+            this.log('info', 'Current last_changed_date', { currentLastChangedDate });
+
+            expect(
+              currentLastChangedDate,
+              'last_changed_date should be updated even when no changes were made',
+            ).to.not.eq(baselineDateStr);
+
+            this.log('done', 'Verified last_changed_date was updated (AC4d)', {
+              baseline: baselineDateStr,
+              current: currentLastChangedDate,
+            });
+          }),
+        );
+    });
   }
 }
 
