@@ -59,26 +59,15 @@ These rules are designed for automated PR reviews (e.g., Codex in GitHub). They 
 
 ## How to use
 
-- Apply these rules to changes in this PR only.
-- Prefer specific, line-anchored comments with a short rationale and a concrete fix.
-- Treat **P0** and **P1** as blocking; **P2** as advisory.
-
-### Scope of review
-
-Automated review should only analyse and comment on **project-owned application code** within this repository.
-
-In particular:
-
-- Focus on TypeScript and templates under `src/app/**`, shared utilities under `src/**`, and configuration that affects runtime behaviour.
-- Ignore Cypress code and tests under `cypress/**` (including component tests, e2e tests, mocks, and fixtures).
-- Ignore external library code and their internals (for example, any packages starting `hmcts-opal-frontend-common-*` or other third-party dependencies).
-- Do not comment on generated files, build outputs, or `node_modules`.
+* Apply these rules to changes in this PR only.
+* Prefer specific, line-anchored comments with a short rationale and a concrete fix.
+* Treat **P0** and **P1** as blocking; **P2** as advisory.
 
 ## Severity definitions
 
-- **P0 (blocker):** Security risk, data loss, broken UX/AX, build/test failure, or architectural violation that will be hard to undo.
-- **P1 (high):** Regressions in quality, maintainability, or performance with simple fixes.
-- **P2 (advice):** Stylistic or non-critical improvements.
+* **P0 (blocker):** Security risk, data loss, broken UX/AX, build/test failure, or architectural violation that will be hard to undo.
+* **P1 (high):** Clearly regressions in quality, maintainability, or performance with simple fixes.
+* **P2 (advice):** Stylistic or non-critical improvements.
 
 ---
 
@@ -92,21 +81,21 @@ Angular v20+ standalone app using GOV.UK/HMCTS design system. Prefer modern Angu
 
 1. **Security & safety**
 
-- Unsanitised HTML or `bypassSecurityTrust*` without justification and tests.
-- Interpolating user data into `[innerHTML]`/`[srcdoc]`/`style`, or unsafe URL handling.
-- Credentials, tokens, secrets, or PII in code, logs, comments, or tests.
+* Unsanitised HTML or `bypassSecurityTrust*` without justification and tests.
+* Interpolating user data into `[innerHTML]`/`[srcdoc]`/`style`, or unsafe URL handling.
+* Credentials, tokens, secrets, or PII in code, logs, comments, or tests.
 
 2. **Accessibility (AX)**
 
-- Interactive elements not reachable by keyboard, `click` handlers on non-interactive elements without proper roles/tabindex.
-- Missing visible label/`aria-label` for form controls or buttons; images without meaningful `alt`.
+* Interactive elements not reachable by keyboard, `click` handlers on non-interactive elements without proper roles/tabindex.
+* Missing visible label/`aria-label` for form controls or buttons; images without meaningful `alt`.
 
 3. **Architecture & build integrity**
 
-- New Angular modules where a **standalone** component/route/provider is appropriate.
-- Mixing **signals** and imperative RxJS within the same component in a way that causes side-effects in template evaluation.
-- Using **barrel exports** (`index.ts`, `export *`) or importing via barrels. Prefer **direct, specific imports** from the declaring file. Keep features self-contained by default.
-- CI/test failures, TypeScript errors, or missing required checks.
+* New Angular modules where a **standalone** component/route/provider is appropriate.
+* Mixing **signals** and imperative RxJS within the same component in a way that causes side-effects in template evaluation.
+* Using **barrel exports** (`index.ts`, `export *`) or importing via barrels. Prefer **direct, specific imports** from the declaring file. Cross-feature imports are allowed when justified; keep features self-contained by default.
+* CI/test failures, TypeScript errors, or missing required checks.
 
 ---
 
@@ -114,48 +103,67 @@ Angular v20+ standalone app using GOV.UK/HMCTS design system. Prefer modern Angu
 
 1. **Angular correctness**
 
-- Prefer `@if`, `@for`, `@switch` over legacy structural directives in new/changed templates.
-- Use **computed signals** and **pure functions** for derived state; avoid calling methods with side effects in templates.
-- Choose RxJS concurrency intentionally: `switchMap` for latest-only, `exhaustMap` for form submit, `concatMap` when order matters.
+* Prefer `@if`, `@for`, `@switch` over legacy structural directives in new/changed templates.
+* Use **computed signals** and **pure functions** for derived state; avoid calling methods with side effects in templates.
+* Choose RxJS concurrency intentionally: `switchMap` for latest-only, `exhaustMap` for form submit, `concatMap` when order matters.
 
 2. **Code quality fundamentals**
 
-- Use clear, descriptive names for symbols, inputs/outputs, and tests; avoid abbreviations that obscure intent.
-- Keep components and services small and cohesive; extract helpers to keep implementations readable.
-- Prefer simple, readable code over cleverness; add comments that explain _why_ decisions were made.
-- Apply modern Angular features (standalone components, signals, control flow) in new/changed code.
+* Use clear, descriptive names for symbols, inputs/outputs, and tests; avoid abbreviations that obscure intent.
+* Keep components and services small and cohesive; extract helpers to keep implementations readable.
+* Prefer simple, readable code over cleverness; add comments that explain *why* decisions were made.
+* Apply modern Angular features (standalone components, signals, control flow) in new/changed code.
 
 3. **Performance**
 
-- Avoid heavy work in templates (no `.map()`/`.filter()` or non-pure pipes inside bindings).
-- Lazy-load routes and large feature areas; avoid broad shared providers when a **standalone provider** suffices.
-- Guard against large third-party dependencies; if introduced, note size and reason.
+* Avoid heavy work in templates (no `.map()`/`.filter()` or non-pure pipes inside bindings).
+* Lazy-load routes and large feature areas; avoid broad shared providers when a **standalone provider** suffices.
+* Guard against large third-party dependencies; if introduced, note size and reason.
 
 4. **Testing**
 
-- Add/maintain tests for new logic and error/empty states.
-- Prefer Angular Testing Library/Harnesses; avoid brittle DOM selectors/data-testids when a Harness exists.
+* Add/maintain tests for new logic and error/empty states.
+* Prefer Angular Testing Library/Harnesses; avoid brittle DOM selectors/data-testids when a Harness exists.
 
 5. **Function design**
 
-- Prefer **small, single-purpose, pure functions**.
-- Keep cyclomatic complexity low.
-- Pass explicit inputs and return data rather than performing side effects.
+* Prefer **small, single-purpose, pure functions**.
+* Keep cyclomatic complexity low.
+* Pass explicit inputs and return data rather than performing side effects.
 
 ---
 
+## Green coding and efficiency
+
+* Favour **OnPush change detection** to avoid unnecessary re-renders; avoid computing logic inside templates.
+* Prefer **async pipe** for subscription management; when subscribing manually, ensure cleanup using `takeUntil()` and `ngOnDestroy`.
+* Use Angular’s `@ViewChild` and `@ViewChildren` rather than direct DOM element references to prevent memory leaks.
+* Ensure components clean up timers, event listeners, and subscriptions during destruction.
+* Prefer **lazy-loaded modules** and deferrable views to reduce initial memory and CPU usage.
+* Use **standalone components** to reduce unnecessary dependencies and improve tree-shaking efficiency.
+* Apply effective **garbage collection strategies** by avoiding long-lived references and large retained objects.
+* Use `track` expressions in `@for` for efficient DOM diffing.
+* Cache API/HTTP responses for data that does not change frequently to reduce repeated network and CPU cost.
+* Avoid binding to new object/array literals inside templates; compute once in a signal or helper.
+* Prefer pure pipes or computed signals over inline operations that allocate new values on each change detection.
+* Throttle or debounce high-frequency events (`scroll`, `keyup`, `mousemove`) before updating state.
+* Avoid long-running synchronous work on the main thread; offload heavy computation to Web Workers.
+* Use native browser and Angular APIs instead of large libraries for simple operations.
+* Optimise images (size, format) and prefer SVG icons to reduce asset weight.
+* Avoid unnecessary DOM depth and wrapper elements to reduce layout and paint work.
+
 ## P2 rules (advisory)
 
-- Prefer container (smart) vs. presentational component separation when complexity grows.
-- Keep features **self-contained** by default. **No barrels** (`index.ts`, `export *`) — prefer direct file imports for tree-shaking.
-- Provide brief inline docs when introducing patterns others should copy.
+* Prefer container (smart) vs. presentational component separation when complexity grows.
+* Keep features **self-contained** by default. **No barrels** (`index.ts`, `export *`) — prefer direct file imports for tree-shaking.
+* Provide brief inline docs when introducing patterns others should copy.
 
 ---
 
 ## What to ignore (unless requested)
 
-- Typos in comments/docs (treat as P2 unless critical).
-- Pure formatting churn without semantic change.
+* Typos in comments/docs (treat as P2 unless critical).
+* Pure formatting churn without semantic change.
 
 ---
 
@@ -163,30 +171,38 @@ Angular v20+ standalone app using GOV.UK/HMCTS design system. Prefer modern Angu
 
 Use this shape to keep feedback crisp and useful:
 
+```
+[Severity]: <Rule name>
+Problem: <what is wrong in one sentence>
+Why: <risk/impact>
+Fix: <specific change>
+Example: <code snippet or link to guideline>
+```
+
 ### Examples
 
-- **P0: Unsanitised HTML**  
-  _Problem:_ `[innerHTML]` used with dynamic user content in `case-summary.component.html`.  
-  _Why:_ XSS risk.  
-  _Fix:_ Remove `innerHTML`, render via bindings/DOM APIs, or use a trusted, sanitised subset with tests.
+* **P0: Unsanitised HTML**
+  *Problem:* `[innerHTML]` used with dynamic user content in `case-summary.component.html`.
+  *Why:* XSS risk.
+  *Fix:* Remove `innerHTML`, render via bindings/DOM APIs, or use a trusted, sanitised subset with tests.
 
-- **P1: Template work**  
-  _Problem:_ Method call `getItems()` used in template; performs filtering.  
-  _Why:_ Re-runs each change detection; performance risk.  
-  _Fix:_ Move to computed signal `itemsFiltered = computed(() => …)` and bind to that.
+* **P1: Template work**
+  *Problem:* Method call `getItems()` used in template; performs filtering.
+  *Why:* Re-runs each change detection; performance risk.
+  *Fix:* Move to computed signal `itemsFiltered = computed(() => …)` and bind to that.
 
-- **P1: Concurrency**  
-  _Problem:_ Form submit uses `mergeMap`, causing double submits.  
-  _Why:_ Users can trigger parallel requests.  
-  _Fix:_ Use `exhaustMap` around submit stream and disable button while pending.
+* **P1: Concurrency**
+  *Problem:* Form submit uses `mergeMap`, causing double submits.
+  *Why:* Users can trigger parallel requests.
+  *Fix:* Use `exhaustMap` around submit stream and disable button while pending.
 
 ---
 
 ## Repo links (for humans & tools)
 
-- Angular style: standalone, signals, control flow
-- GOV.UK/HMCTS patterns and accessibility
-- Testing: Angular Testing Library & Harnesses
+* Angular style: standalone, signals, control flow
+* GOV.UK/HMCTS patterns and accessibility
+* Testing: Angular Testing Library & Harnesses
 
 (When Codex is invoked with `@codex review`, apply these rules. Treat P0/P1 as blocking; raise P2 as comments.)
 
