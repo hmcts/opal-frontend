@@ -91,7 +91,7 @@ Feature: Account Enquiries – View Account Details
     And I verify no amendments were created via API for company details
 
 
-  @PO-2315 @PO-1663 @only
+  @PO-2315 @PO-1663
   Scenario: As a user I can view account details of a non-paying defendant account
     And I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
       | account.defendant.forenames           | Jane         |
