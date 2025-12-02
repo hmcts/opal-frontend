@@ -51,6 +51,8 @@ describe('ReviewAccountRejectedApproveComponent', () => {
             store.setBannerError({
               error: false,
               message: '',
+              title: null,
+              operationId: null
             });
             return store;
           },
@@ -185,7 +187,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
@@ -320,7 +322,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
