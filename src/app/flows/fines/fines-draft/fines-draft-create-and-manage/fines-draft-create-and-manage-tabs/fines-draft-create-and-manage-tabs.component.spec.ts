@@ -40,11 +40,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
     const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
       jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', [
-      'getDraftAccounts',
-      'getDraftAccountById',
-      'clearDraftAccountsCache',
-    ]);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'getDraftAccountById', 'clearCache']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
     mockOpalFinesService.getDraftAccountById.and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
 

@@ -32,7 +32,7 @@ describe('FinesDraftCheckAndValidateTabsComponent', () => {
       'mapAccountPayload',
     ]);
 
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearDraftAccountsCache']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getDraftAccounts', 'clearCache']);
     mockOpalFinesService.getDraftAccounts.and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
 
     finesDraftService = jasmine.createSpyObj<FinesDraftService>('FinesDraftService', [
