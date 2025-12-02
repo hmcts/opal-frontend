@@ -14,7 +14,7 @@ import { AccountSearchCompaniesLocators as C } from '../../../../shared/selector
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { HasAccountLinkOnPage } from '../../../../support/utils/results';
-import { CommonActions } from '../actions/common/common.actions';
+import { CommonActions } from '../actions/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
