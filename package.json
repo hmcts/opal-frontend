@@ -68,7 +68,8 @@
     "lint:ng": "ng lint",
     "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
     "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\"",
-    "cypress": "cypress open "
+    "cypress": "cypress open",
+    "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues"
   },
   "private": true,
   "dependencies": {
