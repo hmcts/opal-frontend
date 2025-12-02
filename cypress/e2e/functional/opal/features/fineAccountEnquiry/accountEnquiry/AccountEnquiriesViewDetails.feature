@@ -91,12 +91,14 @@ Feature: Account Enquiries – View Account Details
     And I verify no amendments were created via API for company details
 
 
-  @PO-2315 @PO-1663
+  @PO-2315 @PO-1663 @only
   Scenario: As a user I can view account details of a non-paying defendant account
     And I create a "pgToPay" draft account with the following details and set status "Publishing Pending":
-      | account.defendant.forenames       | Jane         |
-      | account.defendant.surname         | TestNonPayee |
-      | account.prosecutor_case_reference | PCR-AUTO-004 |
+      | account.defendant.forenames           | Jane         |
+      | account.defendant.surname             | TestNonPayee |
+      | account.defendant.dob                 | 2012-06-15   |
+      | account.defendant.parent_guardian.dob | 1980-02-15   |
+      | account.prosecutor_case_reference     | PCR-AUTO-004 |
     # AC2 – Search and view account details
     When I search for the account by last name "TestNonPayee" and open the latest result
     Then I should see the page header contains "Miss Jane TESTNONPAYEE"
@@ -141,6 +143,7 @@ Feature: Account Enquiries – View Account Details
       | account.collection_order_made_today     | false                   |
       | account.payment_card_request            | false                   |
       | account.defendant.dob                   | 2010-11-10              |
+      | account.defendant.parent_guardian.dob   | 1980-02-15              |
 
     When I search for the account by last name "PgPayEdit" and open the latest result
     Then I should see the page header contains "Alex PGPAYEDIT"
