@@ -5,7 +5,7 @@
  */
 
 import { SearchFilterByBUCommonLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu.common.locators';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 import { log } from '../../../../../support/utils/log.helper';
 
 export class SearchFilterByBUCommonActions {
