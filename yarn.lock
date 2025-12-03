@@ -3230,9 +3230,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.17":
-  version: 0.0.17
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.17"
+"@hmcts/opal-frontend-common-node@npm:^0.0.18":
+  version: 0.0.18
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.18"
   dependencies:
     "@azure/msal-browser": "npm:^4.11.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3255,19 +3255,19 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/9396fdc7e2046b95175c08eeac298aabb721fd379b2e415b5a217660c80ab26c1e786f0d8191665dbdc1d112b83af148bf5a788324a1c1713fffb069f5e45f1c
+  checksum: 10/d5d1f1f928625a34e74a8b6332d145bd1aef513fcf3aea1ed0bc4f84960246e91b4f1b1faae71224add940f143d17984290bf8e87b1885d39e55108279681c47
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.52":
-  version: 0.0.52
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.52"
+"@hmcts/opal-frontend-common@npm:^0.0.54":
+  version: 0.0.54
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.54"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/215e2265bee2e6420692be872131b8225915bde4f72e9c43aa89ff0a54bacf3d84ecc4960b367e28d5fda2c456aa21783bd931ae7a2b7091dd66b1c03ad18b89
+  checksum: 10/8f2a1eadb5e2b398676d630c106e6e1534059b68989da558441d183575a7aa8c84d00b1f873c2c13876adb525de9dcde082a926867889a583d8dd4a190291a1a
   languageName: node
   linkType: hard
 
@@ -13844,8 +13844,8 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.52"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.17"
+    "@hmcts/opal-frontend-common": "npm:^0.0.54"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.18"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^7.0.0"

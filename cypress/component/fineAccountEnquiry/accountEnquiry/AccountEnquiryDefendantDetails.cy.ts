@@ -208,7 +208,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../individual/amend']);
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/individual/amend']);
   });
 
   it('AC2a. Account maintenance permission true, BU not associated with account', { tags: ['PO-784'] }, () => {
@@ -340,7 +340,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../company/amend']);
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/company/amend']);
   });
 
   it(

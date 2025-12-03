@@ -5,6 +5,15 @@ import { log } from '../../../../../support/utils/log.helper';
 
 export class EditParentGuardianDetailsActions {
   /**
+   * Ensures the user is still on the edit page (form visible, not navigated away).
+   */
+  public assertStillOnEditPage(): void {
+    log('assert', 'Asserting Parent/Guardian Details edit form is visible');
+    cy.get(L.form, { timeout: 10_000 }).should('be.visible');
+    log('done', 'Parent/Guardian Details edit form confirmed visible');
+  }
+
+  /**
    * Asserts that the current page is the Parent/Guardian edit form.
    *
    * Verifies the URL path ends with `/parentGuardian/(add|amend|edit)` and confirms the
@@ -130,5 +139,13 @@ export class EditParentGuardianDetailsActions {
     cy.get(L.fields.lastName, { timeout }).should('be.visible').and('have.value', expectedLastName);
 
     log('done', `Verified Last name -> "${expectedLastName}"`);
+  }
+
+  /**
+   * Clicks the Save changes button on the Parent/Guardian edit form.
+   */
+  public saveChanges(): void {
+    log('action', 'Saving Parent/Guardian details');
+    cy.get(L.actions.saveButton, { timeout: 10_000 }).should('be.visible').click();
   }
 }

@@ -14,7 +14,7 @@ import { AccountSearchCompaniesLocators as C } from '../../../../shared/selector
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
 import { HasAccountLinkOnPage } from '../../../../support/utils/results';
-import { CommonActions } from '../actions/common/common.actions';
+import { CommonActions } from '../actions/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
@@ -35,6 +35,7 @@ import { EditParentGuardianDetailsActions } from '../actions/account-details/edi
 export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
+  private static readonly BASE_API_PATH = '/opal-fines-service';
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
@@ -42,6 +43,7 @@ export class AccountEnquiryFlow {
   private readonly results = new ResultsActions();
   private readonly defendantDetails = new AccountDetailsDefendantActions();
   private readonly parentGuardianDetails = new AccountDetailsParentGuardianActions();
+  private readonly companyDetails = new EditCompanyDetailsActions();
   private readonly detailsNav = new AccountDetailsNavActions();
   private readonly notes = new AccountDetailsNotesActions();
   private readonly comments = new AccountDetailsCommentsActions();
@@ -116,7 +118,7 @@ export class AccountEnquiryFlow {
     this.log('method', 'searchByLastName()');
     this.log('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.searchIndividuals.byLastName(surname);
+    this.searchIndividuals.searchByLastName(surname);
   }
 
   /**
@@ -207,6 +209,18 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Navigates to the Parent/Guardian tab and asserts a specific section header.
+   *
+   * @param headerText - Expected section header text.
+   */
+  public goToParentGuardianDetailsAndAssert(headerText: string): void {
+    this.log('method', 'goToParentGuardianDetailsAndAssert()');
+    this.log('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertSectionHeader(headerText);
+  }
+
+  /**
    * Starts editing defendant details and changes the first name field.
    *
    * @param value - New first name value.
@@ -218,6 +232,139 @@ export class AccountEnquiryFlow {
     this.defendantDetails.assertSectionHeader('Defendant');
     this.defendantDetails.change();
     this.editDefendantDetailsActions.updateFirstName(value);
+  }
+
+  /**
+   * Opens defendant details edit mode without making any changes.
+   * Used to test AC4: saving without amendments should not create amendment records.
+   */
+  public editDefendantWithoutChanges(): void {
+    this.log('method', 'editDefendantWithoutChanges()');
+    this.log('action', 'Opening defendant details edit mode without making changes');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertSectionHeader('Defendant');
+    this.defendantDetails.change();
+    this.editDefendantDetailsActions.assertStillOnEditPage();
+  }
+
+  /**
+   * Starts editing parent/guardian details and changes the first name field.
+   *
+   * @param value - New first name value.
+   */
+  public editParentGuardianAndChangeFirstName(value: string): void {
+    this.log('method', 'editParentGuardianAndChangeFirstName()');
+    this.log('edit', 'Editing parent/guardian first name', { value });
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.change();
+    this.editParentGuardianActions.assertHeader();
+    this.editParentGuardianActions.editFirstNames(value);
+  }
+
+  /**
+   * Opens parent/guardian details edit mode without making any changes.
+   * Used to test AC4: saving without amendments should not create amendment records.
+   */
+  public editParentGuardianDetailsWithoutChanges(): void {
+    this.log('method', 'editParentGuardianDetailsWithoutChanges()');
+    this.log('action', 'Opening parent/guardian details edit mode without making changes');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.change();
+    this.editParentGuardianActions.assertStillOnEditPage();
+  }
+
+  /**
+   * Starts editing company details and changes the company name field.
+   *
+   * @param value - New company name value.
+   */
+  public editCompanyDetailsAndChangeName(value: string): void {
+    this.log('method', 'editCompanyDetailsAndChangeName()');
+    this.log('edit', 'Editing company name', { value });
+
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertSectionHeader('Company');
+    this.defendantDetails.change();
+    this.editCompanyDetailsActions.editCompanyName(value);
+  }
+
+  /**
+   * Opens company details edit mode without making any changes.
+   * Used to test AC4: saving without amendments should not create amendment records.
+   */
+  public editCompanyDetailsWithoutChanges(): void {
+    this.log('method', 'editCompanyDetailsWithoutChanges()');
+    this.log('action', 'Opening company details edit mode without making changes');
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertSectionHeader('Company');
+    this.defendantDetails.change();
+    this.editCompanyDetailsActions.assertStillOnEditPage();
+  }
+
+  /**
+   * Saves the defendant details after editing.
+   */
+  public saveDefendantDetails(): void {
+    this.log('method', 'saveDefendantDetails()');
+
+    this.installDefendantAccountPartyDebugIntercept();
+
+    this.editDefendantDetailsActions.saveChanges();
+    this.detailsNav.assertDefendantTabIsActive();
+  }
+
+  /**
+   * Saves the company details after editing.
+   */
+  public saveCompanyDetails(): void {
+    this.log('method', 'saveCompanyDetails()');
+
+    this.installDefendantAccountPartyDebugIntercept();
+
+    this.editCompanyDetailsActions.saveChanges();
+    this.detailsNav.assertDefendantTabIsActive();
+  }
+
+  /**
+   * Saves the parent/guardian details after editing.
+   */
+  public saveParentGuardianDetails(): void {
+    this.log('method', 'saveParentGuardianDetails()');
+
+    this.installDefendantAccountPartyDebugIntercept();
+
+    this.editParentGuardianActions.saveChanges();
+    this.detailsNav.assertParentGuardianTabIsActive();
+  }
+
+  /**
+   * Asserts the defendant summary name contains the expected value.
+   * @param expected text expected in name field
+   */
+  public assertDefendantNameContains(expected: string): void {
+    this.log('assert', 'assertDefendantNameContains()', { expected });
+    this.detailsNav.goToDefendantTab();
+    this.defendantDetails.assertDefendantNameContains(expected);
+  }
+
+  /**
+   * Asserts the parent/guardian summary name contains the expected value.
+   * @param expected text expected in name field
+   */
+  public assertParentGuardianNameContains(expected: string): void {
+    this.log('assert', 'assertParentGuardianNameContains()', { expected });
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertNameContains(expected);
+  }
+
+  /**
+   * Asserts the company summary name contains the expected value.
+   * @param expected text expected in name field
+   */
+  public assertCompanyNameContains(expected: string): void {
+    this.log('assert', 'assertCompanyNameContains()', { expected });
+    this.detailsNav.goToDefendantTab();
+    this.companyDetails.assertCompanyNameContains(expected);
   }
 
   /**
@@ -330,6 +477,117 @@ export class AccountEnquiryFlow {
         this.dashboard.goToAccountSearch();
         this.searchNav.goToCompaniesTab();
       }
+    });
+  }
+
+  /**
+   * Debug intercept for defendant account party updates to aid diagnosis when saving.
+   */
+  private installDefendantAccountPartyDebugIntercept(): void {
+    cy.intercept(
+      { method: 'PUT', url: '**/defendant-accounts/**/defendant-account-parties/**', middleware: true },
+      (req) => {
+        const { url, headers, body } = req;
+        Cypress.log({ name: 'PUT', message: `url: ${url}` });
+        Cypress.log({ name: 'PUT', message: `If-Match: ${headers['if-match'] || headers['If-Match']}` });
+        Cypress.log({
+          name: 'PUT',
+          message: `Business-Unit-Id: ${headers['business-unit-id'] || headers['Business-Unit-Id']}`,
+        });
+        Cypress.log({ name: 'PUT', message: `Payload party_id: ${body?.party_details?.party_id}` });
+
+        req.continue((res) => {
+          console.info('PUT status', res.statusCode);
+          console.info('PUT response body', res.body);
+        });
+      },
+    ).as('debugPutDefendantAccountParty');
+  }
+
+  private getApiHeaders(): Record<string, string> {
+    return { 'Content-Type': 'application/json', Accept: 'application/json' };
+  }
+
+  private extractDefendantAccountIdFromUrl(): Cypress.Chainable<number> {
+    return cy.location('pathname').then((pathname) => {
+      const match = pathname.match(/\/fines\/account\/defendant\/(\d+)\/details/);
+
+      expect(match, `URL should match defendant details pattern: ${pathname}`).to.exist;
+      expect(match?.[1], 'Defendant account ID should be captured from URL').to.exist;
+
+      const defendantAccountId = parseInt(match![1], 10);
+      this.log('action', 'Extracted defendant account ID from URL', { defendantAccountId });
+      return defendantAccountId;
+    });
+  }
+
+  private fetchHeaderSummary(defendantAccountId: number): Cypress.Chainable<Record<string, unknown>> {
+    return cy
+      .request({
+        method: 'GET',
+        url: `${AccountEnquiryFlow.BASE_API_PATH}/defendant-accounts/${defendantAccountId}/header-summary`,
+        headers: this.getApiHeaders(),
+        failOnStatusCode: false,
+      })
+      .then((headerResp) => {
+        expect(headerResp.status, 'GET header-summary status').to.eq(200);
+        return headerResp.body as Record<string, unknown>;
+      });
+  }
+
+  private fetchPartyDetails(defendantAccountId: number, partyId: string): Cypress.Chainable<Record<string, unknown>> {
+    this.log('action', `Fetching party details for party ${partyId}`);
+    return cy
+      .request({
+        method: 'GET',
+        url: `${AccountEnquiryFlow.BASE_API_PATH}/defendant-accounts/${defendantAccountId}/defendant-account-parties/${partyId}`,
+        headers: this.getApiHeaders(),
+        failOnStatusCode: false,
+      })
+      .then((partyResp) => {
+        expect(partyResp.status, 'GET party details status').to.eq(200);
+        return partyResp.body as Record<string, unknown>;
+      });
+  }
+
+  private searchAmendmentsForAccount(
+    defendantAccountId: number,
+  ): Cypress.Chainable<{ amendments: Array<Record<string, unknown>>; count?: number }> {
+    const requestBody = {
+      associated_record_type: 'defendant_accounts',
+      associated_record_id: String(defendantAccountId),
+      function_code: 'ACCOUNT_ENQUIRY',
+    };
+
+    this.log('request', 'Searching amendments for defendant', { requestBody });
+
+    return cy
+      .request({
+        method: 'POST',
+        url: `${AccountEnquiryFlow.BASE_API_PATH}/amendments/search`,
+        headers: this.getApiHeaders(),
+        body: requestBody,
+        failOnStatusCode: false,
+      })
+      .then((amendRes) => {
+        expect(amendRes.status, 'POST amendments search should succeed').to.eq(200);
+
+        const responseBody = amendRes.body as Record<string, unknown>;
+        const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;
+        const count = responseBody?.['count'] as number | undefined;
+
+        this.log('info', 'Amendments search result', {
+          count,
+          searchDataLength: amendments.length,
+        });
+
+        return { amendments, count } as { amendments: Array<Record<string, unknown>>; count?: number };
+      });
+  }
+
+  private assertAmendmentCoreFields(match: Record<string, unknown> | undefined): void {
+    ['amendment_id', 'business_unit_id', 'amended_date', 'amended_by', 'field_code'].forEach((key) => {
+      expect(match, `Amendment should have property: ${key}`).to.have.property(key);
     });
   }
 
@@ -493,7 +751,7 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(text);
 
     // 2. Simulate browser back and confirm the warning
-    this.common.navigateBrowserBackWithConfirmation(/\/details$/);
+    this.common.navigateBrowserBackWithChoice('ok', /\/details$/);
   }
 
   /**
@@ -667,6 +925,125 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Verifies persisted defendant updates and amendment audit rows via backend APIs.
+   * Uses relative API paths - same pattern as draft accounts.
+   *
+   * @param expectedForename - The forename value that should be persisted/audited.
+   */
+  public verifyDefendantAmendmentsViaApi(expectedForename: string): void {
+    this.log('action', 'Verify defendant amendments via API', { expectedForename });
+
+    this.extractDefendantAccountIdFromUrl()
+      .then((defendantAccountId) =>
+        this.fetchHeaderSummary(defendantAccountId).then((headerBody) => ({ defendantAccountId, headerBody })),
+      )
+      .then(({ defendantAccountId, headerBody }) => {
+        const partyId = headerBody['defendant_account_party_id'];
+        expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+        this.log('action', `Found party ID: ${partyId}`);
+
+        return { defendantAccountId, partyId: partyId as string };
+      })
+      .then((data) =>
+        this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
+          const party = partyBody['defendant_account_party'] as Record<string, unknown> | undefined;
+          const details = party?.['party_details'] as Record<string, unknown> | undefined;
+          const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
+
+          expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
+          this.log('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
+          return data.defendantAccountId;
+        }),
+      )
+      .then((defendantAccountId) => this.searchAmendmentsForAccount(defendantAccountId))
+      .then(({ amendments }) => {
+        expect(amendments, 'Amendments searchData should be an array').to.be.an('array').and.not.be.empty;
+
+        const match = amendments.find(
+          (row) => typeof row['new_value'] === 'string' && row['new_value'].includes(expectedForename),
+        );
+
+        expect(match, 'Amendment record should contain updated forename').to.exist;
+        expect(match).to.include({
+          associated_record_type: 'defendant_accounts',
+          function_code: 'ACCOUNT_ENQUIRY',
+        });
+
+        this.assertAmendmentCoreFields(match);
+
+        // AC2a: Verify new_value contains the updated forename
+        expect(match?.['new_value'], 'new_value should contain updated forename')
+          .to.be.a('string')
+          .and.include(expectedForename);
+
+        // AC2b: Verify old_value exists and differs from new_value
+        expect(match?.['old_value'], 'old_value should exist and be a string').to.be.a('string').and.not.be.empty;
+        expect(match?.['old_value'], 'old_value should differ from new_value').to.not.eq(match?.['new_value']);
+
+        this.log('done', 'Amendment verified in amendments log', {
+          amendmentId: match?.['amendment_id'],
+          oldValue: match?.['old_value'],
+          newValue: match?.['new_value'],
+        });
+
+        // Store the current amendment count for later comparison
+        cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
+        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+      });
+  }
+
+  /**
+   * Verifies that NO defendant amendments were created.
+   * Used for AC4: saving without making changes should not create amendment records.
+   *
+   * Extracts the defendant account ID from the current URL and queries the amendments API
+   * to verify no amendment records exist for forenames field.
+   */
+  public verifyNoDefendantAmendments(): void {
+    this.log('method', 'verifyNoDefendantAmendments()');
+
+    // Get the baseline amendment count from the previous verification step
+    cy.get('@amendmentBaseline').then((baseline) => {
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
+      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+
+      let defendantAccountId: number;
+
+      this.extractDefendantAccountIdFromUrl()
+        .then((id) => {
+          defendantAccountId = id;
+          return this.fetchHeaderSummary(id);
+        })
+        .then((headerBody) => {
+          const partyId = headerBody['defendant_account_party_id'];
+          expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+          this.log('info', `Found party ID: ${partyId}`);
+          return defendantAccountId;
+        })
+        .then((id) => this.searchAmendmentsForAccount(id))
+        .then(({ amendments }) => {
+          this.log('info', 'Amendments search result', {
+            searchDataLength: amendments.length,
+            baselineCount,
+          });
+
+          // AC4c: No NEW amendments should have been created since the baseline
+          expect(
+            amendments.length,
+            `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
+          ).to.eq(baselineCount);
+
+          this.log('done', 'Verified no new amendments were created', {
+            currentCount: amendments.length,
+            baselineCount,
+          });
+        });
+    });
+  }
+
+  /**
    * Handles the "Cancel → OK" route-guard scenario for Parent/Guardian edits.
    *
    * Starts an edit, triggers cancel, confirms the discard
@@ -686,6 +1063,263 @@ export class AccountEnquiryFlow {
     this.common.cancelEditing(true); // user selects "Cancel" → "OK" to discard
 
     this.log('complete', 'Parent/Guardian changes discarded successfully');
+  }
+
+  /**
+   * Verifies persisted parent/guardian updates and amendment audit rows via backend APIs.
+   * Uses relative API paths - same pattern as draft accounts.
+   *
+   * @param expectedGuardianName - The guardian name value that should be persisted/audited.
+   */
+  public verifyParentGuardianAmendmentsViaApi(expectedGuardianName: string): void {
+    this.log('action', 'Verify parent/guardian amendments via API', { expectedGuardianName });
+
+    this.extractDefendantAccountIdFromUrl()
+      .then((defendantAccountId) =>
+        this.fetchHeaderSummary(defendantAccountId).then((headerBody) => ({ defendantAccountId, headerBody })),
+      )
+      .then(({ defendantAccountId, headerBody }) => {
+        const partyId = headerBody['parent_guardian_party_id'];
+        expect(partyId, 'parent_guardian_party_id must exist').to.exist;
+
+        this.log('action', `Found parent/guardian party ID: ${partyId}`);
+
+        return { defendantAccountId, partyId: partyId as string };
+      })
+      .then((data) =>
+        this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
+          const party = partyBody['defendant_account_party'] as Record<string, unknown> | undefined;
+          const details = party?.['party_details'] as Record<string, unknown> | undefined;
+          const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
+
+          expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
+            expectedGuardianName,
+          );
+          this.log('assert', 'Guardian forename verified in party details', { forenames: individual?.['forenames'] });
+          return data.defendantAccountId;
+        }),
+      )
+      .then((defendantAccountId) => this.searchAmendmentsForAccount(defendantAccountId))
+      .then(({ amendments }) => {
+        expect(amendments, 'Amendments searchData should be an array').to.be.an('array').and.not.be.empty;
+
+        const match = amendments.find(
+          (row) => typeof row['new_value'] === 'string' && row['new_value'].includes(expectedGuardianName),
+        );
+
+        expect(match, 'Amendment record should contain updated guardian forename').to.exist;
+        expect(match).to.include({
+          associated_record_type: 'defendant_accounts',
+          function_code: 'ACCOUNT_ENQUIRY',
+        });
+
+        this.assertAmendmentCoreFields(match);
+
+        // AC2a: Verify new_value contains the updated guardian forename
+        expect(match?.['new_value'], 'new_value should contain updated guardian forename')
+          .to.be.a('string')
+          .and.include(expectedGuardianName);
+
+        // AC2b: Verify old_value and new_value differ (old_value can be null/empty on first update)
+        const oldValue = match?.['old_value'];
+        const newValue = match?.['new_value'];
+
+        if (oldValue && typeof oldValue === 'string' && oldValue.trim() !== '') {
+          expect(oldValue, 'old_value should differ from new_value when both exist').to.not.eq(newValue);
+        }
+
+        this.log('done', 'Parent/guardian amendment verified in amendments log', {
+          amendmentId: match?.['amendment_id'],
+          fieldCode: match?.['field_code'],
+          oldValue: oldValue || '(empty)',
+          newValue,
+        });
+
+        // Store the current amendment count for later comparison
+        cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
+        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+      });
+  }
+
+  /**
+   * Verifies persisted company updates and amendment audit rows via backend APIs.
+   * Uses relative API paths - same pattern as draft accounts.
+   *
+   * @param expectedCompanyName - The company name value that should be persisted/audited.
+   */
+  public verifyCompanyAmendmentsViaApi(expectedCompanyName: string): void {
+    this.log('action', 'Verify company amendments via API', { expectedCompanyName });
+
+    this.extractDefendantAccountIdFromUrl()
+      .then((defendantAccountId) =>
+        this.fetchHeaderSummary(defendantAccountId).then((headerBody) => ({ defendantAccountId, headerBody })),
+      )
+      .then(({ defendantAccountId, headerBody }) => {
+        const partyId = headerBody['defendant_account_party_id'];
+        expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+        this.log('action', `Found party ID: ${partyId}`);
+
+        return { defendantAccountId, partyId: partyId as string };
+      })
+      .then((data) =>
+        this.fetchPartyDetails(data.defendantAccountId, data.partyId).then((partyBody) => {
+          const party = partyBody['defendant_account_party'] as Record<string, unknown> | undefined;
+          const details = party?.['party_details'] as Record<string, unknown> | undefined;
+
+          // Guard: Ensure this is an organisation party
+          expect(details?.['organisation_flag'], 'Party should be an organisation').to.be.true;
+
+          const organisation = details?.['organisation_details'] as Record<string, unknown> | undefined;
+          const organisationName = organisation?.['organisation_name'];
+
+          expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
+          this.log('assert', 'Organisation name verified in party details', { organisationName });
+          return data.defendantAccountId;
+        }),
+      )
+      .then((defendantAccountId) => this.searchAmendmentsForAccount(defendantAccountId))
+      .then(({ amendments }) => {
+        expect(amendments, 'Amendments searchData should be an array').to.be.an('array').and.not.be.empty;
+
+        // Find amendment matching the organisation name
+        // Narrow by field_code if possible to avoid matching unrelated fields
+        const match = amendments.find(
+          (row) => typeof row['new_value'] === 'string' && row['new_value'].includes(expectedCompanyName),
+        );
+
+        expect(match, 'Amendment record should contain updated organisation name').to.exist;
+        expect(match).to.include({
+          associated_record_type: 'defendant_accounts',
+          function_code: 'ACCOUNT_ENQUIRY',
+        });
+
+        this.assertAmendmentCoreFields(match);
+
+        // AC2a: Verify new_value contains the updated organisation name
+        expect(match?.['new_value'], 'new_value should contain updated organisation name')
+          .to.be.a('string')
+          .and.include(expectedCompanyName);
+
+        // AC2b: Verify old_value and new_value differ (old_value can be null/empty on first update)
+        const oldValue = match?.['old_value'];
+        const newValue = match?.['new_value'];
+
+        if (oldValue && typeof oldValue === 'string' && oldValue.trim() !== '') {
+          expect(oldValue, 'old_value should differ from new_value when both exist').to.not.eq(newValue);
+        }
+
+        this.log('done', 'Organisation amendment verified in amendments log', {
+          amendmentId: match?.['amendment_id'],
+          fieldCode: match?.['field_code'],
+          oldValue: oldValue || '(empty)',
+          newValue,
+        });
+
+        // Store the current amendment count for later comparison
+        cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
+        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+      });
+  }
+
+  /**
+   * Verifies that NO company amendments were created.
+   * Used for AC4: saving without making changes should not create amendment records.
+   *
+   * Extracts the defendant account ID from the current URL and queries the amendments API
+   * to verify no amendment records exist for company details.
+   */
+  public verifyNoCompanyAmendments(): void {
+    this.log('method', 'verifyNoCompanyAmendments()');
+
+    // Get the baseline amendment count from the previous verification step
+    cy.get('@amendmentBaseline').then((baseline) => {
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
+      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+
+      let defendantAccountId: number;
+
+      this.extractDefendantAccountIdFromUrl()
+        .then((id) => {
+          defendantAccountId = id;
+          return this.fetchHeaderSummary(id);
+        })
+        .then((headerBody) => {
+          const partyId = headerBody['defendant_account_party_id'];
+          expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+          this.log('info', `Found party ID: ${partyId}`);
+          return defendantAccountId;
+        })
+        .then((id) => this.searchAmendmentsForAccount(id))
+        .then(({ amendments }) => {
+          this.log('info', 'Amendments search result', {
+            searchDataLength: amendments.length,
+            baselineCount,
+          });
+
+          // AC4c: No NEW amendments should have been created since the baseline
+          expect(
+            amendments.length,
+            `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
+          ).to.eq(baselineCount);
+
+          this.log('done', 'Verified no new amendments were created', {
+            currentCount: amendments.length,
+            baselineCount,
+          });
+        });
+    });
+  }
+
+  /**
+   * Verifies that NO parent/guardian amendments were created.
+   * Used for AC4: saving without making changes should not create amendment records.
+   *
+   * Extracts the defendant account ID from the current URL and queries the amendments API
+   * to verify no amendment records exist for parent/guardian details.
+   */
+  public verifyNoParentGuardianAmendments(): void {
+    this.log('method', 'verifyNoParentGuardianAmendments()');
+
+    // Get the baseline amendment count from the previous verification step
+    cy.get('@amendmentBaseline').then((baseline) => {
+      const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
+      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+
+      let defendantAccountId: number;
+
+      this.extractDefendantAccountIdFromUrl()
+        .then((id) => {
+          defendantAccountId = id;
+          return this.fetchHeaderSummary(id);
+        })
+        .then((headerBody) => {
+          const partyId = headerBody['defendant_account_party_id'];
+          expect(partyId, 'defendant_account_party_id must exist').to.exist;
+
+          this.log('info', `Found party ID: ${partyId}`);
+          return defendantAccountId;
+        })
+        .then((id) => this.searchAmendmentsForAccount(id))
+        .then(({ amendments }) => {
+          this.log('info', 'Amendments search result', {
+            searchDataLength: amendments.length,
+            baselineCount,
+          });
+
+          // AC4c: No NEW amendments should have been created since the baseline
+          expect(
+            amendments.length,
+            `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
+          ).to.eq(baselineCount);
+
+          this.log('done', 'Verified no new amendments were created', {
+            currentCount: amendments.length,
+            baselineCount,
+          });
+        });
+    });
   }
 }
 
