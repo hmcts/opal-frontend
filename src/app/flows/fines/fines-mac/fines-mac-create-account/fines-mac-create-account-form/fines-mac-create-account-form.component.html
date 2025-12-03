@@ -81,7 +81,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <opal-lib-govuk-cancel-link
-        (linkClickEvent)="handleRoute(routingPath.children.dashboard, true)"
+        (linkClickEvent)="handleRoute(routingPath.children.dashboard, { nonRelative: true })"
       ></opal-lib-govuk-cancel-link>
     </div>
   </div>

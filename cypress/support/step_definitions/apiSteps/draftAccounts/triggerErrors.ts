@@ -96,6 +96,37 @@ Given(
 );
 
 Given(
+  'I click the Search button and trigger a {int} non-retriable error for the defendant accounts search API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: '/opal-fines-service/defendant-accounts/search',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: false,
+          title: 'Internal Server Error',
+          detail: 'Sorry, there is a problem with the service',
+          operation_id: 'OP67890',
+        },
+      },
+    ).as('getDefendantAccountsSearchNonRetriableError');
+
+    cy.get('button, a').contains('Search').click();
+
+    cy.wait('@getDefendantAccountsSearchNonRetriableError');
+    cy.get('@getDefendantAccountsSearchNonRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.false;
+      expect(interception.response.body.title).to.equal('Internal Server Error');
+      expect(interception.response.body.operation_id).to.equal('OP67890');
+    });
+  },
+);
+
+Given(
   'I click the Manual account creation link and trigger a {int} non-retriable error for the get businessUnits API',
   (statusCode: number) => {
     cy.intercept(

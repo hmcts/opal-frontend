@@ -112,6 +112,6 @@ export class FinesMacReviewAccountDecisionComponent extends AbstractFormParentBa
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStore.resetError();
+    this.globalStore.resetBannerError();
   }
 }
