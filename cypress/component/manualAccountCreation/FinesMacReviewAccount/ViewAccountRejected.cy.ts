@@ -19,6 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -50,6 +51,7 @@ describe('FinesMacReviewAccountComponent - View Rejected Account', () => {
             let globalStore = new GlobalStore();
             globalStore.setUserState(ACCOUNT_SESSION_USER_STATE_MOCK);
             globalStore.setBannerError({
+              ...GLOBAL_ERROR_STATE,
               error: false,
               message: '',
             });
