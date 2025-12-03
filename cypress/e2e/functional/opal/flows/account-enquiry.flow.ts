@@ -116,7 +116,7 @@ export class AccountEnquiryFlow {
     this.log('method', 'searchByLastName()');
     this.log('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
-    this.searchIndividuals.byLastName(surname);
+    this.searchIndividuals.searchByLastName(surname);
   }
 
   /**
@@ -493,7 +493,7 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(text);
 
     // 2. Simulate browser back and confirm the warning
-    this.common.navigateBrowserBackWithConfirmation(/\/details$/);
+    this.common.navigateBrowserBackWithChoice('ok', /\/details$/);
   }
 
   /**
@@ -686,6 +686,21 @@ export class AccountEnquiryFlow {
     this.common.cancelEditing(true); // user selects "Cancel" → "OK" to discard
 
     this.log('complete', 'Parent/Guardian changes discarded successfully');
+  }
+
+  /**
+   * Searches for individuals by last name.
+   * @param surname The last name to search for.
+   */
+  byLastName(surname: string): void {
+    // Ensure the search page is loaded
+    this.ensureOnIndividualSearchPage();
+
+    // Input the surname into the search field
+    cy.get('[data-cy=search-last-name-input]').clear().type(surname);
+
+    // Trigger the search
+    cy.get('[data-cy=search-button]').click();
   }
 }
 
