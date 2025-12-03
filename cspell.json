@@ -30,6 +30,7 @@
     "editdefendantdetails",
     "elem",
     "facc",
+    "FCOMP",
     "FCOST",
     "finesmac",
     "forenames",
@@ -54,11 +55,16 @@
     "postcodes",
     "PRIS",
     "prisonandprisonnumber",
+    "reindexed",
+    "reindexing",
     "Serde",
     "subnavitemid",
     "subnavitemfragment",
     "Typecheck",
-    "Unauthorised"
+    "Unauthorised",
+    "Upserting",
+    "Upserts",
+    "VPFPO",
   ],
   "ignorePaths": [
     "node_modules",
@@ -71,10 +77,11 @@
   ],
   "ignoreRegExpList": [
     "/^\\s*\\/\\/\\s*cspell:disable-next-line.*$/",
-    "/[A-F0-9]{8,}/"  // hex IDs, hashes
+    "/[A-F0-9]{8,}/",      // hex IDs, hashes
+    "/\\|[^\\n]*\\|/"      // Cucumber tables: ignore anything between pipes
   ],
   "files": [
-    "**/*.{ts,tsx,js,jsx,json,md,html,css,scss}",
+    "**/*.{ts,tsx,js,jsx,json,md,html,css,scss,feature}",
     "cypress/**/*"
   ],
   "flagWords": [

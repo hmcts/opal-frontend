@@ -4,56 +4,26 @@ Feature: Manual account creation - Offence Details
   #Validation tests are contained in the Offence screens component tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    And I am on the dashboard
-    And I navigate to Manual Account Creation
-
-    And I see "Business unit and defendant type" on the page header
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth" radio button
-    And I click the "Continue" button
-    And I see "Account details" on the page header
-    And I click on the "Offence details" link
-    Then I see "Add an offence" on the page header
-    And I see "Offence details" text on the page
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    And I view the "Offence details" task
 
   Scenario: The User can add an offence with multiple impositions with different creditor types [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-668, @PO-669, @PO-413, @PO-817, @PO-818]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    Then the "Remove imposition" option is not available
 
-    Then the link with text "Remove imposition" should not be present
+    When I record impositions with creditor types:
+      | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           |
+      | 1          | Compensation (FCOMP)   | 200            | 100         | Minor         |                           |
+      | 2          | Compensation (FCOMP)   | 300            | 100         | Major         | Temporary Creditor (TEMP) |
+      | 3          | Victim Surcharge (FVS) | 500            | 250         | Default       |                           |
 
-    When I click the "Add another imposition" button
-    And I click the "Add another imposition" button
+    And I maintain individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
-    # Imposition 1 - minor creditor
-    Given I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "100" into the "Amount paid" field for imposition 1
-    And I select the "Minor creditor" radio button
-    When I click on the "Add minor creditor details" link for imposition 1
-    Then I see "Minor creditor details" on the page header
-
-    When I select the "Individual" radio button
-    And I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First name" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
-
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-    And I enter "REF" into the "Payment reference" field
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 1
+    When I view minor creditor details for imposition 1
     Then I see the following Minor creditor details for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
@@ -63,81 +33,56 @@ Feature: Manual account creation - Offence Details
       | Account number    | 12345678                |
       | Payment reference | REF                     |
 
+    And I see remove imposition links for:
+      | Imposition |
+      | 1          |
+      | 2          |
+      | 3          |
 
+    When I review the offence
+    Then I see the offence review details:
+      | Type    | Value                                                                              |
+      | Header  | Offences and impositions                                                           |
+      | Message | Offence TP11003 added                                                              |
+      | Text    | Possess potentially dangerous item on Transport for London road transport premises |
 
-
-    #Imposition 2 - major creditor
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 2
-    And I enter "300" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I see "Add creditor" text on the page
-    And I select the "Major creditor" radio button
-    And I enter "Temporary Creditor" into the "Search using name or code" search box
-    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
-
-
-    #Imposition 3 - default creditor
-    When I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 3
-    And I enter "500" into the "Amount imposed" field for imposition 3
-    And I enter "250" into the "Amount paid" field for imposition 3
-
-    And I see "Remove imposition" link for imposition 1
-    And I see "Remove imposition" link for imposition 2
-    And I see "Remove imposition" link for imposition 3
-
-    When I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-    And I see "Offence TP11003 added" text on the page
-
-    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
-
-    When the table with offence code "TP11003" should contain the following data:
+    Then the table with offence code "TP11003" should contain the following information:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
 
-    And the summary list should contain the following data:
+    And the summary table contains the following data:
       | Amount imposed    | £1000.00 |
       | Amount paid       | £450.00  |
       | Balance remaining | £550.00  |
 
-    When I click the "Return to account details" button
-    And I see the status of "Offence details" is "Provided"
+    When I return to account details from offence details
+    Then the "Offence details" task status is "Provided"
 
-  Scenario: The User can add an offence with a minor creditors and change the creditor details / add / remove a creditor [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-414, @PO-668, @PO-669, @PO-670, @PO-671, @PO-686, @PO-696, @PO-1395]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
+  Scenario: User can add an offence with individual and company minor creditors
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
-    # Imposition 1 - minor creditor to be changed
-    Given I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "100" into the "Amount paid" field for imposition 1
-    And I select the "Minor creditor" radio button
-    When I click on the "Add minor creditor details" link for imposition 1
-    Then I see "Minor creditor details" on the page header
+    When I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 1          | Compensation (FCOMP) | 200            | 100         |
+      | 2          | Compensation (FCOMP) | 200            | 100         |
 
-    When I select the "Individual" radio button
-    And I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First name" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search |
+      | 1          | Minor         |                 |
+      | 2          | Minor         |                 |
 
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-    And I enter "REF" into the "Payment reference" field
+    And I maintain individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
 
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
+    And I maintain company minor creditor with BACS details for imposition 2:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | CNAME   | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAME      | 123456    | 12345678       | REF               |
 
-    When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for imposition 1:
+    Then I see the minor creditor summary for imposition 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -146,34 +91,7 @@ Feature: Manual account creation - Offence Details
       | Account number    | 12345678                |
       | Payment reference | REF                     |
 
-
-    # Imposition 2 - minor creditor to be removed
-    When I click the "Add another imposition" button
-    Given I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 2
-    And I enter "200" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I select the "Minor creditor" radio button
-    When I click on the "Add minor creditor details" link for imposition 2
-    Then I see "Minor creditor details" on the page header
-
-    When I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
-
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAME" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-    And I enter "REF" into the "Payment reference" field
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 2
-    Then I see the following Minor creditor details for imposition 2:
+    And I see the minor creditor summary for imposition 2:
       | Minor creditor    | CNAME                   |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -182,27 +100,21 @@ Feature: Manual account creation - Offence Details
       | Account number    | 12345678                |
       | Payment reference | REF                     |
 
-    # Change minor creditor details for imposition 1
-    When I click on the "Change" link for imposition 1
-    Then I see "Minor creditor details" on the page header
+    When I review the offence
+    Then the table with offence code "TP11003" should contain the following data:
+      | Imposition   | Creditor                    | Amount imposed | Amount paid | Balance remaining |
+      | Compensation | Mr FNAME LNAME Show details | £200.00        | £100.00     | £100.00           |
+      | Compensation | CNAME                       | £200.00        | £100.00     | £100.00           |
+      | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
-    When I enter "FNAMEONE" into the "First name" field
-    And I enter "LNAMEONE" into the "Last name" field
-    And I enter "Addr1 edit" into the "Address Line 1" field
-    And I enter "Addr2 edit" into the "Address Line 2" field
-    And I enter "Addr3 edit" into the "Address Line 3" field
-    And I enter "ED32 1IT" into the "Postcode" field
+  Scenario: User can update an existing minor creditor for an imposition
+    Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
 
-    Then I enter "F LNAMEONE" into the "Name on the account" field
-    And I enter "654321" into the "Sort code" field
-    And I enter "87654321" into the "Account number" field
-    And I enter "REFONE" into the "Payment reference" field
+    When I update individual minor creditor with BACS details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | Mr    | FNAMEONE   | LNAMEONE  | Addr1 edit     | Addr2 edit     | Addr3 edit     | ED32 1IT | F LNAMEONE   | 654321    | 87654321       | REFONE            |
 
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for imposition 1:
+    Then I see the minor creditor summary for imposition 1:
       | Minor creditor    | FNAMEONE LNAMEONE                      |
       | Address           | Addr1 editAddr2 editAddr3 editED32 1IT |
       | Payment method    | BACS                                   |
@@ -211,59 +123,17 @@ Feature: Manual account creation - Offence Details
       | Account number    | 87654321                               |
       | Payment reference | REFONE                                 |
 
-    # Remove minor creditor for imposition 2
-    When I click on the "Remove" link for imposition 2
-    Then I see "Are you sure you want to remove this minor creditor?" on the page header
-    And I see the following Minor creditor details:
-      | Minor creditor    | CNAME                   |
-      | Address           | Addr1Addr2Addr3TE12 3ST |
-      | Payment method    | BACS                    |
-      | Account name      | F LNAME                 |
-      | Sort code         | 12-34-56                |
-      | Account number    | 12345678                |
-      | Payment reference | REF                     |
 
-    When I click on the "No - cancel" link
-    Then I see "Add an offence" on the page header
+  Scenario: User can remove and re-add a minor creditor for an imposition
+    Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
+    When I cancel removing the minor creditor for imposition 2
+    When I confirm removing the minor creditor for imposition 2
 
-    Then I click on the "Remove" link for imposition 2
-    Then I see "Are you sure you want to remove this minor creditor?" on the page header
-    And I see the following Minor creditor details:
-      | Minor creditor    | CNAME                   |
-      | Address           | Addr1Addr2Addr3TE12 3ST |
-      | Payment method    | BACS                    |
-      | Account name      | F LNAME                 |
-      | Sort code         | 12-34-56                |
-      | Account number    | 12345678                |
-      | Payment reference | REF                     |
+    And I maintain company minor creditor with BACS details for imposition 2:
+      | Company  | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | CNAMENEW | Addr1          | Addr2          | Addr3          | TE12 3ST | FLNAME TWO   | 654321    | 87654321       | REFTWO            |
 
-    Then I click the "Yes - remove minor creditor" button
-    Then I see "Add an offence" on the page header
-
-    And I do not see the Minor creditor details for imposition 2
-
-    #Adding imposition 2 again to be removed later
-    When I click on the "Add minor creditor details" link for imposition 2
-    Then I see "Minor creditor details" on the page header
-
-    When I select the "Company" radio button
-    And I enter "CNAMENEW" into the "Company" field
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
-
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "FLNAME TWO" into the "Name on the account" field
-    And I enter "654321" into the "Sort code" field
-    And I enter "87654321" into the "Account number" field
-    And I enter "REFTWO" into the "Payment reference" field
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 2
-    Then I see the following Minor creditor details for imposition 2:
+    Then I see the minor creditor summary for imposition 2:
       | Minor creditor    | CNAMENEW                |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -272,38 +142,15 @@ Feature: Manual account creation - Offence Details
       | Account number    | 87654321                |
       | Payment reference | REFTWO                  |
 
-    When I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
+  Scenario: User can switch a minor creditor to major and add a new minor creditor on another imposition
+    Given an offence exists with 2 minor creditor impositions for offence code "TP11003"
 
-    When the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                          | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | Mr FNAMEONE LNAMEONE Show details | £200.00        | £100.00     | £100.00           |
-      | Compensation | CNAMENEW                          | £200.00        | £100.00     | £100.00           |
-      | Totals       |                                   | £400.00        | £200.00     | £200.00           |
+    # Update imposition 1
+    When I update individual minor creditor with BACS details for imposition 1:
+      | Title | First name   | Last name    | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name   | Sort code | Account number | Payment reference |
+      | Mr    | FNAMETWOEDIT | LNAMETWOEDIT | Addr1edit      | Addr2edit      | Addr3edit      | TE12 3ST | F LNAMETWOEDIT | 123456    | 12345678       | REFEDIT           |
 
-    Then I click on the "Change" link
-    Then I see "Add an offence" on the page header
-    # Change minor creditor details for imposition 1
-    When I click on the "Change" link for imposition 1
-    Then I see "Minor creditor details" on the page header
-
-    When I enter "FNAMETWOEDIT" into the "First name" field
-    And I enter "LNAMETWOEDIT" into the "Last name" field
-    And I enter "Addr1edit" into the "Address Line 1" field
-    And I enter "Addr2edit" into the "Address Line 2" field
-    And I enter "Addr3edit" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
-
-    Then I enter "F LNAMETWOEDIT" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-    And I enter "REFEDIT" into the "Payment reference" field
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 1
-    Then I see the following Minor creditor details for imposition 1:
+    Then I see the minor creditor summary for imposition 1:
       | Minor creditor    | FNAMETWOEDIT LNAMETWOEDIT           |
       | Address           | Addr1editAddr2editAddr3editTE12 3ST |
       | Payment method    | BACS                                |
@@ -312,55 +159,26 @@ Feature: Manual account creation - Offence Details
       | Account number    | 12345678                            |
       | Payment reference | REFEDIT                             |
 
-    # Remove minor creditor for imposition 2
-    When I click on the "Remove" link for imposition 2
-    Then I see "Are you sure you want to remove this minor creditor?" on the page header
-    And I see the following Minor creditor details:
-      | Minor creditor    | CNAMENEW                |
-      | Address           | Addr1Addr2Addr3TE12 3ST |
-      | Payment method    | BACS                    |
-      | Account name      | FLNAME TWO              |
-      | Sort code         | 65-43-21                |
-      | Account number    | 87654321                |
-      | Payment reference | REFTWO                  |
+    # Remove imposition 2 minor creditor and switch to major
+    When I confirm removing the minor creditor for imposition 2
 
-    When I click the "Yes - remove minor creditor" button
-    Then I see "Add an offence" on the page header
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 2          | Major         | Temporary Creditor (TEMP) |
 
-    And I do not see the Minor creditor details for imposition 2
-    #change to major creditor
-    And I see "Add creditor" text on the page
-    And I select the "Major creditor" radio button
-    And I enter "Temporary Creditor" into the "Search using name or code" search box
-    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
+    # Add imposition 3 with minor creditor
+    When I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 3          | Compensation (FCOMP) | 200            | 100         |
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search |
+      | 3          | Minor         |                 |
 
-    # Add another imposition with a minor creditor
-    When I click the "Add another imposition" button
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 3
-    And I enter "200" into the "Amount imposed" field for imposition 3
-    And I enter "100" into the "Amount paid" field for imposition 3
-    And I select the "Minor creditor" radio button for imposition 3
-    When I click on the "Add minor creditor details" link for imposition 3
-    Then I see "Minor creditor details" on the page header
+    And I maintain company minor creditor with BACS details for imposition 3:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | CNAME3  | Addr1          | Addr2          | Addr3          | TE12 3ST | F LNAMETHREE | 123456    | 12345678       | REF               |
 
-    When I select the "Company" radio button
-    And I enter "CNAME3" into the "Company" field
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-    And I enter "TE12 3ST" into the "Postcode" field
-
-    Then I select the "I have BACS payment details" checkbox
-    And I enter "F LNAMETHREE" into the "Name on the account" field
-    And I enter "123456" into the "Sort code" field
-    And I enter "12345678" into the "Account number" field
-    And I enter "REF" into the "Payment reference" field
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click on the "Show details" link for imposition 3
-    Then I see the following Minor creditor details for imposition 3:
+    Then I see the minor creditor summary for imposition 3:
       | Minor creditor    | CNAME3                  |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -369,124 +187,139 @@ Feature: Manual account creation - Offence Details
       | Account number    | 12345678                |
       | Payment reference | REF                     |
 
-    Then I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-
-    When the table with offence code "TP11003" should contain the following data:
+    When I review the offence
+    Then the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                     | Amount imposed | Amount paid | Balance remaining |
       | Compensation | Mr FNAMETWOEDIT LNAMETWOEDIT | £200.00        | £100.00     | £100.00           |
       | Compensation | Temporary Creditor (TEMP)    | £200.00        | £100.00     | £100.00           |
       | Compensation | CNAME3                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                              | £600.00        | £300.00     | £300.00           |
 
-  Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684, @PO-1395]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
+    And the summary table should contain the following data:
+      | Amount imposed    | £600.00 |
+      | Amount paid       | £300.00 |
+      | Balance remaining | £300.00 |
 
-    # Imposition 1 - minor creditor
-    Given I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "100" into the "Amount paid" field for imposition 1
-    And I select the "Minor creditor" radio button
-    When I click on the "Add minor creditor details" link for imposition 1
-    Then I see "Minor creditor details" on the page header
+    When I return to account details from offence details
+    Then the "Offence details" task status is "Provided"
 
-    When I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
+  Scenario: User can see imposition details before removal and cancel or confirm removal
+    Given an offence exists with the following impositions:
+      | Offence code | Sentence weeks ago | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           | Minor creditor type | Minor creditor name | Address line 1 | Postcode |
+      | TP11003      | 9                  | 1          | Compensation (FCOMP)   | 200            | 100         | Minor         |                           | Company             | CNAME               | Addr1          | TE12 3ST |
+      | TP11003      | 9                  | 2          | Costs (FCOST)          | 300            | 100         | Major         | Temporary Creditor (TEMP) |                     |                     |                |          |
+      | TP11003      | 9                  | 3          | Victim Surcharge (FVS) | 500            | 250         | Default       |                           |                     |                     |                |          |
 
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
+    Then I see remove imposition links for:
+      | Imposition |
+      | 1          |
+      | 2          |
+      | 3          |
 
-    # Imposition 2 - major creditor
-    And I click the "Add another imposition" button
-    And I enter "Costs (FCOST)" into the "Result code" field for imposition 2
-    And I enter "300" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I select the "Major creditor" radio button
-    And I enter "Temporary Creditor" into the "Search using name or code" search box
-    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
-
-    # Imposition 3 - default creditor
-    And I click the "Add another imposition" button
-    And I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 3
-    And I enter "500" into the "Amount imposed" field for imposition 3
-    And I enter "250" into the "Amount paid" field for imposition 3
-
-    And I see "Remove imposition" link for imposition 1
-    And I see "Remove imposition" link for imposition 2
-    And I see "Remove imposition" link for imposition 3
-
-    #Remove Imposition 1 - cancel then remove
-    When I click on the "Remove imposition" link for imposition 1
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And row number 1 should have the following data:
+    # Remove Imposition 1 - cancel then remove
+    When I choose to "remove imposition" imposition 1
+    Then I am asked to confirm removing imposition 1
+    And row number 1 has the following data:
       | Imposition           | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
 
-    When I click on the "No - cancel" link
-    Then I see "Add an offence" on the page header
+    When I cancel removing imposition 1
+    Then I am viewing Add an Offence
 
-    When I click on the "Remove imposition" link for imposition 1
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And row number 1 should have the following data:
+    When I choose to "remove imposition" imposition 1
+    Then I am asked to confirm removing imposition 1
+    And row number 1 has the following data:
       | Imposition           | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
 
-    When I click the "Yes - remove imposition" button
-    Then I see "Add an offence" on the page header
-
+    When I confirm removing imposition 1
+    Then I am viewing Add an Offence
     And I do not see "Compensation (FCOMP)" text on the page
 
-    #Remove Imposition 2, now imposition 1
-    When I click on the "Remove imposition" link for imposition 1
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And row number 1 should have the following data:
+
+  Scenario: User sees correct reindexing and cannot remove the last remaining imposition
+    Given an offence exists with the following impositions:
+      | Offence code | Sentence weeks ago | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           | Minor creditor type | Minor creditor name | Address line 1 | Postcode |
+      | TP11003      | 9                  | 1          | Compensation (FCOMP)   | 200            | 100         | Minor         |                           | Company             | CNAME               | Addr1          | TE12 3ST |
+      | TP11003      | 9                  | 2          | Costs (FCOST)          | 300            | 100         | Major         | Temporary Creditor (TEMP) |                     |                     |                |          |
+      | TP11003      | 9                  | 3          | Victim Surcharge (FVS) | 500            | 250         | Default       |                           |                     |                     |                |          |
+
+    Then I see remove imposition links for:
+      | Imposition |
+      | 1          |
+      | 2          |
+      | 3          |
+
+    # Remove Imposition 1
+    When I choose to "remove imposition" imposition 1
+    Then I am asked to confirm removing imposition 1
+    And row number 1 has the following data:
+      | Imposition           | Creditor | Amount imposed | Amount paid | Balance remaining |
+      | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
+
+    When I confirm removing imposition 1
+    Then I am viewing Add an Offence
+    And I do not see "Compensation (FCOMP)" text on the page
+
+    # Remove Imposition 2, now reindexed as imposition 1
+    When I choose to "remove imposition" imposition 1
+    Then I am asked to confirm removing imposition 1
+    And row number 1 has the following data:
       | Imposition    | Creditor                  | Amount imposed | Amount paid | Balance remaining |
       | Costs (FCOST) | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
 
-    When I click the "Yes - remove imposition" button
-    Then I see "Add an offence" on the page header
+    When I confirm removing imposition 1
+    Then I am viewing Add an Offence
     And I do not see "Fine (FO)" text on the page
 
-    #Remove Imposition 3, now imposition 1
-    When I do not see the "Remove imposition" link for imposition 1
-
-    #Add back impositions
-    # Imposition 2 - major creditor
-    And I click the "Add another imposition" button
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 2
-    And I enter "300" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I select the "Major creditor" radio button for imposition 2
-    And I enter "Temporary Creditor" into the "Search using name or code" search box
-    And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 2
-
-    # Imposition 3 - minor creditor
-    And I click the "Add another imposition" button
-    And I enter "Costs (FCOST)" into the "Result code" field for imposition 3
-    And I enter "200" into the "Amount imposed" field for imposition 3
-    And I enter "100" into the "Amount paid" field for imposition 3
-    And I select the "Minor creditor" radio button for imposition 3
-    When I click on the "Add minor creditor details" link for imposition 3
-    Then I see "Minor creditor details" on the page header
+    # Only one imposition left – cannot remove
+    And I do not see the "Remove imposition" link for imposition 1
 
 
+  Scenario: User removes two impositions and rebuilds four impositions
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
-    When I select the "Company" radio button
-    And I enter "CNAME3" into the "Company" field
-    Then I click the "Save" button
-    Then I see "Add an offence" on the page header
+    When I record imposition financial details:
+      | Imposition | Result code            | Amount imposed | Amount paid |
+      | 1          | Victim Surcharge (FVS) | 500            | 250         |
+      | 2          | Compensation (FCOMP)   | 300            | 100         |
+      | 3          | Costs (FCOST)          | 200            | 100         |
 
-    # Imposition 4 - default creditor
-    And I click the "Add another imposition" button
-    And I enter "Costs to Crown Prosecution Service (FCPC)" into the "Result code" field for imposition 4
-    And I enter "500" into the "Amount imposed" field for imposition 4
-    And I enter "250" into the "Amount paid" field for imposition 4
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 1          | Default       |                           |
+      | 2          | Major         | Temporary Creditor (TEMP) |
+      | 3          | Minor         |                           |
 
-    When I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
+    And I maintain company minor creditor with BACS details for imposition 3:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode |
+      | CNAME3  | Addr1          | Addr2          | Addr3          | TE12 3ST |
 
-    When the table with offence code "TP11003" should contain the following data:
+    When I remove these impositions:
+      | Imposition |
+      | 1          |
+      | 2          |
+
+    When I record imposition financial details:
+      | Imposition | Result code                               | Amount imposed | Amount paid |
+      | 1          | Victim Surcharge (FVS)                    | 500            | 250         |
+      | 2          | Compensation (FCOMP)                      | 300            | 100         |
+      | 3          | Costs (FCOST)                             | 200            | 100         |
+      | 4          | Costs to Crown Prosecution Service (FCPC) | 500            | 250         |
+
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 1          | Default       |                           |
+      | 2          | Major         | Temporary Creditor (TEMP) |
+      | 3          | Minor         |                           |
+      | 4          | Default       |                           |
+
+    And I maintain company minor creditor with BACS details for imposition 3:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode |
+      | CNAME3  | Addr1          | Addr2          | Addr3          | TE12 3ST |
+
+    When I review the offence
+    Then the table with offence code "TP11003" should contain the following data:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
@@ -494,695 +327,419 @@ Feature: Manual account creation - Offence Details
       | Costs to Crown   | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £1500.00       | £700.00     | £800.00           |
 
-    Then I click on the "Change" link
-    Then I see "Add an offence" on the page header
+  Scenario: User can update remaining impositions and add a new one after removals
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
 
-    #Remove imposition 1
-    When I click on the "Remove imposition" link for imposition 1
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And row number 1 should have the following data:
-      | Imposition             | Creditor                                | Amount imposed | Amount paid | Balance remaining |
-      | Victim Surcharge (FVS) | HM Courts and Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
+    When I record imposition financial details:
+      | Imposition | Result code                               | Amount imposed | Amount paid |
+      | 1          | Compensation (FCOMP)                      | 300            | 100         |
+      | 2          | Victim Surcharge (FVS)                    | 500            | 250         |
+      | 3          | Costs (FCOST)                             | 200            | 100         |
+      | 4          | Costs to Crown Prosecution Service (FCPC) | 500            | 250         |
 
-    When I click the "Yes - remove imposition" button
-    Then I see "Add an offence" on the page header
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 1          | Major         | Temporary Creditor (TEMP) |
+      | 2          | Default       |                           |
+      | 3          | Default       |                           |
+      | 4          | Default       |                           |
 
-    And I do not see "Victim Surcharge (FVS)" text on the page
+    When I remove these impositions:
+      | Imposition |
+      | 2          |
+      | 3          |
 
-    #Remove imposition 4
-    When I click on the "Remove imposition" link for imposition 3
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And row number 1 should have the following data:
-      | Imposition                                | Creditor                        | Amount imposed | Amount paid | Balance remaining |
-      | Costs to Crown Prosecution Service (FCPC) | Crown Prosecution Service (CPS) | £500.00        | £250.00     | £250.00           |
+    When I record imposition financial details:
+      | Imposition | Result code                               | Amount imposed | Amount paid |
+      | 1          | Compensation (FCOMP)                      | 900            | 134         |
+      | 2          | Vehicle Excise Back Duty (FVEBD)          | 100            | 50          |
+      | 3          | Costs to Crown Prosecution Service (FCPC) | 500            | 250         |
 
-    When I click the "Yes - remove imposition" button
-    Then I see "Add an offence" on the page header
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 1          | Major         | Temporary Creditor (TEMP) |
+      | 2          | Default       |                           |
+      | 3          | Default       |                           |
 
-    #Change imposition 2
-    And I clear the "Amount imposed" field for imposition 2
-    And I clear the "Amount paid" field for imposition 2
+    When I review the offence
+    Then the table with offence code "TP11003" should contain the following data:
+      | Imposition                         | Creditor                              | Amount imposed | Amount paid | Balance remaining |
+      | Compensation                       | Temporary Creditor (TEMP)             | £900.00        | £134.00     | £766.00           |
+      | Costs to Crown Prosecution Service | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
+      | Vehicle Excise Back Duty           | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
+      | Totals                             |                                       | £1500.00       | £434.00     | £1066.00          |
 
-    And I enter "900" into the "Amount imposed" field for imposition 2
-    And I enter "134" into the "Amount paid" field for imposition 2
+  Scenario: (AC.2, AC.7, AC.8) User can add multiple offences and see them ordered with correct totals [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
+    # Offence 1
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code            | Amount imposed | Amount paid |
+      | 1          | Victim Surcharge (FVS) | 500            | 250         |
 
-    #Add another imposition
-    And I click the "Add another imposition" button
-    And I enter "Vehicle Excise Back Duty (FVEBD)" into the "Result code" field for imposition 3
-    And I enter "100" into the "Amount imposed" field for imposition 3
-    And I enter "50" into the "Amount paid" field for imposition 3
+    When I review the offence
+    And I add another offence
 
-    Then I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
+    # Offence 2
+    When I provide offence details for offence code "HY35014" with a sentence date 8 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code   | Amount imposed | Amount paid |
+      | 1          | Costs (FCOST) | 500            | 250         |
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search |
+      | 1          | Minor         |                 |
+    And I maintain company minor creditor details for imposition 1:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode |
+      | CNAME   |                |                |                |          |
+    And I save the minor creditor details for imposition 1
 
-    When the table with offence code "TP11003" should contain the following data:
-      | Imposition     | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation   | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
-      | Costs          | CNAME3                                | £900.00        | £134.00     | £766.00           |
-      | Vehicle Excise | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
-      | Totals         |                                       | £1300.00       | £284.00     | £1016.00          |
+    And I add another offence
 
-  Scenario: (AC.2, AC.7, AC.8) The User can add multiple offences and add / change / remove offences [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
+    # Offence 3
+    When I provide offence details for offence code "TH68001B" with a sentence date 7 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code | Amount imposed | Amount paid |
+      | 1          | Fine (FO)   | 200            | 100         |
 
-    #Offence 1
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
+    When I review all offences
 
-    And I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 1
-    And I enter "500" into the "Amount imposed" field for imposition 1
-    And I enter "250" into the "Amount paid" field for imposition 1
+    Then I see the offences ordered by sentence date:
+      | Position | Sentence date offset | Offence code |
+      | 1        | 9 weeks ago          | TP11003      |
+      | 2        | 8 weeks ago          | HY35014      |
+      | 3        | 7 weeks ago          | TH68001B     |
 
-    Then I click the "Review offence" button
-    And I click the "Add another offence" button
-
-    #Offence 2
-    When I enter "HY35014" into the "Offence code" field
-    And I enter a date 8 weeks into the past into the "Date of sentence" date field
-
-    And I enter "Costs (FCOST)" into the "Result code" field for imposition 1
-    And I enter "500" into the "Amount imposed" field for imposition 1
-    And I enter "250" into the "Amount paid" field for imposition 1
-    And I select the "Minor creditor" radio button for imposition 1
-
-    When I click on the "Add minor creditor details" link for imposition 1
-    Then I see "Minor creditor details" on the page header
-    And I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
-    Then I click the "Save" button
-
-    And I click the "Add another offence" button
-
-    #Offence 3
-    When I enter "TH68001B" into the "Offence code" field
-    And I enter a date 7 weeks into the past into the "Date of sentence" date field
-
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "100" into the "Amount paid" field for imposition 1
-
-    Then I click the "Review offence" button
-
-    And I see the date of sentence 9 weeks ago above the date of sentence 8 weeks ago
-    And I see the date of sentence 8 weeks ago above the date of sentence 7 weeks ago
-
-    And the table with offence code "TP11003" should contain the following data:
+    And the table with offence code "TP11003" will contain the following data:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" should contain the following data:
+    And the table with offence code "HY35014" will contain the following data:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "TH68001B" should contain the following data:
+    And the table with offence code "TH68001B" will contain the following data:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list should contain the following data:
+    And the summary list will contain the following data:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
 
-    Then I click the "Change" link for offence "TP11003"
-    Then I see "Add an offence" on the page header
 
-    #Change offence date and change / add imposition details
-    And I enter a date 6 weeks into the past into the "Date of sentence" date field
-    And I clear the "Amount imposed" field for imposition 1
-    And I clear the "Amount paid" field for imposition 1
+  Scenario: (AC.2, AC.7, AC.8) User can change an offence and remove another offence when multiple offences exist [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
+    Given the following offences exist for the account:
+      | Offence code | Sentence weeks ago | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search | Creditor name | Minor creditor type |
+      | TP11003      | 9                  | Victim Surcharge (FVS) | 500            | 250         | Default       |                 |               |                     |
+      | HY35014      | 8                  | Costs (FCOST)          | 500            | 250         | Minor         |                 | CNAME         | Company             |
+      | TH68001B     | 7                  | Fine (FO)              | 200            | 100         | Default       |                 |               |                     |
 
-    And I enter "300" into the "Amount imposed" field for imposition 1
-    And I enter "150" into the "Amount paid" field for imposition 1
+    # Change offence TP11003 (Offence 1)
+    When I choose to amend offence with offence code "TP11003"
+    And I update the sentence date to 6 weeks in the past for the current offence
+    And I update imposition financial details for the current offence:
+      | Imposition | Result code            | Amount imposed | Amount paid |
+      | 1          | Victim Surcharge (FVS) | 300            | 150         |
 
-    And I click the "Add another imposition" button
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 2
-    And I enter "200" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I select the "Minor creditor" radio button for imposition 2
+    And I add another imposition to the current offence
+    And I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 2          | Compensation (FCOMP) | 200            | 100         |
 
-    When I click on the "Add minor creditor details" link for imposition 2
-    Then I see "Minor creditor details" on the page header
-    And I select the "Company" radio button
-    And I enter "CNAME2" into the "Company" field
-    Then I click the "Save" button
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search |
+      | 2          | Minor         |                 |
 
-    Then I click the "Review offence" button
+    And I maintain company minor creditor with BACS details for imposition 2:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | CNAME2  |                |                |                |          |              |           |                |                   |
 
-    And the table with offence code "TP11003" should contain the following data:
+    When I review all offences
+
+    Then the table with offence code "TP11003" should contain the following information:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | CNAME2                                | £200.00        | £100.00     | £100.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £300.00        | £150.00     | £150.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" should contain the following data:
+    And the table with offence code "HY35014" should contain the following information:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "TH68001B" should contain the following data:
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list should contain the following data:
+    And the summary list should contain the following information:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
 
-    Then I click the "Remove" link for offence "TH68001B"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "TH68001B" should contain the following data:
+    # Remove offence TH68001B (Offence 3) – cancel then confirm
+    When I choose to remove offence with offence code "TH68001B"
+    Then I am asked to confirm removing offence with offence code "TH68001B"
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    #Cancel then remove
-    When I click on the "No - cancel" link
-    Then I see "Offences and impositions" on the page header
-
-    And the table with offence code "TP11003" should contain the following data:
+    When I cancel removing offence with offence code "TH68001B"
+    Then I see the offence review for offence code "TP11003" with the following information:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | CNAME2                                | £200.00        | £100.00     | £100.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £300.00        | £150.00     | £150.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" should contain the following data:
+    And I see the offence review for offence code "HY35014" with the following information:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "TH68001B" should contain the following data:
+    And I see the offence review for offence code "TH68001B" with the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list should contain the following data:
+    And the summary list should contain the following information:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
 
-    Then I click the "Remove" link for offence "TH68001B"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "TH68001B" should contain the following data:
+    When I choose to remove offence with offence code "TH68001B"
+    Then I am asked to confirm removing offence with offence code "TH68001B"
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    When I click the "Yes - remove offence" button
-    Then I see "Offences and impositions" on the page header
-    And I do not see the offence code "TH68001B" on the page
+    When I confirm removing offence with offence code "TH68001B"
+    Then I see the offence review for offence code "TP11003" with the following information:
+      | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
+      | Compensation     | CNAME2                                | £200.00        | £100.00     | £100.00           |
+      | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £300.00        | £150.00     | £150.00           |
+      | Totals           |                                       | £500.00        | £250.00     | £250.00           |
+    And I do not see the offence code "TH68001B"
 
-    And I see the date of sentence 8 weeks ago above the date of sentence 6 weeks ago
+    Then I see the offences ordered by sentence date:
+      | Position | Sentence date offset | Offence code |
+      | 1        | 8 weeks ago          | HY35014      |
+      | 2        | 6 weeks ago          | TP11003      |
 
-
-    And the table with offence code "TP11003" should contain the following data:
+    And I see the offence review for offence code "TP11003" with the following information:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | CNAME2                                | £200.00        | £100.00     | £100.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £300.00        | £150.00     | £150.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" should contain the following data:
+    And I see the offence review for offence code "HY35014" with the following information:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the summary list should contain the following data:
+    And the summary list should contain the following information:
       | Amount imposed | £1000.00 |
       | Amount paid    | £500.00  |
       | Balance        | £500.00  |
 
-  Scenario: The User can add multiple offences and remove all offences [@PO-272, @PO-344, @PO-345, @PO-416, @PO-682, @PO-680]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I click the "Add another imposition" button
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "50" into the "Amount paid" field for imposition 1
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 2
-    And I enter "300" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I see "Add creditor" text on the page
-    And I select the "Major creditor" radio button
-    And I enter "LBUS" into the "Search using name or code" search box
-    And I see "LBUSMajorCreditor (LBUS)" in the "Search using name or code" field for imposition 2
-    And I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-    And I see "Offence TP11003 added" text on the page
-
-    And the table with offence code "TP11003" should contain the following data:
+  @PO-272 @PO-344 @PO-345 @PO-416 @PO-682 @PO-680
+  Scenario: User can add multiple offences and remove all offences
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 1          | Fine (FO)            | 200            | 50          |
+      | 2          | Compensation (FCOMP) | 300            | 100         |
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search |
+      | 2          | Major         | LBUS            |
+    When I review the offence and see the review page
+    And the table with offence code "TP11003" should contain the following information:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
-    When I click the "Add another offence" button
-    And I see "Add an offence" on the page header
-    And I enter "HY35014" into the "Offence code" field
-    And I enter a date 7 weeks into the past into the "Date of sentence" date field
-    And I click the "Add another imposition" button
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "100" into the "Amount imposed" field for imposition 1
-    And I enter "25" into the "Amount paid" field for imposition 1
-    And I enter "Costs (FCOST)" into the "Result code" field for imposition 2
-    And I enter "250" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I see "Add creditor" text on the page
-    And I select the "Major creditor" radio button
-    And I enter "Temporary Creditor (TEMP)" into the "Search using name or code" search box
-
-    When I click the "Add another offence" button
-    And I see "Add an offence" on the page header
-    And I enter "TH68001B" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "100" into the "Amount imposed" field for imposition 1
-    And I enter "25" into the "Amount paid" field for imposition 1
-
-    And I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-    And I see "Offence TH68001B added" text on the page
-    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
-    And I see "Riding a bicycle on a footpath" text on the page
-
-    Then the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
-      | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
-      | Totals       |                                       | £500.00        | £150.00     | £350.00           |
-
-    And the table with offence code "HY35014" should contain the following data:
+    When I add another offence
+    And I provide offence details for offence code "HY35014" with a sentence date 7 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code   | Amount imposed | Amount paid |
+      | 1          | Fine (FO)     | 100            | 25          |
+      | 2          | Costs (FCOST) | 250            | 100         |
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 2          | Major         | Temporary Creditor (TEMP) |
+    When I review the offence and see the review page
+    And the table with offence code "HY35014" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
-    And the table with offence code "TH68001B" should contain the following data:
+    When I add another offence
+    And I provide offence details for offence code "TH68001B" with a sentence date 9 weeks in the past
+    And I record imposition financial details:
+      | Imposition | Result code | Amount imposed | Amount paid |
+      | 1          | Fine (FO)   | 100            | 25          |
+    When I review the offence and see the review page
+    Then I see offence "TH68001B" on the offence review page
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
 
-    When I click the "Remove" link for offence "HY35014"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "HY35014" should contain the following data:
+    When I choose to remove offence with offence code "HY35014"
+    Then I am asked to confirm removing offence with offence code "HY35014"
+    And the table with offence code "HY35014" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
-    When I click on the "No - cancel" link
-    Then I see "Offences and impositions" on the page header
-
-    Then the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
-      | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
-      | Totals       |                                       | £500.00        | £150.00     | £350.00           |
-
-    And the table with offence code "HY35014" should contain the following data:
+    When I cancel removing offence with offence code "HY35014"
+    Then I am viewing Offences and impositions
+    And the table with offence code "HY35014" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
-    And the table with offence code "TH68001B" should contain the following data:
-      | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
-      | Totals     |                                       | £100.00        | £25.00      | £75.00            |
-
-    When I click the "Remove" link for offence "HY35014"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "HY35014" should contain the following data:
-      | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
-      | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
-      | Totals     |                                       | £350.00        | £125.00     | £225.00           |
-
-    When I click the "Yes - remove offence and all impositions" button
-    Then I see "Offences and impositions" on the page header
-
-    And the table with offence code "TP11003" should contain the following data:
+    When I remove offence with offence code "HY35014" and confirm
+    And the table with offence code "TP11003" should contain the following information:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
-
-    And the table with offence code "TH68001B" should contain the following data:
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
 
-    And I do not see the offence code "HY35014" on the page
-
-    When I click the "Remove" link for offence "TP11003"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "TP11003" should contain the following data:
-      | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
-      | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
-      | Totals       |                                       | £500.00        | £150.00     | £350.00           |
-
-    When I click the "Yes - remove offence and all impositions" button
-
-    And I do not see the offence code "TP11003" on the page
-
-    And the table with offence code "TH68001B" should contain the following data:
+    When I remove offence with offence code "TP11003" and confirm
+    And the table with offence code "TH68001B" should contain the following information:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
 
-    When I click the "Remove" link for offence "TH68001B"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And the table with offence code "TH68001B" should contain the following data:
-      | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
-      | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
-      | Totals     |                                       | £100.00        | £25.00      | £75.00            |
+    When I remove offence with offence code "TH68001B" and confirm
+    Then I see no offences messaging
 
-    When I click the "Yes - remove offence and all impositions" button
-
-    And I do not see the offence code "TP11003" on the page
-
-    Then I see "Offences and impositions" on the page header
-    And I see "There are no offences" text on the page
-    And I see the "Add another offence" button
-    And I see the "Return to account details" button
-
-    When I click the "Return to account details" button
-    Then I see the status of "Offence details" is "Not provided"
+    When I return to account details from offence details
+    Then the "Offence details" task status is "Not provided"
 
   Scenario: (AC.11) Grey navigation links routes correctly [@PO-272, @PO-344, @PO-345, @PO-417, @PO-676, @PO-679]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "50" into the "Amount paid" field for imposition 1
-    And I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-    And the button with text "Add payment terms" should not be present
+    When I add offence "TP11003" dated 9 weeks ago with impositions:
+      | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Fine (FO)   | 200            | 50          |               |                 |
+    When I review the offence and see the review page
+    And I should not see the button with text "Add payment terms"
 
-    When I click the "Return to account details" button
-    And I see the status of "Personal details" is "Not provided"
-    And I click on the "Personal details" link
-    And I see "Personal details" on the page header
-    And I select title "Mr" from dropdown
-    And I enter "Firstname" into the "First names" field
-    And I enter "Lastname" into the "Last name" field
-    And I enter "Address line 1" into the "Address line 1" field
-    And I click the "Return to account details" button
-    Then I see the status of "Personal details" is "Provided"
+    When I return to account details from offence details
+    Then the "Personal details" task status is "Not provided"
+    When I provide manual personal details from account details:
+      | title          | Mr             |
+      | first names    | Firstname      |
+      | last name      | Lastname       |
+      | address line 1 | Address line 1 |
+    And I return to account details
+    Then the "Personal details" task status is "Provided"
 
-    When I click on the "Offence details" link
-    And I see "Offences and impositions" on the page header
-    And I click the "Add payment terms" button
-    Then I see "Payment terms" on the page header
+    When I view the "Offence details" task
+    When I continue to payment terms from offence review
 
   Scenario: (AC.10, AC.3) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-411, @PO-681, @PO-684, @PO-686]
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "50" into the "Amount paid" field for imposition 1
-    And I click Cancel, a window pops up and I click Cancel
+    When I add and cancel offence "TP11003" dated 9 weeks ago with impositions:
+      | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Fine (FO)   | 200            | 50          |               |                 |
+    And I see the following offence detail fields:
+      | Field          | Value     | Imposition |
+      | Offence code   | TP11003   |            |
+      | Result code    | Fine (FO) | 1          |
+      | Amount imposed | 200       | 1          |
+      | Amount paid    | 50        | 1          |
 
-    Then I see "Add an offence" on the page header
-
-    When I see "TP11003" in the "Offence code" field
-    And I see "Fine (FO)" in the "Result code" field for imposition 1
-    And I see "200" in the "Amount imposed" field for imposition 1
-    And I see "50" in the "Amount paid" field for imposition 1
-
-    Then I click Cancel, a window pops up and I click Ok
-
+    When I cancel offence details choosing "Ok"
     Then I see the status of "Offence details" is "Not provided"
 
-    Then I click on the "Offence details" link
-    And I see "Add an offence" on the page header
+    When I view the "Offence details" task
+    And I add offence "TP11003" dated 9 weeks ago with impositions:
+      | Imposition | Result code   | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Costs (FCOST) | 200            | 50          |               |                 |
+    And I set imposition creditor types:
+      | Imposition | Creditor type |
+      | 1          | Minor         |
+    When I open and cancel company minor creditor for imposition 1 with company "CNAME"
 
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I enter "Costs (FCOST)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "50" into the "Amount paid" field for imposition 1
-    And I select the "Minor creditor" radio button for imposition 1
-    And I click on the "Add minor creditor details" link for imposition 1
-    And I see "Minor creditor details" on the page header
-    And I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
-    And I click Cancel, a window pops up and I click Cancel
+    When I cancel minor creditor details choosing "Ok"
+    Then I do not see minor creditor details for imposition 1
 
-    Then I validate the "Company" radio button is selected
-    And I see "CNAME" in the "Company" field
+    When I maintain company minor creditor with BACS details for imposition 1:
+      | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
+      | CNAME   |                |                |                |          |              |           |                |                   |
 
-    Then I click Cancel, a window pops up and I click Ok
-
-    And I do not see the Minor creditor details for imposition 1
-
-    Then I click on the "Add minor creditor details" link for imposition 1
-    And I see "Minor creditor details" on the page header
-    And I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
-    And I click the "Save" button
-
-    Then I click on the "Change" link for imposition 1
+    When I choose to "change" imposition 1
     And I enter "addr1" into the "Address line 1" field
-    And I click Cancel, a window pops up and I click Cancel
-
+    When I cancel minor creditor details choosing "Cancel"
     Then I see "addr1" in the "Address line 1" field
 
-    Then I click Cancel, a window pops up and I click Ok
-    And I click on the "Change" link for imposition 1
+    When I cancel minor creditor details choosing "Ok"
+    Then I do not see minor creditor details for imposition 1
 
-    Then I see "" in the "Address line 1" field
 
   Scenario: Offences screens - Axe core
-    # check accessibility on Add an offence screen
     Then I check accessibility
 
-    #Add offence details
-    When I enter "TP11003" into the "Offence code" field
-    And I enter a date 9 weeks into the past into the "Date of sentence" date field
-    And I enter "Fine (FO)" into the "Result code" field for imposition 1
-    And I enter "200" into the "Amount imposed" field for imposition 1
-    And I enter "50" into the "Amount paid" field for imposition 1
+    When I add offence "TP11003" dated 9 weeks ago with impositions:
+      | Imposition | Result code | Amount imposed | Amount paid | Creditor type | Creditor search |
+      | 1          | Fine (FO)   | 200            | 50          |               |                 |
+    And I add another imposition
+    And I record imposition financial details:
+      | Imposition | Result code          | Amount imposed | Amount paid |
+      | 2          | Compensation (FCOMP) | 300            | 100         |
+    And I set imposition creditor types:
+      | Imposition | Creditor type |
+      | 2          | Minor         |
+    When I perform minor creditor accessibility checks for imposition 2 with company "CNAME"
+    And I perform remove minor creditor accessibility check for imposition 2
+    And I perform remove imposition accessibility check for imposition 1
 
-    And I click the "Add another imposition" button
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 2
-    And I enter "300" into the "Amount imposed" field for imposition 2
-    And I enter "100" into the "Amount paid" field for imposition 2
-    And I select the "Minor creditor" radio button for imposition 2
-    When I click on the "Add minor creditor details" link for imposition 2
-
-    #Check accessibility of Minor creditor details screen
-    Then I see "Minor creditor details" on the page header
-    And I select the "Individual" radio button
-    And I check accessibility
-
-    Then I select the "Company" radio button
-    And I enter "CNAME" into the "Company" field
-
-    Then I select the "I have BACS payment details" checkbox
-
-    And I check accessibility
-    Then I unselect the "I have BACS payment details" checkbox
-
-    And I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    #Check accessibility of Remove Minor creditor screen
-    When I click on the "Remove" link for imposition 2
-    Then I see "Are you sure you want to remove this minor creditor?" on the page header
-    And I check accessibility
-
-    When I click on the "No - cancel" link
-    Then I see "Add an offence" on the page header
-
-    #Check accessibility of Remove imposition screen
-    When I click on the "Remove imposition" link for imposition 1
-    Then I see "Are you sure you want to remove this imposition?" on the page header
-    And I check accessibility
-
-    When I click on the "No - cancel" link
-    Then I see "Add an offence" on the page header
-
-    #Check accessibility on Review offence screen
-
-    And I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
+    When I review the offence and see the review page
     Then I check accessibility
 
-    #Check accessibility on Remove offence screen
-    When I click the "Remove" link for offence "TP11003"
-    Then I see "Are you sure you want to remove this offence and all its impositions?" on the page header
-    And I check accessibility
-    When I click the "Yes - remove offence and all impositions" button
-    Then I see "Offences and impositions" on the page header
-    And I check accessibility
+    When I perform offence removal accessibility check for offence code "TP11003"
+
+
 
   Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
-    And I open the "search the offence list" link in the same tab
-    And I see "Search offences" on the page header
+    When I open the "search the offence list" link in the same tab
+    Then I am viewing Search offences
 
-    # Test with results found
-    When I enter "TP11003" into the "Offence code" field
-    And I enter "Transport" into the "Short title" field
-    And I enter "Transport Act" into the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
+    When I search offences with:
+      | Offence code    | TP11003       |
+      | Short title     | Transport     |
+      | Act and section | Transport Act |
+    Then I am viewing offence results
     And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
 
-    When I click on the "Back" link
-    Then I see "Search offences" on the page header
-    And I see "TP11003" in the "Offence code" field
-    And I see "Transport" in the "Short title" field
-    And I see "Transport Act" in the "Act and section" text field
+    When I return to the offence search form
+    Then I am viewing Search offences
+    And I see the offence search form with:
+      | Offence code    | TP11003       |
+      | Short title     | Transport     |
+      | Act and section | Transport Act |
 
-    # Test with no results found
-    When I enter "XYZ999" into the "Offence code" field
-    And I enter "NonExistent" into the "Short title" field
-    And I enter "Invalid Act" into the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
+    When I search offences with:
+      | Offence code    | XYZ999      |
+      | Short title     | NonExistent |
+      | Act and section | Invalid Act |
+    Then I am viewing offence results
     And I see "There are no matching results" text on the page
 
-    When I click on the "Back" link
-    Then I see "Search offences" on the page header
-    And I see "XYZ999" in the "Offence code" field
-    And I see "NonExistent" in the "Short title" field
-    And I see "Invalid Act" in the "Act and section" text field
-
-  Scenario: AC1a-h, AC2a-b, Search functionality behavior and requirements [@PO-667, @PO-987, @PO-545]
-    # AC1b & AC2 user selects the 'Search' button on the 'Search Offences' screen and at least one of the search fields has at least one character entered
-    When I open the "search the offence list" link in the same tab
-
-    And I see "Search offences" on the page header
-    And I click the search button
-
-    Then I see "Search offences" on the page header
-
-    And I enter "A" into the "Offence code" field
-
-    And I click the search button
-    Then I see "Search results" on the page header
-
-    When I click on the "Back" link
-    And I enter "d" into the "Short title" field
-    And I clear the "Offence Code" field
-
-    And I click the search button
-    Then I see "Search results" on the page header
-
-    When I click on the "Back" link
-    And I enter "e" into the "Act and section" text field
-    And I clear the "Short title" field
-
-    And I click the search button
-    Then I see "Search results" on the page header
-
-    When I click on the "Back" link
-    And I clear the "Act and section" text field
-
-    # AC1c - Active/Inactive offences filter
-    When I enter "AB0" into the "Offence code" field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "Present" in the Search results table in the "Used to" column
-
-    When I click on the "Back" link
-    And I select the "Include inactive offence codes" checkbox
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "23 Mar 2011" in the Search results table in the "Used to" column
-    And I see "Present" in the Search results table in the "Used to" column
-
-    # AC1d - Combination search across multiple fields
-    When I click on the "Back" link
-    And I enter "TP" into the "Offence code" field
-    And I enter "Transport" into the "Short title" field
-    And I enter "London" into the "Act and section" text field
-    And I select the "Include inactive offence codes" checkbox
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "Transport" in the Search results table in the "Short title" column
-    And I see "TP" in the Search results table in the "Code" column
-    And I see "London" in the Search results table in the "Act and section" column
-
-    # AC1e - Case insensitive search
-    When I click on the "Back" link
-    And I enter "tp11003" into the "Offence code" field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "TP11003" in the Search results table in the "Code" column
-
-    When I click on the "Back" link
-    And I enter "TRANSPORT" into the "Short title" field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "Transport" in the Search results table in the "Short title" column
-
-    When I click on the "Back" link
-    And I enter "LONDON" into the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "London" in the Search results table in the "Act and section" column
-
-    # AC1f - Offence Code starts with search
-    When I click on the "Back" link
-    And I enter "TP47" into the "Offence code" field
-    And I clear the "Short title" field
-    And I clear the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "TP47033" in the Search results table in the "Code" column
-    And I see "TP47032" in the Search results table in the "Code" column
-
-    # AC1g - Short Title contains search
-    When I click on the "Back" link
-    And I enter "dangerous" into the "Short title" field
-    And I clear the "Offence Code" field
-    And I clear the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "dangerous item" in the Search results table in the "Short title" column
-    And I see "dangerous driving" in the Search results table in the "Short title" column
-
-    # AC1h - Act and Section contains search
-    When I click on the "Back" link
-    And I enter "London" into the "Act and section" text field
-    And I clear the "Offence Code" field
-    And I clear the "Short title" field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "London Byelaws" in the Search results table in the "Act and section" column
-
-    # Max 100 responses
-    When I click on the "Back" link
-    And I enter "A" into the "Offence code" field
-    And I clear the "Act and section" text field
-    And I click the search button
-    Then I see "Search results" on the page header
-    And I see "100 results" text on the page
-
-
-  Scenario: Offence search / results screen - Axe core [@PO-545, @PO-667, PO-987]
-    # check accessibility on Add an offence screen
-    When I open the "search the offence list" link in the same tab
-    And I see "Search offences" on the page header
-
-    #Check accessibility of Search offences screen
-    And I check accessibility
-
-    And I enter "ABC123" into the "Offence code" field
-    And I enter "Title name" into the "Short title" field
-    And I enter "testing the new field" into the "Act and section" text field
-
-    And I click the search button
-
-    #Check accessibility of Search results screen
-    Then I see "Search results" on the page header
-    And I check accessibility
-
-
-
-
-
+    When I return to the offence search form
+    Then I am viewing Search offences
+    And I see the offence search form with:
+      | Offence code    | XYZ999      |
+      | Short title     | NonExistent |
+      | Act and section | Invalid Act |

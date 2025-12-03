@@ -25,10 +25,8 @@ import {
   ManualEmployerFieldKey,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
 import { ManualPersonalDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/personal-details.actions';
-import { ManualOffenceDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';
 import { ManualPaymentTermsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/payment-terms.actions';
 import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
-import { calculateWeeksInFuture, calculateWeeksInPast } from '../../utils/dateUtils';
 import { log } from '../../utils/log.helper';
 import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
 import { ManualAccountTaskNavigationActions } from '../../../e2e/functional/opal/actions/manual-account-creation/task-navigation.actions';
@@ -44,6 +42,16 @@ import {
   LanguageSection,
   ManualLanguagePreferencesActions,
 } from '../../../e2e/functional/opal/actions/manual-account-creation/language-preferences.actions';
+import {
+  LanguagePreferenceLabel,
+  resolveCompanyFieldKey,
+  resolveContactFieldKey,
+  resolveCourtFieldKey,
+  resolveEmployerFieldKey,
+  resolveLanguageLabel,
+  resolveLanguageSection,
+} from '../../utils/fieldResolvers';
+import { normalizeHash, normalizeTableRows, parseWeeksValue, resolveRelativeDate } from './manual-account-creation.shared';
 import { accessibilityActions } from '../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 
 const flow = () => new ManualAccountCreationFlow();
@@ -51,7 +59,6 @@ const comments = () => new ManualAccountCommentsNotesActions();
 const courtDetails = () => new ManualCourtDetailsActions();
 const employerDetails = () => new ManualEmployerDetailsActions();
 const personalDetails = () => new ManualPersonalDetailsActions();
-const offenceDetails = () => new ManualOffenceDetailsActions();
 const paymentTerms = () => new ManualPaymentTermsActions();
 const dashboard = () => new DashboardActions();
 const details = () => new ManualAccountDetailsActions();
@@ -63,138 +70,13 @@ const createAccount = () => new ManualCreateAccountActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
 
 /**
- * @description Normalises a company details label to its logical field key.
- * @param field - Table or step label text (case-insensitive).
- * @returns A canonical company field key used by actions/selectors.
- * @remarks Keeps feature files flexible while ensuring selectors stay centralised.
- * @example resolveCompanyFieldKey('Address line 2') // returns 'address2'
- */
-const resolveCompanyFieldKey = (field: string): 'company' | 'address1' | 'address2' | 'address3' | 'postcode' => {
-  const normalized = field.toLowerCase();
-  if (normalized.includes('company name')) return 'company';
-  if (normalized.includes('address line 1')) return 'address1';
-  if (normalized.includes('address line 2')) return 'address2';
-  if (normalized.includes('address line 3')) return 'address3';
-  if (normalized.includes('postcode')) return 'postcode';
-  throw new Error(`Unknown company details field: ${field}`);
-};
-
-/**
- * @description Normalises a contact details label to its logical field key.
- * @param field - Table or step label text (case-insensitive).
- * @returns Contact field key recognised by ContactDetails actions.
- * @remarks Throws if the label is unknown to catch typos early.
- * @example resolveContactFieldKey('Home telephone number') // returns 'homeNumber'
- */
-const resolveContactFieldKey = (field: string): ManualContactFieldKey => {
-  const normalized = field.toLowerCase();
-
-  if (normalized.includes('primary email')) return 'primaryEmail';
-  if (normalized.includes('secondary email')) return 'secondaryEmail';
-  if (normalized.includes('mobile')) return 'mobileNumber';
-  if (normalized.includes('home')) return 'homeNumber';
-  if (normalized.includes('work')) return 'workNumber';
-
-  throw new Error(`Unknown contact details field: ${field}`);
-};
-
-/**
- * @description Normalises a court details label to its logical field key.
- * @param field - Table or step label text (case-insensitive).
- * @returns Court field key recognised by CourtDetails actions.
- * @remarks Used by Court Details data tables to stay selector-agnostic.
- * @example resolveCourtFieldKey('Prosecutor Case Reference (PCR)') // returns 'pcr'
- */
-const resolveCourtFieldKey = (field: string): ManualCourtFieldKey => {
-  const normalized = field.toLowerCase();
-
-  if (normalized.includes('local justice area') || normalized.includes('sending area')) return 'lja';
-  if (normalized.includes('prosecutor case reference') || normalized.includes('pcr')) return 'pcr';
-  if (normalized.includes('enforcement court')) return 'enforcementCourt';
-
-  throw new Error(`Unknown court details field: ${field}`);
-};
-
-/**
- * @description Normalises an employer details label to its logical field key.
- * @param field - Table or step label text (case-insensitive).
- * @returns Employer field key recognised by EmployerDetails actions.
- * @remarks Throws on unknown labels to prevent selector drift.
- * @example resolveEmployerFieldKey('Employer telephone') // returns 'employerTelephone'
- */
-const resolveEmployerFieldKey = (field: string): ManualEmployerFieldKey => {
-  const normalized = field.toLowerCase();
-
-  if (normalized.includes('employer name')) return 'employerName';
-  if (normalized.includes('employee reference')) return 'employeeReference';
-  if (normalized.includes('email')) return 'employerEmail';
-  if (normalized.includes('telephone') || normalized.includes('phone')) return 'employerTelephone';
-  if (normalized.includes('address line 1')) return 'addressLine1';
-  if (normalized.includes('address line 2')) return 'addressLine2';
-  if (normalized.includes('address line 3')) return 'addressLine3';
-  if (normalized.includes('address line 4')) return 'addressLine4';
-  if (normalized.includes('address line 5')) return 'addressLine5';
-  if (normalized.includes('postcode')) return 'postcode';
-
-  throw new Error(`Unknown employer details field: ${field}`);
-};
-
-type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
-
-/**
- * @description Maps a section label to its logical Language preferences section.
- * @param section - Section text from the feature (e.g., "Documents", "Court hearings").
- * @returns The canonical language section name.
- */
-const resolveLanguageSection = (section: string): LanguageSection => {
-  const normalized = section.toLowerCase();
-  return normalized.includes('court') ? 'Court hearings' : 'Documents';
-};
-
-/**
- * @description Normalises a section label to the Account details language row label.
- * @param section - Section text from the feature (e.g., "Documents", "Court hearings").
- * @returns The Account details summary row label.
- */
-const resolveLanguageLabel = (section: string): LanguagePreferenceLabel => {
-  return resolveLanguageSection(section) === 'Court hearings' ? 'Hearing language' : 'Document language';
-};
-
-/**
  * @step Confirms the user is on the dashboard.
+ * @description Asserts the dashboard is visible to ensure navigation is in a known state.
  */
 Then('I should be on the dashboard', () => {
   log('assert', 'Asserting dashboard is visible');
   dashboard().assertDashboard();
 });
-
-/**
- * @step Starts a fine manual account with the provided business unit and defendant type.
- * @description Navigates the create-account form to land on the Account details task list.
- * @param businessUnit - Business unit name to search and select.
- * @param defendantType - Defendant type option to choose.
- * @remarks Ensures the task list is loaded before later steps run.
- * @example
- *   When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
- */
-const parseWeeksValue = (value: string): { weeks: number; direction: 'past' | 'future' } => {
-  const match = value.match(/(\d+)\s+weeks?/i);
-  const weeks = match ? Number(match[1]) : 0;
-  const direction = /future/i.test(value) ? 'future' : 'past';
-  return { weeks, direction };
-};
-
-/**
- * @description Converts a relative weeks expression (e.g., "2 weeks in the past") to an ISO date string.
- * @param value - Human-readable relative date phrase.
- * @returns ISO date string derived from the relative weeks.
- * @remarks Shared across payment/offence date parsing for consistency.
- * @example resolveRelativeDate('3 weeks in the future') // -> '2025-...'
- */
-const resolveRelativeDate = (value: string): string => {
-  const { weeks, direction } = parseWeeksValue(value);
-  return direction === 'future' ? calculateWeeksInFuture(weeks) : calculateWeeksInPast(weeks);
-};
 
 /**
  * @step Starts a fine manual account with a specific business unit and defendant type.
@@ -209,20 +91,6 @@ When(
   'I start a fine manual account for business unit {string} with defendant type {string}',
   (businessUnit: string, defendantType: DefendantType) => {
     log('step', 'Starting manual account creation', { businessUnit, defendantType });
-    flow().startFineAccount(businessUnit, defendantType);
-  },
-);
-
-/**
- * @step Starts a fine manual account using the default business unit visible on the page.
- * @description Handles single-business-unit users where the business unit is preselected/displayed.
- * @param businessUnit - Expected business unit (for logging/clarity).
- * @param defendantType - Defendant type option to choose.
- */
-When(
-  'I start a fine manual account using the default business unit {string} with defendant type {string}',
-  (businessUnit: string, defendantType: DefendantType) => {
-    log('step', 'Starting manual account creation with default business unit', { businessUnit, defendantType });
     flow().startFineAccount(businessUnit, defendantType);
   },
 );
@@ -394,19 +262,6 @@ Then(
     flow().returnToAccountDetailsAndAssertStatus(taskName, expectedStatus);
   },
 );
-
-/**
- * @step Asserts the status text for a task list item.
- * @description Checks a task list entry status without additional navigation.
- * @param taskName - Task name to verify.
- * @param expectedStatus - Status text expected.
- * @remarks Assumes the caller is already on Account details.
- * @example Then the "Court details" task status is "Not provided"
- */
-Then('the {string} task status is {string}', (taskName: ManualAccountTaskName, expectedStatus: string) => {
-  log('assert', 'Checking task status', { taskName, expectedStatus });
-  details().assertTaskStatus(taskName, expectedStatus);
-});
 
 /**
  * @step Returns to account details task list from a manual account form.
@@ -614,173 +469,11 @@ Then('the manual court details fields are:', (table: DataTable) => {
 });
 
 /**
- * @step Cancels Court details with a given choice.
- * @description Triggers the unsaved changes prompt and selects the provided option.
- * @param choice - Cancel/Ok/Stay/Leave to respond to the confirm dialog.
- * @remarks Accept choices will navigate away; cancel choices keep the user on Court details.
- * @example When I cancel manual court details choosing "Cancel"
- */
-When('I cancel manual court details choosing {string}', (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
-  log('cancel', 'Cancelling court details', { choice });
-  flow().cancelCourtDetails(choice);
-});
-
-/**
- * @step Cancels Court details and asserts navigation to Account details.
- * @description Confirms the dialog (Ok/Leave) and checks we land on Account details.
- * @param choice - Confirmation choice (Ok or Leave).
- * @remarks Throws if a non-confirm choice is supplied to keep behaviour explicit.
- * @example When I cancel manual court details choosing "Ok" and return to account details
- */
-When('I cancel manual court details choosing {string} and return to account details', (choice: 'Ok' | 'Leave') => {
-  if (!/ok|leave/i.test(choice)) {
-    throw new Error('This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.');
-  }
-
-  log('cancel', 'Cancelling court details and returning to account details', { choice });
-  flow().cancelCourtDetailsAndReturn(choice);
-});
-
-/**
- * @step Confirms we are on the Court details page.
- * @description Asserts URL and header for Court details.
- * @remarks Use before field assertions to guard against stale DOM.
- * @example Then I am viewing court details
- */
-Then('I am viewing court details', () => {
-  log('assert', 'Asserting Court details page');
-  courtDetails().assertOnCourtDetailsPage();
-});
-
-/**
- * @step Navigates from Court details to Personal details using the grey CTA.
- * @description Clicks the nested flow button to reach Personal details.
- * @remarks Includes pathname + header guard to avoid stale header assertions.
- * @example When I continue to personal details from court details
- */
-When('I continue to personal details from court details', () => {
-  log('navigate', 'Continuing to personal details from Court details');
-  flow().continueToPersonalDetailsFromCourt();
-});
-
-/**
- * @step Completes minimum personal details fields.
- * @description Fills title, first names, last name, and address line 1 on Personal details.
- * @param title - Title option to select.
- * @param firstNames - First names text.
- * @param lastName - Last name text.
- * @param addressLine1 - Address line 1 text.
- * @remarks Assumes the caller handles navigation to Personal details.
- * @example When I complete manual personal details with title "Mr", first names "John", last name "Smith", address line 1 "1 Test St"
- */
-When(
-  'I complete manual personal details with title {string}, first names {string}, last name {string}, address line 1 {string}',
-  (title: string, firstNames: string, lastName: string, addressLine1: string) => {
-    log('step', 'Completing personal details', { title, firstNames, lastName, addressLine1 });
-    flow().completePersonalDetails({ title, firstNames, lastName, addressLine1 });
-  },
-);
-
-/**
- * @step Populates manual personal details from the account details task using a data table.
- * @description Opens Personal details from Account details and fills required fields.
- * @param table - DataTable of personal detail fields/values.
- * @remarks Navigation handled via flow; table keys must match expected labels.
- * @example
- *   When I have provided manual personal details from account details:
- *     | title        | Mr    |
- *     | first names  | John  |
- */
-When('I have provided manual personal details from account details:', (table: DataTable) => {
-  const data = table.rowsHash();
-  log('step', 'Providing personal details from table', data);
-  flow().providePersonalDetailsFromAccountDetails({
-    title: data['title'],
-    firstNames: data['first names'],
-    lastName: data['last name'],
-    addressLine1: data['address line 1'],
-  });
-});
-
-/**
- * @step Adds a single offence with imposition amounts.
- * @description Fills offence details with a relative date, offence/result codes, and amounts.
- * @param weeksInPast - Weeks before today for the offence date.
- * @param offenceCode - Offence code to enter.
- * @param resultCode - Result code to enter.
- * @param amountImposed - Amount imposed value.
- * @param amountPaid - Amount paid value.
- * @remarks Converts relative weeks to a concrete date via utilities.
- * @example
- *   When I add an offence dated 2 weeks in the past with offence code "ABC" result code "1234" amount imposed "100" and amount paid "50"
- */
-When(
-  'I add an offence dated {int} weeks in the past with offence code {string}, result code {string}, amount imposed {string}, and amount paid {string}',
-  (weeksInPast: number, offenceCode: string, resultCode: string, amountImposed: string, amountPaid: string) => {
-    const dateOfSentence = calculateWeeksInPast(weeksInPast);
-    log('step', 'Completing offence details', {
-      weeksInPast,
-      offenceCode,
-      resultCode,
-      amountImposed,
-      amountPaid,
-      dateOfSentence,
-    });
-    details().assertOnAccountDetailsPage();
-    offenceDetails().fillOffenceDetails({
-      dateOfSentence,
-      offenceCode,
-      resultCode,
-      amountImposed,
-      amountPaid,
-    });
-  },
-);
-
-/**
- * @step Populates offence details from account details using a data table.
- * @description Navigates via Account details to Offence details and fills fields from a table.
- * @param table - DataTable containing offence date, offence code, result code, amounts.
- * @remarks Relative dates are normalised via resolveRelativeDate; unknown labels will throw.
- * @example
- *   When I have provided offence details from account details:
- *     | offence date  | 2 weeks in the past |
- *     | offence code  | ABC123              |
- *     | result code   | 4001                |
- *     | amount imposed| 100                 |
- *     | amount paid   | 50                  |
- */
-When('I have provided offence details from account details:', (table: DataTable) => {
-  const data = table.rowsHash();
-  const offenceDate = resolveRelativeDate(data['offence date']);
-  log('step', 'Providing offence details from table', { ...data, offenceDate });
-  flow().provideOffenceDetailsFromAccountDetails({
-    dateOfSentence: offenceDate,
-    offenceCode: data['offence code'],
-    resultCode: data['result code'],
-    amountImposed: data['amount imposed'],
-    amountPaid: data['amount paid'],
-  });
-});
-
-/**
- * @step Sends offence details for review.
- * @description Clicks the review/submit button on Offence details.
- * @remarks Assumes caller has navigated to Offence details.
- * @example When I submit the offence details for review
- */
-When('I submit the offence details for review', () => {
-  log('navigate', 'Submitting offence details for review');
-  offenceDetails().clickReviewOffence();
-});
-
-/**
  * @step Sets payment terms including collection order and pay-by date.
- * @description Fills collection order, sets past and future dates relative to today, and submits.
+ * @description Fills collection order with past date and a future pay-in-full date.
  * @param collectionOrder - Whether collection order is "Yes" or "No".
  * @param weeksInPast - Weeks ago for collection order date.
  * @param weeksInFuture - Weeks ahead for pay-in-full date.
- * @remarks Uses flow to assert Account details context before filling.
  * @example
  *   When I set manual payment terms with collection order "Yes" 1 weeks ago and pay in full by 4 weeks in the future
  */
@@ -804,9 +497,9 @@ When(
  * @remarks Relative dates are parsed; table labels must match expected keys.
  * @example
  *   When I have provided manual payment terms:
- *     | collection order     | Yes                |
-+ *     | collection order date| 2 weeks in the past|
- *     | pay in full by       | 3 weeks in the future |
+ *     | collection order      | Yes                 |
+ *     | collection order date | 2 weeks in the past |
+ *     | pay in full by        | 3 weeks in the future |
  */
 When('I have provided manual payment terms:', (table: DataTable) => {
   const data = table.rowsHash();
@@ -1036,12 +729,15 @@ When('I save manual language preferences', () => {
  * @step Opens Language preferences from Account details and runs accessibility checks.
  * @param section - Section to open from Account details.
  */
-When('I view manual language preferences from account details for {string} and check accessibility', (section: string) => {
-  const label = resolveLanguageLabel(section);
-  log('a11y', 'Opening language preferences for accessibility check', { section, label });
-  flow().openLanguagePreferencesFromAccountDetails(label);
-  accessibilityActions().checkAccessibilityOnly();
-});
+When(
+  'I view manual language preferences from account details for {string} and check accessibility',
+  (section: string) => {
+    const label = resolveLanguageLabel(section);
+    log('a11y', 'Opening language preferences for accessibility check', { section, label });
+    flow().openLanguagePreferencesFromAccountDetails(label);
+    accessibilityActions().checkAccessibilityOnly();
+  },
+);
 
 /**
  * @step Cancels out of language preferences with a chosen dialog response.
@@ -1064,7 +760,9 @@ When(
   'I cancel manual language preferences choosing {string} and return to account details',
   (choice: 'Ok' | 'Leave') => {
     if (!/ok|leave/i.test(choice)) {
-      throw new Error('This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.');
+      throw new Error(
+        'This step must confirm leaving (Ok/Leave). Use the non-composite cancel step for other choices.',
+      );
     }
     log('cancel', 'Cancelling language preferences and returning to Account details', { choice });
     flow().cancelLanguagePreferencesAndReturn(choice);
@@ -1547,6 +1245,10 @@ Then('I am viewing employer details', () => {
  * @description Clicks the nested flow button to reach Offence details.
  * @remarks Includes pathname + header guard to avoid stale assertions.
  * @example When I continue to offence details from employer details
+ */
+/**
+ * @step Continue from Employer details to Offence details.
+ * @description Uses the grey CTA on Employer details and asserts the Offence details page.
  */
 When('I continue to offence details from employer details', () => {
   log('navigate', 'Continuing to offence details from Employer details');

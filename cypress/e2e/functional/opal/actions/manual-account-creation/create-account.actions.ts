@@ -32,29 +32,24 @@ export class ManualCreateAccountActions {
    */
   selectBusinessUnit(businessUnit: string): void {
     log('type', 'Selecting business unit', { businessUnit });
+    cy.get(L.businessUnit.input, { timeout: 15_000 })
+      .first()
+      .should('exist')
+      .should('be.visible')
+      .scrollIntoView()
+      .clear({ force: true })
+      .type(businessUnit, { delay: 0, force: true });
 
-    cy.get('body').then(($body) => {
-      const inputEl = $body.find(L.businessUnit.input).first();
+    cy.get(L.businessUnit.listbox, this.common.getTimeoutOptions()).first().should('be.visible');
 
-      if (!inputEl.length) {
-        log('info', 'Business unit input not present; single unit assumed by application');
-        return;
-      }
+    cy.get(L.businessUnit.input).first().focus().type('{downarrow}{enter}', { force: true });
 
-      cy.wrap(inputEl)
-        .should('be.visible')
-        .clear({ force: true })
-        .type(businessUnit, { delay: 0 });
-
-      cy.get(L.businessUnit.listbox, this.common.getTimeoutOptions()).should('be.visible');
-      cy.wrap(inputEl).type('{downarrow}{enter}');
-
-      cy.wrap(inputEl)
-        .invoke('val')
-        .should((val) => {
-          expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
-        });
-    });
+    cy.get(L.businessUnit.input)
+      .first()
+      .invoke('val')
+      .should((val) => {
+        expect(String(val ?? '')).to.not.equal('', 'Business unit should be selected');
+      });
   }
 
   /**
@@ -67,10 +62,14 @@ export class ManualCreateAccountActions {
         ? L.accountType.fine
         : normalized.startsWith('fixed penalty')
           ? L.accountType.fixedPenalty
-          : L.accountType.conditionalCaution;
+      : L.accountType.conditionalCaution;
 
     log('click', 'Selecting account type', { type });
-    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions())
+      .first()
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
   }
 
   /**
@@ -87,7 +86,11 @@ export class ManualCreateAccountActions {
     }
 
     log('click', 'Selecting defendant type', { defendantType });
-    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions())
+      .first()
+      .should('exist')
+      .scrollIntoView()
+      .check({ force: true });
   }
 
   /**

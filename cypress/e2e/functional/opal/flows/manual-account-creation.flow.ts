@@ -27,9 +27,42 @@ import {
   LanguageOption,
   ManualLanguagePreferencesActions,
 } from '../actions/manual-account-creation/language-preferences.actions';
+import { ManualOffenceMinorCreditorActions } from '../actions/manual-account-creation/offence-minor-creditor.actions';
+import { calculateWeeksInPast } from '../../../../support/utils/dateUtils';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
+type OffenceImpositionInput = {
+  imposition: number;
+  resultCode?: string;
+  amountImposed?: string;
+  amountPaid?: string;
+  creditorType?: string;
+  creditorSearch?: string;
+};
+type MinorCreditorWithBacs = {
+  title?: string;
+  firstNames?: string;
+  lastName?: string;
+  company?: string;
+  address1?: string;
+  address2?: string;
+  address3?: string;
+  postcode?: string;
+  accountName?: string;
+  sortCode?: string;
+  accountNumber?: string;
+  paymentReference?: string;
+};
+type MinorCreditorSummary = Partial<{
+  'Minor creditor': string;
+  Address: string;
+  'Payment method': string;
+  'Account name': string;
+  'Sort code': string;
+  'Account number': string;
+  'Payment reference': string;
+}>;
 
 /**
  * Flow for Manual Account Creation.
@@ -50,6 +83,7 @@ export class ManualAccountCreationFlow {
   private readonly courtDetails = new ManualCourtDetailsActions();
   private readonly personalDetails = new ManualPersonalDetailsActions();
   private readonly offenceDetails = new ManualOffenceDetailsActions();
+  private readonly offenceMinorCreditor = new ManualOffenceMinorCreditorActions();
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
 
@@ -451,7 +485,6 @@ export class ManualAccountCreationFlow {
     addressLine1: string;
   }): void {
     log('flow', 'Provide personal details from Account details', payload);
-    this.taskNavigation.navigateToAccountDetails();
     this.accountDetails.openTask('Personal details');
     this.personalDetails.fillBasicDetails(payload);
   }
@@ -481,11 +514,195 @@ export class ManualAccountCreationFlow {
     amountPaid: string;
   }): void {
     log('flow', 'Provide offence details from Account details', payload);
-    this.taskNavigation.navigateToAccountDetails();
     this.accountDetails.assertOnAccountDetailsPage();
     this.accountDetails.openTask('Offence details');
     this.offenceDetails.fillOffenceDetails(payload);
     this.offenceDetails.clickReviewOffence();
+  }
+
+  /**
+   * Adds impositions (financials + creditor types) for an offence and sets offence details.
+   */
+  addOffenceWithImpositions(payload: {
+    offenceCode: string;
+    weeksAgo: number;
+    impositions: OffenceImpositionInput[];
+  }): void {
+    const { offenceCode, weeksAgo } = payload;
+    const impositions = [...payload.impositions].sort((a, b) => a.imposition - b.imposition);
+    const dateOfSentence = calculateWeeksInPast(weeksAgo);
+
+    log('flow', 'Adding offence with impositions and creditor types', {
+      offenceCode,
+      weeksAgo,
+      impositionCount: impositions.length,
+    });
+
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.setOffenceField('Offence code', offenceCode);
+    this.offenceDetails.setOffenceField('Date of sentence', dateOfSentence);
+
+    cy.wrap(impositions).each((row: OffenceImpositionInput) => {
+      const index = Number(row.imposition) - 1;
+      if (Number.isNaN(index) || index < 0) {
+        throw new Error(`Invalid imposition index: ${row.imposition}`);
+      }
+
+      return this.ensureImpositionIndex(index).then(() => {
+        if (row.resultCode) {
+          this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
+        }
+        if (row.amountImposed) {
+          this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
+        }
+        if (row.amountPaid) {
+          this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
+        }
+
+        const type = (row.creditorType || '').toLowerCase();
+        if (type.includes('major')) {
+          this.offenceDetails.selectCreditorType(index, 'major');
+          if (row.creditorSearch) {
+            this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
+          }
+        } else if (type.includes('minor')) {
+          this.offenceDetails.selectCreditorType(index, 'minor');
+        }
+      });
+    });
+  }
+
+  /**
+   * Completes an Individual minor creditor with BACS details and saves.
+   */
+  maintainIndividualMinorCreditorWithBacs(imposition: number, details: MinorCreditorWithBacs): void {
+    const index = imposition - 1;
+    log('flow', 'Maintaining individual minor creditor with BACS', { imposition, details });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.openMinorCreditorDetails(index);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Individual');
+
+    if (details.title) {
+      this.offenceMinorCreditor.selectTitle(details.title);
+    }
+    if (details.firstNames) {
+      this.offenceMinorCreditor.setField('firstNames', details.firstNames);
+    }
+    if (details.lastName) {
+      this.offenceMinorCreditor.setField('lastName', details.lastName);
+    }
+    if (details.address1) {
+      this.offenceMinorCreditor.setField('address1', details.address1);
+    }
+    if (details.address2) {
+      this.offenceMinorCreditor.setField('address2', details.address2);
+    }
+    if (details.address3) {
+      this.offenceMinorCreditor.setField('address3', details.address3);
+    }
+    if (details.postcode) {
+      this.offenceMinorCreditor.setField('postcode', details.postcode);
+    }
+
+    const hasBacsDetails = [
+      details.accountName,
+      details.sortCode,
+      details.accountNumber,
+      details.paymentReference,
+    ].some(Boolean);
+    if (hasBacsDetails) {
+      this.offenceMinorCreditor.togglePayByBacs(true);
+      if (details.accountName) {
+        this.offenceMinorCreditor.setField('accountName', details.accountName);
+      }
+      if (details.sortCode) {
+        this.offenceMinorCreditor.setField('sortCode', details.sortCode);
+      }
+      if (details.accountNumber) {
+        this.offenceMinorCreditor.setField('accountNumber', details.accountNumber);
+      }
+      if (details.paymentReference) {
+        this.offenceMinorCreditor.setField('paymentReference', details.paymentReference);
+      }
+    }
+
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Completes a Company minor creditor with BACS details and saves.
+   */
+  maintainCompanyMinorCreditorWithBacs(imposition: number, details: MinorCreditorWithBacs): void {
+    const index = imposition - 1;
+    log('flow', 'Maintaining company minor creditor with BACS', { imposition, details });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.openMinorCreditorDetails(index);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Company');
+
+    if (details.company) {
+      this.offenceMinorCreditor.setField('company', details.company);
+    }
+    if (details.address1) {
+      this.offenceMinorCreditor.setField('address1', details.address1);
+    }
+    if (details.address2) {
+      this.offenceMinorCreditor.setField('address2', details.address2);
+    }
+    if (details.address3) {
+      this.offenceMinorCreditor.setField('address3', details.address3);
+    }
+    if (details.postcode) {
+      this.offenceMinorCreditor.setField('postcode', details.postcode);
+    }
+
+    const hasBacsDetails = [
+      details.accountName,
+      details.sortCode,
+      details.accountNumber,
+      details.paymentReference,
+    ].some(Boolean);
+    if (hasBacsDetails) {
+      this.offenceMinorCreditor.togglePayByBacs(true);
+      if (details.accountName) {
+        this.offenceMinorCreditor.setField('accountName', details.accountName);
+      }
+      if (details.sortCode) {
+        this.offenceMinorCreditor.setField('sortCode', details.sortCode);
+      }
+      if (details.accountNumber) {
+        this.offenceMinorCreditor.setField('accountNumber', details.accountNumber);
+      }
+      if (details.paymentReference) {
+        this.offenceMinorCreditor.setField('paymentReference', details.paymentReference);
+      }
+    }
+
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Asserts a minor creditor summary for an imposition (expands the details).
+   */
+  assertMinorCreditorSummary(imposition: number, expectations: MinorCreditorSummary): void {
+    const index = imposition - 1;
+    log('assert', 'Asserting minor creditor summary', { imposition, expectations });
+    this.offenceDetails.toggleMinorCreditorDetails(index, 'Show details');
+    this.offenceDetails.assertMinorCreditorDetails(index, expectations);
+  }
+
+  /**
+   * Asserts remove imposition links visibility for a set of impositions.
+   */
+  assertRemoveImpositionLinks(impositions: number[], expectedVisible: boolean = true): void {
+    log('assert', 'Asserting remove imposition links', { impositions, expectedVisible });
+    impositions.forEach((imposition) => {
+      const index = imposition - 1;
+      this.offenceDetails.assertRemoveImpositionLink(index, expectedVisible);
+    });
   }
 
   /**
@@ -672,5 +889,14 @@ export class ManualAccountCreationFlow {
   private ensureOnCreateAccountPage(): void {
     this.dashboard.goToManualAccountCreation();
     this.createAccount.assertOnCreateAccountPage();
+  }
+
+  private ensureImpositionIndex(index: number): Cypress.Chainable<void> {
+    return this.offenceDetails.getImpositionCount().then((count) => {
+      if (count <= index) {
+        this.offenceDetails.clickAddAnotherImposition();
+        return this.ensureImpositionIndex(index);
+      }
+    });
   }
 }

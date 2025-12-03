@@ -24,6 +24,7 @@
 import { Given } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { createDraftAndSetStatus } from '../../../e2e/functional/opal/actions/draft-account.api';
+import { log } from '../../utils/log.helper';
 
 /**
  * @typedef AccountType
@@ -51,16 +52,11 @@ function createDraftAndPrepareForPublishing(
 ) {
   const details = table.hashes?.() ?? [];
 
-  Cypress.log({
-    name: 'draft',
-    displayName: 'Create Draft',
-    message: `Creating ${accountType} draft → ${status}`,
-    consoleProps: () => ({
-      accountType,
-      status,
-      fields: details,
-      rowCount: details.length,
-    }),
+  log('step', `Creating ${accountType} draft → ${status}`, {
+    accountType,
+    status,
+    fields: details,
+    rowCount: details.length,
   });
 
   return createDraftAndSetStatus(accountType, status, table);
@@ -90,12 +86,7 @@ Given(
     // Convert DataTable into raw row format for logging purposes.
     const data = table.rows();
 
-    Cypress.log({
-      name: 'draft',
-      displayName: 'Create Draft',
-      message: `Create ${accountType} draft, status ${status}`,
-      consoleProps: () => ({ accountType, status, data }),
-    });
+    log('step', `Create ${accountType} draft, status ${status}`, { accountType, status, data });
 
     // Perform the draft creation and set the desired status.
     createDraftAndPrepareForPublishing(accountType, table, status);
