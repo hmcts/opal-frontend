@@ -1,4 +1,4 @@
 export interface IFinesMacLanguagePreferencesOptions {
-  CY: string;
-  EN: string;
+  CY: 'Welsh and English';
+  EN: 'English only';
 }

@@ -456,7 +456,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStore.resetError();
+    this.globalStore.resetBannerError();
   }
 
   public ngOnInit(): void {
