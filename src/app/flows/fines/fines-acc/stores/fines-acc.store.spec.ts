@@ -53,6 +53,7 @@ describe('FinesAccountStore', () => {
     expect(snapshot).toEqual({
       account_number: payload.account_number,
       account_id: payload.account_id,
+      pg_party_id: payload.pg_party_id,
       party_id: payload.party_id,
       party_type: payload.party_type,
       party_name: payload.party_name,
@@ -74,6 +75,7 @@ describe('FinesAccountStore', () => {
     expect(current).toEqual({
       account_number: initialState.account_number,
       account_id: initialState.account_id,
+      pg_party_id: initialState.pg_party_id,
       party_id: initialState.party_id,
       party_type: initialState.party_type,
       party_name: initialState.party_name,
