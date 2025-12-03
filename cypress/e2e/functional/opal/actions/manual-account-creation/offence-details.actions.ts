@@ -11,6 +11,7 @@ type ImpositionField = 'Result code' | 'Amount imposed' | 'Amount paid';
 
 export class ManualOffenceDetailsActions {
   private readonly common = new CommonActions();
+  private readonly resultCodeInputSelector = 'input[id^="fm_offence_details_result_id_"][id$="-autocomplete"]';
 
   /**
    * Asserts the Add an offence page is displayed.
@@ -234,7 +235,7 @@ export class ManualOffenceDetailsActions {
    * Returns the current number of imposition panels on the page.
    */
   getImpositionCount(): Cypress.Chainable<number> {
-    return cy.get(L.imposition.container, this.common.getTimeoutOptions()).its('length');
+    return cy.get(this.resultCodeInputSelector, this.common.getTimeoutOptions()).its('length');
   }
 
   /**
@@ -496,7 +497,7 @@ export class ManualOffenceDetailsActions {
   }
 
   private getImpositionPanel(index: number) {
-    return cy.get(L.imposition.container, this.common.getTimeoutOptions()).eq(index);
+    return cy.get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions()).closest(L.imposition.container);
   }
 
   /**

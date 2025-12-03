@@ -203,6 +203,7 @@ Feature: Manual account creation - Offence Details
     When I return to account details from offence details
     Then the "Offence details" task status is "Provided"
 
+
   Scenario: User can see imposition details before removal and cancel or confirm removal
     Given an offence exists with the following impositions:
       | Offence code | Sentence weeks ago | Imposition | Result code            | Amount imposed | Amount paid | Creditor type | Creditor search           | Minor creditor type | Minor creditor name | Address line 1 | Postcode |
@@ -235,7 +236,6 @@ Feature: Manual account creation - Offence Details
     When I confirm removing imposition 1
     Then I am viewing Add an Offence
     And I do not see "Compensation (FCOMP)" text on the page
-
 
   Scenario: User sees correct reindexing and cannot remove the last remaining imposition
     Given an offence exists with the following impositions:
@@ -661,7 +661,7 @@ Feature: Manual account creation - Offence Details
       | Amount paid    | 50        | 1          |
 
     When I cancel offence details choosing "Ok"
-    Then I see the status of "Offence details" is "Not provided"
+    Then the "Offence details" task status is "Not provided"
 
     When I view the "Offence details" task
     And I add offence "TP11003" dated 9 weeks ago with impositions:
@@ -673,7 +673,7 @@ Feature: Manual account creation - Offence Details
     When I open and cancel company minor creditor for imposition 1 with company "CNAME"
 
     When I cancel minor creditor details choosing "Ok"
-    Then I do not see minor creditor details for imposition 1
+    Then I am viewing Add an Offence
 
     When I maintain company minor creditor with BACS details for imposition 1:
       | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
@@ -685,7 +685,7 @@ Feature: Manual account creation - Offence Details
     Then I see "addr1" in the "Address line 1" field
 
     When I cancel minor creditor details choosing "Ok"
-    Then I do not see minor creditor details for imposition 1
+    Then I am viewing Add an Offence
 
 
   Scenario: Offences screens - Axe core
@@ -735,7 +735,7 @@ Feature: Manual account creation - Offence Details
       | Short title     | NonExistent |
       | Act and section | Invalid Act |
     Then I am viewing offence results
-    And I see "There are no matching results" text on the page
+    And I see "There are no matching results" text
 
     When I return to the offence search form
     Then I am viewing Search offences

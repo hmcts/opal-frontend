@@ -14,7 +14,7 @@ export const ManualOffenceDetailsLocators = {
   addAnotherOffenceButton: 'button.nested-flow:contains("Add another offence")',
   reviewOffenceButton: 'button[type="submit"]:contains("Review offence")',
   returnToAccountDetailsButton: 'button[type="submit"]:contains("Return to account details")',
-  cancelLink: 'a.govuk-link, button.govuk-link, [role="button"].govuk-link',
+  cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
   searchOffenceLink: 'a[href*="search-offences"]',
   imposition: {
     container: 'opal-lib-moj-ticket-panel',
@@ -51,7 +51,7 @@ export const ManualOffenceDetailsLocators = {
     accountNumberInput: '#fm_offence_details_minor_creditor_bank_account_number',
     paymentReferenceInput: '#fm_offence_details_minor_creditor_bank_account_ref',
     saveButton: '#submitForm',
-    cancelLink: 'a.govuk-link, button.govuk-link, [role="button"].govuk-link',
+    cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
   },
   removeMinorCreditor: {
     pageHeader: 'h1.govuk-heading-l',

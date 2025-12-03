@@ -26,7 +26,7 @@ export class ManualOffenceSearchActions {
    * @param expectedHeader - Expected header text fragment.
    */
   assertOnResultsPage(expectedHeader: string = 'Search results'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', 'search-offences/results');
+    cy.location('pathname', { timeout: 20_000 }).should('include', 'search-offences-results');
     this.common.assertHeaderContains(expectedHeader, 20_000);
   }
 

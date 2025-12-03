@@ -789,6 +789,18 @@ Then('the task statuses are:', (table: DataTable) => {
 });
 
 /**
+ * @step Asserts a single task status while on Account details.
+ * @description Checks the status text for the given task list entry.
+ * @param taskName - Task list entry to verify.
+ * @param expectedStatus - Expected status text (e.g., "Provided").
+ * @example Then the "Offence details" task status is "Provided"
+ */
+Then('the {string} task status is {string}', (taskName: ManualAccountTaskName, expectedStatus: string) => {
+  log('assert', 'Checking single task status', { taskName, expectedStatus });
+  details().assertTaskStatus(taskName, expectedStatus);
+});
+
+/**
  * @step Asserts both comment and note fields at once.
  * @description Verifies the comment and note values in a single assertion helper.
  * @param commentText - Expected comment text.

@@ -490,7 +490,9 @@ Given('an offence exists with the following impositions:', (table: DataTable) =>
     return acc;
   }, {});
 
-  Object.entries(offences).forEach(([offenceCode, impositions], index) => {
+  const offenceEntries = Object.entries(offences);
+
+  offenceEntries.forEach(([offenceCode, impositions], index) => {
     if (index > 0) {
       offenceReview().assertOnReviewPage();
       offenceReview().clickAddAnotherOffence();
@@ -559,8 +561,12 @@ Given('an offence exists with the following impositions:', (table: DataTable) =>
         });
       });
 
-    offenceDetails().clickReviewOffence();
-    offenceReview().assertOnReviewPage();
+    // Stay on the offence form for the last offence; navigate to review only when seeding subsequent offences.
+    if (index < offenceEntries.length - 1) {
+      offenceDetails().clickReviewOffence();
+      offenceReview().assertOnReviewPage();
+    }
+
     currentOffenceCode = offenceCode;
   });
 });
@@ -911,7 +917,7 @@ Then('I see the offence review details:', (table: DataTable) => {
  * @param value - Value to enter.
  * @param fieldLabel - Label of the field to target.
  */
-When('I enter {string} into the {string} field', (value: string, fieldLabel: string) => {
+When('I enter {string} into the {string} field in the MAC flow', (value: string, fieldLabel: string) => {
   log('type', 'Entering value into field', { fieldLabel, value });
 
   cy.location('pathname').then((pathname) => {
@@ -939,7 +945,7 @@ When('I enter {string} into the {string} field', (value: string, fieldLabel: str
  * @step Assert a value in an offence/imposition/minor creditor field.
  * @description Detects context (offence form, search form, minor creditor form) and asserts the given value.
  */
-Then('I see {string} in the {string} field', (expected: string, fieldLabel: string) => {
+Then('I see {string} in the {string} field in the MAC flow', (expected: string, fieldLabel: string) => {
   log('assert', 'Asserting value in field', { fieldLabel, expected });
 
   cy.location('pathname').then((pathname) => {
@@ -990,13 +996,16 @@ When('I enter a date {int} weeks into the future into the {string} date field', 
  * @step Enter a value into an imposition field.
  * @description Sets Result code/Amount imposed/Amount paid for a specific imposition row.
  */
-When('I enter {string} into the {string} field for imposition {int}', (value: string, field: string, row: number) => {
-  const fieldKey = resolveImpositionFieldKey(field);
-  const index = row - 1;
-  currentImpositionIndex = index;
-  log('type', 'Entering imposition value', { value, field, index });
-  offenceDetails().setImpositionField(index, fieldKey, value);
-});
+When(
+  'I enter {string} into the {string} field for imposition {int} in the MAC flow',
+  (value: string, field: string, row: number) => {
+    const fieldKey = resolveImpositionFieldKey(field);
+    const index = row - 1;
+    currentImpositionIndex = index;
+    log('type', 'Entering imposition value', { value, field, index });
+    offenceDetails().setImpositionField(index, fieldKey, value);
+  },
+);
 
 /**
  * @step Clear an imposition field value.
@@ -1058,7 +1067,7 @@ When('I choose to {string} imposition {int}', (action: string, imposition: numbe
 
 /**
  * @step Seed an offence with two minor creditor impositions.
- * @description Creates one individual + one company minor creditor, then navigates to review.
+ * @description Creates one individual + one company minor creditor, leaving the user on the offence form.
  */
 Given('an offence exists with 2 minor creditor impositions for offence code {string}', (offenceCode: string) => {
   const offence = offenceDetails();
@@ -1115,21 +1124,23 @@ Given('an offence exists with 2 minor creditor impositions for offence code {str
   creditor.save();
   offence.assertOnAddOffencePage();
 
-  offence.clickReviewOffence();
-  offenceReview().assertOnReviewPage();
+  // Remain on the offence form; callers decide when to review/submit.
   currentOffenceCode = offenceCode;
 });
 
 /**
  * @step Assert an imposition field value for a given row.
  */
-Then('I see {string} in the {string} field for imposition {int}', (expected: string, field: string, row: number) => {
-  const fieldKey = resolveImpositionFieldKey(field);
-  const index = row - 1;
-  currentImpositionIndex = index;
-  log('assert', 'Asserting imposition field value', { expected, field, index });
-  offenceDetails().assertImpositionFieldValue(index, fieldKey, expected);
-});
+Then(
+  'I see {string} in the {string} field for imposition {int} in the MAC flow',
+  (expected: string, field: string, row: number) => {
+    const fieldKey = resolveImpositionFieldKey(field);
+    const index = row - 1;
+    currentImpositionIndex = index;
+    log('assert', 'Asserting imposition field value', { expected, field, index });
+    offenceDetails().assertImpositionFieldValue(index, fieldKey, expected);
+  },
+);
 
 /**
  * @step Enter text into the major creditor search for a specific imposition.
@@ -1716,7 +1727,7 @@ Then('I see {string} on the page header', (header: string) => {
 /**
  * @step Assert arbitrary text content exists on the page.
  */
-Then('I see {string} text on the page', (text: string) => {
+Then('I see {string} text', (text: string) => {
   log('assert', 'Checking text on page', { text });
   cy.contains(text).should('exist');
 });
