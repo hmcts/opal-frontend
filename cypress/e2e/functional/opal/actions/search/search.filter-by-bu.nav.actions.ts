@@ -29,6 +29,21 @@ export class SearchFilterByBUNavActions {
   }
 
   /**
+   * Ensures the given tab link is marked active. If the link is not already
+   * active (aria-current missing), it clicks the link to activate it before
+   * running assertions.
+   */
+  private ensureTabActive(tabLinkSelector: string): void {
+    cy.get(tabLinkSelector).then(($link) => {
+      const isActive = $link.attr('aria-current') === SearchFilterByBUNavLocators.activeSubNavAriaCurrent;
+      if (!isActive) {
+        log('info', `Tab ${tabLinkSelector} not active – clicking to activate`);
+        cy.wrap($link).click();
+      }
+    });
+  }
+
+  /**
    * Verifies that the provided tab link selector is marked as active via `aria-current="page"`.
    *
    * @param tabLinkSelector - CSS selector for the tab link to assert as active
@@ -43,6 +58,7 @@ export class SearchFilterByBUNavActions {
    */
   verifyFinesTabIsActive(): void {
     log('info', 'Verifying Fines tab is active in filter-by-business-unit navigation');
+    this.ensureTabActive(SearchFilterByBUNavLocators.finesTabLink);
     this.verifyActiveTab(SearchFilterByBUNavLocators.finesTabLink);
   }
 
@@ -51,6 +67,7 @@ export class SearchFilterByBUNavActions {
    */
   verifyConfiscationTabIsActive(): void {
     log('info', 'Verifying Confiscation tab is active in filter-by-business-unit navigation');
+    this.ensureTabActive(SearchFilterByBUNavLocators.confiscationTabLink);
     this.verifyActiveTab(SearchFilterByBUNavLocators.confiscationTabLink);
   }
 

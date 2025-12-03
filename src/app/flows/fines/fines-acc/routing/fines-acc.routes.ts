@@ -77,13 +77,13 @@ export const routing: Routes = [
         },
       },
       {
-        path: `:partyType/amend`,
+        path: `party/:partyType/:mode`,
 
         loadComponent: () =>
           import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(
             (c) => c.FinesAccPartyAddAmendConvert,
           ),
-        canActivate: [routePermissionsGuard],
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['account-maintenance']],

@@ -2819,16 +2819,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/grep@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "@cypress/grep@npm:4.1.1"
+"@cypress/grep@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@cypress/grep@npm:5.0.0"
   dependencies:
     debug: "npm:^4.3.4"
     find-test-names: "npm:^1.28.18"
     globby: "npm:^11.0.4"
   peerDependencies:
     cypress: ">=10"
-  checksum: 10/3d0d01a9c014c51cd0d289a0235540f754b8426cbef3a85bd206adfb5b5b23f4f77e0ec497477e7b091b75ba9f4f040046dd35a358fb2c1a95f73ef535d61d41
+  checksum: 10/a7ebd1936dbbe7c832559dd13bc381a1cec73f044d01074577cc8f5aaa07a2585d17021b184536dcc528816e865d222685c3829811f7d9f5a4c9beac24b51a90
   languageName: node
   linkType: hard
 
@@ -3230,9 +3230,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common-node@npm:^0.0.17":
-  version: 0.0.17
-  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.17"
+"@hmcts/opal-frontend-common-node@npm:^0.0.18":
+  version: 0.0.18
+  resolution: "@hmcts/opal-frontend-common-node@npm:0.0.18"
   dependencies:
     "@azure/msal-browser": "npm:^4.11.0"
     "@hmcts/info-provider": "npm:^1.1.0"
@@ -3255,19 +3255,19 @@ __metadata:
     redis: "npm:^5.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/9396fdc7e2046b95175c08eeac298aabb721fd379b2e415b5a217660c80ab26c1e786f0d8191665dbdc1d112b83af148bf5a788324a1c1713fffb069f5e45f1c
+  checksum: 10/d5d1f1f928625a34e74a8b6332d145bd1aef513fcf3aea1ed0bc4f84960246e91b4f1b1faae71224add940f143d17984290bf8e87b1885d39e55108279681c47
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:^0.0.52":
-  version: 0.0.52
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.52"
+"@hmcts/opal-frontend-common@npm:^0.0.54":
+  version: 0.0.54
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.54"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.0 || ^19.0.0 || ^20.0.0
     "@angular/core": ^18.2.0 || ^19.0.0 || ^20.0.0
-  checksum: 10/215e2265bee2e6420692be872131b8225915bde4f72e9c43aa89ff0a54bacf3d84ecc4960b367e28d5fda2c456aa21783bd931ae7a2b7091dd66b1c03ad18b89
+  checksum: 10/8f2a1eadb5e2b398676d630c106e6e1534059b68989da558441d183575a7aa8c84d00b1f873c2c13876adb525de9dcde082a926867889a583d8dd4a190291a1a
   languageName: node
   linkType: hard
 
@@ -8099,8 +8099,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^15.0.0":
-  version: 15.7.0
-  resolution: "cypress@npm:15.7.0"
+  version: 15.7.1
+  resolution: "cypress@npm:15.7.1"
   dependencies:
     "@cypress/request": "npm:^3.0.9"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -8146,7 +8146,7 @@ __metadata:
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10/7cf4a8dabcd1a0736c7c9526853d834c6098f5cf850cc10fecfabca7a2e86dd63bdcd914bd16829e1630d540707de4bfc513cccf0e0ee84fe00ee2f3b786534c
+  checksum: 10/bf78d8e0695a332b9b096b7c1102c7d14acd46da4d183b7599e267cac119967e7a47340cb487e0244b0bacf131b9e1731bc3549678d1b003401d1d38af1e9fbc
   languageName: node
   linkType: hard
 
@@ -11709,10 +11709,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.12.0":
-  version: 5.12.1
-  resolution: "jasmine-core@npm:5.12.1"
-  checksum: 10/0b6934d8eecb16dc7634cfc492bc4a6b30a8476d9972d976d1a9d7dfe19ed9cc0826323e7dbda0148a88081eb6133c6b10ffe5b00750ce663b973dd25d4c6286
+"jasmine-core@npm:~5.13.0":
+  version: 5.13.0
+  resolution: "jasmine-core@npm:5.13.0"
+  checksum: 10/7c88618b1aa442da9db60d1ca960073c8582d9cf4ac89543609015a25ab90437d65c8eb63c84edd72a4059056c96a8ca579e1eadbb7addf9cbe0c18110f8fa2f
   languageName: node
   linkType: hard
 
@@ -13839,13 +13839,13 @@ __metadata:
     "@angular/router": "npm:^20.3.0"
     "@angular/ssr": "npm:^20.3.6"
     "@badeball/cypress-cucumber-preprocessor": "npm:^23.0.0"
-    "@cypress/grep": "npm:^4.1.0"
+    "@cypress/grep": "npm:^5.0.0"
     "@cypress/webpack-preprocessor": "npm:^7.0.0"
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:^0.0.52"
-    "@hmcts/opal-frontend-common-node": "npm:^0.0.17"
+    "@hmcts/opal-frontend-common": "npm:^0.0.54"
+    "@hmcts/opal-frontend-common-node": "npm:^0.0.18"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^7.0.0"
@@ -13885,7 +13885,7 @@ __metadata:
     helmet: "npm:^8.0.0"
     home-office-kit: "npm:^1.2.0"
     http-proxy-middleware: "npm:^3.0.0"
-    jasmine-core: "npm:~5.12.0"
+    jasmine-core: "npm:~5.13.0"
     junit-report-merger: "npm:^8.0.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.2.0"

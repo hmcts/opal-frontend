@@ -6,7 +6,7 @@
 // shared `log` utility and Sonar-compliant documentation.
 
 import { When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common.actions';
+import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { log } from '../../utils/log.helper';
 
 /**
