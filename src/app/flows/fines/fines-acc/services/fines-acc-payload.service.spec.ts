@@ -15,6 +15,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
+import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -141,6 +142,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
+      pg_party_id: header.parent_guardian_party_id,
       party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name:
@@ -172,6 +174,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
+      pg_party_id: header.parent_guardian_party_id,
       party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
@@ -279,10 +282,12 @@ describe('FinesAccPayloadService', () => {
         {
           facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
           facc_party_add_amend_convert_alias_surname_0: 'Smith',
+          facc_party_add_amend_convert_alias_id_0: '1',
         },
         {
           facc_party_add_amend_convert_alias_forenames_1: 'Jon',
           facc_party_add_amend_convert_alias_surname_1: 'Doe',
+          facc_party_add_amend_convert_alias_id_1: '2',
         },
       ]);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true); // Should be true when aliases exist
@@ -505,6 +510,27 @@ describe('FinesAccPayloadService', () => {
         );
         expect(result).toEqual(inputPayload);
       });
+    });
+    it('should delegate to buildAccountPartyPayload utility function', () => {
+      // This test ensures the service method properly delegates to the utility
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_title: 'Mr',
+        facc_party_add_amend_convert_forenames: 'John',
+        facc_party_add_amend_convert_surname: 'Doe',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAccountPartyPayload(formState, 'individual', true, 'party123');
+
+      // Verify it returns a proper payload structure
+      expect(result).toBeDefined();
+      expect(result.defendant_account_party_type).toBe('Defendant');
+      expect(result.is_debtor).toBe(true);
+      expect(result.party_details).toBeDefined();
+      expect(result.address).toBeDefined();
+      expect(result.contact_details).toBeDefined();
+      expect(result.language_preferences).toBeDefined();
     });
   });
 });

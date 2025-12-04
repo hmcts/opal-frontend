@@ -373,7 +373,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(handleRouteSpy).toHaveBeenCalledWith(
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-      true,
+      { nonRelative: true },
     );
   });
 

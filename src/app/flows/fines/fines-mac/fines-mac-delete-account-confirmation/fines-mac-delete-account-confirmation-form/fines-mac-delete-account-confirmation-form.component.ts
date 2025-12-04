@@ -15,7 +15,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-
+import { IAbstractFormBaseHandleRouteOptions } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { IFinesMacDeleteAccountConfirmationForm } from '../interfaces/fines-mac-delete-account-confirmation-form.interface';
 import { IFinesMacDeleteAccountConfirmationFieldErrors } from '../interfaces/fines-mac-delete-account-confirmation-field-errors.interface';
@@ -106,10 +106,10 @@ export class FinesMacDeleteAccountConfirmationFormComponent
     }
   }
 
-  public override handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+  public override handleRoute(route: string, options?: IAbstractFormBaseHandleRouteOptions): void {
     if (this.accountId && this.accountId > 0) {
       route = `${route}/${this.accountId}`;
-      super.handleRoute(route, nonRelative, event);
+      super.handleRoute(route, options);
     } else {
       this['router'].navigate([route], { relativeTo: this['activatedRoute'].parent });
     }

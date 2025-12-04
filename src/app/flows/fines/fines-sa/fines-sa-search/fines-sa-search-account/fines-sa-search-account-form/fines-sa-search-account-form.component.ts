@@ -301,7 +301,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    */
   public goToFilterBusinessUnits(): void {
     this.finesSaStore.setSearchAccountTemporary(this.form.value);
-    this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), false, undefined, {
+    this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), {
+      nonRelative: false,
       fragment: this.finesSaStore.activeTab(),
     });
   }

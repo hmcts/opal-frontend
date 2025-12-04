@@ -65,4 +65,12 @@ export class EditDefendantDetailsActions {
     cy.get(L.forenamesInput.selector, { timeout }).should('be.visible').and('have.value', expected);
     log('done', `Verified First Name is "${expected}"`);
   }
+
+  /**
+   * Clicks the Save changes button on the edit form.
+   */
+  public saveChanges(): void {
+    log('action', 'Saving defendant details');
+    cy.get(L.saveChangesButton.selector, { timeout: 10_000 }).should('be.visible').click();
+  }
 }
