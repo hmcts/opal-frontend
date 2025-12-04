@@ -38,7 +38,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
    * @returns string representing the card title
    */
   public cardTitle(): string {
-    if (this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
+    if (this.tabData.payment_terms.lump_sum_amount && !this.tabData.payment_terms.instalment_amount) {
       return 'Pay in full';
     } else if (this.tabData.payment_terms.lump_sum_amount) {
       return 'Lump sum plus instalments';
