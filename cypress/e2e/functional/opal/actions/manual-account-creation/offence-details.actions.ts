@@ -358,7 +358,9 @@ export class ManualOffenceDetailsActions {
   ): void {
     log('assert', 'Validating minor creditor summary', { index, expectations });
     const panel = this.getImpositionPanel(index);
-    const summaryRoot = panel.find(L.imposition.minorCreditorSummary, this.common.getTimeoutOptions()).should('be.visible');
+    const summaryRoot = panel
+      .find(L.imposition.minorCreditorSummary, this.common.getTimeoutOptions())
+      .should('be.visible');
 
     summaryRoot.within(() => {
       Object.entries(expectations).forEach(([label, value]) => {

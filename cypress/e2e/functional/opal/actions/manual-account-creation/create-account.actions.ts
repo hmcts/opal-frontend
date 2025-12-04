@@ -62,14 +62,10 @@ export class ManualCreateAccountActions {
         ? L.accountType.fine
         : normalized.startsWith('fixed penalty')
           ? L.accountType.fixedPenalty
-      : L.accountType.conditionalCaution;
+          : L.accountType.conditionalCaution;
 
     log('click', 'Selecting account type', { type });
-    cy.get(selector, this.common.getTimeoutOptions())
-      .first()
-      .should('exist')
-      .scrollIntoView()
-      .check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions()).first().should('exist').scrollIntoView().check({ force: true });
   }
 
   /**
@@ -86,11 +82,7 @@ export class ManualCreateAccountActions {
     }
 
     log('click', 'Selecting defendant type', { defendantType });
-    cy.get(selector, this.common.getTimeoutOptions())
-      .first()
-      .should('exist')
-      .scrollIntoView()
-      .check({ force: true });
+    cy.get(selector, this.common.getTimeoutOptions()).first().should('exist').scrollIntoView().check({ force: true });
   }
 
   /**

@@ -23,6 +23,7 @@ import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/man
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -49,6 +50,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
             let store = new GlobalStore();
             store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
             store.setBannerError({
+              ...GLOBAL_ERROR_STATE,
               error: false,
               message: '',
             });
