@@ -15,13 +15,14 @@ export type ManualContactFieldKey = 'primaryEmail' | 'secondaryEmail' | 'mobileN
  */
 export class ManualContactDetailsActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts the Contact details page is loaded with the expected header.
    */
   assertOnContactDetailsPage(expectedHeader: string = 'contact details'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

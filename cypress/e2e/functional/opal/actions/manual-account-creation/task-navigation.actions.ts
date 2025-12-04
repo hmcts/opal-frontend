@@ -5,6 +5,7 @@ import { ManualAccountDetailsActions } from './account-details.actions';
 
 export class ManualAccountTaskNavigationActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
   private readonly details = new ManualAccountDetailsActions();
 
   /**
@@ -25,7 +26,7 @@ export class ManualAccountTaskNavigationActions {
   navigateToAccountDetails(): void {
     log('navigate', 'Returning to account details via Return button');
     this.returnToAccountDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.details.assertOnAccountDetailsPage();
   }
 }

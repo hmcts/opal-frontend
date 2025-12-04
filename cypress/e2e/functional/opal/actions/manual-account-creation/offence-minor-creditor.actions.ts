@@ -9,14 +9,15 @@ import { MinorCreditorFieldKey, MinorCreditorType } from '../../../../../support
 
 export class ManualOffenceMinorCreditorActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts the Minor creditor page is displayed.
    * @param expectedHeader - Header text fragment to assert.
    */
   assertOnMinorCreditorPage(expectedHeader: string = 'Minor creditor details'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', 'minor-creditor');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'minor-creditor');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

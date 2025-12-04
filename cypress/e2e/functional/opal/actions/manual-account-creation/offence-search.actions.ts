@@ -11,14 +11,15 @@ type ResultsColumn = 'Code' | 'Short title' | 'Act and section' | 'Used from' | 
 
 export class ManualOffenceSearchActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts the search form page is displayed.
    * @param expectedHeader - Expected header text fragment.
    */
   assertOnSearchPage(expectedHeader: string = 'Search offences'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', 'search-offences');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'search-offences');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
@@ -26,8 +27,8 @@ export class ManualOffenceSearchActions {
    * @param expectedHeader - Expected header text fragment.
    */
   assertOnResultsPage(expectedHeader: string = 'Search results'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', 'search-offences-results');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'search-offences-results');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

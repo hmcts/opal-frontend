@@ -8,16 +8,17 @@ import { CommonActions } from '../common/common.actions';
 
 export class ManualOffenceReviewActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts the review page is displayed.
    * @param expectedHeader - Header text fragment to assert.
    */
   assertOnReviewPage(expectedHeader: string = 'Offences and impositions'): void {
-    cy.location('pathname', { timeout: 20_000 }).should((path) => {
+    cy.location('pathname', { timeout: this.pathTimeout }).should((path) => {
       expect(path).to.satisfy((p: string) => p.includes('/offence-details/review'));
     });
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
@@ -30,8 +31,8 @@ export class ManualOffenceReviewActions {
     offenceCode: string,
     expectedHeader: string = 'Are you sure you want to remove this offence and all its impositions?',
   ): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/offence-details/remove');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/offence-details/remove');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
     cy.contains(L.review.offenceCaption, offenceCode, this.common.getTimeoutOptions()).should('exist');
   }
 
@@ -47,35 +48,36 @@ export class ManualOffenceReviewActions {
     this.getOffenceComponent(offenceCode)
       .find(L.review.impositionTable)
       .within(() => {
-        cy.get('thead th').each((header, idx) => {
-          cy.wrap(header)
-            .invoke('text')
-            .should((text) => expect(text.trim()).to.equal(headers[idx]));
-        });
+        cy.get('thead th')
+          .then(($headers) => Array.from($headers, (el) => el.textContent?.trim() ?? ''))
+          .should((actualHeaders) => {
+            expect(actualHeaders).to.deep.equal(headers);
+          });
 
-        cy.get('tbody tr').each((row, rowIdx) => {
-          const expected = [...rows[rowIdx]];
-          cy.wrap(row)
-            .find('td, th')
-            .each((cell, cellIdx) => {
-              if (expected.length !== Cypress.$(cell).parent().children().length) {
-                // Adjust for merged totals row (colspan=2) by dropping empty creditor placeholder
-                if (expected[1] === '' && expected.length - 1 === Cypress.$(cell).parent().children().length) {
-                  expected.splice(1, 1);
-                }
+        cy.get('tbody tr').then(($rowEls) => {
+          expect($rowEls.length).to.equal(rows.length);
+
+          Array.from($rowEls).forEach((rowEl, rowIdx) => {
+            let expected = [...rows[rowIdx]];
+            const cells = Array.from(rowEl.querySelectorAll('td, th'));
+
+            if (expected[1] === '' && expected.length - 1 === cells.length) {
+              // Adjust for merged totals row (colspan=2) by dropping empty creditor placeholder
+              expected.splice(1, 1);
+            }
+
+            expect(cells.length).to.equal(expected.length);
+
+            cells.forEach((cell, cellIdx) => {
+              const actual = (cell.textContent || '').replace(/\s+/g, ' ').trim();
+              const expectedValue = expected[cellIdx];
+              if (!expectedValue) {
+                expect(actual).to.equal('');
+              } else {
+                expect(actual).to.include(expectedValue);
               }
-              cy.wrap(cell)
-                .invoke('text')
-                .should((text) => {
-                  const actual = text.replace(/\s+/g, ' ').trim();
-                  const expectedValue = expected[cellIdx];
-                  if (!expectedValue) {
-                    expect(actual).to.equal('');
-                    return;
-                  }
-                  expect(actual).to.include(expectedValue);
-                });
             });
+          });
         });
       });
   }

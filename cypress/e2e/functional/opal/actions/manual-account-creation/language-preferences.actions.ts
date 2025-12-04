@@ -11,14 +11,15 @@ export type LanguageSection = 'Documents' | 'Court hearings';
 
 export class ManualLanguagePreferencesActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts the Language preferences page is displayed.
    * @param expectedHeader - Header text fragment to assert.
    */
   assertOnLanguagePreferencesPage(expectedHeader: string = 'Language preferences'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/language-preferences');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/language-preferences');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

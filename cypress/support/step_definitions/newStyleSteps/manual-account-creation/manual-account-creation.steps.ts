@@ -507,7 +507,7 @@ Then('I am viewing account details', () => {
  */
 Then('I am viewing manual account creation start', () => {
   log('assert', 'Asserting manual account creation start page');
-  cy.location('pathname', { timeout: 20_000 }).should('include', 'create-account');
+  cy.url(common().getPathTimeoutOptions()).should('include', 'create-account');
   createAccount().assertOnCreateAccountPage();
 });
 /**

@@ -6,6 +6,7 @@ import { calculateWeeksInPast } from '../../../utils/dateUtils';
 import { normalizeHash } from '../../../utils/cucumberHelpers';
 import { log } from '../../../utils/log.helper';
 import { MinorCreditorFieldKey } from '../../../utils/macFieldResolvers';
+import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import {
   common,
   flow,
@@ -17,6 +18,35 @@ import {
   setCurrentOffenceCode,
   setCurrentImpositionIndex,
 } from './manual-account-creation.offence.stepshelper';
+
+const ensureOnMinorCreditorPage = (index: number): Cypress.Chainable => {
+  return cy
+    .get('body')
+    .then(($body) => {
+      const isMinorCreditor = $body.find(L.minorCreditorForm.saveButton).length > 0;
+      if (!isMinorCreditor) {
+        offenceDetails().openMinorCreditorDetails(index);
+      }
+    })
+    .then(() => {
+      minorCreditor().assertOnMinorCreditorPage();
+    });
+};
+
+const ensureOnOffenceDetailsFromReview = (): Cypress.Chainable => {
+  return cy.get('body').then(($body) => {
+    const onReview = $body.find(L.review.offenceComponent).length > 0;
+    if (!onReview) {
+      return;
+    }
+    const offenceCode = getCurrentOffenceCode();
+    if (!offenceCode) {
+      throw new Error('Current offence code is unknown; cannot navigate to change imposition.');
+    }
+    offenceReview().clickChangeOffence(offenceCode);
+    offenceDetails().assertOnAddOffencePage();
+  });
+};
 
 /**
  * @step Fill individual minor creditor form for an imposition.
@@ -37,12 +67,7 @@ When('I maintain minor creditor details for imposition {int}:', (imposition: num
   const index = imposition - 1;
   setCurrentImpositionIndex(index);
 
-  cy.location('pathname').then((pathname) => {
-    if (!pathname.includes('minor-creditor')) {
-      offenceDetails().openMinorCreditorDetails(index);
-    }
-    minorCreditor().assertOnMinorCreditorPage();
-  });
+  ensureOnMinorCreditorPage(index);
 
   minorCreditor().selectCreditorType('Individual');
 
@@ -84,12 +109,7 @@ When('I maintain company minor creditor details for imposition {int}:', (imposit
   const index = imposition - 1;
   setCurrentImpositionIndex(index);
 
-  cy.location('pathname').then((pathname) => {
-    if (!pathname.includes('minor-creditor')) {
-      offenceDetails().openMinorCreditorDetails(index);
-    }
-    minorCreditor().assertOnMinorCreditorPage();
-  });
+  ensureOnMinorCreditorPage(index);
 
   minorCreditor().selectCreditorType('Company');
 
@@ -243,15 +263,7 @@ When(
       offenceDetails().assertOnAddOffencePage();
     };
 
-    cy.location('pathname').then((pathname) => {
-      if (pathname.includes('/offence-details/review')) {
-        if (!getCurrentOffenceCode()) {
-          throw new Error('Current offence code is unknown; cannot navigate to change imposition.');
-        }
-        offenceReview().clickChangeOffence(getCurrentOffenceCode() as string);
-        offenceDetails().assertOnAddOffencePage();
-      }
-
+    ensureOnOffenceDetailsFromReview().then(() => {
       offenceDetails().clickMinorCreditorAction(index, 'Change');
       fillMinorCreditor();
     });
@@ -488,14 +500,7 @@ Then('the minor creditor summary for imposition {int} is:', (imposition: number,
  */
 When('I cancel removing the minor creditor for imposition {int}', (imposition: number) => {
   const index = imposition - 1;
-  cy.location('pathname').then((pathname) => {
-    if (pathname.includes('/offence-details/review')) {
-      if (!getCurrentOffenceCode()) {
-        throw new Error('Current offence code is unknown; cannot navigate to change imposition.');
-      }
-      offenceReview().clickChangeOffence(getCurrentOffenceCode() as string);
-      offenceDetails().assertOnAddOffencePage();
-    }
+  ensureOnOffenceDetailsFromReview().then(() => {
     offenceDetails().clickMinorCreditorAction(index, 'Remove');
     common().assertHeaderContains('Are you sure you want to remove this minor creditor?');
     offenceDetails().cancelRemoveMinorCreditor();
@@ -511,14 +516,7 @@ When('I cancel removing the minor creditor for imposition {int}', (imposition: n
  */
 When('I confirm removing the minor creditor for imposition {int}', (imposition: number) => {
   const index = imposition - 1;
-  cy.location('pathname').then((pathname) => {
-    if (pathname.includes('/offence-details/review')) {
-      if (!getCurrentOffenceCode()) {
-        throw new Error('Current offence code is unknown; cannot navigate to change imposition.');
-      }
-      offenceReview().clickChangeOffence(getCurrentOffenceCode() as string);
-      offenceDetails().assertOnAddOffencePage();
-    }
+  ensureOnOffenceDetailsFromReview().then(() => {
     offenceDetails().clickMinorCreditorAction(index, 'Remove');
     common().assertHeaderContains('Are you sure you want to remove this minor creditor?');
     offenceDetails().confirmRemoveMinorCreditor();

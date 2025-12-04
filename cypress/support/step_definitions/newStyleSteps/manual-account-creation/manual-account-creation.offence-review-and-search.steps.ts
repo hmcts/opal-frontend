@@ -28,6 +28,21 @@ import {
   setCurrentImpositionIndex,
 } from './manual-account-creation.offence.stepshelper';
 
+type MacPageContext = 'search' | 'offence' | 'minorCreditor';
+
+const resolveMacPage = (): Cypress.Chainable<MacPageContext> =>
+  cy.get('body').then(($body) => {
+    if ($body.find(L.minorCreditorForm.saveButton).length) {
+      return 'minorCreditor';
+    }
+
+    if ($body.find(L.search.resultsTable).length || $body.find(L.search.offenceCodeInput).length) {
+      return 'search';
+    }
+
+    return 'offence';
+  });
+
 /**
  * @step Amend an offence from the review page.
  * @description Amend an offence from the review page.
@@ -86,24 +101,25 @@ Then('I see the offence review details:', (table: DataTable) => {
 When('I enter {string} into the {string} field in the MAC flow', (value: string, fieldLabel: string) => {
   log('type', 'Entering value into field', { fieldLabel, value });
 
-  cy.location('pathname').then((pathname) => {
-    if (pathname.includes('search-offences')) {
+  resolveMacPage().then((page) => {
+    if (page === 'search') {
       const searchField = resolveSearchFieldKey(fieldLabel);
       offenceSearch().setSearchField(searchField, value);
       return;
     }
 
-    try {
-      const offenceField = resolveOffenceFieldKey(fieldLabel);
-      offenceDetails().setOffenceField(offenceField, value);
-      setCurrentImpositionIndex(0);
-      return;
-    } catch {
-      // Fall through
+    if (page === 'offence') {
+      try {
+        const offenceField = resolveOffenceFieldKey(fieldLabel);
+        offenceDetails().setOffenceField(offenceField, value);
+        setCurrentImpositionIndex(0);
+        return;
+      } catch {
+        // Fall through
+      }
     }
 
-    const minorField = resolveMinorCreditorFieldKey(fieldLabel);
-    minorCreditor().setField(minorField, value);
+    minorCreditor().setField(resolveMinorCreditorFieldKey(fieldLabel), value);
   });
 });
 
@@ -118,23 +134,24 @@ When('I enter {string} into the {string} field in the MAC flow', (value: string,
 Then('I see {string} in the {string} field in the MAC flow', (expected: string, fieldLabel: string) => {
   log('assert', 'Asserting value in field', { fieldLabel, expected });
 
-  cy.location('pathname').then((pathname) => {
-    if (pathname.includes('search-offences')) {
+  resolveMacPage().then((page) => {
+    if (page === 'search') {
       const searchField = resolveSearchFieldKey(fieldLabel);
       offenceSearch().assertSearchFieldValue(searchField, expected);
       return;
     }
 
-    try {
-      const offenceField = resolveOffenceFieldKey(fieldLabel);
-      offenceDetails().assertOffenceFieldValue(offenceField, expected);
-      return;
-    } catch {
-      // Fall through
+    if (page === 'offence') {
+      try {
+        const offenceField = resolveOffenceFieldKey(fieldLabel);
+        offenceDetails().assertOffenceFieldValue(offenceField, expected);
+        return;
+      } catch {
+        // Fall through
+      }
     }
 
-    const minorField = resolveMinorCreditorFieldKey(fieldLabel);
-    minorCreditor().assertFieldValue(minorField, expected);
+    minorCreditor().assertFieldValue(resolveMinorCreditorFieldKey(fieldLabel), expected);
   });
 });
 
@@ -414,8 +431,9 @@ Then('I see no offences messaging', () => {
  * @example When I return to account details from offence details
  */
 When('I return to account details from offence details', () => {
-  cy.location('pathname').then((pathname) => {
-    if (pathname.includes('offence-details/review')) {
+  cy.get('body').then(($body) => {
+    const onReview = $body.find(L.review.returnToAccountDetailsButton).length > 0;
+    if (onReview) {
       offenceReview().returnToAccountDetails();
       return;
     }

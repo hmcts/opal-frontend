@@ -14,13 +14,14 @@ import { log } from '../../../../../support/utils/log.helper';
  */
 export class ManualCompanyDetailsActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts we are on the Company details page.
    */
   assertOnCompanyDetailsPage(expectedHeader: string = 'Company details'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/company-details');
-    this.common.assertHeaderContains(expectedHeader);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/company-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

@@ -76,20 +76,24 @@ export const upsertImpositionFinancialRows = (rows: ImpositionFinancialRow[]): v
   });
   log('type', 'Upserting imposition financial rows', { rows: sorted });
 
-  cy.wrap(sorted).each((row: ImpositionFinancialRow) => {
-    const { imposition, resultCode, amountImposed, amountPaid } = row;
-    const index = imposition - 1;
-    return ensureImpositionExists(index).then(() => {
-      setCurrentImpositionIndex(index);
-      if (resultCode) {
-        offenceDetails().setImpositionField(index, 'Result code', resultCode);
-      }
-      if (amountImposed) {
-        offenceDetails().setImpositionField(index, 'Amount imposed', amountImposed);
-      }
-      if (amountPaid) {
-        offenceDetails().setImpositionField(index, 'Amount paid', amountPaid);
-      }
-    });
-  });
+  sorted
+    .reduce((chain, row: ImpositionFinancialRow) => {
+      const { imposition, resultCode, amountImposed, amountPaid } = row;
+      const index = imposition - 1;
+      return chain
+        .then(() => ensureImpositionExists(index))
+        .then(() => {
+          setCurrentImpositionIndex(index);
+          if (resultCode) {
+            offenceDetails().setImpositionField(index, 'Result code', resultCode);
+          }
+          if (amountImposed) {
+            offenceDetails().setImpositionField(index, 'Amount imposed', amountImposed);
+          }
+          if (amountPaid) {
+            offenceDetails().setImpositionField(index, 'Amount paid', amountPaid);
+          }
+        });
+    }, cy.wrap(null))
+    .then(() => undefined);
 };

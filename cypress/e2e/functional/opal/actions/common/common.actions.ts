@@ -5,9 +5,18 @@ type NullableString = string | null;
 
 export class CommonActions {
   private readonly TIMEOUT = 10_000;
+  private readonly PATH_TIMEOUT = 20_000;
 
   public getTimeoutOptions() {
     return { timeout: this.TIMEOUT };
+  }
+
+  public getPathTimeout(): number {
+    return this.PATH_TIMEOUT;
+  }
+
+  public getPathTimeoutOptions() {
+    return { timeout: this.PATH_TIMEOUT };
   }
 
   /**

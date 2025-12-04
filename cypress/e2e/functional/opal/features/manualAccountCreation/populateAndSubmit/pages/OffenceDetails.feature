@@ -814,7 +814,7 @@ Feature: Manual account creation - Offence Details
       | Column          | Value  |
       | Act and section | London |
 
-  # This test assumes there is data already present!
+  @only
   @PO-667 @PO-987 @PO-545
   Scenario: AC1g-h Starts-with, contains and max-results offence searches
     When I follow the offence search link in the same tab
@@ -828,7 +828,8 @@ Feature: Manual account creation - Offence Details
 
     When I return to the offence search form
     And I search offences with:
-      | Short title | dangerous |
+      | Short title  | dangerous |
+      | Offence code |           |
     Then I see offence search results contain rows with values in column:
       | Column      | Values                            |
       | Short title | dangerous item, dangerous driving |
@@ -836,6 +837,7 @@ Feature: Manual account creation - Offence Details
     When I return to the offence search form
     And I search offences with:
       | Act and section | London |
+      | Short title     |        |
     Then I see offence search results contain rows with values in column:
       | Column          | Values         |
       | Act and section | London Byelaws |
@@ -843,7 +845,8 @@ Feature: Manual account creation - Offence Details
     # Max results message
     When I return to the offence search form
     And I search offences with:
-      | Offence code | A |
+      | Offence code    | A |
+      | Act and section |   |
     Then I see the offence search max results message "100 results"
 
   @PO-667 @PO-987 @PO-545

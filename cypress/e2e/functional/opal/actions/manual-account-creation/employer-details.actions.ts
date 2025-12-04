@@ -20,13 +20,14 @@ export type ManualEmployerFieldKey =
 
 export class ManualEmployerDetailsActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts we are on the Employer details page.
    */
   assertOnEmployerDetailsPage(expectedHeader: string = 'Employer details'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/employer-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

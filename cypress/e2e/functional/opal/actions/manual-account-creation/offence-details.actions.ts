@@ -11,6 +11,7 @@ type ImpositionField = 'Result code' | 'Amount imposed' | 'Amount paid';
 
 export class ManualOffenceDetailsActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
   private readonly resultCodeInputSelector = 'input[id^="fm_offence_details_result_id_"][id$="-autocomplete"]';
 
   /**
@@ -18,8 +19,8 @@ export class ManualOffenceDetailsActions {
    * @param expectedHeader - Expected header text fragment.
    */
   assertOnAddOffencePage(expectedHeader: string = 'Add an offence'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/offence-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/offence-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**

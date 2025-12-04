@@ -33,6 +33,7 @@ import { ManualOffenceMinorCreditorActions } from '../actions/manual-account-cre
 import { accessibilityActions } from '../actions/accessibility/accessibility.actions';
 import { calculateWeeksInPast } from '../../../../support/utils/dateUtils';
 import { resolveSearchFieldKey, resolveSearchResultColumn } from '../../../../support/utils/macFieldResolvers';
+import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -84,6 +85,7 @@ export class ManualAccountCreationFlow {
   private readonly contactDetails = new ManualContactDetailsActions();
   private readonly employerDetails = new ManualEmployerDetailsActions();
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
   private readonly courtDetails = new ManualCourtDetailsActions();
   private readonly personalDetails = new ManualPersonalDetailsActions();
   private readonly offenceDetails = new ManualOffenceDetailsActions();
@@ -105,7 +107,7 @@ export class ManualAccountCreationFlow {
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
-    cy.location('pathname', { timeout: 15_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -147,7 +149,7 @@ export class ManualAccountCreationFlow {
   goToAccountDetails(): void {
     log('flow', 'Continue to account details task list');
     this.createAccount.continueToAccountDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -207,7 +209,7 @@ export class ManualAccountCreationFlow {
   saveLanguagePreferencesAndReturn(): void {
     log('flow', 'Saving language preferences and returning to Account details');
     this.languagePreferences.saveChanges();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -228,7 +230,7 @@ export class ManualAccountCreationFlow {
   cancelLanguagePreferencesAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancelling language preferences and returning to Account details', { choice });
     this.cancelLanguagePreferences(choice);
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -246,19 +248,19 @@ export class ManualAccountCreationFlow {
     }
 
     if (taskName === 'Account comments and notes') {
-      cy.location('pathname', { timeout: 20_000 }).should('include', 'account-comments');
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'account-comments');
       this.commentsAndNotes.assertHeader();
       return;
     }
 
     if (taskName === 'Contact details') {
-      cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
       this.contactDetails.assertOnContactDetailsPage();
       return;
     }
 
     if (taskName === 'Employer details') {
-      cy.location('pathname', { timeout: 20_000 }).should('include', '/employer-details');
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
       this.employerDetails.assertOnEmployerDetailsPage();
       return;
     }
@@ -329,10 +331,10 @@ export class ManualAccountCreationFlow {
     log('flow', 'Proceed to review from comments and notes', { expectedHeader });
     this.commentsAndNotes.assertReviewAndSubmitVisible();
     this.commentsAndNotes.clickReviewAndSubmit();
-    cy.location('pathname', { timeout: 20_000 }).should((path) => {
+    cy.location('pathname', { timeout: this.pathTimeout }).should((path) => {
       expect(path).to.match(/(check-account|review-account)/i);
     });
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
@@ -354,7 +356,7 @@ export class ManualAccountCreationFlow {
   returnToAccountDetailsAndAssertStatus(taskName: ManualAccountTaskName, expectedStatus: string): void {
     log('flow', 'Return to account details and assert task status', { taskName, expectedStatus });
     this.taskNavigation.returnToAccountDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertTaskStatus(taskName, expectedStatus);
   }
 
@@ -429,7 +431,7 @@ export class ManualAccountCreationFlow {
   cancelEmployerDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Employer details and return to Account details', { choice });
     this.cancelEmployerDetails(choice);
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -441,8 +443,8 @@ export class ManualAccountCreationFlow {
     log('flow', 'Continue to Offence details from Employer details', { expectedHeader });
     this.employerDetails.assertOnEmployerDetailsPage();
     this.employerDetails.clickNestedFlowButton('Add offence details');
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/offence-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/offence-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
@@ -481,7 +483,7 @@ export class ManualAccountCreationFlow {
   cancelCourtDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Court details and return to Account details', { choice });
     this.cancelCourtDetails(choice);
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -493,8 +495,8 @@ export class ManualAccountCreationFlow {
     log('flow', 'Continue to Personal details from Court details', { expectedHeader });
     this.courtDetails.assertOnCourtDetailsPage();
     this.courtDetails.clickNestedFlowButton('Add personal details');
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/personal-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/personal-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
@@ -779,7 +781,7 @@ export class ManualAccountCreationFlow {
   continueToContactDetailsFromCompany(): void {
     log('flow', 'Continue to contact details from Company details');
     this.companyDetails.clickAddContactDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/contact-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
     this.contactDetails.assertOnContactDetailsPage();
   }
 
@@ -790,7 +792,7 @@ export class ManualAccountCreationFlow {
   cancelCompanyDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Company details and return to Account details', { choice });
     this.common.cancelEditing(true);
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -801,8 +803,8 @@ export class ManualAccountCreationFlow {
     log('flow', 'Continue to Employer details from Contact details');
     this.contactDetails.assertOnContactDetailsPage();
     this.contactDetails.clickAddEmployerDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/employer-details');
-    this.common.assertHeaderContains('Employer details', 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
+    this.common.assertHeaderContains('Employer details', this.pathTimeout);
   }
 
   /**
@@ -812,8 +814,8 @@ export class ManualAccountCreationFlow {
     log('flow', 'Continue to Offence details from Contact details');
     this.contactDetails.assertOnContactDetailsPage();
     this.contactDetails.clickAddOffenceDetails();
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/offence-details');
-    this.common.assertHeaderContains('offence', 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/offence-details');
+    this.common.assertHeaderContains('offence', this.pathTimeout);
   }
 
   /**
@@ -834,7 +836,7 @@ export class ManualAccountCreationFlow {
     log('flow', 'Confirm Contact details cancellation and return', { choice });
     this.contactDetails.assertOnContactDetailsPage();
     this.contactDetails.cancelAndChoose(choice);
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/account-details');
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
   }
 
@@ -957,8 +959,14 @@ export class ManualAccountCreationFlow {
   searchOffences(criteria: Record<string, string>): void {
     this.offenceSearch.assertOnSearchPage();
     Object.entries(criteria).forEach(([label, value]) => {
-      if (!value) return;
-      this.offenceSearch.setSearchField(resolveSearchFieldKey(label), value.toString().trim());
+      if (value === undefined || value === null) return;
+      const trimmed = value.toString().trim();
+      const field = resolveSearchFieldKey(label);
+      if (trimmed === '') {
+        this.offenceSearch.clearSearchField(field);
+      } else {
+        this.offenceSearch.setSearchField(field, trimmed);
+      }
     });
     this.offenceSearch.submitSearch();
   }
@@ -989,8 +997,9 @@ export class ManualAccountCreationFlow {
    * Enables inactive offences checkbox and runs the search (guards state).
    */
   enableInactiveOffencesAndSearch(): void {
-    cy.location('pathname').then((path) => {
-      if (path.includes('search-offences-results')) {
+    cy.get('body').then(($body) => {
+      const onResultsPage = $body.find(L.search.resultsTable).length > 0;
+      if (onResultsPage) {
         this.offenceSearch.clickBackLink();
       }
     });

@@ -15,13 +15,14 @@ export type ManualCourtFieldKey = 'lja' | 'pcr' | 'enforcementCourt';
  */
 export class ManualCourtDetailsActions {
   private readonly common = new CommonActions();
+  private readonly pathTimeout = this.common.getPathTimeout();
 
   /**
    * Asserts we are on the Court details page before interacting.
    */
   assertOnCourtDetailsPage(expectedHeader: string = 'Court details'): void {
-    cy.location('pathname', { timeout: 20_000 }).should('include', '/court-details');
-    this.common.assertHeaderContains(expectedHeader, 20_000);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/court-details');
+    this.common.assertHeaderContains(expectedHeader, this.pathTimeout);
   }
 
   /**
