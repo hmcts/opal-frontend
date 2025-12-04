@@ -53,7 +53,7 @@ Feature: Manual account creation - Offence Details
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
 
-    And the summary table contains the following data:
+    And the review summary table contains:
       | Amount imposed    | £1000.00 |
       | Amount paid       | £450.00  |
       | Balance remaining | £550.00  |
@@ -195,7 +195,7 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME3                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                              | £600.00        | £300.00     | £300.00           |
 
-    And the summary table contains:
+    And the review summary table contains:
       | Amount imposed    | £600.00 |
       | Amount paid       | £300.00 |
       | Balance remaining | £300.00 |
@@ -225,7 +225,7 @@ Feature: Manual account creation - Offence Details
       | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
 
     When I cancel removing imposition 1
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
 
     When I choose to "remove imposition" imposition 1
     Then I am asked to confirm removing imposition 1
@@ -234,7 +234,7 @@ Feature: Manual account creation - Offence Details
       | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
 
     When I confirm removing imposition 1
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
     And I do not see "Compensation (FCOMP)" text on the page
 
   Scenario: User sees correct reindexing and cannot remove the last remaining imposition
@@ -258,7 +258,7 @@ Feature: Manual account creation - Offence Details
       | Compensation (FCOMP) | CNAME    | £200.00        | £100.00     | £100.00           |
 
     When I confirm removing imposition 1
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
     And I do not see "Compensation (FCOMP)" text on the page
 
     # Remove Imposition 2, now reindexed as imposition 1
@@ -269,7 +269,7 @@ Feature: Manual account creation - Offence Details
       | Costs (FCOST) | Temporary Creditor (TEMP) | £300.00        | £100.00     | £200.00           |
 
     When I confirm removing imposition 1
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
     And I do not see "Fine (FO)" text on the page
 
     # Only one imposition left – cannot remove
@@ -427,7 +427,6 @@ Feature: Manual account creation - Offence Details
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
-
 
   Scenario: (AC.2, AC.7, AC.8) User can change an offence and remove another offence when multiple offences exist [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, @PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
     Given the following offences exist for the account:
@@ -599,7 +598,7 @@ Feature: Manual account creation - Offence Details
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
     When I cancel removing offence with offence code "HY35014"
-    Then I am viewing Offences and impositions
+    Then I should see the header containing text "Offences and impositions"
     And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
@@ -673,7 +672,7 @@ Feature: Manual account creation - Offence Details
     When I open and cancel company minor creditor for imposition 1 with company "CNAME"
 
     When I cancel minor creditor details choosing "Ok"
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
 
     When I maintain company minor creditor with BACS details for imposition 1:
       | Company | Address line 1 | Address line 2 | Address line 3 | Postcode | Account name | Sort code | Account number | Payment reference |
@@ -685,7 +684,7 @@ Feature: Manual account creation - Offence Details
     Then I see "addr1" in the "Address line 1" field
 
     When I cancel minor creditor details choosing "Ok"
-    Then I am viewing Add an Offence
+    Then I should see the header containing text "Add an offence"
 
 
   Scenario: Offences screens - Axe core
@@ -714,17 +713,17 @@ Feature: Manual account creation - Offence Details
 
   Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
     When I follow the offence search link in the same tab
-    Then I am viewing Search offences
+    Then I should see the header containing text "Search offences"
 
     When I search offences with:
       | Offence code    | TP11003       |
       | Short title     | Transport     |
       | Act and section | Transport Act |
-    Then I am viewing offence results
+    Then I should see the header containing text "Search results"
     And I see offence text "Possess potentially dangerous item on Transport for London road transport premises"
 
     When I return to the offence search form
-    Then I am viewing Search offences
+    Then I should see the header containing text "Search offences"
     And I see the offence search form with:
       | Offence code    | TP11003       |
       | Short title     | Transport     |
@@ -734,11 +733,11 @@ Feature: Manual account creation - Offence Details
       | Offence code    | XYZ999      |
       | Short title     | NonExistent |
       | Act and section | Invalid Act |
-    Then I am viewing offence results
-    And I see "There are no matching results" text
+    Then I should see the header containing text "Search results"
+    And I see the following text "There are no matching results"
 
     When I return to the offence search form
-    Then I am viewing Search offences
+    Then I should see the header containing text "Search offences"
     And I see the offence search form with:
       | Offence code    | XYZ999      |
       | Short title     | NonExistent |
@@ -751,11 +750,11 @@ Feature: Manual account creation - Offence Details
   @PO-667 @PO-987 @PO-545
   Scenario: AC1a Guarding against empty offence search submissions
     When I follow the offence search link in the same tab
-    Then I am viewing Search offences
+    Then I should see the header containing text "Search offences"
 
     # Guard empty search
     When I submit the offence search
-    Then I am viewing Search offences
+    Then I should see the header containing text "Search offences"
 
 
   @PO-667 @PO-987 @PO-545

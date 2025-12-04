@@ -109,6 +109,11 @@ When('I go to the Defendant details section and the header is {string}', (expect
   flow().goToDefendantDetailsAndAssert(expected);
 });
 
+/**
+ * @step Navigates to the Parent or guardian details section and validates the header text.
+ *
+ * @param expected - Expected header text for the section.
+ */
 When('I go to the Parent or guardian details section and the header is {string}', (expected: string) => {
   log('step', 'Navigate to Parent/Guardian details', { expected });
   flow().goToParentGuardianDetailsAndAssert(expected);
@@ -124,41 +129,69 @@ When('I edit the Defendant details and change the First name to {string}', (valu
   flow().editDefendantAndChangeFirstName(value);
 });
 
+/**
+ * @step Opens Defendant details for editing without applying any changes.
+ */
 When('I edit the Defendant details without making changes', () => {
   log('step', 'Edit Defendant details without making changes');
   flow().editDefendantWithoutChanges();
 });
 
+/**
+ * @step Edits the Parent or guardian details, changing the First name to a given value.
+ *
+ * @param value - New First name to enter.
+ */
 When('I edit the Parent or guardian details and change the First name to {string}', (value: string) => {
   log('step', 'Edit Parent/Guardian first name', { value });
   flow().editParentGuardianAndChangeFirstName(value);
 });
 
+/**
+ * @step Opens Parent or guardian details for editing without applying changes.
+ */
 When('I edit the Parent or guardian details without making changes', () => {
   log('step', 'Edit Parent or guardian details without making changes');
   flow().editParentGuardianDetailsWithoutChanges();
 });
 
+/**
+ * @step Edits the Company details, changing the Company name to a given value.
+ *
+ * @param value - New company name to enter.
+ */
 When('I edit the Company details and change the Company name to {string}', (value: string) => {
   log('step', 'Edit Company name', { value });
   flow().editCompanyDetailsAndChangeName(value);
 });
 
+/**
+ * @step Opens Company details for editing without applying changes.
+ */
 When('I edit the Company details without making changes', () => {
   log('step', 'Edit Company details without making changes');
   flow().editCompanyDetailsWithoutChanges();
 });
 
+/**
+ * @step Saves edits on the Defendant details form.
+ */
 When('I save the defendant details', () => {
   log('step', 'Save defendant details');
   flow().saveDefendantDetails();
 });
 
+/**
+ * @step Saves edits on the Parent or guardian details form.
+ */
 When('I save the parent or guardian details', () => {
   log('step', 'Save parent or guardian details');
   flow().saveParentGuardianDetails();
 });
 
+/**
+ * @step Saves edits on the Company details form.
+ */
 When('I save the company details', () => {
   log('step', 'Save company details');
   flow().saveCompanyDetails();
@@ -213,46 +246,85 @@ Then('I should return to the account details page Parent or guardian tab', () =>
   navActions().assertParentGuardianTabIsActive();
 });
 
+/**
+ * @step Asserts the defendant name displayed on the account summary contains the expected value.
+ *
+ * @param expected - Text expected within the defendant name.
+ */
 Then('I should see the defendant name contains {string}', (expected: string) => {
   log('assert', 'Defendant name contains', { expected });
   flow().assertDefendantNameContains(expected);
 });
 
+/**
+ * @step Asserts the parent/guardian name displayed on the account summary contains the expected value.
+ *
+ * @param expected - Text expected within the parent/guardian name.
+ */
 Then('I should see the parent or guardian name contains {string}', (expected: string) => {
   log('assert', 'Parent or guardian name contains', { expected });
   flow().assertParentGuardianNameContains(expected);
 });
 
+/**
+ * @step Asserts the company name displayed on the account summary contains the expected value.
+ *
+ * @param expected - Text expected within the company name.
+ */
 Then('I should see the company name contains {string}', (expected: string) => {
   log('assert', 'Company name contains', { expected });
   flow().assertCompanyNameContains(expected);
 });
 
+/**
+ * @step Verifies via API that a defendant amendment exists for the provided first name.
+ *
+ * @param expectedForename - First name expected in the amendment record.
+ */
 Then('I verify defendant amendments via API for first name {string}', (expectedForename: string) => {
   log('step', 'Verify defendant amendments via API', { expectedForename });
   flow().verifyDefendantAmendmentsViaApi(expectedForename);
 });
 
+/**
+ * @step Verifies via API that a company amendment exists for the provided company name.
+ *
+ * @param expectedCompanyName - Company name expected in the amendment record.
+ */
 Then('I verify Company amendments via API for company name {string}', (expectedCompanyName: string) => {
   log('assert', 'Verify company amendments via API', { expectedCompanyName });
   flow().verifyCompanyAmendmentsViaApi(expectedCompanyName);
 });
 
+/**
+ * @step Verifies via API that a parent/guardian amendment exists for the provided guardian name.
+ *
+ * @param expectedGuardianName - Guardian name expected in the amendment record.
+ */
 Then('I verify parent or guardian amendments via API for guardian name {string}', (expectedGuardianName: string) => {
   log('assert', 'Verify parent/guardian amendments via API', { expectedGuardianName });
   flow().verifyParentGuardianAmendmentsViaApi(expectedGuardianName);
 });
 
+/**
+ * @step Verifies via API that no defendant amendments were created.
+ */
 Then('I verify no amendments were created via API', () => {
   log('assert', 'Verify no amendments were created via API');
   flow().verifyNoDefendantAmendments();
 });
 
+/**
+ * @step Verifies via API that no company amendments were created.
+ */
 Then('I verify no amendments were created via API for company details', () => {
   log('assert', 'Verify no amendments were created via API for company details');
   flow().verifyNoCompanyAmendments();
 });
 
+/**
+ * @step Verifies via API that no parent/guardian amendments were created.
+ */
 Then('I verify no amendments were created via API for parent or guardian details', () => {
   log('assert', 'Verify no amendments were created via API for parent or guardian details');
   flow().verifyNoParentGuardianAmendments();
@@ -370,11 +442,17 @@ When('I open the Add account note screen, enter {string}, and navigate back with
   flow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
 });
 
+/**
+ * @step Opens Comments from the defendant summary and validates the page.
+ */
 When('I open the Comments page from the defendant summary and verify the page contents', () => {
   log('step', 'Open Comments from summary');
   flow().openCommentsFromSummaryAndVerifyPageDetails();
 });
 
+/**
+ * @step Cancels on the Comments page and confirms leaving, returning to the summary.
+ */
 When('I cancel with confirmation on the Comments page', () => {
   log('step', 'Cancel Comments and confirm leave');
 

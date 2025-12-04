@@ -166,10 +166,12 @@ When('I choose manual defendant type {string}', (defendantType: DefendantType) =
 });
 /**
  * @step Restarts manual fine company account creation after a refresh,
- * selecting the business unit, account type, and defendant type before continuing.
+ * @description Restarts manual fine company account creation after a refresh, selecting the business unit, account type, and defendant type before continuing.
  * @param businessUnit - Business unit to select.
  * @param accountType - Account type to choose (e.g., "Fine").
  * @param defendantType - Defendant type to choose.
+ * @example
+ *   When I restart manual fine company account creation for business unit "West London" with account type "Fine" and defendant type "Company"
  */
 When(
   'I restart manual fine company account creation for business unit {string} with account type {string} and defendant type {string}',
@@ -184,8 +186,11 @@ When(
 );
 /**
  * @step Restarts a fine manual account after refresh using the provided business unit and defendant type.
+ * @description Restarts a fine manual account after refresh using the provided business unit and defendant type.
  * @param businessUnit - Business unit to re-select.
  * @param defendantType - Defendant type to re-select.
+ * @example
+ *   When I restart manual fine account for business unit "West London" with defendant type "Adult or youth only"
  */
 When(
   'I restart manual fine account for business unit {string} with defendant type {string}',
@@ -196,7 +201,10 @@ When(
 );
 /**
  * @step Restarts a fine manual account using the default/only business unit after a refresh.
+ * @description Restarts a fine manual account using the default/only business unit after a refresh.
  * @param defendantType - Defendant type to re-select.
+ * @example
+ *   When I restart manual fine account using the default business unit with defendant type "Adult or youth only"
  */
 When(
   'I restart manual fine account using the default business unit with defendant type {string}',
@@ -653,6 +661,8 @@ Then('the manual language preference selections are:', (table: DataTable) => {
 });
 /**
  * @step Saves language preferences and returns to Account details.
+ * @description Saves language preferences and returns to Account details.
+
  * @remarks Asserts the Account details header after saving to avoid stale content.
  * @example When I save manual language preferences
  */
@@ -662,6 +672,8 @@ When('I save manual language preferences', () => {
 });
 /**
  * @step Opens Language preferences from Account details and runs accessibility checks.
+ * @description Opens Language preferences from Account details and runs accessibility checks.
+
  * @param section - Section to open from Account details.
  */
 When(
@@ -675,6 +687,8 @@ When(
 );
 /**
  * @step Cancels out of language preferences with a chosen dialog response.
+ * @description Cancels out of language preferences with a chosen dialog response.
+
  * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
  * @remarks Use this when remaining on the page or when the navigation outcome is asserted separately.
  * @example When I cancel manual language preferences choosing "Cancel"
@@ -685,6 +699,8 @@ When('I cancel manual language preferences choosing {string}', (choice: 'Cancel'
 });
 /**
  * @step Cancels language preferences, confirms leaving, and asserts return to Account details.
+ * @description Cancels language preferences, confirms leaving, and asserts return to Account details.
+
  * @param choice - Confirmation choice (Ok/Leave).
  * @remarks Throws if a non-confirm choice is supplied to keep intent explicit.
  * @example When I cancel manual language preferences choosing "Ok" and return to account details
@@ -1144,12 +1160,7 @@ Then('I am viewing employer details', () => {
   log('assert', 'Asserting Employer details page');
   employerDetails().assertOnEmployerDetailsPage();
 });
-/**
- * @step Navigates from Employer details to Offence details using the grey CTA.
- * @description Clicks the nested flow button to reach Offence details.
- * @remarks Includes pathname + header guard to avoid stale assertions.
- * @example When I continue to offence details from employer details
- */
+
 /**
  * @step Continue from Employer details to Offence details.
  * @description Uses the grey CTA on Employer details and asserts the Offence details page.
