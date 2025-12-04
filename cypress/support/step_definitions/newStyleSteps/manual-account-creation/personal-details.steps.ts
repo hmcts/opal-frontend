@@ -3,8 +3,8 @@
  * @description NewStyle step definitions for Manual Account Creation Personal details.
  */
 import { When, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { ManualAccountCreationFlow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
-import { log } from '../../utils/log.helper';
+import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
+import { log } from '../../../utils/log.helper';
 
 const flow = () => new ManualAccountCreationFlow();
 

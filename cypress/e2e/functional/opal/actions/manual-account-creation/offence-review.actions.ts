@@ -94,10 +94,12 @@ export class ManualOffenceReviewActions {
           cy.get('div[summaryListRowId]')
             .eq(index)
             .within(() => {
-              cy.get('ng-container[name], dt').invoke('text').should((text) => {
-                const actual = text.replace(/\s+/g, ' ').trim();
-                expect(actual).to.equal(expectedLabel);
-              });
+              cy.get('ng-container[name], dt')
+                .invoke('text')
+                .should((text) => {
+                  const actual = text.replace(/\s+/g, ' ').trim();
+                  expect(actual).to.equal(expectedLabel);
+                });
               cy.get('ng-container[value], dd')
                 .invoke('text')
                 .should((text) => expect(text.replace(/\s+/g, ' ').trim()).to.equal(value));
@@ -114,16 +116,14 @@ export class ManualOffenceReviewActions {
     log('navigate', 'Changing offence', { offenceCode });
     const component = this.getOffenceComponent(offenceCode);
 
-    component
-      .find('a#change', this.common.getTimeoutOptions())
-      .then(($link) => {
-        if ($link.length) {
-          cy.wrap($link).scrollIntoView().click({ force: true });
-          return;
-        }
+    component.find('a#change', this.common.getTimeoutOptions()).then(($link) => {
+      if ($link.length) {
+        cy.wrap($link).scrollIntoView().click({ force: true });
+        return;
+      }
 
-        component.contains('a', 'Change', this.common.getTimeoutOptions()).scrollIntoView().click({ force: true });
-      });
+      component.contains('a', 'Change', this.common.getTimeoutOptions()).scrollIntoView().click({ force: true });
+    });
   }
 
   /**

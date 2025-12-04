@@ -44,7 +44,7 @@ Feature: Manual account creation - Account Comments and Notes
       | PCR               | 1234              |
       | enforcement court | West London VPFPO |
 
-    And I have provided manual personal details from account details:
+    And I provide manual personal details from account details:
       | field          | value |
       | title          | Mr    |
       | first names    | FNAME |

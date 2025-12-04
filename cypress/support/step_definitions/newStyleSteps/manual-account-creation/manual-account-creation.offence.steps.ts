@@ -3,22 +3,22 @@
  * @description Offence-specific step definitions for Manual Account Creation journeys.
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { ManualAccountCreationFlow } from '../../../e2e/functional/opal/flows/manual-account-creation.flow';
-import { ManualOffenceDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';
-import { ManualOffenceMinorCreditorActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-minor-creditor.actions';
-import { ManualOffenceReviewActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-review.actions';
-import { ManualOffenceSearchActions } from '../../../e2e/functional/opal/actions/manual-account-creation/offence-search.actions';
-import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
-import { ManualOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
+import { ManualOffenceDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-details.actions';
+import { ManualOffenceMinorCreditorActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-minor-creditor.actions';
+import { ManualOffenceReviewActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-review.actions';
+import { ManualOffenceSearchActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/offence-search.actions';
+import { ManualAccountDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
+import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
+import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import {
   calculateWeeksInFuture,
   calculateWeeksInPast,
   formatDateString,
   parseWeeksValue,
   resolveRelativeDate,
-} from '../../utils/dateUtils';
-import { log } from '../../utils/log.helper';
+} from '../../../utils/dateUtils';
+import { log } from '../../../utils/log.helper';
 import {
   ImpositionFieldKey,
   MinorCreditorFieldKey,
@@ -30,8 +30,8 @@ import {
   resolveOffenceFieldKey,
   resolveSearchFieldKey,
   resolveSearchResultColumn,
-} from '../../utils/macFieldResolvers';
-import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
+} from '../../../utils/macFieldResolvers';
+import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
 
 const flow = () => new ManualAccountCreationFlow();
 const offenceDetails = () => new ManualOffenceDetailsActions();
@@ -2057,9 +2057,6 @@ When('I perform offence removal accessibility check for offence code {string}', 
  *     | Imposition       | Creditor | Amount imposed | Amount paid | Balance remaining |
  *     | Compensation     | Smith    | £200.00        | £100.00     | £100.00           |
  */
-Then(
-  'the offence review table for offence code {string} contains:',
-  (offenceCode: string, dataTable: DataTable) => {
-    offenceReview().assertOffenceTable(offenceCode, dataTable.raw());
-  },
-);
+Then('the offence review table for offence code {string} contains:', (offenceCode: string, dataTable: DataTable) => {
+  offenceReview().assertOffenceTable(offenceCode, dataTable.raw());
+});
