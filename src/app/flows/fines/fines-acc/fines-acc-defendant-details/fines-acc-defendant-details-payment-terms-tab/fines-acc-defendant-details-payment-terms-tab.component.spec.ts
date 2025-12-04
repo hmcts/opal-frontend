@@ -42,6 +42,30 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(component.cardTitle()).toBe('Instalments only');
   });
 
+  it('should return the correct card title for Pay by date even if there are no values in installment_amount or lump_sum_amount', () => {
+    component.tabData.payment_terms.instalment_amount = 0.0;
+    component.tabData.payment_terms.lump_sum_amount = 0.0;
+    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'B';
+    fixture.detectChanges();
+    expect(component.cardTitle()).toBe('Pay by date');
+  });
+
+  it('should return the correct card title for Paid when there are no values in installment_amount or lump_sum_amount and the code is P', () => {
+    component.tabData.payment_terms.instalment_amount = 0.0;
+    component.tabData.payment_terms.lump_sum_amount = 0.0;
+    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+    fixture.detectChanges();
+    expect(component.cardTitle()).toBe('Paid');
+  });
+
+  it('should return the correct card title for Paid when there are no values in installment_amount or lump_sum_amount and the code is not P of B', () => {
+    component.tabData.payment_terms.instalment_amount = 0.0;
+    component.tabData.payment_terms.lump_sum_amount = 0.0;
+    component.tabData.payment_terms.payment_terms_type.payment_terms_type_code = 'I';
+    fixture.detectChanges();
+    expect(component.cardTitle()).toBe('Paid');
+  });
+
   it('should handle change payment terms by emitting an event', () => {
     spyOn(component.changePaymentTerms, 'emit');
     component.handleChangePaymentTerms();
