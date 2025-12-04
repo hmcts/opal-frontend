@@ -113,6 +113,58 @@ export class ManualOffenceSearchActions {
       .should('contain.text', expected);
   }
 
+  /**
+   * Asserts every result row in a column contains the expected text.
+   * @param column - Column heading.
+   * @param expected - Text each row should include.
+   */
+  assertAllResultsContain(column: ResultsColumn, expected: string): void {
+    const cellId = this.resolveResultColumnId(column);
+    log('assert', 'Validating all search results contain value', { column, expected });
+    cy.get(L.search.resultsTable, this.common.getTimeoutOptions())
+      .find(`td#${cellId}`)
+      .should('have.length.greaterThan', 0)
+      .each(($cell) => cy.wrap($cell).should('contain.text', expected));
+  }
+
+  /**
+   * Asserts that the results contain at least one row for each expected value in a column.
+   * @param column - Column heading.
+   * @param expectedValues - Values that must appear in at least one row.
+   */
+  assertResultsIncludeValues(column: ResultsColumn, expectedValues: string[]): void {
+    const cellId = this.resolveResultColumnId(column);
+    log('assert', 'Validating search results include values', { column, expectedValues });
+    cy.get(L.search.resultsTable, this.common.getTimeoutOptions())
+      .find(`td#${cellId}`)
+      .then(($cells) => {
+        const values = Array.from($cells, (cell) => cell.textContent?.trim() ?? '');
+        expectedValues.forEach((expected) => {
+          expect(
+            values.some((val) => val.includes(expected)),
+            `Expected at least one "${column}" value to include "${expected}"`,
+          ).to.be.true;
+        });
+      });
+  }
+
+  /**
+   * Returns all values from a column in the current results table.
+   * @param column - Column heading.
+   */
+  getResultColumnValues(column: ResultsColumn): Cypress.Chainable<string[]> {
+    const cellId = this.resolveResultColumnId(column);
+    return cy
+      .get(L.search.resultsTable, this.common.getTimeoutOptions())
+      .find(`td#${cellId}`)
+      .then(($cells) => Array.from($cells, (cell) => cell.textContent?.trim() ?? ''));
+  }
+
+  /**
+   * Resolves a logical search field label to its input selector.
+   * @param field - Offence search field name.
+   * @throws Error when an unknown field is provided.
+   */
   private resolveFieldSelector(field: SearchField): string {
     switch (field) {
       case 'Offence code':
@@ -126,6 +178,11 @@ export class ManualOffenceSearchActions {
     }
   }
 
+  /**
+   * Resolves a results column heading to its table cell id.
+   * @param column - Column name as displayed in the results table.
+   * @throws Error when an unknown column is provided.
+   */
   private resolveResultColumnId(column: ResultsColumn): string {
     const normalized = column.toLowerCase();
     if (normalized.includes('code')) return 'code';

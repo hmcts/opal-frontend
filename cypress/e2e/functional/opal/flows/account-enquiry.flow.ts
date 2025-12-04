@@ -18,6 +18,10 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
+import { log, LogScope } from '../../../../support/utils/log.helper';
+
+const logAE = (scope: LogScope, message: string, data?: Record<string, unknown>): void =>
+  log(scope, message, { flow: 'AccountEnquiryFlow', ...data });
 
 /**
  * @file AccountEnquiryFlow
@@ -55,31 +59,15 @@ export class AccountEnquiryFlow {
   private readonly editParentGuardianActions = new EditParentGuardianDetailsActions();
 
   /**
-   * Standardized logger for this flow.
-   * Adds consistent `consoleProps` so logs are searchable and grouped.
-   *
-   * @param name - Short category (e.g., "method", "search", "assert").
-   * @param message - Human-readable description of the action.
-   * @param data - Optional additional context shown in the Cypress runner.
-   */
-  private log(name: string, message: string, data?: Record<string, unknown>): void {
-    Cypress.log({
-      name,
-      message,
-      consoleProps: () => ({ flow: 'AccountEnquiryFlow', message, ...data }),
-    });
-  }
-
-  /**
    * Ensures the test is on the Individuals Account Search page.
    * If not, it navigates via the dashboard.
    */
   private ensureOnIndividualSearchPage(): void {
-    this.log('method', 'ensureOnIndividualSearchPage()');
+    logAE('method', 'ensureOnIndividualSearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(L.root).length > 0;
       if (!onSearch) {
-        this.log('navigate', 'Navigating to Account Search dashboard (Individuals)');
+        logAE('navigate', 'Navigating to Account Search dashboard (Individuals)');
         this.dashboard.goToAccountSearch();
       }
     });
@@ -115,8 +103,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchByLastName(surname: string): void {
-    this.log('method', 'searchByLastName()');
-    this.log('search', 'Searching by last name', { surname });
+    logAE('method', 'searchByLastName()');
+    logAE('search', 'Searching by last name', { surname });
     this.ensureOnIndividualSearchPage();
     this.searchIndividuals.searchByLastName(surname);
   }
@@ -131,21 +119,21 @@ export class AccountEnquiryFlow {
    * No cross-page pagination (keeps control flow simple and avoids catch/overload issues).
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
-    this.log('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
-    this.log('click', 'Click latest published account or matching @etagUpdate (current page only)');
+    logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
+    logAE('click', 'Click latest published account or matching @etagUpdate (current page only)');
 
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
     this.resolveAccountNumberFromAlias().then((accOrNull) => {
       if (!accOrNull) {
-        this.log('fallback', 'No @etagUpdate found → opening latest row');
+        logAE('fallback', 'No @etagUpdate found → opening latest row');
         this.results.openLatestPublished();
         return;
       }
 
       const acc = accOrNull;
-      this.log('match', 'Looking for account number on current page', { accountNumber: acc });
+      logAE('match', 'Looking for account number on current page', { accountNumber: acc });
 
       HasAccountLinkOnPage(acc).then((exists) => {
         if (exists) {
@@ -153,7 +141,7 @@ export class AccountEnquiryFlow {
           return;
         }
 
-        this.log('fallback', `Account ${acc} not found on current page; opening latest row`, {
+        logAE('fallback', `Account ${acc} not found on current page; opening latest row`, {
           accountNumber: acc,
         });
         this.results.openLatestPublished();
@@ -167,8 +155,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchBySurname(surname: string): void {
-    this.log('method', 'searchBySurname()');
-    this.log('flow', 'Search by surname', { surname });
+    logAE('method', 'searchBySurname()');
+    logAE('flow', 'Search by surname', { surname });
     this.searchByLastName(surname);
   }
 
@@ -178,8 +166,8 @@ export class AccountEnquiryFlow {
    * @param surname - Surname to search for.
    */
   public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
-    this.log('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
-    this.log('flow', 'Search and open latest by surname', { surname });
+    logAE('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
+    logAE('flow', 'Search and open latest by surname', { surname });
     this.searchBySurname(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
@@ -188,8 +176,8 @@ export class AccountEnquiryFlow {
    * Opens the most recent account from the results (top row) and asserts navigation.
    */
   public openMostRecentFromResults(): void {
-    this.log('method', 'openMostRecentFromResults()');
-    this.log('open', 'Opening most recent account from results');
+    logAE('method', 'openMostRecentFromResults()');
+    logAE('open', 'Opening most recent account from results');
 
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
@@ -202,8 +190,8 @@ export class AccountEnquiryFlow {
    * @param headerText - Expected section header text.
    */
   public goToDefendantDetailsAndAssert(headerText: string): void {
-    this.log('method', 'goToDefendantDetailsAndAssert()');
-    this.log('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
+    logAE('method', 'goToDefendantDetailsAndAssert()');
+    logAE('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader(headerText);
   }
@@ -214,8 +202,8 @@ export class AccountEnquiryFlow {
    * @param headerText - Expected section header text.
    */
   public goToParentGuardianDetailsAndAssert(headerText: string): void {
-    this.log('method', 'goToParentGuardianDetailsAndAssert()');
-    this.log('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
+    logAE('method', 'goToParentGuardianDetailsAndAssert()');
+    logAE('navigate', 'Navigating to Parent/Guardian tab and asserting section header', { headerText });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertSectionHeader(headerText);
   }
@@ -226,8 +214,8 @@ export class AccountEnquiryFlow {
    * @param value - New first name value.
    */
   public editDefendantAndChangeFirstName(value: string): void {
-    this.log('method', 'editDefendantAndChangeFirstName()');
-    this.log('edit', 'Editing defendant first name', { value });
+    logAE('method', 'editDefendantAndChangeFirstName()');
+    logAE('edit', 'Editing defendant first name', { value });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader('Defendant');
     this.defendantDetails.change();
@@ -236,11 +224,10 @@ export class AccountEnquiryFlow {
 
   /**
    * Opens defendant details edit mode without making any changes.
-   * Used to test AC4: saving without amendments should not create amendment records.
    */
   public editDefendantWithoutChanges(): void {
-    this.log('method', 'editDefendantWithoutChanges()');
-    this.log('action', 'Opening defendant details edit mode without making changes');
+    logAE('method', 'editDefendantWithoutChanges()');
+    logAE('action', 'Opening defendant details edit mode without making changes');
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader('Defendant');
     this.defendantDetails.change();
@@ -253,8 +240,8 @@ export class AccountEnquiryFlow {
    * @param value - New first name value.
    */
   public editParentGuardianAndChangeFirstName(value: string): void {
-    this.log('method', 'editParentGuardianAndChangeFirstName()');
-    this.log('edit', 'Editing parent/guardian first name', { value });
+    logAE('method', 'editParentGuardianAndChangeFirstName()');
+    logAE('edit', 'Editing parent/guardian first name', { value });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertHeader();
@@ -263,11 +250,10 @@ export class AccountEnquiryFlow {
 
   /**
    * Opens parent/guardian details edit mode without making any changes.
-   * Used to test AC4: saving without amendments should not create amendment records.
    */
   public editParentGuardianDetailsWithoutChanges(): void {
-    this.log('method', 'editParentGuardianDetailsWithoutChanges()');
-    this.log('action', 'Opening parent/guardian details edit mode without making changes');
+    logAE('method', 'editParentGuardianDetailsWithoutChanges()');
+    logAE('action', 'Opening parent/guardian details edit mode without making changes');
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertStillOnEditPage();
@@ -279,8 +265,8 @@ export class AccountEnquiryFlow {
    * @param value - New company name value.
    */
   public editCompanyDetailsAndChangeName(value: string): void {
-    this.log('method', 'editCompanyDetailsAndChangeName()');
-    this.log('edit', 'Editing company name', { value });
+    logAE('method', 'editCompanyDetailsAndChangeName()');
+    logAE('edit', 'Editing company name', { value });
 
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader('Company');
@@ -290,11 +276,10 @@ export class AccountEnquiryFlow {
 
   /**
    * Opens company details edit mode without making any changes.
-   * Used to test AC4: saving without amendments should not create amendment records.
    */
   public editCompanyDetailsWithoutChanges(): void {
-    this.log('method', 'editCompanyDetailsWithoutChanges()');
-    this.log('action', 'Opening company details edit mode without making changes');
+    logAE('method', 'editCompanyDetailsWithoutChanges()');
+    logAE('action', 'Opening company details edit mode without making changes');
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader('Company');
     this.defendantDetails.change();
@@ -305,7 +290,7 @@ export class AccountEnquiryFlow {
    * Saves the defendant details after editing.
    */
   public saveDefendantDetails(): void {
-    this.log('method', 'saveDefendantDetails()');
+    logAE('method', 'saveDefendantDetails()');
 
     this.installDefendantAccountPartyDebugIntercept();
 
@@ -317,7 +302,7 @@ export class AccountEnquiryFlow {
    * Saves the company details after editing.
    */
   public saveCompanyDetails(): void {
-    this.log('method', 'saveCompanyDetails()');
+    logAE('method', 'saveCompanyDetails()');
 
     this.installDefendantAccountPartyDebugIntercept();
 
@@ -329,7 +314,7 @@ export class AccountEnquiryFlow {
    * Saves the parent/guardian details after editing.
    */
   public saveParentGuardianDetails(): void {
-    this.log('method', 'saveParentGuardianDetails()');
+    logAE('method', 'saveParentGuardianDetails()');
 
     this.installDefendantAccountPartyDebugIntercept();
 
@@ -342,7 +327,7 @@ export class AccountEnquiryFlow {
    * @param expected text expected in name field
    */
   public assertDefendantNameContains(expected: string): void {
-    this.log('assert', 'assertDefendantNameContains()', { expected });
+    logAE('assert', 'assertDefendantNameContains()', { expected });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertDefendantNameContains(expected);
   }
@@ -352,7 +337,7 @@ export class AccountEnquiryFlow {
    * @param expected text expected in name field
    */
   public assertParentGuardianNameContains(expected: string): void {
-    this.log('assert', 'assertParentGuardianNameContains()', { expected });
+    logAE('assert', 'assertParentGuardianNameContains()', { expected });
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.assertNameContains(expected);
   }
@@ -362,7 +347,7 @@ export class AccountEnquiryFlow {
    * @param expected text expected in name field
    */
   public assertCompanyNameContains(expected: string): void {
-    this.log('assert', 'assertCompanyNameContains()', { expected });
+    logAE('assert', 'assertCompanyNameContains()', { expected });
     this.detailsNav.goToDefendantTab();
     this.companyDetails.assertCompanyNameContains(expected);
   }
@@ -371,8 +356,8 @@ export class AccountEnquiryFlow {
    * Cancels the edit operation and asserts that we remain on the edit page.
    */
   public cancelEditAndStay(): void {
-    this.log('method', 'cancelEditAndStay()');
-    this.log('cancel', 'Cancelling edit and staying on edit page');
+    logAE('method', 'cancelEditAndStay()');
+    logAE('cancel', 'Cancelling edit and staying on edit page');
     this.common.cancelEditing(false);
     this.editDefendantDetailsActions.assertStillOnEditPage();
   }
@@ -381,8 +366,8 @@ export class AccountEnquiryFlow {
    * Cancels the edit operation
    */
   public cancelEditAndLeave(): void {
-    this.log('method', 'cancelEditAndLeave()');
-    this.log('cancel', 'Cancelling edit and returning to details page');
+    logAE('method', 'cancelEditAndLeave()');
+    logAE('cancel', 'Cancelling edit and returning to details page');
     this.common.cancelEditing(true);
   }
 
@@ -394,38 +379,38 @@ export class AccountEnquiryFlow {
    * @param tempName - Temporary value entered for the company name field.
    */
   public verifyRouteGuardBehaviour(companyName: string, tempName: string): void {
-    this.log('method', 'verifyRouteGuardBehaviour()');
-    this.log('verify', 'Verifying route guard behaviour', { companyName, tempName });
+    logAE('method', 'verifyRouteGuardBehaviour()');
+    logAE('verify', 'Verifying route guard behaviour', { companyName, tempName });
 
     // Navigate to defendant tab
-    this.log('action', 'Navigating to Defendant tab');
+    logAE('action', 'Navigating to Defendant tab');
     this.detailsNav.goToDefendantTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    logAE('action', 'Change Link');
     this.defendantDetails.change();
 
     // Edit company name
-    this.log('action', 'Editing company name', { newName: tempName });
+    logAE('action', 'Editing company name', { newName: tempName });
     this.editCompanyDetailsActions.editCompanyName(tempName);
 
     // Cancel edit (without saving)
-    this.log('action', 'Cancelling edit without saving');
+    logAE('action', 'Cancelling edit without saving');
     this.common.cancelEditing(false);
 
     // Verify temp name persisted
-    this.log('verify', 'Verifying temporary company name persisted', { expected: tempName });
+    logAE('verify', 'Verifying temporary company name persisted', { expected: tempName });
     this.editCompanyDetailsActions.verifyFieldValue(tempName);
 
     // Cancel edit (revert changes)
-    this.log('action', 'Cancelling edit with revert');
+    logAE('action', 'Cancelling edit with revert');
     this.common.cancelEditing(true);
 
     // Final verification: header restored to original
-    this.log('verify', 'Verifying header reverted to original company name', { expected: companyName });
+    logAE('verify', 'Verifying header reverted to original company name', { expected: companyName });
     this.atAGlanceDetails.assertHeaderContains(companyName);
 
-    this.log('complete', 'Route guard behaviour verification completed');
+    logAE('complete', 'Route guard behaviour verification completed');
   }
 
   /**
@@ -436,32 +421,32 @@ export class AccountEnquiryFlow {
    * @param tempName - Temporary value entered for the company name field.
    */
   public verifyCancelChangesBehaviour(companyName: string, tempName: string): void {
-    this.log('method', 'verifyCancelChangesBehaviour()');
-    this.log('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
+    logAE('method', 'verifyCancelChangesBehaviour()');
+    logAE('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
 
     // Navigate to defendant tab
-    this.log('action', 'Navigating to Defendant tab');
+    logAE('action', 'Navigating to Defendant tab');
     this.detailsNav.goToDefendantTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    logAE('action', 'Change Link');
     this.defendantDetails.change();
 
     // Begin editing company name
-    this.log('action', 'Starting edit of Company Name field', { newValue: tempName });
+    logAE('action', 'Starting edit of Company Name field', { newValue: tempName });
     this.editCompanyDetailsActions.editCompanyName(tempName);
 
     // Simulate cancel action but choose to stay
-    this.log('action', 'Initiating cancel edit (choosing to stay on page)');
+    logAE('action', 'Initiating cancel edit (choosing to stay on page)');
     this.common.cancelEditing(false);
 
     // Check that header remains unchanged
-    this.log('verify', 'Verifying header still displays original company name', { expected: companyName });
+    logAE('verify', 'Verifying header still displays original company name', { expected: companyName });
     this.atAGlanceDetails.assertHeaderContains(companyName);
 
     // Post-verification confirmation
-    this.log('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
-    this.log('complete', 'verifyCancelChangesBehaviour() completed');
+    logAE('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
+    logAE('complete', 'verifyCancelChangesBehaviour() completed');
   }
 
   /**
@@ -469,11 +454,11 @@ export class AccountEnquiryFlow {
    * If not, it navigates via the dashboard and Companies tab.
    */
   private ensureOnCompanySearchPage(): void {
-    this.log('method', 'ensureOnCompanySearchPage()');
+    logAE('method', 'ensureOnCompanySearchPage()');
     cy.get('body').then(($b) => {
       const onSearch = $b.find(C.root).length > 0;
       if (!onSearch) {
-        this.log('navigate', 'Navigating to Account Search dashboard (Companies)');
+        logAE('navigate', 'Navigating to Account Search dashboard (Companies)');
         this.dashboard.goToAccountSearch();
         this.searchNav.goToCompaniesTab();
       }
@@ -516,11 +501,15 @@ export class AccountEnquiryFlow {
       expect(match?.[1], 'Defendant account ID should be captured from URL').to.exist;
 
       const defendantAccountId = parseInt(match![1], 10);
-      this.log('action', 'Extracted defendant account ID from URL', { defendantAccountId });
+      logAE('action', 'Extracted defendant account ID from URL', { defendantAccountId });
       return defendantAccountId;
     });
   }
 
+  /**
+   * Fetches the header summary for a defendant account via API.
+   * @param defendantAccountId - ID of the defendant account.
+   */
   private fetchHeaderSummary(defendantAccountId: number): Cypress.Chainable<Record<string, unknown>> {
     return cy
       .request({
@@ -535,8 +524,13 @@ export class AccountEnquiryFlow {
       });
   }
 
+  /**
+   * Fetches party details for a defendant account via API.
+   * @param defendantAccountId - ID of the defendant account.
+   * @param partyId - Party ID to fetch.
+   */
   private fetchPartyDetails(defendantAccountId: number, partyId: string): Cypress.Chainable<Record<string, unknown>> {
-    this.log('action', `Fetching party details for party ${partyId}`);
+    logAE('action', `Fetching party details for party ${partyId}`);
     return cy
       .request({
         method: 'GET',
@@ -550,6 +544,11 @@ export class AccountEnquiryFlow {
       });
   }
 
+  /**
+   * Searches amendments associated with a defendant account.
+   * @param defendantAccountId - ID of the defendant account.
+   * @returns Amendments list and optional count.
+   */
   private searchAmendmentsForAccount(
     defendantAccountId: number,
   ): Cypress.Chainable<{ amendments: Array<Record<string, unknown>>; count?: number }> {
@@ -559,7 +558,7 @@ export class AccountEnquiryFlow {
       function_code: 'ACCOUNT_ENQUIRY',
     };
 
-    this.log('request', 'Searching amendments for defendant', { requestBody });
+    logAE('action', 'Searching amendments for defendant', { requestBody });
 
     return cy
       .request({
@@ -576,7 +575,7 @@ export class AccountEnquiryFlow {
         const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;
         const count = responseBody?.['count'] as number | undefined;
 
-        this.log('info', 'Amendments search result', {
+        logAE('info', 'Amendments search result', {
           count,
           searchDataLength: amendments.length,
         });
@@ -585,6 +584,10 @@ export class AccountEnquiryFlow {
       });
   }
 
+  /**
+   * Asserts core amendment fields are present.
+   * @param match - Amendment record to validate.
+   */
   private assertAmendmentCoreFields(match: Record<string, unknown> | undefined): void {
     ['amendment_id', 'business_unit_id', 'amended_date', 'amended_by', 'field_code'].forEach((key) => {
       expect(match, `Amendment should have property: ${key}`).to.have.property(key);
@@ -597,11 +600,11 @@ export class AccountEnquiryFlow {
    * @param companyName - Company name to search for.
    */
   public searchByCompanyName(companyName: string): void {
-    this.log('method', 'searchByCompanyName()');
+    logAE('method', 'searchByCompanyName()');
     this.dashboard.goToAccountSearch();
     this.searchNav.goToCompaniesTab();
     this.ensureOnCompanySearchPage();
-    this.log('search', 'Searching by company name', { companyName });
+    logAE('search', 'Searching by company name', { companyName });
     this.searchCompany.byCompanyName(companyName);
     this.results.assertOnResults();
   }
@@ -612,9 +615,9 @@ export class AccountEnquiryFlow {
    * @param companyName - Company name to search and open.
    */
   public openCompanyAccountDetailsByNameAndSelectLatest(companyName: string): void {
-    this.log('method', 'openCompanyAccountDetailsByNameAndSelectLatest()');
+    logAE('method', 'openCompanyAccountDetailsByNameAndSelectLatest()');
     this.searchByCompanyName(companyName);
-    this.log('results', 'Select Latest published company account from results', { companyName });
+    logAE('results', 'Select Latest published company account from results', { companyName });
     this.clickLatestPublishedFromResultsOrAcrossPages();
   }
 
@@ -623,9 +626,9 @@ export class AccountEnquiryFlow {
    *
    */
   public openAddAccountNoteAndVerifyHeader(): void {
-    this.log('method', 'openAddAccountNoteAndVerifyHeader()');
+    logAE('method', 'openAddAccountNoteAndVerifyHeader()');
 
-    this.log('navigate', 'Opening "Add account note" screen');
+    logAE('navigate', 'Opening "Add account note" screen');
     this.detailsNav.clickAddAccountNoteButton();
 
     this.notes.assertHeaderContains('Add account note');
@@ -637,10 +640,10 @@ export class AccountEnquiryFlow {
    * @throws Error if the screen is not recognised.
    */
   public openNotesScreenAndEnterText(text: string): void {
-    this.log('method', 'openNotesScreenAndEnterText()');
+    logAE('method', 'openNotesScreenAndEnterText()');
 
     this.openAddAccountNoteAndVerifyHeader();
-    this.log('input', 'Typing note text');
+    logAE('input', 'Typing note text');
 
     this.notes.enterAccountNote(text);
   }
@@ -651,10 +654,10 @@ export class AccountEnquiryFlow {
    * @param note - The note text to enter.
    */
   public openAccountNoteEnterNoteAndSave(note: string): void {
-    this.log('method', 'openAccountNoteEnterNoteAndSave()');
-    this.log('input', 'Preparing to enter and save account note', { length: note?.length });
+    logAE('method', 'openAccountNoteEnterNoteAndSave()');
+    logAE('input', 'Preparing to enter and save account note', { length: note?.length });
     this.openNotesScreenAndEnterText(note);
-    this.log('save', 'Saving account note');
+    logAE('save', 'Saving account note');
     this.notes.save();
   }
 
@@ -677,10 +680,10 @@ export class AccountEnquiryFlow {
    *  accountDetailsActions.enterAndSaveNote('Customer requested payment extension.');
    */
   public enterAndSaveNote(note: string): void {
-    this.log('method', 'enterAndSaveNote()');
-    this.log('input', 'Typing note text');
+    logAE('method', 'enterAndSaveNote()');
+    logAE('input', 'Typing note text');
     this.notes.enterAccountNote(note);
-    this.log('save', 'Saving account note');
+    logAE('save', 'Saving account note');
     this.notes.save();
   }
 
@@ -712,15 +715,15 @@ export class AccountEnquiryFlow {
    * @param text - The text to enter before cancelling.
    */
   public openNotesScreenEnterTextAndCancel(text: string): void {
-    this.log('method', 'openScreenEnterTextAndCancel()');
-    this.log('flow', 'Open → enter text → cancel');
+    logAE('method', 'openScreenEnterTextAndCancel()');
+    logAE('flow', 'Open → enter text → cancel');
 
     this.openNotesScreenAndEnterText(text);
 
     // Ensure the value is present before we cancel (prevents stale element errors)
     this.notes.assertNoteValueEquals(text);
 
-    this.log('cancel', 'Cancelling edit and confirming leave');
+    logAE('cancel', 'Cancelling edit and confirming leave');
     this.common.cancelEditing(true);
 
     cy.document({ timeout: 20000 })
@@ -744,8 +747,8 @@ export class AccountEnquiryFlow {
    * @param text - The text to enter before navigating back.
    */
   public openScreenEnterTextAndNavigateBackWithConfirmation(text: string): void {
-    this.log('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
-    this.log('flow', 'Open → enter text → browser back → confirm');
+    logAE('method', 'openScreenEnterTextAndNavigateBackWithConfirmation()');
+    logAE('flow', 'Open → enter text → browser back → confirm');
 
     // 1. Navigate and enter note text
     this.openNotesScreenAndEnterText(text);
@@ -831,42 +834,42 @@ export class AccountEnquiryFlow {
    * @param tempFirstName - Temporary value to enter into the "First names" field (e.g. "FNAMECHANGE").
    */
   public verifyParentGuardianRouteGuardBehaviour(originalHeaderName: string, tempFirstName: string): void {
-    this.log('method', 'verifyParentGuardianRouteGuardBehaviour()');
-    this.log('verify', 'Verifying route guard behaviour (Parent/Guardian)', { originalHeaderName, tempFirstName });
+    logAE('method', 'verifyParentGuardianRouteGuardBehaviour()');
+    logAE('verify', 'Verifying route guard behaviour (Parent/Guardian)', { originalHeaderName, tempFirstName });
 
     // Navigate to Defendant tab
-    this.log('action', 'Navigating to Parent Guardian tab');
+    logAE('action', 'Navigating to Parent Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
     // Click Change Link
-    this.log('action', 'Change Link');
+    logAE('action', 'Change Link');
     this.parentGuardianDetails.change();
 
     // Assert section header
-    this.log('verify', 'Verifying section header is "Parent or guardian details"');
+    logAE('verify', 'Verifying section header is "Parent or guardian details"');
     this.editParentGuardianActions.assertHeader();
 
     // Enter temporary first name
-    this.log('action', 'Editing "First names"', { newValue: tempFirstName });
+    logAE('action', 'Editing "First names"', { newValue: tempFirstName });
     this.editParentGuardianActions.editFirstNames(tempFirstName);
 
     // Cancel edit (user chooses to stay on page)
-    this.log('action', 'Cancelling edit without saving (stay on page)');
+    logAE('action', 'Cancelling edit without saving (stay on page)');
     this.common.cancelEditing(false); // maps to: click Cancel -> modal -> Cancel
 
     // Verify temp value persisted
-    this.log('verify', 'Verifying temporary first name persisted', { expected: tempFirstName });
+    logAE('verify', 'Verifying temporary first name persisted', { expected: tempFirstName });
     this.editParentGuardianActions.verifyFirstName(tempFirstName);
 
     // Cancel edit (user confirms leaving/reverting)
-    this.log('action', 'Cancelling edit with revert (leave)');
+    logAE('action', 'Cancelling edit with revert (leave)');
     this.common.cancelEditing(true); // maps to: click Cancel -> modal -> Ok
 
     // Final verification: header restored to original defendant name
-    this.log('verify', 'Verifying header reverted to original name', { expected: originalHeaderName });
+    logAE('verify', 'Verifying header reverted to original name', { expected: originalHeaderName });
     this.atAGlanceDetails.assertHeaderContains(originalHeaderName);
 
-    this.log('complete', 'Parent/Guardian route-guard verification completed');
+    logAE('complete', 'Parent/Guardian route-guard verification completed');
   }
 
   /**
@@ -875,25 +878,25 @@ export class AccountEnquiryFlow {
    * Opens the Parent/Guardian tab, starts an edit, then cancels and discards changes.
    */
   public cancelParentGuardianEditWithoutSaving(): void {
-    this.log('method', 'cancelParentGuardianEditWithoutSaving()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    logAE('method', 'cancelParentGuardianEditWithoutSaving()');
+    logAE('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    logAE('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    logAE('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
     const tempLastName = 'LNAMEALTERED';
 
-    this.log('action', 'Editing "Last name"', { newValue: tempLastName });
+    logAE('action', 'Editing "Last name"', { newValue: tempLastName });
     this.editParentGuardianActions.editLastName(tempLastName);
 
-    this.log('action', 'Cancelling edit without saving (discard changes)');
+    logAE('action', 'Cancelling edit without saving (discard changes)');
     this.common.cancelEditing(true); // "Cancel" -> Confirm "Ok"
 
-    this.log('complete', 'Parent/Guardian cancel edit without saving complete');
+    logAE('complete', 'Parent/Guardian cancel edit without saving complete');
   }
 
   /**
@@ -903,25 +906,25 @@ export class AccountEnquiryFlow {
    * verifies the temporary value persists, then leaves verification for later steps.
    */
   public cancelParentGuardianEditButStayOnPage(): void {
-    this.log('method', 'cancelParentGuardianEditButStayOnPage()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    logAE('method', 'cancelParentGuardianEditButStayOnPage()');
+    logAE('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    logAE('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    logAE('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
     const tempLastName = 'LNAMEALTERED';
 
-    this.log('action', 'Editing "Last name"', { newValue: tempLastName });
+    logAE('action', 'Editing "Last name"', { newValue: tempLastName });
     this.editParentGuardianActions.editLastName(tempLastName);
 
-    this.log('action', 'Cancelling edit but staying on the page');
+    logAE('action', 'Cancelling edit but staying on the page');
     this.common.cancelEditing(false); // user selects "Cancel" → "Stay"
 
-    this.log('complete', 'Stayed on page; temporary data should be retained');
+    logAE('complete', 'Stayed on page; temporary data should be retained');
   }
 
   /**
@@ -931,7 +934,7 @@ export class AccountEnquiryFlow {
    * @param expectedForename - The forename value that should be persisted/audited.
    */
   public verifyDefendantAmendmentsViaApi(expectedForename: string): void {
-    this.log('action', 'Verify defendant amendments via API', { expectedForename });
+    logAE('action', 'Verify defendant amendments via API', { expectedForename });
 
     this.extractDefendantAccountIdFromUrl()
       .then((defendantAccountId) =>
@@ -941,7 +944,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        this.log('action', `Found party ID: ${partyId}`);
+        logAE('action', `Found party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -952,7 +955,7 @@ export class AccountEnquiryFlow {
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
           expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
-          this.log('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
+          logAE('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
           return data.defendantAccountId;
         }),
       )
@@ -972,16 +975,14 @@ export class AccountEnquiryFlow {
 
         this.assertAmendmentCoreFields(match);
 
-        // AC2a: Verify new_value contains the updated forename
         expect(match?.['new_value'], 'new_value should contain updated forename')
           .to.be.a('string')
           .and.include(expectedForename);
 
-        // AC2b: Verify old_value exists and differs from new_value
         expect(match?.['old_value'], 'old_value should exist and be a string').to.be.a('string').and.not.be.empty;
         expect(match?.['old_value'], 'old_value should differ from new_value').to.not.eq(match?.['new_value']);
 
-        this.log('done', 'Amendment verified in amendments log', {
+        logAE('done', 'Amendment verified in amendments log', {
           amendmentId: match?.['amendment_id'],
           oldValue: match?.['old_value'],
           newValue: match?.['new_value'],
@@ -989,24 +990,23 @@ export class AccountEnquiryFlow {
 
         // Store the current amendment count for later comparison
         cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
-        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+        logAE('info', 'Stored amendment count for baseline', { count: amendments.length });
       });
   }
 
   /**
    * Verifies that NO defendant amendments were created.
-   * Used for AC4: saving without making changes should not create amendment records.
    *
    * Extracts the defendant account ID from the current URL and queries the amendments API
    * to verify no amendment records exist for forenames field.
    */
   public verifyNoDefendantAmendments(): void {
-    this.log('method', 'verifyNoDefendantAmendments()');
+    logAE('method', 'verifyNoDefendantAmendments()');
 
     // Get the baseline amendment count from the previous verification step
     cy.get('@amendmentBaseline').then((baseline) => {
       const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
-      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+      logAE('info', 'Retrieved amendment baseline', { baselineCount });
 
       let defendantAccountId: number;
 
@@ -1019,23 +1019,22 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          this.log('info', `Found party ID: ${partyId}`);
+          logAE('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
         .then(({ amendments }) => {
-          this.log('info', 'Amendments search result', {
+          logAE('info', 'Amendments search result', {
             searchDataLength: amendments.length,
             baselineCount,
           });
 
-          // AC4c: No NEW amendments should have been created since the baseline
           expect(
             amendments.length,
             `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
           ).to.eq(baselineCount);
 
-          this.log('done', 'Verified no new amendments were created', {
+          logAE('done', 'Verified no new amendments were created', {
             currentCount: amendments.length,
             baselineCount,
           });
@@ -1049,20 +1048,20 @@ export class AccountEnquiryFlow {
    * Starts an edit, triggers cancel, confirms the discard
    */
   public discardParentGuardianChanges(): void {
-    this.log('method', 'discardParentGuardianChanges()');
-    this.log('action', 'Navigating to Parent/Guardian tab');
+    logAE('method', 'discardParentGuardianChanges()');
+    logAE('action', 'Navigating to Parent/Guardian tab');
     this.detailsNav.goToParentGuardianTab();
 
-    this.log('action', 'Starting Parent/Guardian edit');
+    logAE('action', 'Starting Parent/Guardian edit');
     this.parentGuardianDetails.change();
 
-    this.log('verify', 'Verifying Parent/Guardian section header');
+    logAE('verify', 'Verifying Parent/Guardian section header');
     this.editParentGuardianActions.assertHeader();
 
-    this.log('action', 'Cancelling edit and confirming discard');
+    logAE('action', 'Cancelling edit and confirming discard');
     this.common.cancelEditing(true); // user selects "Cancel" → "OK" to discard
 
-    this.log('complete', 'Parent/Guardian changes discarded successfully');
+    logAE('complete', 'Parent/Guardian changes discarded successfully');
   }
 
   /**
@@ -1072,7 +1071,7 @@ export class AccountEnquiryFlow {
    * @param expectedGuardianName - The guardian name value that should be persisted/audited.
    */
   public verifyParentGuardianAmendmentsViaApi(expectedGuardianName: string): void {
-    this.log('action', 'Verify parent/guardian amendments via API', { expectedGuardianName });
+    logAE('action', 'Verify parent/guardian amendments via API', { expectedGuardianName });
 
     this.extractDefendantAccountIdFromUrl()
       .then((defendantAccountId) =>
@@ -1082,7 +1081,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['parent_guardian_party_id'];
         expect(partyId, 'parent_guardian_party_id must exist').to.exist;
 
-        this.log('action', `Found parent/guardian party ID: ${partyId}`);
+        logAE('action', `Found parent/guardian party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -1095,7 +1094,7 @@ export class AccountEnquiryFlow {
           expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
             expectedGuardianName,
           );
-          this.log('assert', 'Guardian forename verified in party details', { forenames: individual?.['forenames'] });
+          logAE('assert', 'Guardian forename verified in party details', { forenames: individual?.['forenames'] });
           return data.defendantAccountId;
         }),
       )
@@ -1115,12 +1114,10 @@ export class AccountEnquiryFlow {
 
         this.assertAmendmentCoreFields(match);
 
-        // AC2a: Verify new_value contains the updated guardian forename
         expect(match?.['new_value'], 'new_value should contain updated guardian forename')
           .to.be.a('string')
           .and.include(expectedGuardianName);
 
-        // AC2b: Verify old_value and new_value differ (old_value can be null/empty on first update)
         const oldValue = match?.['old_value'];
         const newValue = match?.['new_value'];
 
@@ -1128,7 +1125,7 @@ export class AccountEnquiryFlow {
           expect(oldValue, 'old_value should differ from new_value when both exist').to.not.eq(newValue);
         }
 
-        this.log('done', 'Parent/guardian amendment verified in amendments log', {
+        logAE('done', 'Parent/guardian amendment verified in amendments log', {
           amendmentId: match?.['amendment_id'],
           fieldCode: match?.['field_code'],
           oldValue: oldValue || '(empty)',
@@ -1137,7 +1134,7 @@ export class AccountEnquiryFlow {
 
         // Store the current amendment count for later comparison
         cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
-        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+        logAE('info', 'Stored amendment count for baseline', { count: amendments.length });
       });
   }
 
@@ -1148,7 +1145,7 @@ export class AccountEnquiryFlow {
    * @param expectedCompanyName - The company name value that should be persisted/audited.
    */
   public verifyCompanyAmendmentsViaApi(expectedCompanyName: string): void {
-    this.log('action', 'Verify company amendments via API', { expectedCompanyName });
+    logAE('action', 'Verify company amendments via API', { expectedCompanyName });
 
     this.extractDefendantAccountIdFromUrl()
       .then((defendantAccountId) =>
@@ -1158,7 +1155,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        this.log('action', `Found party ID: ${partyId}`);
+        logAE('action', `Found party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -1174,7 +1171,7 @@ export class AccountEnquiryFlow {
           const organisationName = organisation?.['organisation_name'];
 
           expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
-          this.log('assert', 'Organisation name verified in party details', { organisationName });
+          logAE('assert', 'Organisation name verified in party details', { organisationName });
           return data.defendantAccountId;
         }),
       )
@@ -1196,12 +1193,10 @@ export class AccountEnquiryFlow {
 
         this.assertAmendmentCoreFields(match);
 
-        // AC2a: Verify new_value contains the updated organisation name
         expect(match?.['new_value'], 'new_value should contain updated organisation name')
           .to.be.a('string')
           .and.include(expectedCompanyName);
 
-        // AC2b: Verify old_value and new_value differ (old_value can be null/empty on first update)
         const oldValue = match?.['old_value'];
         const newValue = match?.['new_value'];
 
@@ -1209,7 +1204,7 @@ export class AccountEnquiryFlow {
           expect(oldValue, 'old_value should differ from new_value when both exist').to.not.eq(newValue);
         }
 
-        this.log('done', 'Organisation amendment verified in amendments log', {
+        logAE('done', 'Organisation amendment verified in amendments log', {
           amendmentId: match?.['amendment_id'],
           fieldCode: match?.['field_code'],
           oldValue: oldValue || '(empty)',
@@ -1218,24 +1213,24 @@ export class AccountEnquiryFlow {
 
         // Store the current amendment count for later comparison
         cy.wrap({ amendmentCount: amendments.length }).as('amendmentBaseline');
-        this.log('info', 'Stored amendment count for baseline', { count: amendments.length });
+        logAE('info', 'Stored amendment count for baseline', { count: amendments.length });
       });
   }
 
   /**
    * Verifies that NO company amendments were created.
-   * Used for AC4: saving without making changes should not create amendment records.
+   * Saving without making changes should not create amendment records.
    *
    * Extracts the defendant account ID from the current URL and queries the amendments API
    * to verify no amendment records exist for company details.
    */
   public verifyNoCompanyAmendments(): void {
-    this.log('method', 'verifyNoCompanyAmendments()');
+    logAE('method', 'verifyNoCompanyAmendments()');
 
     // Get the baseline amendment count from the previous verification step
     cy.get('@amendmentBaseline').then((baseline) => {
       const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
-      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+      logAE('info', 'Retrieved amendment baseline', { baselineCount });
 
       let defendantAccountId: number;
 
@@ -1248,23 +1243,23 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          this.log('info', `Found party ID: ${partyId}`);
+          logAE('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
         .then(({ amendments }) => {
-          this.log('info', 'Amendments search result', {
+          logAE('info', 'Amendments search result', {
             searchDataLength: amendments.length,
             baselineCount,
           });
 
-          // AC4c: No NEW amendments should have been created since the baseline
+          // No NEW amendments should have been created since the baseline
           expect(
             amendments.length,
             `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
           ).to.eq(baselineCount);
 
-          this.log('done', 'Verified no new amendments were created', {
+          logAE('done', 'Verified no new amendments were created', {
             currentCount: amendments.length,
             baselineCount,
           });
@@ -1274,18 +1269,17 @@ export class AccountEnquiryFlow {
 
   /**
    * Verifies that NO parent/guardian amendments were created.
-   * Used for AC4: saving without making changes should not create amendment records.
    *
    * Extracts the defendant account ID from the current URL and queries the amendments API
    * to verify no amendment records exist for parent/guardian details.
    */
   public verifyNoParentGuardianAmendments(): void {
-    this.log('method', 'verifyNoParentGuardianAmendments()');
+    logAE('method', 'verifyNoParentGuardianAmendments()');
 
     // Get the baseline amendment count from the previous verification step
     cy.get('@amendmentBaseline').then((baseline) => {
       const baselineCount = (baseline as unknown as { amendmentCount: number })?.amendmentCount ?? 0;
-      this.log('info', 'Retrieved amendment baseline', { baselineCount });
+      logAE('info', 'Retrieved amendment baseline', { baselineCount });
 
       let defendantAccountId: number;
 
@@ -1298,23 +1292,22 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          this.log('info', `Found party ID: ${partyId}`);
+          logAE('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
         .then(({ amendments }) => {
-          this.log('info', 'Amendments search result', {
+          logAE('info', 'Amendments search result', {
             searchDataLength: amendments.length,
             baselineCount,
           });
 
-          // AC4c: No NEW amendments should have been created since the baseline
           expect(
             amendments.length,
             `No amendment records should be created when no changes were made (baseline: ${baselineCount})`,
           ).to.eq(baselineCount);
 
-          this.log('done', 'Verified no new amendments were created', {
+          logAE('done', 'Verified no new amendments were created', {
             currentCount: amendments.length,
             baselineCount,
           });

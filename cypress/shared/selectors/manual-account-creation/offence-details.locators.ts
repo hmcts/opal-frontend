@@ -6,8 +6,10 @@
  * - Includes offence/imposition inputs, autocomplete listboxes, and navigation CTAs.
  * - Keep selectors centralized for Cypress actions/flows.
  */
+import { CommonLocators as Common } from '../common.locators';
+
 export const ManualOffenceDetailsLocators = {
-  pageHeader: 'h1.govuk-heading-l',
+  pageHeader: Common.pageHeader,
   dateOfSentenceInput: 'input[id = "fm_offence_details_date_of_sentence"]',
   offenceCodeInput: 'input[id = "fm_offence_details_offence_cjs_code"]',
   addImpositionButton: '#addImposition',
@@ -34,7 +36,7 @@ export const ManualOffenceDetailsLocators = {
     removeMinorCreditorLink: 'a:contains("Remove")',
   },
   minorCreditorForm: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     individualRadio: '#individual',
     companyRadio: '#company',
     titleSelect: '#fm_offence_details_minor_creditor_title',
@@ -54,23 +56,23 @@ export const ManualOffenceDetailsLocators = {
     cancelLink: 'a.button-link, button.button-link, [role="button"].button-link',
   },
   removeMinorCreditor: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     confirmButton: '#confirmDeletion',
     cancelLink: 'a:contains("No - cancel")',
   },
   removeImposition: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     confirmButton: '#confirmDeletion',
     cancelLink: 'a:contains("No - cancel")',
     table: 'opal-lib-govuk-table',
   },
   removeOffence: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     confirmButton: '#confirmDeletion',
     cancelLink: 'a:contains("No - cancel")',
   },
   review: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     offenceComponent: 'app-fines-mac-offence-details-review-offence',
     offenceCaption: 'span.govuk-caption-m',
     impositionTable: 'opal-lib-govuk-table',
@@ -80,7 +82,7 @@ export const ManualOffenceDetailsLocators = {
     addAnotherOffenceButton: 'button#addAnOffence, button:contains("Add another offence")',
   },
   search: {
-    pageHeader: 'h1.govuk-heading-l',
+    pageHeader: Common.pageHeader,
     offenceCodeInput: '#fm_offence_details_search_offences_code',
     shortTitleInput: '#fm_offence_details_search_offences_short_title',
     actAndSectionInput: '#fm_offence_details_search_offences_act_section',

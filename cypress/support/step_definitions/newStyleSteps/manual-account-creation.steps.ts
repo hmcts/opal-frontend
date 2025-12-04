@@ -50,8 +50,9 @@ import {
   resolveEmployerFieldKey,
   resolveLanguageLabel,
   resolveLanguageSection,
-} from '../../utils/fieldResolvers';
-import { normalizeHash, normalizeTableRows, parseWeeksValue, resolveRelativeDate } from './manual-account-creation.shared';
+} from '../../utils/macFieldResolvers';
+import { parseWeeksValue, resolveRelativeDate } from '../../utils/dateUtils';
+import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 import { accessibilityActions } from '../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 
 const flow = () => new ManualAccountCreationFlow();
@@ -564,7 +565,7 @@ Then('the manual language preferences in account details are:', (table: DataTabl
 
   Object.entries(normalized).forEach(([section, value]) => {
     const label = resolveLanguageLabel(section);
-    flow().assertLanguagePreferenceSummary(label, value);
+    details().assertLanguagePreference(label, value);
   });
 });
 
@@ -816,7 +817,10 @@ Then(
   },
 );
 /**
- * @step Opens the Account comments and notes task without navigating (assumes we are already on Account details).
+ * @step Opens the Account comments and notes task without navigating.
+ * @description Clicks the "Account comments and notes" entry on the task list when already on Account details.
+ * @remarks Use after confirming the Account details page is loaded; does not perform navigation from other pages.
+ * @example When I open the Account comments and notes task
  */
 When('I open the Account comments and notes task', () => {
   log('navigate', 'Opening Account comments and notes task (no navigation)');

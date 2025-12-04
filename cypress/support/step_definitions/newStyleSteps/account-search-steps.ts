@@ -18,10 +18,9 @@ import { AccountSearchProblemActions } from '../../../e2e/functional/opal/action
 import { ResultsActions } from '../../../e2e/functional/opal/actions/search.results.actions';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
+import { MinorCreditorType } from '../../utils/macFieldResolvers';
 
 import { log } from '../../utils/log.helper';
-
-type MinorCreditorType = 'Individual' | 'Company';
 
 // Factory pattern for isolated, stateless flow instances
 const flow = () => new AccountEnquiryFlow();

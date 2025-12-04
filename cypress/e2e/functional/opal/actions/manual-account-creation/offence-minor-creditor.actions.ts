@@ -5,21 +5,7 @@
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
-
-type MinorCreditorType = 'Individual' | 'Company';
-type MinorCreditorFieldKey =
-  | 'title'
-  | 'firstNames'
-  | 'lastName'
-  | 'company'
-  | 'address1'
-  | 'address2'
-  | 'address3'
-  | 'postcode'
-  | 'accountName'
-  | 'sortCode'
-  | 'accountNumber'
-  | 'paymentReference';
+import { MinorCreditorFieldKey, MinorCreditorType } from '../../../../../support/utils/macFieldResolvers';
 
 export class ManualOffenceMinorCreditorActions {
   private readonly common = new CommonActions();

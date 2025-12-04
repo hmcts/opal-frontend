@@ -496,6 +496,10 @@ export class ManualOffenceDetailsActions {
     cy.get(L.removeMinorCreditor.cancelLink, this.common.getTimeoutOptions()).should('exist').click({ force: true });
   }
 
+  /**
+   * Returns the Cypress chain for a given imposition card.
+   * @param index - Zero-based imposition index.
+   */
   private getImpositionPanel(index: number) {
     return cy.get(L.imposition.resultCodeInput(index), this.common.getTimeoutOptions()).closest(L.imposition.container);
   }

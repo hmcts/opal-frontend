@@ -22,13 +22,17 @@ import {
 } from '../actions/manual-account-creation/court-details.actions';
 import { ManualPersonalDetailsActions } from '../actions/manual-account-creation/personal-details.actions';
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
+import { ManualOffenceReviewActions } from '../actions/manual-account-creation/offence-review.actions';
+import { ManualOffenceSearchActions } from '../actions/manual-account-creation/offence-search.actions';
 import { ManualPaymentTermsActions } from '../actions/manual-account-creation/payment-terms.actions';
 import {
   LanguageOption,
   ManualLanguagePreferencesActions,
 } from '../actions/manual-account-creation/language-preferences.actions';
 import { ManualOffenceMinorCreditorActions } from '../actions/manual-account-creation/offence-minor-creditor.actions';
+import { accessibilityActions } from '../actions/accessibility/accessibility.actions';
 import { calculateWeeksInPast } from '../../../../support/utils/dateUtils';
+import { resolveSearchFieldKey, resolveSearchResultColumn } from '../../../../support/utils/macFieldResolvers';
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -83,12 +87,16 @@ export class ManualAccountCreationFlow {
   private readonly courtDetails = new ManualCourtDetailsActions();
   private readonly personalDetails = new ManualPersonalDetailsActions();
   private readonly offenceDetails = new ManualOffenceDetailsActions();
+  private readonly offenceReview = new ManualOffenceReviewActions();
+  private readonly offenceSearch = new ManualOffenceSearchActions();
   private readonly offenceMinorCreditor = new ManualOffenceMinorCreditorActions();
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
 
   /**
    * Starts a Fine manual account and lands on the task list.
+   * @param businessUnit - Business unit to select.
+   * @param defendantType - Defendant type option to choose.
    */
   startFineAccount(businessUnit: string, defendantType: DefendantType): void {
     log('flow', 'Start manual fine account', { businessUnit, defendantType });
@@ -103,6 +111,9 @@ export class ManualAccountCreationFlow {
 
   /**
    * Starts a fine manual account and opens the requested task.
+   * @param businessUnit - Business unit to select.
+   * @param defendantType - Defendant type option to choose.
+   * @param taskName - Task to open after creation.
    */
   startFineAccountAndOpenTask(
     businessUnit: string,
@@ -116,6 +127,9 @@ export class ManualAccountCreationFlow {
 
   /**
    * Reloads the create account page and restarts manual account creation.
+   * @param businessUnit - Business unit to reselect.
+   * @param accountType - Account type to choose.
+   * @param defendantType - Defendant type to choose.
    */
   restartManualAccount(businessUnit: string, accountType: AccountType, defendantType: DefendantType): void {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
@@ -146,15 +160,6 @@ export class ManualAccountCreationFlow {
     this.accountDetails.assertOnAccountDetailsPage();
     this.accountDetails.openLanguagePreference(label);
     this.languagePreferences.assertOnLanguagePreferencesPage();
-  }
-
-  /**
-   * Asserts a language preference value on Account details.
-   * @param label - Language row label.
-   * @param expectedValue - Expected value text.
-   */
-  assertLanguagePreferenceSummary(label: LanguagePreferenceLabel, expectedValue: string): void {
-    this.accountDetails.assertLanguagePreference(label, expectedValue);
   }
 
   /**
@@ -229,6 +234,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Opens a task from account details and asserts the destination page.
+   * @param taskName - Task list entry to open.
    */
   openTaskFromAccountDetails(taskName: ManualAccountTaskName): void {
     this.accountDetails.assertOnAccountDetailsPage();
@@ -264,6 +270,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Opens the Account comments and notes task, sets values, and returns to the task list.
+   * @param comment - Comment text to enter.
+   * @param note - Note text to enter.
    */
   provideAccountCommentsAndNotes(comment: string, note: string): void {
     log('flow', 'Provide account comments and notes', { comment, note });
@@ -275,6 +283,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Opens Account comments and notes, sets values, and stays on the task.
+   * @param comment - Comment text to enter.
+   * @param note - Note text to enter.
    */
   setAccountCommentsAndNotes(comment: string, note: string): void {
     log('flow', 'Set account comments and notes on task', { comment, note });
@@ -302,13 +312,6 @@ export class ManualAccountCreationFlow {
   }
 
   /**
-   * Returns to account details from the current manual account form.
-   */
-  returnToAccountDetails(): void {
-    this.taskNavigation.returnToAccountDetails();
-  }
-
-  /**
    * Navigates from the dashboard to the Manual Account Creation start page.
    * Asserts both the dashboard and the target page.
    */
@@ -320,6 +323,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * From Account comments and notes, continue to Review and submit and assert the destination header.
+   * @param expectedHeader - Header text expected on the review page.
    */
   proceedToReviewFromComments(expectedHeader: string): void {
     log('flow', 'Proceed to review from comments and notes', { expectedHeader });
@@ -333,6 +337,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts both comment and note values on the Account comments and notes task.
+   * @param comment - Expected comment text.
+   * @param note - Expected note text.
    */
   assertAccountCommentsAndNotes(comment: string, note: string): void {
     log('flow', 'Asserting account comments and notes values', { comment, note });
@@ -342,6 +348,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Returns to Account details and asserts the requested task status.
+   * @param taskName - Task to check.
+   * @param expectedStatus - Expected status string.
    */
   returnToAccountDetailsAndAssertStatus(taskName: ManualAccountTaskName, expectedStatus: string): void {
     log('flow', 'Return to account details and assert task status', { taskName, expectedStatus });
@@ -352,6 +360,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Provides court details by opening the task from Account details.
+   * @param payload - Court details key/value map.
    */
   provideCourtDetailsFromAccountDetails(payload: Partial<Record<ManualCourtFieldKey, string>>): void {
     log('flow', 'Provide court details from Account details', { payload });
@@ -361,6 +370,9 @@ export class ManualAccountCreationFlow {
 
   /**
    * Completes Court details assuming navigation is handled by the caller.
+   * @param lja - Local justice area code.
+   * @param pcr - Prosecutor case reference.
+   * @param enforcementCourt - Enforcement court value.
    */
   completeCourtDetails(lja: string, pcr: string, enforcementCourt: string): void {
     log('flow', 'Complete court details (navigation handled by caller)', { lja, pcr, enforcementCourt });
@@ -370,6 +382,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Provides employer details by opening the task from Account details.
+   * @param payload - Employer details key/value map.
    */
   provideEmployerDetailsFromAccountDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
     log('flow', 'Provide employer details from Account details', { payload });
@@ -379,6 +392,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Completes Employer details assuming navigation is handled by the caller.
+   * @param payload - Employer details key/value map.
    */
   completeEmployerDetails(payload: Partial<Record<ManualEmployerFieldKey, string>>): void {
     log('flow', 'Complete employer details (navigation handled by caller)', { payload });
@@ -388,6 +402,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts Employer details field values on the task.
+   * @param expected - Field/value pairs to assert.
    */
   assertEmployerDetailsFields(expected: Partial<Record<ManualEmployerFieldKey, string>>): void {
     log('flow', 'Asserting Employer details field values', { expected });
@@ -399,6 +414,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels out of Employer details with a given choice.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelEmployerDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     log('flow', 'Cancel Employer details', { choice });
@@ -408,6 +424,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels Employer details and asserts return to Account details.
+   * @param choice - Confirmation choice (Ok/Leave).
    */
   cancelEmployerDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Employer details and return to Account details', { choice });
@@ -418,6 +435,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Navigates from Employer details to Offence details using the nested CTA.
+   * @param expectedHeader - Header text expected on Offence details.
    */
   continueToOffenceDetailsFromEmployer(expectedHeader: string = 'Add an offence'): void {
     log('flow', 'Continue to Offence details from Employer details', { expectedHeader });
@@ -429,6 +447,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts Court details field values on the task.
+   * @param expected - Field/value pairs to assert.
    */
   assertCourtDetailsFields(expected: Partial<Record<ManualCourtFieldKey, string>>): void {
     log('flow', 'Asserting Court details field values', { expected });
@@ -447,6 +466,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels out of Court details with a given choice.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelCourtDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     log('flow', 'Cancel Court details', { choice });
@@ -456,6 +476,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels Court details and asserts return to Account details.
+   * @param choice - Confirmation choice (Ok/Leave).
    */
   cancelCourtDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Court details and return to Account details', { choice });
@@ -466,6 +487,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Navigates to Personal details via the Court details nested CTA.
+   * @param expectedHeader - Header text expected on Personal details.
    */
   continueToPersonalDetailsFromCourt(expectedHeader: string = 'Personal details'): void {
     log('flow', 'Continue to Personal details from Court details', { expectedHeader });
@@ -477,6 +499,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Provides personal details from the Account details task list.
+   * @param payload - Personal details values to populate.
    */
   providePersonalDetailsFromAccountDetails(payload: {
     title: string;
@@ -491,6 +514,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Completes personal details assuming navigation is handled by the caller.
+   * @param payload - Personal details values to populate.
    */
   completePersonalDetails(payload: {
     title: string;
@@ -505,6 +529,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Provides offence details from Account details and submits for review.
+   * @param payload - Offence details and imposition values.
    */
   provideOffenceDetailsFromAccountDetails(payload: {
     dateOfSentence: string;
@@ -522,6 +547,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Adds impositions (financials + creditor types) for an offence and sets offence details.
+   * @param payload - Offence code, relative sentence weeks, and imposition rows.
    */
   addOffenceWithImpositions(payload: {
     offenceCode: string;
@@ -574,6 +600,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Completes an Individual minor creditor with BACS details and saves.
+   * @param imposition - 1-based imposition number.
+   * @param details - Minor creditor payload (individual) including optional BACS.
    */
   maintainIndividualMinorCreditorWithBacs(imposition: number, details: MinorCreditorWithBacs): void {
     const index = imposition - 1;
@@ -633,6 +661,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Completes a Company minor creditor with BACS details and saves.
+   * @param imposition - 1-based imposition number.
+   * @param details - Minor creditor payload (company) including optional BACS.
    */
   maintainCompanyMinorCreditorWithBacs(imposition: number, details: MinorCreditorWithBacs): void {
     const index = imposition - 1;
@@ -686,6 +716,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts a minor creditor summary for an imposition (expands the details).
+   * @param imposition - 1-based imposition number.
+   * @param expectations - Expected summary values.
    */
   assertMinorCreditorSummary(imposition: number, expectations: MinorCreditorSummary): void {
     const index = imposition - 1;
@@ -696,6 +728,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts remove imposition links visibility for a set of impositions.
+   * @param impositions - Array of 1-based imposition numbers.
+   * @param expectedVisible - Whether links should be visible.
    */
   assertRemoveImpositionLinks(impositions: number[], expectedVisible: boolean = true): void {
     log('assert', 'Asserting remove imposition links', { impositions, expectedVisible });
@@ -707,6 +741,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Provides payment terms from the Account details task list.
+   * @param payload - Payment terms payload including collection order and dates.
    */
   providePaymentTermsFromAccountDetails(payload: {
     collectionOrder: 'Yes' | 'No';
@@ -721,6 +756,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts multiple task statuses after returning to Account details.
+   * @param statuses - List of task/status pairs to assert.
    */
   assertTaskStatuses(statuses: Array<{ task: ManualAccountTaskName; status: string }>): void {
     log('flow', 'Asserting multiple task statuses', { statuses });
@@ -749,6 +785,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels Company details and returns to Account details.
+   * @param choice - Confirmation choice (Ok/Leave).
    */
   cancelCompanyDetailsAndReturn(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Cancel Company details and return to Account details', { choice });
@@ -781,6 +818,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Cancels Contact details without navigation expectations.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
    */
   cancelContactDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
     log('flow', 'Cancel Contact details', { choice });
@@ -790,6 +828,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Confirms cancellation on Contact details and asserts return to Account details.
+   * @param choice - Confirmation choice (Ok/Leave).
    */
   confirmContactDetailsCancellation(choice: 'Ok' | 'Leave'): void {
     log('flow', 'Confirm Contact details cancellation and return', { choice });
@@ -801,6 +840,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Populates Company details using a data table object.
+   * @param data - Field/value pairs for company details.
    */
   fillCompanyDetailsFromTable(data: Record<string, string>): void {
     log('flow', 'Filling Company details from table data', data);
@@ -823,6 +863,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Adds company aliases and toggles the checkbox on.
+   * @param aliases - Alias rows containing alias number and name.
    */
   addCompanyAliases(aliases: CompanyAliasRow[]): void {
     log('flow', 'Adding company aliases', { aliases });
@@ -842,6 +883,8 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts company aliases and checkbox state.
+   * @param aliases - Alias rows to validate.
+   * @param expectedChecked - Whether the add-aliases checkbox should be checked.
    */
   assertCompanyAliases(aliases: CompanyAliasRow[], expectedChecked: boolean = true): void {
     log('flow', 'Asserting company aliases', { aliases, expectedChecked });
@@ -858,6 +901,7 @@ export class ManualAccountCreationFlow {
 
   /**
    * Asserts Company detail field values using table data.
+   * @param data - Field/value pairs for company details.
    */
   assertCompanyDetailsFields(data: Record<string, string>): void {
     log('flow', 'Asserting Company details fields', data);
@@ -879,6 +923,180 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Moves from the offence review page to Payment terms via CTA.
+   */
+  continueToPaymentTermsFromReview(): void {
+    log('flow', 'Continue to payment terms from offence review');
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.clickAddPaymentTerms();
+  }
+
+  /**
+   * Submits the offence search form, guarding the search page.
+   */
+  submitOffenceSearch(): void {
+    log('flow', 'Submit offence search');
+    this.offenceSearch.assertOnSearchPage();
+    this.offenceSearch.submitSearch();
+  }
+
+  /**
+   * Returns from the offence search results to the search form.
+   */
+  returnToOffenceSearchForm(): void {
+    log('flow', 'Return to offence search form');
+    this.offenceSearch.assertOnResultsPage();
+    this.offenceSearch.clickBackLink();
+    this.offenceSearch.assertOnSearchPage();
+  }
+
+  /**
+   * Populates offence search criteria and submits the form.
+   * @param criteria - Field/value pairs keyed by field label.
+   */
+  searchOffences(criteria: Record<string, string>): void {
+    this.offenceSearch.assertOnSearchPage();
+    Object.entries(criteria).forEach(([label, value]) => {
+      if (!value) return;
+      this.offenceSearch.setSearchField(resolveSearchFieldKey(label), value.toString().trim());
+    });
+    this.offenceSearch.submitSearch();
+  }
+
+  /**
+   * Asserts every offence search result row contains the given values.
+   * @param rows - Array of { Column, Value } expectations.
+   */
+  assertAllOffenceResults(rows: Array<{ Column: string; Value: string }>): void {
+    this.offenceSearch.assertOnResultsPage();
+    rows.forEach(({ Column, Value }) => {
+      this.offenceSearch.assertAllResultsContain(resolveSearchResultColumn(Column), Value);
+    });
+  }
+
+  /**
+   * Asserts offence search results include rows with provided values.
+   * @param rows - Array of { Column, Values[] } expectations.
+   */
+  assertOffenceResultsContain(rows: Array<{ Column: string; Values: string[] }>): void {
+    this.offenceSearch.assertOnResultsPage();
+    rows.forEach(({ Column, Values }) => {
+      this.offenceSearch.assertResultsIncludeValues(resolveSearchResultColumn(Column), Values);
+    });
+  }
+
+  /**
+   * Enables inactive offences checkbox and runs the search (guards state).
+   */
+  enableInactiveOffencesAndSearch(): void {
+    cy.location('pathname').then((path) => {
+      if (path.includes('search-offences-results')) {
+        this.offenceSearch.clickBackLink();
+      }
+    });
+    this.offenceSearch.assertOnSearchPage();
+    this.offenceSearch.toggleIncludeInactive(true);
+    this.offenceSearch.submitSearch();
+    this.offenceSearch.assertOnResultsPage();
+  }
+
+  /**
+   * Disables inactive offences and reruns the search.
+   */
+  resetInactiveOffencesAndSearch(): void {
+    this.offenceSearch.assertOnResultsPage();
+    this.offenceSearch.clickBackLink();
+    this.offenceSearch.assertOnSearchPage();
+    this.offenceSearch.toggleIncludeInactive(false);
+    this.offenceSearch.submitSearch();
+    this.offenceSearch.assertOnResultsPage();
+  }
+
+  /**
+   * Asserts results contain both active and inactive offences.
+   */
+  assertActiveAndInactiveResults(): void {
+    this.offenceSearch.assertOnResultsPage();
+    this.offenceSearch.getResultColumnValues('Used to').then((values) => {
+      expect(values.some((v) => v.includes('Present'))).to.be.true;
+      expect(values.some((v) => v && !v.includes('Present'))).to.be.true;
+    });
+  }
+
+  /**
+   * Asserts results contain only active offences.
+   */
+  assertActiveOnlyResults(): void {
+    this.offenceSearch.assertOnResultsPage();
+    this.offenceSearch.getResultColumnValues('Used to').then((values) => {
+      expect(values.length).to.be.greaterThan(0);
+      expect(values.every((v) => v.includes('Present'))).to.be.true;
+    });
+  }
+
+  /**
+   * Runs accessibility checks on the minor creditor form for an imposition.
+   * @param imposition - 1-based imposition number.
+   * @param company - Company name to populate in company mode.
+   */
+  runMinorCreditorAccessibility(imposition: number, company: string): void {
+    const index = imposition - 1;
+    this.offenceDetails.openMinorCreditorDetails(index);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Individual');
+    accessibilityActions().checkAccessibilityOnly();
+
+    this.offenceMinorCreditor.selectCreditorType('Company');
+    this.offenceMinorCreditor.setField('company', company);
+    this.offenceMinorCreditor.togglePayByBacs(true);
+    accessibilityActions().checkAccessibilityOnly();
+    this.offenceMinorCreditor.togglePayByBacs(false);
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Runs accessibility checks on remove minor creditor confirmation.
+   * @param imposition - 1-based imposition number.
+   */
+  runRemoveMinorCreditorAccessibility(imposition: number): void {
+    const index = imposition - 1;
+    this.offenceDetails.clickMinorCreditorAction(index, 'Remove');
+    this.common.assertHeaderContains('Are you sure you want to remove this minor creditor?');
+    accessibilityActions().checkAccessibilityOnly();
+    this.offenceDetails.cancelRemoveMinorCreditor();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Runs accessibility checks on remove imposition confirmation.
+   * @param imposition - 1-based imposition number.
+   */
+  runRemoveImpositionAccessibility(imposition: number): void {
+    const index = imposition - 1;
+    this.offenceDetails.clickRemoveImposition(index);
+    this.common.assertHeaderContains('Are you sure you want to remove this imposition?');
+    accessibilityActions().checkAccessibilityOnly();
+    this.offenceDetails.cancelRemoveImposition();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Runs accessibility checks across the offence removal flow.
+   * @param offenceCode - Offence code to remove.
+   */
+  runOffenceRemovalAccessibility(offenceCode: string): void {
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.clickRemoveOffence(offenceCode);
+    this.offenceReview.assertOnRemoveOffencePage(offenceCode);
+    accessibilityActions().checkAccessibilityOnly();
+    this.offenceReview.confirmRemoveOffence();
+    this.offenceReview.assertOnReviewPage();
+    this.common.assertHeaderContains('Offences and impositions');
+    accessibilityActions().checkAccessibilityOnly();
+  }
+
+  /**
    * Ensures the Manual Account Creation start page is loaded from the dashboard.
    *
    * @remarks
@@ -891,12 +1109,20 @@ export class ManualAccountCreationFlow {
     this.createAccount.assertOnCreateAccountPage();
   }
 
-  private ensureImpositionIndex(index: number): Cypress.Chainable<void> {
+  /**
+   * Ensures the requested imposition index exists by adding rows as needed.
+   * @param index - Zero-based imposition index to guarantee.
+   */
+  private ensureImpositionIndex(index: number): Cypress.Chainable<number> {
     return this.offenceDetails.getImpositionCount().then((count) => {
-      if (count <= index) {
-        this.offenceDetails.clickAddAnotherImposition();
-        return this.ensureImpositionIndex(index);
+      const needed = index - count + 1;
+      if (needed > 0) {
+        return cy
+          .wrap(Array.from({ length: needed }))
+          .each(() => this.offenceDetails.clickAddAnotherImposition())
+          .then(() => this.offenceDetails.getImpositionCount());
       }
+      return cy.wrap(count);
     });
   }
 }

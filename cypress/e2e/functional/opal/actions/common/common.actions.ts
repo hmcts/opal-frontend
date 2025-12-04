@@ -1,4 +1,4 @@
-import { CommonLocators as L } from '../../../../../shared/common.locators';
+import { CommonLocators as L } from '../../../../../shared/selectors/common.locators';
 import { log } from '../../../../../support/utils/log.helper';
 
 type NullableString = string | null;

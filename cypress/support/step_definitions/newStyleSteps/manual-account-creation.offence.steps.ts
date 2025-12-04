@@ -11,7 +11,13 @@ import { ManualOffenceSearchActions } from '../../../e2e/functional/opal/actions
 import { ManualAccountDetailsActions } from '../../../e2e/functional/opal/actions/manual-account-creation/account-details.actions';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { ManualOffenceDetailsLocators as L } from '../../../shared/selectors/manual-account-creation/offence-details.locators';
-import { calculateWeeksInFuture, calculateWeeksInPast, formatDateString } from '../../utils/dateUtils';
+import {
+  calculateWeeksInFuture,
+  calculateWeeksInPast,
+  formatDateString,
+  parseWeeksValue,
+  resolveRelativeDate,
+} from '../../utils/dateUtils';
 import { log } from '../../utils/log.helper';
 import {
   ImpositionFieldKey,
@@ -23,14 +29,9 @@ import {
   resolveMinorCreditorFieldKey,
   resolveOffenceFieldKey,
   resolveSearchFieldKey,
-} from '../../utils/fieldResolvers';
-import { accessibilityActions } from '../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
-import {
-  normalizeHash,
-  normalizeTableRows,
-  parseWeeksValue,
-  resolveRelativeDate,
-} from './manual-account-creation.shared';
+  resolveSearchResultColumn,
+} from '../../utils/macFieldResolvers';
+import { normalizeHash, normalizeTableRows } from '../../utils/cucumberHelpers';
 
 const flow = () => new ManualAccountCreationFlow();
 const offenceDetails = () => new ManualOffenceDetailsActions();
@@ -115,8 +116,10 @@ const upsertImpositionFinancialRows = (rows: ImpositionFinancialRow[]): void => 
 
 /**
  * @step Confirms the user is on the offence details page.
+ * @param header - Expected page header text.
+ * @param text - Supporting body text that should be present.
+ * @example Then I see the offence details page with header "Add an offence" and text "Offence details"
  */
-
 Then('I see the offence details page with header {string} and text {string}', (header: string, text: string) => {
   log('assert', 'Asserting offence details page header and text', { header, text });
   offenceDetails().assertOnAddOffencePage(header);
@@ -1805,14 +1808,20 @@ When('I save the minor creditor details', () => {
  * @step Navigate from offence review to Payment terms using the CTA.
  * @description Guards the review page before clicking Add payment terms.
  */
+/**
+ * Navigates from the offence review page to Payment terms.
+ * @example When I continue to payment terms from offence review
+ */
 When('I continue to payment terms from offence review', () => {
-  log('navigate', 'Continuing to payment terms from offence review');
-  offenceReview().assertOnReviewPage();
-  offenceReview().clickAddPaymentTerms();
+  flow().continueToPaymentTermsFromReview();
 });
 
 /**
  * @step Open the offence search link in the same tab.
+ */
+/**
+ * Opens the offence search link in the current tab.
+ * @example When I follow the offence search link in the same tab
  */
 When('I follow the offence search link in the same tab', () => {
   offenceDetails().openOffenceSearchLink();
@@ -1824,10 +1833,12 @@ When('I follow the offence search link in the same tab', () => {
  * @remarks Keeps the search flow guarded to avoid stale DOM interactions.
  * @example When I submit the offence search
  */
+/**
+ * Submits the offence search form.
+ * @example When I submit the offence search
+ */
 When('I submit the offence search', () => {
-  log('action', 'Submitting offence search form');
-  offenceSearch().assertOnSearchPage();
-  offenceSearch().submitSearch();
+  flow().submitOffenceSearch();
 });
 
 /**
@@ -1836,38 +1847,80 @@ When('I submit the offence search', () => {
  * @remarks Use to verify search field persistence after viewing results.
  * @example When I return to the offence search form
  */
-When('I return to the offence search form', () => {
-  log('navigate', 'Returning to offence search form');
-  offenceSearch().assertOnResultsPage();
-  offenceSearch().clickBackLink();
-  offenceSearch().assertOnSearchPage();
-});
-
 /**
- * @step Assert offence search form values.
+ * Returns from search results to the offence search form.
+ * @example When I return to the offence search form
  */
-Then('I see the offence search form with:', (table: DataTable) => {
-  const data = table.rowsHash();
-  log('assert', 'Asserting offence search form values', { data });
-  offenceSearch().assertOnSearchPage();
-
-  Object.entries(data).forEach(([fieldLabel, expected]) => {
-    const searchField = resolveSearchFieldKey(fieldLabel);
-    offenceSearch().assertSearchFieldValue(searchField, expected.toString().trim());
-  });
+When('I return to the offence search form', () => {
+  flow().returnToOffenceSearchForm();
 });
 
 Then(
-  'I see {string} in the Search results table in the {string} column',
+  'I see {string} in the offence search results table under the {string} column',
   (value: string, column: SearchResultColumn) => {
     offenceSearch().assertResultContains(column, value);
   },
 );
 
 /**
+ * @step Assert the max results banner/message on offence search results.
+ */
+/**
+ * Asserts the max-results message is shown on offence search results.
+ * @param text - Expected banner/message text.
+ * @example Then I see the offence search max results message "100 results"
+ */
+Then('I see the offence search max results message {string}', (text: string) => {
+  offenceSearch().assertOnResultsPage();
+  cy.contains(text).should('exist');
+});
+
+/**
+ * @step Assert every offence search result row contains values for given columns.
+ */
+/**
+ * Asserts every offence search result row contains the provided values.
+ * @param table - DataTable of Column/Value pairs.
+ * @example
+ *   Then I see all offence search results have:
+ *     | Column      | Value     |
+ *     | Short title | Transport |
+ */
+Then('I see all offence search results have:', (table: DataTable) => {
+  const rows = table.hashes().map(({ Column, Value }) => ({
+    Column,
+    Value,
+  }));
+  flow().assertAllOffenceResults(rows);
+});
+
+/**
+ * @step Assert offence search results include rows with specific values in a column.
+ */
+/**
+ * Asserts offence search results include rows with the given values per column.
+ * @param table - DataTable of Column/Values (comma-separated list).
+ * @example
+ *   Then I see offence search results contain rows with values in column:
+ *     | Column | Values           |
+ *     | Code   | TP47033, TP47032 |
+ */
+Then('I see offence search results contain rows with values in column:', (table: DataTable) => {
+  const rows = table.hashes().map(({ Column, Values }) => ({
+    Column,
+    Values: Values.split(',').map((v) => v.trim()).filter(Boolean),
+  }));
+  flow().assertOffenceResultsContain(rows);
+});
+
+/**
  * @step Select the include inactive offence codes checkbox.
  */
-When('I select the "Include inactive offence codes" checkbox', () => {
+/**
+ * Checks the include-inactive checkbox on offence search (without submitting).
+ * @example When I enable the "Include inactive offence codes" checkbox on offence search
+ */
+When('I enable the "Include inactive offence codes" checkbox on offence search', () => {
   log('click', 'Selecting include inactive offences checkbox');
   offenceSearch().toggleIncludeInactive(true);
 });
@@ -1875,131 +1928,124 @@ When('I select the "Include inactive offence codes" checkbox', () => {
 /**
  * @step Unselect the include inactive offence codes checkbox.
  */
-When('I unselect the "Include inactive offence codes" checkbox', () => {
+/**
+ * Unchecks the include-inactive checkbox on offence search (without submitting).
+ * @example When I disable the "Include inactive offence codes" checkbox on offence search
+ */
+When('I disable the "Include inactive offence codes" checkbox on offence search', () => {
   log('click', 'Unselecting include inactive offences checkbox');
   offenceSearch().toggleIncludeInactive(false);
 });
 
 /**
+ * Enables inactive offences and submits the search.
+ * @example When I enable inactive offence codes and run the offence search
+ */
+When('I enable inactive offence codes and run the offence search', () => {
+  flow().enableInactiveOffencesAndSearch();
+});
+
+/**
+ * Disables inactive offences and re-runs the search.
+ * @example When I reset the offence search to exclude inactive offence codes
+ */
+When('I reset the offence search to exclude inactive offence codes', () => {
+  flow().resetInactiveOffencesAndSearch();
+});
+
+/**
+ * Asserts results contain both active and inactive offences.
+ * @example Then I am viewing offence results with active and inactive offences
+ */
+Then('I am viewing offence results with active and inactive offences', () => {
+  flow().assertActiveAndInactiveResults();
+});
+
+/**
+ * Asserts results contain only active offences.
+ * @example Then I am viewing offence results with active offences only
+ */
+Then('I am viewing offence results with active offences only', () => {
+  flow().assertActiveOnlyResults();
+});
+
+/**
  * @step Search offences using a data table of field/value pairs.
  */
+/**
+ * Populates offence search criteria and submits.
+ * @param table - DataTable of field/value pairs.
+ * @example
+ *   When I search offences with:
+ *     | Offence code | TP11003 |
+ */
 When('I search offences with:', (table: DataTable) => {
-  offenceSearch().assertOnSearchPage();
-  const data = table.rowsHash();
-
-  Object.entries(data).forEach(([fieldLabel, value]) => {
-    if (!value) return;
-    const searchField = resolveSearchFieldKey(fieldLabel);
-    offenceSearch().setSearchField(searchField, value.toString().trim());
-  });
-
-  offenceSearch().submitSearch();
+  flow().searchOffences(table.rowsHash());
 });
 
 /**
  * @step Run a11y checks on minor creditor form (individual/company) and save.
  */
+/**
+ * Runs a11y checks on minor creditor form (individual/company paths) for an imposition.
+ * @param imposition - 1-based imposition number.
+ * @param company - Company name to populate in company mode.
+ * @example When I perform minor creditor accessibility checks for imposition 1 with company "Acme Ltd"
+ */
 When(
   'I perform minor creditor accessibility checks for imposition {int} with company {string}',
   (imposition: number, company: string) => {
-    const index = imposition - 1;
-    currentImpositionIndex = index;
-    log('a11y', 'Running minor creditor accessibility checks', { imposition, company });
-
-    offenceDetails().openMinorCreditorDetails(index);
-    minorCreditor().assertOnMinorCreditorPage();
-    minorCreditor().selectCreditorType('Individual');
-    accessibilityActions().checkAccessibilityOnly();
-
-    minorCreditor().selectCreditorType('Company');
-    minorCreditor().setField('company', company);
-    minorCreditor().togglePayByBacs(true);
-    accessibilityActions().checkAccessibilityOnly();
-    minorCreditor().togglePayByBacs(false);
-    minorCreditor().save();
-    offenceDetails().assertOnAddOffencePage();
+    currentImpositionIndex = imposition - 1;
+    flow().runMinorCreditorAccessibility(imposition, company);
   },
 );
 
 /**
  * @step Run a11y check on remove minor creditor confirmation and cancel.
  */
+/**
+ * Runs a11y checks on the remove minor creditor confirmation for an imposition.
+ * @param imposition - 1-based imposition number.
+ */
 When('I perform remove minor creditor accessibility check for imposition {int}', (imposition: number) => {
-  const index = imposition - 1;
-  log('a11y', 'Running remove minor creditor accessibility check', { imposition });
-  offenceDetails().clickMinorCreditorAction(index, 'Remove');
-  common().assertHeaderContains('Are you sure you want to remove this minor creditor?');
-  accessibilityActions().checkAccessibilityOnly();
-  offenceDetails().cancelRemoveMinorCreditor();
-  offenceDetails().assertOnAddOffencePage();
+  flow().runRemoveMinorCreditorAccessibility(imposition);
 });
 
 /**
  * @step Run a11y check on remove imposition confirmation and cancel.
  */
+/**
+ * Runs a11y checks on the remove imposition confirmation for an imposition.
+ * @param imposition - 1-based imposition number.
+ */
 When('I perform remove imposition accessibility check for imposition {int}', (imposition: number) => {
-  const index = imposition - 1;
-  log('a11y', 'Running remove imposition accessibility check', { imposition });
-  offenceDetails().clickRemoveImposition(index);
-  common().assertHeaderContains('Are you sure you want to remove this imposition?');
-  accessibilityActions().checkAccessibilityOnly();
-  offenceDetails().cancelRemoveImposition();
-  offenceDetails().assertOnAddOffencePage();
+  flow().runRemoveImpositionAccessibility(imposition);
 });
 
 /**
  * @step Run a11y checks around offence removal (confirm).
  */
+/**
+ * Runs a11y checks on the offence removal confirmation flow.
+ * @param offenceCode - Offence code to remove.
+ */
 When('I perform offence removal accessibility check for offence code {string}', (offenceCode: string) => {
-  log('a11y', 'Running offence removal accessibility check', { offenceCode });
-  offenceReview().assertOnReviewPage();
-  offenceReview().clickRemoveOffence(offenceCode);
-  offenceReview().assertOnRemoveOffencePage(offenceCode);
-  accessibilityActions().checkAccessibilityOnly();
-  offenceReview().confirmRemoveOffence();
-  offenceReview().assertOnReviewPage();
-  common().assertHeaderContains('Offences and impositions');
-  accessibilityActions().checkAccessibilityOnly();
+  flow().runOffenceRemovalAccessibility(offenceCode);
 });
 
 // Asserts offence review tables for a given offence code using raw table data (legacy helper).
+/**
+ * Asserts the imposition table for an offence code matches expected rows.
+ * @param offenceCode - Offence code caption on the review page.
+ * @param dataTable - Expected table including header row.
+ * @example
+ *   Then the table with offence code "TP11003" will contain the following data:
+ *     | Imposition       | Creditor | Amount imposed | Amount paid | Balance remaining |
+ *     | Compensation     | Smith    | £200.00        | £100.00     | £100.00           |
+ */
 Then(
   'the table with offence code {string} will contain the following data:',
   (offenceCode: string, dataTable: DataTable) => {
-    // Extract expected rows from the data table
-    const expectedRows = dataTable.raw();
-
-    // Locate the table by finding the offence code in the caption
-    cy.get('span.govuk-caption-m')
-      .contains(offenceCode)
-      .parentsUntil('app-fines-mac-offence-details-review-offence')
-      .parent()
-      .next('app-fines-mac-offence-details-review-offence-imposition')
-      .within(() => {
-        // Verify table headers
-        cy.get('thead th').each((header, headerIndex) => {
-          // Check if each header matches the expected header text
-          cy.wrap(header).should('contain.text', expectedRows[0][headerIndex].trim());
-        });
-
-        // Verify table rows
-        cy.get('tbody tr').each((row, rowIndex) => {
-          // Get the expected data for the current row
-          const expectedRowData = expectedRows[rowIndex + 1];
-          cy.wrap(row).within(() => {
-            // Verify each cell in the row
-            cy.get('td, th').each((cell, colIndex) => {
-              // Adjust column index if the row has a specific class
-              if (row.hasClass('govuk-light-grey-background-color')) {
-                if (colIndex >= 1 && colIndex <= 3) {
-                  colIndex += 1;
-                }
-              }
-              // Check if each cell matches the expected cell text
-              cy.wrap(cell).should('contain.text', expectedRowData[colIndex].trim());
-            });
-          });
-        });
-      });
+    offenceReview().assertOffenceTable(offenceCode, dataTable.raw());
   },
 );

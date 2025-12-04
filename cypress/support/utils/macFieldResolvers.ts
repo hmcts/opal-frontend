@@ -5,6 +5,7 @@ import { ManualContactFieldKey } from '../../e2e/functional/opal/actions/manual-
 export type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
 export type OffenceFieldKey = 'Offence code' | 'Date of sentence';
 export type ImpositionFieldKey = 'Result code' | 'Amount imposed' | 'Amount paid';
+export type MinorCreditorType = 'Individual' | 'Company';
 export type MinorCreditorFieldKey =
   | 'title'
   | 'firstNames'
@@ -149,4 +150,17 @@ export const resolveSearchFieldKey = (label: string): SearchFieldKey => {
   if (normalized.includes('short title')) return 'Short title';
   if (normalized.includes('act and section')) return 'Act and section';
   throw new Error(`Unknown offence search field: ${label}`);
+};
+
+/**
+ * Resolves a results table column label to its key.
+ */
+export const resolveSearchResultColumn = (label: string): SearchResultColumn => {
+  const normalized = label.toLowerCase();
+  if (normalized.includes('code')) return 'Code';
+  if (normalized.includes('short title')) return 'Short title';
+  if (normalized.includes('act')) return 'Act and section';
+  if (normalized.includes('used from')) return 'Used from';
+  if (normalized.includes('used to')) return 'Used to';
+  throw new Error(`Unknown offence search results column: ${label}`);
 };

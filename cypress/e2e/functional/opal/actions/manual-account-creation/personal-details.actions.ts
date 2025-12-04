@@ -20,11 +20,21 @@ export class ManualPersonalDetailsActions {
     this.typeText(L.addressLine1Input, payload.addressLine1, 'Address line 1');
   }
 
+  /**
+   * Selects a title from the dropdown.
+   * @param title - Title option to choose (e.g., "Mr", "Ms").
+   */
   private selectTitle(title: string): void {
     log('select', 'Selecting title', { title });
     cy.get(L.titleSelect, this.common.getTimeoutOptions()).should('be.visible').select(title);
   }
 
+  /**
+   * Types text into a provided input and logs the action.
+   * @param selector - CSS selector for the input.
+   * @param value - Value to type.
+   * @param label - Human-readable label for logging.
+   */
   private typeText(selector: string, value: string, label: string): void {
     cy.get(selector, this.common.getTimeoutOptions())
       .should('be.visible')

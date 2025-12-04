@@ -713,7 +713,7 @@ Feature: Manual account creation - Offence Details
 
 
   Scenario: AC7. Back button navigation retains search field values [@PO-987, @PO-545]
-    When I open the "search the offence list" link in the same tab
+    When I follow the offence search link in the same tab
     Then I am viewing Search offences
 
     When I search offences with:
@@ -743,3 +743,123 @@ Feature: Manual account creation - Offence Details
       | Offence code    | XYZ999      |
       | Short title     | NonExistent |
       | Act and section | Invalid Act |
+
+
+
+
+
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC1a Guarding against empty offence search submissions
+    When I follow the offence search link in the same tab
+    Then I am viewing Search offences
+
+    # Guard empty search
+    When I submit the offence search
+    Then I am viewing Search offences
+
+
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC1b-d Single-field offence searches
+    When I follow the offence search link in the same tab
+
+    # Offence code only
+    And I search offences with:
+      | Offence code | A |
+
+    # Short title only
+    When I return to the offence search form
+    And I search offences with:
+      | Short title | d |
+
+    # Act and Section only
+    When I return to the offence search form
+    And I search offences with:
+      | Act and section | e |
+
+
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC1e Combination offence search across fields
+    When I follow the offence search link in the same tab
+    And I search offences with:
+      | Offence code    | TP        |
+      | Short title     | Transport |
+      | Act and section | London    |
+    Then I see all offence search results have:
+      | Column          | Value     |
+      | Short title     | Transport |
+      | Code            | TP        |
+      | Act and section | London    |
+
+
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC1f Case-insensitive offence searches
+    When I follow the offence search link in the same tab
+
+    And I search offences with:
+      | Offence code | tp11003 |
+    Then I see all offence search results have:
+      | Column | Value   |
+      | Code   | TP11003 |
+
+    When I return to the offence search form
+    And I search offences with:
+      | Short title | TRANSPORT |
+    Then I see all offence search results have:
+      | Column      | Value     |
+      | Short title | Transport |
+
+    When I return to the offence search form
+    And I search offences with:
+      | Act and section | LONDON |
+    Then I see all offence search results have:
+      | Column          | Value  |
+      | Act and section | London |
+
+  @only
+  # This test assumes there is data already present!
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC1g-h Starts-with, contains and max-results offence searches
+    When I follow the offence search link in the same tab
+
+    # Starts-with (offence code)
+    And I search offences with:
+      | Offence code | TP47 |
+    Then I see offence search results contain rows with values in column:
+      | Column | Values           |
+      | Code   | TP47033, TP47032 |
+
+    When I return to the offence search form
+    And I search offences with:
+      | Short title | dangerous |
+    Then I see offence search results contain rows with values in column:
+      | Column      | Values                            |
+      | Short title | dangerous item, dangerous driving |
+
+    When I return to the offence search form
+    And I search offences with:
+      | Act and section | London |
+    Then I see offence search results contain rows with values in column:
+      | Column          | Values         |
+      | Act and section | London Byelaws |
+
+    # Max results message
+    When I return to the offence search form
+    And I search offences with:
+      | Offence code | A |
+    Then I see the offence search max results message "100 results"
+
+  @PO-667 @PO-987 @PO-545
+  Scenario: AC2a-b Active and inactive offence filter behaviour
+    When I follow the offence search link in the same tab
+
+    When I search offences with:
+      | Offence code | AB0 |
+    Then I see all offence search results have:
+      | Column  | Value   |
+      | Used to | Present |
+
+    When I enable inactive offence codes and run the offence search
+    Then I am viewing offence results with active and inactive offences
+
+    When I reset the offence search to exclude inactive offence codes
+    Then I am viewing offence results with active offences only
