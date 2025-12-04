@@ -88,13 +88,14 @@ export const routing: Routes = [
         data: {
           routePermissionId: [accRootPermissionIds['amend-payment-terms']],
           title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-terms'],
+          // accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`,
         },
         resolve: {
           title: TitleResolver,
         },
       },
       {
-        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`,
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/:type`,
 
         loadComponent: () =>
           import('../fines-acc-payment-terms-amend-denied/fines-acc-payment-terms-amend-denied.component').then(
