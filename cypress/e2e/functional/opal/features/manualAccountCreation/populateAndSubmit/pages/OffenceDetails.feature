@@ -24,7 +24,7 @@ Feature: Manual account creation - Offence Details
     Then I see the offence details page with header "Add an offence" and text "Offence details"
 
     When I view minor creditor details for imposition 1
-    Then I see the following Minor creditor details for imposition 1:
+    Then the minor creditor summary for imposition 1 is:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
       | Payment method    | BACS                    |
@@ -46,7 +46,7 @@ Feature: Manual account creation - Offence Details
       | Message | Offence TP11003 added                                                              |
       | Text    | Possess potentially dangerous item on Transport for London road transport premises |
 
-    Then the table with offence code "TP11003" should contain the following information:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
@@ -101,7 +101,7 @@ Feature: Manual account creation - Offence Details
       | Payment reference | REF                     |
 
     When I review the offence
-    Then the table with offence code "TP11003" should contain the following data:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition   | Creditor                    | Amount imposed | Amount paid | Balance remaining |
       | Compensation | Mr FNAME LNAME Show details | £200.00        | £100.00     | £100.00           |
       | Compensation | CNAME                       | £200.00        | £100.00     | £100.00           |
@@ -188,14 +188,14 @@ Feature: Manual account creation - Offence Details
       | Payment reference | REF                     |
 
     When I review the offence
-    Then the table with offence code "TP11003" should contain the following data:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition   | Creditor                     | Amount imposed | Amount paid | Balance remaining |
       | Compensation | Mr FNAMETWOEDIT LNAMETWOEDIT | £200.00        | £100.00     | £100.00           |
       | Compensation | Temporary Creditor (TEMP)    | £200.00        | £100.00     | £100.00           |
       | Compensation | CNAME3                       | £200.00        | £100.00     | £100.00           |
       | Totals       |                              | £600.00        | £300.00     | £300.00           |
 
-    And the summary table should contain the following data:
+    And the summary table contains:
       | Amount imposed    | £600.00 |
       | Amount paid       | £300.00 |
       | Balance remaining | £300.00 |
@@ -319,7 +319,7 @@ Feature: Manual account creation - Offence Details
       | CNAME3  | Addr1          | Addr2          | Addr3          | TE12 3ST |
 
     When I review the offence
-    Then the table with offence code "TP11003" should contain the following data:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
@@ -362,7 +362,7 @@ Feature: Manual account creation - Offence Details
       | 3          | Default       |                           |
 
     When I review the offence
-    Then the table with offence code "TP11003" should contain the following data:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition                         | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation                       | Temporary Creditor (TEMP)             | £900.00        | £134.00     | £766.00           |
       | Costs to Crown Prosecution Service | Crown Prosecution Service (CPS)       | £500.00        | £250.00     | £250.00           |
@@ -408,22 +408,22 @@ Feature: Manual account creation - Offence Details
       | 2        | 8 weeks ago          | HY35014      |
       | 3        | 7 weeks ago          | TH68001B     |
 
-    And the table with offence code "TP11003" will contain the following data:
+    And the offence review table for offence code "TP11003" contains:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" will contain the following data:
+    And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "TH68001B" will contain the following data:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list will contain the following data:
+    And the summary list contains:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
@@ -458,23 +458,23 @@ Feature: Manual account creation - Offence Details
 
     When I review all offences
 
-    Then the table with offence code "TP11003" should contain the following information:
+    Then the offence review table for offence code "TP11003" contains:
       | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation     | CNAME2                                | £200.00        | £100.00     | £100.00           |
       | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £300.00        | £150.00     | £150.00           |
       | Totals           |                                       | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "HY35014" should contain the following information:
+    And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor | Amount imposed | Amount paid | Balance remaining |
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list should contain the following information:
+    And the summary list contains:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
@@ -482,7 +482,7 @@ Feature: Manual account creation - Offence Details
     # Remove offence TH68001B (Offence 3) – cancel then confirm
     When I choose to remove offence with offence code "TH68001B"
     Then I am asked to confirm removing offence with offence code "TH68001B"
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
@@ -504,14 +504,14 @@ Feature: Manual account creation - Offence Details
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
 
-    And the summary list should contain the following information:
+    And the summary list contains:
       | Amount imposed | £1200.00 |
       | Amount paid    | £600.00  |
       | Balance        | £600.00  |
 
     When I choose to remove offence with offence code "TH68001B"
     Then I am asked to confirm removing offence with offence code "TH68001B"
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £200.00        | £100.00     | £100.00           |
       | Totals     |                                       | £200.00        | £100.00     | £100.00           |
@@ -540,7 +540,7 @@ Feature: Manual account creation - Offence Details
       | Costs      | CNAME    | £500.00        | £250.00     | £250.00           |
       | Totals     |          | £500.00        | £250.00     | £250.00           |
 
-    And the summary list should contain the following information:
+    And the summary list contains:
       | Amount imposed | £1000.00 |
       | Amount paid    | £500.00  |
       | Balance        | £500.00  |
@@ -556,7 +556,7 @@ Feature: Manual account creation - Offence Details
       | Imposition | Creditor type | Creditor search |
       | 2          | Major         | LBUS            |
     When I review the offence and see the review page
-    And the table with offence code "TP11003" should contain the following information:
+    And the offence review table for offence code "TP11003" contains:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
@@ -572,7 +572,7 @@ Feature: Manual account creation - Offence Details
       | Imposition | Creditor type | Creditor search           |
       | 2          | Major         | Temporary Creditor (TEMP) |
     When I review the offence and see the review page
-    And the table with offence code "HY35014" should contain the following information:
+    And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
@@ -585,14 +585,14 @@ Feature: Manual account creation - Offence Details
       | 1          | Fine (FO)   | 100            | 25          |
     When I review the offence and see the review page
     Then I see offence "TH68001B" on the offence review page
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
 
     When I choose to remove offence with offence code "HY35014"
     Then I am asked to confirm removing offence with offence code "HY35014"
-    And the table with offence code "HY35014" should contain the following information:
+    And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
@@ -600,25 +600,25 @@ Feature: Manual account creation - Offence Details
 
     When I cancel removing offence with offence code "HY35014"
     Then I am viewing Offences and impositions
-    And the table with offence code "HY35014" should contain the following information:
+    And the offence review table for offence code "HY35014" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Costs      | Temporary Creditor (TEMP)             | £250.00        | £100.00     | £150.00           |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £350.00        | £125.00     | £225.00           |
 
     When I remove offence with offence code "HY35014" and confirm
-    And the table with offence code "TP11003" should contain the following information:
+    And the offence review table for offence code "TP11003" contains:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation | LBUSMajorCreditor (LBUS)              | £300.00        | £100.00     | £200.00           |
       | Fine         | HM Courts & Tribunals Service (HMCTS) | £200.00        | £50.00      | £150.00           |
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
 
     When I remove offence with offence code "TP11003" and confirm
-    And the table with offence code "TH68001B" should contain the following information:
+    And the offence review table for offence code "TH68001B" contains:
       | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
       | Totals     |                                       | £100.00        | £25.00      | £75.00            |
@@ -680,7 +680,7 @@ Feature: Manual account creation - Offence Details
       | CNAME   |                |                |                |          |              |           |                |                   |
 
     When I choose to "change" imposition 1
-    And I enter "addr1" into the "Address line 1" field
+    And I enter "addr1" into the "Address line 1" field in the MAC flow
     When I cancel minor creditor details choosing "Cancel"
     Then I see "addr1" in the "Address line 1" field
 
@@ -721,7 +721,7 @@ Feature: Manual account creation - Offence Details
       | Short title     | Transport     |
       | Act and section | Transport Act |
     Then I am viewing offence results
-    And I see "Possess potentially dangerous item on Transport for London road transport premises" text on the page
+    And I see offence text "Possess potentially dangerous item on Transport for London road transport premises"
 
     When I return to the offence search form
     Then I am viewing Search offences
@@ -815,7 +815,6 @@ Feature: Manual account creation - Offence Details
       | Column          | Value  |
       | Act and section | London |
 
-  @only
   # This test assumes there is data already present!
   @PO-667 @PO-987 @PO-545
   Scenario: AC1g-h Starts-with, contains and max-results offence searches

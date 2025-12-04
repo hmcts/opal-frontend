@@ -127,6 +127,16 @@ Then('I see the offence details page with header {string} and text {string}', (h
 });
 
 /**
+ * Asserts a specific offence-related text is visible on the page.
+ * @param text - Text expected to be visible.
+ * @example Then I see offence text "Possess potentially dangerous item on Transport for London road transport premises"
+ */
+Then('I see offence text {string}', (text: string) => {
+  log('assert', 'Asserting offence text is visible', { text });
+  cy.contains(text).should('exist');
+});
+
+/**
  * @step Adds a single offence with imposition amounts.
  * @description Fills offence details with a relative date, offence/result codes, and amounts.
  * @param weeksInPast - Weeks before today for the offence date.
@@ -1388,6 +1398,15 @@ Then('I see the minor creditor summary for imposition {int}:', (imposition: numb
 });
 
 /**
+ * Alias for asserting minor creditor summary using a different wording.
+ */
+Then('the minor creditor summary for imposition {int} is:', (imposition: number, table: DataTable) => {
+  const expectations = normalizeHash(table);
+  log('assert', 'Asserting minor creditor summary (alias)', { imposition, expectations });
+  flow().assertMinorCreditorSummary(imposition, expectations);
+});
+
+/**
  * @step Assert remove imposition links exist for provided impositions.
  */
 Then('I see remove imposition links for:', (table: DataTable) => {
@@ -1798,13 +1817,6 @@ When('I save the minor creditor details', () => {
 });
 
 /**
- * @step Assert a task status on Account details.
- * @param taskName - Task name (e.g., Offence details).
- * @param status - Expected status text.
- */
-// Alias handled in manual-account-creation.steps.ts to keep status checks in one place.
-
-/**
  * @step Navigate from offence review to Payment terms using the CTA.
  * @description Guards the review page before clicking Add payment terms.
  */
@@ -1908,7 +1920,9 @@ Then('I see all offence search results have:', (table: DataTable) => {
 Then('I see offence search results contain rows with values in column:', (table: DataTable) => {
   const rows = table.hashes().map(({ Column, Values }) => ({
     Column,
-    Values: Values.split(',').map((v) => v.trim()).filter(Boolean),
+    Values: Values.split(',')
+      .map((v) => v.trim())
+      .filter(Boolean),
   }));
   flow().assertOffenceResultsContain(rows);
 });
@@ -2039,12 +2053,12 @@ When('I perform offence removal accessibility check for offence code {string}', 
  * @param offenceCode - Offence code caption on the review page.
  * @param dataTable - Expected table including header row.
  * @example
- *   Then the table with offence code "TP11003" will contain the following data:
+ *   Then the offence review table for offence code "TP11003" contains:
  *     | Imposition       | Creditor | Amount imposed | Amount paid | Balance remaining |
  *     | Compensation     | Smith    | £200.00        | £100.00     | £100.00           |
  */
 Then(
-  'the table with offence code {string} will contain the following data:',
+  'the offence review table for offence code {string} contains:',
   (offenceCode: string, dataTable: DataTable) => {
     offenceReview().assertOffenceTable(offenceCode, dataTable.raw());
   },
