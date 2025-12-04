@@ -42,6 +42,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
         When I click on the "GREEN, Oliver" link
         And I see "Mr Oliver GREEN" on the page header
+        #PO-2463 Ensure the Back button navigates to the "Review Accounts" page under the "Failed" tab for fixed penalty defendant
         When "Back" is clicked
         And I see "Review accounts" on the page header
 
@@ -82,6 +83,9 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
 
         When I click on the "Argent Oak Solutions Ltd comp" link
         And I see "Argent Oak Solutions Ltd comp" on the page header
+        #PO-2463 Ensure the Back button navigates to the "Review Accounts" page under the "Failed" tab for fixed penalty company defendant
+        When "Back" is clicked
+        And I see "Review accounts" on the page header
 
 
 

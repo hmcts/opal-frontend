@@ -80,8 +80,6 @@ export class FinesMacReviewAccountFixedPenaltyOffenceDetailsComponent implements
   }
 
   public ngOnInit(): void {
-    console.log('offenceDetails in Review Fixed Penalty Offence Details Component:', this.offenceDetails);
-    console.log('Offence CJS Code:', this.offenceDetails.fm_offence_details_offence_cjs_code);
     this.getOffence(this.offenceDetails.fm_offence_details_offence_cjs_code!);
   }
 }
