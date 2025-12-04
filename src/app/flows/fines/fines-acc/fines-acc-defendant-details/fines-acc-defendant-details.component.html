@@ -234,7 +234,13 @@
     <div class="govuk-grid-column-full"></div>
   }
   @case ('enforcement') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabEnforcement$ | async; as tabData) {
+      <app-fines-acc-defendant-details-enforcement-tab
+        [tabData]="tabData"
+        [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
+        [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
+      ></app-fines-acc-defendant-details-enforcement-tab>
+    }
   }
   @case ('impositions') {
     <div class="govuk-grid-column-full"></div>

@@ -1,0 +1,59 @@
+<div class="govuk-grid-column-two-thirds">
+  <h2 [class]="style.heading">Enforcement status</h2>
+  <hr [class]="style.hr" />
+  <opal-lib-govuk-summary-card-list cardTitle="Enforcement overview" summaryCardListId="enforcement-overview">
+    <ng-container content>
+      <opal-lib-govuk-summary-list summaryListId="enforcementOverviewDetails">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="enforcementOverviewDetails"
+          summaryListRowId="collection_order_status"
+        >
+          <ng-container name>Collection order status</ng-container>
+          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="enforcementOverviewDetails"
+          summaryListRowId="days_in_default"
+        >
+          <ng-container name>Days in default</ng-container>
+          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+        </div>
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="enforcementOverviewDetails"
+          summaryListRowId="enforcement_court"
+        >
+          <ng-container name>Enforcement court</ng-container>
+          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
+    </ng-container>
+  </opal-lib-govuk-summary-card-list>
+  <opal-lib-govuk-summary-card-list cardTitle="Last enforcement action" summaryCardListId="last-enforcement-action">
+    <ng-container content> There is no outstanding enforcement action. </ng-container>
+  </opal-lib-govuk-summary-card-list>
+</div>
+@if (hasAccountMaintenancePermission || hasEnterEnforcementPermission) {
+  <div class="govuk-grid-column-one-third">
+    <hr [class]="style.hr" />
+    <h2 [class]="style.heading">Actions</h2>
+    @if (hasEnterEnforcementPermission) {
+      <p>
+        <a class="govuk-link" tabindex="0">Add enforcement action</a>
+      </p>
+    }
+    @if (hasAccountMaintenancePermission) {
+      <p>
+        <a class="govuk-link" tabindex="0">Add enforcement override</a>
+      </p>
+    }
+    <p>
+      <a class="govuk-link" tabindex="0">Request an HMRC check</a>
+    </p>
+  </div>
+}

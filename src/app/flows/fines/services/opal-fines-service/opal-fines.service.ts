@@ -629,14 +629,30 @@ export class OpalFines {
    * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
    *
    * @param account_id - The ID of the defendant account.
-   * @param business_unit_id - The ID of the business unit.
-   * @param business_unit_user_id - The ID of the business unit user.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountEnforcementTabData(): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
-    return (
-      this.accountDetailsCache$['enforcement'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK)
-    );
+  public getDefendantAccountEnforcementTabData(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
+    // if (!this.accountDetailsCache$['enforcement']) {
+    //   const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
+    //   this.accountDetailsCache$['enforcement'] = this.http
+    //     .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(url, { observe: 'response' })
+    //     .pipe(
+    //       map((response: HttpResponse<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>) => {
+    //         const version = this.extractEtagVersion(response.headers);
+    //         const payload = response.body as IOpalFinesAccountDefendantDetailsEnforcementTabRefData;
+    //         return {
+    //           ...payload,
+    //           version,
+    //         };
+    //       }),
+    //       shareReplay(1),
+    //     );
+    // }
+    //return this.accountDetailsCache$['enforcement'] || of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+    console.log(account_id);
+    return of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
   }
 
   /**
