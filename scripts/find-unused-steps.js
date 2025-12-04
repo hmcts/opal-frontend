@@ -24,13 +24,18 @@ function escapeForRegExp(s) {
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-const stepFiles = walk(STEP_DIR, STEP_GLOB_EXT, true)
-  .filter(f => !f.includes('manual-account-creation'));
+const stepFiles = walk(STEP_DIR, STEP_GLOB_EXT, true).filter((f) => !f.includes('manual-account-creation'));
 const featureFiles = walk(FEATURE_DIR, FEATURE_EXT, true);
 
-const featuresContent = featureFiles.map(f => ({ f, text: fs.readFileSync(f, 'utf8') }));
+const featuresContent = featureFiles.map((f) => ({ f, text: fs.readFileSync(f, 'utf8') }));
 
-console.log('Scanning', stepFiles.length, 'newStyleSteps files and', featureFiles.length, 'feature files (excluded manualAccountCreation).\n');
+console.log(
+  'Scanning',
+  stepFiles.length,
+  'newStyleSteps files and',
+  featureFiles.length,
+  'feature files (excluded manualAccountCreation).\n',
+);
 
 let totalUnused = 0;
 
@@ -62,7 +67,7 @@ for (const sf of stepFiles) {
 
   if (fileUnused.length > 0) {
     console.log('===', path.relative(process.cwd(), sf), '===');
-    fileUnused.forEach(step => {
+    fileUnused.forEach((step) => {
       console.log('  ❌', step);
       totalUnused++;
     });

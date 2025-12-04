@@ -2,17 +2,10 @@
  * Offence detail and imposition step definitions for Manual Account Creation journeys.
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import {
-  calculateWeeksInFuture,
-  calculateWeeksInPast,
-  resolveRelativeDate,
-} from '../../../utils/dateUtils';
+import { calculateWeeksInFuture, calculateWeeksInPast, resolveRelativeDate } from '../../../utils/dateUtils';
 import { log } from '../../../utils/log.helper';
 import { normalizeTableRows } from '../../../utils/cucumberHelpers';
-import {
-  resolveImpositionFieldKey,
-  resolveOffenceFieldKey,
-} from '../../../utils/macFieldResolvers';
+import { resolveImpositionFieldKey, resolveOffenceFieldKey } from '../../../utils/macFieldResolvers';
 import {
   common,
   details,
@@ -256,7 +249,9 @@ When('I record impositions with creditor types:', (table: DataTable) => {
 
  */
 When('I add another imposition to the current offence', () => {
-  log('click', 'Adding another imposition to the current offence', { currentImpositionIndex: getCurrentImpositionIndex() });
+  log('click', 'Adding another imposition to the current offence', {
+    currentImpositionIndex: getCurrentImpositionIndex(),
+  });
   offenceDetails().clickAddAnotherImposition();
 });
 

@@ -40,7 +40,9 @@ export const resolveLanguageLabel = (section: string): LanguagePreferenceLabel =
 /**
  * Normalises a company details label to its logical field key.
  */
-export const resolveCompanyFieldKey = (field: string): 'company' | 'address1' | 'address2' | 'address3' | 'postcode' => {
+export const resolveCompanyFieldKey = (
+  field: string,
+): 'company' | 'address1' | 'address2' | 'address3' | 'postcode' => {
   const normalized = field.toLowerCase();
   if (normalized.includes('company name')) return 'company';
   if (normalized.includes('address line 1')) return 'address1';

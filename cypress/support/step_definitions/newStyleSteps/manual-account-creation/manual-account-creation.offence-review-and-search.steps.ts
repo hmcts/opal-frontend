@@ -188,7 +188,6 @@ When('I review all offences', () => {
   offenceReview().assertOnReviewPage();
 });
 
-
 /**
  * @step Validates totals in the summary list or table on review.
  * @description Validates totals in the summary list or table on review.
