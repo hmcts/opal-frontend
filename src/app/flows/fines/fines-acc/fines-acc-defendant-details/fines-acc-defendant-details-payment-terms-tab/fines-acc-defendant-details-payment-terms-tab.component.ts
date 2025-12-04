@@ -38,12 +38,14 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
    * @returns string representing the card title
    */
   public cardTitle(): string {
-    if (this.tabData.payment_terms.lump_sum_amount && !this.tabData.payment_terms.instalment_amount) {
-      return 'Pay in full';
-    } else if (this.tabData.payment_terms.lump_sum_amount) {
+    if (this.tabData.payment_terms.lump_sum_amount && this.tabData.payment_terms.instalment_amount) {
       return 'Lump sum plus instalments';
+    } else if (this.tabData.payment_terms.lump_sum_amount) {
+      return 'Pay in full';
+    } else if (this.tabData.payment_terms.instalment_amount) {
+      return 'Instalments only';
     }
-    return 'Instalments only';
+    return 'Unknown';
   }
 
   /**
