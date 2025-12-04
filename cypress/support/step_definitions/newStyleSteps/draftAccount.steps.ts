@@ -92,16 +92,3 @@ Given(
     createDraftAndPrepareForPublishing(accountType, table, status);
   },
 );
-
-/**
- * Step alias #2 (implicit “Publishing Pending” status)
- *
- * @example
- * And I create and publish an "adultOrYouthOnly" draft account with the following details:
- *   | account.defendant.forenames | John |
- *   | account.defendant.surname   | Smith |
- */
-Given(
-  'I create and publish an {string} draft account with the following details:',
-  (accountType: AccountType, table: DataTable) => createDraftAndPrepareForPublishing(accountType, table),
-);

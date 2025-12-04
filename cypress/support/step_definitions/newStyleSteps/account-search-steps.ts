@@ -210,23 +210,6 @@ Then('the search remains on the Minor creditors form - no navigation', () => {
 });
 
 /**
- * @step Verifies a validation message for a Minor Creditor Individual or Company is visible.
- * @param expectedText The text expected to be shown (use quotes in feature files).
- * @param entity "individual" or "company"
- * @details Delegates to `AccountSearchMinorCreditorsActions.assertMinorValidationMessage()`.
- * @example
- *  Then I see "Enter minor creditor first name, last name, address or postcode" validation message for a minor creditor individual
- *  Then I see "Enter minor creditor company name or address" validation message for a minor creditor company
- */
-Then(
-  'I see {string} validation message for a minor creditor {word}',
-  (expectedText: string, entity: 'individual' | 'company') => {
-    log('assert', `Verifying minor creditor ${entity} validation message: "${expectedText}"`);
-    searchCommonActions().assertValidationMessageContains(expectedText);
-  },
-);
-
-/**
  * @step Prefills the Individuals form with a sample set of inputs (for stateful tests).
  * @details Delegates to `AccountSearchIndividualsActions.prepareIndividualsSample()`.
  * @example
@@ -324,17 +307,6 @@ When('I switch away and back to the Minor creditors form', () => {
 Then('the Minor creditors form is cleared to defaults', () => {
   log('assert', 'Verifying Minor creditors form cleared');
   searchFlow().assertMinorCreditorsCleared();
-});
-
-/**
- * @step Submits the search request (whatever form is active).
- * @details Delegates to `AccountSearchCommonActions.submitSearch()`.
- * @example
- *  When I attempt the search
- */
-When('I attempt the search', () => {
-  log('action', 'Submitting search with multiple section data');
-  searchCommonActions().clickSearchButton();
 });
 
 /**
@@ -537,26 +509,6 @@ Then(
 );
 
 /**
- * @step Assert we remain on the Search Individuals form (no navigation occurred).
- * @details Verifies URL still targets the Search Accounts search path and that the Individuals form root is visible.
- * @example Then the search remains on the Search Individuals form - no navigation
- */
-Then('the search remains on the Search Individuals form - no navigation', () => {
-  log('assert', 'Verifying search remains on the Search Individuals form (no navigation)');
-  searchIndividualActions().assertRemainsOnSearchFormNoNavigation();
-});
-
-/*
- * @step Assert we remain on the Search Companies form (no navigation occurred).
- * @details Verifies URL still targets the Search Accounts search path and that the Companies form root is visible.
- * @example Then the search remains on the Search Companies form - no navigation
- */
-Then('the search remains on the Search Companies form - no navigation', () => {
-  log('assert', 'Verifying search remains on the Search Companies form (no navigation)');
-  searchCompanyActions().assertRemainsOnSearchFormNoNavigation();
-});
-
-/**
  * @step Verifies a validation message is visible for a given search type (company/individual/minor/etc).
  * @param expectedText The exact text expected (quoted in the feature).
  * @param searchType The search type (e.g. Company, individual). Can be quoted or unquoted in the feature.
@@ -743,26 +695,6 @@ Then('I see the Individuals search results:', (table: DataTable) => {
  */
 When('I see the Companies search results:', (table: DataTable) => {
   searchFlow().assertCompaniesResultsAlreadyOnCompanies(table);
-});
-
-/**
- * @step I see the Companies search results after switching tab:
- * @description
- * Verifies Companies search results after the user has switched to the
- * Companies tab from another tab (e.g. Individuals), using:
- *
- *   - AccountSearchFlow.assertCompaniesResultsWithTabSwitch()
- *
- * The DataTable must be a two-column table where each row is:
- *   | field | value |
- *
- * Example:
- *   Then I see the Companies search results after switching tab:
- *     | company name      | ACME LTD |
- *     | company reference | C123456  |
- */
-Then('I see the Companies search results after switching tab:', (table: DataTable) => {
-  searchFlow().assertCompaniesResultsWithTabSwitch(table);
 });
 
 /**

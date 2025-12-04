@@ -41,15 +41,6 @@ type CommentRow = { [key: string]: string };
 import { rowsHashSafe } from '../../../support/utils/table';
 
 /**
- * @step Clears any approved draft accounts via a Cypress task.
- * Typically used in background or setup scenarios to ensure a clean state.
- */
-Given('any approved draft accounts are cleared', () => {
-  log('step', 'Clearing approved draft accounts');
-  cy.task('clearApprovedDrafts');
-});
-
-/**
  * @step Selects the latest account and verifies the header.
  */
 When('I select the latest published account and verify the header is {string}', (header: string) => {
@@ -220,14 +211,6 @@ Then('I should return to the account details page Defendant tab', () => {
 Then('I should return to the account details page Parent or guardian tab', () => {
   log('assert', 'Return to Parent/Guardian details tab');
   navActions().assertParentGuardianTabIsActive();
-});
-
-/**
- * @step Confirms the user has returned to the account details page at a glance tab
- */
-Then('I should return to the account details page At a glance tab', () => {
-  log('assert', 'Return to At a glance tab');
-  navActions().assertAtAGlanceTabIsActive();
 });
 
 Then('I should see the defendant name contains {string}', (expected: string) => {
@@ -488,13 +471,4 @@ When('I partially edit Parent or guardian details and choose to stay on the page
 Then('I should see the unsaved value retained for Last name as {string}', (expected: string) => {
   log('assert', 'Verify unsaved PG last name retained', { expected });
   editParentGuardianDetails().verifyLastName(expected);
-});
-
-/**
- * @step Discards Parent/Guardian changes after cancelling the edit (Cancel → OK path).
- * Covers the route-guard "Cancel → Discard" behaviour where edits are reverted.
- */
-When('I discard Parent or guardian changes', () => {
-  log('step', 'Discard Parent/Guardian changes');
-  flow().discardParentGuardianChanges();
 });

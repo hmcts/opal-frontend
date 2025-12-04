@@ -168,33 +168,6 @@ When('I select the following business units:', (table: DataTable) => {
 });
 
 /**
- * @step Saves the currently selected business units.
- *
- * @description
- * This is an intent-based step (no UI verbs) that finalises the user’s
- * business-unit selections on the Filter-by-Business-Unit page.
- *
- * The step delegates the behaviour to:
- *   - `SearchFilterByBUFlow.saveBusinessUnitSelection()`
- *
- * That flow method:
- *   - interacts with `SearchFilterByBUCommonActions.saveSelection()`
- *   - handles logging and Cypress actions internally
- *   - performs the actual submit action required to persist the selection
- *
- * This step does not need to assert navigation; the calling scenario
- * should follow with an explicit validation step such as:
- *   - `Then I am on the "Search for an account" page`
- *   - `Then the business unit filter summary shows "<summary>"`
- *
- * @example
- *   When I save the selected business units
- */
-When('I save the selected business units', () => {
-  filterByBUFlow.saveBusinessUnitSelection();
-});
-
-/**
  * @step Clears all selected business units on the specified tab.
  *
  * @description
@@ -211,26 +184,6 @@ When('I save the selected business units', () => {
  */
 When('I clear all selected business units on the {string} tab', (tab: string) => {
   filterByBUFlow.clearAllBusinessUnitsOnTab(tab as 'Fines' | 'Confiscation');
-});
-
-/**
- * @step Verifies that no business units are selected on the specified tab.
- *
- * @description
- * Asserts that for the given tab (Fines or Confiscation):
- *   - the master checkbox is not checked
- *   - no individual business unit checkboxes are checked
- *   - the summary/selected count label starts with "0 of"
- *
- * Delegates to:
- *   - `SearchFilterByBUFlow.verifyNoBusinessUnitsSelectedOnTab(tab)`
- *
- * @example
- *   Then no business units are selected on the "Fines" tab
- *   And no business units are selected on the "Confiscation" tab
- */
-Then('the {string} tab shows no selected business units', (tab: string) => {
-  filterByBUFlow.verifyNoBusinessUnitsSelectedOnTab(tab as 'Fines' | 'Confiscation');
 });
 
 /**
