@@ -90,22 +90,24 @@ export class ManualOffenceReviewActions {
     log('assert', 'Validating offence totals summary', { rows });
     cy.get(L.review.totalsSummaryList, this.common.getTimeoutOptions())
       .first()
-      .within(() => {
-        rows.forEach(([label, value], index) => {
-          const expectedLabel = label.trim().toLowerCase() === 'balance' ? 'Balance remaining' : label;
-          cy.get('div[summaryListRowId]')
-            .eq(index)
-            .within(() => {
-              cy.get('ng-container[name], dt')
-                .invoke('text')
-                .should((text) => {
-                  const actual = text.replace(/\s+/g, ' ').trim();
-                  expect(actual).to.equal(expectedLabel);
-                });
-              cy.get('ng-container[value], dd')
-                .invoke('text')
-                .should((text) => expect(text.replace(/\s+/g, ' ').trim()).to.equal(value));
-            });
+      .find('div[summaryListRowId]')
+      .then(($rows) => {
+        expect($rows.length).to.equal(rows.length);
+
+        const normalizedExpected = rows.map(([label, value]) => [
+          label.trim().toLowerCase() === 'balance' ? 'Balance remaining' : label,
+          value.trim(),
+        ]);
+
+        Array.from($rows).forEach((rowEl, index) => {
+          const [expectedLabel, expectedValue] = normalizedExpected[index];
+          const labelText =
+            rowEl.querySelector('ng-container[name], dt')?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+          const valueText =
+            rowEl.querySelector('ng-container[value], dd')?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+
+          expect(labelText).to.equal(expectedLabel);
+          expect(valueText).to.equal(expectedValue);
         });
       });
   }

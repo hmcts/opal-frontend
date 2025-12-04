@@ -570,34 +570,38 @@ export class ManualAccountCreationFlow {
     this.offenceDetails.setOffenceField('Offence code', offenceCode);
     this.offenceDetails.setOffenceField('Date of sentence', dateOfSentence);
 
-    cy.wrap(impositions).each((row: OffenceImpositionInput) => {
-      const index = Number(row.imposition) - 1;
-      if (Number.isNaN(index) || index < 0) {
-        throw new Error(`Invalid imposition index: ${row.imposition}`);
-      }
-
-      return this.ensureImpositionIndex(index).then(() => {
-        if (row.resultCode) {
-          this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
-        }
-        if (row.amountImposed) {
-          this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
-        }
-        if (row.amountPaid) {
-          this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
+    impositions
+      .reduce((chain, row: OffenceImpositionInput) => {
+        const index = Number(row.imposition) - 1;
+        if (Number.isNaN(index) || index < 0) {
+          throw new Error(`Invalid imposition index: ${row.imposition}`);
         }
 
-        const type = (row.creditorType || '').toLowerCase();
-        if (type.includes('major')) {
-          this.offenceDetails.selectCreditorType(index, 'major');
-          if (row.creditorSearch) {
-            this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
-          }
-        } else if (type.includes('minor')) {
-          this.offenceDetails.selectCreditorType(index, 'minor');
-        }
-      });
-    });
+        return chain
+          .then(() => this.ensureImpositionIndex(index))
+          .then(() => {
+            if (row.resultCode !== undefined) {
+              this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
+            }
+            if (row.amountImposed !== undefined) {
+              this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
+            }
+            if (row.amountPaid !== undefined) {
+              this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
+            }
+
+            const type = (row.creditorType || '').toLowerCase();
+            if (type.includes('major')) {
+              this.offenceDetails.selectCreditorType(index, 'major');
+              if (row.creditorSearch) {
+                this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
+              }
+            } else if (type.includes('minor')) {
+              this.offenceDetails.selectCreditorType(index, 'minor');
+            }
+          });
+      }, cy.wrap(null))
+      .then(() => undefined);
   }
 
   /**
