@@ -232,6 +232,10 @@ export const USER_STATE_MOCK_PERMISSION_BU77: IOpalUserState = {
           permission_id: 7,
           permission_name: 'Account Maintenance',
         },
+        {
+          permission_id: 9,
+          permission_name: 'Amend Payment Terms',
+        },
       ],
     },
   ],

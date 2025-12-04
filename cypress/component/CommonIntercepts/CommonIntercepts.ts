@@ -7,6 +7,7 @@ import {
   OPAL_FINES_RESULTS_REF_DATA_MOCK,
   OPAL_OFFENCE_BY_ID_MOCK,
   OPAL_FINES_OFFENCES_REF_DATA_MOCK,
+  OPAL_FINES_RESULT_REF_DATA_MOCK,
 } from './CommonIntercept.mocks';
 
 /**
@@ -197,4 +198,21 @@ export function interceptRefDataForReviewAccount(businessUnitId: number) {
   interceptLocalJusticeAreas();
   interceptResultsByIds(['FCOMP', 'FVS', 'FCOST', 'FCPC', 'FO', 'FCC', 'FVEBD', 'FFR']);
   interceptProsecutors();
+}
+
+export function interceptResultByCode(resultCode: string) {
+  const results = OPAL_FINES_RESULT_REF_DATA_MOCK;
+  const matchedResult = results.filter((result) => result.result_id === resultCode);
+  return cy
+    .intercept(
+      {
+        method: 'GET',
+        pathname: `/opal-fines-service/results/${resultCode}`,
+      },
+      {
+        statusCode: 200,
+        body: matchedResult[0],
+      },
+    )
+    .as('getResultByCode');
 }

@@ -3,6 +3,7 @@ import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-se
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 
 export const BUSINESS_UNIT_77_MOCK = {
@@ -380,6 +381,57 @@ export const OPAL_FINES_RESULTS_REF_DATA_MOCK: IOpalFinesResultsRefData = {
     },
   ],
 };
+
+export const OPAL_FINES_RESULT_REF_DATA_MOCK: IOpalFinesResultRefData[] = [
+  {
+    result_id: 'REM',
+    result_title: 'Reminder of Unpaid Fine',
+    result_title_cy: 'Nodyn atgoffa terfynol am ddirwy heb ei thalu',
+    result_type: 'Result',
+    active: true,
+    imposition: false,
+    imposition_accruing: false,
+    enforcement: true,
+    enforcement_override: false,
+    further_enforcement_warn: false,
+    further_enforcement_disallow: false,
+    enforcement_hold: false,
+    requires_enforcer: false,
+    generates_hearing: false,
+    collection_order: false,
+    extend_ttp_disallow: false,
+    extend_ttp_preserve_last_enf: false,
+    prevent_payment_card: false,
+    lists_monies: false,
+    result_parameters:
+      '[{ "name":"reason", "prompt":"Reason", "type":"text", "min":1, "max":24, "language_dependent":"false" }]',
+  },
+  {
+    result_id: 'FO',
+    result_title: 'Fine',
+    result_title_cy: 'Dirwy',
+    result_type: 'Result',
+    active: true,
+    imposition_allocation_priority: 6,
+    imposition_creditor: 'CF',
+    imposition: true,
+    imposition_category: 'Fines',
+    imposition_accruing: false,
+    enforcement: false,
+    enforcement_override: false,
+    further_enforcement_warn: false,
+    further_enforcement_disallow: false,
+    enforcement_hold: false,
+    requires_enforcer: false,
+    generates_hearing: false,
+    collection_order: false,
+    extend_ttp_disallow: false,
+    extend_ttp_preserve_last_enf: false,
+    prevent_payment_card: false,
+    lists_monies: false,
+  },
+];
+
 export const OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK: IOpalFinesMajorCreditorRefData = {
   count: 4,
   refData: [
