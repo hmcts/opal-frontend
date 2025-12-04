@@ -2,6 +2,7 @@ import {
   createDefendantHeaderMockWithName,
   DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
+  USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
 } from './mocks/defendant_details_mock';
 
@@ -29,6 +30,7 @@ describe('Account Enquiry Payment Terms', () => {
       '../debtor/individual/amend',
       '../debtor/parentGuardian/amend',
       '../payment-terms/amend',
+      '../payment-terms/amend-denied',
       // Add more routes here as needed
     ],
   };
@@ -158,6 +160,29 @@ describe('Account Enquiry Payment Terms', () => {
   );
 
   it(
+    'AC2: User with permission to amend payment terms in different BU, no change link - Adult or youth only',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
     'AC2: User without permission to amend payment terms, no change link - Adult or youth only',
     { tags: ['PO-1146'] },
     () => {
@@ -179,10 +204,174 @@ describe('Account Enquiry Payment Terms', () => {
     },
   );
 
-  // This scenario is dependant on PO-1801, which has not yet been implemented.
-  //it('AC2: User with permission to amend payment terms, but cannot make amendments', { tags: ['PO-1146'] }, () => {
-  // Mount component
-  //});
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - account status CS',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'CS';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - account status WO',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'WO';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TO',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'TO';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TS',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'TS';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - account status TA',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'TA';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms, but cannot make amendments - extend_ttp_disallow true and account status CS',
+    { tags: ['PO-1146'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.account_status_reference.account_status_code = 'CS';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'DW';
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('DW');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
 
   it('AC3: Payment terms with amendments panel - Adult or youth only', { tags: ['PO-1146'] }, () => {
     let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
@@ -337,6 +526,30 @@ describe('Account Enquiry Payment Terms', () => {
       cy.get(PAYMENT_TERMS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
       cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
+    },
+  );
+
+  it(
+    'AC2: User with permission to amend payment terms in different BU, no change link - Parent or guardian',
+    { tags: ['PO-1636'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Parent/Guardian';
+      headerMock.parent_guardian_party_id = '1770000001';
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
     },
   );
 
@@ -533,6 +746,34 @@ describe('Account Enquiry Payment Terms', () => {
     cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
     cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend']);
   });
+
+  it(
+    'AC2: User with permission to amend payment terms in different BU, no change link - Company',
+    { tags: ['PO-1637'] },
+    () => {
+      const header = structuredClone(DEFENDANT_HEADER_MOCK);
+      header.party_details.organisation_flag = true;
+      header.party_details.organisation_details = {
+        organisation_name: 'Test Org Ltd',
+        organisation_aliases: [],
+      };
+
+      let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+
+      const accountId = header.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU17);
+      interceptDefendantHeader(accountId, header, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
+      cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+    },
+  );
 
   it('AC2: User without permission to amend payment terms, no change link - Company', { tags: ['PO-1637'] }, () => {
     const header = structuredClone(DEFENDANT_HEADER_MOCK);
