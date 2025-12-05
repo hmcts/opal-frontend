@@ -10,6 +10,11 @@ import { ManualAccountTaskName } from '../../../../shared/selectors/manual-accou
 import { ManualAccountTaskNavigationActions } from '../actions/manual-account-creation/task-navigation.actions';
 import { ManualContactDetailsActions } from '../actions/manual-account-creation/contact-details.actions';
 import {
+  ManualParentGuardianDetailsActions,
+  ManualParentGuardianDetailsPayload,
+  ManualParentGuardianFieldKey,
+} from '../actions/manual-account-creation/parent-guardian-details.actions';
+import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
 } from '../actions/manual-account-creation/employer-details.actions';
@@ -69,6 +74,10 @@ type MinorCreditorSummary = Partial<{
   'Payment reference': string;
 }>;
 
+type ParentGuardianDetailsExpectations = ManualParentGuardianDetailsPayload & {
+  addAliasesChecked?: boolean;
+};
+
 /**
  * Flow for Manual Account Creation.
  *
@@ -83,6 +92,7 @@ export class ManualAccountCreationFlow {
   private readonly companyDetails = new ManualCompanyDetailsActions();
   private readonly taskNavigation = new ManualAccountTaskNavigationActions();
   private readonly contactDetails = new ManualContactDetailsActions();
+  private readonly parentGuardianDetails = new ManualParentGuardianDetailsActions();
   private readonly employerDetails = new ManualEmployerDetailsActions();
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
@@ -259,6 +269,12 @@ export class ManualAccountCreationFlow {
       return;
     }
 
+    if (taskName === 'Parent or guardian details') {
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/parent-guardian-details');
+      this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+      return;
+    }
+
     if (taskName === 'Employer details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
       this.employerDetails.assertOnEmployerDetailsPage();
@@ -311,6 +327,159 @@ export class ManualAccountCreationFlow {
     log('flow', 'Opening Company details task');
     this.accountDetails.openTask('Company details');
     this.companyDetails.assertOnCompanyDetailsPage();
+  }
+
+  /**
+   * @description Opens the Parent or guardian details task and asserts the page.
+   * @example
+   *  flow.openParentGuardianDetailsTask();
+   */
+  openParentGuardianDetailsTask(): void {
+    log('flow', 'Opening Parent/Guardian details task');
+    this.openTaskFromAccountDetails('Parent or guardian details');
+  }
+
+  /**
+   * @description Fills Parent/Guardian details using the provided payload.
+   * @param payload - Field/value map including optional aliases.
+   * @example
+   *  flow.fillParentGuardianDetails({ firstNames: 'FNAME', lastName: 'LNAME' });
+   */
+  fillParentGuardianDetails(payload: ManualParentGuardianDetailsPayload): void {
+    log('flow', 'Filling Parent/Guardian details form', { payload });
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.fillParentGuardianDetails(payload);
+  }
+
+  /**
+   * @description Asserts Parent/Guardian details match expectations.
+   * @param expected - Expected field values (aliases optional).
+   * @example
+   *  flow.assertParentGuardianDetails({ firstNames: 'FNAME', addAliasesChecked: true });
+   */
+  assertParentGuardianDetails(expected: ParentGuardianDetailsExpectations): void {
+    log('assert', 'Asserting Parent/Guardian details', { expected });
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+
+    const addAliases = expected.addAliasesChecked ?? expected.addAliases;
+    if (addAliases !== undefined) {
+      this.parentGuardianDetails.assertAddAliasesChecked(Boolean(addAliases));
+    }
+
+    if (expected.firstNames !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('firstNames', expected.firstNames);
+    }
+
+    if (expected.lastName !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('lastName', expected.lastName);
+    }
+
+    if (expected.dob !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('dob', expected.dob);
+    }
+
+    if (expected.nationalInsuranceNumber !== undefined) {
+      this.parentGuardianDetails.assertFieldValue(
+        'nationalInsuranceNumber',
+        expected.nationalInsuranceNumber ?? '',
+      );
+    }
+
+    if (expected.addressLine1 !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('addressLine1', expected.addressLine1);
+    }
+
+    if (expected.addressLine2 !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('addressLine2', expected.addressLine2);
+    }
+
+    if (expected.addressLine3 !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('addressLine3', expected.addressLine3);
+    }
+
+    if (expected.postcode !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('postcode', expected.postcode);
+    }
+
+    if (expected.vehicleMake !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('vehicleMake', expected.vehicleMake);
+    }
+
+    if (expected.vehicleRegistration !== undefined) {
+      this.parentGuardianDetails.assertFieldValue('vehicleRegistration', expected.vehicleRegistration);
+    }
+
+    expected.aliases?.forEach((alias, index) => {
+      if (alias.firstNames !== undefined) {
+        this.parentGuardianDetails.assertAliasFieldValue(index, 'firstNames', alias.firstNames);
+      }
+      if (alias.lastName !== undefined) {
+        this.parentGuardianDetails.assertAliasFieldValue(index, 'lastName', alias.lastName);
+      }
+    });
+  }
+
+  /**
+   * @description Asserts an inline validation error on the Parent/Guardian form.
+   * @param field - Field key to target.
+   * @param expected - Expected error text.
+   * @example
+   *  flow.assertParentGuardianInlineError('firstNames', "Enter parent or guardian's first name(s)");
+   */
+  assertParentGuardianInlineError(field: ManualParentGuardianFieldKey, expected: string): void {
+    log('assert', 'Asserting Parent/Guardian inline error', { field, expected });
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.assertInlineError(field, expected);
+  }
+
+  /**
+   * @description Returns to the Account details task list from Parent/Guardian.
+   * @example
+   *  flow.returnToAccountDetailsFromParentGuardian();
+   */
+  returnToAccountDetailsFromParentGuardian(): void {
+    log('flow', 'Returning to Account details from Parent/Guardian task');
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.returnToAccountDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * @description Clicks Return to account details without asserting navigation (useful for validation flows).
+   * @example
+   *  flow.submitParentGuardianWithoutNavigation();
+   */
+  submitParentGuardianWithoutNavigation(): void {
+    log('flow', 'Submitting Parent/Guardian form without navigation assertion');
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.returnToAccountDetails();
+  }
+
+  /**
+   * @description Navigates to Contact details using the nested CTA on Parent/Guardian details.
+   * @param expectedHeader - Expected Contact details header text.
+   * @example
+   *  flow.continueToContactDetailsFromParentGuardian('Parent or guardian contact details');
+   */
+  continueToContactDetailsFromParentGuardian(expectedHeader: string = 'Parent or guardian contact details'): void {
+    log('flow', 'Continuing to Contact details from Parent/Guardian task', { expectedHeader });
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.addContactDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
+    this.contactDetails.assertOnContactDetailsPage(expectedHeader);
+  }
+
+  /**
+   * @description Cancels the Parent/Guardian form and chooses confirm dialog response.
+   * @param choice - Choose "Ok" to leave or "Cancel" to stay.
+   * @example
+   *  flow.cancelParentGuardianDetails('Ok');
+   */
+  cancelParentGuardianDetails(choice: 'Ok' | 'Cancel'): void {
+    log('flow', 'Cancelling Parent/Guardian details', { choice });
+    this.parentGuardianDetails.assertOnParentGuardianDetailsPage();
+    this.parentGuardianDetails.cancelAndChoose(choice);
   }
 
   /**
@@ -570,38 +739,40 @@ export class ManualAccountCreationFlow {
     this.offenceDetails.setOffenceField('Offence code', offenceCode);
     this.offenceDetails.setOffenceField('Date of sentence', dateOfSentence);
 
-    impositions
-      .reduce((chain, row: OffenceImpositionInput) => {
-        const index = Number(row.imposition) - 1;
-        if (Number.isNaN(index) || index < 0) {
-          throw new Error(`Invalid imposition index: ${row.imposition}`);
-        }
+    let chain = cy.wrap(0);
 
-        return chain
-          .then(() => this.ensureImpositionIndex(index))
-          .then(() => {
-            if (row.resultCode !== undefined) {
-              this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
-            }
-            if (row.amountImposed !== undefined) {
-              this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
-            }
-            if (row.amountPaid !== undefined) {
-              this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
-            }
+    impositions.forEach((row: OffenceImpositionInput) => {
+      const index = Number(row.imposition) - 1;
+      if (Number.isNaN(index) || index < 0) {
+        throw new Error(`Invalid imposition index: ${row.imposition}`);
+      }
 
-            const type = (row.creditorType || '').toLowerCase();
-            if (type.includes('major')) {
-              this.offenceDetails.selectCreditorType(index, 'major');
-              if (row.creditorSearch) {
-                this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
-              }
-            } else if (type.includes('minor')) {
-              this.offenceDetails.selectCreditorType(index, 'minor');
+      chain = chain
+        .then(() => this.ensureImpositionIndex(index))
+        .then(() => {
+          if (row.resultCode !== undefined) {
+            this.offenceDetails.setImpositionField(index, 'Result code', row.resultCode);
+          }
+          if (row.amountImposed !== undefined) {
+            this.offenceDetails.setImpositionField(index, 'Amount imposed', row.amountImposed);
+          }
+          if (row.amountPaid !== undefined) {
+            this.offenceDetails.setImpositionField(index, 'Amount paid', row.amountPaid);
+          }
+
+          const type = (row.creditorType || '').toLowerCase();
+          if (type.includes('major')) {
+            this.offenceDetails.selectCreditorType(index, 'major');
+            if (row.creditorSearch) {
+              this.offenceDetails.setMajorCreditor(index, row.creditorSearch);
             }
-          });
-      }, cy.wrap(null))
-      .then(() => undefined);
+          } else if (type.includes('minor')) {
+            this.offenceDetails.selectCreditorType(index, 'minor');
+          }
+        });
+    });
+
+    chain.then(() => undefined);
   }
 
   /**
