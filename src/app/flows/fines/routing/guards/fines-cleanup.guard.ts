@@ -17,14 +17,10 @@ export const finesCleanupGuard: CanDeactivateFn<unknown> = () => {
   const finesAccountStore = inject(FinesAccountStore);
 
   opalFines.clearAllCaches();
-  finesMacStore.resetFinesMacStore();
-  finesDraftStore.resetFineDraftState();
-  finesDraftStore.resetFragmentAndAmend();
-  finesDraftStore.resetFragmentAndChecker();
-  finesDraftStore.resetBannerMessage();
+  finesMacStore.resetStore();
+  finesDraftStore.resetStore();
   finesSaStore.resetStore();
-  finesAccountStore.clearAccountState();
-  finesAccountStore.clearSuccessMessage();
+  finesAccountStore.resetStore();
 
   return true;
 };

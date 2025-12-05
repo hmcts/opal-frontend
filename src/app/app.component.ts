@@ -166,6 +166,27 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Clears all caches and resets all fine-related stores to their initial state.
+   * 
+   * This method performs a complete cleanup of:
+   * - All caches maintained by the opalFines service
+   * - Fine MAC store
+   * - Fines draft store
+   * - Fines SA store
+   * - Fines account store
+   * 
+   * @private
+   * @returns {void}
+   */
+  private clearCachesAndStores(): void {
+    this.opalFines.clearAllCaches();
+    this.finesMacStore.resetStore();
+    this.finesDraftStore.resetStore();
+    this.finesSaStore.resetStore();
+    this.finesAccountStore.resetStore();
+  }
+
+  /**
    * Initializes the component after Angular has initialized all data-bound properties.
    * This method is called once after the first `ngOnChanges` method is called.
    */
@@ -197,15 +218,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public handleAuthentication(): void {
     if (this.globalStore.authenticated()) {
-      this.opalFines.clearAllCaches();
-      this.finesMacStore.resetFinesMacStore();
-      this.finesDraftStore.resetFineDraftState();
-      this.finesDraftStore.resetFragmentAndAmend();
-      this.finesDraftStore.resetFragmentAndChecker();
-      this.finesDraftStore.resetBannerMessage();
-      this.finesSaStore.resetStore();
-      this.finesAccountStore.clearAccountState();
-      this.finesAccountStore.clearSuccessMessage();
+      this.clearCachesAndStores();
       this.handleRedirect(SSO_ENDPOINTS.logout);
     } else {
       this.handleRedirect(SSO_ENDPOINTS.login);

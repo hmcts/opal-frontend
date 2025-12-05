@@ -169,5 +169,8 @@ export const FinesDraftStore = signalStore(
     resetBannerMessage: () => {
       patchState(store, { bannerMessage: '' });
     },
+    resetStore: () => {
+      patchState(store, FINES_DRAFT_STATE);
+    },
   })),
 );

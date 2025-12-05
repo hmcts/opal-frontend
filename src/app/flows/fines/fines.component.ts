@@ -24,14 +24,10 @@ export class FinesComponent implements OnDestroy {
   public ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
     this.opalFines.clearAllCaches();
-    this.finesMacStore.resetFinesMacStore();
-    this.finesDraftStore.resetFineDraftState();
-    this.finesDraftStore.resetFragmentAndAmend();
-    this.finesDraftStore.resetFragmentAndChecker();
-    this.finesDraftStore.resetBannerMessage();
+    this.finesMacStore.resetStore();
+    this.finesDraftStore.resetStore();
     this.finesSaStore.resetStore();
-    this.finesAccountStore.clearAccountState();
-    this.finesAccountStore.clearSuccessMessage();
+    this.finesAccountStore.resetStore();
 
     // Clear any errors...
     this.globalStore.resetBannerError();

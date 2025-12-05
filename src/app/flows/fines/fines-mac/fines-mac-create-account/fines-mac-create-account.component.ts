@@ -108,7 +108,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     this.setBusinessUnit(this.businessUnitsRefData);
     this.data = this.createAutoCompleteItems(this.businessUnitsRefData);
     const businessUnitId = this.finesMacStore.getBusinessUnitId();
-    this.finesMacStore.resetFinesMacStore();
+    this.finesMacStore.resetStore();
     if (businessUnitId) {
       this.finesMacStore.setBusinessUnitId(businessUnitId);
     }

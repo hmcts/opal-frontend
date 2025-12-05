@@ -15,9 +15,6 @@ export class FinesDraftComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.opalFines.clearDraftAccountsCache();
-    this.finesDraftStore.resetFineDraftState();
-    this.finesDraftStore.resetFragmentAndAmend();
-    this.finesDraftStore.resetFragmentAndChecker();
-    this.finesDraftStore.resetBannerMessage();
+    this.finesDraftStore.resetStore();
   }
 }
