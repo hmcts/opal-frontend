@@ -1,0 +1,194 @@
+<div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 [class]="style.heading">Payment terms</h2>
+    </div>
+    @if (hasAmendPaymentTermsPermission) {
+      <div class="govuk-grid-column-one-third govuk-!-text-align-right govuk-!-margin-top-3">
+        <a
+          tabindex="0"
+          [class]="style.changeLink"
+          (click)="handleChangePaymentTerms()"
+          (keyup.enter)="handleChangePaymentTerms()"
+          >Change</a
+        >
+      </div>
+    }
+  </div>
+  <hr [class]="style.hr" />
+  <ng-container content>
+    <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
+      <ng-container content>
+        <opal-lib-govuk-summary-list summaryListId="payment-terms">
+          @if (
+            tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I' &&
+            tabData.payment_terms.lump_sum_amount
+          ) {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms"
+              summaryListRowId="lump-sum-amount"
+            >
+              <ng-container name>Lump sum</ng-container>
+              @if (tabData.payment_terms.lump_sum_amount; as lump_sum_amount) {
+                <ng-container value>{{ utilsService.convertToMonetaryString(lump_sum_amount) }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+          }
+          @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms"
+              summaryListRowId="instalment-amount"
+            >
+              <ng-container name>Instalment</ng-container>
+              @if (tabData.payment_terms.instalment_amount; as instalment_amount) {
+                <ng-container value>{{ utilsService.convertToMonetaryString(instalment_amount) }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms"
+              summaryListRowId="instalment-period"
+            >
+              <ng-container name>Frequency</ng-container>
+              @if (
+                tabData.payment_terms.instalment_period?.instalment_period_display_name;
+                as instalment_period_display_name
+              ) {
+                <ng-container value>{{ instalment_period_display_name }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+          }
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="payment-terms"
+            summaryListRowId="effective-date"
+          >
+            @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
+              <ng-container name>Start date</ng-container>
+            } @else {
+              <ng-container name>Pay by date</ng-container>
+            }
+            @if (tabData.payment_terms.effective_date; as effective_date) {
+              <ng-container value>{{
+                dateService.getFromFormatToFormat(effective_date!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="payment-terms"
+            summaryListRowId="days-in-default"
+          >
+            <ng-container name>Days in default</ng-container>
+            @if (tabData.payment_terms.days_in_default; as days_in_default) {
+              <ng-container value>{{ days_in_default }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="payment-terms"
+            summaryListRowId="date-days-in-default-were-imposed"
+          >
+            <ng-container name>Date days in default were imposed</ng-container>
+            @if (tabData.payment_terms.date_days_in_default_imposed; as date_days_in_default_imposed) {
+              <ng-container value>{{
+                dateService.getFromFormatToFormat(date_days_in_default_imposed!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+          </div>
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row"
+            summaryListId="payment-terms"
+            summaryListRowId="payment-card-last-requested"
+            [actionEnabled]="true"
+            (actionClick)="handleRequestPaymentCard()"
+          >
+            <ng-container name>Payment card last requested</ng-container>
+            @if (tabData.payment_card_last_requested; as payment_card_last_requested) {
+              <ng-container value>{{
+                dateService.getFromFormatToFormat(payment_card_last_requested!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}</ng-container>
+            } @else {
+              <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+            }
+            <ng-container action>Request payment card</ng-container>
+          </div>
+        </opal-lib-govuk-summary-list>
+      </ng-container>
+    </opal-lib-govuk-summary-card-list>
+
+    @if (tabData.payment_terms.extension) {
+      <opal-lib-govuk-summary-card-list
+        cardTitle="Payment terms amendments"
+        summaryCardListId="payment-terms-amendments"
+      >
+        <ng-container content>
+          <opal-lib-govuk-summary-list summaryListId="payment-terms-amendments">
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms-amendments"
+              summaryListRowId="date-last-amended"
+            >
+              <ng-container name>Date last amended</ng-container>
+              @if (tabData.payment_terms.posted_details.posted_date; as posted_date) {
+                <ng-container value>{{
+                  dateService.getFromFormatToFormat(posted_date!, 'dd/MM/yyyy', 'dd MMMM yyyy')
+                }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms-amendments"
+              summaryListRowId="last-amended-by"
+            >
+              <ng-container name>Last amended by</ng-container>
+              @if (tabData.payment_terms.posted_details.posted_by_name; as posted_by_name) {
+                <ng-container value>{{ posted_by_name }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+            <div
+              opal-lib-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="payment-terms-amendments"
+              summaryListRowId="amendement-reason"
+            >
+              <ng-container name>Amendment reason</ng-container>
+              @if (tabData.payment_terms.reason_for_extension; as reason_for_extension) {
+                <ng-container value>{{ reason_for_extension }}</ng-container>
+              } @else {
+                <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
+              }
+            </div>
+          </opal-lib-govuk-summary-list>
+        </ng-container>
+      </opal-lib-govuk-summary-card-list>
+    }
+  </ng-container>
+</div>

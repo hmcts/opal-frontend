@@ -7,9 +7,16 @@ import {
   interceptAtAGlance,
   interceptDefendantDetails,
   interceptDefendantHeader,
+  interceptPaymentTerms,
 } from './intercept/defendantAccountIntercepts';
-import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import {
+  interceptAuthenticatedUser,
+  interceptResultByCode,
+  interceptUserState,
+} from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77 } from './mocks/defendant_details_mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
+import { head } from 'lodash';
 
 describe('Global Version Control Mechanism - Component Tests', () => {
   beforeEach(() => {
@@ -45,6 +52,8 @@ describe('Global Version Control Mechanism - Component Tests', () => {
         etag,
       );
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, etag);
+      interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, etag);
+      interceptResultByCode('REM');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -76,6 +85,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       // Use different ETags to simulate version changes
       const headerEtag = 'W/"version-1"';
       const atAGlanceEtag = 'W/"version-2"';
+      const paymentTermsEtag = 'W/"version-3"';
 
       interceptDefendantHeader(77, DEFENDANT_HEADER_MOCK, headerEtag);
       interceptDefendantDetails(
@@ -87,6 +97,8 @@ describe('Global Version Control Mechanism - Component Tests', () => {
         headerEtag, // Use headerEtag to match the header version
       );
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, atAGlanceEtag);
+      interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, paymentTermsEtag);
+      interceptResultByCode('REM');
 
       setupAccountEnquiryComponent(componentProperties);
 
