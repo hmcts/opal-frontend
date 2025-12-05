@@ -50,15 +50,19 @@ import { FinesAccDefendantDetailsDefendantTabComponent } from './fines-acc-defen
 import { FinesAccDefendantDetailsParentOrGuardianTabComponent } from './fines-acc-defendant-details-parent-or-guardian-tab/fines-acc-defendant-details-parent-or-guardian-tab.component';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { FINES_ACC_DEBTOR_TYPES } from '../constants/fines-acc-debtor-types.constant';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab/fines-acc-defendant-details-payment-terms-tab.component';
+import { FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP } from './constants/fines-acc-defendant-account-tabs-cache-map.constant';
+import { IFinesAccDefendantAccountTabsCacheMap } from './interfaces/fines-acc-defendant-account-tabs-cache-map.interface';
 import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from './fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -67,6 +71,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
     FinesAccDefendantDetailsAtAGlanceTabComponent,
     FinesAccDefendantDetailsDefendantTabComponent,
     FinesAccDefendantDetailsParentOrGuardianTabComponent,
+    FinesAccDefendantDetailsPaymentTermsTabComponent,
     FinesAccDefendantDetailsFixedPenaltyTabComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
@@ -109,13 +114,14 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public tabAtAGlance$: Observable<IOpalFinesAccountDefendantAtAGlance> = EMPTY;
   public tabDefendant$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
   public tabParentOrGuardian$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
-  public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> = EMPTY;
+  public tabPaymentTerms$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> = EMPTY;
   public tabEnforcement$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> = EMPTY;
   public tabImpositions$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> = EMPTY;
   public tabHistoryAndNotes$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> = EMPTY;
   public tabFixedPenalty$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> = EMPTY;
   public debtorTypes = FINES_ACC_DEBTOR_TYPES;
   public accountTypes = FINES_ACCOUNT_TYPES;
+  public lastEnforcement: IOpalFinesResultRefData | null = null;
 
   /**
    * Fetches the defendant account heading data and current tab fragment from the route.
@@ -123,6 +129,26 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private getHeaderDataFromRoute(): void {
     this.accountData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
+  }
+
+  /**
+   *
+   * Calculates if the user can amend payment terms based on account status and permissions.
+   * @returns boolean indicating if the user can amend payment terms
+   */
+  private canAmendPaymentTerms(): boolean {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
+    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
+
+    return (
+      !this.lastEnforcement?.extend_ttp_disallow &&
+      !invalidCodes.includes(accountStatusCode) &&
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['amend-payment-terms'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    );
   }
 
   /**
@@ -137,7 +163,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   private setupTabDataStream(): void {
     const fragment$ = merge(
       this.clearCacheOnTabChange(this.getFragmentStream('at-a-glance', this.destroy$), () =>
-        this.opalFinesService.clearAccountDetailsCache(),
+        this.opalFinesService.clearCache(
+          FINES_ACC_DEFENDANT_ACCOUNT_TABS_CACHE_MAP[this.activeTab as keyof IFinesAccDefendantAccountTabsCacheMap],
+        ),
       ),
       this.refreshFragment$,
     );
@@ -164,7 +192,20 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           this.tabFixedPenalty$ = this.fetchTabData(this.opalFinesService.getDefendantAccountFixedPenalty(account_id));
           break;
         case 'payment-terms':
-          this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
+          this.tabPaymentTerms$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
+              tap((data) => {
+                if (data.last_enforcement) {
+                  this.opalFinesService
+                    .getResult(data.last_enforcement)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((result) => {
+                      this.lastEnforcement = result;
+                    });
+                }
+              }),
+            ),
+          );
           break;
         case 'enforcement':
           this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
@@ -234,7 +275,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Navigates to the add comments page.
-   * @param event The click event that triggered the navigation.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddCommentsPage(): void {
     if (
@@ -295,6 +336,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
+  /**
+   * Navigates to the amend party details page for the specified party type.
+   * Or navigates to the access-denied page if the user lacks the required permission in this BU.
+   * @param partyType
+   */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
@@ -308,6 +354,21 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       });
     } else {
       this['router'].navigate(['/access-denied'], {
+        relativeTo: this.activatedRoute,
+      });
+    }
+  }
+
+  /**
+   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
+   */
+  public navigateToAmendPaymentTermsPage(): void {
+    if (this.canAmendPaymentTerms()) {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
+        relativeTo: this.activatedRoute,
+      });
+    } else {
+      this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`], {
         relativeTo: this.activatedRoute,
       });
     }

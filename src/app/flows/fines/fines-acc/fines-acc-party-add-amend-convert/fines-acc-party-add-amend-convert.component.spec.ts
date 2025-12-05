@@ -32,7 +32,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'mapDebtorAccountPartyPayload',
       'buildAccountPartyPayload',
     ]);
-    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountParty', 'clearAccountDetailsCache']);
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['putDefendantAccountParty', 'clearCache']);
     mockFinesAccStore = {
       account_id: jasmine.createSpy().and.returnValue(123),
       party_id: jasmine.createSpy().and.returnValue('party-123'),
@@ -110,7 +110,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       jasmine.any(String), // version
       'bu-123', // business_unit_id
     );
-    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'defendant',
@@ -140,7 +140,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       jasmine.any(String), // version
       'bu-123', // business_unit_id
     );
-    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
@@ -182,7 +182,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     tick(); // Wait for observable to complete
 
     // Assert
-    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'defendant',
@@ -211,7 +211,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
     tick(); // Wait for observable to complete
 
     // Assert
-    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'parent-or-guardian',
@@ -291,7 +291,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Assert
     expect(mockOpalFinesService.putDefendantAccountParty).toHaveBeenCalled();
-    expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
       fragment: 'defendant',
