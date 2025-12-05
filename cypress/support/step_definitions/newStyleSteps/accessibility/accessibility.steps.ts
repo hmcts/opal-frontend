@@ -43,23 +43,3 @@ Then('I check the page for accessibility and navigate back', () => {
   log('step', 'Check current page for accessibility and navigate back afterwards');
   accessibilityActions().checkAccessibilityAndNavigateBack();
 });
-
-/**
- * @step I navigate to each URL in the datatable and check for accessibility
- * @description
- * Iterates over each URL provided in the Gherkin DataTable, navigates to
- * each one in turn and performs accessibility checks on every page.
- *
- * @param dataTable
- *  Gherkin DataTable containing a list of URLs to visit and check.
- *
- * @example
- *  Then I navigate to each URL in the datatable and check for accessibility
- *    | url                       |
- *    | /account/search           |
- *    | /account/search/results   |
- */
-Then('I navigate to each URL in the datatable and check for accessibility', (dataTable: DataTable) => {
-  log('step', 'Check accessibility for each URL in the provided DataTable');
-  accessibilityActions().checkAccessibilityForUrls(dataTable);
-});

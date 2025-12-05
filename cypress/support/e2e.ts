@@ -15,6 +15,17 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
+// Force stubbed source-map helpers into the bundle to avoid base64 decode errors
+require('./stubs/cucumber-source-map');
+require('./stubs/source-map-lib');
+try {
+  const sourceMapHelper = require('@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map');
+  sourceMapHelper.createSourceMapConsumer = () => undefined;
+  sourceMapHelper.cachedCreateSourceMapConsumer = () => undefined;
+  sourceMapHelper.maybeRetrievePositionFromSourceMap = () => undefined;
+} catch {
+  // Ignore if helper is not present in this bundle
+}
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

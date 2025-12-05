@@ -2,236 +2,77 @@ Feature: Manual account creation - Create Draft Account
   # Placeholder for refactored e2e tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
-    Then I am on the dashboard
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    And I start a fine manual account for business unit "West London" with defendant type "Adult or youth" and I view the "Offence details" task
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
   @PO-1448 @PO-1638 @PO-1872
   Scenario: As a user I can create a draft account for the Adult or youth only defendant type
-    Given I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    Then I click the "Continue" button
+    When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
+    Then the "Remove imposition" option is not available
 
-    # Court Details
-    Then I click on the "Court details" link
-    And I see "Court details" on the page header
+    When I record imposition financial details:
+      | Imposition | Result code            | Amount imposed | Amount paid |
+      | 1          | Compensation (FCOMP)   | 200            | 100         |
+      | 2          | Compensation (FCOMP)   | 300            | 100         |
+      | 3          | Victim Surcharge (FVS) | 500            | 250         |
 
-    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
+    And I set imposition creditor types:
+      | Imposition | Creditor type | Creditor search           |
+      | 1          | Minor         |                           |
+      | 2          | Major         | Temporary Creditor (TEMP) |
+      | 3          | Default       |                           |
 
-    # Test For Capitalization in PCR - PO-1448
-    When I enter "abcd1234a" into the "Prosecutor Case Reference (PCR)" field
-    Then I see "ABCD1234A" in the "Prosecutor Case Reference (PCR)" field
+    And I maintain minor creditor details for imposition 1:
+      | Title | First name | Last name | Address line 1 | Address line 2 | Address line 3 | Postcode |
+      | Mr    | FNAME      | LNAME     | Addr1          | Addr2          | Addr3          | TE12 3ST |
 
-    When I enter "Aram Court (100)" into the "Enforcement court" search box
+    And I maintain BACS payment details for imposition 1:
+      | Name on the account | Sort code | Account number | Payment reference |
+      | F LNAME             | 123456    | 12345678       | REF               |
 
-    Then I click the "Return to account details" button
+    When I save the minor creditor details for imposition 1
+    Then I see the offence details page with header "Add an offence" and text "Offence details"
 
-    Then I see the status of "Court details" is "Provided"
+    When I view minor creditor details for imposition 1
+    Then I see the following Minor creditor details for imposition 1:
+      | Minor creditor    | FNAME LNAME             |
+      | Address           | Addr1Addr2Addr3TE12 3ST |
+      | Payment method    | BACS                    |
+      | Account name      | F LNAME                 |
+      | Sort code         | 12-34-56                |
+      | Account number    | 12345678                |
+      | Payment reference | REF                     |
 
-    # Personal Details
-    Then I click on the "Personal details" link
-    And I see "Personal details" on the page header
+    Then I see "Remove imposition" link for imposition 1
+    And I see "Remove imposition" link for imposition 2
+    And I see "Remove imposition" link for imposition 3
 
-    When I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
+    When I review the offence
+    Then I see the offence review details:
+      | Type    | Value                                                                      |
+      | Header  | Offences and impositions                                                   |
+      | Message | Offence TP11003 added                                                      |
+      | Text    | Possess potentially dangerous item on Transport for London road transport premises |
 
-    # Test For Capitalization in Last Name - PO-1448
-    When I enter "lname" into the "Last name" field
-    Then I see "LNAME" in the "Last name" field
+    When the table with offence code "TP11003" should contain the following data:
+      | Imposition       | Creditor                              | Amount imposed | Amount paid | Balance remaining |
+      | Compensation     | FNAME LNAME                           | £200.00        | £100.00     | £100.00           |
+      | Compensation     | Temporary Creditor (TEMP)             | £300.00        | £100.00     | £200.00           |
+      | Victim Surcharge | HM Courts & Tribunals Service (HMCTS) | £500.00        | £250.00     | £250.00           |
+      | Totals           |                                       | £1000.00       | £450.00     | £550.00           |
 
-    When I enter "Addr1" into the "Address line 1" field
+    And the summary list should contain the following data:
+      | Amount imposed    | £1000.00 |
+      | Amount paid       | £450.00  |
+      | Balance remaining | £550.00  |
 
-    # Test For Capitalization in Post Code - PO-1448
-    When I enter "te1 1st" into the "Postcode" field
-    Then I see "TE1 1ST" in the "Postcode" field
-
-    When I enter "01/01/1990" into the Date of birth field
-    And I enter "FORD FOCUS" into the "Make and model" field
-
-    # Test For Capitalization in VRN - PO-1448
-    When I enter "ab12 cde" into the "Registration number" field
-    Then I see "AB12 CDE" in the "Registration number" field
-
-    # Test For Capitalization in National Insurance Number - PO-1448
-    When I enter "qq123456c" into the "National insurance number" field
-    Then I see "QQ123456C" in the "National insurance number" field
-
-    When I select the "Add aliases" checkbox
-
-    # Test For Capitalization in Alias 1 Last Name - PO-1448
-    And I set the "Alias 1", "First names" to "fnameone"
-    When I set the "Alias 1", "Last name" to "lnameone"
-    Then I see "Alias 1", "Last name" is set to "LNAMEONE"
-
-    And I click the "Add another alias" button
-
-    # Test For Capitalization in Alias 2 Last Name - PO-1448
-    And I set the "Alias 2", "First names" to "fnametwo"
-    When I set the "Alias 2", "Last name" to "lnametwo"
-    Then I see "Alias 2", "Last name" is set to "LNAMETWO"
-
-    And I click the "Add another alias" button
-
-    # Test For Capitalization in Alias 3 Last Name - PO-1448
-    And I set the "Alias 3", "First names" to "fnamethree"
-    When I set the "Alias 3", "Last name" to "lnamethree"
-    Then I see "Alias 3", "Last name" is set to "LNAMETHREE"
-
-    And I click the "Add another alias" button
-
-    # Test For Capitalization in Alias 4 Last Name - PO-1448
-    And I set the "Alias 4", "First names" to "fnamefour"
-    When I set the "Alias 4", "Last name" to "lnamefour"
-    Then I see "Alias 4", "Last name" is set to "LNAMEFOUR"
-
-    And I click the "Add another alias" button
-    # Test For Capitalization in Alias 5 Last Name - PO-1448
-    And I set the "Alias 5", "First names" to "fnamefive"
-    When I set the "Alias 5", "Last name" to "lnamefive"
-    Then I see "Alias 5", "Last name" is set to "LNAMEFIVE"
-
-    And I click the "Return to account details" button
-
-    Then I see the status of "Personal details" is "Provided"
-
-    # Offence Details
-    And I click on the "Offence details" link
-    Then I see "Add an offence" on the page header
-    And I see "Offence details" text on the page
-
-    When I enter "HY35014" into the "Offence code" field
-    And I enter a date 8 weeks into the past into the "Date of sentence" date field
-
-    And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 1
-    And I enter "300" into the "Amount imposed" field for imposition 1
-    And I enter "100" into the "Amount paid" field for imposition 1
-    And I see "Add creditor" text on the page
-    And I select the "Minor creditor" radio button
-    When I click on the "Add minor creditor details" link for imposition 1
-    Then I see "Minor creditor details" on the page header
-
-    When I select the "Individual" radio button
-    And I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First name" field
-
-    # Test For Capitalization in Last Name - PO-1448
-    When I enter "lname" into the "Last name" field
-    Then I see "LNAME" in the "Last name" field
-
-    And I enter "Addr1" into the "Address Line 1" field
-    And I enter "Addr2" into the "Address Line 2" field
-    And I enter "Addr3" into the "Address Line 3" field
-
-    # Test Capitalization in Postcode - PO-1448
-    When I enter "te1 1st" into the "Postcode" field
-    Then I see "TE1 1ST" in the "Postcode" field
-
-    # Not entering BACS info, coverage for PO-1872
-    And I validate the "I have BACS payment details" checkbox is not checked
-
-    When I click the "Save" button
-    Then I see "Add an offence" on the page header
-
-    When I click the "Review offence" button
-    Then I see "Offences and impositions" on the page header
-    When I click the "Return to account details" button
-    And I see the status of "Offence details" is "Provided"
-
-    # Payment Terms
-    When I click on the "Payment terms" link
-    And I see "Payment terms" on the page header
-
-    When I select the "No" radio button under the "Has a collection order been made?" section
-    And I select the "Make collection order today" checkbox
-    And I select the "Lump sum plus instalments" radio button
-    And I enter "150" into the "Lump sum" payment field
-    And I enter "300" into the "Instalment" payment field
-    And I select the "Monthly" radio button
-    And I enter a date 2 weeks into the future into the "Start date" date field
-    And I select the "Request payment card" checkbox
-
-    And I select the "There are days in default" checkbox
-    And I enter a date 1 weeks into the past into the "Date days in default were imposed" date field
-    And I enter "100" into the days in default input field
-
-    Then I select the "Add enforcement action" radio button
-    And I select the "Hold enforcement on account (NOENF)" radio button
-    And I enter "Reason" into the "Reason account is on NOENF" text field
-
-    And I click the "Return to account details" button
-    Then I see "Account details" on the page header
-    Then I see the status of "Payment terms" is "Provided"
-
-    # Employer Details
-    When I click on the "Employer details" link
-    And I see "Employer details" on the page header
-
-    And I enter "Test Corp" into the "Employer name" field
-
-    # Test Capitalization in Employee Reference - PO-1448
-    When I enter "ab123456c" into the "Employee reference" field
-    Then I see "AB123456C" in the "Employee reference" field
-
-    And I enter "employer@example.com" into the "Employer email address" field
-    And I enter "01234567890" into the "Employer telephone" field
-    And I enter "Addr1" into the "Address line 1" field
-    And I enter "Addr2" into the "Address line 2" field
-    And I enter "Addr3" into the "Address line 3" field
-    And I enter "Addr4" into the "Address line 4" field
-    And I enter "Addr5" into the "Address line 5" field
-
-    # Test Capitalization in Postcode - PO-1448
-    When I enter "te12 3st" into the "Postcode" field
-    Then I see "TE12 3ST" in the "Postcode" field
-    When I enter "te12 3st" into the "Postcode" field
-    Then I see "TE12 3ST" in the "Postcode" field
-
-    And I click the "Return to account details" button
-
-    Then I see the status of "Employer details" is "Provided"
-
-    # Check Account
-    And I see the "Check account" button
-    And I do not see "You cannot proceed until all required sections have been completed." text on the page
-
-    When I click the "Check account" button
-    Then I see "Check account details" on the page header
-
-    Then I see the following in the "Court details" table:
-      | Prosecutor Case Reference (PCR) | ABCD1234A |
-
-    Then I see the following in the "Personal details" table:
-      | Last name                 | LNAME                                                                                                 |
-      | Address                   | Addr1  TE1 1ST                                                                                        |
-      | Registration number       | AB12 CDE                                                                                              |
-      | National Insurance number | QQ123456C                                                                                             |
-      | Alias                     | fnameone LNAMEONE  fnametwo LNAMETWO  fnamethree LNAMETHREE  fnamefour LNAMEFOUR  fnamefive LNAMEFIVE |
-
-    Then I see the following in the "Employer details" table:
-      | Employee reference | AB123456C                                   |
-      | Employer address   | Addr1  Addr2  Addr3  Addr4  Addr5  TE12 3ST |
-
-    Then I see the following details for imposition 1 in the Offences and impositions table:
-      | imposition       | Compensation                 |
-      | creditor         | Mr FNAME LNAME               |
-      | amountImposed    | 300                          |
-      | amountPaid       | 100                          |
-      | balanceRemaining | 200                          |
-      | Address          | Addr1  Addr2  Addr3  TE1 1ST |
-      | Payment method   | —                            |
-
-    #This is coverage for BUG PO-1638 to ensure accounts with a minor creditor can be created.
-    When I click the "Submit for review" button and capture the created account number
-    Then I see "You've submitted this account for review" text on the page
+    When I return to account details from offence details
+    Then I see the status of "Offence details" is "Provided"
 
   @PO-1450 @PO-1638
   Scenario: As a user I can create a draft account for the Company defendant type
-    Given I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Company" radio button
-    Then I click the "Continue" button
+    When I restart manual fine account for business unit "West London" with defendant type "Company"
 
     # Court Details
     Then I click on the "Court details" link
@@ -289,12 +130,12 @@ Feature: Manual account creation - Create Draft Account
     When I enter "ref" into the "Payment reference" field
     Then I see "REF" in the "Payment reference" field
 
-    When I click the "Save" button
+    When I save the minor creditor details
     Then I see "Add an offence" on the page header
 
-    When I click the "Review offence" button
+    When I review the offence
     Then I see "Offences and impositions" on the page header
-    When I click the "Return to account details" button
+    When I return to account details from offence details
     And I see the status of "Offence details" is "Provided"
 
     # Payment Terms
@@ -394,11 +235,7 @@ Feature: Manual account creation - Create Draft Account
 
   @PO-1449 @PO-1638
   Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
-    Given I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth with parent or guardian to pay" radio button
-    And I click the "Continue" button
+    When I restart manual fine account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
 
     # Court Details
     Then I click on the "Court details" link
@@ -583,12 +420,12 @@ Feature: Manual account creation - Create Draft Account
     When I enter "refab" into the "Payment reference" field
     Then I see "REFAB" in the "Payment reference" field
 
-    When I click the "Save" button
+    When I save the minor creditor details
     Then I see "Add an offence" on the page header
 
-    When I click the "Review offence" button
+    When I review the offence
     Then I see "Offences and impositions" on the page header
-    When I click the "Return to account details" button
+    When I return to account details from offence details
     And I see the status of "Offence details" is "Provided"
 
     # Payment Terms

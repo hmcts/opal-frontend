@@ -144,3 +144,39 @@ When('I select back and cancel', () => {
   log('step', 'Select back and cancel (no navigate)');
   Common().navigateBrowserBackWithChoice('cancel');
 });
+
+/**
+ * @step Assert arbitrary text content exists on the page.
+ * @param text - Text expected to be visible anywhere on the page.
+ */
+Then('I see the following text {string}', (text: string) => {
+  log('assert', 'Checking text on page', { text });
+  cy.contains(text).should('exist');
+});
+
+/**
+ * @step Assert a link with given text is not present.
+ * @param linkText - Link text that should not be found.
+ */
+Then('the link with text {string} should not be present', (linkText: string) => {
+  log('assert', 'Ensuring link is not present', { linkText });
+  cy.contains('a', linkText).should('not.exist');
+});
+
+/**
+ * @step Assert a button with given text is not present.
+ * @param text - Button text that should not be found.
+ */
+Then('the button with text {string} should not be present', (text: string) => {
+  log('assert', 'Ensuring button is not present', { text });
+  cy.contains('button', text).should('not.exist');
+});
+
+/**
+ * @step Assert a button with given text is not present (alias).
+ * @param text - Button text that should not be found.
+ */
+Then('I should not see the button with text {string}', (text: string) => {
+  log('assert', 'Ensuring button is not present (alias)', { text });
+  cy.contains('button', text).should('not.exist');
+});

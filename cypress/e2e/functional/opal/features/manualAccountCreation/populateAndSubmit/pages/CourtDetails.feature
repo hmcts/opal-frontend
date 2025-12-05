@@ -5,99 +5,74 @@ Feature: Manual account creation - Court Details
   #Tests for conditional rendering (different defendant types) are contained in the CourtDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
-
-    When I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    And I click the "Continue" button
-
-    Then I click on the "Court details" link
-    And I see "Court details" on the page header
+    Given I am logged in with email "opal-test@hmcts.net"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    And I view the "Court details" task
 
   Scenario: (AC.8, AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
-    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
-    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "West London VPFPO (101)" into the "Enforcement court" search box
+    When I complete manual court details:
+      | Sending area or Local Justice Area (LJA) | Avon                    |
+      | Prosecutor Case Reference (PCR)          | 1234                    |
+      | Enforcement court                        | West London VPFPO (101) |
+    And I return to account details
+    Then the "Court details" task status is "Provided"
+    When I view the "Court details" task
+    Then the manual court details fields are:
+      | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
+      | Prosecutor Case Reference (PCR)          | 1234                                      |
+      | Enforcement court                        | West London VPFPO (101)                   |
+    When I restart manual fine account for business unit "West London" with defendant type "Adult or youth only"
+    Then the "Court details" task status is "Not provided"
+    When I view the "Court details" task
+    Then the manual court details fields are:
+      | Sending area or Local Justice Area (LJA) |  |
+      | Prosecutor Case Reference (PCR)          |  |
+      | Enforcement court                        |  |
 
-    Then I click the "Return to account details" button
+  Scenario: (AC.10) Unsaved court details are cleared when user confirms cancel [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
+    When I complete manual court details:
+      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Prosecutor Case Reference (PCR)          | 1234              |
+      | Enforcement court                        | West London VPFPO |
+    And I cancel manual court details choosing "Ok" and return to account details
+    Then the "Court details" task status is "Not provided"
+    When I view the "Court details" task
+    Then the manual court details fields are:
+      | Sending area or Local Justice Area (LJA) |  |
+      | Prosecutor Case Reference (PCR)          |  |
+      | Enforcement court                        |  |
 
-    Then I see the status of "Court details" is "Provided"
+  Scenario: (AC.11) Confirming cancel restores last saved court details [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
+    When I complete manual court details:
+      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Prosecutor Case Reference (PCR)          | 1234              |
+      | Enforcement court                        | West London VPFPO |
+    And I return to account details
+    Then the "Court details" task status is "Provided"
 
-    When I click on the "Court details" link
-    And I see "Avon & Somerset Magistrates' Court (1450)" in the "Sending area or Local Justice Area (LJA)" searchbox
-    And I see "1234" in the "Prosecutor Case Reference (PCR)" field
-    And I see "West London VPFPO (101)" in the "Enforcement court" searchbox
+    When I view the "Court details" task
+    And I complete manual court details:
+      | Prosecutor Case Reference (PCR) | 4321 |
+    And I cancel manual court details choosing "Ok" and return to account details
 
-    When I reload the page
-    Then I see "Business unit and defendant type" on the page header
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    And I click the "Continue" button
+    When I view the "Court details" task
+    Then the manual court details fields are:
+      | Prosecutor Case Reference (PCR) | 1234 |
 
-    Then I see the status of "Court details" is "Not provided"
-
-    When I click on the "Court details" link
-
-    And I see "" in the "Sending area or Local Justice Area (LJA)" searchbox
-    And I see "" in the "Prosecutor Case Reference (PCR)" field
-    And I see "" in the "Enforcement court" searchbox
-
-  Scenario: (AC.10, AC.11) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-389, @PO-527, @PO-529]
-    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
-    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "West London VPFPO" into the "Enforcement court" search box
-
-    Then I click Cancel, a window pops up and I click Ok
-
-    Then I see the status of "Court details" is "Not provided"
-
-    When I click on the "Court details" link
-
-    And I see "" in the "Sending area or Local Justice Area (LJA)" searchbox
-    And I see "" in the "Prosecutor Case Reference (PCR)" field
-    And I see "" in the "Enforcement court" searchbox
-
-    Then I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
-    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "West London VPFPO" into the "Enforcement court" search box
-
-    Then I click the "Return to account details" button
-
-    Then I see the status of "Court details" is "Provided"
-
-    When I click on the "Court details" link
-    And I enter "4321" into the "Prosecutor Case Reference (PCR)" field
-    And I click Cancel, a window pops up and I click Ok
-
-    When I click on the "Court details" link
-    And I see "1234" in the "Prosecutor Case Reference (PCR)" field
-
-    Then I enter "4321" into the "Prosecutor Case Reference (PCR)" field
-    And I click Cancel, a window pops up and I click Cancel
-
-    Then I see "4321" in the "Prosecutor Case Reference (PCR)" field
-
-    When I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I click Cancel, a window pops up and I click Ok
-
-    Then I see the status of "Court details" is "Provided"
-
-    When I click on the "Court details" link
-    When I enter "1234" into the "Prosecutor Case Reference (PCR)" field
+  Scenario: (AC.11) Unsaved court details are retained when cancel is dismissed
+    When I complete manual court details:
+      | Prosecutor Case Reference (PCR) | 4321 |
+    And I cancel manual court details choosing "Cancel"
+    Then the manual court details fields are:
+      | Prosecutor Case Reference (PCR) | 4321 |
 
   Scenario: Court Details - Axe Core
     Then I check accessibility
 
   Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
-    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
-    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "West London VPFPO" into the "Enforcement court" search box
-
-    When I click the "Add personal details" button
-
-    Then I see "Personal details" on the page header
-
+    When I complete manual court details:
+      | Sending area or Local Justice Area (LJA) | Avon              |
+      | Prosecutor Case Reference (PCR)          | 1234              |
+      | Enforcement court                        | West London VPFPO |
+    And I continue to personal details from court details
+    Then I should see the header containing text "Personal details"

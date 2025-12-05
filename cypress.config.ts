@@ -49,8 +49,16 @@ async function setupNodeEvents(
     'file:preprocessor',
     webpack({
       webpackOptions: {
+        // Disable sourcemaps to avoid sourcemap helper recursion in headed runs
+        devtool: false,
         resolve: {
           extensions: ['.ts', '.js'],
+          alias: {
+            '@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map': path.resolve(
+              __dirname,
+              'cypress/support/stubs/cucumber-source-map.js',
+            ),
+          },
           plugins: [
             new TsconfigPathsPlugin({
               configFile: path.resolve(__dirname, 'e2e.tsconfig.json'), // ← absolute
@@ -68,6 +76,11 @@ async function setupNodeEvents(
                   options: {
                     configFile: 'e2e.tsconfig.json',
                     transpileOnly: true,
+                    compilerOptions: {
+                      sourceMap: false,
+                      inlineSourceMap: false,
+                      inlineSources: false,
+                    },
                   },
                 },
               ],

@@ -1,4 +1,5 @@
 import { AccountNavDetailsLocators as N } from '../../../../../shared/selectors/account-details/account.nav.details.locators';
+import { log } from '../../../../../support/utils/log.helper';
 
 /**
  * @file account.details.nav.actions.ts
@@ -30,11 +31,7 @@ export class AccountDetailsNavActions {
    *  nav.clickAddAccountNoteButton();
    */
   clickAddAccountNoteButton(): void {
-    Cypress.log({
-      name: 'nav',
-      displayName: 'Account Nav',
-      message: 'Clicking "Add account note" button',
-    });
+    log('navigate', 'Clicking "Add account note" button');
 
     cy.get(N.addAccountNoteButton, { timeout: 10_000 }).should('be.visible').click({ force: true });
   }
@@ -56,11 +53,7 @@ export class AccountDetailsNavActions {
    *  nav.assertDefendantTabIsActive();
    */
   goToDefendantTab(): void {
-    Cypress.log({
-      name: 'nav',
-      displayName: 'Account Nav',
-      message: 'Navigating to "Defendant" tab',
-    });
+    log('navigate', 'Navigating to "Defendant" tab');
 
     cy.get(N.subNav.defendantTab, { timeout: 10_000 }).should('be.visible').click();
   }
@@ -82,11 +75,7 @@ export class AccountDetailsNavActions {
    *  nav.assertParentGuardianTabIsActive();
    */
   goToParentGuardianTab(): void {
-    Cypress.log({
-      name: 'nav',
-      displayName: 'Account Nav',
-      message: 'Navigating to "Parent or guardian" tab',
-    });
+    log('navigate', 'Navigating to "Parent or guardian" tab');
 
     cy.get(N.subNav.parentOrGuardianTab, { timeout: 10_000 }).should('be.visible').click();
   }
@@ -103,11 +92,7 @@ export class AccountDetailsNavActions {
    *  nav.assertParentGuardianTabIsActive();
    */
   assertParentGuardianTabIsActive(): void {
-    Cypress.log({
-      name: 'assert',
-      displayName: 'Account Nav',
-      message: 'Asserting "Parent or guardian" tab is active',
-    });
+    log('assert', 'Asserting "Parent or guardian" tab is active');
 
     cy.get(N.subNav.currentTab, { timeout: 10_000 })
       .should('be.visible')
@@ -127,11 +112,7 @@ export class AccountDetailsNavActions {
    *  nav.assertDefendantTabIsActive();
    */
   assertDefendantTabIsActive(): void {
-    Cypress.log({
-      name: 'assert',
-      displayName: 'Account Nav',
-      message: 'Asserting "Defendant" tab is active',
-    });
+    log('assert', 'Asserting "Defendant" tab is active');
 
     cy.get(N.subNav.currentTab, { timeout: 10_000 })
       .should('be.visible')
@@ -151,11 +132,7 @@ export class AccountDetailsNavActions {
    *  nav.assertAtAGlanceTabIsActive();
    */
   assertAtAGlanceTabIsActive(): void {
-    Cypress.log({
-      name: 'assert',
-      displayName: 'Account Nav',
-      message: 'Asserting "At a glance" tab is active',
-    });
+    log('assert', 'Asserting "At a glance" tab is active');
 
     cy.get(N.subNav.currentTab, { timeout: 10_000 })
       .should('be.visible')
