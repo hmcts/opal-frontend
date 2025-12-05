@@ -58,6 +58,12 @@ async function setupNodeEvents(
               __dirname,
               'cypress/support/stubs/cucumber-source-map.js',
             ),
+            'source-map': path.resolve(__dirname, 'cypress/support/stubs/source-map-lib.js'),
+            'source-map-js': path.resolve(__dirname, 'cypress/support/stubs/source-map-lib.js'),
+            '@badeball/cypress-cucumber-preprocessor/dist/helpers/merge': path.resolve(
+              __dirname,
+              'cypress/support/stubs/cucumber-merge.js',
+            ),
           },
           plugins: [
             new TsconfigPathsPlugin({
