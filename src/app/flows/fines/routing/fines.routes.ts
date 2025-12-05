@@ -8,6 +8,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { accountGuard } from '@hmcts/opal-frontend-common/guards/account';
+import { finesCleanupGuard } from './guards/fines-cleanup.guard';
 
 export const finesRouting: Routes = [
   {
@@ -19,6 +20,7 @@ export const finesRouting: Routes = [
     path: FINES_ROUTING_PATHS.root,
     loadComponent: () => import('../fines.component').then((c) => c.FinesComponent),
     canActivateChild: [accountGuard],
+    canDeactivate: [finesCleanupGuard],
     children: [
       {
         path: FINES_ROUTING_PATHS.children.mac.root,

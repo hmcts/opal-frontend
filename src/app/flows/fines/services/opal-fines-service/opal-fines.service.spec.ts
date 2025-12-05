@@ -50,9 +50,9 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOC
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-search-params.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
-import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
+import { IOpalFinesBusinessUnitRefData } from './interfaces/opal-fines-business-unit-ref-data.interface';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -859,13 +859,66 @@ describe('OpalFines', () => {
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
-  it('should clear account details cache', () => {
-    const tab = 'at-a-glance';
-    service['accountDetailsCache$'][tab] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-    service.clearAccountDetailsCache();
+  it('should clear account detail caches', () => {
+    service['defendantAtAGlanceCache$']['123'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    service['defendantPartyCache$']['123-party'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    service['parentGuardianPartyCache$']['456-parent'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    service['fixedPenaltyCache$']['123'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
 
-    // Verify that the cache for the specified tab is cleared
-    expect(service['accountDetailsCache$']).toEqual({} as IOpalFinesAccountDefendantDetailsTabsCache);
+    service.clearAccountDetailsCache();
+    expect(service['defendantAtAGlanceCache$']).toEqual({});
+    expect(service['defendantPartyCache$']).toEqual({});
+    expect(service['parentGuardianPartyCache$']).toEqual({});
+    expect(service['fixedPenaltyCache$']).toEqual({});
+  });
+
+  it('should keep per-account caches isolated', () => {
+    const firstAccountId = 789;
+    const secondAccountId = 790;
+
+    const first$ = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    const second$ = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+
+    service['defendantAtAGlanceCache$'][String(firstAccountId)] = first$;
+    service['defendantAtAGlanceCache$'][String(secondAccountId)] = second$;
+
+    expect(service['defendantAtAGlanceCache$'][String(firstAccountId)]).not.toBe(
+      service['defendantAtAGlanceCache$'][String(secondAccountId)],
+    );
+  });
+
+  it('should clear all caches when clearAllCaches is called', () => {
+    service['draftAccountsCache$']['key'] = of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    service['defendantAtAGlanceCache$']['123'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    service['defendantPartyCache$']['123-party'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    service['parentGuardianPartyCache$']['123-parent'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK);
+    service['fixedPenaltyCache$']['123'] = of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK);
+    service['courtRefDataCache$']['1'] = of(OPAL_FINES_COURT_REF_DATA_MOCK);
+    service['businessUnitsPermissionCache$']['perm'] = of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    service['offenceCodesCache$']['code'] = of(OPAL_FINES_OFFENCES_REF_DATA_MOCK);
+    service['majorCreditorsCache$']['1'] = of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK);
+    service['prosecutorDataCache$']['1'] = of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
+    service['businessUnitsCache$'] = of(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK as unknown as IOpalFinesBusinessUnitRefData,
+    );
+    service['localJusticeAreasCache$'] = of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK);
+    service['resultsCache$'] = of(OPAL_FINES_RESULTS_REF_DATA_MOCK);
+
+    service.clearAllCaches();
+
+    expect(service['draftAccountsCache$']).toEqual({});
+    expect(service['defendantAtAGlanceCache$']).toEqual({});
+    expect(service['defendantPartyCache$']).toEqual({});
+    expect(service['parentGuardianPartyCache$']).toEqual({});
+    expect(service['fixedPenaltyCache$']).toEqual({});
+    expect(service['courtRefDataCache$']).toEqual({});
+    expect(service['businessUnitsPermissionCache$']).toEqual({});
+    expect(service['offenceCodesCache$']).toEqual({});
+    expect(service['majorCreditorsCache$']).toEqual({});
+    expect(service['prosecutorDataCache$']).toEqual({});
+    expect(service['businessUnitsCache$']).toBeUndefined();
+    expect(service['localJusticeAreasCache$']).toBeUndefined();
+    expect(service['resultsCache$']).toBeUndefined();
   });
 
   it('should send a POST request to search defendant accounts API with correct body', () => {

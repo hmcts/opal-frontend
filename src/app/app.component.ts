@@ -21,6 +21,11 @@ import { SessionService } from '@hmcts/opal-frontend-common/services/session-ser
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { OpalFines } from './flows/fines/services/opal-fines-service/opal-fines.service';
+import { FinesMacStore } from './flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesDraftStore } from './flows/fines/fines-draft/stores/fines-draft.store';
+import { FinesSaStore } from './flows/fines/fines-sa/stores/fines-sa.store';
+import { FinesAccountStore } from './flows/fines/fines-acc/stores/fines-acc.store';
 
 @Component({
   selector: 'app-root',
@@ -49,6 +54,11 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly router = inject(Router);
   private readonly POLL_INTERVAL = 60;
+  private readonly opalFines = inject(OpalFines);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesDraftStore = inject(FinesDraftStore);
+  private readonly finesSaStore = inject(FinesSaStore);
+  private readonly finesAccountStore = inject(FinesAccountStore);
 
   protected readonly headerLinks = HEADER_LINKS;
   protected readonly footerLinks = FOOTER_LINKS;
@@ -187,6 +197,15 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public handleAuthentication(): void {
     if (this.globalStore.authenticated()) {
+      this.opalFines.clearAllCaches();
+      this.finesMacStore.resetFinesMacStore();
+      this.finesDraftStore.resetFineDraftState();
+      this.finesDraftStore.resetFragmentAndAmend();
+      this.finesDraftStore.resetFragmentAndChecker();
+      this.finesDraftStore.resetBannerMessage();
+      this.finesSaStore.resetStore();
+      this.finesAccountStore.clearAccountState();
+      this.finesAccountStore.clearSuccessMessage();
       this.handleRedirect(SSO_ENDPOINTS.logout);
     } else {
       this.handleRedirect(SSO_ENDPOINTS.login);

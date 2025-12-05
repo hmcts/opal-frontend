@@ -54,7 +54,6 @@ import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interf
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData } from './interfaces/opal-fines-account-defendant-details-payment-terms-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
-import { IOpalFinesAccountDefendantDetailsTabsCache } from './interfaces/opal-fines-account-defendant-details-tabs-cache.interface';
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountSearchParams } from './interfaces/opal-fines-defendant-account-search-params.interface';
@@ -76,8 +75,10 @@ export class OpalFines {
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
   private draftAccountsCache$: { [key: string]: Observable<IOpalFinesDraftAccountsResponse> } = {};
   private prosecutorDataCache$: { [key: string]: Observable<IOpalFinesProsecutorRefData> } = {};
-  private accountDetailsCache$: IOpalFinesAccountDefendantDetailsTabsCache =
-    {} as IOpalFinesAccountDefendantDetailsTabsCache;
+  private defendantAtAGlanceCache$: Record<string, Observable<IOpalFinesAccountDefendantAtAGlance>> = {};
+  private defendantPartyCache$: Record<string, Observable<IOpalFinesAccountDefendantAccountParty>> = {};
+  private parentGuardianPartyCache$: Record<string, Observable<IOpalFinesAccountDefendantAccountParty>> = {};
+  private fixedPenaltyCache$: Record<string, Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>> = {};
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
   private readonly PARAM_STATUS = 'status';
@@ -149,6 +150,32 @@ export class OpalFines {
       return { headers: { 'If-Match': version } };
     }
     return {};
+  }
+
+  /**
+   * Clears cache entries in the provided cache map. If a matcher is supplied, only matching keys are cleared;
+   * otherwise the whole map is reset.
+   */
+  private clearCacheStore<T>(store: Record<string, T>, matcher?: (key: string) => boolean): void {
+    Object.keys(store)
+      .filter((key) => (matcher ? matcher(key) : true))
+      .forEach((key) => delete store[key]);
+  }
+
+  /**
+   * Resets the provided record-based caches by deleting all keys.
+   */
+  private resetRecordCaches(stores: Array<Record<string, unknown>>, matcher?: (key: string) => boolean): void {
+    stores.forEach((store) => this.clearCacheStore(store, matcher));
+  }
+
+  /**
+   * Resets the provided single-value caches by setting them to undefined.
+   */
+  private resetSingleValueCaches(cacheKeys: string[]): void {
+    cacheKeys.forEach((cacheKey) => {
+      (this as Record<string, unknown>)[cacheKey] = undefined;
+    });
   }
 
   /**
@@ -393,12 +420,43 @@ export class OpalFines {
   }
 
   /**
-   * Clears the cache of account details by resetting the `accountDetailsCache$` property to an empty object.
-   * This method is typically used to remove all cached account details data, ensuring that subsequent operations
-   * fetch fresh data or start with a clean state.
+   * Clears all defendant account detail caches.
    */
   public clearAccountDetailsCache(): void {
-    this.accountDetailsCache$ = {} as IOpalFinesAccountDefendantDetailsTabsCache;
+    this.resetRecordCaches([
+      this.defendantAtAGlanceCache$,
+      this.defendantPartyCache$,
+      this.parentGuardianPartyCache$,
+      this.fixedPenaltyCache$,
+    ]);
+  }
+
+  /**
+   * Clears reference data caches. Useful when forcing a full refresh of fines reference data.
+   */
+  public clearReferenceDataCaches(): void {
+    this.resetRecordCaches([
+      this.courtRefDataCache$,
+      this.businessUnitsPermissionCache$,
+      this.offenceCodesCache$,
+      this.majorCreditorsCache$,
+      this.prosecutorDataCache$,
+    ]);
+    this.resetSingleValueCaches(['businessUnitsCache$', 'localJusticeAreasCache$', 'resultsCache$']);
+  }
+
+  /**
+   * Clears all caches managed by this service (drafts, account detail caches, and reference data caches).
+   */
+  public clearAllCaches(): void {
+    this.resetRecordCaches([
+      this.draftAccountsCache$,
+      this.defendantAtAGlanceCache$,
+      this.defendantPartyCache$,
+      this.parentGuardianPartyCache$,
+      this.fixedPenaltyCache$,
+    ]);
+    this.clearReferenceDataCaches();
   }
 
   /**
@@ -513,9 +571,14 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountAtAGlance(account_id: number | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
-    if (!this.accountDetailsCache$['at-a-glance']) {
+    if (account_id === null || account_id === undefined) {
+      throw new Error('Account ID is required to retrieve account details');
+    }
+
+    const cacheKey = String(account_id);
+    if (!this.defendantAtAGlanceCache$[cacheKey]) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
-      this.accountDetailsCache$['at-a-glance'] = this.http
+      this.defendantAtAGlanceCache$[cacheKey] = this.http
         .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
@@ -530,7 +593,7 @@ export class OpalFines {
         );
     }
 
-    return this.accountDetailsCache$['at-a-glance'];
+    return this.defendantAtAGlanceCache$[cacheKey];
   }
 
   /**
@@ -545,9 +608,14 @@ export class OpalFines {
     account_id: number | null,
     defendant_party_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.accountDetailsCache$['defendant']) {
+    if (account_id === null || account_id === undefined) {
+      throw new Error('Account ID is required to retrieve account party details');
+    }
+    const cacheKey = `${account_id}-${defendant_party_id ?? ''}`;
+
+    if (!this.defendantPartyCache$[cacheKey]) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${defendant_party_id}`;
-      this.accountDetailsCache$['defendant'] = this.http
+      this.defendantPartyCache$[cacheKey] = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
@@ -561,7 +629,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.accountDetailsCache$['defendant'];
+    return this.defendantPartyCache$[cacheKey];
   }
 
   /**
@@ -576,9 +644,14 @@ export class OpalFines {
     account_id: number | null,
     party_account_id: string | null,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
-    if (!this.accountDetailsCache$['parent-or-guardian']) {
+    if (account_id === null || account_id === undefined) {
+      throw new Error('Account ID is required to retrieve parent/guardian party details');
+    }
+    const cacheKey = `${account_id}-${party_account_id ?? ''}`;
+
+    if (!this.parentGuardianPartyCache$[cacheKey]) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/defendant-account-parties/${party_account_id}`;
-      this.accountDetailsCache$['parent-or-guardian'] = this.http
+      this.parentGuardianPartyCache$[cacheKey] = this.http
         .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
@@ -592,7 +665,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.accountDetailsCache$['parent-or-guardian'];
+    return this.parentGuardianPartyCache$[cacheKey];
   }
 
   /**
@@ -605,9 +678,13 @@ export class OpalFines {
   public getDefendantAccountFixedPenalty(
     account_id: number | null,
   ): Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> {
-    if (!this.accountDetailsCache$['fixed-penalty']) {
+    if (account_id === null || account_id === undefined) {
+      throw new Error('Account ID is required to retrieve fixed penalty details');
+    }
+    const cacheKey = String(account_id);
+    if (!this.fixedPenaltyCache$[cacheKey]) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/fixed-penalty`;
-      this.accountDetailsCache$['fixed-penalty'] = this.http
+      this.fixedPenaltyCache$[cacheKey] = this.http
         .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(url, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>) => {
@@ -621,7 +698,7 @@ export class OpalFines {
           shareReplay(1),
         );
     }
-    return this.accountDetailsCache$['fixed-penalty'];
+    return this.fixedPenaltyCache$[cacheKey];
   }
 
   /**
@@ -634,9 +711,7 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountEnforcementTabData(): Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> {
-    return (
-      this.accountDetailsCache$['enforcement'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK)
-    );
+    return of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
   }
 
   /**
@@ -649,9 +724,7 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountImpositionsTabData(): Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> {
-    return (
-      this.accountDetailsCache$['impositions'] ?? of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK)
-    );
+    return of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
   }
 
   /**
@@ -664,10 +737,7 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountHistoryAndNotesTabData(): Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> {
-    return (
-      this.accountDetailsCache$['history-and-notes'] ??
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK)
-    );
+    return of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK);
   }
 
   /**
@@ -680,10 +750,7 @@ export class OpalFines {
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
   public getDefendantAccountPaymentTermsTabData(): Observable<IOpalFinesAccountDefendantDetailsPaymentTermsTabRefData> {
-    return (
-      this.accountDetailsCache$['payment-terms'] ??
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK)
-    );
+    return of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK);
   }
 
   /**

@@ -290,6 +290,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public ngOnDestroy(): void {
     this.accountStore.clearSuccessMessage();
     this.accountStore.setHasVersionMismatch(false);
+    this.opalFinesService.clearAccountDetailsCache();
     this.destroy$.next();
     this.destroy$.complete();
   }
