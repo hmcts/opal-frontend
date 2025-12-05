@@ -36,9 +36,7 @@ const toExpectationValue = (value?: string): string => {
   return normalized;
 };
 
-const mapPersonalDetailsExpectations = (
-  table: DataTable,
-): Partial<Record<ManualPersonalDetailsFieldKey, string>> => {
+const mapPersonalDetailsExpectations = (table: DataTable): Partial<Record<ManualPersonalDetailsFieldKey, string>> => {
   const normalized = normalizeHash(table);
   const expectations: Partial<Record<ManualPersonalDetailsFieldKey, string>> = {};
 
@@ -109,7 +107,9 @@ When('I continue to contact details from personal details', () => {
  * @description Accepts a single-column table of field labels (header optional) and clears each field.
  */
 When('I clear the following personal details fields:', (table: DataTable) => {
-  const rows = normalizeTableRows(table).map((row) => row[0]).filter(Boolean);
+  const rows = normalizeTableRows(table)
+    .map((row) => row[0])
+    .filter(Boolean);
   const labels = rows[0] && /^field$/i.test(rows[0]) ? rows.slice(1) : rows;
 
   if (!labels.length) {

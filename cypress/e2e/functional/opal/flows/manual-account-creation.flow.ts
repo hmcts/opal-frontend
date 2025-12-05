@@ -398,10 +398,7 @@ export class ManualAccountCreationFlow {
     }
 
     if (expected.nationalInsuranceNumber !== undefined) {
-      this.parentGuardianDetails.assertFieldValue(
-        'nationalInsuranceNumber',
-        expected.nationalInsuranceNumber ?? '',
-      );
+      this.parentGuardianDetails.assertFieldValue('nationalInsuranceNumber', expected.nationalInsuranceNumber ?? '');
     }
 
     if (expected.addressLine1 !== undefined) {

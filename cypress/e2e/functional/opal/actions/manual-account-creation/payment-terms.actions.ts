@@ -2,9 +2,7 @@
  * @fileoverview Actions for Manual Account Creation - Payment terms task.
  * Provides helpers to set collection order, payment schedules, enforcement actions, and navigation.
  */
-import {
-  ManualPaymentTermsLocators as L,
-} from '../../../../../shared/selectors/manual-account-creation/payment-terms.locators';
+import { ManualPaymentTermsLocators as L } from '../../../../../shared/selectors/manual-account-creation/payment-terms.locators';
 import { calculateWeeksInFuture, calculateWeeksInPast } from '../../../../../support/utils/dateUtils';
 import { log } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';

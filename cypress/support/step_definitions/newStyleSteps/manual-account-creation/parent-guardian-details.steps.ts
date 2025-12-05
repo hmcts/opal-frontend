@@ -71,10 +71,7 @@ const ensureAliasEntry = (
   return payload.aliases[index] ?? {};
 };
 
-const parseParentGuardianTable = (
-  table: DataTable,
-  mode: 'fill' | 'assert',
-): ParentGuardianExpectationPayload => {
+const parseParentGuardianTable = (table: DataTable, mode: 'fill' | 'assert'): ParentGuardianExpectationPayload => {
   const raw = normalizeHash(table);
   const payload: ParentGuardianExpectationPayload = {};
 
@@ -241,7 +238,9 @@ Then('I clear the parent or guardian {string} field', (label: string) => {
  *    | First names |
  */
 Then('I clear the following parent or guardian fields:', (table: DataTable) => {
-  const rows = normalizeTableRows(table).map((row) => row[0]).filter(Boolean);
+  const rows = normalizeTableRows(table)
+    .map((row) => row[0])
+    .filter(Boolean);
   const labels = rows[0] && /^field$/i.test(rows[0]) ? rows.slice(1) : rows;
 
   if (!labels.length) {

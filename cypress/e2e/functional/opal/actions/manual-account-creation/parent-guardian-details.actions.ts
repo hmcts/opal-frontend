@@ -166,7 +166,9 @@ export class ManualParentGuardianDetailsActions {
         if (index > 0) {
           this.addAliasRow();
         }
-        this.applyIfPresent(alias.firstNames, () => this.setAliasField(index, 'firstNames', alias.firstNames as string));
+        this.applyIfPresent(alias.firstNames, () =>
+          this.setAliasField(index, 'firstNames', alias.firstNames as string),
+        );
         this.applyIfPresent(alias.lastName, () => this.setAliasField(index, 'lastName', alias.lastName as string));
       });
     }

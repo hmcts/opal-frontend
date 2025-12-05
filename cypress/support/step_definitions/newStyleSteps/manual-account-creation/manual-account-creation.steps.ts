@@ -444,16 +444,13 @@ Then('the manual court details fields are:', (table: DataTable) => {
  * @param choice - Confirmation choice; must be Ok or Leave.
  * @example And I cancel manual court details choosing "Ok" and return to account details
  */
-When(
-  'I cancel manual court details choosing {string} and return to account details',
-  (choice: 'Ok' | 'Leave') => {
-    if (!/ok|leave/i.test(choice)) {
-      throw new Error('Use the non-returning cancel step for choices other than Ok/Leave.');
-    }
-    log('cancel', 'Cancelling Court details and returning to Account details', { choice });
-    flow().cancelCourtDetailsAndReturn(choice);
-  },
-);
+When('I cancel manual court details choosing {string} and return to account details', (choice: 'Ok' | 'Leave') => {
+  if (!/ok|leave/i.test(choice)) {
+    throw new Error('Use the non-returning cancel step for choices other than Ok/Leave.');
+  }
+  log('cancel', 'Cancelling Court details and returning to Account details', { choice });
+  flow().cancelCourtDetailsAndReturn(choice);
+});
 /**
  * @step Cancels Court details and stays on the page.
  * @description Triggers Cancel and dismisses the confirm dialog to remain on Court details.

@@ -108,10 +108,7 @@ const mapEnforcementOption = (value?: string): EnforcementActionOption | undefin
   throw new Error(`Unknown enforcement option: ${value}`);
 };
 
-const mapPaymentTermsPayload = (
-  table: DataTable,
-  defaultPaymentTerm?: PaymentTermOption,
-): ManualPaymentTermsInput => {
+const mapPaymentTermsPayload = (table: DataTable, defaultPaymentTerm?: PaymentTermOption): ManualPaymentTermsInput => {
   const rows = normalizeTable(table);
   const collectionOrder = rows['collection order'];
   const payload: ManualPaymentTermsInput = {};
