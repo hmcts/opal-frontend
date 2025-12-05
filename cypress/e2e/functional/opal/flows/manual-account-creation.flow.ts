@@ -25,7 +25,11 @@ import {
   ManualCourtDetailsActions,
   ManualCourtFieldKey,
 } from '../actions/manual-account-creation/court-details.actions';
-import { ManualPersonalDetailsActions } from '../actions/manual-account-creation/personal-details.actions';
+import {
+  ManualPersonalDetailsActions,
+  ManualPersonalDetailsFieldKey,
+  ManualPersonalDetailsPayload,
+} from '../actions/manual-account-creation/personal-details.actions';
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
 import { ManualOffenceReviewActions } from '../actions/manual-account-creation/offence-review.actions';
 import { ManualOffenceSearchActions } from '../actions/manual-account-creation/offence-search.actions';
@@ -270,6 +274,11 @@ export class ManualAccountCreationFlow {
     if (taskName === 'Contact details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
       this.contactDetails.assertOnContactDetailsPage();
+      return;
+    }
+
+    if (taskName === 'Personal details') {
+      this.personalDetails.assertOnPersonalDetailsPage();
       return;
     }
 
@@ -682,30 +691,50 @@ export class ManualAccountCreationFlow {
    * Provides personal details from the Account details task list.
    * @param payload - Personal details values to populate.
    */
-  providePersonalDetailsFromAccountDetails(payload: {
-    title: string;
-    firstNames: string;
-    lastName: string;
-    addressLine1: string;
-  }): void {
+  providePersonalDetailsFromAccountDetails(payload: ManualPersonalDetailsPayload): void {
     log('flow', 'Provide personal details from Account details', payload);
+    this.accountDetails.assertOnAccountDetailsPage();
     this.accountDetails.openTask('Personal details');
-    this.personalDetails.fillBasicDetails(payload);
+    this.personalDetails.assertOnPersonalDetailsPage();
+    this.personalDetails.fillPersonalDetails(payload);
   }
 
   /**
    * Completes personal details assuming navigation is handled by the caller.
    * @param payload - Personal details values to populate.
    */
-  completePersonalDetails(payload: {
-    title: string;
-    firstNames: string;
-    lastName: string;
-    addressLine1: string;
-  }): void {
+  completePersonalDetails(payload: ManualPersonalDetailsPayload): void {
     log('flow', 'Complete personal details (navigation handled by caller)', payload);
-    this.accountDetails.assertOnAccountDetailsPage();
-    this.personalDetails.fillBasicDetails(payload);
+    this.personalDetails.assertOnPersonalDetailsPage();
+    this.personalDetails.fillPersonalDetails(payload);
+  }
+
+  /**
+   * @description Continues from Personal details to Contact details using the nested CTA.
+   * @param expectedHeader - Header text expected on Contact details.
+   * @example
+   *  flow.continueToContactDetailsFromPersonalDetails('Defendant contact details');
+   */
+  continueToContactDetailsFromPersonalDetails(expectedHeader: string = 'Defendant contact details'): void {
+    log('flow', 'Continue to Contact details from Personal details', { expectedHeader });
+    this.personalDetails.assertOnPersonalDetailsPage();
+    this.personalDetails.clickAddContactDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/contact-details');
+    this.contactDetails.assertOnContactDetailsPage(expectedHeader);
+  }
+
+  /**
+   * @description Asserts Personal details fields against expected values.
+   * @param expected - Field/value pairs to verify.
+   * @example
+   *  flow.assertPersonalDetailsFields({ firstNames: 'FNAME' });
+   */
+  assertPersonalDetailsFields(expected: Partial<Record<ManualPersonalDetailsFieldKey, string>>): void {
+    log('assert', 'Asserting personal details fields', { expected });
+    this.personalDetails.assertOnPersonalDetailsPage();
+    Object.entries(expected).forEach(([field, value]) => {
+      this.personalDetails.assertFieldValue(field as ManualPersonalDetailsFieldKey, value as string);
+    });
   }
 
   /**

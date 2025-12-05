@@ -1,6 +1,7 @@
 import { ManualCourtFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/court-details.actions';
 import { ManualEmployerFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/employer-details.actions';
 import { ManualContactFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/contact-details.actions';
+import { ManualPersonalDetailsFieldKey } from '../../e2e/functional/opal/actions/manual-account-creation/personal-details.actions';
 
 export type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
 export type OffenceFieldKey = 'Offence code' | 'Date of sentence';
@@ -35,6 +36,27 @@ export const resolveLanguageSection = (section: string): 'Documents' | 'Court he
  */
 export const resolveLanguageLabel = (section: string): LanguagePreferenceLabel => {
   return resolveLanguageSection(section) === 'Court hearings' ? 'Hearing language' : 'Document language';
+};
+
+/**
+ * Normalises a personal details label to its logical field key.
+ */
+export const resolvePersonalDetailsFieldKey = (field: string): ManualPersonalDetailsFieldKey => {
+  const normalized = field.toLowerCase();
+
+  if (normalized.includes('title')) return 'title';
+  if (normalized.includes('first name') || normalized.includes('forename')) return 'firstNames';
+  if (normalized.includes('last name') || normalized.includes('surname')) return 'lastName';
+  if (normalized.includes('date of birth') || normalized.includes('dob')) return 'dob';
+  if (normalized.includes('national insurance')) return 'nationalInsuranceNumber';
+  if (normalized.includes('address line 1')) return 'addressLine1';
+  if (normalized.includes('address line 2')) return 'addressLine2';
+  if (normalized.includes('address line 3')) return 'addressLine3';
+  if (normalized.includes('postcode') || normalized.includes('post code')) return 'postcode';
+  if (normalized.includes('make and model')) return 'vehicleMake';
+  if (normalized.includes('registration number')) return 'vehicleRegistration';
+
+  throw new Error(`Unknown personal details field: ${field}`);
 };
 
 /**
