@@ -164,7 +164,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      require('@cypress/grep/src/plugin')(config);
+      const { plugin: cypressGrepPlugin } = require('@cypress/grep/plugin');
+      cypressGrepPlugin(config);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       require('cypress-mochawesome-reporter/plugin')(on);
 

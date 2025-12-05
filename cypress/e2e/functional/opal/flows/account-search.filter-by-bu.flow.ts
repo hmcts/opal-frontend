@@ -54,6 +54,8 @@ export class SearchFilterByBUFlow {
 
     log('assert', 'Open Business Unit Filter');
     this.searchCommonActions.openBusinessUnitFilter();
+
+    navActions.verifyFinesTabIsActive();
   }
 
   /**
@@ -322,6 +324,8 @@ export class SearchFilterByBUFlow {
   cancelBusinessUnitSelection(): void {
     log('flow', 'Cancelling Filter-by-Business-Unit selection');
 
+    // Ensure tab content is rendered before interacting with the cancel link.
+    navActions.verifyFinesTabIsActive();
     commonActions.cancel();
 
     log('assert', 'Verifying we are back on the "Search for an account" page');

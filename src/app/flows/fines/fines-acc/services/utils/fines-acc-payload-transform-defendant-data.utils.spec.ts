@@ -1,6 +1,7 @@
 import { transformDefendantAccountPartyPayload } from './fines-acc-payload-transform-defendant-data.utils';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
+import { IOpalFinesDefendantAccountIndividualAlias } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_EMPTY_DATA_MOCK } from '../mocks/opal-fines-account-defendant-account-party-null-data.mock';
 
@@ -74,12 +75,14 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_forenames_0: 'S. J.',
       facc_party_add_amend_convert_alias_surname_0: 'Taylor',
+      facc_party_add_amend_convert_alias_id_0: '1',
     });
 
     // Test second alias
     expect(result.facc_party_add_amend_convert_individual_aliases[1]).toEqual({
       facc_party_add_amend_convert_alias_forenames_1: 'John',
       facc_party_add_amend_convert_alias_surname_1: 'Peters',
+      facc_party_add_amend_convert_alias_id_1: '2',
     });
   });
 
@@ -145,12 +148,141 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_forenames_0: 'Alias0',
       facc_party_add_amend_convert_alias_surname_0: 'Surname0',
+      facc_party_add_amend_convert_alias_id_0: '1',
     });
 
     expect(result.facc_party_add_amend_convert_individual_aliases[4]).toEqual({
       facc_party_add_amend_convert_alias_forenames_4: 'Alias4',
       facc_party_add_amend_convert_alias_surname_4: 'Surname4',
+      facc_party_add_amend_convert_alias_id_4: '5',
     });
+  });
+
+  it('should handle individual aliases with null alias_id', () => {
+    const aliasesWithNullId: Partial<IOpalFinesDefendantAccountIndividualAlias>[] = [
+      {
+        alias_id: null as unknown as string, // null alias_id
+        sequence_number: 1,
+        forenames: 'John',
+        surname: 'Smith',
+      },
+      {
+        alias_id: undefined as unknown as string, // undefined alias_id
+        sequence_number: 2,
+        forenames: 'Jane',
+        surname: 'Doe',
+      },
+    ];
+
+    mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases =
+      aliasesWithNullId as IOpalFinesDefendantAccountIndividualAlias[];
+
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
+
+    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
+      facc_party_add_amend_convert_alias_forenames_0: 'John',
+      facc_party_add_amend_convert_alias_surname_0: 'Smith',
+      facc_party_add_amend_convert_alias_id_0: null as unknown as string, // null should remain null
+    });
+    expect(result.facc_party_add_amend_convert_individual_aliases[1]).toEqual({
+      facc_party_add_amend_convert_alias_forenames_1: 'Jane',
+      facc_party_add_amend_convert_alias_surname_1: 'Doe',
+      facc_party_add_amend_convert_alias_id_1: null as unknown as string, // undefined becomes null
+    });
+  });
+
+  it('should handle individual aliases with empty string alias_id', () => {
+    const aliasesWithEmptyId = [
+      {
+        alias_id: '', // empty string alias_id
+        sequence_number: 1,
+        forenames: 'John',
+        surname: 'Smith',
+      },
+      {
+        alias_id: '   ', // whitespace only alias_id
+        sequence_number: 2,
+        forenames: 'Jane',
+        surname: 'Doe',
+      },
+    ];
+
+    mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases = aliasesWithEmptyId;
+
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
+
+    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+    expect(result.facc_party_add_amend_convert_individual_aliases[0]).toEqual({
+      facc_party_add_amend_convert_alias_forenames_0: 'John',
+      facc_party_add_amend_convert_alias_surname_0: 'Smith',
+      facc_party_add_amend_convert_alias_id_0: null as unknown as string, // empty string becomes null due to || null
+    });
+    expect(result.facc_party_add_amend_convert_individual_aliases[1]).toEqual({
+      facc_party_add_amend_convert_alias_forenames_1: 'Jane',
+      facc_party_add_amend_convert_alias_surname_1: 'Doe',
+      facc_party_add_amend_convert_alias_id_1: '   ', // whitespace is preserved as it's truthy
+    });
+  });
+
+  it('should handle mixed valid and invalid alias_id values for individual aliases', () => {
+    const aliasesWithMixedIds: Partial<IOpalFinesDefendantAccountIndividualAlias>[] = [
+      {
+        alias_id: '99000000001031', // valid alias_id
+        sequence_number: 1,
+        forenames: 'John',
+        surname: 'Smith',
+      },
+      {
+        alias_id: '', // empty string
+        sequence_number: 2,
+        forenames: 'Jane',
+        surname: 'Doe',
+      },
+      {
+        alias_id: null as unknown as string, // null
+        sequence_number: 3,
+        forenames: 'Bob',
+        surname: 'Johnson',
+      },
+      {
+        // no alias_id property (undefined)
+        sequence_number: 4,
+        forenames: 'Alice',
+        surname: 'Brown',
+      },
+    ];
+
+    mockDefendantData.defendant_account_party.party_details.individual_details!.individual_aliases =
+      aliasesWithMixedIds as IOpalFinesDefendantAccountIndividualAlias[];
+
+    const result: IFinesAccPartyAddAmendConvertState = transformDefendantAccountPartyPayload(
+      mockDefendantData,
+      'individual',
+      true,
+    );
+
+    expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(4);
+    expect(result.facc_party_add_amend_convert_individual_aliases[0].facc_party_add_amend_convert_alias_id_0).toBe(
+      '99000000001031',
+    );
+    expect(
+      result.facc_party_add_amend_convert_individual_aliases[1].facc_party_add_amend_convert_alias_id_1,
+    ).toBeNull();
+    expect(
+      result.facc_party_add_amend_convert_individual_aliases[2].facc_party_add_amend_convert_alias_id_2,
+    ).toBeNull();
+    expect(
+      result.facc_party_add_amend_convert_individual_aliases[3].facc_party_add_amend_convert_alias_id_3,
+    ).toBeNull();
   });
 
   it('should handle missing individual_details', () => {
@@ -288,9 +420,11 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(2);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_0: 'Test Corp',
+      facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
     });
     expect(result.facc_party_add_amend_convert_organisation_aliases[1]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_1: 'Testing Corporation',
+      facc_party_add_amend_convert_alias_id_1: 'ORG-ALIAS-2',
     });
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
@@ -359,9 +493,11 @@ describe('transformDefendantAccountPartyPayload', () => {
     // Test that the correct indices are used
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_0: 'Alias Company 0',
+      facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
     });
     expect(result.facc_party_add_amend_convert_organisation_aliases[4]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_4: 'Alias Company 4',
+      facc_party_add_amend_convert_alias_id_4: 'ORG-ALIAS-5',
     });
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
@@ -407,8 +543,12 @@ describe('transformDefendantAccountPartyPayload', () => {
       result.facc_party_add_amend_convert_organisation_aliases[0]
         .facc_party_add_amend_convert_alias_organisation_name_0,
     ).toBeNull();
+    expect(result.facc_party_add_amend_convert_organisation_aliases[0].facc_party_add_amend_convert_alias_id_0).toBe(
+      'ORG-ALIAS-1',
+    );
     expect(result.facc_party_add_amend_convert_organisation_aliases[1]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_1: 'Valid Alias Name',
+      facc_party_add_amend_convert_alias_id_1: 'ORG-ALIAS-2',
     });
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
@@ -446,6 +586,7 @@ describe('transformDefendantAccountPartyPayload', () => {
     expect(result.facc_party_add_amend_convert_organisation_aliases.length).toBe(1);
     expect(result.facc_party_add_amend_convert_organisation_aliases[0]).toEqual({
       facc_party_add_amend_convert_alias_organisation_name_0: 'Test Alias',
+      facc_party_add_amend_convert_alias_id_0: 'ORG-ALIAS-1',
     });
     expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
   });
@@ -616,6 +757,55 @@ describe('transformDefendantAccountPartyPayload', () => {
       expect(result.facc_party_add_amend_convert_forenames).toBeNull(); // Individual fields should be null for company
       // Aliases are based on organisation_flag, not partyType, so individual aliases won't be processed when org flag is true
       expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(0);
+    });
+
+    it('should return limited fields for individual party type when not a debtor (isIndividual && !isDebtor)', () => {
+      const result = transformDefendantAccountPartyPayload(mockDefendantData, 'individual', false);
+
+      // Individual-specific fields should be populated (title to address postcode)
+      expect(result.facc_party_add_amend_convert_title).toBe('Ms');
+      expect(result.facc_party_add_amend_convert_forenames).toBe('Sarah Jane');
+      expect(result.facc_party_add_amend_convert_surname).toBe('Thompson');
+      expect(result.facc_party_add_amend_convert_dob).toBe('12/04/1988');
+      expect(result.facc_party_add_amend_convert_national_insurance_number).toBe('QQ 12 34 56 C');
+      expect(result.facc_party_add_amend_convert_individual_aliases.length).toBe(2);
+      expect(result.facc_party_add_amend_convert_add_alias).toBe(true);
+
+      // Address fields should be populated
+      expect(result.facc_party_add_amend_convert_address_line_1).toBe('45 High Street');
+      expect(result.facc_party_add_amend_convert_address_line_2).toBe('Flat 2B');
+      expect(result.facc_party_add_amend_convert_post_code).toBe('AB1 2CD');
+
+      // Contact details should be explicitly set to null for individual non-debtor
+      expect(result.facc_party_add_amend_convert_contact_email_address_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_email_address_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_mobile).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_home).toBeNull();
+      expect(result.facc_party_add_amend_convert_contact_telephone_number_business).toBeNull();
+
+      // Vehicle details should be explicitly set to null for individual non-debtor
+      expect(result.facc_party_add_amend_convert_vehicle_make).toBeNull();
+      expect(result.facc_party_add_amend_convert_vehicle_registration_mark).toBeNull();
+
+      // Language preferences should be explicitly set to null for individual non-debtor
+      expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBeNull();
+      expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBeNull();
+
+      // Employer details should be explicitly set to null for individual non-debtor
+      expect(result.facc_party_add_amend_convert_employer_company_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_reference).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_email_address).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_telephone_number).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_address_line_1).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_address_line_2).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_address_line_3).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_address_line_4).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_address_line_5).toBeNull();
+      expect(result.facc_party_add_amend_convert_employer_post_code).toBeNull();
+
+      // Organisation-specific fields should be null
+      expect(result.facc_party_add_amend_convert_organisation_name).toBeNull();
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
     });
 
     it('should handle company data with individual flag correctly when partyType is specified', () => {

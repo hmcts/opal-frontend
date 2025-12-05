@@ -451,7 +451,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // // Click Change button and verify it navigates to the change screen
       cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
 
-      cy.get('@routerNavigate').should('have.been.calledWith', ['../parentGuardian/amend']);
+      cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
     },
   );
 

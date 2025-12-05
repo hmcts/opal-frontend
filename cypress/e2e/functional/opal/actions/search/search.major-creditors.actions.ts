@@ -10,7 +10,7 @@
  */
 
 import { AccountSearchMajorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.major-creditors.locators';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class AccountSearchMajorCreditorsActions {
   private readonly commonActions = new CommonActions();

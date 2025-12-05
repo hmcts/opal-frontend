@@ -206,7 +206,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN;
     component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`],
+      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -217,7 +217,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY;
     component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
+      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
@@ -228,7 +228,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     const partyType: string = FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL;
     component.navigateToAmendPartyDetailsPage(partyType);
     expect(routerSpy.navigate).toHaveBeenCalledWith(
-      [`../${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`],
+      [`../party/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`],
       {
         relativeTo: component['activatedRoute'],
       },
