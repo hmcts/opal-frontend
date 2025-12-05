@@ -118,41 +118,49 @@
 
     <div class="govuk-grid-column-one-third">
       <h2 [class]="style.heading">Payment terms</h2>
-      <hr [class]="style.hr" />
+      @if (tabData.payment_terms) {
+        <hr [class]="style.hr" />
 
-      @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
-        <h3 [class]="style.key">Payment terms</h3>
-        <p [class]="style.value">Pay by date</p>
-        @if (tabData.payment_terms.effective_date) {
-          <h3 [class]="style.key">By date</h3>
-          <p [class]="style.value">
-            {{ dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy') }}
-          </p>
-        }
-      } @else if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
-        <h3 [class]="style.key">Payment terms</h3>
-        @if (tabData.payment_terms.lump_sum_amount) {
-          <p [class]="style.value">Lump sum plus instalments</p>
-        } @else {
-          <p [class]="style.value">Instalments only</p>
-        }
+        @if (tabData.payment_terms.lump_sum_amount && !tabData.payment_terms.instalment_amount) {
+          <h3 [class]="style.key">Payment terms</h3>
+          <p [class]="style.value">Pay by date</p>
+          @if (tabData.payment_terms.effective_date) {
+            <h3 [class]="style.key">By date</h3>
+            <p [class]="style.value">
+              {{
+                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}
+            </p>
+          }
+        } @else if (tabData.payment_terms.instalment_amount) {
+          <h3 [class]="style.key">Payment terms</h3>
+          @if (tabData.payment_terms.lump_sum_amount) {
+            <p [class]="style.value">Lump sum plus instalments</p>
+          } @else {
+            <p [class]="style.value">Instalments only</p>
+          }
 
-        @if (tabData.payment_terms.instalment_period?.instalment_period_display_name) {
-          <h3 [class]="style.key">Frequency</h3>
-          <p [class]="style.value">{{ tabData.payment_terms.instalment_period?.instalment_period_display_name }}</p>
+          @if (tabData.payment_terms.instalment_period?.instalment_period_display_name) {
+            <h3 [class]="style.key">Frequency</h3>
+            <p [class]="style.value">{{ tabData.payment_terms.instalment_period?.instalment_period_display_name }}</p>
+          }
+          @if (tabData.payment_terms.instalment_amount) {
+            <h3 [class]="style.key">Instalments</h3>
+            <p [class]="style.value">
+              {{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}
+            </p>
+          }
+          @if (tabData.payment_terms.effective_date) {
+            <h3 [class]="style.key">Start date</h3>
+            <p [class]="style.value">
+              {{
+                dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy')
+              }}
+            </p>
+          }
         }
-        @if (tabData.payment_terms.instalment_amount) {
-          <h3 [class]="style.key">Instalments</h3>
-          <p [class]="style.value">
-            {{ utilsService.convertToMonetaryString(tabData.payment_terms.instalment_amount) }}
-          </p>
-        }
-        @if (tabData.payment_terms.effective_date) {
-          <h3 [class]="style.key">Start date</h3>
-          <p [class]="style.value">
-            {{ dateService.getFromFormatToFormat(tabData.payment_terms.effective_date, 'dd/MM/yyyy', 'dd MMMM yyyy') }}
-          </p>
-        }
+      } @else {
+        <p [class]="style.value">No payment terms available.</p>
       }
     </div>
 
