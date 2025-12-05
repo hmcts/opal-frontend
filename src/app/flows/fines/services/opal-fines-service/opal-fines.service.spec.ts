@@ -741,12 +741,10 @@ describe('OpalFines', () => {
   });
 
   it('should getDefendantAccountEnforcementTabData', () => {
-    // const account_id: number = 77;
-    // const business_unit_id: string = '12';
-    // const business_unit_user_id: string | null = '12';
+    const account_id: number = 77;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
 
-    service.getDefendantAccountEnforcementTabData().subscribe((response) => {
+    service.getDefendantAccountEnforcementTabData(account_id).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
   });

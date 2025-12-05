@@ -59,6 +59,7 @@ import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fine
 import { FinesAccDefendantDetailsFixedPenaltyTabComponent } from './fines-acc-defendant-details-fixed-penalty-tab/fines-acc-defendant-details-fixed-penalty-tab.component';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
+import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab/fines-acc-defendant-details-enforcement-tab.component';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -88,6 +89,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
     MojAlertContentComponent,
     MojAlertTextComponent,
     MojAlertIconComponent,
+    FinesAccDefendantDetailsEnforcementTab,
   ],
   templateUrl: './fines-acc-defendant-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -167,7 +169,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           this.tabPaymentTerms$ = this.fetchTabData(this.opalFinesService.getDefendantAccountPaymentTermsTabData());
           break;
         case 'enforcement':
-          this.tabEnforcement$ = this.fetchTabData(this.opalFinesService.getDefendantAccountEnforcementTabData());
+          this.tabEnforcement$ = this.fetchTabData(
+            this.opalFinesService.getDefendantAccountEnforcementTabData(account_id),
+          );
           break;
         case 'impositions':
           this.tabImpositions$ = this.fetchTabData(this.opalFinesService.getDefendantAccountImpositionsTabData());

@@ -9,4 +9,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'search-and-view-accounts': 6,
   'account-maintenance': 7,
   'add-account-activity-notes': 8,
+  'enter-enforcement': 10,
 };
