@@ -132,6 +132,9 @@ export const FinesDraftStore = signalStore(
     setFragment: (fragment: string) => {
       patchState(store, { fragment });
     },
+    resetFineDraftState: () => {
+      patchState(store, FINES_DRAFT_STATE);
+    },
     resetFragment: () => {
       patchState(store, { fragment: '' });
     },

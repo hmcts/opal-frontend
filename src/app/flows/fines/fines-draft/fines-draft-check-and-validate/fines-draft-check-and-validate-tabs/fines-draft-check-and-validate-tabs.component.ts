@@ -176,7 +176,7 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
   }
 
   public ngOnInit(): void {
-    this.finesDraftStore.resetStore();
+    this.finesDraftStore.resetFineDraftState();
     this.finesDraftStore.resetFragmentAndChecker();
     this.setupTabDataStream();
     this.setupFailedCountStream();

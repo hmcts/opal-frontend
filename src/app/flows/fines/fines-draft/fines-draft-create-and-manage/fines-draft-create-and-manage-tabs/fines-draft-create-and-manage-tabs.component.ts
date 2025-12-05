@@ -215,7 +215,8 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
    * - Sets up the stream to track the count of rejected items.
    */
   public ngOnInit(): void {
-    this.finesDraftStore.resetStore();
+    this.finesDraftStore.resetFineDraftState();
+    this.finesDraftStore.resetFragmentAndAmend();
     this.setupTabDataStream();
     this.setupRejectedCountStream();
   }
