@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FinesAccDefendantDetailsComponent } from './fines-acc-defendant-details.component';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -13,7 +13,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
-import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-tab-ref-data.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-impositions-tab-ref-data.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
@@ -22,6 +22,7 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-ac
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
+import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -63,11 +64,12 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'getDefendantAccountImpositionsTabData',
       'getDefendantAccountHistoryAndNotesTabData',
       'getDefendantAccountEnforcementTabData',
-      'getDefendantAccountPaymentTermsTabData',
+      'getDefendantAccountPaymentTermsLatest',
       'getDefendantAccountParty',
       'getParentOrGuardianAccountParty',
+      'clearCache',
+      'getResult',
       'getDefendantAccountFixedPenalty',
-      'clearAccountDetailsCache',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
@@ -83,8 +85,8 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountEnforcementTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK),
     );
-    mockOpalFinesService.getDefendantAccountPaymentTermsTabData.and.returnValue(
-      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_TAB_REF_DATA_MOCK),
+    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.and.returnValue(
+      of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK),
     );
     mockOpalFinesService.getDefendantAccountHistoryAndNotesTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_HISTORY_AND_NOTES_TAB_REF_DATA_MOCK),
@@ -92,6 +94,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     mockOpalFinesService.getDefendantAccountImpositionsTabData.and.returnValue(
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
+    mockOpalFinesService.getResult.and.returnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -179,10 +182,13 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
   });
 
-  it('should fetch the payment terms tab data when fragment is changed to payment-terms', () => {
+  it('should fetch the payment terms tab data when fragment is changed to payment-terms', fakeAsync(() => {
     component['refreshFragment$'].next('payment-terms');
-    expect(mockOpalFinesService.getDefendantAccountPaymentTermsTabData).toHaveBeenCalled();
-  });
+    component.tabPaymentTerms$.subscribe();
+    tick();
+    expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalled();
+    expect(mockOpalFinesService.getResult).toHaveBeenCalled();
+  }));
 
   it('should fetch the history and notes tab data when fragment is changed to history-and-notes', () => {
     component['refreshFragment$'].next('history-and-notes');
@@ -258,5 +264,30 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/access-denied'], {
       relativeTo: component['activatedRoute'],
     });
+  });
+
+  it('should navigate to the change defendant payment terms access denied page if user does not have the relevant permission', () => {
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+    component.navigateToAmendPaymentTermsPage();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend-denied`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
+  });
+
+  it('should navigate to the change defendant payment terms page if user has the relevant permission', () => {
+    routerSpy.navigate.calls.reset();
+    spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(true);
+    component.lastEnforcement = OPAL_FINES_RESULT_REF_DATA_MOCK;
+    component.navigateToAmendPaymentTermsPage();
+    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(
+      [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`],
+      {
+        relativeTo: component['activatedRoute'],
+      },
+    );
   });
 });
