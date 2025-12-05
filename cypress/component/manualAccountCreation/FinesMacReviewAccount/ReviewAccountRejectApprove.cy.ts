@@ -54,7 +54,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
               error: false,
               message: '',
               title: null,
-              operationId: null
+              operationId: null,
             });
             return store;
           },
