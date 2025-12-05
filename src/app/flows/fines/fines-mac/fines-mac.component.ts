@@ -23,7 +23,7 @@ export class FinesMacComponent implements OnDestroy {
    *
    * @returns boolean
    */
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   handleBeforeUnload(): boolean {
     if (this.finesMacStore.unsavedChanges()) {
       return false;
@@ -49,7 +49,7 @@ export class FinesMacComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
     this.finesMacStore.resetStore();
     this.opalFines.clearDraftAccountsCache();

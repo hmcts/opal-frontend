@@ -53,6 +53,7 @@ import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './moc
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { IOpalFinesBusinessUnitRefData } from './interfaces/opal-fines-business-unit-ref-data.interface';
+import { Injectable } from '@angular/core';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -1148,5 +1149,41 @@ describe('OpalFines', () => {
     expect(req.request.body).toEqual(updatePayload);
 
     req.flush(expectedResponse);
+  });
+
+  // Isolated matcher test suite to avoid TestBed reconfiguration errors
+});
+
+describe('OpalFines clearCacheStore matcher', () => {
+  @Injectable()
+  class TestOpalFines extends OpalFines {
+    public testClearCacheStore(store: Record<string, unknown>, matcher?: (key: string) => boolean) {
+      if (matcher) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any).clearCacheStore(store, matcher);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any).clearCacheStore(store);
+      }
+    }
+  }
+
+  let testService: TestOpalFines;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: OpalFines, useClass: TestOpalFines }, provideHttpClient(), provideHttpClientTesting()],
+    });
+    testService = TestBed.inject(OpalFines) as TestOpalFines;
+  });
+
+  it('should clear only matching keys using matcher in clearCacheStore', () => {
+    const store = { a: 1, b: 2, c: 3 };
+    const matcher = (key: string) => key === 'b' || key === 'c';
+
+    testService.testClearCacheStore(store, matcher);
+    expect(store).toEqual(jasmine.objectContaining({ a: 1 }));
+    expect(store.b).toBeUndefined();
+    expect(store.c).toBeUndefined();
   });
 });
