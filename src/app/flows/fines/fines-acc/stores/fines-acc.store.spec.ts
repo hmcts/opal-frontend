@@ -129,4 +129,11 @@ describe('FinesAccountStore', () => {
     store.compareVersion(MOCK_FINES_ACCOUNT_STATE.base_version);
     expect(store.hasVersionMismatch()).toBeFalse();
   });
+
+  it('should reset the store to default state', () => {
+    const payload: IFinesAccountState = MOCK_FINES_ACCOUNT_STATE;
+    store.setAccountState(payload);
+    store.resetStore();
+    expect(store.getAccountState()).toEqual(FINES_ACCOUNT_STATE);
+  });
 });

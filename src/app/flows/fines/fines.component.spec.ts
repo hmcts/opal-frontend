@@ -1,28 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesComponent } from './fines.component';
-import { FINES_MAC_STATE_MOCK } from '../fines/fines-mac/mocks/fines-mac-state.mock';
-import { FinesMacStoreType } from './fines-mac/stores/types/fines-mac-store.type';
-import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { FinesDraftStoreType } from './fines-draft/stores/types/fines-draft.type';
+import { FinesDraftStore } from './fines-draft/stores/fines-draft.store';
+import { OpalFines } from './services/opal-fines-service/opal-fines.service';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
   let fixture: ComponentFixture<FinesComponent>;
-  let finesMacStore: FinesMacStoreType;
+  let finesDraftStore: FinesDraftStoreType;
   let globalStore: GlobalStoreType;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
 
   beforeEach(async () => {
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['clearAllCaches']);
+
     await TestBed.configureTestingModule({
       imports: [FinesComponent],
+      providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesComponent);
     component = fixture.componentInstance;
 
-    finesMacStore = TestBed.inject(FinesMacStore);
-    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+    finesDraftStore = TestBed.inject(FinesDraftStore);
 
     globalStore = TestBed.inject(GlobalStore);
 
@@ -34,13 +37,13 @@ describe('FinesComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
-    const destroy = spyOn(component, 'ngOnDestroy');
+    spyOn(finesDraftStore, 'resetStore');
 
     component.ngOnDestroy();
     fixture.detectChanges();
 
-    expect(destroy).toHaveBeenCalled();
-    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
     expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
+    expect(finesDraftStore.resetStore).toHaveBeenCalled();
+    expect(mockOpalFinesService.clearAllCaches).toHaveBeenCalled();
   });
 });
