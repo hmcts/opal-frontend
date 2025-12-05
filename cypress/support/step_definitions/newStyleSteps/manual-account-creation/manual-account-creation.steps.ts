@@ -51,7 +51,6 @@ import {
   resolveLanguageLabel,
   resolveLanguageSection,
 } from '../../../utils/macFieldResolvers';
-import { parseWeeksValue, resolveRelativeDate } from '../../../utils/dateUtils';
 import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { accessibilityActions } from '../../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
 const flow = () => new ManualAccountCreationFlow();
@@ -440,6 +439,44 @@ Then('the manual court details fields are:', (table: DataTable) => {
   flow().assertCourtDetailsFields(expected);
 });
 /**
+ * @step Cancels Court details and confirms leaving the page.
+ * @description Triggers Cancel, accepts the confirmation, and asserts Account details is shown.
+ * @param choice - Confirmation choice; must be Ok or Leave.
+ * @example And I cancel manual court details choosing "Ok" and return to account details
+ */
+When(
+  'I cancel manual court details choosing {string} and return to account details',
+  (choice: 'Ok' | 'Leave') => {
+    if (!/ok|leave/i.test(choice)) {
+      throw new Error('Use the non-returning cancel step for choices other than Ok/Leave.');
+    }
+    log('cancel', 'Cancelling Court details and returning to Account details', { choice });
+    flow().cancelCourtDetailsAndReturn(choice);
+  },
+);
+/**
+ * @step Cancels Court details and stays on the page.
+ * @description Triggers Cancel and dismisses the confirm dialog to remain on Court details.
+ * @param choice - Confirmation choice (e.g., "Cancel" to stay).
+ * @example And I cancel manual court details choosing "Cancel"
+ */
+When('I cancel manual court details choosing {string}', (choice: 'Cancel' | 'Stay') => {
+  if (!/cancel|stay/i.test(choice)) {
+    throw new Error('Use the return-to-account-details cancel step for Ok/Leave choices.');
+  }
+  log('cancel', 'Cancelling Court details without leaving', { choice });
+  flow().cancelCourtDetails(choice);
+});
+/**
+ * @step Navigates from Court details to Personal details via nested CTA.
+ * @description Clicks the nested flow button and guards the Personal details header.
+ * @example And I continue to personal details from court details
+ */
+When('I continue to personal details from court details', () => {
+  log('navigate', 'Continuing to Personal details from Court details');
+  flow().continueToPersonalDetailsFromCourt('Personal details');
+});
+/**
  * @step Sets payment terms including collection order and pay-by date.
  * @description Fills collection order with past date and a future pay-in-full date.
  * @param collectionOrder - Whether collection order is "Yes" or "No".
@@ -460,35 +497,6 @@ When(
     });
   },
 );
-/**
- * @step Populates manual payment terms using a data table.
- * @description Navigates via Account details to Payment terms and fills from a table.
- * @param table - DataTable containing collection order choice/date and pay-by date.
- * @remarks Relative dates are parsed; table labels must match expected keys.
- * @example
- *   When I have provided manual payment terms:
- *     | collection order      | Yes                 |
- *     | collection order date | 2 weeks in the past |
- *     | pay in full by        | 3 weeks in the future |
- */
-When('I have provided manual payment terms:', (table: DataTable) => {
-  const data = table.rowsHash();
-  const collectionDate = resolveRelativeDate(data['collection order date']);
-  const payByDate = resolveRelativeDate(data['pay in full by']);
-  const collectionChoice = data['collection order'] as 'Yes' | 'No';
-  log('step', 'Providing payment terms from table', {
-    collectionChoice,
-    collectionDate,
-    payByDate,
-  });
-  const collectionWeeks = parseWeeksValue(data['collection order date']).weeks;
-  const payByWeeks = parseWeeksValue(data['pay in full by']).weeks;
-  flow().providePaymentTermsFromAccountDetails({
-    collectionOrder: collectionChoice,
-    collectionOrderWeeksInPast: collectionWeeks,
-    payByWeeksInFuture: payByWeeks,
-  });
-});
 /**
  * @step Confirms we are on the account details task list.
  * @description Asserts Account details header while on the task list page.

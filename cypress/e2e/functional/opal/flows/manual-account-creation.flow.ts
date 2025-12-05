@@ -29,7 +29,11 @@ import { ManualPersonalDetailsActions } from '../actions/manual-account-creation
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
 import { ManualOffenceReviewActions } from '../actions/manual-account-creation/offence-review.actions';
 import { ManualOffenceSearchActions } from '../actions/manual-account-creation/offence-search.actions';
-import { ManualPaymentTermsActions } from '../actions/manual-account-creation/payment-terms.actions';
+import {
+  ManualPaymentTermsActions,
+  ManualPaymentTermsExpectations,
+  ManualPaymentTermsInput,
+} from '../actions/manual-account-creation/payment-terms.actions';
 import {
   LanguageOption,
   ManualLanguagePreferencesActions,
@@ -278,6 +282,12 @@ export class ManualAccountCreationFlow {
     if (taskName === 'Employer details') {
       cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/employer-details');
       this.employerDetails.assertOnEmployerDetailsPage();
+      return;
+    }
+
+    if (taskName === 'Payment terms') {
+      cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/payment-terms');
+      this.paymentTerms.assertOnPaymentTermsPage();
       return;
     }
 
@@ -920,15 +930,66 @@ export class ManualAccountCreationFlow {
    * Provides payment terms from the Account details task list.
    * @param payload - Payment terms payload including collection order and dates.
    */
-  providePaymentTermsFromAccountDetails(payload: {
-    collectionOrder: 'Yes' | 'No';
-    collectionOrderWeeksInPast: number;
-    payByWeeksInFuture: number;
-  }): void {
+  providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput): void {
     log('flow', 'Provide payment terms from Account details', payload);
-    this.taskNavigation.navigateToAccountDetails();
-    this.accountDetails.openTask('Payment terms');
-    this.paymentTerms.completePayInFullWithCollectionOrder(payload);
+    cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
+      if (!pathname.includes('/account-details')) {
+        this.taskNavigation.navigateToAccountDetails();
+      } else {
+        this.accountDetails.assertOnAccountDetailsPage();
+      }
+      this.openTaskFromAccountDetails('Payment terms');
+      this.paymentTerms.fillPaymentTerms(payload);
+    });
+  }
+
+  /**
+   * Completes payment terms assuming navigation is handled by the caller.
+   * @param payload - Payment terms payload to populate.
+   */
+  completePaymentTerms(payload: ManualPaymentTermsInput): void {
+    log('flow', 'Complete payment terms (navigation handled by caller)', payload);
+    this.paymentTerms.fillPaymentTerms(payload);
+  }
+
+  /**
+   * Asserts payment terms values on the task.
+   * @param expected - Expected payment terms values.
+   */
+  assertPaymentTermsFields(expected: ManualPaymentTermsExpectations): void {
+    log('flow', 'Asserting payment terms fields', { expected });
+    this.paymentTerms.assertPaymentTermsValues(expected);
+  }
+
+  /**
+   * Cancels Payment terms with a specific choice.
+   * @param choice - Confirmation choice (Cancel/Ok/Stay/Leave).
+   */
+  cancelPaymentTerms(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    log('flow', 'Cancel Payment terms', { choice });
+    this.paymentTerms.cancelAndChoose(choice);
+  }
+
+  /**
+   * Cancels Payment terms and confirms return to Account details.
+   * @param choice - Confirmation choice (Ok/Leave).
+   */
+  cancelPaymentTermsAndReturn(choice: 'Ok' | 'Leave'): void {
+    log('flow', 'Cancel Payment terms and return to Account details', { choice });
+    this.paymentTerms.cancelAndChoose(choice);
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Navigates from Payment terms to Account comments and notes.
+   */
+  proceedToAccountCommentsFromPaymentTerms(): void {
+    log('flow', 'Proceeding to Account comments and notes from Payment terms');
+    this.paymentTerms.assertOnPaymentTermsPage();
+    this.paymentTerms.clickAddAccountCommentsAndNotes();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', 'account-comments');
+    this.commentsAndNotes.assertHeader();
   }
 
   /**
