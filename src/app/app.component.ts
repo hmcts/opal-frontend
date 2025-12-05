@@ -167,14 +167,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /**
    * Clears all caches and resets all fine-related stores to their initial state.
-   * 
+   *
    * This method performs a complete cleanup of:
    * - All caches maintained by the opalFines service
    * - Fine MAC store
    * - Fines draft store
    * - Fines SA store
    * - Fines account store
-   * 
+   *
    * @private
    * @returns {void}
    */
