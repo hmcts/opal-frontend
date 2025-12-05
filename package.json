@@ -69,7 +69,8 @@
     "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
     "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\"",
     "cypress": "cypress open",
-    "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues"
+    "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -166,7 +167,8 @@
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.2.0",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
-    "typescript": "~5.9.0"
+    "typescript": "~5.9.0",
+    "patch-package": "^8.0.0"
   },
   "packageManager": "yarn@4.12.0",
   "cypress-cucumber-preprocessor": {
