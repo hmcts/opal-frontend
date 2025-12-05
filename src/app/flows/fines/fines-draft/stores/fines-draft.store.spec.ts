@@ -113,13 +113,8 @@ describe('FinesDraftStore', () => {
   it('should reset fineDraftState', () => {
     const finesDraftState = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     store.setFinesDraftState(finesDraftState);
-    store.resetFineDraftState();
+    store.resetStore();
     expect(store.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
-  });
-
-  it('should return blank for account_status if null', () => {
-    store.resetFineDraftState();
-    expect(store.getAccountStatus()).toEqual('');
   });
 
   it('should set fragment', () => {

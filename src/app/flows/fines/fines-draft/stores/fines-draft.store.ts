@@ -34,7 +34,14 @@ export const FinesDraftStore = signalStore(
   withHooks((store) => {
     return {
       onDestroy() {
-        patchState(store, FINES_DRAFT_STATE);
+        patchState(store, {
+          ...FINES_DRAFT_STATE,
+          fragment: '',
+          amend: false,
+          viewAllAccounts: false,
+          checker: false,
+          bannerMessage: '',
+        });
       },
     };
   }),
@@ -122,9 +129,6 @@ export const FinesDraftStore = signalStore(
       };
       return finesDraftStore;
     },
-    resetFineDraftState: () => {
-      patchState(store, FINES_DRAFT_STATE);
-    },
     setFragment: (fragment: string) => {
       patchState(store, { fragment });
     },
@@ -170,7 +174,14 @@ export const FinesDraftStore = signalStore(
       patchState(store, { bannerMessage: '' });
     },
     resetStore: () => {
-      patchState(store, FINES_DRAFT_STATE);
+      patchState(store, {
+        ...FINES_DRAFT_STATE,
+        fragment: '',
+        amend: false,
+        viewAllAccounts: false,
+        checker: false,
+        bannerMessage: '',
+      });
     },
   })),
 );

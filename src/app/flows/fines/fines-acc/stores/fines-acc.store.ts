@@ -72,7 +72,11 @@ export const FinesAccountStore = signalStore(
         }
       },
       resetStore: () => {
-        patchState(store, FINES_ACCOUNT_STATE);
+        patchState(store, {
+          ...FINES_ACCOUNT_STATE,
+          hasVersionMismatch: false,
+          successMessage: null,
+        });
       },
     };
   }),
