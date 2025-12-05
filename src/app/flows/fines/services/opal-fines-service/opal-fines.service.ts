@@ -143,29 +143,22 @@ export class OpalFines {
   }
 
   /**
-   * Clears cache entries in the provided cache map. If a matcher is supplied, only matching keys are cleared;
-   * otherwise the whole map is reset.
+   * Clears reference data caches to force fresh fetches.
    */
-  private clearCacheStore<T>(store: Record<string, T>, matcher?: (key: string) => boolean): void {
-    Object.keys(store)
-      .filter((key) => (matcher ? matcher(key) : true))
-      .forEach((key) => delete store[key]);
-  }
+  private clearReferenceDataCaches(): void {
+    const referenceCaches: (keyof IOpalFinesCache)[] = [
+      'courtRefDataCache$',
+      'businessUnitsCache$',
+      'businessUnitsPermissionCache$',
+      'localJusticeAreasCache$',
+      'resultsCache$',
+      'resultCache$',
+      'offenceCodesCache$',
+      'majorCreditorsCache$',
+      'prosecutorDataCache$',
+    ];
 
-  /**
-   * Resets the provided record-based caches by deleting all keys.
-   */
-  private resetRecordCaches(stores: Array<Record<string, unknown>>, matcher?: (key: string) => boolean): void {
-    stores.forEach((store) => this.clearCacheStore(store, matcher));
-  }
-
-  /**
-   * Resets the provided single-value caches by setting them to undefined.
-   */
-  private resetSingleValueCaches(cacheKeys: string[]): void {
-    cacheKeys.forEach((cacheKey) => {
-      (this as Record<string, unknown>)[cacheKey] = undefined;
-    });
+    referenceCaches.forEach((cacheKey) => this.clearCache(cacheKey));
   }
 
   /**
@@ -436,6 +429,40 @@ export class OpalFines {
         this.cache[cacheKey] = structuredClone(OPAL_FINES_CACHE_DEFAULTS as any)[cacheKey];
       }
     }
+  }
+
+  /**
+   * Clears all cached account detail responses.
+   */
+  public clearAccountDetailsCache(): void {
+    const accountCaches: (keyof IOpalFinesCache)[] = [
+      'defendantAccountAtAGlanceCache$',
+      'defendantAccountPartyCache$',
+      'defendantAccountparentOrGuardianAccountPartyCache$',
+      'defendantAccountEnforcementCache$',
+      'defendantAccountImpositionsCache$',
+      'defendantAccountHistoryAndNotesCache$',
+      'defendantAccountPaymentTermsLatestCache$',
+      'defendantAccountFixedPenaltyCache$',
+    ];
+
+    accountCaches.forEach((cacheKey) => this.clearCache(cacheKey));
+  }
+
+  /**
+   * Clears all cached draft account responses.
+   */
+  public clearDraftAccountsCache(): void {
+    this.clearCache('draftAccountsCache$');
+  }
+
+  /**
+   * Clears all caches maintained by this service.
+   */
+  public clearAllCaches(): void {
+    this.clearDraftAccountsCache();
+    this.clearAccountDetailsCache();
+    this.clearReferenceDataCaches();
   }
 
   /**
