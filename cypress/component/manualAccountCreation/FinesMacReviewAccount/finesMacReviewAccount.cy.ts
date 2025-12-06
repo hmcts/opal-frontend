@@ -314,7 +314,7 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
       cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
         .should('contain', 'National Insurance number')
-        .should('contain', 'AB123456C');
+        .should('contain', 'AB 12 34 56 C');
       cy.get(DOM_ELEMENTS.address)
         .should('contain', 'Address')
         .should('contain', '123 Fake Street')
@@ -517,7 +517,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.PGsurname).should('contain', 'test');
     cy.get(DOM_ELEMENTS.PGAliases).should('contain', 'test test');
     cy.get(DOM_ELEMENTS.PGdob).should('contain', '01 February 1990');
-    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB123456C');
+    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.PGaddress)
       .should('contain', 'Address')
       .should('contain', 'test address line 1')
@@ -535,7 +535,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
@@ -921,7 +921,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
@@ -1034,7 +1034,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.PGsurname).should('contain', 'test');
     cy.get(DOM_ELEMENTS.PGAliases).should('contain', 'test test');
     cy.get(DOM_ELEMENTS.PGdob).should('contain', '01 February 1990');
-    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB123456C');
+    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.PGaddress)
       .should('contain', 'Address')
       .should('contain', 'test address line 1')
@@ -1052,7 +1052,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')

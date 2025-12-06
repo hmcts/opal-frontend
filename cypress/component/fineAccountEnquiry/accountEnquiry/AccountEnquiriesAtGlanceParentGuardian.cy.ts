@@ -87,7 +87,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
         .contains('National Insurance Number')
         .next('p')
         .should('be.visible')
-        .should('contain.text', ' OT000001D ');
+        .should('contain.text', ' OT 00 00 01 D ');
     },
   );
 
