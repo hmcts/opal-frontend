@@ -105,9 +105,9 @@ export class ManualOffenceDetailsActions {
     this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
 
     if (field === 'Result code') {
-      cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
-      cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
-    }
+    cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
+    cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
+  }
   }
 
   /**
@@ -206,6 +206,25 @@ export class ManualOffenceDetailsActions {
     cy.get(L.imposition.majorCreditorInput(index), this.common.getTimeoutOptions())
       .invoke('val')
       .should((val) => expect(String(val ?? '')).to.contain(expected));
+  }
+
+  /**
+   * Selects the first available Result code option for an imposition.
+   * @param index - Zero-based imposition index.
+   */
+  selectFirstResultCode(index: number): void {
+    log('select', 'Selecting first Result code option', { imposition: index + 1 });
+    const inputSelector = L.imposition.resultCodeInput(index);
+    const listSelector = L.imposition.resultCodeList(index);
+
+    cy.get(inputSelector, this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .clear({ force: true })
+      .type('{downarrow}{enter}', { force: true });
+
+    cy.get(listSelector, this.common.getTimeoutOptions()).should('exist');
+    cy.get(inputSelector, this.common.getTimeoutOptions()).invoke('val').should('not.be.empty');
   }
 
   /**
