@@ -173,6 +173,39 @@ export class ResultsActions {
   }
 
   /**
+   * Opens a specific account by number, traversing pagination until found.
+   * Throws if the link is not found on any page.
+   */
+  public openByAccountNumberAcrossPages(accountNumber: string): void {
+    log('open', 'Opening by account number across paginated results', { accountNumber });
+
+    const tryPage = (): void => {
+      // Check current page first
+      cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+        const selector = R.linkByAccountNumber(accountNumber);
+        const onPage = $body.find(selector).length > 0;
+
+        if (onPage) {
+          cy.get(selector, { timeout: ResultsActions.WAIT_MS }).scrollIntoView().click({ force: true });
+          this.assertNavigatedToDetails();
+          return;
+        }
+
+        const nextLink = $body.find('nav.moj-pagination .moj-pagination__item--next a.moj-pagination__link');
+        if (!nextLink.length) {
+          throw new Error(`Account ${accountNumber} not found in paginated results`);
+        }
+
+        cy.wrap(nextLink).click({ force: true });
+        this.waitForResultsTable();
+        tryPage();
+      });
+    };
+
+    tryPage();
+  }
+
+  /**
    * Asserts that at least one row in the results table matches all of the
    * provided column/value expectations.
    *

@@ -36,6 +36,18 @@ export class AccountEnquiryFlow {
   private static readonly WAIT_MS = 15_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
 
+  /** Waits for the account header summary call to succeed and the At a glance tab to render. */
+  private waitForHeaderSummaryAndAtAGlance(): void {
+    cy.wait('@headerSummary', { timeout: AccountEnquiryFlow.WAIT_MS }).then((res) => {
+      if (res?.response?.statusCode !== 200) {
+        cy.reload();
+        cy.wait('@headerSummary', { timeout: AccountEnquiryFlow.WAIT_MS }).its('response.statusCode').should('eq', 200);
+      }
+    });
+
+    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+  }
+
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
   private readonly searchNav = new AccountSearchNavActions();
@@ -133,6 +145,7 @@ export class AccountEnquiryFlow {
     this.log('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
     this.log('click', 'Click latest published account or matching @etagUpdate (current page only)');
 
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('headerSummary');
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
@@ -140,14 +153,16 @@ export class AccountEnquiryFlow {
       if (!accOrNull) {
         this.log('fallback', 'No @etagUpdate found → opening latest row');
         this.results.openLatestPublished();
+        this.waitForHeaderSummaryAndAtAGlance();
         return;
       }
 
       const acc = accOrNull;
       this.log('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
 
-      // Wait for the specific account we just created; avoid falling back to a different surname match.
-      this.results.openByAccountNumber(acc);
+      // Wait for the specific account we just created; traverse pagination if needed.
+      this.results.openByAccountNumberAcrossPages(acc);
+      this.waitForHeaderSummaryAndAtAGlance();
     });
   }
 
