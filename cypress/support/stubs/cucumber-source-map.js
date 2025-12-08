@@ -10,4 +10,3 @@ module.exports = {
   cachedCreateSourceMapConsumer: () => undefined,
   maybeRetrievePositionFromSourceMap: () => undefined,
 };
-
