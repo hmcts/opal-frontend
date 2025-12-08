@@ -183,6 +183,16 @@
     "brace-expansion": "^4.0.0",
     "tmp": "^0.2.4",
     "esbuild": "^0.27.0",
-    "glob": "^11.1.0"
+    "@badeball/cypress-cucumber-preprocessor/glob": "11.1.0",
+    "@cucumber/cucumber/glob": "11.1.0",
+    "cypress-parallel/glob": "11.1.0",
+    "@npmcli/package-json/glob": "11.1.0",
+    "cacache/glob": "11.1.0",
+    "mocha/glob": "11.1.0",
+    "mochawesome-merge/glob": "11.1.0",
+    "module-lookup-amd/glob": "11.1.0",
+    "node-gyp/glob": "11.1.0",
+    "rimraf/glob": "11.1.0",
+    "shelljs/glob": "11.1.0"
   }
 }
