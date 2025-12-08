@@ -14,4 +14,8 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS: IAbstractFormArrayControlV
     controlName: 'facc_party_add_amend_convert_alias_surname',
     validators: [Validators.maxLength(30), Validators.required, LETTERS_WITH_SPACES_PATTERN_VALIDATOR],
   },
+  {
+    controlName: 'facc_party_add_amend_convert_alias_id',
+    validators: [], // No validation needed for hidden ID field
+  },
 ];

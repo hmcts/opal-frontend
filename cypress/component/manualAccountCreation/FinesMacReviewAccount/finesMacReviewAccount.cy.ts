@@ -20,6 +20,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -58,7 +59,7 @@ describe('FinesMacReviewAccountComponent', () => {
           useFactory: () => {
             const store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
-            store.setBannerError({ error: false, message: '' });
+            store.setBannerError({ ...GLOBAL_ERROR_STATE, error: false, message: '' });
             return store;
           },
         },

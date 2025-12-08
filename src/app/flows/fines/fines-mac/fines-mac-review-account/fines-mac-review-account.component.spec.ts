@@ -409,17 +409,6 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['viewAllAccountsTabs']], {});
     });
 
-    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
-      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-      const routerSpy = spyOn(component['router'], 'navigate');
-
-      component.navigateBack();
-
-      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: jasmine.any(Object),
-      });
-    });
-
     it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
 

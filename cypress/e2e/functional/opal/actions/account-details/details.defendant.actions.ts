@@ -6,7 +6,7 @@
  * @module actions/account.details.actions
  */
 import { AccountDefendantDetailsLocators as L } from '../../../../../shared/selectors/account-details/account.defendant-details.locators';
-import { CommonActions } from '../common.actions';
+import { CommonActions } from '../common/common.actions';
 
 export class AccountDetailsDefendantActions {
   readonly common = new CommonActions();
@@ -53,5 +53,13 @@ export class AccountDetailsDefendantActions {
     if (opts?.formSelector) {
       cy.get(opts.formSelector, { timeout }).should('be.visible');
     }
+  }
+
+  /**
+   * Asserts the defendant name on the summary card contains the expected value.
+   * @param expected text expected in the name field
+   */
+  assertDefendantNameContains(expected: string): void {
+    cy.get(L.defendant.fields.name, { timeout: 10000 }).should('contain.text', expected);
   }
 }
