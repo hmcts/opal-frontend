@@ -45,7 +45,9 @@ export class AccountEnquiryFlow {
       }
     });
 
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should(
+      'be.visible',
+    );
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
