@@ -15,14 +15,17 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
-try {
-  const sourceMapHelper = require('@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map');
-  sourceMapHelper.createSourceMapConsumer = () => undefined;
-  sourceMapHelper.cachedCreateSourceMapConsumer = () => undefined;
-  sourceMapHelper.maybeRetrievePositionFromSourceMap = () => undefined;
-} catch {
-  // Ignore if helper is not present in this bundle
-}
+// Ignore the specific sourcemap/Base64 error coming from the Cucumber preprocessor.
+// This stops the noisy "Invalid string. Length must be a multiple of 4" from
+// failing the run, but other uncaught errors will still fail tests.
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message?.includes('Invalid string. Length must be a multiple of 4')) {
+    return false; // do NOT fail the test for this one known issue
+  }
+
+  // Let all other errors behave normally (fail the test)
+  return true;
+});
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
