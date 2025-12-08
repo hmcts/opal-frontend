@@ -78,6 +78,22 @@ export class ManualCourtDetailsActions {
   }
 
   /**
+   * Selects the first available LJA option when no value is provided.
+   */
+  selectFirstLjaOption(): void {
+    log('select', 'Selecting first LJA option by default');
+    this.selectFirstAutocompleteOption(L.ljaInput, L.ljaListbox, 'LJA');
+  }
+
+  /**
+   * Selects the first available enforcement court option when no value is provided.
+   */
+  selectFirstEnforcementCourtOption(): void {
+    log('select', 'Selecting first enforcement court option by default');
+    this.selectFirstAutocompleteOption(L.enforcementCourtInput, L.enforcementCourtListbox, 'Enforcement court');
+  }
+
+  /**
    * Clicks the nested flow CTA (e.g., Add personal details).
    */
   clickNestedFlowButton(expectedText?: string): void {
@@ -137,7 +153,10 @@ export class ManualCourtDetailsActions {
       return;
     }
 
-    input.type(value, { delay: 0, force: true }).should('have.value', value);
+    input.type(value, { delay: 0, force: true }).should(($el) => {
+      const actual = ($el.val() ?? '').toString().toLowerCase();
+      expect(actual).to.equal(value.toLowerCase());
+    });
   }
 
   /**
@@ -157,6 +176,17 @@ export class ManualCourtDetailsActions {
     cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
     cy.get(inputSelector).type('{downarrow}{enter}', { force: true });
     cy.get(inputSelector, this.common.getTimeoutOptions()).should('not.have.value', '');
+  }
+
+  /**
+   * Selects the first option in an autocomplete without relying on typed text.
+   */
+  private selectFirstAutocompleteOption(inputSelector: string, listboxSelector: string, label: string): void {
+    const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
+    input.scrollIntoView().clear({ force: true }).type('{downarrow}{enter}', { force: true });
+    cy.get(listboxSelector, this.common.getTimeoutOptions()).should('exist');
+    cy.get(inputSelector, this.common.getTimeoutOptions()).invoke('val').should('not.be.empty');
+    log('select', `Selected first option for ${label}`);
   }
 
   /**

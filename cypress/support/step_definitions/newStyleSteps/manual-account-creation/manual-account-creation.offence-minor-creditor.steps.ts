@@ -5,7 +5,7 @@ import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preproc
 import { calculateWeeksInPast } from '../../../utils/dateUtils';
 import { normalizeHash } from '../../../utils/cucumberHelpers';
 import { log } from '../../../utils/log.helper';
-import { MinorCreditorFieldKey } from '../../../utils/macFieldResolvers';
+import { MinorCreditorFieldKey, resolveMinorCreditorFieldKey } from '../../../utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import {
   common,
@@ -174,7 +174,7 @@ When(
       address2: data['Address line 2'],
       address3: data['Address line 3'],
       postcode: data['Postcode'],
-      accountName: data['Account name'],
+      accountName: data['Name on account'],
       sortCode: data['Sort code'],
       accountNumber: data['Account number'],
       paymentReference: data['Payment reference'],
@@ -475,6 +475,62 @@ Then('the minor creditor summary for imposition {int} is:', (imposition: number,
   const expectations = normalizeHash(table);
   log('assert', 'Asserting minor creditor summary (alias)', { imposition, expectations });
   flow().assertMinorCreditorSummary(imposition, expectations);
+});
+
+/**
+ * @step Asserts current minor creditor field values using a table.
+ * @description Maps table labels to minor creditor field keys and asserts their values.
+ * @param table - DataTable of label/value pairs.
+ */
+Then('I see the following values in the Minor Creditor fields:', (table: DataTable) => {
+  const rows = normalizeHash(table);
+  const entries = Object.entries(rows);
+
+  if (!entries.length) {
+    throw new Error('No minor creditor fields provided for assertion');
+  }
+
+  log('assert', 'Asserting minor creditor field values', { rows });
+
+  entries.forEach(([label, value]) => {
+    if (/payment method/i.test(label)) {
+      const shouldBeBacs = /bacs/i.test(value);
+      log('assert', 'Asserting payment method via BACS toggle', { value, shouldBeBacs });
+      minorCreditor().assertPayByBacsState(shouldBeBacs);
+      return;
+    }
+
+    const key = resolveMinorCreditorFieldKey(label);
+    minorCreditor().assertFieldValue(key, value);
+  });
+});
+
+/**
+ * @step Asserts BACS payment field values for the minor creditor form.
+ * @description Uses the same label mapping as minor creditor fields.
+ * @param table - DataTable of payment field labels and expected values.
+ */
+Then('I see the following values in the Payment details fields:', (table: DataTable) => {
+  const rows = normalizeHash(table);
+  const entries = Object.entries(rows);
+
+  if (!entries.length) {
+    throw new Error('No payment detail fields provided for assertion');
+  }
+
+  log('assert', 'Asserting minor creditor payment detail values', { rows });
+
+  entries.forEach(([label, value]) => {
+    if (/payment method/i.test(label)) {
+      const shouldBeBacs = /bacs/i.test(value);
+      log('assert', 'Asserting payment method via BACS toggle', { value, shouldBeBacs });
+      minorCreditor().assertPayByBacsState(shouldBeBacs);
+      return;
+    }
+
+    const key = resolveMinorCreditorFieldKey(label);
+    minorCreditor().assertFieldValue(key, value);
+  });
 });
 
 /**

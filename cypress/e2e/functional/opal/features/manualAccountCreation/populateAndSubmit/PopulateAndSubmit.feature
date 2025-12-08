@@ -50,9 +50,9 @@ Feature: Manual account creation - Create Draft Account
 
     When I review the offence
     Then I see the offence review details:
-      | Type    | Value                                                                      |
-      | Header  | Offences and impositions                                                   |
-      | Message | Offence TP11003 added                                                      |
+      | Type    | Value                                                                              |
+      | Header  | Offences and impositions                                                           |
+      | Message | Offence TP11003 added                                                              |
       | Text    | Possess potentially dangerous item on Transport for London road transport premises |
 
     When the table with offence code "TP11003" should contain the following data:

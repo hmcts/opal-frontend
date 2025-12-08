@@ -347,6 +347,16 @@ When('I refresh the application', () => {
   log('navigate', 'Refreshing the page');
   cy.reload();
 });
+
+/**
+ * @step Completes Court, Offence, and Minor Creditor details from a composite table.
+ * @description Parses the table by Section and delegates to the relevant flows, including navigation.
+ * @param table - DataTable with columns: Section | Field | Value | Imposition (optional).
+ */
+When('I complete the court, offence and minor creditor details for this manual account:', (table: DataTable) => {
+  log('flow', 'Completing court/offence/minor creditor from composite table');
+  flow().completeCourtOffenceAndMinorCreditor(table.raw());
+});
 /**
  * @step Completes court details and remains on the form (navigation handled by caller).
  * @description Sets LJA, PCR, and enforcement court fields on the Court details task.

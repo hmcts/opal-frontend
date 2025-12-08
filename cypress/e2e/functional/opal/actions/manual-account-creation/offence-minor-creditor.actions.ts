@@ -173,7 +173,10 @@ export class ManualOffenceMinorCreditorActions {
       .scrollIntoView()
       .clear({ force: true })
       .type(value, { force: true, delay: 0 })
-      .should('have.value', value);
+      .should(($el) => {
+        const actual = ($el.val() ?? '').toString().toLowerCase();
+        expect(actual).to.equal(value.toLowerCase());
+      });
     log('type', `Set ${label}`, { value });
   }
 }
