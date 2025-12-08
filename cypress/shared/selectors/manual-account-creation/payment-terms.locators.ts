@@ -39,7 +39,7 @@ export const ManualPaymentTermsLocators = {
     add: '#fm_payment_terms_add_enforcement_action',
     options: {
       prison: '#PRIS',
-      holdOnAccount: '#NOENF',
+      holdOnAccount: '#fm_payment_terms_hold_enforcement_on_account',
     },
     earliestReleaseDate: '#fm_payment_terms_earliest_release_date',
     prisonAndNumber: '#fm_payment_terms_prison_and_prison_number',

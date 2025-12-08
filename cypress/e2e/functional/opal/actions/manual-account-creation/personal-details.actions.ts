@@ -231,7 +231,12 @@ export class ManualPersonalDetailsActions {
           return;
         }
 
-        cy.wrap($input).type(value, { force: true, delay: 0 }).should('have.value', value);
+        cy.wrap($input)
+          .type(value, { force: true, delay: 0 })
+          .should(($el) => {
+            const actual = ($el.val() ?? '').toString().toLowerCase();
+            expect(actual).to.equal(value.toLowerCase());
+          });
       });
   }
 

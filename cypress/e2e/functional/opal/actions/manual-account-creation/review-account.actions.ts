@@ -55,13 +55,27 @@ type OffenceRow = {
     }
 
     cy.get(L.summaryList(summaryListId), this.common.getTimeoutOptions())
+      .should('exist')
+      .first() // guard against multiple summary lists with the same id on the page
       .should('be.visible')
       .within(() => {
         rows.forEach(({ label, value }) => {
           cy.contains(L.summaryRow, label, this.common.getTimeoutOptions())
             .should('be.visible')
             .within(() => {
-              cy.get(L.summaryValue, this.common.getTimeoutOptions()).should('contain.text', value);
+              cy.get(L.summaryValue, this.common.getTimeoutOptions()).should(($val) => {
+                const normalizedText = ($val.text() ?? '').replace(/\s+/g, ' ').trim();
+                const expectsNotProvided = value.trim().toLowerCase() === 'not provided';
+                if (expectsNotProvided) {
+                  const hasNotProvidedIcon = $val.find('[aria-label="Not provided"]').length > 0;
+                  expect(hasNotProvidedIcon || /not provided/i.test(normalizedText)).to.equal(
+                    true,
+                    'Not provided indicator',
+                  );
+                  return;
+                }
+                expect(normalizedText).to.contain(value);
+              });
             });
         });
       });
