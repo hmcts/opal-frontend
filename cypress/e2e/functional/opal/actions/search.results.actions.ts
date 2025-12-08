@@ -164,7 +164,7 @@ export class ResultsActions {
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
 
     // Dynamic locator is defined in the locators file
-    cy.get(R.linkByAccountNumber(accountNumber), { timeout: 8_000 })
+    cy.get(R.linkByAccountNumber(accountNumber), { timeout: ResultsActions.WAIT_MS })
       .scrollIntoView()
       .should('be.visible')
       .click({ force: true });

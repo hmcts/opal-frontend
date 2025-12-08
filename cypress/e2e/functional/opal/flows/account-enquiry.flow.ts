@@ -13,7 +13,6 @@ import { AccountSearchIndividualsLocators as L } from '../../../../shared/select
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
-import { HasAccountLinkOnPage } from '../../../../support/utils/results';
 import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
@@ -145,19 +144,10 @@ export class AccountEnquiryFlow {
       }
 
       const acc = accOrNull;
-      this.log('match', 'Looking for account number on current page', { accountNumber: acc });
+      this.log('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
 
-      HasAccountLinkOnPage(acc).then((exists) => {
-        if (exists) {
-          this.results.clickAccountOnCurrentPage(acc).then(() => this.assertNavigatedToDetails());
-          return;
-        }
-
-        this.log('fallback', `Account ${acc} not found on current page; opening latest row`, {
-          accountNumber: acc,
-        });
-        this.results.openLatestPublished();
-      });
+      // Wait for the specific account we just created; avoid falling back to a different surname match.
+      this.results.openByAccountNumber(acc);
     });
   }
 
