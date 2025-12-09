@@ -15,12 +15,11 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
-import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
@@ -55,6 +54,7 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -103,14 +103,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   };
 
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
-  public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  public readonly paymentTermOptions = FINES_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
     value,
   }));
-  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
-  ).map(([key, value]) => ({ key, value }));
+  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS).map(
+    ([key, value]) => ({ key, value }),
+  );
   public readonly enforcementActionsOptions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
   public readonly enforcementActions: IGovUkRadioOptions[] = Object.entries(this.enforcementActionsOptions).map(
     ([key, value]) => ({

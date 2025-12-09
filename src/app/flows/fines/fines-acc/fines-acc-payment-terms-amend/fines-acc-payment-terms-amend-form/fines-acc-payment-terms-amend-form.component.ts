@@ -15,8 +15,8 @@ import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-
 import { IFinesAccPaymentTermsAmendFieldErrors } from '../interfaces/fines-acc-payment-terms-amend-field-errors.interface';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS } from '../constants/fines-acc-payment-terms-amend-field-errors.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from '../constants/fines-acc-payment-terms-amend-form.constant';
-import { FINES_ACC_PAYMENT_TERMS_AMEND_OPTIONS } from '../constants/fines-acc-payment-terms-amend-options.constant';
-import { FINES_ACC_PAYMENT_TERMS_AMEND_FREQUENCY_OPTIONS } from '../constants/fines-acc-payment-terms-amend-frequency-options.constant';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
@@ -102,14 +102,14 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     ...FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS,
   };
 
-  public readonly paymentTermOptions = FINES_ACC_PAYMENT_TERMS_AMEND_OPTIONS;
+  public readonly paymentTermOptions = FINES_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
     value,
   }));
-  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
-    FINES_ACC_PAYMENT_TERMS_AMEND_FREQUENCY_OPTIONS,
-  ).map(([key, value]) => ({ key, value }));
+  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS).map(
+    ([key, value]) => ({ key, value }),
+  );
 
   public today!: string;
   public yesterday!: string;

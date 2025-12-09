@@ -1,4 +1,3 @@
-import { of } from 'rxjs';
 import { IFinesAccPaymentTermsAmendForm } from '../interfaces/fines-acc-payment-terms-amend-form.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
 
@@ -36,43 +35,3 @@ export const MOCK_PAYLOAD: IOpalFinesAmendPaymentTermsPayload = {
   payment_card_requested: null,
   generate_payment_terms_change_letter: null,
 };
-
-export function createMockOpalFinesService() {
-  return jasmine.createSpyObj('OpalFines', ['putDefendantAccountPaymentTerms', 'clearCache'], {
-    putDefendantAccountPaymentTerms: jasmine.createSpy().and.returnValue(of({ defendant_account_id: 123456 })),
-    clearCache: jasmine.createSpy(),
-  });
-}
-
-export function createMockPayloadService() {
-  return jasmine.createSpyObj('FinesAccPayloadService', ['buildPaymentTermsAmendPayload'], {
-    buildPaymentTermsAmendPayload: jasmine.createSpy().and.returnValue(MOCK_PAYLOAD),
-  });
-}
-
-export function createMockFinesAccountStore() {
-  return {
-    account_id: jasmine.createSpy('account_id').and.returnValue(123456),
-    business_unit_id: jasmine.createSpy('business_unit_id').and.returnValue('TEST_UNIT'),
-    base_version: jasmine.createSpy('base_version').and.returnValue('version123'),
-    account_number: jasmine.createSpy('account_number').and.returnValue('TEST123456'),
-    party_name: jasmine.createSpy('party_name').and.returnValue('John Doe'),
-  };
-}
-
-export function createMockUtilsService() {
-  return jasmine.createSpyObj('UtilsService', ['scrollToTop']);
-}
-
-export function createMockRouter() {
-  return jasmine.createSpyObj('Router', ['navigate']);
-}
-
-export function createMockActivatedRoute() {
-  return jasmine.createSpyObj('ActivatedRoute', [], {
-    snapshot: { data: {} },
-    params: of({}),
-    queryParams: of({}),
-    data: of({}),
-  });
-}

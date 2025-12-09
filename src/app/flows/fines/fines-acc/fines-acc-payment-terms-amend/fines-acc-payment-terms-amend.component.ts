@@ -7,6 +7,7 @@ import { IFinesAccPaymentTermsAmendForm } from './interfaces/fines-acc-payment-t
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from './constants/fines-acc-payment-terms-amend-form.constant';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
+import { IOpalFinesAmendPaymentTermsPayload } from '../../services/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -27,19 +28,24 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
   protected readonly finesDefendantRoutingPaths = FINES_ACC_DEFENDANT_ROUTING_PATHS;
 
   /**
-   * Handles the form submission for payment terms amendment
+   * Validates that all required data is available for the payment terms amendment
    */
-  public handlePaymentTermsSubmit(formData: IFinesAccPaymentTermsAmendForm): void {
-    const payload = this.payloadService.buildPaymentTermsAmendPayload(formData.formData);
+  private validateRequiredData(): boolean {
+    const defendantAccountId = this.finesAccountStore.account_id();
+    const businessUnitId = this.finesAccountStore.business_unit_id();
+    const ifMatch = this.finesAccountStore.base_version();
+
+    return !!(defendantAccountId && businessUnitId && ifMatch);
+  }
+
+  /**
+   * Submits the payment terms amendment to the API
+   */
+  private submitPaymentTermsAmendment(payload: IOpalFinesAmendPaymentTermsPayload): void {
     const defendantAccountId = this.finesAccountStore.account_id()!;
     const businessUnitId = this.finesAccountStore.business_unit_id()!;
     const ifMatch = this.finesAccountStore.base_version()!;
-    const fragment = 'payment-terms';
 
-    if (!defendantAccountId || !businessUnitId || !ifMatch) {
-      this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, fragment);
-      return;
-    }
     this.opalFinesService
       .putDefendantAccountPaymentTerms(defendantAccountId, payload, businessUnitId, ifMatch)
       .pipe(
@@ -52,9 +58,31 @@ export class FinesAccPaymentTermsAmendComponent extends AbstractFormParentBaseCo
       .subscribe({
         next: () => {
           this.opalFinesService.clearCache('defendantAccountPaymentTermsLatestCache$');
-          this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, fragment);
+          this.navigateToDetails();
         },
       });
+  }
+
+  /**
+   * Navigates to the defendant details page with payment terms fragment
+   */
+  private navigateToDetails(): void {
+    const fragment = 'payment-terms';
+    this.routerNavigate(this.finesDefendantRoutingPaths.children.details, false, undefined, undefined, fragment);
+  }
+
+  /**
+   * Handles the form submission for payment terms amendment
+   */
+  public handlePaymentTermsSubmit(formData: IFinesAccPaymentTermsAmendForm): void {
+    const payload = this.payloadService.buildPaymentTermsAmendPayload(formData.formData);
+
+    if (!this.validateRequiredData()) {
+      this.navigateToDetails();
+      return;
+    }
+
+    this.submitPaymentTermsAmendment(payload);
   }
 
   /**

@@ -4,17 +4,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { map, catchError, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
-import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
-
-/**
- * Creates a redirect command to the defendant details page
- * @param router - The Angular Router instance
- * @returns A RedirectCommand to the defendant details page
- */
-const createDefendantDetailsRedirect = (router: Router): RedirectCommand => {
-  return new RedirectCommand(router.createUrlTree([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]));
-};
+import { createDefendantDetailsRedirect } from './constants/resolver-utils.constant';
 
 export const defendantAccountPartyResolver: ResolveFn<IOpalFinesAccountDefendantAccountParty | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
