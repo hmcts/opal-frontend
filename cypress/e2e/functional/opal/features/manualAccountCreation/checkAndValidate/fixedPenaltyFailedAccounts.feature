@@ -29,6 +29,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
             | Account type  |
             | Business unit |
             | Submitted by  |
+        And I sort the table by column "Date failed" in descending order
 
         # AC1ai - Verify defendant name format: <LAST NAME>, <forenames> for individual defendants
         And I see "GREEN, Oliver" is present in column "Defendant"
@@ -69,6 +70,7 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
             | Account type  |
             | Business unit |
             | Submitted by  |
+        And I sort the table by column "Date failed" in descending order
 
         # AC1ai - Verify defendant name format: <LAST NAME>, <forenames> for individual defendants
         And I see "Argent Oak Solutions Ltd comp" is present in column "Defendant"
@@ -86,6 +88,5 @@ Feature: Fixed Penalty Failed Account Validation (PO-1816)
         #PO-2463 Ensure the Back button navigates to the "Review Accounts" page under the "Failed" tab for fixed penalty company defendant
         When "Back" is clicked
         And I see "Review accounts" on the page header
-
 
 
