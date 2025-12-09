@@ -79,6 +79,7 @@ export function interceptDefendantDetails(
 }
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 
 /**
  * Intercepts the GET request for the defendant header summary in Cypress tests,
@@ -176,4 +177,20 @@ export function interceptFixedPenaltyDetails(
       },
     })
     .as('getFixedPenaltyDetails');
+}
+
+export function interceptPaymentTerms(
+  accountId: String | number,
+  mockData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/payment-terms/latest`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getPaymentTerms');
 }

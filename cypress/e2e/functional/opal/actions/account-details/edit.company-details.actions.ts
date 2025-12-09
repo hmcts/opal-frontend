@@ -4,6 +4,7 @@
  */
 
 import { CompanyDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.company-details.locators';
+import { AccountCompanyDetailsLocators as SummaryL } from '../../../../../shared/selectors/account-details/account.company-details.locators';
 import { log } from '../../../../../support/utils/log.helper';
 
 export class EditCompanyDetailsActions {
@@ -75,5 +76,24 @@ export class EditCompanyDetailsActions {
       });
 
     log('done', `Verified Company name is "${expectedValue}"`);
+  }
+
+  /**
+   * Clicks Save changes on the Company details form.
+   */
+  public saveChanges(): void {
+    log('action', 'Saving company details');
+    cy.get(L.actions.saveChanges, { timeout: 10_000 }).should('be.visible').click();
+  }
+
+  /**
+   * Asserts the company name on the summary card contains the expected value.
+   * Uses the read-only summary card locator, not the edit form input.
+   * @param expected text expected in the name field
+   */
+  assertCompanyNameContains(expected: string): void {
+    log('assert', `Asserting company name summary contains "${expected}"`);
+    cy.get(SummaryL.fields.name, { timeout: 10000 }).should('be.visible').and('contain.text', expected);
+    log('done', `Verified company name contains "${expected}"`);
   }
 }

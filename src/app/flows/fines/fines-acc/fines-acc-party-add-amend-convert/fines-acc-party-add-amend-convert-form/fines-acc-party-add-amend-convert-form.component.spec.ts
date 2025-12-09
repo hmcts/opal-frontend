@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
 import { signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -25,6 +25,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let component: FinesAccPartyAddAmendConvertFormComponent;
   let fixture: ComponentFixture<FinesAccPartyAddAmendConvertFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  let mockRouter: jasmine.SpyObj<Router>;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let mockFinesAccountStore: {
     welsh_speaking: ReturnType<typeof signal>;
     account_number: ReturnType<typeof signal>;
@@ -39,6 +41,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       'getAgeObject',
     ]);
 
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], { data: of({}) });
+
     mockFinesAccountStore = jasmine.createSpyObj('FinesAccountStore', [], {
       welsh_speaking: signal('N'),
       account_number: signal('1234567890'),
@@ -50,7 +55,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       providers: [
         { provide: DateService, useValue: mockDateService },
         { provide: FinesAccountStore, useValue: mockFinesAccountStore },
-        { provide: ActivatedRoute, useValue: { data: of({}) } },
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
 
@@ -152,6 +158,23 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component['showLanguagePreferences']()).toBe(false);
   });
 
+  it('should resolve defendant fragment by default', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    expect(component.routeFragment).toBe('defendant');
+
+    component.partyType = 'company';
+    expect(component.routeFragment).toBe('defendant');
+  });
+
+  it('should resolve parent or guardian fragment for parent guardian party type', () => {
+    component.partyType = 'parentGuardian';
+    fixture.detectChanges();
+
+    expect(component.routeFragment).toBe('parent-or-guardian');
+  });
+
   it('should calculate age when valid date of birth is provided', () => {
     mockDateService.getAgeObject.and.returnValue({ value: 30, group: 'Adult' });
     component.partyType = 'individual';
@@ -207,7 +230,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(mockDateService.getAgeObject).not.toHaveBeenCalled();
   });
 
-  it('should require title field', () => {
+  it('should require title field for individual party type', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
 
@@ -217,6 +240,21 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     titleControl?.markAsTouched();
     titleControl?.updateValueAndValidity();
     expect(titleControl?.hasError('required')).toBe(true);
+
+    titleControl?.setValue('Mr');
+    expect(titleControl?.hasError('required')).toBe(false);
+  });
+
+  it('should not require title field for parent/guardian party type', () => {
+    component.partyType = 'parentGuardian';
+    fixture.detectChanges();
+
+    const titleControl = component.form.get('facc_party_add_amend_convert_title');
+    // Ensure the control value is null/empty and check it's not required
+    titleControl?.setValue(null);
+    titleControl?.markAsTouched();
+    titleControl?.updateValueAndValidity();
+    expect(titleControl?.hasError('required')).toBe(false);
 
     titleControl?.setValue('Mr');
     expect(titleControl?.hasError('required')).toBe(false);
@@ -657,12 +695,12 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(component.form.get('facc_party_add_amend_convert_organisation_aliases')).toBeNull();
     });
 
-    it('should require title, forenames and surname for parent/guardian party type', () => {
+    it('should require forenames and surname but not title for parent/guardian party type', () => {
       const titleControl = component.form.get('facc_party_add_amend_convert_title');
       const forenamesControl = component.form.get('facc_party_add_amend_convert_forenames');
       const surnameControl = component.form.get('facc_party_add_amend_convert_surname');
 
-      expect(titleControl?.hasError('required')).toBe(true);
+      expect(titleControl?.hasError('required')).toBe(false); // Title should not be required for parent/guardian
       expect(forenamesControl?.hasError('required')).toBe(true);
       expect(surnameControl?.hasError('required')).toBe(true);
 

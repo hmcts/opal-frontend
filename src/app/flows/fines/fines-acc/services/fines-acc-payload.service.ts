@@ -10,7 +10,11 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { IOpalFinesUpdateDefendantAccountPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-update-defendant-account.interface';
 import { ITransformItem } from '@hmcts/opal-frontend-common/services/transformation-service/interfaces';
-import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from '../services/constants/fines-acc-transform-items-config.constant';
+import {
+  IOpalFinesAccountDefendantAccountParty,
+  IOpalFinesAccountPartyDetails,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
@@ -22,6 +26,8 @@ import { transformPaymentTermsData } from './utils/fines-acc-payload-transform-p
 import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
 import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
 import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
+import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,6 +82,7 @@ export class FinesAccPayloadService {
     return {
       account_number: headingData.account_number,
       account_id: Number(account_id),
+      pg_party_id: headingData.parent_guardian_party_id,
       party_id: headingData.defendant_account_party_id,
       party_type: headingData.debtor_type,
       party_name: party_name,
@@ -182,5 +189,23 @@ export class FinesAccPayloadService {
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
     return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+   * Builds a party payload from the form state for updating defendant account party details.
+   * This is the reverse transformation of mapDebtorAccountPartyPayload.
+   *
+   * @param formState - The form state containing party add/amend/convert data
+   * @param partyType - The party type (company, individual, parentGuardian)
+   * @param isDebtor - Whether this is a debtor party
+   * @returns The transformed payload object for updating party details
+   */
+  public buildAccountPartyPayload(
+    formState: IFinesAccPartyAddAmendConvertState,
+    partyType: string,
+    isDebtor: boolean,
+    partyId: string,
+  ): IOpalFinesAccountPartyDetails {
+    return this.transformPayload(
+      buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    );
   }
 }

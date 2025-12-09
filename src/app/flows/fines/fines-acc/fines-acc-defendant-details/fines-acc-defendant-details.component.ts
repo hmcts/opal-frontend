@@ -132,6 +132,26 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   }
 
   /**
+   *
+   * Calculates if the user can amend payment terms based on account status and permissions.
+   * @returns boolean indicating if the user can amend payment terms
+   */
+  private canAmendPaymentTerms(): boolean {
+    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
+    const invalidCodes = ['CS', 'WO', 'TO', 'TS', 'TA'];
+
+    return (
+      !this.lastEnforcement?.extend_ttp_disallow &&
+      !invalidCodes.includes(accountStatusCode) &&
+      this.permissionsService.hasBusinessUnitPermissionAccess(
+        FINES_PERMISSIONS['amend-payment-terms'],
+        Number(this.accountStore.business_unit_id()!),
+        this.userState.business_unit_users,
+      )
+    );
+  }
+
+  /**
    * Initializes and sets up the observable data stream for the fines draft tab component.
    *
    * This method listens to changes in either the route fragment (representing the active tab)
@@ -176,9 +196,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
             this.opalFinesService.getDefendantAccountPaymentTermsLatest(account_id).pipe(
               tap((data) => {
                 if (data.last_enforcement) {
-                  this.opalFinesService.getResult(data.last_enforcement).subscribe((result) => {
-                    this.lastEnforcement = result;
-                  });
+                  this.opalFinesService
+                    .getResult(data.last_enforcement)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((result) => {
+                      this.lastEnforcement = result;
+                    });
                 }
               }),
             ),
@@ -252,7 +275,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Navigates to the add comments page.
-   * @param event The click event that triggered the navigation.
+   * If the user lacks the required permission in this BU, navigates to the access-denied page instead.
    */
   public navigateToAddCommentsPage(): void {
     if (
@@ -312,6 +335,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     this.destroy$.complete();
   }
 
+  /**
+   * Navigates to the amend party details page for the specified party type.
+   * Or navigates to the access-denied page if the user lacks the required permission in this BU.
+   * @param partyType
+   */
   public navigateToAmendPartyDetailsPage(partyType: string): void {
     if (
       this.permissionsService.hasBusinessUnitPermissionAccess(
@@ -320,7 +348,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
         this.userState.business_unit_users,
       )
     ) {
-      this['router'].navigate([`../${partyType}/amend`], {
+      this['router'].navigate([`../party/${partyType}/amend`], {
         relativeTo: this.activatedRoute,
       });
     } else {
@@ -330,21 +358,11 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
     }
   }
 
+  /**
+   * Navigates to the amend payment terms page or amend denied page based on user permissions and account status.
+   */
   public navigateToAmendPaymentTermsPage(): void {
-    const accountStatusCode = this.accountData.account_status_reference.account_status_code;
-    if (
-      !this.lastEnforcement?.extend_ttp_disallow &&
-      accountStatusCode !== 'CS' &&
-      accountStatusCode !== 'WO' &&
-      accountStatusCode !== 'TO' &&
-      accountStatusCode !== 'TS' &&
-      accountStatusCode !== 'TA' &&
-      this.permissionsService.hasBusinessUnitPermissionAccess(
-        FINES_PERMISSIONS['amend-payment-terms'],
-        Number(this.accountStore.business_unit_id()!),
-        this.userState.business_unit_users,
-      )
-    ) {
+    if (this.canAmendPaymentTerms()) {
       this['router'].navigate([`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/amend`], {
         relativeTo: this.activatedRoute,
       });
