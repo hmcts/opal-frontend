@@ -42,10 +42,6 @@ import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-pa
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
 import {
-  IOpalFinesAmendPaymentTermsPayload,
-  IOpalFinesAmendPaymentTermsResponse,
-} from './interfaces/opal-fines-amend-payment-terms.interface';
-import {
   OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK,
   OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK,
   OPAL_FINES_AMEND_PAYMENT_TERMS_SUCCESS_RESPONSE_MOCK,

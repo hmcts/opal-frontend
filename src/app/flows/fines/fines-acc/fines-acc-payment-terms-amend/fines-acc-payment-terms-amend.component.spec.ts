@@ -26,6 +26,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockPayloadService: jasmine.SpyObj<FinesAccPayloadService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFinesAccountStore: any;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 

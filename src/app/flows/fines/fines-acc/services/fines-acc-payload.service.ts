@@ -25,7 +25,6 @@ import { IFinesAccPaymentTermsAmendForm } from '../fines-acc-payment-terms-amend
 import { transformPaymentTermsData } from './utils/fines-acc-payload-transform-payment-terms-data.utils';
 import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
 import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
-import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
 import { buildAccountPartyFromFormState } from './utils/fines-acc-payload-build-defendant-data.utils';
 
 @Injectable({
@@ -189,7 +188,9 @@ export class FinesAccPayloadService {
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
     return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
-   * Builds a party payload from the form state for updating defendant account party details.
+  }
+
+  /**
    * This is the reverse transformation of mapDebtorAccountPartyPayload.
    *
    * @param formState - The form state containing party add/amend/convert data
