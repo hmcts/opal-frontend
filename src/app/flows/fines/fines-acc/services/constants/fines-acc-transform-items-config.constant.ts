@@ -25,6 +25,9 @@ export const FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_birth', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'effective_date', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'last_movement_date', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'date_days_in_default_imposed', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'posted_date', ...BUILD_PAYLOAD_DATE_FORMAT },
+  { key: 'payment_card_last_requested', ...BUILD_PAYLOAD_DATE_FORMAT },
   { key: 'date_notice_issued', ...BUILD_PAYLOAD_DATE_FORMAT },
 ];
 
@@ -33,5 +36,8 @@ export const FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'date_of_birth', ...MAP_PAYLOAD_DATE_FORMAT },
   { key: 'effective_date', ...MAP_PAYLOAD_DATE_FORMAT },
   { key: 'last_movement_date', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'date_days_in_default_imposed', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'posted_date', ...MAP_PAYLOAD_DATE_FORMAT },
+  { key: 'payment_card_last_requested', ...MAP_PAYLOAD_DATE_FORMAT },
   { key: 'date_notice_issued', ...MAP_PAYLOAD_DATE_FORMAT },
 ];

@@ -70,7 +70,7 @@ export class FinesAccPartyAddAmendConvert extends AbstractFormParentBaseComponen
       )
       .subscribe({
         next: () => {
-          this.opalFinesService.clearAccountDetailsCache();
+          this.opalFinesService.clearCache('defendantAccountPartyCache$');
           this.routerNavigate(
             this.finesDefendantRoutingPaths.children.details,
             false,
