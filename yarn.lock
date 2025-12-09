@@ -2820,15 +2820,15 @@ __metadata:
   linkType: hard
 
 "@cypress/grep@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@cypress/grep@npm:5.0.0"
+  version: 5.0.1
+  resolution: "@cypress/grep@npm:5.0.1"
   dependencies:
     debug: "npm:^4.3.4"
     find-test-names: "npm:^1.28.18"
     globby: "npm:^11.0.4"
   peerDependencies:
     cypress: ">=10"
-  checksum: 10/a7ebd1936dbbe7c832559dd13bc381a1cec73f044d01074577cc8f5aaa07a2585d17021b184536dcc528816e865d222685c3829811f7d9f5a4c9beac24b51a90
+  checksum: 10/4d14664998ada560eb22dfc065820a98c3750ec7453171549858a53f0d113a601cd0c50e83c4ae4afaca9bab48e589a30a97db7c4b757b5c11fd2e8731623d88
   languageName: node
   linkType: hard
 
