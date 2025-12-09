@@ -16,19 +16,17 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 
-// Debug + ignore the specific sourcemap/Base64 error coming from the
-// Cucumber preprocessor. All other errors will still fail tests.
 Cypress.on('uncaught:exception', (err) => {
-  // Temporary debug log to prove this runs
-  // eslint-disable-next-line no-console
-  console.error('UNCAUGHT EXCEPTION CAUGHT BY CYPRESS HANDLER:', err?.message);
+  const message = String(err?.message || err || '');
 
-  if (typeof err?.message === 'string' && err.message.includes('Invalid string. Length must be a multiple of 4')) {
-    return false; // tell Cypress: don't fail the test for this one
+  // eslint-disable-next-line no-console
+  console.error('UNCAUGHT EXCEPTION CAUGHT BY CYPRESS HANDLER:', message);
+
+  if (message.includes('Invalid string. Length must be a multiple of 4')) {
+    return false; // ignore this known sourcemap/Base64 noise
   }
 
-  // Let all other errors behave normally (fail the test)
-  return true;
+  return true; // fail on everything else
 });
 
 // Alternatively you can use CommonJS syntax:
