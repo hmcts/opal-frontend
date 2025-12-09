@@ -8,6 +8,7 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_STATE: IFinesAccPaymentTermsAmendStat
   facc_payment_terms_instalment_period: null,
   facc_payment_terms_start_date: null,
   facc_payment_terms_payment_card_request: null,
+  facc_payment_terms_prevent_payment_card: null,
   facc_payment_terms_has_days_in_default: null,
   facc_payment_terms_suspended_committal_date: null,
   facc_payment_terms_default_days_in_jail: null,

@@ -4,5 +4,4 @@ import { IFinesAccPaymentTermsAmendState } from './fines-acc-payment-terms-amend
 export interface IFinesAccPaymentTermsAmendForm extends IAbstractFormBaseForm<IFinesAccPaymentTermsAmendState> {
   formData: IFinesAccPaymentTermsAmendState;
   nestedFlow: boolean;
-  status?: string | null;
 }

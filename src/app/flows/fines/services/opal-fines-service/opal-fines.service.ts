@@ -48,6 +48,10 @@ import {
 import { IOpalFinesAccountDefendantAccountParty } from './interfaces/opal-fines-account-defendant-account-party.interface';
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
+import {
+  IOpalFinesAmendPaymentTermsPayload,
+  IOpalFinesAmendPaymentTermsResponse,
+} from './interfaces/opal-fines-amend-payment-terms.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload, IOpalFinesAddNoteResponse } from './interfaces/opal-fines-add-note.interface';
 import { IOpalFinesDefendantAccountResponse } from './interfaces/opal-fines-defendant-account.interface';
@@ -712,6 +716,34 @@ export class OpalFines {
         );
     }
     return this.cache.defendantAccountPaymentTermsLatestCache$;
+  }
+
+  /**
+   * Sends a PUT request to add payment terms to a defendant account.
+   *
+   * @param defendantAccountId - The ID of the defendant account to add payment terms to.
+   * @param payload - The payment terms payload containing the payment terms data.
+   * @param businessUnitId - Optional Business Unit ID header.
+   * @param ifMatch - Optional If-Match header for optimistic locking.
+   * @returns An Observable of the payment terms response.
+   */
+  public putDefendantAccountPaymentTerms(
+    defendantAccountId: number,
+    payload: IOpalFinesAmendPaymentTermsPayload,
+    businessUnitId?: string,
+    ifMatch?: string,
+  ): Observable<IOpalFinesAmendPaymentTermsResponse> {
+    const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
+
+    const headers: Record<string, string> = {};
+    if (businessUnitId !== undefined) {
+      headers['Business-Unit-Id'] = businessUnitId;
+    }
+    if (ifMatch) {
+      headers['If-Match'] = ifMatch;
+    }
+
+    return this.http.put<IOpalFinesAmendPaymentTermsResponse>(url, payload, { headers });
   }
 
   /**

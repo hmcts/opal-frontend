@@ -30,13 +30,9 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS: IFinesAccPaymentTermsAm
       message: `Enter lump sum amount`,
       priority: 1,
     },
-    numericalTextPattern: {
-      message: `Lump sum amount must only contain numbers`,
-      priority: 2,
-    },
     invalidDecimal: {
       message: `Enter an amount with no more than 18 digits before the decimal and 2 or fewer after`,
-      priority: 3,
+      priority: 2,
     },
   },
   facc_payment_terms_instalment_amount: {
@@ -44,13 +40,9 @@ export const FINES_ACC_PAYMENT_TERMS_AMEND_FIELD_ERRORS: IFinesAccPaymentTermsAm
       message: `Enter instalment amount`,
       priority: 1,
     },
-    numericalTextPattern: {
-      message: `Instalment amount must only contain numbers`,
-      priority: 2,
-    },
     invalidDecimal: {
       message: `Enter an amount with no more than 18 digits before the decimal and 2 or fewer after`,
-      priority: 3,
+      priority: 2,
     },
   },
   facc_payment_terms_instalment_period: {

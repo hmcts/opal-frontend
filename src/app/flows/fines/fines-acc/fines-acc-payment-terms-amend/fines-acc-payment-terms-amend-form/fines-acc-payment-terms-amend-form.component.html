@@ -140,6 +140,11 @@
             [errors]="formControlErrorMessages['facc_payment_terms_default_days_in_jail']"
           ></opal-lib-govuk-text-input-prefix-suffix>
         </div>
+        <div class="govuk-form-group">
+          <app-fines-mac-default-days
+            [date]="form.get('facc_payment_terms_suspended_committal_date')?.value"
+          ></app-fines-mac-default-days>
+        </div>
       </div>
     }
   </opal-lib-govuk-checkboxes>
@@ -163,13 +168,19 @@
 
   <hr class="{{ FINES_ACC_SECTION_BREAK }}" />
 
-  <div
-    opal-lib-govuk-checkboxes-item
-    labelText="Request payment card"
-    inputId="facc_payment_terms_payment_card_request"
-    inputName="facc_payment_terms_payment_card_request"
-    [control]="form.get('facc_payment_terms_payment_card_request')"
-  ></div>
+  @if (preventPaymentCard) {
+    <ng-container
+      *ngTemplateOutlet="paymentCardTemplate; context: { $implicit: 'Payment card request blocked' }"
+    ></ng-container>
+  } @else {
+    <div
+      opal-lib-govuk-checkboxes-item
+      labelText="Request payment card"
+      inputId="facc_payment_terms_payment_card_request"
+      inputName="facc_payment_terms_payment_card_request"
+      [control]="form.get('facc_payment_terms_payment_card_request')"
+    ></div>
+  }
 
   <div class="govuk-!-margin-top-4">
     <div
@@ -265,7 +276,20 @@
 
 <ng-template #dateInFutureTemplate let-fieldName>
   <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
-    <strong>{{ fieldName }} is more than 3 years in the future</strong>
+    <strong>{{ fieldName }} is more than 6 months in the future</strong>
     <p>You can continue with date in the past or change</p>
+  </opal-lib-moj-ticket-panel>
+</ng-template>
+
+<ng-template #paymentCardTemplate let-fieldName>
+  <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--blue" [alert]="true">
+    <strong>{{ fieldName }}</strong>
+    <p>You cannot request a payment card. This may be because:</p>
+    <p></p>
+    <ul>
+      <li>a card has already been requested and is being processed</li>
+      <li>the current enforcement action does not allow it</li>
+      <li>your business unit does not allow payment card requests</li>
+    </ul>
   </opal-lib-moj-ticket-panel>
 </ng-template>

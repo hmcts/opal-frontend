@@ -81,6 +81,22 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     expect(component.initialFormData).toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM);
   });
 
+  it('should not overwrite initialFormData when already set', () => {
+    const existingFormData: IFinesAccPaymentTermsAmendForm = {
+      formData: {
+        ...FINES_ACC_PAYMENT_TERMS_AMEND_FORM.formData,
+        facc_payment_terms_payment_terms: 'payInInstalments',
+      },
+      nestedFlow: false,
+    };
+
+    component.initialFormData = existingFormData;
+    component.ngOnInit();
+
+    expect(component.initialFormData).toEqual(existingFormData);
+    expect(component.initialFormData).not.toEqual(FINES_ACC_PAYMENT_TERMS_AMEND_FORM);
+  });
+
   it('should initialize form with correct controls', () => {
     component.ngOnInit();
 
@@ -162,24 +178,34 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     it('should validate decimal format for lump sum amount', () => {
       const lumpSumControl = component.form.get('facc_payment_terms_lump_sum_amount');
 
-      // Test with non-numeric input
+      // Test with non-numeric input - should fail with numericalTextPattern error first
       lumpSumControl?.setValue('abc');
-      expect(lumpSumControl?.hasError('invalidDecimal')).toBeTruthy();
+      lumpSumControl?.markAsTouched();
+      lumpSumControl?.updateValueAndValidity();
+
+      // Should only have invalidDecimal error since we removed NUMERIC_PATTERN_VALIDATOR
+      expect(lumpSumControl?.errors?.['invalidDecimal']).toBeTruthy();
 
       // Test with valid decimal
       lumpSumControl?.setValue('100.50');
+      lumpSumControl?.updateValueAndValidity();
       expect(lumpSumControl?.valid).toBeTruthy();
     });
 
     it('should validate decimal format for instalment amount', () => {
       const instalmentControl = component.form.get('facc_payment_terms_instalment_amount');
 
-      // Test with non-numeric input
+      // Test with non-numeric input - should fail with both validators
       instalmentControl?.setValue('xyz');
-      expect(instalmentControl?.hasError('invalidDecimal')).toBeTruthy();
+      instalmentControl?.markAsTouched();
+      instalmentControl?.updateValueAndValidity();
+
+      // Should only have invalidDecimal error since we removed NUMERIC_PATTERN_VALIDATOR
+      expect(instalmentControl?.errors?.['invalidDecimal']).toBeTruthy();
 
       // Test with valid decimal
       instalmentControl?.setValue('50.99');
+      instalmentControl?.updateValueAndValidity();
       expect(instalmentControl?.valid).toBeTruthy();
     });
 
@@ -248,6 +274,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
           facc_payment_terms_instalment_period: null,
           facc_payment_terms_start_date: null,
           facc_payment_terms_payment_card_request: false,
+          facc_payment_terms_prevent_payment_card: false,
           facc_payment_terms_has_days_in_default: null,
           facc_payment_terms_suspended_committal_date: null,
           facc_payment_terms_default_days_in_jail: null,
@@ -298,6 +325,111 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
     });
 
     it('should initialize date validation flags', () => {
+      expect(component.dateInPast).toBe(false);
+      expect(component.dateInFuture).toBe(false);
+    });
+
+    it('should validate dates on initial form population', () => {
+      // Setup mock to return that date is in the past
+      mockDateService.isDateInThePast.and.returnValue(true);
+      mockDateService.isDateInTheFuture.and.returnValue(false);
+
+      const testData: IFinesAccPaymentTermsAmendForm = {
+        formData: {
+          facc_payment_terms_payment_terms: 'payInFull',
+          facc_payment_terms_pay_by_date: '2023-01-01', // Past date
+          facc_payment_terms_lump_sum_amount: null,
+          facc_payment_terms_instalment_amount: null,
+          facc_payment_terms_instalment_period: null,
+          facc_payment_terms_start_date: null,
+          facc_payment_terms_payment_card_request: false,
+          facc_payment_terms_prevent_payment_card: false,
+          facc_payment_terms_has_days_in_default: null,
+          facc_payment_terms_suspended_committal_date: null,
+          facc_payment_terms_default_days_in_jail: null,
+          facc_payment_terms_reason_for_change: 'Test reason',
+          facc_payment_terms_change_letter: true,
+        },
+        nestedFlow: false,
+      };
+
+      component.initialFormData = testData;
+      component.ngOnInit();
+
+      // Verify that date validation was called and flags are set
+      expect(mockDateService.isDateInThePast).toHaveBeenCalledWith('2023-01-01');
+      expect(component.dateInPast).toBe(true);
+      expect(component.dateInFuture).toBe(false);
+    });
+
+    it('should validate future dates on initial form population', () => {
+      // Setup mock to return that date is in the future
+      mockDateService.isDateInThePast.and.returnValue(false);
+      mockDateService.isDateInTheFuture.and.returnValue(true);
+
+      const testData: IFinesAccPaymentTermsAmendForm = {
+        formData: {
+          facc_payment_terms_payment_terms: 'instalmentsOnly',
+          facc_payment_terms_pay_by_date: null,
+          facc_payment_terms_lump_sum_amount: null,
+          facc_payment_terms_instalment_amount: 100.0,
+          facc_payment_terms_instalment_period: 'W',
+          facc_payment_terms_start_date: '2025-12-31', // Future date
+          facc_payment_terms_payment_card_request: false,
+          facc_payment_terms_prevent_payment_card: false,
+          facc_payment_terms_has_days_in_default: null,
+          facc_payment_terms_suspended_committal_date: null,
+          facc_payment_terms_default_days_in_jail: null,
+          facc_payment_terms_reason_for_change: 'Test reason',
+          facc_payment_terms_change_letter: true,
+        },
+        nestedFlow: false,
+      };
+
+      component.initialFormData = testData;
+      component.ngOnInit();
+
+      // Verify that date validation was called and flags are set
+      expect(mockDateService.isDateInTheFuture).toHaveBeenCalledWith('2025-12-31', 0.6);
+      expect(component.dateInPast).toBe(false);
+      expect(component.dateInFuture).toBe(true);
+    });
+
+    it('should not validate suspended committal date for banner flags', () => {
+      // Reset mocks and component state
+      mockDateService.isDateInThePast.calls.reset();
+      mockDateService.isDateInTheFuture.calls.reset();
+      mockDateService.isValidDate.calls.reset();
+
+      // Setup mocks to return false for date validation methods since no relevant dates should be validated
+      mockDateService.isValidDate.and.returnValue(false);
+      mockDateService.isDateInThePast.and.returnValue(false);
+      mockDateService.isDateInTheFuture.and.returnValue(false);
+
+      const testData: IFinesAccPaymentTermsAmendForm = {
+        formData: {
+          facc_payment_terms_payment_terms: 'payInFull',
+          facc_payment_terms_pay_by_date: null, // No date to validate
+          facc_payment_terms_lump_sum_amount: null,
+          facc_payment_terms_instalment_amount: null,
+          facc_payment_terms_instalment_period: null,
+          facc_payment_terms_start_date: null, // No date to validate
+          facc_payment_terms_payment_card_request: false,
+          facc_payment_terms_prevent_payment_card: false,
+          facc_payment_terms_has_days_in_default: null,
+          facc_payment_terms_suspended_committal_date: '2023-01-01', // Past date - should not affect banner
+          facc_payment_terms_default_days_in_jail: null,
+          facc_payment_terms_reason_for_change: 'Test reason',
+          facc_payment_terms_change_letter: true,
+        },
+        nestedFlow: false,
+      };
+
+      component.initialFormData = testData;
+      component.ngOnInit();
+
+      // Verify that suspended committal date was not checked for banner validation
+      expect(mockDateService.isDateInThePast).not.toHaveBeenCalledWith('2023-01-01');
       expect(component.dateInPast).toBe(false);
       expect(component.dateInFuture).toBe(false);
     });

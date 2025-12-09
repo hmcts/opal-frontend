@@ -12,6 +12,7 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_TITLES } from './constants/fines-acc-defendant-routing-titles.constant';
 import { defendantAccountPartyResolver } from './resolvers/defendant-account-party.resolver';
+import { defendantAccountPaymentTermsLatestResolver } from './resolvers/defendant-account-payment-terms-latest.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 
@@ -83,7 +84,7 @@ export const routing: Routes = [
           import('../fines-acc-payment-terms-amend/fines-acc-payment-terms-amend.component').then(
             (c) => c.FinesAccPaymentTermsAmendComponent,
           ),
-        canActivate: [routePermissionsGuard],
+        canActivate: [routePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [accRootPermissionIds['amend-payment-terms']],
@@ -91,6 +92,7 @@ export const routing: Routes = [
         },
         resolve: {
           title: TitleResolver,
+          paymentTermsFormData: defendantAccountPaymentTermsLatestResolver,
         },
       },
       {

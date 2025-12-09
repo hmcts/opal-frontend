@@ -23,7 +23,7 @@ import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { IGovUkRadioOptions } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio/interfaces';
 import { takeUntil } from 'rxjs';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
-
+import { FinesMacDefaultDaysComponent } from '../../../fines-mac/components/fines-mac-default-days/fines-mac-default-days.component';
 // GovUK Components
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -82,6 +82,7 @@ const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patte
     MojDatePickerComponent,
     MojTicketPanelComponent,
     GovukTextAreaComponent,
+    FinesMacDefaultDaysComponent,
   ],
   templateUrl: './fines-acc-payment-terms-amend-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,6 +115,13 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   public yesterday!: string;
 
   /**
+   * Gets the prevent payment card flag from initial form data
+   */
+  public get preventPaymentCard(): boolean {
+    return this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
+  }
+
+  /**
    * Sets up the payment terms form structure
    */
   private setupPaymentTermsForm(): void {
@@ -121,14 +129,8 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
       // Payment Terms
       facc_payment_terms_payment_terms: new FormControl(null, [Validators.required]),
       facc_payment_terms_pay_by_date: new FormControl(null, [optionalValidDateValidator()]),
-      facc_payment_terms_lump_sum_amount: new FormControl(null, [
-        NUMERIC_PATTERN_VALIDATOR,
-        TWO_DECIMAL_PLACES_PATTERN_VALIDATOR,
-      ]),
-      facc_payment_terms_instalment_amount: new FormControl(null, [
-        NUMERIC_PATTERN_VALIDATOR,
-        TWO_DECIMAL_PLACES_PATTERN_VALIDATOR,
-      ]),
+      facc_payment_terms_lump_sum_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
+      facc_payment_terms_instalment_amount: new FormControl(null, [TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]),
       facc_payment_terms_instalment_period: new FormControl(null),
       facc_payment_terms_start_date: new FormControl(null, [optionalValidDateValidator()]),
 
@@ -175,6 +177,13 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
         instalmentAmountControl?.setValidators([TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
         startDateControl?.setValidators([optionalValidDateValidator()]);
 
+        // Clear all conditional field values first
+        payByDateControl?.setValue(null);
+        lumpSumAmountControl?.setValue(null);
+        instalmentAmountControl?.setValue(null);
+        instalmentPeriodControl?.setValue(null);
+        startDateControl?.setValue(null);
+
         // Add required validators based on selection
         switch (value) {
           case 'payInFull':
@@ -205,6 +214,8 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
 
   /**
    * Checks the validity of a date and sets flags indicating if the date is in the future or in the past.
+   * Note: This method sets shared flags for all date fields. If multiple dates need individual validation,
+   * this should be refactored to handle field-specific validation.
    * @param dateValue - The date value to be checked.
    */
   private dateChecker(dateValue: string): void {
@@ -212,17 +223,9 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     this.dateInPast = false;
 
     if (this.dateService.isValidDate(dateValue)) {
-      this.dateInFuture = this.dateService.isDateInTheFuture(dateValue, 3);
+      this.dateInFuture = this.dateService.isDateInTheFuture(dateValue, 0.6);
       this.dateInPast = this.dateService.isDateInThePast(dateValue);
     }
-  }
-
-  /**
-   * Resets the date checker flags to their initial state.
-   */
-  private resetDateChecker(): void {
-    this.dateInFuture = false;
-    this.dateInPast = false;
   }
 
   /**
@@ -238,12 +241,27 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   }
 
   /**
-   * Sets up date listeners for all date fields
+   * Sets up date listeners for date fields that affect the banner warning
+   * Note: Suspended committal date is excluded as it should not affect the banner
    */
   private setupDateListeners(): void {
     this.dateListener('facc_payment_terms_pay_by_date');
     this.dateListener('facc_payment_terms_start_date');
-    this.dateListener('facc_payment_terms_suspended_committal_date');
+  }
+
+  /**
+   * Validates date fields that affect the banner warning with their current values to trigger initial date checks
+   * Note: Suspended committal date is excluded as it should not affect the banner
+   */
+  private validateInitialDateValues(): void {
+    const dateFields = ['facc_payment_terms_pay_by_date', 'facc_payment_terms_start_date'];
+
+    dateFields.forEach((fieldName) => {
+      const control = this.form.get(fieldName);
+      if (control && control.value) {
+        this.dateChecker(control.value);
+      }
+    });
   }
 
   /**
@@ -255,10 +273,11 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
   private initialPaymentTermsForm(): void {
     const { formData } = this.initialFormData;
     this.setupPaymentTermsForm();
-    this.paymentTermsListener();
     this.setupDateListeners();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.paymentTermsListener();
+    this.validateInitialDateValues();
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
@@ -279,7 +298,6 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
     }
 
     this.initialPaymentTermsForm();
-    this.resetDateChecker();
     super.ngOnInit();
   }
 }

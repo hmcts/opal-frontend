@@ -14,7 +14,14 @@ import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fin
 import { IFinesAccPartyAddAmendConvertState } from '../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-state.interface';
 import { TransformationService } from '@hmcts/opal-frontend-common/services/transformation-service';
 import { transformDefendantAccountPartyPayload } from './utils/fines-acc-payload-transform-defendant-data.utils';
-
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
+import { IFinesAccPaymentTermsAmendState } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
+import { IFinesAccPaymentTermsAmendForm } from '../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-form.interface';
+import { transformPaymentTermsData } from './utils/fines-acc-payload-transform-payment-terms-data.utils';
+import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
+import { buildPaymentTermsAmendPayloadUtil } from './utils/fines-acc-payload-build-payment-terms-amend.utils';
+import { FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG } from './constants/fines-acc-transform-items-config.constant';
 @Injectable({
   providedIn: 'root',
 })
@@ -145,5 +152,35 @@ export class FinesAccPayloadService {
     isDebtor: boolean,
   ): IFinesAccPartyAddAmendConvertState {
     return transformDefendantAccountPartyPayload(defendantData, partyType, isDebtor);
+  }
+
+  /**
+   * Transforms payment terms data from API response format to form data format.
+   * Combines payment terms latest data with enforcement action result data.
+   *
+   * @param paymentTermsData - The payment terms latest data from the API
+   * @param resultData - The enforcement action result data from the API (optional)
+   * @returns Transformed data in the form structure format
+   */
+  public transformPaymentTermsPayload(
+    paymentTermsData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest,
+    resultData: IOpalFinesResultRefData | null,
+  ): IFinesAccPaymentTermsAmendForm {
+    const formData = transformPaymentTermsData(paymentTermsData, resultData);
+    return {
+      formData,
+      nestedFlow: false,
+    };
+  }
+
+  /**
+   * Builds the payload for amending payment terms on a defendant account.
+   * Transforms form data into the API payload format required for payment terms amendment.
+   *
+   * @param formData - The payment terms form data from the component
+   * @returns The payload object conforming to the IOpalFinesAmendPaymentTermsPayload interface
+   */
+  public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
+    return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 }
