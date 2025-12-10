@@ -66,6 +66,12 @@ export interface GetDefendantAccountHeaderSummaryResponse {
    */
   is_youth: boolean;
   /**
+   * This field will return true if the account has had accounts consolidated into it or false if it has not.
+   * @type {boolean}
+   * @memberof GetDefendantAccountHeaderSummaryResponse
+   */
+  has_consolidated_accounts: boolean;
+  /**
    *
    * @type {AccountStatusReferenceCommon}
    * @memberof GetDefendantAccountHeaderSummaryResponse

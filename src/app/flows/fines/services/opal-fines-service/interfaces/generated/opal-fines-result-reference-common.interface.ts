@@ -6,10 +6,10 @@
 export interface ResultReferenceCommon {
   /**
    *
-   * @type {number}
+   * @type {string}
    * @memberof ResultReferenceCommon
    */
-  result_id: number;
+  result_id: string;
   /**
    *
    * @type {string}

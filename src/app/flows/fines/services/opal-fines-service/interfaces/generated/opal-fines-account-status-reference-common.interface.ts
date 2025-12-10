@@ -4,7 +4,6 @@
  */
 
 import type { AccountStatusReferenceCommonAccountStatusCodeEnum } from '../../types/opal-fines-account-status-reference-common-account-status-code-enum.type';
-import type { AccountStatusReferenceCommonAccountStatusDisplayNameEnum } from '../../types/opal-fines-account-status-reference-common-account-status-display-name-enum.type';
 
 export interface AccountStatusReferenceCommon {
   /**
@@ -18,5 +17,5 @@ export interface AccountStatusReferenceCommon {
    * @type {string}
    * @memberof AccountStatusReferenceCommon
    */
-  account_status_display_name: (typeof AccountStatusReferenceCommonAccountStatusDisplayNameEnum)[keyof typeof AccountStatusReferenceCommonAccountStatusDisplayNameEnum];
+  account_status_display_name: string;
 }
