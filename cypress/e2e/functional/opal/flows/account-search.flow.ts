@@ -537,16 +537,16 @@ export class AccountSearchFlow {
     // ───────────────────────────────
     const hasIndividualData = Boolean(
       map['individual last name'] ||
-        map['first names'] ||
-        map['date of birth'] ||
-        map['dob'] ||
-        map['national insurance number'] ||
-        map['ni number'] ||
-        map['address line 1'] ||
-        map['postcode'] ||
-        map['last name exact match'] ||
-        map['first names exact match'] ||
-        map['include aliases'],
+      map['first names'] ||
+      map['date of birth'] ||
+      map['dob'] ||
+      map['national insurance number'] ||
+      map['ni number'] ||
+      map['address line 1'] ||
+      map['postcode'] ||
+      map['last name exact match'] ||
+      map['first names exact match'] ||
+      map['include aliases'],
     );
 
     if (!hasIndividualData) {
