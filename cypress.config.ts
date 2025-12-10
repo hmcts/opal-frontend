@@ -1,8 +1,9 @@
+// cypress.config.ts
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import * as path from 'node:path'; // prefer node:path
+import * as path from 'node:path';
 
 function setupBrowserLaunch(on: Cypress.PluginEvents): void {
   on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
@@ -45,71 +46,18 @@ async function setupNodeEvents(
 ): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
 
-  // on(
-  //   'file:preprocessor',
-  //   webpack({
-  //     webpackOptions: {
-  //       // Disable sourcemaps to avoid sourcemap helper recursion in headed runs
-  //       devtool: false,
-  //       resolve: {
-  //         extensions: ['.ts', '.js'],
-  //         alias: {
-  //           '@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map': path.resolve(
-  //             __dirname,
-  //             'cypress/support/stubs/cucumber-source-map.js',
-  //           ),
-  //         },
-  //         plugins: [
-  //           new TsconfigPathsPlugin({
-  //             configFile: path.resolve(__dirname, 'e2e.tsconfig.json'), // ← absolute
-  //           }),
-  //         ],
-  //       },
-  //       module: {
-  //         rules: [
-  //           {
-  //             test: /\.ts$/,
-  //             exclude: [/node_modules/, /src/],
-  //             use: [
-  //               {
-  //                 loader: 'ts-loader',
-  //                 options: {
-  //                   configFile: 'e2e.tsconfig.json',
-  //                   transpileOnly: true,
-  //                   compilerOptions: {
-  //                     sourceMap: false,
-  //                     inlineSourceMap: false,
-  //                     inlineSources: false,
-  //                   },
-  //                 },
-  //               },
-  //             ],
-  //           },
-  //           {
-  //             test: /\.feature$/,
-  //             include: [/cypress\/e2e/],
-  //             use: [
-  //               {
-  //                 loader: '@badeball/cypress-cucumber-preprocessor/webpack',
-  //                 options: config,
-  //               },
-  //             ],
-  //           },
-  //         ],
-  //       },
-  //     },
-  //   }),
-  // );
-
   on(
     'file:preprocessor',
     webpack({
       webpackOptions: {
+        // IMPORTANT: use a valid sourcemap mode, not false,
+        // to avoid broken Base64 / "length must be multiple of 4" errors.
+        devtool: 'eval',
         resolve: {
           extensions: ['.ts', '.js'],
           plugins: [
             new TsconfigPathsPlugin({
-              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'), // ← absolute
+              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'),
             }),
           ],
         },
@@ -123,7 +71,15 @@ async function setupNodeEvents(
                   loader: 'ts-loader',
                   options: {
                     configFile: 'e2e.tsconfig.json',
+                    // keep transpileOnly to speed up bundling for Cypress
                     transpileOnly: true,
+                    compilerOptions: {
+                      // TS sourcemaps are optional; Webpack devtool handles
+                      // bundle-level sourcemaps for Cucumber.
+                      sourceMap: false,
+                      inlineSourceMap: false,
+                      inlineSources: false,
+                    },
                   },
                 },
               ],
@@ -173,8 +129,10 @@ export default defineConfig({
     ],
     setupNodeEvents,
     retries: { runMode: 1, openMode: 0 },
+    // make sure our support file always loads
     supportFile: 'cypress/support/e2e.ts',
   },
+
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
 

@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["node_modules/cypress", "node_modules/cypress-axe", "**/*.ts"],   //"support/stubs/cucumber-source-map.js"],
+  "include": ["node_modules/cypress", "node_modules/cypress-axe", "**/*.ts"],
   "compilerOptions": {
     "noEmit": false,
     "sourceMap": false,
