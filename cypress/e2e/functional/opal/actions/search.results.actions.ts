@@ -164,12 +164,45 @@ export class ResultsActions {
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
 
     // Dynamic locator is defined in the locators file
-    cy.get(R.linkByAccountNumber(accountNumber), { timeout: 8_000 })
+    cy.get(R.linkByAccountNumber(accountNumber), { timeout: ResultsActions.WAIT_MS })
       .scrollIntoView()
       .should('be.visible')
       .click({ force: true });
 
     this.assertNavigatedToDetails();
+  }
+
+  /**
+   * Opens a specific account by number, traversing pagination until found.
+   * Throws if the link is not found on any page.
+   */
+  public openByAccountNumberAcrossPages(accountNumber: string): void {
+    log('open', 'Opening by account number across paginated results', { accountNumber });
+
+    const tryPage = (): void => {
+      // Check current page first
+      cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+        const selector = R.linkByAccountNumber(accountNumber);
+        const onPage = $body.find(selector).length > 0;
+
+        if (onPage) {
+          cy.get(selector, { timeout: ResultsActions.WAIT_MS }).scrollIntoView().click({ force: true });
+          this.assertNavigatedToDetails();
+          return;
+        }
+
+        const nextLink = $body.find('nav.moj-pagination .moj-pagination__item--next a.moj-pagination__link');
+        if (!nextLink.length) {
+          throw new Error(`Account ${accountNumber} not found in paginated results`);
+        }
+
+        cy.wrap(nextLink).click({ force: true });
+        this.waitForResultsTable();
+        tryPage();
+      });
+    };
+
+    tryPage();
   }
 
   /**
