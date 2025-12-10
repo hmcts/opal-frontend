@@ -306,7 +306,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.PGsurname).should('contain', 'test');
     cy.get(DOM_ELEMENTS.PGAliases).should('contain', 'test test');
     cy.get(DOM_ELEMENTS.PGdob).should('contain', '01 February 1990');
-    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB123456C');
+    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.PGaddress)
       .should('contain', 'Address')
       .should('contain', 'test address line 1')
