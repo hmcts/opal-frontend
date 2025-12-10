@@ -558,24 +558,30 @@ When('I set imposition creditor types:', (table: DataTable) => {
  * @description Enter a past date into a date field.
 
  */
-When('I enter a date {int} weeks into the past into the {string} date field', (weeks: number, fieldLabel: string) => {
-  const date = calculateWeeksInPast(weeks);
-  const field = resolveOffenceFieldKey(fieldLabel);
-  log('type', 'Entering past date', { weeks, date, fieldLabel });
-  offenceDetails().setOffenceField(field, date);
-});
+When(
+  'I enter a manual account date {int} weeks into the past into the {string} date field',
+  (weeks: number, fieldLabel: string) => {
+    const date = calculateWeeksInPast(weeks);
+    const field = resolveOffenceFieldKey(fieldLabel);
+    log('type', 'Entering past date (manual account)', { weeks, date, fieldLabel });
+    offenceDetails().setOffenceField(field, date);
+  },
+);
 
 /**
  * @step Enter a future date into a date field.
  * @description Enter a future date into a date field.
 
  */
-When('I enter a date {int} weeks into the future into the {string} date field', (weeks: number, fieldLabel: string) => {
-  const date = calculateWeeksInFuture(weeks);
-  const field = resolveOffenceFieldKey(fieldLabel);
-  log('type', 'Entering future date', { weeks, date, fieldLabel });
-  offenceDetails().setOffenceField(field, date);
-});
+When(
+  'I enter a manual account date {int} weeks into the future into the {string} date field',
+  (weeks: number, fieldLabel: string) => {
+    const date = calculateWeeksInFuture(weeks);
+    const field = resolveOffenceFieldKey(fieldLabel);
+    log('type', 'Entering future date (manual account)', { weeks, date, fieldLabel });
+    offenceDetails().setOffenceField(field, date);
+  },
+);
 
 /**
  * @step Enter a value into an imposition field.

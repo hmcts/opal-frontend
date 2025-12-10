@@ -522,6 +522,22 @@ Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedT
 });
 
 /**
+ * @step Verifies a validation message for Minor Creditor searches (explicit wording).
+ *
+ * Alias to handle feature wording like:
+ *   And I see "Enter minor creditor company name or address" validation message for a minor creditor "company"
+ *
+ * Delegates to the generic validation assertion.
+ */
+Then(
+  'I see {string} validation message for a minor creditor {string}',
+  (expectedText: string, searchType: string) => {
+    log('assert', `Verifying minor creditor validation for ${searchType}: "${expectedText}"`);
+    searchCommonActions().assertValidationMessageContains(expectedText);
+  },
+);
+
+/**
  * @step Select back → confirm navigation → assert we returned to the Search page.
  * @description
  * Uses the shared CommonActions.navigateBrowserBackWithConfirmation() helper

@@ -389,7 +389,8 @@ When('I complete manual court details:', (table: DataTable) => {
   log('debug', 'Court details table map', { hash: normalized });
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualCourtFieldKey, string>>>(
     (acc, [field, value]) => {
-      if (!field) {
+      const isHeaderRow = field.toLowerCase() === 'field' && value.toLowerCase() === 'value';
+      if (!field || isHeaderRow) {
         return acc;
       }
       const key = resolveCourtFieldKey(field);
@@ -416,7 +417,8 @@ When('I have provided manual court details:', (table: DataTable) => {
   const normalized = Object.fromEntries(Object.entries(hash).map(([field, value]) => [field.trim(), value.trim()]));
   const payload = Object.entries(normalized).reduce<Partial<Record<ManualCourtFieldKey, string>>>(
     (acc, [field, value]) => {
-      if (!field) {
+      const isHeaderRow = field.toLowerCase() === 'field' && value.toLowerCase() === 'value';
+      if (!field || isHeaderRow) {
         return acc;
       }
       const key = resolveCourtFieldKey(field);

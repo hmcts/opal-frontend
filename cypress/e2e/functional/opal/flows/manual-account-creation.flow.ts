@@ -131,6 +131,11 @@ export class ManualAccountCreationFlow {
   private readonly offenceMinorCreditor = new ManualOffenceMinorCreditorActions();
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
+  private readonly defaultBusinessUnitToken = 'default business unit';
+
+  private isDefaultBusinessUnit(businessUnit: string): boolean {
+    return businessUnit.trim().toLowerCase() === this.defaultBusinessUnitToken;
+  }
 
   /**
    * Starts a Fine manual account and lands on the task list.
@@ -140,7 +145,9 @@ export class ManualAccountCreationFlow {
   startFineAccount(businessUnit: string, defendantType: DefendantType): void {
     log('flow', 'Start manual fine account', { businessUnit, defendantType });
     this.ensureOnCreateAccountPage();
-    this.createAccount.selectBusinessUnit(businessUnit);
+    if (!this.isDefaultBusinessUnit(businessUnit)) {
+      this.createAccount.selectBusinessUnit(businessUnit);
+    }
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
@@ -514,10 +521,7 @@ export class ManualAccountCreationFlow {
    * @param offenceRows - Entries scoped to Offence details.
    * @param minorRows - Entries scoped to Minor creditor details.
    */
-  private handleOffenceAndMinorEntries(
-    offenceRows: CompositeEntry[],
-    minorRows: CompositeEntry[],
-  ): void {
+  private handleOffenceAndMinorEntries(offenceRows: CompositeEntry[], minorRows: CompositeEntry[]): void {
     if (!offenceRows.length && !minorRows.length) return;
 
     const parseWeeksAgo = (value?: string): number | undefined => {
@@ -840,7 +844,9 @@ export class ManualAccountCreationFlow {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
     cy.reload();
     this.createAccount.assertOnCreateAccountPage();
-    this.createAccount.selectBusinessUnit(businessUnit);
+    if (!this.isDefaultBusinessUnit(businessUnit)) {
+      this.createAccount.selectBusinessUnit(businessUnit);
+    }
     this.createAccount.selectAccountType(accountType);
     this.createAccount.selectDefendantType(defendantType);
     this.goToAccountDetails();

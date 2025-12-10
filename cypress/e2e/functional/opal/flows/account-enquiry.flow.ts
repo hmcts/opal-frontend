@@ -17,9 +17,10 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
+const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
 
 /**
  * @file AccountEnquiryFlow
@@ -507,7 +508,7 @@ export class AccountEnquiryFlow {
       expect(match?.[1], 'Defendant account ID should be captured from URL').to.exist;
 
       const defendantAccountId = parseInt(match![1], 10);
-      logAE('action', 'Extracted defendant account ID from URL', { defendantAccountId });
+      logAESync('action', 'Extracted defendant account ID from URL', { defendantAccountId });
       return defendantAccountId;
     });
   }
@@ -581,7 +582,7 @@ export class AccountEnquiryFlow {
         const amendments = (responseBody?.['searchData'] ?? []) as Array<Record<string, unknown>>;
         const count = responseBody?.['count'] as number | undefined;
 
-        logAE('info', 'Amendments search result', {
+        logAESync('info', 'Amendments search result', {
           count,
           searchDataLength: amendments.length,
         });
@@ -950,7 +951,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        logAE('action', `Found party ID: ${partyId}`);
+        logAESync('action', `Found party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -961,7 +962,7 @@ export class AccountEnquiryFlow {
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
           expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
-          logAE('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
+          logAESync('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
           return data.defendantAccountId;
         }),
       )
@@ -1025,7 +1026,7 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          logAE('info', `Found party ID: ${partyId}`);
+          logAESync('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
@@ -1087,7 +1088,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['parent_guardian_party_id'];
         expect(partyId, 'parent_guardian_party_id must exist').to.exist;
 
-        logAE('action', `Found parent/guardian party ID: ${partyId}`);
+        logAESync('action', `Found parent/guardian party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -1100,7 +1101,9 @@ export class AccountEnquiryFlow {
           expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
             expectedGuardianName,
           );
-          logAE('assert', 'Guardian forename verified in party details', { forenames: individual?.['forenames'] });
+          logAESync('assert', 'Guardian forename verified in party details', {
+            forenames: individual?.['forenames'],
+          });
           return data.defendantAccountId;
         }),
       )
@@ -1161,7 +1164,7 @@ export class AccountEnquiryFlow {
         const partyId = headerBody['defendant_account_party_id'];
         expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-        logAE('action', `Found party ID: ${partyId}`);
+        logAESync('action', `Found party ID: ${partyId}`);
 
         return { defendantAccountId, partyId: partyId as string };
       })
@@ -1177,7 +1180,7 @@ export class AccountEnquiryFlow {
           const organisationName = organisation?.['organisation_name'];
 
           expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
-          logAE('assert', 'Organisation name verified in party details', { organisationName });
+          logAESync('assert', 'Organisation name verified in party details', { organisationName });
           return data.defendantAccountId;
         }),
       )
@@ -1249,7 +1252,7 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          logAE('info', `Found party ID: ${partyId}`);
+          logAESync('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
@@ -1298,7 +1301,7 @@ export class AccountEnquiryFlow {
           const partyId = headerBody['defendant_account_party_id'];
           expect(partyId, 'defendant_account_party_id must exist').to.exist;
 
-          logAE('info', `Found party ID: ${partyId}`);
+          logAESync('info', `Found party ID: ${partyId}`);
           return defendantAccountId;
         })
         .then((id) => this.searchAmendmentsForAccount(id))
