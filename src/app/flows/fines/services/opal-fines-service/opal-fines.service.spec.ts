@@ -807,11 +807,18 @@ describe('OpalFines', () => {
 
   it('should getDefendantAccountEnforcementTabData', () => {
     const account_id: number = 77;
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK;
 
     service.getDefendantAccountEnforcementTabData(account_id).subscribe((response) => {
+      response.version = OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK.version;
       expect(response).toEqual(expectedResponse);
     });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(expectedResponse);
   });
 
   it('should getDefendantAccountImpositionsTabData', () => {

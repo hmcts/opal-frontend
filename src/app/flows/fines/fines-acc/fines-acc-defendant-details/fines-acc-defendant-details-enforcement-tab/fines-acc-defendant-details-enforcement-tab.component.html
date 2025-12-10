@@ -47,7 +47,10 @@
         <a class="govuk-link" tabindex="0">Add enforcement action</a>
       </p>
     }
-    @if (hasAccountMaintenancePermission) {
+    @if (
+      hasAccountMaintenancePermission &&
+      !this.tabData.enforcement_override.enforcement_override_result.enforcement_override_result_id
+    ) {
       <p>
         <a class="govuk-link" tabindex="0">Add enforcement override</a>
       </p>
