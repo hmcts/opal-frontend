@@ -18,7 +18,7 @@ import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
 } from '../actions/manual-account-creation/employer-details.actions';
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { log } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
 import { ManualCompanyDetailsActions } from '../actions/manual-account-creation/company-details.actions';
 import {
@@ -37,6 +37,9 @@ import {
   ManualPaymentTermsActions,
   ManualPaymentTermsExpectations,
   ManualPaymentTermsInput,
+  PaymentFrequencyOption,
+  PaymentTermOption,
+  EnforcementActionOption,
 } from '../actions/manual-account-creation/payment-terms.actions';
 import {
   LanguageOption,
@@ -44,12 +47,17 @@ import {
 } from '../actions/manual-account-creation/language-preferences.actions';
 import { ManualOffenceMinorCreditorActions } from '../actions/manual-account-creation/offence-minor-creditor.actions';
 import { accessibilityActions } from '../actions/accessibility/accessibility.actions';
-import { calculateWeeksInPast } from '../../../../support/utils/dateUtils';
-import { resolveSearchFieldKey, resolveSearchResultColumn } from '../../../../support/utils/macFieldResolvers';
+import { calculateWeeksInPast, resolveRelativeDate } from '../../../../support/utils/dateUtils';
+import {
+  MinorCreditorFieldKey,
+  resolveEmployerFieldKey,
+  resolveCourtFieldKey,
+  resolveMinorCreditorFieldKey,
+  resolvePersonalDetailsFieldKey,
+  resolveSearchFieldKey,
+  resolveSearchResultColumn,
+} from '../../../../support/utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
-import { ManualCreateAccountLocators as CreateLocators } from '../../../../shared/selectors/manual-account-creation/create-account.locators';
-
-const log = createScopedLogger('ManualAccountCreationFlow');
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -89,6 +97,14 @@ type ParentGuardianDetailsExpectations = ManualParentGuardianDetailsPayload & {
   addAliasesChecked?: boolean;
 };
 
+type CompositeEntry = {
+  raw: string[];
+  section: string;
+  field: string;
+  value: string;
+  imposition: number;
+};
+
 /**
  * Flow for Manual Account Creation.
  *
@@ -124,28 +140,678 @@ export class ManualAccountCreationFlow {
   startFineAccount(businessUnit: string, defendantType: DefendantType): void {
     log('flow', 'Start manual fine account', { businessUnit, defendantType });
     this.ensureOnCreateAccountPage();
-    const normalizedBu = businessUnit.trim().toLowerCase();
-    const isDefaultBusinessUnit = normalizedBu === 'default business unit';
-
-    cy.get('body', { timeout: this.pathTimeout }).then(($body) => {
-      const hasBusinessUnitInput = $body.find(CreateLocators.businessUnit.input).length > 0;
-
-      if (isDefaultBusinessUnit || !hasBusinessUnitInput) {
-        log('info', 'Skipping business unit selection (default or field absent)', {
-          businessUnit,
-          hasBusinessUnitInput,
-        });
-        return;
-      }
-
-      this.createAccount.selectBusinessUnit(businessUnit);
-    });
-
+    this.createAccount.selectBusinessUnit(businessUnit);
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
     cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
     this.accountDetails.assertOnAccountDetailsPage();
+  }
+
+  /**
+   * Completes Court, Offence (single imposition), and Minor Creditor details from one table.
+   * @param rows - Raw DataTable rows including headers.
+   */
+  completeCourtOffenceAndMinorCreditorWithDefaults(rows: string[][]): void {
+    if (!rows.length) {
+      throw new Error('No data provided for court/offence/minor creditor completion');
+    }
+
+    const parseWeeksAgo = (value?: string): number | undefined => {
+      if (!value) return undefined;
+      const weekMatch = value.match(/(-?\d+)\s*week/i);
+      if (weekMatch) return Number(weekMatch[1]);
+      const monthMatch = value.match(/(-?\d+)\s*month/i);
+      if (monthMatch) return Number(monthMatch[1]) * 4;
+      return undefined;
+    };
+
+    const [header, ...body] = rows;
+    const findIndex = (name: string) => header.findIndex((h) => h?.trim().toLowerCase() === name);
+    const sectionIdx = findIndex('section');
+    const fieldIdx = findIndex('field');
+    const valueIdx = findIndex('value');
+    const impositionIdx = findIndex('imposition');
+
+    if (sectionIdx === -1 || fieldIdx === -1 || valueIdx === -1) {
+      throw new Error('Table must include Section, Field, and Value columns');
+    }
+
+    const entries = body
+      .map((row) => ({
+        section: row[sectionIdx]?.trim(),
+        field: row[fieldIdx]?.trim(),
+        value: row[valueIdx]?.trim(),
+        imposition: impositionIdx >= 0 ? Number(row[impositionIdx] ?? 1) || 1 : 1,
+      }))
+      .filter(({ section, field }) => section && field);
+
+    const courtRows = entries.filter(({ section }) => /court/i.test(section));
+    const offenceRows = entries.filter(({ section }) => /offence/i.test(section));
+    const minorRows = entries.filter(({ section }) => /minor creditor/i.test(section));
+
+    const shouldSelectFirstLja = !courtRows.some(({ field }) => /local justice area|sending area/i.test(field));
+    const shouldSelectFirstEnforcement = !courtRows.some(({ field }) => /enforcement court/i.test(field));
+
+    const courtPayload = courtRows.reduce<Partial<Record<ManualCourtFieldKey, string>>>((acc, row) => {
+      const key = resolveCourtFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    let offenceCode = offenceRows.find(({ field }) => /offence code/i.test(field ?? ''))?.value?.trim() || 'TP11003';
+    let weeksAgo = parseWeeksAgo(offenceRows.find(({ field }) => /date of sentence/i.test(field ?? ''))?.value) ?? 4;
+
+    type ImpositionRow = {
+      resultCode?: string;
+      amountImposed?: string;
+      amountPaid?: string;
+      creditorType?: string;
+      paymentMethod?: string;
+    };
+
+    const impositionMap = new Map<number, ImpositionRow>();
+    offenceRows.forEach(({ field, value, imposition }) => {
+      const normalized = field.toLowerCase();
+      if (/offence code|date of sentence/.test(normalized)) {
+        return;
+      }
+      const bucket = impositionMap.get(imposition) ?? {};
+      if (/result code/.test(normalized)) bucket.resultCode = value;
+      if (/amount imposed/.test(normalized)) bucket.amountImposed = value;
+      if (/amount paid/.test(normalized)) bucket.amountPaid = value;
+      if (/creditor type/.test(normalized)) bucket.creditorType = value;
+      if (/payment method/.test(normalized)) bucket.paymentMethod = value;
+      impositionMap.set(imposition, bucket);
+    });
+
+    if (impositionMap.size === 0) {
+      impositionMap.set(1, { creditorType: 'Minor', paymentMethod: 'BACS' });
+    }
+
+    const impositions: OffenceImpositionInput[] = Array.from(impositionMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([imposition, payload]) => {
+        const defaultCreditor =
+          payload.creditorType || (payload.paymentMethod && /bacs/i.test(payload.paymentMethod) ? 'Minor' : undefined);
+        return {
+          imposition,
+          resultCode: payload.resultCode || 'Compensation (FCOMP)',
+          amountImposed: payload.amountImposed,
+          amountPaid: payload.amountPaid,
+          creditorType: defaultCreditor,
+        };
+      });
+
+    const minorFields = minorRows.reduce<Partial<Record<MinorCreditorFieldKey, string>>>((acc, row) => {
+      if (/payment method|creditor type/i.test(row.field)) {
+        return acc;
+      }
+      const key = resolveMinorCreditorFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    const bacsImpositionFromTable =
+      Array.from(impositionMap.entries()).find(([, payload]) => /bacs/i.test(payload.paymentMethod ?? ''))?.[0] || 1;
+    const minorImposition =
+      minorRows[0]?.imposition ||
+      impositions.find(({ creditorType }) => /minor/i.test(creditorType ?? ''))?.imposition ||
+      bacsImpositionFromTable ||
+      1;
+
+    const bacsRequested =
+      /bacs/i.test(impositionMap.get(minorImposition)?.paymentMethod ?? '') ||
+      ['accountName', 'sortCode', 'accountNumber', 'paymentReference'].some((key) =>
+        Boolean((minorFields as any)[key]),
+      );
+
+    const minorPayload: MinorCreditorWithBacs = {
+      company: minorFields.company || 'Minor Creditor Ltd',
+      address1: minorFields.address1 || 'Addr1',
+      address2: minorFields.address2,
+      address3: minorFields.address3,
+      postcode: minorFields.postcode || 'TE1 1ST',
+      accountName: bacsRequested ? minorFields.accountName || 'Minor Creditor' : undefined,
+      sortCode: bacsRequested ? minorFields.sortCode || '123456' : undefined,
+      accountNumber: bacsRequested ? minorFields.accountNumber || '12345678' : undefined,
+      paymentReference: bacsRequested ? minorFields.paymentReference || 'REF' : undefined,
+    };
+
+    log('flow', 'Completing Court details from composite table', { courtPayload });
+    this.openTaskFromAccountDetails('Court details');
+    this.courtDetails.fillCourtDetails(courtPayload);
+    if (shouldSelectFirstLja) {
+      this.courtDetails.selectFirstLjaOption();
+    }
+    if (shouldSelectFirstEnforcement) {
+      this.courtDetails.selectFirstEnforcementCourtOption();
+    }
+    this.taskNavigation.returnToAccountDetails();
+
+    log('flow', 'Completing Offence details from composite table', {
+      offenceCode,
+      weeksAgo,
+      impositions,
+    });
+    this.openTaskFromAccountDetails('Offence details');
+    this.addOffenceWithImpositions({ offenceCode, weeksAgo, impositions });
+
+    // Minor creditor: ensure we capture BACS when requested and return to Account details.
+    log('flow', 'Completing Company minor creditor with BACS', { minorImposition, minorPayload });
+    this.maintainCompanyMinorCreditorWithBacs(minorImposition, minorPayload);
+    this.offenceDetails.clickReviewOffence();
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.returnToAccountDetails();
+  }
+
+  /**
+   * Completes a full manual account setup (Court, Parent/Guardian, Employer, Personal, Offence, Minor Creditor,
+   * Payment terms, and Company details) using a single composite table. Sections without rows are skipped.
+   * @param rows - Raw DataTable rows including headers.
+   */
+  completeManualAccountWithDefaults(rows: string[][]): void {
+    const entries = this.parseCompositeEntries(rows);
+    const courtRows = entries.filter(({ section }) => /court/i.test(section));
+    const parentRows = entries.filter(({ section }) => /parent|guardian/i.test(section));
+    const employerRows = entries.filter(({ section }) => /employer/i.test(section));
+    const personalRows = entries.filter(({ section }) => /personal|defendant/i.test(section));
+    const offenceRows = entries.filter(({ section }) => /offence/i.test(section));
+    const minorRows = entries.filter(({ section }) => /minor creditor/i.test(section));
+    const paymentRows = entries.filter(({ section }) => /payment/i.test(section));
+    const companyRows = entries.filter(({ section }) => /company/i.test(section));
+
+    this.handleCourtEntries(courtRows);
+    this.handleParentGuardianEntries(parentRows);
+    this.handleEmployerEntries(employerRows);
+    this.handlePersonalEntries(personalRows);
+    this.handleOffenceAndMinorEntries(offenceRows, minorRows);
+    this.handlePaymentEntries(paymentRows);
+    this.handleCompanyEntries(companyRows);
+  }
+
+  /**
+   * Parses a composite data table into normalized entries with section/field/value/imposition.
+   * @param rows - Raw DataTable rows including headers.
+   * @returns Array of composite entries with parsed values.
+   */
+  private parseCompositeEntries(rows: string[][]): CompositeEntry[] {
+    if (!rows.length) {
+      throw new Error('No data provided for manual account completion');
+    }
+
+    const [header, ...body] = rows;
+    const findIndex = (name: string) => header.findIndex((h) => h?.trim().toLowerCase() === name);
+    const sectionIdx = findIndex('section');
+    const fieldIdx = findIndex('field');
+    const valueIdx = findIndex('value');
+    const impositionIdx = findIndex('imposition');
+
+    if (sectionIdx === -1 || fieldIdx === -1 || valueIdx === -1) {
+      throw new Error('Table must include Section, Field, and Value columns');
+    }
+
+    const entries: CompositeEntry[] = body
+      .map((row) => ({
+        raw: row,
+        section: row[sectionIdx]?.trim(),
+        field: row[fieldIdx]?.trim(),
+        value: row[valueIdx]?.trim(),
+        imposition: impositionIdx >= 0 ? Number(row[impositionIdx] ?? 1) || 1 : 1,
+      }))
+      .filter(({ section, field }) => section && field) as CompositeEntry[];
+
+    return entries;
+  }
+
+  /**
+   * Populates Court details from composite entries and returns to Account details.
+   * @param courtRows - Entries scoped to Court details.
+   */
+  private handleCourtEntries(courtRows: CompositeEntry[]): void {
+    if (!courtRows.length) return;
+
+    const shouldSelectFirstLja = !courtRows.some(({ field }) => /local justice area|sending area/i.test(field));
+    const shouldSelectFirstEnforcement = !courtRows.some(({ field }) => /enforcement court/i.test(field));
+
+    const courtPayload = courtRows.reduce<Partial<Record<ManualCourtFieldKey, string>>>((acc, row) => {
+      const key = resolveCourtFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    log('flow', 'Completing Court details from composite table', { courtPayload });
+    this.provideCourtDetailsFromAccountDetails(courtPayload);
+    if (shouldSelectFirstLja) {
+      this.courtDetails.selectFirstLjaOption();
+    }
+    if (shouldSelectFirstEnforcement) {
+      this.courtDetails.selectFirstEnforcementCourtOption();
+    }
+    this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Parent/Guardian details (including aliases) from composite entries.
+   * @param parentRows - Entries scoped to Parent/Guardian details.
+   */
+  private handleParentGuardianEntries(parentRows: CompositeEntry[]): void {
+    if (!parentRows.length) return;
+
+    const parentPayload: ManualParentGuardianDetailsPayload = {};
+    const ensureAliasEntry = (index: number) => {
+      if (!parentPayload.aliases) parentPayload.aliases = [];
+      while (parentPayload.aliases.length <= index) {
+        parentPayload.aliases.push({});
+      }
+      return parentPayload.aliases[index] as NonNullable<ManualParentGuardianDetailsPayload['aliases']>[number];
+    };
+
+    parentRows.forEach(({ field, value }) => {
+      const aliasMatch = field.match(/^alias\s*(\d+)\.(.+)$/i);
+      if (aliasMatch) {
+        const aliasIndex = Number(aliasMatch[1]) - 1;
+        const aliasField = aliasMatch[2].trim().toLowerCase();
+        const target = ensureAliasEntry(aliasIndex);
+        if (aliasField.startsWith('first')) {
+          target.firstNames = value;
+        } else if (aliasField.startsWith('last')) {
+          target.lastName = value;
+        } else {
+          throw new Error(`Unsupported parent/guardian alias field: ${field}`);
+        }
+        return;
+      }
+
+      const normalized = field.toLowerCase();
+      const compact = normalized.replace(/\s+/g, '');
+
+      if (/add\s*aliases/.test(normalized)) {
+        parentPayload.addAliases = /true|yes|1/i.test(value);
+        return;
+      }
+      if (/first name/.test(normalized) || /firstname/.test(compact)) {
+        parentPayload.firstNames = value;
+        return;
+      }
+      if (/last name|surname/.test(normalized) || /lastname/.test(compact)) {
+        parentPayload.lastName = value;
+        return;
+      }
+      if (/national insurance/.test(normalized) || /nationalinsurance/.test(compact)) {
+        parentPayload.nationalInsuranceNumber = value;
+        return;
+      }
+      if (/address line 1/.test(normalized) || /addressline1/.test(compact)) {
+        parentPayload.addressLine1 = value;
+        return;
+      }
+      if (/address line 2/.test(normalized) || /addressline2/.test(compact)) {
+        parentPayload.addressLine2 = value;
+        return;
+      }
+      if (/address line 3/.test(normalized) || /addressline3/.test(compact)) {
+        parentPayload.addressLine3 = value;
+        return;
+      }
+      if (/postcode|post code/.test(normalized) || /postcode/.test(compact)) {
+        parentPayload.postcode = value;
+        return;
+      }
+      if (/vehicle make|make and model/.test(normalized)) {
+        parentPayload.vehicleMake = value;
+        return;
+      }
+      if (/vehicle registration|registration number/.test(normalized)) {
+        parentPayload.vehicleRegistration = value;
+      }
+    });
+
+    log('flow', 'Completing Parent/Guardian details from composite table', { parentPayload });
+    this.openParentGuardianDetailsTask();
+    this.fillParentGuardianDetails(parentPayload);
+    this.returnToAccountDetailsFromParentGuardian();
+  }
+
+  /**
+   * Populates Employer details from composite entries and returns to Account details.
+   * @param employerRows - Entries scoped to Employer details.
+   */
+  private handleEmployerEntries(employerRows: CompositeEntry[]): void {
+    if (!employerRows.length) return;
+
+    const employerPayload = employerRows.reduce<Partial<Record<ManualEmployerFieldKey, string>>>((acc, row) => {
+      const key = resolveEmployerFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    log('flow', 'Completing Employer details from composite table', { employerPayload });
+    this.provideEmployerDetailsFromAccountDetails(employerPayload);
+    this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Personal details from composite entries and returns to Account details.
+   * @param personalRows - Entries scoped to Personal details.
+   */
+  private handlePersonalEntries(personalRows: CompositeEntry[]): void {
+    if (!personalRows.length) return;
+
+    const personalPayload = personalRows.reduce<ManualPersonalDetailsPayload>((acc, row) => {
+      const key = resolvePersonalDetailsFieldKey(row.field);
+      (acc as any)[key] = row.value;
+      return acc;
+    }, {});
+
+    log('flow', 'Completing Personal details from composite table', { personalPayload });
+    this.providePersonalDetailsFromAccountDetails(personalPayload);
+    this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Offence details, impositions, and minor creditor data from composite entries.
+   * @param offenceRows - Entries scoped to Offence details.
+   * @param minorRows - Entries scoped to Minor creditor details.
+   */
+  private handleOffenceAndMinorEntries(
+    offenceRows: CompositeEntry[],
+    minorRows: CompositeEntry[],
+  ): void {
+    if (!offenceRows.length && !minorRows.length) return;
+
+    const parseWeeksAgo = (value?: string): number | undefined => {
+      if (!value) return undefined;
+      const weekMatch = value.match(/(-?\d+)\s*week/i);
+      if (weekMatch) return Number(weekMatch[1]);
+      const monthMatch = value.match(/(-?\d+)\s*month/i);
+      if (monthMatch) return Number(monthMatch[1]) * 4;
+      return undefined;
+    };
+
+    let offenceCode = offenceRows.find(({ field }) => /offence code/i.test(field ?? ''))?.value?.trim() || 'TP11003';
+    let weeksAgo = parseWeeksAgo(offenceRows.find(({ field }) => /date of sentence/i.test(field ?? ''))?.value) ?? 4;
+
+    type ImpositionRow = {
+      resultCode?: string;
+      amountImposed?: string;
+      amountPaid?: string;
+      creditorType?: string;
+      paymentMethod?: string;
+    };
+
+    const impositionMap = new Map<number, ImpositionRow>();
+    offenceRows.forEach(({ field, value, imposition }) => {
+      const normalized = field.toLowerCase();
+      if (/offence code|date of sentence/.test(normalized)) {
+        return;
+      }
+      const bucket = impositionMap.get(imposition) ?? {};
+      if (/result code/.test(normalized)) bucket.resultCode = value;
+      if (/amount imposed/.test(normalized)) bucket.amountImposed = value;
+      if (/amount paid/.test(normalized)) bucket.amountPaid = value;
+      if (/creditor type/.test(normalized)) bucket.creditorType = value;
+      if (/payment method/.test(normalized)) bucket.paymentMethod = value;
+      impositionMap.set(imposition, bucket);
+    });
+
+    if (impositionMap.size === 0) {
+      impositionMap.set(1, { creditorType: 'Minor', paymentMethod: 'BACS' });
+    }
+
+    const impositions: OffenceImpositionInput[] = Array.from(impositionMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([imposition, payload]) => {
+        const defaultCreditor =
+          payload.creditorType || (payload.paymentMethod && /bacs/i.test(payload.paymentMethod) ? 'Minor' : undefined);
+        return {
+          imposition,
+          resultCode: payload.resultCode || 'Compensation (FCOMP)',
+          amountImposed: payload.amountImposed,
+          amountPaid: payload.amountPaid,
+          creditorType: defaultCreditor,
+        };
+      });
+
+    const minorFields = minorRows.reduce<Partial<Record<MinorCreditorFieldKey, string>>>((acc, row) => {
+      if (/payment method|creditor type/i.test(row.field)) {
+        return acc;
+      }
+      const key = resolveMinorCreditorFieldKey(row.field);
+      acc[key] = row.value;
+      return acc;
+    }, {});
+
+    const bacsImpositionFromTable =
+      Array.from(impositionMap.entries()).find(([, payload]) => /bacs/i.test(payload.paymentMethod ?? ''))?.[0] || 1;
+    const minorImposition =
+      minorRows[0]?.imposition ||
+      impositions.find(({ creditorType }) => /minor/i.test(creditorType ?? ''))?.imposition ||
+      bacsImpositionFromTable ||
+      1;
+
+    const bacsRequested =
+      /bacs/i.test(impositionMap.get(minorImposition)?.paymentMethod ?? '') ||
+      ['accountName', 'sortCode', 'accountNumber', 'paymentReference'].some((key) =>
+        Boolean((minorFields as any)[key]),
+      );
+
+    const minorPayload: MinorCreditorWithBacs = {
+      company: minorFields.company || 'Minor Creditor Ltd',
+      address1: minorFields.address1 || 'Addr1',
+      address2: minorFields.address2,
+      address3: minorFields.address3,
+      postcode: minorFields.postcode || 'TE1 1ST',
+      accountName: bacsRequested ? minorFields.accountName || 'Minor Creditor' : undefined,
+      sortCode: bacsRequested ? minorFields.sortCode || '123456' : undefined,
+      accountNumber: bacsRequested ? minorFields.accountNumber || '12345678' : undefined,
+      paymentReference: bacsRequested ? minorFields.paymentReference || 'REF' : undefined,
+    };
+
+    log('flow', 'Completing Offence details from composite table', {
+      offenceCode,
+      weeksAgo,
+      impositions,
+    });
+    this.openTaskFromAccountDetails('Offence details');
+    this.addOffenceWithImpositions({ offenceCode, weeksAgo, impositions });
+
+    log('flow', 'Completing Company minor creditor with BACS', { minorImposition, minorPayload });
+    this.maintainCompanyMinorCreditorWithBacs(minorImposition, minorPayload);
+    this.offenceDetails.clickReviewOffence();
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Payment terms from composite entries and returns to Account details.
+   * @param paymentRows - Entries scoped to Payment terms.
+   */
+  private handlePaymentEntries(paymentRows: CompositeEntry[]): void {
+    if (!paymentRows.length) return;
+
+    const payload: ManualPaymentTermsInput = {};
+
+    const toBoolean = (value?: string): boolean | undefined => {
+      if (value === undefined) return undefined;
+      const normalized = value.trim().toLowerCase();
+      if (normalized === '') return undefined;
+      if (['yes', 'y', 'true', 'checked', 'selected'].includes(normalized)) return true;
+      if (['no', 'n', 'false', 'unchecked', 'not selected'].includes(normalized)) return false;
+      return undefined;
+    };
+
+    const resolveDateValue = (value?: string): string | undefined => {
+      if (value === undefined) return undefined;
+      const trimmed = value.trim();
+      if (trimmed === '') return '';
+      if (/week/i.test(trimmed)) {
+        return resolveRelativeDate(trimmed);
+      }
+      return trimmed;
+    };
+
+    const mapPaymentTerm = (value?: string): PaymentTermOption | undefined => {
+      if (!value) return undefined;
+      const normalized = value.trim().toLowerCase();
+      if (normalized === '') return undefined;
+      if (/pay in full/i.test(normalized)) return 'Pay in full';
+      if (/instalments only/i.test(normalized)) return 'Instalments only';
+      if (/lump sum plus instalments/i.test(normalized)) return 'Lump sum plus instalments';
+      return undefined;
+    };
+
+    const mapFrequency = (value?: string): PaymentFrequencyOption | undefined => {
+      if (!value) return undefined;
+      const normalized = value.trim().toLowerCase();
+      if (normalized === '') return undefined;
+      if (/weekly/i.test(normalized)) return 'Weekly';
+      if (/fortnightly/i.test(normalized)) return 'Fortnightly';
+      if (/monthly/i.test(normalized)) return 'Monthly';
+      return undefined;
+    };
+
+    const mapEnforcementOption = (value?: string): EnforcementActionOption | undefined => {
+      if (!value) return undefined;
+      const normalized = value.trim().toLowerCase();
+      if (normalized === '') return undefined;
+      if (/noenf|hold enforcement/i.test(normalized)) return 'Hold enforcement on account (NOENF)';
+      if (/prison|pris/i.test(normalized)) return 'Prison (PRIS)';
+      return undefined;
+    };
+
+    paymentRows.forEach(({ field, value }) => {
+      const normalizedField = field.toLowerCase();
+      if (/collection order/.test(normalizedField) && !/today/.test(normalizedField)) {
+        if (value) {
+          payload.collectionOrder = value.trim().toLowerCase() === 'yes' ? 'Yes' : 'No';
+        }
+        return;
+      }
+      if (/collection order today/.test(normalizedField)) {
+        const boolVal = toBoolean(value);
+        if (boolVal !== undefined) payload.collectionOrderToday = boolVal;
+        return;
+      }
+      if (/collection order date/.test(normalizedField)) {
+        const resolved = resolveDateValue(value);
+        if (resolved !== undefined) payload.collectionOrderDate = resolved;
+        return;
+      }
+      if (/payment term/.test(normalizedField)) {
+        const term = mapPaymentTerm(value);
+        if (term) payload.paymentTerm = term;
+        return;
+      }
+      if (/pay in full by/.test(normalizedField)) {
+        const resolved = resolveDateValue(value);
+        if (resolved !== undefined) payload.payByDate = resolved;
+        return;
+      }
+      if (/lump sum/.test(normalizedField)) {
+        payload.lumpSumAmount = value;
+        return;
+      }
+      if (/instalment/.test(normalizedField)) {
+        payload.instalmentAmount = value;
+        return;
+      }
+      if (/frequency/.test(normalizedField)) {
+        const freq = mapFrequency(value);
+        if (freq) payload.frequency = freq;
+        return;
+      }
+      if (/start date/.test(normalizedField)) {
+        const resolved = resolveDateValue(value);
+        if (resolved !== undefined) payload.startDate = resolved;
+        return;
+      }
+      if (/request payment card/.test(normalizedField)) {
+        const boolVal = toBoolean(value);
+        if (boolVal !== undefined) payload.requestPaymentCard = boolVal;
+        return;
+      }
+      if (/days in default/.test(normalizedField) && !/date/.test(normalizedField)) {
+        const boolVal = toBoolean(value);
+        if (boolVal !== undefined) payload.hasDaysInDefault = boolVal;
+        return;
+      }
+      if (/date days in default were imposed/.test(normalizedField)) {
+        const resolved = resolveDateValue(value);
+        if (resolved !== undefined) payload.daysInDefaultDate = resolved;
+        return;
+      }
+      if (/default days|days in default input field|days in default count/.test(normalizedField)) {
+        payload.defaultDays = value;
+        return;
+      }
+      if (/add enforcement action/.test(normalizedField)) {
+        const boolVal = toBoolean(value);
+        if (boolVal !== undefined) payload.addEnforcementAction = boolVal;
+        return;
+      }
+      if (/enforcement action/.test(normalizedField)) {
+        const option = mapEnforcementOption(value);
+        if (option) payload.enforcementOption = option;
+        return;
+      }
+      if (/enforcement reason|reason account is on noenf|reason/.test(normalizedField)) {
+        payload.enforcementReason = value;
+      }
+    });
+
+    log('flow', 'Completing Payment terms from composite table', { payload });
+    this.providePaymentTermsFromAccountDetails(payload);
+    this.taskNavigation.returnToAccountDetails();
+  }
+
+  /**
+   * Populates Company details (including aliases) from composite entries and returns to Account details.
+   * @param companyRows - Entries scoped to Company details.
+   */
+  private handleCompanyEntries(companyRows: CompositeEntry[]): void {
+    if (!companyRows.length) return;
+
+    const companyData: Record<string, string> = {};
+    const aliases: CompanyAliasRow[] = [];
+
+    companyRows.forEach(({ field, value }) => {
+      const normalized = field.toLowerCase();
+      const aliasMatch = normalized.match(/alias\s*(\d+)/);
+      if (aliasMatch) {
+        aliases.push({ alias: aliasMatch[1], name: value });
+        return;
+      }
+      if (/company name/.test(normalized)) {
+        companyData['company name'] = value;
+        return;
+      }
+      if (/address line 1/.test(normalized)) {
+        companyData['address line 1'] = value;
+        return;
+      }
+      if (/address line 2/.test(normalized)) {
+        companyData['address line 2'] = value;
+        return;
+      }
+      if (/address line 3/.test(normalized)) {
+        companyData['address line 3'] = value;
+        return;
+      }
+      if (/postcode/.test(normalized)) {
+        companyData['postcode'] = value;
+      }
+    });
+
+    log('flow', 'Completing Company details from composite table', { companyData, aliases });
+    this.openTaskFromAccountDetails('Company details');
+    if (Object.keys(companyData).length) {
+      this.fillCompanyDetailsFromTable(companyData);
+    }
+    if (aliases.length) {
+      this.addCompanyAliases(aliases);
+    }
+    this.taskNavigation.returnToAccountDetails();
   }
 
   /**
@@ -174,22 +840,7 @@ export class ManualAccountCreationFlow {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
     cy.reload();
     this.createAccount.assertOnCreateAccountPage();
-    const normalizedBu = businessUnit.trim().toLowerCase();
-    const isDefaultBusinessUnit = normalizedBu === 'default business unit';
-
-    cy.get('body', { timeout: this.pathTimeout }).then(($body) => {
-      const hasBusinessUnitInput = $body.find(CreateLocators.businessUnit.input).length > 0;
-
-      if (isDefaultBusinessUnit || !hasBusinessUnitInput) {
-        log('info', 'Skipping business unit selection after refresh (default or field absent)', {
-          businessUnit,
-          hasBusinessUnitInput,
-        });
-      } else {
-        this.createAccount.selectBusinessUnit(businessUnit);
-      }
-    });
-
+    this.createAccount.selectBusinessUnit(businessUnit);
     this.createAccount.selectAccountType(accountType);
     this.createAccount.selectDefendantType(defendantType);
     this.goToAccountDetails();
@@ -991,7 +1642,7 @@ export class ManualAccountCreationFlow {
    * @param payload - Payment terms payload including collection order and dates.
    */
   providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput): void {
-    log('flow', 'Provide payment terms from Account details', payload as Record<string, unknown>);
+    log('flow', 'Provide payment terms from Account details', { payload });
     cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
       if (!pathname.includes('/account-details')) {
         this.taskNavigation.navigateToAccountDetails();
@@ -1008,7 +1659,7 @@ export class ManualAccountCreationFlow {
    * @param payload - Payment terms payload to populate.
    */
   completePaymentTerms(payload: ManualPaymentTermsInput): void {
-    log('flow', 'Complete payment terms (navigation handled by caller)', payload as Record<string, unknown>);
+    log('flow', 'Complete payment terms (navigation handled by caller)', { payload });
     this.paymentTerms.fillPaymentTerms(payload);
   }
 
@@ -1058,7 +1709,8 @@ export class ManualAccountCreationFlow {
    */
   assertTaskStatuses(statuses: Array<{ task: ManualAccountTaskName; status: string }>): void {
     log('flow', 'Asserting multiple task statuses', { statuses });
-    this.taskNavigation.navigateToAccountDetails();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+    this.accountDetails.assertOnAccountDetailsPage();
     statuses.forEach(({ task, status }) => this.accountDetails.assertTaskStatus(task, status));
   }
 
