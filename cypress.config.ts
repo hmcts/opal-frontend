@@ -130,8 +130,8 @@ export default defineConfig({
     ],
     setupNodeEvents,
     retries: { runMode: 1, openMode: 0 },
+    supportFile: 'cypress/support/e2e.ts',
   },
-
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
 

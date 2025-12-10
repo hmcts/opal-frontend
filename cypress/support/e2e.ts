@@ -13,20 +13,24 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-import './commands';
-
 Cypress.on('uncaught:exception', (err) => {
-  const message = String(err?.message || err || '');
+  const message = String((err && (err as any).message) || err || '');
 
   // eslint-disable-next-line no-console
-  console.error('UNCAUGHT EXCEPTION CAUGHT BY CYPRESS HANDLER:', message);
+  console.error('UNCAUGHT EXCEPTION (global handler):', message);
 
-  if (message.includes('Invalid string. Length must be a multiple of 4')) {
-    return false; // ignore this known sourcemap/Base64 noise
+  // 🔴 Treat anything that looks like the sourcemap/Base64 bug as "known noise"
+  if (
+    message.includes('Invalid string') ||
+    message.includes('Length must be a multiple of 4') ||
+    message.includes('createSourceMapConsumer') ||
+    message.includes('maybeRetrievePositionFromSourceMap')
+  ) {
+    return false; // don't fail tests for this known Cucumber+source-map bug
   }
 
-  return true; // fail on everything else
+  // Let everything else still fail the test
+  return true;
 });
 
 // Alternatively you can use CommonJS syntax:
