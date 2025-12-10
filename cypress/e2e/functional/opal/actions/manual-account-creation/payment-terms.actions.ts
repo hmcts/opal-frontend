@@ -469,6 +469,7 @@ export class ManualPaymentTermsActions {
   private setEnforcementOption(option: EnforcementActionOption): void {
     const selector = this.resolveEnforcementSelector(option);
     log('select', 'Setting enforcement option', { option });
-    cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
+    const waitOpts = { timeout: this.pathTimeout };
+    cy.get(selector, waitOpts).should('exist').scrollIntoView().check({ force: true });
   }
 }

@@ -349,29 +349,15 @@ When('I refresh the application', () => {
 });
 
 /**
- * @step Completes Court, Offence, and Minor Creditor details from a composite table.
- * @description Parses the table by Section and delegates to the relevant flows, including navigation.
+ * @step Completes manual account creation fields (Court, Parent/Guardian, Employer, Personal, Offence, Minor Creditor, Payment terms, Company) from one table.
+ * @description Parses Section/Field/Value rows and delegates to flows with defaults where values are omitted.
  * @param table - DataTable with columns: Section | Field | Value | Imposition (optional).
  */
-When(
-  'I complete the court, offence and minor creditor details for this manual account with defaults:',
-  (table: DataTable) => {
-    log('flow', 'Completing court/offence/minor creditor from composite table (with defaults)');
-    flow().completeCourtOffenceAndMinorCreditorWithDefaults(table.raw());
-  },
-);
-/**
- * @step Completes Court, Parent/Guardian, Employer, Personal, Offence, and Minor Creditor from a composite table.
- * @description Parses Section/Field/Value rows and delegates to the relevant flows with navigation. Sections without rows are skipped.
- * @param table - DataTable with columns: Section | Field | Value | Imposition (optional for offence).
- */
-When(
-  'I complete the court details, parent or guardian details, employer details and personal details for this account with defaults:',
-  (table: DataTable) => {
-    log('flow', 'Completing court/parent/employer/personal/offence/minor from composite table (with defaults)');
-    flow().completeCourtParentEmployerPersonalAndOffenceWithDefaults(table.raw());
-  },
-);
+When('I complete manual account creation with the following fields and defaults:', (table: DataTable) => {
+  log('flow', 'Completing full manual account creation from composite table');
+  flow().completeManualAccountWithDefaults(table.raw());
+});
+
 /**
  * @step Completes court details and remains on the form (navigation handled by caller).
  * @description Sets LJA, PCR, and enforcement court fields on the Court details task.
