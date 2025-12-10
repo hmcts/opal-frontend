@@ -52,9 +52,9 @@ export const routing: Routes = [
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition,
     loadComponent: () =>
-      import(
-        '../fines-mac-offence-details-remove-imposition/fines-mac-offence-details-remove-imposition.component'
-      ).then((c) => c.FinesMacOffenceDetailsRemoveImpositionComponent),
+      import('../fines-mac-offence-details-remove-imposition/fines-mac-offence-details-remove-imposition.component').then(
+        (c) => c.FinesMacOffenceDetailsRemoveImpositionComponent,
+      ),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeImposition },
     resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
@@ -73,9 +73,9 @@ export const routing: Routes = [
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor,
     loadComponent: () =>
-      import(
-        '../fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component'
-      ).then((c) => c.FinesMacOffenceDetailsRemoveMinorCreditorComponent),
+      import('../fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component').then(
+        (c) => c.FinesMacOffenceDetailsRemoveMinorCreditorComponent,
+      ),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeMinorCreditor },
     resolve: { title: TitleResolver },
@@ -83,9 +83,9 @@ export const routing: Routes = [
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence,
     loadComponent: () =>
-      import(
-        '../fines-mac-offence-details-remove-offence-and-impositions/fines-mac-offence-details-remove-offence-and-impositions.component'
-      ).then((c) => c.FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent),
+      import('../fines-mac-offence-details-remove-offence-and-impositions/fines-mac-offence-details-remove-offence-and-impositions.component').then(
+        (c) => c.FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent,
+      ),
     canActivate: [finesMacFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeOffence },
     resolve: { title: TitleResolver, results: fetchResultsResolver, majorCreditors: fetchMajorCreditorsResolver },
