@@ -15,11 +15,11 @@ export class FinesAccPaymentTermsAmendDeniedComponent {
   private readonly router = inject(Router);
   public readonly accountStore = inject(FinesAccountStore);
   public readonly accountStatusCode: keyof typeof FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP =
-    history.state?.accountStatusCode;
+    this.router.currentNavigation()?.extras.state?.['accountStatusCode'];
   public readonly deniedType = this.route.snapshot.paramMap.get('type');
   public readonly accountStatusDescription: string =
     FINES_ACC_PAYMENT_TERMS_AMEND_DENIED_ACCOUNT_STATUS_MAP[this.accountStatusCode];
-  public readonly lastEnforcement = history.state?.lastEnforcement;
+  public readonly lastEnforcement = this.router.currentNavigation()?.extras.state?.['lastEnforcement'];
 
   /**
    * Navigates back to the account summary details page.
