@@ -45,20 +45,68 @@ async function setupNodeEvents(
 ): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
 
+  // on(
+  //   'file:preprocessor',
+  //   webpack({
+  //     webpackOptions: {
+  //       // Disable sourcemaps to avoid sourcemap helper recursion in headed runs
+  //       devtool: false,
+  //       resolve: {
+  //         extensions: ['.ts', '.js'],
+  //         alias: {
+  //           '@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map': path.resolve(
+  //             __dirname,
+  //             'cypress/support/stubs/cucumber-source-map.js',
+  //           ),
+  //         },
+  //         plugins: [
+  //           new TsconfigPathsPlugin({
+  //             configFile: path.resolve(__dirname, 'e2e.tsconfig.json'), // ← absolute
+  //           }),
+  //         ],
+  //       },
+  //       module: {
+  //         rules: [
+  //           {
+  //             test: /\.ts$/,
+  //             exclude: [/node_modules/, /src/],
+  //             use: [
+  //               {
+  //                 loader: 'ts-loader',
+  //                 options: {
+  //                   configFile: 'e2e.tsconfig.json',
+  //                   transpileOnly: true,
+  //                   compilerOptions: {
+  //                     sourceMap: false,
+  //                     inlineSourceMap: false,
+  //                     inlineSources: false,
+  //                   },
+  //                 },
+  //               },
+  //             ],
+  //           },
+  //           {
+  //             test: /\.feature$/,
+  //             include: [/cypress\/e2e/],
+  //             use: [
+  //               {
+  //                 loader: '@badeball/cypress-cucumber-preprocessor/webpack',
+  //                 options: config,
+  //               },
+  //             ],
+  //           },
+  //         ],
+  //       },
+  //     },
+  //   }),
+  // );
+
   on(
     'file:preprocessor',
     webpack({
       webpackOptions: {
-        // Disable sourcemaps to avoid sourcemap helper recursion in headed runs
-        devtool: false,
         resolve: {
           extensions: ['.ts', '.js'],
-          alias: {
-            '@badeball/cypress-cucumber-preprocessor/dist/helpers/source-map': path.resolve(
-              __dirname,
-              'cypress/support/stubs/cucumber-source-map.js',
-            ),
-          },
           plugins: [
             new TsconfigPathsPlugin({
               configFile: path.resolve(__dirname, 'e2e.tsconfig.json'), // ← absolute
@@ -76,11 +124,6 @@ async function setupNodeEvents(
                   options: {
                     configFile: 'e2e.tsconfig.json',
                     transpileOnly: true,
-                    compilerOptions: {
-                      sourceMap: false,
-                      inlineSourceMap: false,
-                      inlineSources: false,
-                    },
                   },
                 },
               ],

@@ -13,25 +13,27 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-Cypress.on('uncaught:exception', (err) => {
-  const message = String((err && (err as any).message) || err || '');
+import './commands';
 
-  // eslint-disable-next-line no-console
-  console.error('UNCAUGHT EXCEPTION (global handler):', message);
+// Cypress.on('uncaught:exception', (err) => {
+//   const message = String((err && (err as any).message) || err || '');
 
-  // 🔴 Treat anything that looks like the sourcemap/Base64 bug as "known noise"
-  if (
-    message.includes('Invalid string') ||
-    message.includes('Length must be a multiple of 4') ||
-    message.includes('createSourceMapConsumer') ||
-    message.includes('maybeRetrievePositionFromSourceMap')
-  ) {
-    return false; // don't fail tests for this known Cucumber+source-map bug
-  }
+//   // eslint-disable-next-line no-console
+//   console.error('UNCAUGHT EXCEPTION (global handler):', message);
 
-  // Let everything else still fail the test
-  return true;
-});
+//   // 🔴 Treat anything that looks like the sourcemap/Base64 bug as "known noise"
+//   if (
+//     message.includes('Invalid string') ||
+//     message.includes('Length must be a multiple of 4') ||
+//     message.includes('createSourceMapConsumer') ||
+//     message.includes('maybeRetrievePositionFromSourceMap')
+//   ) {
+//     return false; // don't fail tests for this known Cucumber+source-map bug
+//   }
+
+//   // Let everything else still fail the test
+//   return true;
+// });
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
