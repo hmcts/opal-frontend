@@ -118,7 +118,7 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
    * Gets the prevent payment card flag from initial form data
    */
   public get preventPaymentCard(): boolean {
-    return this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === true;
+    return this.initialFormData?.formData?.facc_payment_terms_prevent_payment_card === false;
   }
 
   /**

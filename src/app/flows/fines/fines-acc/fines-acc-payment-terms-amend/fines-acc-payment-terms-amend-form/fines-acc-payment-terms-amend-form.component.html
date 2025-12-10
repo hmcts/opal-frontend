@@ -277,15 +277,14 @@
 <ng-template #dateInFutureTemplate let-fieldName>
   <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
     <strong>{{ fieldName }} is more than 6 months in the future</strong>
-    <p>You can continue with date in the past or change</p>
+    <p>You can continue with date in the future or change</p>
   </opal-lib-moj-ticket-panel>
 </ng-template>
 
 <ng-template #paymentCardTemplate let-fieldName>
   <opal-lib-moj-ticket-panel sectionClasses="moj-ticket-panel__content--blue" [alert]="true">
     <strong>{{ fieldName }}</strong>
-    <p>You cannot request a payment card. This may be because:</p>
-    <p></p>
+    <p class="govuk-!-margin-bottom-1">You cannot request a payment card. This may be because:</p>
     <ul>
       <li>a card has already been requested and is being processed</li>
       <li>the current enforcement action does not allow it</li>

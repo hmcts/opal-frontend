@@ -1,5 +1,6 @@
 import { IFinesAccPaymentTermsAmendState } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-state.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-amend-payment-terms.interface';
+import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 
 /**
  * Maps form payment terms type to API payment terms type code
@@ -7,13 +8,13 @@ import { IOpalFinesAmendPaymentTermsPayload } from '@services/fines/opal-fines-s
  * Pay in full is represented as 'B' with no lump sum amount
  */
 function mapPaymentTermsTypeToCode(paymentTermsType: string | null): string | null {
-  const typeMapping: Record<string, string> = {
+  const typeMapping: IFinesPaymentTermsOptions = {
     payInFull: 'B', // Pay in full is 'B' (Both) with no lump sum amount
     instalmentsOnly: 'I',
     lumpSumPlusInstalments: 'B', // Lump sum + instalments is also 'B' but with lump sum amount
   };
 
-  return paymentTermsType ? typeMapping[paymentTermsType] || null : null;
+  return paymentTermsType! in typeMapping ? typeMapping[paymentTermsType as keyof IFinesPaymentTermsOptions] : null;
 }
 
 /**
