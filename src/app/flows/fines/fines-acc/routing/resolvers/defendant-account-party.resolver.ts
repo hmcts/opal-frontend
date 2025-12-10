@@ -5,7 +5,7 @@ import { map, catchError, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IOpalFinesAccountDefendantAccountParty } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
-import { createDefendantDetailsRedirect } from './constants/resolver-utils.constant';
+import { createDefendantDetailsRedirect } from './helpers/fines-acc-resolver-redirect';
 
 export const defendantAccountPartyResolver: ResolveFn<IOpalFinesAccountDefendantAccountParty | RedirectCommand> = (
   route: ActivatedRouteSnapshot,

@@ -155,61 +155,58 @@ export class FinesAccPaymentTermsAmendFormComponent extends AbstractFormBaseComp
    * Listens for changes in the payment terms control and performs actions based on the selected term.
    */
   private paymentTermsListener(): void {
-    const paymentTermsControl = this.form.get('facc_payment_terms_payment_terms');
-    const payByDateControl = this.form.get('facc_payment_terms_pay_by_date');
-    const lumpSumAmountControl = this.form.get('facc_payment_terms_lump_sum_amount');
-    const instalmentAmountControl = this.form.get('facc_payment_terms_instalment_amount');
-    const instalmentPeriodControl = this.form.get('facc_payment_terms_instalment_period');
-    const startDateControl = this.form.get('facc_payment_terms_start_date');
+    const paymentTermsControl = this.form.get('facc_payment_terms_payment_terms')!;
+    const payByDateControl = this.form.get('facc_payment_terms_pay_by_date')!;
+    const lumpSumAmountControl = this.form.get('facc_payment_terms_lump_sum_amount')!;
+    const instalmentAmountControl = this.form.get('facc_payment_terms_instalment_amount')!;
+    const instalmentPeriodControl = this.form.get('facc_payment_terms_instalment_period')!;
+    const startDateControl = this.form.get('facc_payment_terms_start_date')!;
 
-    if (paymentTermsControl) {
-      paymentTermsControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((value) => {
-        // Clear previous validators
-        payByDateControl?.clearValidators();
-        lumpSumAmountControl?.clearValidators();
-        instalmentAmountControl?.clearValidators();
-        instalmentPeriodControl?.clearValidators();
-        startDateControl?.clearValidators();
+    paymentTermsControl.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((value) => {
+      // Clear previous validators
+      payByDateControl.clearValidators();
+      lumpSumAmountControl.clearValidators();
+      instalmentAmountControl.clearValidators();
+      instalmentPeriodControl.clearValidators();
+      startDateControl.clearValidators();
+      // Set base validators
+      payByDateControl.setValidators([optionalValidDateValidator()]);
+      lumpSumAmountControl.setValidators([TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
+      instalmentAmountControl.setValidators([TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
+      startDateControl.setValidators([optionalValidDateValidator()]);
 
-        // Set base validators
-        payByDateControl?.setValidators([optionalValidDateValidator()]);
-        lumpSumAmountControl?.setValidators([TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
-        instalmentAmountControl?.setValidators([TWO_DECIMAL_PLACES_PATTERN_VALIDATOR]);
-        startDateControl?.setValidators([optionalValidDateValidator()]);
+      // Clear all conditional field values first
+      payByDateControl.setValue(null);
+      lumpSumAmountControl.setValue(null);
+      instalmentAmountControl.setValue(null);
+      instalmentPeriodControl.setValue(null);
+      startDateControl.setValue(null);
 
-        // Clear all conditional field values first
-        payByDateControl?.setValue(null);
-        lumpSumAmountControl?.setValue(null);
-        instalmentAmountControl?.setValue(null);
-        instalmentPeriodControl?.setValue(null);
-        startDateControl?.setValue(null);
+      // Add required validators based on selection
+      switch (value) {
+        case 'payInFull':
+          payByDateControl.addValidators([Validators.required]);
+          break;
+        case 'instalmentsOnly':
+          instalmentAmountControl.addValidators([Validators.required]);
+          instalmentPeriodControl.setValidators([Validators.required]);
+          startDateControl.addValidators([Validators.required]);
+          break;
+        case 'lumpSumPlusInstalments':
+          lumpSumAmountControl.addValidators([Validators.required]);
+          instalmentAmountControl.addValidators([Validators.required]);
+          instalmentPeriodControl.setValidators([Validators.required]);
+          startDateControl.addValidators([Validators.required]);
+          break;
+      }
 
-        // Add required validators based on selection
-        switch (value) {
-          case 'payInFull':
-            payByDateControl?.addValidators([Validators.required]);
-            break;
-          case 'instalmentsOnly':
-            instalmentAmountControl?.addValidators([Validators.required]);
-            instalmentPeriodControl?.setValidators([Validators.required]);
-            startDateControl?.addValidators([Validators.required]);
-            break;
-          case 'lumpSumPlusInstalments':
-            lumpSumAmountControl?.addValidators([Validators.required]);
-            instalmentAmountControl?.addValidators([Validators.required]);
-            instalmentPeriodControl?.setValidators([Validators.required]);
-            startDateControl?.addValidators([Validators.required]);
-            break;
-        }
-
-        // Update validity
-        payByDateControl?.updateValueAndValidity();
-        lumpSumAmountControl?.updateValueAndValidity();
-        instalmentAmountControl?.updateValueAndValidity();
-        instalmentPeriodControl?.updateValueAndValidity();
-        startDateControl?.updateValueAndValidity();
-      });
-    }
+      // Update validity
+      payByDateControl.updateValueAndValidity();
+      lumpSumAmountControl.updateValueAndValidity();
+      instalmentAmountControl.updateValueAndValidity();
+      instalmentPeriodControl.updateValueAndValidity();
+      startDateControl.updateValueAndValidity();
+    });
   }
 
   /**

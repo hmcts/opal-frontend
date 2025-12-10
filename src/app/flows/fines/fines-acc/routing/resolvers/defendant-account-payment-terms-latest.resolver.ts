@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { map, catchError, of, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
 import { IFinesAccPaymentTermsAmendForm } from '../../fines-acc-payment-terms-amend/interfaces/fines-acc-payment-terms-amend-form.interface';
 import { FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../services/constants/fines-acc-transform-items-config.constant';
-import { createDefendantDetailsRedirect } from './constants/resolver-utils.constant';
+import { createDefendantDetailsRedirect } from './helpers/fines-acc-resolver-redirect';
 
 export const defendantAccountPaymentTermsLatestResolver: ResolveFn<IFinesAccPaymentTermsAmendForm | RedirectCommand> = (
   route: ActivatedRouteSnapshot,
@@ -38,20 +38,16 @@ export const defendantAccountPaymentTermsLatestResolver: ResolveFn<IFinesAccPaym
         return of(createDefendantDetailsRedirect(router));
       }
 
-      return opalFinesService.getResult(resultId).pipe(
-        map((resultData) =>
-          payloadService.transformPaymentTermsPayload(
-            payloadService.transformPayload(paymentTermsData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
-            resultData,
+      return opalFinesService
+        .getResult(resultId)
+        .pipe(
+          map((resultData) =>
+            payloadService.transformPaymentTermsPayload(
+              payloadService.transformPayload(paymentTermsData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG),
+              resultData,
+            ),
           ),
-        ),
-        catchError(() => {
-          return of(createDefendantDetailsRedirect(router));
-        }),
-      );
-    }),
-    catchError(() => {
-      return of(createDefendantDetailsRedirect(router));
+        );
     }),
   );
 };

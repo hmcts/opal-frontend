@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, RedirectCommand, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { defendantAccountPaymentTermsLatestResolver } from './defendant-account-payment-terms-latest.resolver';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesAccPayloadService } from '../../services/fines-acc-payload.service';
@@ -103,51 +103,6 @@ describe('defendantAccountPaymentTermsLatestResolver', () => {
           expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
           expect(mockOpalFinesService.getResult).not.toHaveBeenCalled();
           expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
-          expect(mockRouter.createUrlTree).toHaveBeenCalled();
-          expect(data).toBeInstanceOf(RedirectCommand);
-          done();
-        });
-      } else {
-        fail('Expected Observable but got something else');
-      }
-    });
-  });
-
-  it('should return a redirect command when getResult fails', (done) => {
-    (mockRoute.paramMap.get as jasmine.Spy).and.returnValue('12345');
-    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.and.returnValue(of(MOCK_PAYMENT_TERMS_DATA));
-    mockOpalFinesService.getResult.and.returnValue(throwError(() => new Error('Result fetch failed')));
-
-    TestBed.runInInjectionContext(() => {
-      const result = defendantAccountPaymentTermsLatestResolver(mockRoute, {} as never);
-
-      if (result && typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((data) => {
-          expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
-          expect(mockOpalFinesService.getResult).toHaveBeenCalledWith('ENF123');
-          expect(mockPayloadService.transformPaymentTermsPayload).not.toHaveBeenCalled();
-          expect(mockRouter.createUrlTree).toHaveBeenCalled();
-          expect(data).toBeInstanceOf(RedirectCommand);
-          done();
-        });
-      } else {
-        fail('Expected Observable but got something else');
-      }
-    });
-  });
-
-  it('should return a redirect command when payment terms data fetch fails', (done) => {
-    (mockRoute.paramMap.get as jasmine.Spy).and.returnValue('12345');
-    mockOpalFinesService.getDefendantAccountPaymentTermsLatest.and.returnValue(
-      throwError(() => new Error('Payment terms fetch failed')),
-    );
-
-    TestBed.runInInjectionContext(() => {
-      const result = defendantAccountPaymentTermsLatestResolver(mockRoute, {} as never);
-
-      if (result && typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((data) => {
-          expect(mockOpalFinesService.getDefendantAccountPaymentTermsLatest).toHaveBeenCalledWith(12345);
           expect(mockRouter.createUrlTree).toHaveBeenCalled();
           expect(data).toBeInstanceOf(RedirectCommand);
           done();
