@@ -13,7 +13,6 @@ import { AccountSearchIndividualsLocators as L } from '../../../../shared/select
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
-import { HasAccountLinkOnPage } from '../../../../support/utils/results';
 import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
@@ -40,6 +39,20 @@ export class AccountEnquiryFlow {
   /** Default timeout (ms) for key waits in this flow. */
   private static readonly WAIT_MS = 15_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
+
+  /** Waits for the account header summary call to succeed and the At a glance tab to render. */
+  private waitForHeaderSummaryAndAtAGlance(): void {
+    cy.wait('@headerSummary', { timeout: AccountEnquiryFlow.WAIT_MS }).then((res) => {
+      if (res?.response?.statusCode !== 200) {
+        cy.reload();
+        cy.wait('@headerSummary', { timeout: AccountEnquiryFlow.WAIT_MS }).its('response.statusCode').should('eq', 200);
+      }
+    });
+
+    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should(
+      'be.visible',
+    );
+  }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
   private readonly searchCompany = new AccountSearchCompanyActions();
@@ -122,6 +135,7 @@ export class AccountEnquiryFlow {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
     logAE('click', 'Click latest published account or matching @etagUpdate (current page only)');
 
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('headerSummary');
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
@@ -129,23 +143,16 @@ export class AccountEnquiryFlow {
       if (!accOrNull) {
         logAE('fallback', 'No @etagUpdate found → opening latest row');
         this.results.openLatestPublished();
+        this.waitForHeaderSummaryAndAtAGlance();
         return;
       }
 
       const acc = accOrNull;
-      logAE('match', 'Looking for account number on current page', { accountNumber: acc });
+      this.log('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
 
-      HasAccountLinkOnPage(acc).then((exists) => {
-        if (exists) {
-          this.results.clickAccountOnCurrentPage(acc).then(() => this.assertNavigatedToDetails());
-          return;
-        }
-
-        logAE('fallback', `Account ${acc} not found on current page; opening latest row`, {
-          accountNumber: acc,
-        });
-        this.results.openLatestPublished();
-      });
+      // Wait for the specific account we just created; traverse pagination if needed.
+      this.results.openByAccountNumberAcrossPages(acc);
+      this.waitForHeaderSummaryAndAtAGlance();
     });
   }
 
