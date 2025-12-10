@@ -4,8 +4,10 @@
  */
 import { ManualPaymentTermsLocators as L } from '../../../../../shared/selectors/manual-account-creation/payment-terms.locators';
 import { calculateWeeksInFuture, calculateWeeksInPast } from '../../../../../support/utils/dateUtils';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualPaymentTermsActions');
 
 export type PaymentTermOption = 'Pay in full' | 'Instalments only' | 'Lump sum plus instalments';
 export type PaymentFrequencyOption = 'Weekly' | 'Fortnightly' | 'Monthly';

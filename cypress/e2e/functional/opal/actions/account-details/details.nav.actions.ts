@@ -1,5 +1,7 @@
 import { AccountNavDetailsLocators as N } from '../../../../../shared/selectors/account-details/account.nav.details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountDetailsNavActions');
 
 /**
  * @file account.details.nav.actions.ts

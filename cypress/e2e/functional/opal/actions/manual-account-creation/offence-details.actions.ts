@@ -3,8 +3,10 @@
  * Handles offence entry, impositions, minor creditor interactions, and navigation.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualOffenceDetailsActions');
 
 type OffenceField = 'Offence code' | 'Date of sentence';
 type ImpositionField = 'Result code' | 'Amount imposed' | 'Amount paid';

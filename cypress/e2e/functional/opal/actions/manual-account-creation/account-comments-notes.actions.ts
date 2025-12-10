@@ -3,8 +3,10 @@
  * Encapsulates comment/note entry, navigation, and cancel handling.
  */
 import { ManualAccountCommentsNotesLocators as L } from '../../../../../shared/selectors/manual-account-creation/account-comments-notes.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualAccountCommentsNotesActions');
 
 type CancelChoice = 'Cancel' | 'Ok' | 'Stay' | 'Leave';
 

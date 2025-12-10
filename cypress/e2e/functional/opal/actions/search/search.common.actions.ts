@@ -9,7 +9,7 @@
  * Keeps steps small, reusable, and intent-driven.
  */
 
-import { log, logSync } from '../../../../../support/utils/log.helper';
+import { createScopedLogger, logSync } from '../../../../../support/utils/log.helper';
 import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountSearchIndividualsActions } from './search.individuals.actions';
 import { AccountSearchCompanyActions } from './search.companies.actions';
@@ -19,6 +19,7 @@ import { AccountSearchCommonLocators as C } from '../../../../../shared/selector
 import { parseToIsoDate } from '../../../../../support/utils/dateUtils';
 
 type Entity = 'individual' | 'company' | 'minorCreditor';
+const log = createScopedLogger('AccountSearchCommonActions');
 
 /**
  * Mapping between high-level Gherkin parameter keys and the underlying

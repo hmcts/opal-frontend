@@ -3,8 +3,10 @@
  * Covers LJA/PCR/enforcement court entry, nested navigation, cancel handling, and assertions.
  */
 import { ManualCourtDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/court-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualCourtDetailsActions');
 
 export type ManualCourtFieldKey = 'lja' | 'pcr' | 'enforcementCourt';
 

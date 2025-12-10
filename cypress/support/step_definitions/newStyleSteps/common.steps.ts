@@ -75,6 +75,21 @@ Then('I should see the header containing text {string}', (expectedHeader: string
 });
 
 /**
+ * @step Select an option from a dropdown by its label.
+ * @description Selects the given option in a dropdown identified by its visible label text.
+ *
+ * @param option - The option/value text to choose.
+ * @param dropdownLabel - The visible label of the dropdown.
+ *
+ * @example
+ *   When I choose "Mr" from the "Title" dropdown
+ */
+When('I choose {string} from the {string} dropdown', (option: string, dropdownLabel: string) => {
+  log('select', 'Selecting dropdown value', { dropdownLabel, option });
+  Common().selectFromDropdown(dropdownLabel, option);
+});
+
+/**
  * @step Combined assertion: check both page header and URL.
  * @description
  * Provides a compact assertion for scenarios where both header text and

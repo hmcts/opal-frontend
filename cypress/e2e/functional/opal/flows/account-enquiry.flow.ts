@@ -17,10 +17,9 @@ import { CommonActions } from '../actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../actions/account-details/edit.defendant-details.actions';
 import { EditCompanyDetailsActions } from '../actions/account-details/edit.company-details.actions';
 import { EditParentGuardianDetailsActions } from '../actions/account-details/edit.parent-guardian-details.actions';
-import { log, LogScope } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 
-const logAE = (scope: LogScope, message: string, data?: Record<string, unknown>): void =>
-  log(scope, message, { flow: 'AccountEnquiryFlow', ...data });
+const logAE = createScopedLogger('AccountEnquiryFlow');
 
 /**
  * @file AccountEnquiryFlow
@@ -148,7 +147,7 @@ export class AccountEnquiryFlow {
       }
 
       const acc = accOrNull;
-      this.log('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+      logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
 
       // Wait for the specific account we just created; traverse pagination if needed.
       this.results.openByAccountNumberAcrossPages(acc);

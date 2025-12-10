@@ -36,7 +36,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     Then I click on the "Personal details" link
     And I see "Personal details" on the page header
 
-    When I select "Mr" from the "Title" dropdown
+    When I choose "Mr" from the "Title" dropdown
     And I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
     And I enter "Addr Line 1" into the "Address line 1" field
@@ -62,7 +62,7 @@ Feature: Accessibility Tests for Populate and Submit Screens
     And I enter "300" into the "Amount imposed" field for imposition 1
     And I enter "100" into the "Amount paid" field for imposition 1
     And I see "Add creditor" text on the page
-    And I select the "Major creditor" radio button
+    And I select the minor creditor radio option "Major creditor"
     And I enter "Temporary Creditor" into the "Search using name or code" search box
     And I see "Temporary Creditor (TEMP)" in the "Search using name or code" field for imposition 1
 
@@ -108,5 +108,3 @@ Feature: Accessibility Tests for Populate and Submit Screens
     When I click the "Submit for review" button and capture the created account number
     Then I see "You've submitted this account for review" text on the page
     Then I check accessibility
-
-

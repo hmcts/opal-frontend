@@ -3,8 +3,10 @@
  * Handles entry, assertions, and cancellation for the personal details form.
  */
 import { ManualPersonalDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/personal-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualPersonalDetailsActions');
 
 export type ManualPersonalDetailsFieldKey =
   | 'title'

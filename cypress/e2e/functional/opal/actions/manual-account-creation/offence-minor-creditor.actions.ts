@@ -3,8 +3,10 @@
  * Encapsulates field entry, radio/checkbox selection, and cancel/save handling.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualOffenceMinorCreditorActions');
 import { MinorCreditorFieldKey, MinorCreditorType } from '../../../../../support/utils/macFieldResolvers';
 
 export class ManualOffenceMinorCreditorActions {

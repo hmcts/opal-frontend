@@ -6,7 +6,9 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('DashboardActions');
 
 export class DashboardActions {
   /**

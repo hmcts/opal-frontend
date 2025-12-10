@@ -3,8 +3,10 @@
  * Each method performs a single responsibility (field entry, assertions, cancel handling).
  */
 import { ManualEmployerDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/employer-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualEmployerDetailsActions');
 
 export type ManualEmployerFieldKey =
   | 'employerName'

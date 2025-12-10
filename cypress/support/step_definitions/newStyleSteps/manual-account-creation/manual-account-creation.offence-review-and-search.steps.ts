@@ -399,18 +399,6 @@ Then('I see the offences ordered by sentence date:', (table: DataTable) => {
 });
 
 /**
- * @step Assert a provided header fragment is visible on the page.
- * @description Assert a provided header fragment is visible on the page.
-
- * @param header - Text expected in the page header.
- * @example Then I see "Search offences" on the page header
- */
-Then('I see {string} on the page header', (header: string) => {
-  log('assert', 'Asserting page header', { header });
-  common().assertHeaderContains(header);
-});
-
-/**
  * @step Assert the empty-offence messaging is shown.
  * @description Assert the empty-offence messaging is shown.
 

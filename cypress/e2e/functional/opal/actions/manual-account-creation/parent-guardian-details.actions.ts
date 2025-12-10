@@ -8,8 +8,10 @@
  * - Methods are single-purpose to keep step definitions thin.
  */
 import { ManualParentGuardianDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/parent-guardian-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualParentGuardianDetailsActions');
 
 export type ManualParentGuardianFieldKey =
   | 'firstNames'

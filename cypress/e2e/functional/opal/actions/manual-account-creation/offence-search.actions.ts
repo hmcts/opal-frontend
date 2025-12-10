@@ -3,8 +3,10 @@
  * Covers entering search criteria, submitting, navigating back, and validating results.
  */
 import { ManualOffenceDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/offence-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualOffenceSearchActions');
 
 type SearchField = 'Offence code' | 'Short title' | 'Act and section';
 type ResultsColumn = 'Code' | 'Short title' | 'Act and section' | 'Used from' | 'Used to';

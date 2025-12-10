@@ -351,7 +351,7 @@ Given('an offence exists with 2 minor creditor impositions for offence code {str
  * @param label - Text containing "major/minor creditor" or "Individual/Company".
  * @example When I select the "Minor creditor" radio button
  */
-When('I select the {string} radio button', (label: string) => {
+When('I select the minor creditor radio option {string}', (label: string) => {
   const normalized = label.toLowerCase();
   if (normalized.includes('minor creditor') || normalized.includes('major creditor')) {
     const type = normalized.includes('minor') ? 'minor' : 'major';
@@ -368,21 +368,6 @@ When('I select the {string} radio button', (label: string) => {
   }
 
   throw new Error(`Unknown radio button label: ${label}`);
-});
-
-/**
- * @step Select a dropdown value on the minor creditor form.
- * @description Select a dropdown value on the minor creditor form.
-
- * @param value - Value to select.
- * @param label - Dropdown label (currently supports Title).
- */
-When('I select {string} from the {string} dropdown', (value: string, label: string) => {
-  if (!/title/i.test(label)) {
-    throw new Error(`Unknown dropdown label: ${label}`);
-  }
-  log('select', 'Selecting dropdown value', { label, value });
-  minorCreditor().selectTitle(value);
 });
 
 /**
@@ -411,7 +396,7 @@ When('I unselect the "I have BACS payment details" checkbox', () => {
 
  * @param label - Text containing "Individual" or "Company".
  */
-Then('I validate the {string} radio button is selected', (label: string) => {
+Then('the minor creditor radio option {string} is selected', (label: string) => {
   const normalized = label.toLowerCase();
   const type = normalized.includes('individual') ? 'Individual' : 'Company';
   log('assert', 'Asserting radio selected', { label, type });

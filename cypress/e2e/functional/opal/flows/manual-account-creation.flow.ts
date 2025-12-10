@@ -18,7 +18,7 @@ import {
   ManualEmployerDetailsActions,
   ManualEmployerFieldKey,
 } from '../actions/manual-account-creation/employer-details.actions';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
 import { ManualCompanyDetailsActions } from '../actions/manual-account-creation/company-details.actions';
 import {
@@ -47,6 +47,9 @@ import { accessibilityActions } from '../actions/accessibility/accessibility.act
 import { calculateWeeksInPast } from '../../../../support/utils/dateUtils';
 import { resolveSearchFieldKey, resolveSearchResultColumn } from '../../../../support/utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
+import { ManualCreateAccountLocators as CreateLocators } from '../../../../shared/selectors/manual-account-creation/create-account.locators';
+
+const log = createScopedLogger('ManualAccountCreationFlow');
 
 export type CompanyAliasRow = { alias: string; name: string };
 type LanguagePreferenceLabel = 'Document language' | 'Hearing language';
@@ -121,7 +124,23 @@ export class ManualAccountCreationFlow {
   startFineAccount(businessUnit: string, defendantType: DefendantType): void {
     log('flow', 'Start manual fine account', { businessUnit, defendantType });
     this.ensureOnCreateAccountPage();
-    this.createAccount.selectBusinessUnit(businessUnit);
+    const normalizedBu = businessUnit.trim().toLowerCase();
+    const isDefaultBusinessUnit = normalizedBu === 'default business unit';
+
+    cy.get('body', { timeout: this.pathTimeout }).then(($body) => {
+      const hasBusinessUnitInput = $body.find(CreateLocators.businessUnit.input).length > 0;
+
+      if (isDefaultBusinessUnit || !hasBusinessUnitInput) {
+        log('info', 'Skipping business unit selection (default or field absent)', {
+          businessUnit,
+          hasBusinessUnitInput,
+        });
+        return;
+      }
+
+      this.createAccount.selectBusinessUnit(businessUnit);
+    });
+
     this.createAccount.selectAccountType('Fine');
     this.createAccount.selectDefendantType(defendantType);
     this.createAccount.continueToAccountDetails();
@@ -155,7 +174,22 @@ export class ManualAccountCreationFlow {
     log('flow', 'Restart manual account after refresh', { businessUnit, accountType, defendantType });
     cy.reload();
     this.createAccount.assertOnCreateAccountPage();
-    this.createAccount.selectBusinessUnit(businessUnit);
+    const normalizedBu = businessUnit.trim().toLowerCase();
+    const isDefaultBusinessUnit = normalizedBu === 'default business unit';
+
+    cy.get('body', { timeout: this.pathTimeout }).then(($body) => {
+      const hasBusinessUnitInput = $body.find(CreateLocators.businessUnit.input).length > 0;
+
+      if (isDefaultBusinessUnit || !hasBusinessUnitInput) {
+        log('info', 'Skipping business unit selection after refresh (default or field absent)', {
+          businessUnit,
+          hasBusinessUnitInput,
+        });
+      } else {
+        this.createAccount.selectBusinessUnit(businessUnit);
+      }
+    });
+
     this.createAccount.selectAccountType(accountType);
     this.createAccount.selectDefendantType(defendantType);
     this.goToAccountDetails();
@@ -957,7 +991,7 @@ export class ManualAccountCreationFlow {
    * @param payload - Payment terms payload including collection order and dates.
    */
   providePaymentTermsFromAccountDetails(payload: ManualPaymentTermsInput): void {
-    log('flow', 'Provide payment terms from Account details', payload);
+    log('flow', 'Provide payment terms from Account details', payload as Record<string, unknown>);
     cy.location('pathname', { timeout: this.pathTimeout }).then((pathname) => {
       if (!pathname.includes('/account-details')) {
         this.taskNavigation.navigateToAccountDetails();
@@ -974,7 +1008,7 @@ export class ManualAccountCreationFlow {
    * @param payload - Payment terms payload to populate.
    */
   completePaymentTerms(payload: ManualPaymentTermsInput): void {
-    log('flow', 'Complete payment terms (navigation handled by caller)', payload);
+    log('flow', 'Complete payment terms (navigation handled by caller)', payload as Record<string, unknown>);
     this.paymentTerms.fillPaymentTerms(payload);
   }
 

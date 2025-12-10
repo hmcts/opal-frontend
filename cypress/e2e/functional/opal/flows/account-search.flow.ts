@@ -1,6 +1,6 @@
 // e2e/functional/opal/flows/account-search.flow.ts
 
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
@@ -22,6 +22,7 @@ type MinorCreditorSimpleType = 'individual' | 'company';
 type InputMap = Record<string, string>;
 
 const SEARCH_RESULTS_PATH_SEGMENT = '/fines/search-accounts/results';
+const log = createScopedLogger('AccountSearchFlow');
 
 /**
  * AccountSearchFlow

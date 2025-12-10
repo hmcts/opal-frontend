@@ -102,12 +102,12 @@ Feature: Manual account creation - Create Draft Account
     And I enter "300" into the "Amount imposed" field for imposition 1
     And I enter "100" into the "Amount paid" field for imposition 1
     And I see "Add creditor" text on the page
-    And I select the "Minor creditor" radio button
+    And I select the minor creditor radio option "Minor creditor"
     When I click on the "Add minor creditor details" link for imposition 1
     Then I see "Minor creditor details" on the page header
 
-    When I select the "Individual" radio button
-    And I select "Mr" from the "Title" dropdown
+    When I select the minor creditor radio option "Individual"
+    And I choose "Mr" from the "Title" dropdown
     And I enter "FNAME" into the "First name" field
 
     # Test For Capitalization in Last Name @PO-1450
@@ -333,7 +333,7 @@ Feature: Manual account creation - Create Draft Account
     Then I click on the "Personal details" link
     And I see "Personal details" on the page header
 
-    When I select "Miss" from the "Title" dropdown
+    When I choose "Miss" from the "Title" dropdown
     And I enter "FNAME" into the "First names" field
     When I enter "1 Address Street" into the "Address line 1" field
 
@@ -395,12 +395,12 @@ Feature: Manual account creation - Create Draft Account
     And I enter "300" into the "Amount imposed" field for imposition 1
     And I enter "100" into the "Amount paid" field for imposition 1
     And I see "Add creditor" text on the page
-    And I select the "Minor creditor" radio button
+    And I select the minor creditor radio option "Minor creditor"
     When I click on the "Add minor creditor details" link for imposition 1
     Then I see "Minor creditor details" on the page header
 
-    When I select the "Individual" radio button
-    And I select "Mr" from the "Title" dropdown
+    When I select the minor creditor radio option "Individual"
+    And I choose "Mr" from the "Title" dropdown
     And I enter "FNAME" into the "First name" field
 
     # Test For Capitalization in Last Name - PO-1449

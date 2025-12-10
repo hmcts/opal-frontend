@@ -6,8 +6,10 @@ import {
   ManualAccountDetailsLocators as L,
   ManualAccountTaskName,
 } from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualAccountDetailsActions');
 
 export class ManualAccountDetailsActions {
   private readonly common = new CommonActions();

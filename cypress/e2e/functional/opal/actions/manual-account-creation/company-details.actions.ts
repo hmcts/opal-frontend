@@ -4,7 +4,9 @@
  */
 import { ManualCompanyDetailsLocators as L } from '../../../../../shared/selectors/manual-account-creation/company-details.locators';
 import { CommonActions } from '../common/common.actions';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('ManualCompanyDetailsActions');
 
 /**
  * Actions for the Manual Account Creation Company details page.

@@ -71,3 +71,18 @@ export function logSync(scope: LogScope, message: string, details?: Record<strin
     consoleProps: () => details ?? {},
   });
 }
+
+/**
+ * Creates a scoped logger that automatically tags log entries with a `scope` field (e.g., flow/action name).
+ * @param scopeName - Logical scope to include in log details (e.g., "ManualAccountCreationFlow").
+ * @returns A logger function matching the `log` signature that injects the scope name.
+ *
+ * @example
+ * const log = createScopedLogger('AccountSearchFlow');
+ * log('navigate', 'Opening account search');
+ */
+export const createScopedLogger = (scopeName: string) => {
+  return (scope: LogScope, message: string, details?: Record<string, unknown>): void => {
+    log(scope, message, { scope: scopeName, ...details });
+  };
+};

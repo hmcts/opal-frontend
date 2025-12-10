@@ -3,8 +3,10 @@
  * Encapsulates radio selection, assertions, and cancel/save handling.
  */
 import { ManualLanguagePreferencesLocators as L } from '../../../../../shared/selectors/manual-account-creation/language-preferences.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualLanguagePreferencesActions');
 
 export type LanguageOption = 'English only' | 'Welsh and English';
 export type LanguageSection = 'Documents' | 'Court hearings';
