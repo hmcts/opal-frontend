@@ -105,9 +105,9 @@ export class ManualOffenceDetailsActions {
     this.typeAndAssert(selector, value, `${field} (imposition ${index + 1})`);
 
     if (field === 'Result code') {
-    cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
-    cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
-  }
+      cy.get(L.imposition.resultCodeList(index), this.common.getTimeoutOptions()).should('be.visible');
+      cy.get(L.imposition.resultCodeInput(index)).type('{downarrow}{enter}', { force: true });
+    }
   }
 
   /**

@@ -529,13 +529,10 @@ Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedT
  *
  * Delegates to the generic validation assertion.
  */
-Then(
-  'I see {string} validation message for a minor creditor {string}',
-  (expectedText: string, searchType: string) => {
-    log('assert', `Verifying minor creditor validation for ${searchType}: "${expectedText}"`);
-    searchCommonActions().assertValidationMessageContains(expectedText);
-  },
-);
+Then('I see {string} validation message for a minor creditor {string}', (expectedText: string, searchType: string) => {
+  log('assert', `Verifying minor creditor validation for ${searchType}: "${expectedText}"`);
+  searchCommonActions().assertValidationMessageContains(expectedText);
+});
 
 /**
  * @step Select back → confirm navigation → assert we returned to the Search page.

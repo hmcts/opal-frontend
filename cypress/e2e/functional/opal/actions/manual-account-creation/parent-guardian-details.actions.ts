@@ -101,12 +101,10 @@ export class ManualParentGuardianDetailsActions {
       .clear({ force: true });
 
     if (value !== '') {
-      chain
-        .type(value, { delay: 0, force: true })
-        .should(($input) => {
-          const actual = ($input.val() ?? '').toString().toLowerCase();
-          expect(actual).to.equal(value.toLowerCase());
-        });
+      chain.type(value, { delay: 0, force: true }).should(($input) => {
+        const actual = ($input.val() ?? '').toString().toLowerCase();
+        expect(actual).to.equal(value.toLowerCase());
+      });
       return;
     }
 
@@ -132,12 +130,10 @@ export class ManualParentGuardianDetailsActions {
       .clear({ force: true });
 
     if (value !== '') {
-      chain
-        .type(value, { delay: 0, force: true })
-        .should(($input) => {
-          const actual = ($input.val() ?? '').toString().toLowerCase();
-          expect(actual).to.equal(value.toLowerCase());
-        });
+      chain.type(value, { delay: 0, force: true }).should(($input) => {
+        const actual = ($input.val() ?? '').toString().toLowerCase();
+        expect(actual).to.equal(value.toLowerCase());
+      });
       return;
     }
 

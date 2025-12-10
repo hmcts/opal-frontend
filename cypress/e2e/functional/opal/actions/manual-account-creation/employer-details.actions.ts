@@ -116,12 +116,10 @@ export class ManualEmployerDetailsActions {
       return;
     }
 
-    input
-      .type(value, { delay: 0, force: true })
-      .should(($el) => {
-        const actual = ($el.val() ?? '').toString().toLowerCase();
-        expect(actual).to.equal(value.toLowerCase());
-      });
+    input.type(value, { delay: 0, force: true }).should(($el) => {
+      const actual = ($el.val() ?? '').toString().toLowerCase();
+      expect(actual).to.equal(value.toLowerCase());
+    });
   }
 
   /**

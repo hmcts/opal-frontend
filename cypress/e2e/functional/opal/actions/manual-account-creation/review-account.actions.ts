@@ -11,10 +11,10 @@ type OffenceRow = {
   balanceRemaining: string;
 };
 
-  /**
-   * Actions for the Manual Account Creation **Check account details** screen.
-   */
-  export class ManualReviewAccountActions {
+/**
+ * Actions for the Manual Account Creation **Check account details** screen.
+ */
+export class ManualReviewAccountActions {
   private readonly common = new CommonActions();
   private readonly pathTimeout = this.common.getPathTimeout();
 
@@ -103,12 +103,16 @@ type OffenceRow = {
 
     const detailRows = rows.filter((row) => !/totals/i.test(row.imposition));
     detailRows.forEach((row, index) => {
-      cy.get(L.offences.impositionCells, this.common.getTimeoutOptions()).eq(index).should('contain.text', row.imposition);
+      cy.get(L.offences.impositionCells, this.common.getTimeoutOptions())
+        .eq(index)
+        .should('contain.text', row.imposition);
       cy.get(L.offences.creditorCells, this.common.getTimeoutOptions()).eq(index).should('contain.text', row.creditor);
       cy.get(L.offences.amountImposedCells, this.common.getTimeoutOptions())
         .eq(index)
         .should('contain.text', row.amountImposed);
-      cy.get(L.offences.amountPaidCells, this.common.getTimeoutOptions()).eq(index).should('contain.text', row.amountPaid);
+      cy.get(L.offences.amountPaidCells, this.common.getTimeoutOptions())
+        .eq(index)
+        .should('contain.text', row.amountPaid);
       cy.get(L.offences.balanceRemainingCells, this.common.getTimeoutOptions())
         .eq(index)
         .should('contain.text', row.balanceRemaining);
@@ -121,7 +125,10 @@ type OffenceRow = {
         'contain.text',
         totalsRow.amountImposed,
       );
-      cy.get(L.offences.totals.amountPaid, this.common.getTimeoutOptions()).should('contain.text', totalsRow.amountPaid);
+      cy.get(L.offences.totals.amountPaid, this.common.getTimeoutOptions()).should(
+        'contain.text',
+        totalsRow.amountPaid,
+      );
       cy.get(L.offences.totals.balanceRemaining, this.common.getTimeoutOptions()).should(
         'contain.text',
         totalsRow.balanceRemaining,
