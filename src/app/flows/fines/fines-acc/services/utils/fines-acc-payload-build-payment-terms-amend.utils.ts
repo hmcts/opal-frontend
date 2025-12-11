@@ -92,7 +92,7 @@ export function buildPaymentTermsAmendPayloadUtil(
       jail_days: formData.facc_payment_terms_default_days_in_jail,
       suspended_committal_date: formData.facc_payment_terms_suspended_committal_date,
       reason_for_extension: formData.facc_payment_terms_reason_for_change,
-      extension: null,
+      extension: true,
       payment_terms_type: paymentTermsTypeCode
         ? {
             payment_terms_type_code: paymentTermsTypeCode,

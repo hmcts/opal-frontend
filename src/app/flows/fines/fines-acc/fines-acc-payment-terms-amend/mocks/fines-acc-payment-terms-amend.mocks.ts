@@ -25,7 +25,7 @@ export const MOCK_PAYLOAD: IOpalFinesAmendPaymentTermsPayload = {
     jail_days: 30,
     suspended_committal_date: null,
     reason_for_extension: 'Payment plan adjustment',
-    extension: null,
+    extension: true,
     payment_terms_type: { payment_terms_type_code: 'B' },
     effective_date: '2025-01-15',
     instalment_period: null,
