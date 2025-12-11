@@ -138,7 +138,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    *          - 'CPS' returns the crown prosecution service default.
    *          - Any other value returns the string default.
    */
-  private getDefaultCreditor(impositionCreditor: string): string {
+  private getDefaultCreditor(impositionCreditor: string | null | undefined): string {
     switch (impositionCreditor) {
       case 'CF':
         return FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.centralFundDefault;

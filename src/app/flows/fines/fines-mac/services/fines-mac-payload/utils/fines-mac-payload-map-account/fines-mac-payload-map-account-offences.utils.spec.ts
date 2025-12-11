@@ -44,6 +44,21 @@ describe('finesMacPayloadMapAccountOffences', () => {
 
     const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    const minorCreditor = payload.account.offences[0].impositions?.[0].minor_creditor;
+    if (minorCreditor) {
+      minorCreditor.company_flag = null;
+      minorCreditor.address_line_1 = null;
+      minorCreditor.address_line_2 = null;
+      minorCreditor.address_line_3 = null;
+      minorCreditor.post_code = null;
+      minorCreditor.bank_account_name = null;
+      minorCreditor.bank_account_number = null;
+      minorCreditor.bank_account_ref = null;
+      minorCreditor.bank_sort_code = null;
+      minorCreditor.forenames = null;
+      minorCreditor.surname = null;
+      minorCreditor.company_name = null;
+    }
 
     const result = finesMacPayloadMapAccountOffences(initialState, payload, null);
     const offencesMockState: IFinesMacOffenceDetailsForm[] = [];
@@ -151,13 +166,13 @@ describe('finesMacPayloadMapAccountOffences', () => {
     payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
     if (payload.account.offences[0].impositions) {
       payload.account.offences[0].impositions[0].minor_creditor = null;
-      payload.account.offences[0].offence_id = offencesRefData.offenceId;
+      payload.account.offences[0].offence_id = offencesRefData.offenceId ?? 0;
     }
 
     const result = finesMacPayloadMapAccountOffences(initialState, payload, [offencesRefData]);
 
     expect(result.offenceDetails[0].formData.fm_offence_details_offence_cjs_code).toEqual(
-      OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK.cjsCode,
+      OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK.cjsCode ?? OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK.code ?? null,
     );
   });
 

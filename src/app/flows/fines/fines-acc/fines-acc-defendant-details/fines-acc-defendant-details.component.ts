@@ -146,12 +146,12 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
           break;
         case 'defendant':
           this.tabDefendant$ = this.fetchTabData(
-            this.opalFinesService.getDefendantAccountParty(account_id, defendant_account_party_id),
+            this.opalFinesService.getDefendantAccountParty(account_id, defendant_account_party_id ?? null),
           );
           break;
         case 'parent-or-guardian':
           this.tabParentOrGuardian$ = this.fetchTabData(
-            this.opalFinesService.getParentOrGuardianAccountParty(account_id, parent_guardian_party_id),
+            this.opalFinesService.getParentOrGuardianAccountParty(account_id, parent_guardian_party_id ?? null),
           );
           break;
         case 'payment-terms':

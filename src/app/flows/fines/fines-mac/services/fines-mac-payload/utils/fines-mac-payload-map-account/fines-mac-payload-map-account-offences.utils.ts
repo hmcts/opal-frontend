@@ -40,24 +40,40 @@ const mapAccountOffencesMinorCreditorState = (
   minorCreditor: IFinesMacPayloadAccountOffencesMinorCreditor,
   index: number,
 ): IFinesMacOffenceDetailsMinorCreditorState => {
-  const creditorType = getCreditorType(minorCreditor.company_flag);
+  const companyFlag = minorCreditor.company_flag ?? minorCreditor.party_details?.organisation_flag ?? null;
+  const creditorType = getCreditorType(companyFlag);
+  const address = minorCreditor.address;
+  const individual = minorCreditor.party_details?.individual_details;
+  const organisation = minorCreditor.party_details?.organisation_details;
+  const forenames = individual?.forenames ?? minorCreditor.forenames;
+  const surname = individual?.surname ?? minorCreditor.surname;
+  const companyName = organisation?.organisation_name ?? minorCreditor.company_name;
+  const bankAccountName = minorCreditor.payment?.account_name ?? minorCreditor.bank_account_name;
+  const bankSortCode = minorCreditor.payment?.sort_code ?? minorCreditor.bank_sort_code;
+  const bankAccountNumber = minorCreditor.payment?.account_number ?? minorCreditor.bank_account_number;
+  const bankAccountRef = minorCreditor.payment?.account_reference ?? minorCreditor.bank_account_ref;
+  const payByBacs = minorCreditor.payment?.pay_by_bacs ?? minorCreditor.pay_by_bacs;
+  const addressLine1 = address?.address_line_1 ?? minorCreditor.address_line_1;
+  const addressLine2 = address?.address_line_2 ?? minorCreditor.address_line_2;
+  const addressLine3 = address?.address_line_3 ?? minorCreditor.address_line_3;
+  const postCode = address?.postcode ?? minorCreditor.post_code;
 
   return {
     fm_offence_details_imposition_position: index,
     fm_offence_details_minor_creditor_creditor_type: creditorType,
     fm_offence_details_minor_creditor_title: minorCreditor.title,
-    fm_offence_details_minor_creditor_forenames: minorCreditor.forenames,
-    fm_offence_details_minor_creditor_surname: minorCreditor.surname,
-    fm_offence_details_minor_creditor_company_name: minorCreditor.company_name,
-    fm_offence_details_minor_creditor_address_line_1: minorCreditor.address_line_1,
-    fm_offence_details_minor_creditor_address_line_2: minorCreditor.address_line_2,
-    fm_offence_details_minor_creditor_address_line_3: minorCreditor.address_line_3,
-    fm_offence_details_minor_creditor_post_code: minorCreditor.post_code,
-    fm_offence_details_minor_creditor_pay_by_bacs: minorCreditor.pay_by_bacs,
-    fm_offence_details_minor_creditor_bank_account_name: minorCreditor.bank_account_name,
-    fm_offence_details_minor_creditor_bank_sort_code: minorCreditor.bank_sort_code,
-    fm_offence_details_minor_creditor_bank_account_number: minorCreditor.bank_account_number,
-    fm_offence_details_minor_creditor_bank_account_ref: minorCreditor.bank_account_ref,
+    fm_offence_details_minor_creditor_forenames: forenames,
+    fm_offence_details_minor_creditor_surname: surname,
+    fm_offence_details_minor_creditor_company_name: companyName,
+    fm_offence_details_minor_creditor_address_line_1: addressLine1,
+    fm_offence_details_minor_creditor_address_line_2: addressLine2,
+    fm_offence_details_minor_creditor_address_line_3: addressLine3,
+    fm_offence_details_minor_creditor_post_code: postCode,
+    fm_offence_details_minor_creditor_pay_by_bacs: payByBacs,
+    fm_offence_details_minor_creditor_bank_account_name: bankAccountName,
+    fm_offence_details_minor_creditor_bank_sort_code: bankSortCode,
+    fm_offence_details_minor_creditor_bank_account_number: bankAccountNumber,
+    fm_offence_details_minor_creditor_bank_account_ref: bankAccountRef,
   };
 };
 
@@ -79,7 +95,14 @@ const getCreditor = (
     return majorCreditorValue;
   }
 
-  if (minorCreditor?.surname) {
+  const hasMinorCreditor =
+    minorCreditor?.surname ||
+    minorCreditor?.forenames ||
+    minorCreditor?.company_name ||
+    minorCreditor?.party_details?.organisation_details?.organisation_name ||
+    minorCreditor?.party_details?.individual_details?.surname;
+
+  if (hasMinorCreditor) {
     return minorCreditorValue;
   }
 
@@ -268,7 +291,7 @@ const mapAccountOffencesPayload = (
       fm_offence_details_id: index,
       fm_offence_details_date_of_sentence: offence.date_of_sentence,
       fm_offence_details_offence_id: offence.offence_id,
-      fm_offence_details_offence_cjs_code: offenceRefData ? offenceRefData.cjsCode : null,
+      fm_offence_details_offence_cjs_code: offenceRefData?.cjsCode ?? offenceRefData?.code ?? null,
       fm_offence_details_impositions: mappedOffenceDetailsImpositionsState,
     };
 

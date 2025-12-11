@@ -169,7 +169,10 @@ export class OpalFines {
    * @returns The pretty name of the court.
    */
   public getCourtPrettyName(court: IOpalFinesCourt): string {
-    return `${court.name} (${court.court_code})`;
+    const name = court.court_name ?? court.name ?? 'Unknown court';
+    const code = court.court_code ?? null;
+
+    return code ? `${name} (${code})` : name;
   }
 
   /**
@@ -248,7 +251,10 @@ export class OpalFines {
    * @returns The pretty name of the local justice area.
    */
   public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea): string {
-    return `${localJusticeArea.name} (${localJusticeArea.local_justice_area_id})`;
+    const name = localJusticeArea.lja_name ?? localJusticeArea.name ?? 'Unknown local justice area';
+    const id = localJusticeArea.lja_id ?? localJusticeArea.local_justice_area_id ?? localJusticeArea.lja_code ?? '';
+
+    return id ? `${name} (${id})` : name;
   }
 
   /**
@@ -258,7 +264,7 @@ export class OpalFines {
    * @returns The value of the configuration item, or null if the item is not found.
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configuration_items.find((item) => item.item_name === itemName)?.item_value ?? null;
+    return (businessUnit.configuration_items ?? []).find((item) => item.item_name === itemName)?.item_value ?? null;
   }
 
   /**
@@ -324,7 +330,15 @@ export class OpalFines {
    * @returns The pretty name of the major creditor.
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
-    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+    const name = majorCreditor.name ?? 'Unknown major creditor';
+    const code =
+      majorCreditor.major_creditor_code ??
+      majorCreditor.code ??
+      majorCreditor.account_reference?.display_name ??
+      majorCreditor.account_reference?.account_type ??
+      null;
+
+    return code ? `${name} (${code})` : name;
   }
 
   /**
@@ -669,6 +683,8 @@ export class OpalFines {
         return {
           ...payload,
           version,
+          defendant_account_party_id: payload.defendant_account_party_id ?? payload.defendant_party_id ?? null,
+          parent_guardian_party_id: payload.parent_guardian_party_id ?? null,
         };
       }),
     );

@@ -76,7 +76,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getSendingCourt(idLocationInStore: string | null): string | null {
     const lja = this.localJusticeAreasData.refData.find(
-      (lja: IOpalFinesLocalJusticeArea) => lja.local_justice_area_id === +idLocationInStore!,
+      (lja: IOpalFinesLocalJusticeArea) => (lja.local_justice_area_id ?? lja.lja_id) === +idLocationInStore!,
     )!;
 
     if (!lja) {

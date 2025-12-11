@@ -30,12 +30,16 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK: IOpalFinesDe
               {
                 alias_number: 1,
                 organisation_name: null,
+                alias_id: `AL-${idx}-1`,
+                sequence_number: 1,
                 surname: `SMITH_${idx}`,
                 forenames: `John Michael_${idx}`,
               },
               {
                 alias_number: 2,
                 organisation_name: null,
+                alias_id: `AL-${idx}-2`,
+                sequence_number: 2,
                 surname: `SMYTHE_${idx}`,
                 forenames: `Jon M._${idx}`,
               },
@@ -65,12 +69,16 @@ export const OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK_101: IOpalFin
               {
                 alias_number: 1,
                 organisation_name: null,
+                alias_id: `AL-${idx}-1`,
+                sequence_number: 1,
                 surname: `SMITH_${idx}`,
                 forenames: `John Michael_${idx}`,
               },
               {
                 alias_number: 2,
                 organisation_name: null,
+                alias_id: `AL-${idx}-2`,
+                sequence_number: 2,
                 surname: `SMYTHE_${idx}`,
                 forenames: `Jon M._${idx}`,
               },

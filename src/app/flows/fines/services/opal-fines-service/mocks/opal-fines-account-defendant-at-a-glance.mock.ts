@@ -4,7 +4,30 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
   version: null,
   defendant_account_id: 'DEF-001',
   account_number: 'ACC-123456',
-  debtor_type: 'PERSON',
+  defendant_party_id: 'PARTY-001',
+  parent_guardian_party_id: null,
+  debtor_type: 'Defendant',
+  has_consolidated_accounts: false,
+  account_status_reference: {
+    account_status_code: 'L',
+    account_status_display_name: 'Live',
+  },
+  account_type: 'Fine',
+  originator_type: 'CASE',
+  originator_name: 'Originator Name',
+  prosecutor_case_reference: null,
+  fixed_penalty_ticket_number: null,
+  business_unit_summary: {
+    business_unit_id: 'BU-001',
+    business_unit_name: 'Test Business Unit',
+    welsh_speaking: 'false',
+  },
+  payment_state_summary: {
+    imposed_amount: 1000,
+    arrears_amount: 100,
+    paid_amount: 200,
+    account_balance: 700,
+  },
   is_youth: false,
   party_details: {
     party_id: 'PARTY-001',
@@ -57,6 +80,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
       enforcement_override_result: {
         enforcement_override_result_id: 'EOR-001',
         enforcement_override_result_title: 'Override Approved',
+        enforcement_override_result_name: 'Override Approved',
       },
       enforcer: {
         enforcer_id: 10,

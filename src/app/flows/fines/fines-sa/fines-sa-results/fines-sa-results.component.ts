@@ -190,16 +190,27 @@ export class FinesSaResultsComponent implements OnInit, OnDestroy {
   private buildCommonCreditorFields(
     account: IOpalFinesCreditorAccount,
   ): IFinesSaResultsMinorCreditorTableWrapperTableData {
+    const addressLine1 = account.address?.address_line_1 ?? account.address_line_1 ?? null;
+    const postcode = account.address?.postcode ?? account.postcode ?? null;
+    const party = account.party_details;
+    const defendantName: IOpalFinesCreditorAccountDefendant | null =
+      party?.defendant ??
+      ({
+        firstnames: account.firstnames ?? null,
+        surname: account.surname ?? null,
+        organisation_name: account.organisation_name ?? null,
+      } as IOpalFinesCreditorAccountDefendant);
+
     return {
       ...FINES_SA_RESULTS_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_EMPTY,
       'Creditor account id': account.creditor_account_id,
-      Account: account.account_number,
-      'Address line 1': account.address_line_1,
-      Postcode: account.postcode,
-      'Business unit': account.business_unit_name,
-      'Defendant account id': account.defendant_account_id,
-      Defendant: this.buildDefendantName(account.defendant),
-      Balance: account.account_balance,
+      Account: account.payment?.account_number ?? account.account_number ?? null,
+      'Address line 1': addressLine1,
+      Postcode: postcode,
+      'Business unit': account.business_unit_name ?? null,
+      'Defendant account id': account.defendant_account_id ?? null,
+      Defendant: this.buildDefendantName(defendantName),
+      Balance: account.account_balance ?? null,
     };
   }
 

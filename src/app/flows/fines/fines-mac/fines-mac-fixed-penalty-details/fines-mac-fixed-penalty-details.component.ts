@@ -215,8 +215,9 @@ export class FinesMacFixedPenaltyDetailsComponent extends AbstractFormParentBase
       };
     });
     const _localJusticeAreas = localJusticeAreas.refData.map((item) => {
+      const id = item.local_justice_area_id ?? item.lja_id;
       return {
-        value: item.local_justice_area_id,
+        value: id,
         name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
       };
     });

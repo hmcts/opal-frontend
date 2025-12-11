@@ -300,13 +300,14 @@ describe('OpalFines', () => {
 
   it('should send a GET request to offences ref data API', () => {
     const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+    const cjsCode = refData.get_cjs_code ?? refData.code ?? '';
     const expectedResponse: IOpalFinesOffencesRefData = {
       count: 1,
       refData: [refData],
     };
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`;
 
-    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe((response) => {
+    service.getOffenceByCjsCode(cjsCode).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
     });
 

@@ -84,8 +84,11 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    */
   private getOriginatorName(originatorId: string | null): string {
     const originatorIdNumber = Number(originatorId); // Convert string to number
-    const court = this.localJusticeAreas.refData.find((court) => court.local_justice_area_id === originatorIdNumber);
-    return court ? court.name : '';
+    const court = this.localJusticeAreas.refData.find(
+      (cja) => (cja.local_justice_area_id ?? cja.lja_id) === originatorIdNumber,
+    );
+
+    return court ? (court.name ?? court.lja_name ?? '') : '';
   }
 
   /**
