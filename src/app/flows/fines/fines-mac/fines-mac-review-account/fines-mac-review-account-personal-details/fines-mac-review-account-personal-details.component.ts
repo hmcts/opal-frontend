@@ -12,6 +12,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/national-insurance';
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
@@ -21,6 +22,7 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
     FinesNotProvidedComponent,
+    NationalInsurancePipe,
   ],
   templateUrl: './fines-mac-review-account-personal-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

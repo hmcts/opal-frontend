@@ -10,9 +10,9 @@ export const routing: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import(
-        '../fines-mac-offence-details-search-offences-search/fines-mac-offence-details-search-offences-search.component'
-      ).then((c) => c.FinesMacOffenceDetailsSearchOffencesSearchComponent),
+      import('../fines-mac-offence-details-search-offences-search/fines-mac-offence-details-search-offences-search.component').then(
+        (c) => c.FinesMacOffenceDetailsSearchOffencesSearchComponent,
+      ),
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffences },
     resolve: { title: TitleResolver },
@@ -20,9 +20,9 @@ export const routing: Routes = [
   {
     path: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS.children.searchOffencesResults,
     loadComponent: () =>
-      import(
-        '../fines-mac-offence-details-search-offences-results/fines-mac-offence-details-search-offences-results.component'
-      ).then((c) => c.FinesMacOffenceDetailsSearchOffencesResultsComponent),
+      import('../fines-mac-offence-details-search-offences-results/fines-mac-offence-details-search-offences-results.component').then(
+        (c) => c.FinesMacOffenceDetailsSearchOffencesResultsComponent,
+      ),
     canActivate: [finesMacOffenceDetailsSearchOffencesFlowStateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults },
     resolve: {
