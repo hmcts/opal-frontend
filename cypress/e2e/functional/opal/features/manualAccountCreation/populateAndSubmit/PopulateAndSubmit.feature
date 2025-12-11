@@ -392,15 +392,15 @@ Feature: Manual account creation - Create Draft Account
     And I see the manual review "Parent or guardian details" summary:
       | Surname                   | LNAME                                                                                             |
       | Address                   | 1 Address Street RG12 8EU                                                                         |
-      | National Insurance number | AB122398B                                                                                         |
+      | National Insurance number | AB 12 23 98 B                                                                                     |
       | Aliases                   | fnameone LNAMEONE fnametwo LNAMETWO fnamethree LNAMETHREE fnamefour LNAMEFOUR fnamefive LNAMEFIVE |
     And I see the manual review "Defendant details" summary:
       | Last name                 | LNAME                     |
       | Address                   | 1 Address Street RG12 8EU |
-      | National Insurance number | AB122398B                 |
+      | National Insurance number | AB 12 23 98 B             |
       | Aliases                   | Not provided              |
     And I see the manual review "Employer details" summary:
-      | Employee reference | AB122398B                 |
+      | Employee reference | A122398B                  |
       | Employer address   | 1 Address Street RG12 8EU |
     And the manual review offence table contains:
       | Imposition   | Creditor           | Amount imposed | Amount paid | Balance remaining |
