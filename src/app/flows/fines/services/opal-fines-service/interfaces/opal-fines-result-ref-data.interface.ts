@@ -1,0 +1,32 @@
+export interface IOpalFinesResultRefData {
+  result_id: string;
+  result_title: string;
+  result_title_cy: string;
+  result_type: string;
+  active: boolean;
+  imposition: boolean;
+  imposition_category: string | undefined;
+  imposition_allocation_priority: number | undefined;
+  imposition_accruing: boolean;
+  imposition_creditor: string | undefined;
+  enforcement: boolean;
+  enforcement_override: boolean;
+  further_enforcement_warn: boolean;
+  further_enforcement_disallow: boolean;
+  enforcement_hold: boolean;
+  requires_enforcer: boolean;
+  generates_hearing: boolean;
+  generates_warrant: boolean | undefined;
+  collection_order: boolean;
+  extend_ttp_disallow: boolean;
+  extend_ttp_preserve_last_enf: boolean;
+  prevent_payment_card: boolean;
+  lists_monies: boolean;
+  result_parameters: string | undefined;
+  allow_payment_terms: boolean | undefined;
+  requires_employment_data: boolean | undefined;
+  allow_additional_action: boolean | undefined;
+  enf_next_permitted_actions: string | undefined;
+  requires_lja: boolean | undefined;
+  manual_enforcement: boolean | undefined;
+}

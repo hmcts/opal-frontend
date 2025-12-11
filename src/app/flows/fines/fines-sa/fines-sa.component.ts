@@ -37,6 +37,6 @@ export class FinesSaComponent implements OnDestroy {
     this.finesSaStore.resetStore();
 
     // Clear any errors...
-    this.globalStore.resetError();
+    this.globalStore.resetBannerError();
   }
 }

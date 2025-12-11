@@ -8,8 +8,8 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-company-details',
@@ -31,7 +31,7 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
   public aliases!: string[];
   public address!: string[];
-  public readonly accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
+  public readonly accountTypesKeys = FINES_ACCOUNT_TYPES;
 
   /**
    * Retrieves and formats alias data from the company details.

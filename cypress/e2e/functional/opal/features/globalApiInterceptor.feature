@@ -91,3 +91,32 @@ Feature: Global API Interceptor shows error banner for all CEP error codes
     And I see "the account is outside your business unit and some features are restricted" text on the page
     And I see "you are not permitted to use this feature" text on the page
     And I see "If you think this is incorrect, contact your line manager." text on the page
+
+  @PO-2224
+  Scenario Outline: Internal Server Error page is displayed for non-retriable backend errors - FAE
+
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    And I navigate to Search For An Account
+    When I enter "NOMATCH999" into the "Reference or case number" field
+
+    ## Non-retriable (HTTP 500) error response received
+    When I click the Search button and trigger a 500 non-retriable error for the defendant accounts search API
+    Then I see "Sorry, there is a problem with the service" on the page header
+    And I see "Error code: OP67890." text on the page
+
+
+  @PO-2223
+  Scenario Outline: Global warning banner is displayed for retriable backend errors - FAE
+
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    And I navigate to Search For An Account
+    When I enter "NOMATCH999" into the "Reference or case number" field
+    When I select the "Companies" tab
+    And I click the Search button and trigger a 500 retriable error for the defendant accounts search API
+    Then I should see the retriable global warning banner
+    And I see "Search for an account" on the page header
+    And I reload the page
+    And I see "Search for an account" on the page header
+    And I should not see the global error banner

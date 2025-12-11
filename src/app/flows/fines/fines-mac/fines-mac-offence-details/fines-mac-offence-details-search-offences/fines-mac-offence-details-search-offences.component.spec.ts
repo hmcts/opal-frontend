@@ -47,7 +47,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     );
     expect(finesMacOffenceDetailsSearchOffencesStore.unsavedChanges()).toBe(false);
     expect(finesMacOffenceDetailsSearchOffencesStore.stateChanges()).toBe(false);
-    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
+    expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call handleBeforeUnload ', () => {

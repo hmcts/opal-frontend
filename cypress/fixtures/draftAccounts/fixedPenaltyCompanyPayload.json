@@ -1,0 +1,118 @@
+
+{
+  "draft_account_id": null,
+  "created_at": null,
+  "account_snapshot": null,
+  "account_status_date": null,
+  "business_unit_id": 77,
+  "submitted_by": "L077JG",
+  "submitted_by_name": "opal-test",
+  "account": {
+    "account_type": "Fixed Penalty",
+    "defendant_type": "company",
+    "originator_name": "Fixed Penalty Office",
+    "originator_id": 9001,
+    "prosecutor_case_reference": "FPC123456",
+    "enforcement_court_id": 770000000001,
+    "collection_order_made": null,
+    "collection_order_made_today": null,
+    "collection_order_date": null,
+    "suspended_committal_date": null,
+    "payment_card_request": null,
+    "account_sentence_date": "2025-05-15",
+    "defendant": {
+      "company_flag": true,
+      "company_name": "TEST Fixed-Penalty-Company-Ltd",
+      "address_line_1": "123 Business Park",
+      "address_line_2": "Industrial Estate",
+      "address_line_3": null,
+      "address_line_4": null,
+      "address_line_5": null,
+      "post_code": "BU1 2NE",
+      "telephone_number_home": null,
+      "telephone_number_business": "01234567890",
+      "telephone_number_mobile": null,
+      "email_address_1": "contact@testcompany.com",
+      "email_address_2": null,
+      "national_insurance_number": null,
+      "driving_licence_number": null,
+      "nationality_1": null,
+      "nationality_2": null,
+      "ethnicity_self_defined": null,
+      "ethnicity_observed": null,
+      "cro_number": null,
+      "occupation": null,
+      "gender": null,
+      "custody_status": null,
+      "prison_number": null,
+      "interpreter_lang": null,
+      "debtor_detail": {
+        "vehicle_make": "Ford Transit",
+        "vehicle_registration_mark": "CO12 MPY",
+        "document_language": "English",
+        "hearing_language": "English",
+        "employee_reference": null,
+        "employer_company_name": null,
+        "employer_address_line_1": null,
+        "employer_address_line_2": null,
+        "employer_address_line_3": null,
+        "employer_address_line_4": null,
+        "employer_address_line_5": null,
+        "employer_post_code": null,
+        "employer_telephone_number": null,
+        "employer_email_address": null,
+        "aliases": null
+      },
+      "parent_guardian": null
+    },
+    "offences": [
+      {
+        "offence_type": "Vehicle",
+        "offence_id": 33369,
+        "date_of_sentence": "2025-05-15",
+        "imposing_court_id": 770000000001,
+        "impositions": [
+          {
+            "result_id": "FPN",
+            "amount_imposed": 2200,
+            "amount_paid": 0,
+            "major_creditor_id": 770000000001,
+            "minor_creditor": null
+          }
+        ]
+      }
+    ],
+    "fp_ticket_detail": {
+      "fp_registration_number": "CO12 MPY",
+      "offence_location": "Loading Bay, Commercial Street",
+      "notice_type": "Fixed Penalty Notice - Commercial",
+      "date_of_notice": "2025-05-15",
+      "offence_type": "Vehicle",
+      "notice_to_hirer_number": "NTH987654",
+      "date_notice_to_owner_issued": "2025-05-12",
+      "time_of_offence": "09:45",
+      "driving_licence_number": null    
+    },
+    "payment_terms": {
+      "payment_terms_type_code": "I",
+      "effective_date": "2025-06-15",
+      "instalment_period": null,
+      "lump_sum_amount": 1200,
+      "instalment_amount": null,
+      "default_days_in_jail": null,
+      "enforcements": null
+    },
+    "account_notes": null
+  },
+  "account_type": "Fixed Penalty",
+  "account_status": "Draft",
+  "timeline_data": [
+    {
+      "username": "opal-test",
+      "status": "Draft",
+      "status_date": "2025-11-17",
+      "reason_text": "Created for testing Fixed Penalty company functionality"
+    }
+  ],
+  "version": 0
+}

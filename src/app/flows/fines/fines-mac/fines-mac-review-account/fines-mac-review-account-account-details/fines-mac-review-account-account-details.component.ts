@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from '../../fines-mac-account-details/constants/fines-mac-account-details-account-types';
-import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
@@ -13,6 +12,7 @@ import {
   GovukSummaryListRowComponent,
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-account-details',
@@ -40,7 +40,7 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
   private getAccountType(): void {
     this.accountType =
       FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
-        this.accountDetails.fm_create_account_account_type! as keyof IFinesMacAccountTypes
+        this.accountDetails.fm_create_account_account_type! as keyof IFinesAccountTypes
       ];
   }
 

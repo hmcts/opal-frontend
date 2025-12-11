@@ -26,9 +26,9 @@ import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 // Shared factory for setting up the test module
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -113,7 +113,7 @@ function createTestModule(snapshotData?: any) {
   const component = fixture.componentInstance;
   const globalStore = TestBed.inject(GlobalStore);
   globalStore.setUserState(OPAL_USER_STATE_MOCK);
-  globalStore.setError({
+  globalStore.setBannerError({
     ...GLOBAL_ERROR_STATE,
   });
   const finesMacStore = TestBed.inject(FinesMacStore);
@@ -409,17 +409,6 @@ describe('FinesMacReviewAccountComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith([component['viewAllAccountsTabs']], {});
     });
 
-    it('should navigate back to fixed penalty form when account type is fixed penalty', () => {
-      spyOn(component['finesMacStore'], 'getAccountType').and.returnValue(FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
-      const routerSpy = spyOn(component['router'], 'navigate');
-
-      component.navigateBack();
-
-      expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.fixedPenaltyDetails], {
-        relativeTo: jasmine.any(Object),
-      });
-    });
-
     it('should navigate to fixed penalty details when not read-only, accountType is Fixed Penalty and status is not Rejected (late branch)', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
 
@@ -429,7 +418,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
       // Drive execution into the later else-branch under !isReadOnly
       component.isReadOnly = false;
-      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
       component.accountStatus = 'In Review'; // anything other than 'Rejected'
 
       component.navigateBack();
@@ -442,7 +431,7 @@ describe('FinesMacReviewAccountComponent', () => {
     it('should navigate back to referrer when account type is fixed penalty and account type is "Rejected"', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
       component.accountStatus = 'Rejected';
-      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
       component.isReadOnly = false;
       component.navigateBack();
 
@@ -455,7 +444,7 @@ describe('FinesMacReviewAccountComponent', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
       finesDraftStore.setFragment('test-fragment');
       component.accountStatus = 'Rejected';
-      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
       component.isReadOnly = false;
       component.navigateBack();
 
@@ -508,7 +497,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should route to the account details page when change() is called from a fine account', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
-      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
+      component.accountType = FINES_ACCOUNT_TYPES['Fine'];
 
       component.change();
 
@@ -519,7 +508,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     it('should route to the fixed penalty details form when change() is called from a fixed penalty account', () => {
       const routerSpy = spyOn(component['router'], 'navigate');
-      component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
       component.change();
 
@@ -551,7 +540,7 @@ describe('FinesMacReviewAccountComponent', () => {
     it('should set correct flags when  reviewAccountFetchedMappedPayload is called for a fixed penalty account', () => {
       const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
       const finesMacDraft = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
       finesMacDraft.account_status = 'Rejected';
       const snapshotData: IFetchMapFinesMacPayload = {
         finesMacState,

@@ -41,6 +41,6 @@ describe('FinesComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
-    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
+    expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 });

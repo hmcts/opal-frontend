@@ -13,7 +13,7 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-pretty-name.mock';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   let component: FinesMacReviewAccountCourtDetailsComponent;
@@ -107,7 +107,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.courtDetails.fm_court_details_originator_id = '1865';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+    component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
 
@@ -124,7 +124,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.courtDetails.fm_court_details_originator_id = '9985';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+    component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
 
@@ -141,7 +141,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getSendingCourt').and.callThrough();
     component.courtDetails.fm_court_details_originator_id = '9985';
-    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
+    component.accountType = FINES_ACCOUNT_TYPES['Fine'];
 
     component['getCourtDetailsData']();
 
@@ -151,11 +151,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should set card title based on account type', () => {
-    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+    component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
     component['setCardTitle']();
     expect(component.cardTitle).toBe('Issuing authority and court details');
 
-    component.accountType = FINES_MAC_ACCOUNT_TYPES['Fine'];
+    component.accountType = FINES_ACCOUNT_TYPES['Fine'];
     component['setCardTitle']();
     expect(component.cardTitle).toBe('Court details');
   });

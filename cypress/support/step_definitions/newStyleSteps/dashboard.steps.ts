@@ -1,5 +1,5 @@
 /**
- * @file dashboardsteps.ts
+ * @file dashboard.steps.ts
  * @description
  * Step definitions for **Dashboard navigation** within the Opal application.
  * Covers high-level actions such as opening the Manual Account Creation page
@@ -42,11 +42,5 @@ const dashboard = () => new DashboardActions();
  * ```
  */
 When('I open Manual Account Creation', () => {
-  Cypress.log({
-    name: 'navigate',
-    displayName: 'Dashboard',
-    message: 'Opening Manual Account Creation from Dashboard',
-  });
-
   dashboard().goToManualAccountCreation();
 });

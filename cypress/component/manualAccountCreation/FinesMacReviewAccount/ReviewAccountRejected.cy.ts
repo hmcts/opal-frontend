@@ -20,7 +20,7 @@ import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { data } from 'cypress/types/jquery';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -39,9 +39,11 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
           useFactory: () => {
             let globalStore = new GlobalStore();
             globalStore.setUserState(ACCOUNT_SESSION_USER_STATE_MOCK);
-            globalStore.setError({
+            globalStore.setBannerError({
               error: false,
               message: '',
+              title: null,
+              operationId: null,
             });
             return globalStore;
           },
@@ -120,7 +122,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         //Checking a few of the values in the account object are correct
         expect(request.body).to.have.property('account');
-        expect(request.body.account).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES.Fine);
+        expect(request.body.account).to.have.property('account_type', FINES_ACCOUNT_TYPES.Fine);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
         expect(request.body.account.defendant).to.have.property('title', 'Mr');
         expect(request.body.account.defendant).to.have.property('surname', 'Doe');
@@ -131,7 +133,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.account.defendant).to.have.property('address_line_3', 'Fake City');
         expect(request.body.account.defendant).to.have.property('post_code', 'AB12 3CD');
 
-        expect(request.body).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES.Fine);
+        expect(request.body).to.have.property('account_type', FINES_ACCOUNT_TYPES.Fine);
         expect(request.body).to.have.property('account_status', 'Resubmitted');
         expect(request.body).to.have.property('timeline_data');
 
@@ -159,7 +161,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
       setupComponent(false);
       cy.get(DOM_ELEMENTS.submitButton).click();
 
-      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'];
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
       cy.wait('@putDraftAccount').then(({ request }) => {
         expect(request.body).to.exist;
@@ -178,7 +180,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
 
         // AC4d
         expect(request.body).to.have.property('account');
-        expect(request.body.account).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
+        expect(request.body.account).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
         expect(request.body.account).to.have.property('defendant_type', 'adultOrYouthOnly');
         expect(request.body.account.defendant).to.have.property('title', 'Mr');
         expect(request.body.account.defendant).to.have.property('surname', 'Doe');
@@ -190,7 +192,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body.account.defendant).to.have.property('post_code', 'AB12 3CD');
 
         // AC4e - account_type = 'Fixed Penalty'
-        expect(request.body).to.have.property('account_type', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
+        expect(request.body).to.have.property('account_type', FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
         // AC4f - account_status_message = null
         expect(request.body).to.have.property('account_status_message', null);

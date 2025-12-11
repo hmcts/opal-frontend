@@ -10,7 +10,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_CREATE_ACCOUNT_MOCK } from './mocks/fines_mac_create_account_mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacCreateAccountComponent', () => {
   const setupComponent = (formSubmit?: any) => {
@@ -87,9 +87,9 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(DOM_ELEMENTS.businessUnitLabel).should('contain', 'Business unit');
 
     cy.get(DOM_ELEMENTS.accountTypeHeading).should('contain', 'Account type');
-    cy.get(DOM_ELEMENTS.fineLabel).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
-    cy.get(DOM_ELEMENTS.fixedPenaltyLabel).should('contain', FINES_MAC_ACCOUNT_TYPES['Fixed Penalty']);
-    cy.get(DOM_ELEMENTS.conditionalCautionLabel).should('contain', FINES_MAC_ACCOUNT_TYPES['Conditional Caution']);
+    cy.get(DOM_ELEMENTS.fineLabel).should('contain', FINES_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.fixedPenaltyLabel).should('contain', FINES_ACCOUNT_TYPES['Fixed Penalty']);
+    cy.get(DOM_ELEMENTS.conditionalCautionLabel).should('contain', FINES_ACCOUNT_TYPES['Conditional Caution']);
     cy.get(DOM_ELEMENTS.ConditionalCautionHint).should('contain', 'Adult or youth only');
   });
 

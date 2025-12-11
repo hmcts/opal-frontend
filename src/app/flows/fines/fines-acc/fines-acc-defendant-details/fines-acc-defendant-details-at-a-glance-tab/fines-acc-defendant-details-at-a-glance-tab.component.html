@@ -92,13 +92,14 @@
       @if (!tabData.party_details.organisation_flag) {
         <h3 [class]="style.key">National Insurance Number</h3>
         <p [class]="style.value">
-          {{
-            tabData.party_details.individual_details?.national_insurance_number
-              ? (tabData.party_details.individual_details?.national_insurance_number | uppercase)
-              : '&mdash;'
-          }}
+          @if (tabData.party_details.individual_details?.national_insurance_number) {
+            {{ tabData.party_details.individual_details?.national_insurance_number! | nationalInsurance }}
+          } @else {
+            <app-fines-not-provided></app-fines-not-provided>
+          }
         </p>
       }
+
       @if (
         tabData.language_preferences?.document_language_preference?.language_display_name === languages.CY ||
         tabData.language_preferences?.hearing_language_preference?.language_display_name === languages.CY

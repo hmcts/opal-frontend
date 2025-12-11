@@ -124,7 +124,8 @@ describe('FinesSaSearchAccountFormComponent', () => {
     component.goToFilterBusinessUnits();
     expect(mockFinesSaStore.searchAccount()).toEqual(component.form.value);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).handleRoute).toHaveBeenCalledWith('filter-business-units', false, undefined, {
+    expect((component as any).handleRoute).toHaveBeenCalledWith('filter-business-units', {
+      nonRelative: false,
       fragment: 'individuals',
     });
   });

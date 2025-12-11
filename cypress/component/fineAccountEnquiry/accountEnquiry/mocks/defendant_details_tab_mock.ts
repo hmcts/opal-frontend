@@ -38,7 +38,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_TAB_MOCK: IOpalFinesAccountDefendantAt
       surname: 'Graham',
       date_of_birth: '1980-02-03',
       age: '45',
-      national_insurance_number: 'QA 12 34 56C',
+      national_insurance_number: 'QA123456C',
       individual_aliases: INDIVIDUAL_ALIASES, // Changed from null to empty array if it expects an array type
       //individual_aliases: null,
     },

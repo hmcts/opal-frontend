@@ -40,7 +40,7 @@ describe('FinesMacComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
-    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
+    expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call handleBeforeUnload ', () => {

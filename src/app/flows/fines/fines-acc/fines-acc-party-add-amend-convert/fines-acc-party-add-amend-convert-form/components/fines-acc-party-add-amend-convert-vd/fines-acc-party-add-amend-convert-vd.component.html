@@ -1,0 +1,22 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Vehicle details</legend>
+  <opal-lib-govuk-text-input
+    labelText="Make and model"
+    inputId="facc_party_add_amend_convert_vehicle_make"
+    inputName="facc_party_add_amend_convert_vehicle_make"
+    inputClasses="govuk-input--width-20"
+    labelClasses="govuk-label--s"
+    [control]="form.get('facc_party_add_amend_convert_vehicle_make')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_make']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Registration number"
+    inputId="facc_party_add_amend_convert_vehicle_registration_mark"
+    inputName="facc_party_add_amend_convert_vehicle_registration_mark"
+    inputClasses="govuk-input--width-10"
+    labelClasses="govuk-label--s"
+    [control]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark']"
+    [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_vehicle_registration_mark')!"
+  ></opal-lib-govuk-text-input>
+</fieldset>

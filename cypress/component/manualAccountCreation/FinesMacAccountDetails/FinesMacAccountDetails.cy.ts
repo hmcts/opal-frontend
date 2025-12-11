@@ -13,7 +13,7 @@ import { FINES_COMP_CHECK_ACCOUNT_MOCK } from './mocks/fines_mac_comp_check_acco
 import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
 import { FinesMacPayloadService } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_REJECTED_ACCOUNT_MOCK } from './mocks/fines_mac_rejected_account_mock';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_CHECK_ACCOUNT_MOCK);
@@ -111,7 +111,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
       //verify correct text is displayed
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
     },
   );
@@ -144,7 +144,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.employerDetails).should('exist');
       cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
     },
   );
@@ -174,7 +174,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.languagePreferences).should('not.exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
     },
   );
@@ -354,7 +354,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.employerDetails).should('exist');
       cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
     },
   );
@@ -398,7 +398,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.employerDetails).should('exist');
       cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
     },
   );
@@ -435,7 +435,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
       cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
 
-      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+      cy.get(DOM_ELEMENTS.accountType).should('contain', FINES_ACCOUNT_TYPES.Fine);
       cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
     },
   );

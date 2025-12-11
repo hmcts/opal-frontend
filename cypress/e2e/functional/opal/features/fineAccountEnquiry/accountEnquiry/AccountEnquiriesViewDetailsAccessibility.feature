@@ -19,7 +19,7 @@ Feature: Account Enquiries - View Account Details Accessibility
       | account.defendant.dob                   | 2002-05-15                     |
     When I search for the account by last name "AccDetailSurname"
     ## Check Accessibility on Search Results Page
-    Then I check for accessibility
+    Then I check the page for accessibility
     And I select the latest published account and verify the header is "Mr John ACCDETAILSURNAME"
     ## Check Accessibility on Account Details Page
     Then I check accessibility
@@ -37,7 +37,7 @@ Feature: Account Enquiries - View Account Details Accessibility
       | account.payment_card_request        | false                  |
     When I search for the account by company name "Accdetail comp"
     # Check Accessibility on Company Search Results Page
-    Then I check accessibility
+    Then I check the page for accessibility
     # Check Accessibility on Company Account Details Page
     And I select the latest published account and verify the header is "Accdetail comp"
-    Then I check accessibility
+    Then I check the page for accessibility

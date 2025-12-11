@@ -515,7 +515,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     if (this.finesMacOffenceDetailsStore.emptyOffences()) {
       this.handleRoute(
         `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-        true,
+        { nonRelative: true },
       );
     } else {
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);

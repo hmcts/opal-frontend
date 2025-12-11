@@ -45,6 +45,6 @@ export class FinesMacOffenceDetailsSearchOffencesComponent implements OnDestroy 
     this.finesMacOffenceDetailsSearchOffencesStore.resetSearchOffencesStore();
 
     // Clear any errors...
-    this.globalStore.resetError();
+    this.globalStore.resetBannerError();
   }
 }

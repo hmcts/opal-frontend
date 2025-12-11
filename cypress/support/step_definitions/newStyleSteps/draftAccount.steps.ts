@@ -1,44 +1,116 @@
 /**
  * @file draftAccount.steps.ts
  * @description
- * Step definitions for **draft account creation and status management** within Opal.
- *
- * These steps interface directly with API-level actions (not UI flows) to
- * quickly prepare test data for scenarios that depend on specific draft states.
+ * Step definitions for creating draft accounts and setting their status.
+ * Supports multiple Gherkin aliases that map to one underlying implementation,
+ * keeping features readable while avoiding duplicate logic.
  *
  * @remarks
- * - Uses the `createDraftAndSetStatus()` API helper to create a draft account
- *   and immediately update its status (e.g., "Submitted", "Approved").
- * - Designed for setup/background steps in Cucumber features.
- * - Avoids UI overhead by manipulating data via Cypress tasks or API routes.
+ * - These steps operate at the API level via Cypress tasks — no UI overhead.
+ * - Use them in Background or setup stages to prepare predictable data states.
+ * - Aliases allow both the explicit and implicit “Publishing Pending” forms.
  *
  * @example
- *   Given I create a "company" draft account with the following details and set status "Approved":
- *     | Name    | Example Ltd |
- *     | Address | 123 Test St |
+ *   Given I create a "company" draft account with the following details and set status "Submitted":
+ *     | account.defendant.company_name | Example Co Ltd |
+ *     | account.account_type           | Fine           |
  *
- * @see {@link createDraftAndSetStatus}
+ * @example
+ *   And I create and publish an "adultOrYouthOnly" draft account with the following details:
+ *     | account.defendant.forenames | John |
+ *     | account.defendant.surname   | Smith |
  */
 
 import { Given } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { createDraftAndSetStatus } from '../../../e2e/functional/opal/actions/draftAccount.api';
+import { createDraftAndSetStatus } from '../../../e2e/functional/opal/actions/draft-account.api';
 
 /**
- * @step Creates a draft account of the specified type using provided details,
- *       then updates its status.
+ * @typedef AccountType
+ * Union of all supported draft account types.
+ */
+type AccountType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
+
+/**
+ * Unified implementation used by all step aliases.
  *
- * @param accountType - Type of account to create (`company`, `adultOrYouthOnly`, or `pgToPay`).
- * @param newStatus - The new status to set after creation (e.g., "Approved", "Submitted").
- * @param table - A Cucumber `DataTable` defining field/value pairs for draft creation.
+ * @param accountType - The type of account to create (`company`, `adultOrYouthOnly`, or `pgToPay`).
+ * @param table - A Cucumber DataTable defining the account fields and values.
+ * @param status - The target status after creation (defaults to "Publishing Pending").
  *
- * @details
- * - Delegates to the reusable `createDraftAndSetStatus()` action for API-level operations.
- * - Returns the underlying Cypress chain to ensure proper command sequencing.
+ * @returns Cypress.Chainable
+ *
+ * @remarks
+ * - Writes Cypress logs for clear traceability in the test runner.
+ * - Default behaviour simulates the “create and publish pending” lifecycle.
+ */
+function createDraftAndPrepareForPublishing(
+  accountType: AccountType,
+  table: DataTable,
+  status: string = 'Publishing Pending',
+) {
+  const details = table.hashes?.() ?? [];
+
+  Cypress.log({
+    name: 'draft',
+    displayName: 'Create Draft',
+    message: `Creating ${accountType} draft → ${status}`,
+    consoleProps: () => ({
+      accountType,
+      status,
+      fields: details,
+      rowCount: details.length,
+    }),
+  });
+
+  return createDraftAndSetStatus(accountType, status, table);
+}
+
+/**
+ * @step Create a draft account, set explicit status, and persist.
+ * @description
+ *  Creates a draft account of the specified type, populates it with data from the
+ *  provided Cucumber DataTable, and sets the draft's status before saving.
+ *
+ * @param accountType - The account type (e.g., "company" or "individual").
+ * @param status - The target draft status to assign.
+ * @param table - Cucumber DataTable containing field/value pairs for the draft account.
+ *
+ * @remarks
+ *  - Uses the flow `createDraftAndPrepareForPublishing()` to perform all actions.
+ *  - Utilizes `table.rows()` to safely extract the table data for logging.
+ *
+ * @example
+ *  Given I create a "company" draft account with the following details and set status "Submitted":
+ *    | account.defendant.company_name | Example Co |
  */
 Given(
   'I create a {string} draft account with the following details and set status {string}:',
-  (accountType: 'company' | 'adultOrYouthOnly' | 'pgToPay', newStatus: string, table: DataTable) => {
-    return createDraftAndSetStatus(accountType, newStatus, table);
+  (accountType: AccountType, status: string, table: DataTable) => {
+    // Convert DataTable into raw row format for logging purposes.
+    const data = table.rows();
+
+    Cypress.log({
+      name: 'draft',
+      displayName: 'Create Draft',
+      message: `Create ${accountType} draft, status ${status}`,
+      consoleProps: () => ({ accountType, status, data }),
+    });
+
+    // Perform the draft creation and set the desired status.
+    createDraftAndPrepareForPublishing(accountType, table, status);
   },
+);
+
+/**
+ * Step alias #2 (implicit “Publishing Pending” status)
+ *
+ * @example
+ * And I create and publish an "adultOrYouthOnly" draft account with the following details:
+ *   | account.defendant.forenames | John |
+ *   | account.defendant.surname   | Smith |
+ */
+Given(
+  'I create and publish an {string} draft account with the following details:',
+  (accountType: AccountType, table: DataTable) => createDraftAndPrepareForPublishing(accountType, table),
 );

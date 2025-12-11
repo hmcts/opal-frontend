@@ -20,6 +20,7 @@ import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-dr
 import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 import { FinesMacDeleteAccountConfirmationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
 import { getToday } from 'cypress/support/utils/dateUtils';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -45,7 +46,8 @@ describe('FinesMacDeleteAccountConfirmation - Checker Delete account', () => {
           useFactory: () => {
             let store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
-            store.setError({
+            store.setBannerError({
+              ...GLOBAL_ERROR_STATE,
               error: false,
               message: '',
             });

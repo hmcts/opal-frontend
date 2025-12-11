@@ -39,7 +39,7 @@ describe('FinesSaComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(finesSaStore.searchAccount()).toEqual(FINES_SA_SEARCH_ACCOUNT_STATE);
-    expect(globalStore.error()).toEqual({ ...GLOBAL_ERROR_STATE });
+    expect(globalStore.bannerError()).toEqual({ ...GLOBAL_ERROR_STATE });
   });
 
   it('should call handleBeforeUnload ', () => {

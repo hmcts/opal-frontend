@@ -21,7 +21,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
-import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
@@ -37,6 +36,7 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { IFinesAccountTypes } from '../../interfaces/fines-account-types.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -156,7 +156,7 @@ export class FinesMacAccountDetailsComponent extends AbstractFormParentBaseCompo
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
     const { fm_create_account_account_type: accountType } = this.finesMacStore.accountDetails().formData;
-    this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountTypes] || '';
+    this.accountType = this.accountTypes[accountType as keyof IFinesAccountTypes] || '';
   }
 
   /**

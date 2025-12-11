@@ -9,7 +9,7 @@ import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacFixedPenaltyDetailsStoreState } from '../../../../fines-mac-fixed-penalty-details/interfaces/fines-mac-fixed-penalty-details-store-state.interface';
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
-import { FINES_MAC_ACCOUNT_TYPES } from '../../../../constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
   let offencesMockState: IFinesMacOffenceDetailsForm[] | null;
@@ -260,7 +260,7 @@ describe('finesMacPayloadBuildAccountOffences', () => {
     const results = finesMacPayloadBuildAccountOffences(
       offencesMockState,
       fixedPenaltyMockState,
-      FINES_MAC_ACCOUNT_TYPES['Fixed Penalty'],
+      FINES_ACCOUNT_TYPES['Fixed Penalty'],
     );
 
     expect(results).toEqual([
