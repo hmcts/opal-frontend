@@ -166,6 +166,7 @@ When(
   'I maintain individual minor creditor with BACS details for imposition {int}:',
   (imposition: number, table: DataTable) => {
     const data = normalizeHash(table);
+    const accountName = data['Account name'] ?? data['Name on account'] ?? data['Name on the account'];
     const payload = {
       title: data['Title'],
       firstNames: data['First name'],
@@ -174,7 +175,7 @@ When(
       address2: data['Address line 2'],
       address3: data['Address line 3'],
       postcode: data['Postcode'],
-      accountName: data['Name on account'],
+      accountName,
       sortCode: data['Sort code'],
       accountNumber: data['Account number'],
       paymentReference: data['Payment reference'],
@@ -196,13 +197,14 @@ When(
   'I maintain company minor creditor with BACS details for imposition {int}:',
   (imposition: number, table: DataTable) => {
     const data = normalizeHash(table);
+    const accountName = data['Account name'] ?? data['Name on account'] ?? data['Name on the account'];
     const payload = {
       company: data['Company'],
       address1: data['Address line 1'],
       address2: data['Address line 2'],
       address3: data['Address line 3'],
       postcode: data['Postcode'],
-      accountName: data['Account name'],
+      accountName,
       sortCode: data['Sort code'],
       accountNumber: data['Account number'],
       paymentReference: data['Payment reference'],
@@ -224,6 +226,7 @@ When(
   'I update individual minor creditor with BACS details for imposition {int}:',
   (imposition: number, table: DataTable) => {
     const data = normalizeHash(table);
+    const accountName = data['Account name'] ?? data['Name on account'] ?? data['Name on the account'];
     const index = imposition - 1;
     setCurrentImpositionIndex(index);
 
@@ -250,10 +253,10 @@ When(
         }
       });
 
-      const hasBacs = data['Account name'] || data['Sort code'] || data['Account number'] || data['Payment reference'];
+      const hasBacs = accountName || data['Sort code'] || data['Account number'] || data['Payment reference'];
       if (hasBacs) {
         minorCreditor().togglePayByBacs(true);
-        if (data['Account name']) minorCreditor().setField('accountName', data['Account name']);
+        if (accountName) minorCreditor().setField('accountName', accountName);
         if (data['Sort code']) minorCreditor().setField('sortCode', data['Sort code']);
         if (data['Account number']) minorCreditor().setField('accountNumber', data['Account number']);
         if (data['Payment reference']) minorCreditor().setField('paymentReference', data['Payment reference']);
