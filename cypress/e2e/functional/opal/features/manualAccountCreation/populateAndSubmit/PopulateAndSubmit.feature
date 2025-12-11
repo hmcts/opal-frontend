@@ -205,7 +205,7 @@ Feature: Manual account creation - Create Draft Account
       | Last name                 | LNAME                                                                                                 |
       | Address                   | Addr1  TE1 1ST                                                                                        |
       | Registration number       | AB12 CDE                                                                                              |
-      | National Insurance number | QQ123456C                                                                                             |
+      | National Insurance number | QQ 12 34 56 C                                                                                         |
       | Alias                     | fnameone LNAMEONE  fnametwo LNAMETWO  fnamethree LNAMETHREE  fnamefour LNAMEFOUR  fnamefive LNAMEFIVE |
 
     Then I see the following in the "Employer details" table:
@@ -392,7 +392,7 @@ Feature: Manual account creation - Create Draft Account
     When I click the "Submit for review" button and capture the created account number
     Then I see "You've submitted this account for review" text on the page
 
-  @PO-1449 @PO-1638
+  @PO-1449 @PO-1638 @only
   Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
@@ -618,7 +618,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following in the "Parent or guardian details" table:
       | Surname                   | LNAME                                                                                                 |
       | Address                   | 1 Address Street  RG12 8EU                                                                            |
-      | National Insurance number | AB122398B                                                                                             |
+      | National Insurance number | AB 12 23 98 B                                                                                         |
       | Alias                     | fnameone LNAMEONE  fnametwo LNAMETWO  fnamethree LNAMETHREE  fnamefour LNAMEFOUR  fnamefive LNAMEFIVE |
       | Registration number       | CARREG                                                                                                |
 
@@ -626,7 +626,7 @@ Feature: Manual account creation - Create Draft Account
     Then I see the following in the "Defendant details" table:
       | Last name                 | LNAME                                                                                                 |
       | Address                   | 1 Address Street  RG12 8EU                                                                            |
-      | National Insurance number | AB122398B                                                                                             |
+      | National Insurance number | AB 12 23 98 B                                                                                         |
       | Alias                     | fnameone LNAMEONE  fnametwo LNAMETWO  fnamethree LNAMETHREE  fnamefour LNAMEFOUR  fnamefive LNAMEFIVE |
 
     Then I see the following in the "Employer details" table:
