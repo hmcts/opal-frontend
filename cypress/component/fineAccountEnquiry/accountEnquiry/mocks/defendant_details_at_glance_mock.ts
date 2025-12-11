@@ -49,7 +49,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK: IOpalFinesAccountDef
       surname: 'Williams',
       date_of_birth: '1980-02-03',
       age: '45',
-      national_insurance_number: 'QA 12 34 56C',
+      national_insurance_number: 'QA123456C',
       individual_aliases: INDIVIDUAL_ALIASES,
     },
   },
