@@ -379,7 +379,7 @@ Feature: Navigate and edit sections from task list
       | Address                   | Addr1  TE1 1ST          |
       | Date of birth             | 01 January 1990 (Adult) |
       | Vehicle make and model    | FORD FOCUS              |
-      | National Insurance number | QQ123456C               |
+      | National Insurance number | QQ 12 34 56 C           |
       | Registration number       | AB12 CDE                |
 
     Then I see the following in the "Contact details" table:
@@ -586,14 +586,14 @@ Feature: Navigate and edit sections from task list
       | Last name                 | LNAME                   |
       | Address                   | Addr1  RG12 8EU         |
       | Date of birth             | 01 January 2010 (Youth) |
-      | National Insurance number | AB122398B               |
+      | National Insurance number | AB 12 23 98 B           |
 
     Then I see the following in the "Parent or guardian details" table:
       | Forenames                 | parent fname                  |
       | Surname                   | PARENT LNAME                  |
       | Aliases                   | alias fname ALIAS LNAME       |
       | Date of birth             | 01 January 1980               |
-      | National Insurance number | QW123456C                     |
+      | National Insurance number | QW 12 34 56 C                 |
       | Address                   | Addr1  Addr2  Addr3  AB12 3CD |
       | Vehicle make and model    | Ford Focus                    |
       | Registration number       | AB12 CDE                      |

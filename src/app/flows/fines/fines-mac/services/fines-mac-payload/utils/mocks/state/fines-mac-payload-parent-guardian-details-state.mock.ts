@@ -11,7 +11,7 @@ export const FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacPare
       fm_parent_guardian_details_alias_surname_0: 'Johnson',
     },
   ],
-  fm_parent_guardian_details_national_insurance_number: 'ZX 98 76 54 D',
+  fm_parent_guardian_details_national_insurance_number: 'ZX987654D',
   fm_parent_guardian_details_address_line_1: '456 Oakwood Drive',
   fm_parent_guardian_details_address_line_2: 'Apt 22B',
   fm_parent_guardian_details_address_line_3: 'Lakeside',

@@ -17,7 +17,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK: IFinesMac
       surname: 'Anderson',
       forenames: 'Michael James',
       dob: '12/03/1978',
-      national_insurance_number: 'ZX 98 76 54 D',
+      national_insurance_number: 'ZX987654D',
       address_line_1: '456 Oakwood Drive',
       address_line_2: 'Apt 22B',
       address_line_3: 'Lakeside',
