@@ -394,11 +394,14 @@ describe('Account Enquiry Payment Terms', () => {
   });
 
   it(
-    'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU',
+    'AC1.2b: Navigate to error screen if user lacks Amend Payment Terms permission in account BU for company defendants',
     { tags: ['PO-1801'] },
     () => {
-      let headerMock = structuredClone(createDefendantHeaderMockWithName('Alice', 'Smith'));
-      headerMock.debtor_type = 'individual';
+      const headerMock = structuredClone(DEFENDANT_HEADER_ORG_MOCK);
+      headerMock.party_details.organisation_details = {
+        organisation_name: 'Acme Corporation',
+        organisation_aliases: [],
+      };
       headerMock.account_status_reference.account_status_code = 'TA';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 
