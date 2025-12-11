@@ -200,7 +200,7 @@ withPipeline(type, product, component) {
       if (!labels.contains(skipLabel)) {
         echo 'Running opal component tests (no skip label present)'
         sh '''
-          echo "Checking for focused Cypress specs before component tests"
+          echo "=== Focused test checks (component + feature) ==="
           set +e
           COMPONENT_ONLY_FILES=$(grep -R -l --include='*.cy.ts' '\\.only' cypress/component 2>/dev/null)
           FEATURE_ONLY_FILES=$(grep -R -l --include='*.feature' '@only' cypress/e2e/functional/opal/features 2>/dev/null)
@@ -209,25 +209,29 @@ withPipeline(type, product, component) {
           HAS_FAILURE=0
 
           if [ -n "$COMPONENT_ONLY_FILES" ]; then
-            echo "Found focused component specs (.only) in:"
-            echo "$COMPONENT_ONLY_FILES"
+            echo ""
+            echo "Found focused component specs (.only):"
+            echo "$COMPONENT_ONLY_FILES" | sed 's/^/ - /'
             HAS_FAILURE=1
           else
             echo "No focused component specs found."
           fi
 
           if [ -n "$FEATURE_ONLY_FILES" ]; then
+            echo ""
             echo "Found @only tags in feature files:"
-            echo "$FEATURE_ONLY_FILES"
+            echo "$FEATURE_ONLY_FILES" | sed 's/^/ - /'
             HAS_FAILURE=1
           else
             echo "No @only tags found in feature files."
           fi
 
           if [ "$HAS_FAILURE" -eq 1 ]; then
-            echo "Remove the focused tests above before running component tests."
+            echo ""
+            echo "FAIL: Remove the focused tests above before running component tests."
             exit 1
           fi
+          echo "Focused test checks passed."
         '''
         try {
           yarnBuilder.yarn('test:opalComponent')
