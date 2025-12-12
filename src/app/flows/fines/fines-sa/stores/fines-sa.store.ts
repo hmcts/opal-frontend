@@ -24,8 +24,10 @@ export const FinesSaStore = signalStore(
         patchState(store, {
           searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
           activeTab: 'individuals' as FinesSaSearchAccountTab,
+          resultsActiveTab: 'individuals' as FinesSaSearchAccountTab,
           stateChanges: false,
           unsavedChanges: false,
+          searchAccountPopulated: false,
         });
       },
     };
@@ -149,8 +151,10 @@ export const FinesSaStore = signalStore(
       patchState(store, {
         searchAccount: FINES_SA_SEARCH_ACCOUNT_STATE,
         activeTab: 'individuals' as FinesSaSearchAccountTab,
+        resultsActiveTab: 'individuals' as FinesSaSearchAccountTab,
         stateChanges: false,
         unsavedChanges: false,
+        searchAccountPopulated: false,
       }),
   })),
 );
