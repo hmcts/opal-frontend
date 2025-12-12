@@ -42,7 +42,9 @@ describe('Account Enquiry Payment Terms', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
+      paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+      paymentTermsMock.payment_terms.lump_sum_amount = 200.0;
+      paymentTermsMock.payment_terms.instalment_amount = 0.0;
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -178,7 +180,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
     },
   );
 
@@ -224,7 +226,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
     },
   );
 
@@ -248,7 +250,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
     },
   );
 
@@ -272,7 +274,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
     },
   );
 
@@ -296,7 +298,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
     },
   );
 
@@ -320,7 +322,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
     },
   );
 
@@ -344,7 +346,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/account-status']);
     },
   );
 
@@ -369,7 +371,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/enforcement']);
     },
   );
 
@@ -405,7 +407,9 @@ describe('Account Enquiry Payment Terms', () => {
       headerMock.debtor_type = 'Parent/Guardian';
       headerMock.parent_guardian_party_id = '1770000001';
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
-
+      paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+      paymentTermsMock.payment_terms.lump_sum_amount = 200.0;
+      paymentTermsMock.payment_terms.instalment_amount = 0.0;
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -549,7 +553,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
     },
   );
 
@@ -615,6 +619,9 @@ describe('Account Enquiry Payment Terms', () => {
       };
 
       let paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.payment_terms.payment_terms_type.payment_terms_type_code = 'P';
+      paymentTermsMock.payment_terms.lump_sum_amount = 200.0;
+      paymentTermsMock.payment_terms.instalment_amount = 0.0;
 
       const accountId = header.defendant_account_party_id;
       interceptAuthenticatedUser();
@@ -771,7 +778,7 @@ describe('Account Enquiry Payment Terms', () => {
 
       cy.get(PAYMENT_TERMS_TAB.tabName).should('exist').and('contain.text', 'Payment terms');
       cy.get(PAYMENT_TERMS_TAB.paymentTermsLink).contains('Change').click();
-      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/amend-denied']);
+      cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../payment-terms/denied/permission']);
     },
   );
 
