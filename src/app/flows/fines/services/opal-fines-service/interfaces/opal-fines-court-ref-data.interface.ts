@@ -1,10 +1,11 @@
-export interface IOpalFinesCourt {
-  court_id: number;
-  court_code: number;
-  name: string;
-  name_cy: string | null;
-  national_court_code: string | null;
-  business_unit_id: number;
+import { CourtReferenceCommon } from './generated/opal-fines-court-reference-common.interface';
+
+export interface IOpalFinesCourt extends CourtReferenceCommon {
+  court_code?: number | null;
+  name?: string | null;
+  name_cy?: string | null;
+  national_court_code?: string | null;
+  business_unit_id?: number | null;
 }
 
 export interface IOpalFinesCourtRefData {

@@ -41,7 +41,8 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
    * Retrieves the offence title from the offence reference data and assigns it to the `offenceTitle` property.
    */
   public getOffenceTitle(): void {
-    this.offenceTitle = this.offenceRefData.refData[0].offence_title;
+    const offence = this.offenceRefData.refData[0];
+    this.offenceTitle = offence.offence_title ?? offence.title ?? '';
   }
 
   public ngOnInit(): void {

@@ -1,6 +1,9 @@
 import { IOpalFinesOffencesNonSnakeCase } from '../interfaces/opal-fines-offences-ref-data.interface';
 
 export const OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK: IOpalFinesOffencesNonSnakeCase = {
+  id: 314441,
+  code: 'AK123456',
+  title: 'ak test',
   offenceId: 314441,
   cjsCode: 'AK123456',
   businessUnitId: 52,

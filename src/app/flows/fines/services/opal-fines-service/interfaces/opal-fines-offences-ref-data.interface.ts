@@ -1,13 +1,15 @@
-export interface IOpalFinesOffences {
-  business_unit_id: number;
-  date_used_from: string;
-  date_used_to: string | null;
-  get_cjs_code: string;
-  offence_id: number;
-  offence_oas: string;
-  offence_oas_cy: string | null;
-  offence_title: string;
-  offence_title_cy: string | null;
+import { OffenceReferenceCommon } from './generated/opal-fines-offence-reference-common.interface';
+
+export interface IOpalFinesOffences extends OffenceReferenceCommon {
+  business_unit_id?: number | null;
+  date_used_from?: string | null;
+  date_used_to?: string | null;
+  get_cjs_code?: string | null;
+  offence_id?: number | null;
+  offence_oas?: string | null;
+  offence_oas_cy?: string | null;
+  offence_title?: string | null;
+  offence_title_cy?: string | null;
 }
 
 export interface IOpalFinesOffencesRefData {
@@ -15,14 +17,14 @@ export interface IOpalFinesOffencesRefData {
   refData: IOpalFinesOffences[];
 }
 
-export interface IOpalFinesOffencesNonSnakeCase {
-  businessUnitId: number;
-  dateUsedFrom: string;
-  dateUsedTo: string | null;
-  cjsCode: string;
-  offenceId: number;
-  offenceOas: string;
-  offenceOasCy: string | null;
-  offenceTitle: string;
-  offenceTitleCy: string | null;
+export interface IOpalFinesOffencesNonSnakeCase extends OffenceReferenceCommon {
+  businessUnitId?: number | null;
+  dateUsedFrom?: string | null;
+  dateUsedTo?: string | null;
+  cjsCode?: string | null;
+  offenceId?: number | null;
+  offenceOas?: string | null;
+  offenceOasCy?: string | null;
+  offenceTitle?: string | null;
+  offenceTitleCy?: string | null;
 }

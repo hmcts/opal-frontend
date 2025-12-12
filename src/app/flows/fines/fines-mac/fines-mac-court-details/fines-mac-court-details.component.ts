@@ -40,8 +40,9 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     const localJusticeAreas = response.refData;
 
     return localJusticeAreas.map((item) => {
+      const id = item.local_justice_area_id ?? item.lja_id;
       return {
-        value: item.local_justice_area_id,
+        value: id,
         name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
       };
     });

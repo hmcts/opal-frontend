@@ -1,4 +1,9 @@
+import { AddressDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-address-details-common.interface';
+import { PartyDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-party-details-common.interface';
+import { CreditorAccountPaymentDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-creditor-account-payment-details-common.interface';
+
 export interface IFinesMacPayloadAccountOffencesMinorCreditor {
+  // legacy flat fields kept for backwards compatibility
   company_flag: boolean | null;
   title: string | null;
   company_name: string | null;
@@ -18,6 +23,10 @@ export interface IFinesMacPayloadAccountOffencesMinorCreditor {
   bank_account_number: string | null;
   bank_account_name: string | null;
   bank_account_ref: string | null;
+  // generated-aligned optional shapes
+  party_details?: PartyDetailsCommon | null;
+  address?: AddressDetailsCommon | null;
+  payment?: CreditorAccountPaymentDetailsCommon | null;
 }
 
 export interface IFinesMacPayloadAccountOffencesImposition {

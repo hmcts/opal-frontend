@@ -1,19 +1,23 @@
+import type { BusinessUnitSummaryCommon } from './generated/opal-fines-business-unit-summary-common.interface';
+
 export interface IOpalFinesBusinessUnitConfigurationItems {
   item_name: string | null;
   item_value: string | null;
   item_values: string[] | null;
 }
 
-export interface IOpalFinesBusinessUnit {
-  business_unit_code: string;
-  business_unit_type: string;
-  account_number_prefix: null | string;
-  opal_domain: null | string;
+// Generated summary plus legacy fields we still surface in the UI/mappers.
+export type IOpalFinesBusinessUnit = Omit<BusinessUnitSummaryCommon, 'business_unit_id' | 'welsh_speaking'> & {
   business_unit_id: number;
-  business_unit_name: string;
-  configuration_items: IOpalFinesBusinessUnitConfigurationItems[];
-  welsh_language: boolean | null;
-}
+  business_unit_id_display?: string | null;
+  welsh_speaking?: string | null;
+  welsh_language?: boolean | null;
+  business_unit_code?: string | null;
+  business_unit_type?: string | null;
+  account_number_prefix?: string | null;
+  opal_domain?: string | null;
+  configuration_items?: IOpalFinesBusinessUnitConfigurationItems[];
+};
 
 export interface IOpalFinesBusinessUnitRefData {
   count: number;
@@ -27,12 +31,12 @@ export interface IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase {
 }
 
 export interface IOpalFinesBusinessUnitNonSnakeCase {
-  businessUnitCode: string;
-  businessUnitType: string;
-  accountNumberPrefix: null | string;
-  opalDomain: null | string;
+  businessUnitCode?: string | null;
+  businessUnitType?: string | null;
+  accountNumberPrefix?: null | string;
+  opalDomain?: null | string;
   businessUnitId: number;
   businessUnitName: string;
-  configurationItems: IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase[];
-  welshLanguage: boolean | null;
+  configurationItems?: IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase[];
+  welshLanguage?: boolean | null;
 }

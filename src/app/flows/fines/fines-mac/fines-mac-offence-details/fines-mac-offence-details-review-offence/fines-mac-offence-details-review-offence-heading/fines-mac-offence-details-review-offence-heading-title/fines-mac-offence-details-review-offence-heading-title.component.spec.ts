@@ -36,6 +36,7 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   it('should set offenceTitle when getOffenceTitle is called', () => {
     component.getOffenceTitle();
 
-    expect(component.offenceTitle).toEqual(component.offenceRefData.refData[0].offence_title);
+    const offence = component.offenceRefData.refData[0];
+    expect(component.offenceTitle).toEqual(offence.offence_title ?? offence.title ?? '');
   });
 });

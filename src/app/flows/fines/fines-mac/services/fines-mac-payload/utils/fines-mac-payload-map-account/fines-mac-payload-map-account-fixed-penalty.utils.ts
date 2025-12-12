@@ -41,7 +41,7 @@ export const finesMacPayloadMapAccountFixedPenalty = (
       fm_offence_details_driving_licence_number: fp_ticket_detail.fp_driving_licence_number,
       fm_offence_details_nto_nth: fp_ticket_detail.notice_to_owner_hirer,
       fm_offence_details_offence_type: fp_ticket_detail.fp_registration_number ? 'vehicle' : 'non-vehicle',
-      fm_offence_details_offence_cjs_code: offenceRefData ? offenceRefData.cjsCode : null,
+      fm_offence_details_offence_cjs_code: offenceRefData?.cjsCode ?? offenceRefData?.code ?? null,
     };
   }
 

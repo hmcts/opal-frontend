@@ -186,7 +186,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
    * @param resultCodeCreditor - The resultCodeCreditor to determine the default creditor text.
    * @returns The default creditor text.
    */
-  private getDefaultCreditorText(resultCodeCreditor: string): string {
+  private getDefaultCreditorText(resultCodeCreditor: string | null | undefined): string {
     if (resultCodeCreditor === 'CPS') {
       return this.defaultValues.defaultCpsCreditor;
     }
@@ -205,7 +205,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   private getCreditorInformation(
     creditor: string | null,
     majorCreditor: number | null,
-    resultCodeCreditor: string,
+    resultCodeCreditor: string | null | undefined,
     impositionId: number,
   ): string {
     if (resultCodeCreditor === 'Any' || resultCodeCreditor === '!CPS') {
