@@ -4,130 +4,114 @@ Feature: Manual account creation - Company Details
   #Validation tests are contained in the CompanyDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
-    Then I am on the dashboard
-
-    When I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Company" radio button
-    And I click the "Continue" button
-
-    Then I click on the "Company details" link
-    And I see "Company details" on the page header
+    Given I am logged in with email "opal-test@hmcts.net"
+    When I start a fine manual account for business unit "West London" with defendant type "Company"
+    And I view the "Company details" task
 
   Scenario: (AC.12) Entered data persists in the session [@PO-345, @PO-365]
-    When I enter "COMPANY NAME" into the "Company name" field
-    And I select the "Add company aliases" checkbox
-    And I set the "Alias 1", "Company name" to "ALIAS 1"
-    And I select add another alias
-    And I set the "Alias 2", "Company name" to "ALIAS 2"
-
-    And I enter "Addr1" into the "Address line 1" field
-    And I enter "Addr2" into the "Address line 2" field
-    And I enter "Addr3" into the "Address line 3" field
-    And I enter "TE1 1ST" into the "Postcode" field
-
-    When I click the "Return to account details" button
-
-    Then I see the status of "Company details" is "Provided"
-
-    When I click on the "Company details" link
-    And I see "COMPANY NAME" in the "Company name" field
-    And I validate the "Add company aliases" checkbox is checked
-    And I see "Alias 1", "Company name" is set to "ALIAS 1"
-    And I see "Alias 2", "Company name" is set to "ALIAS 2"
-    And I see "Addr1" in the "Address line 1" field
-    And I see "Addr2" in the "Address line 2" field
-    And I see "Addr3" in the "Address line 3" field
-    And I see "TE1 1ST" in the "Postcode" field
-
-    When I reload the page
-    Then I see "Business unit and defendant type" on the page header
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Company" radio button
-    And I click the "Continue" button
-
-    Then I see the status of "Company details" is "Not provided"
-
-    When I click on the "Company details" link
-    And I see "" in the "Company name" field
-    And I validate the "Add company aliases" checkbox is not checked
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Address line 2" field
-    And I see "" in the "Address line 3" field
-    And I see "" in the "Postcode" field
+    When I complete manual company details:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+      | address line 2 | Addr2        |
+      | address line 3 | Addr3        |
+      | postcode       | TE1 1ST      |
+    And I add manual company aliases:
+      | alias | name    |
+      | 1     | ALIAS 1 |
+      | 2     | ALIAS 2 |
+    And I return to account details
+    Then the "Company details" task status is "Provided"
+    When I view the "Company details" task
+    Then the manual company details fields are:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+      | address line 2 | Addr2        |
+      | address line 3 | Addr3        |
+      | postcode       | TE1 1ST      |
+    And the manual company aliases are:
+      | alias | name    |
+      | 1     | ALIAS 1 |
+      | 2     | ALIAS 2 |
+    And the manual company aliases checkbox is "checked"
+    When I restart manual fine company account creation for business unit "West London" with account type "Fine" and defendant type "Company"
+    Then the "Company details" task status is "Not provided"
+    When I view the "Company details" task
+    Then the manual company details fields are:
+      | company name   |  |
+      | address line 1 |  |
+      | address line 2 |  |
+      | address line 3 |  |
+      | postcode       |  |
+    And the manual company aliases checkbox is "not checked"
 
   Scenario: (AC.12) Grey navigation links routes correctly [@PO-345, @PO-365]
-    When I enter "COMPANY NAME" into the "Company name" field
-    And I enter "Addr1" into the "Address line 1" field
-    And I click the "Add contact details" button
+    When I complete manual company details:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+    And I continue to defendant contact details from company details
+    Then I should see the header containing text "Defendant contact details"
 
-    Then I see "Defendant contact details" on the page header
 
-  Scenario: (AC.13, AC.14) Unsaved data is cleared when cancel is clicked [@PO-345, @PO-365]
-    When I enter "COMPANY NAME" into the "Company name" field
-    And I select the "Add company aliases" checkbox
-    And I set the "Alias 1", "Company name" to "ALIAS 1"
-    And I select add another alias
-    And I set the "Alias 2", "Company name" to "ALIAS 2"
+  Scenario: (AC.13) Unsaved data is cleared when user confirms cancel [@PO-345, @PO-365]
+    When I complete manual company details:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+      | address line 2 | Addr2        |
+      | address line 3 | Addr3        |
+      | postcode       | TE1 1ST      |
+    And I add manual company aliases:
+      | alias | name    |
+      | 1     | ALIAS 1 |
+      | 2     | ALIAS 2 |
+    And I cancel company details choosing "Ok" and return to account details
+    Then the "Company details" task status is "Not provided"
+    When I view the "Company details" task
+    Then the manual company details fields are:
+      | company name   |  |
+      | address line 1 |  |
+      | address line 2 |  |
+      | address line 3 |  |
+      | postcode       |  |
+    And the manual company aliases checkbox is "not checked"
 
-    And I enter "Addr1" into the "Address line 1" field
-    And I enter "Addr2" into the "Address line 2" field
-    And I enter "Addr3" into the "Address line 3" field
-    And I enter "TE1 1ST" into the "Postcode" field
 
-    Then I click Cancel, a window pops up and I click Ok
+  Scenario: (AC.13) Unsaved data is retained when user cancels the cancel [@PO-345, @PO-365]
+    When I complete manual company details:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+    And I cancel company details choosing "Cancel"
+    And the manual company details fields are:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
 
-    Then I see the status of "Company details" is "Not provided"
 
-    When I click on the "Company details" link
-    And I see "" in the "Company name" field
-    And I validate the "Add company aliases" checkbox is not checked
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Address line 2" field
-    And I see "" in the "Address line 3" field
-    And I see "" in the "Postcode" field
+  Scenario: (AC.14) Confirming cancel restores last saved company details [@PO-345, @PO-365]
+    When I complete manual company details:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+    And I return to account details
+    Then the "Company details" task status is "Provided"
+    When I view the "Company details" task
+    And I complete manual company details:
+      | company name   | COMPANY NAME EDITED |
+      | address line 2 | Addr2               |
+    And I cancel company details choosing "Ok" and return to account details
+    When I view the "Company details" task
+    Then the manual company details fields are:
+      | company name   | COMPANY NAME |
+      | address line 1 | Addr1        |
+      | address line 2 |              |
 
-    Then I enter "COMPANY NAME" into the "Company name" field
-    And I enter "Addr1" into the "Address line 1" field
-
-    When I click Cancel, a window pops up and I click Cancel
-
-    Then I see "Company details" on the page header
-    And I see "COMPANY NAME" in the "Company name" field
-    And I see "Addr1" in the "Address line 1" field
-
-    Then I click the "Return to account details" button
-
-    Then I see the status of "Company details" is "Provided"
-
-    When I click on the "Company details" link
-
-    Then I enter "COMPANY NAME EDITED" into the "Company name" field
-    And I enter "Addr2" into the "Address line 2" field
-
-    When I click Cancel, a window pops up and I click Ok
-
-    Then I see "Account details" on the page header
-
-    When I click on the "Company details" link
-    And I see "COMPANY NAME" in the "Company name" field
-    And I see "Addr1" in the "Address line 1" field
-    And I see "" in the "Address line 2" field
-
-    Then I clear the "Company name" field
-    And I click the "Return to account details" button
-    Then I see the error message "Enter company name" above the "Company name" field
-
-    When I click Cancel, a window pops up and I click Cancel
-
-    Then I see "Company details" on the page header
-    And I see "" in the "Company name" field
-    And I see the error message "Enter company name" above the "Company name" field
+  Scenario: (AC.14) Inline error persists when cancelling and revisiting company details [@PO-345, @PO-365]
+    When I complete manual company details:
+      | address line 1 | Addr1 |
+    And I return to account details
+    Then I see a manual company inline error "Enter company name" for "Company name"
+    When I cancel company details choosing "Cancel"
+    And the manual company details fields are:
+      | company name   |       |
+      | address line 1 | Addr1 |
+    Then I see a manual company inline error "Enter company name" for "Company name"
 
   Scenario: Company Details - Axe Core
-    Then I check accessibility
-
-
+    Then I check the page for accessibility

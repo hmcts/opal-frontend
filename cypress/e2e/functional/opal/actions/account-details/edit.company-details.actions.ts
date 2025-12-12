@@ -5,7 +5,9 @@
 
 import { CompanyDetailsLocators as L } from '../../../../../shared/selectors/account-details/edit.company-details.locators';
 import { AccountCompanyDetailsLocators as SummaryL } from '../../../../../shared/selectors/account-details/account.company-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('EditCompanyDetailsActions');
 
 export class EditCompanyDetailsActions {
   /**

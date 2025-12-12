@@ -13,9 +13,11 @@
 import { FinesFilterBusinessUnitConfiscationLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu-confiscation.locators';
 import { SearchFilterByBUCommonLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu.common.locators';
 
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 export type BusinessUnitMap = Map<string, string>;
+
+const log = createScopedLogger('SearchFilterByBUConfiscationActions');
 
 export class SearchFilterByBUConfiscationActions {
   private readonly businessUnitNameToIdMap: Map<string, string> = new Map();
