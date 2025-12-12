@@ -6,8 +6,6 @@ Feature: Manual account creation - Account Comments and Notes
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    Then I should be on the dashboard
-    When I open Manual Account Creation
 
   Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
@@ -34,24 +32,25 @@ Feature: Manual account creation - Account Comments and Notes
     When I view the "Account comments and notes" task
     Then the manual account comment and note fields show "" and ""
 
-
   Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     Then the "Account comments and notes" task status is "Not provided"
 
-    And I have provided manual court details:
-      | field             | value             |
+    And I view the "Court details" task
+    And I complete manual court details:
       | LJA               | Avon              |
       | PCR               | 1234              |
       | enforcement court | West London VPFPO |
 
-    And I have provided manual personal details from account details:
+    And I return to account details
+    And I provide manual personal details from account details:
       | field          | value |
       | title          | Mr    |
       | first names    | FNAME |
       | last name      | LNAME |
       | address line 1 | Addr1 |
 
+    And I return to account details
     And I have provided offence details from account details:
       | field          | value               |
       | offence date   | 2 weeks in the past |
@@ -60,12 +59,14 @@ Feature: Manual account creation - Account Comments and Notes
       | amount imposed | 200                 |
       | amount paid    | 100                 |
 
+    And I return to account details
     And I have provided manual payment terms:
       | field                 | value                  |
       | collection order      | Yes                    |
       | collection order date | 1 weeks ago            |
       | pay in full by        | 28 weeks in the future |
 
+    And I return to account details
     Then the task statuses are:
       | task             | status   |
       | Court details    | Provided |
@@ -78,5 +79,5 @@ Feature: Manual account creation - Account Comments and Notes
 
   Scenario: Account Comments and Notes - Axe Core
     Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
-    When I view the "Account comments and notes" task from account details
+    When I view the "Account comments and notes" task
     Then I check accessibility

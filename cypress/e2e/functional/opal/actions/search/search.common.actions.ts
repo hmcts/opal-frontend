@@ -9,15 +9,17 @@
  * Keeps steps small, reusable, and intent-driven.
  */
 
-import { log, logSync } from '../../../../../support/utils/log.helper';
+import { createScopedLogger, logSync } from '../../../../../support/utils/log.helper';
 import { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { AccountSearchIndividualsActions } from './search.individuals.actions';
 import { AccountSearchCompanyActions } from './search.companies.actions';
 import { AccountSearchMinorCreditorsActions } from './search.minor-creditors.actions';
 import { CommonActions } from '../common/common.actions';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
+import { parseToIsoDate } from '../../../../../support/utils/dateUtils';
 
 type Entity = 'individual' | 'company' | 'minorCreditor';
+const log = createScopedLogger('AccountSearchCommonActions');
 
 /**
  * Mapping between high-level Gherkin parameter keys and the underlying
@@ -114,22 +116,6 @@ export const DEFENDANT_GHERKIN_TO_API_KEY: Record<string, string> = {
   firstNamesExact: 'exact_match_forenames',
   dateOfBirth: 'birth_date',
   nationalInsuranceNumber: 'national_insurance_number',
-};
-
-// Converts dd/MM/yyyy → yyyy-MM-dd and accepts ISO format as-is.
-export const parseToIsoDate = (value: unknown, contextKey: string): string => {
-  const str = String(value).trim();
-
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
-    const [dd, mm, yyyy] = str.split('/');
-    return `${yyyy}-${mm}-${dd}`;
-  }
-
-  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-    return str;
-  }
-
-  throw new Error(`Unsupported date format for "${contextKey}": "${str}". Expected dd/MM/yyyy or yyyy-MM-dd.`);
 };
 
 // Resolves the Cypress alias + entity key based on account type.
