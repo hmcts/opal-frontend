@@ -224,6 +224,7 @@ describe('FinesDraftCreateAndManageTabsComponent', () => {
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: ['Deleted'],
       submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      notSubmittedBy: null,
       accountStatusDateFrom: ['2023-01-01'],
       accountStatusDateTo: ['2023-01-07'],
     });

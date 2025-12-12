@@ -20,5 +20,5 @@ export interface IOpalFinesUpdateDefendantAccountPayload {
  */
 export interface IOpalFinesUpdateDefendantAccountResponse {
   defendant_account_id: number;
-  message?: string;
+  message: string | null;
 }

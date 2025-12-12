@@ -97,8 +97,11 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
 
         const params: IOpalFinesDraftAccountParams = {
           businessUnitIds: this.businessUnitIds,
-          statuses: currentTab?.statuses,
+          statuses: currentTab?.statuses ?? null,
+          submittedBy: null,
           notSubmittedBy: this.businessUnitUserIds,
+          accountStatusDateFrom: null,
+          accountStatusDateTo: null,
         };
 
         if (currentTab?.historicWindowInDays) {
@@ -136,6 +139,9 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
         businessUnitIds: this.businessUnitIds,
         notSubmittedBy: this.businessUnitUserIds,
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
+        submittedBy: null,
+        accountStatusDateFrom: null,
+        accountStatusDateTo: null,
       }),
       (params) => this.opalFinesService.getDraftAccounts(params),
       (res) => res.count,

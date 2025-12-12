@@ -5,6 +5,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-statuses.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 
 export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFinesDraftAccountsResponse> = () => {
   const opalFinesService = inject(OpalFines);
@@ -19,6 +20,13 @@ export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFi
     return of({ count: 0, summaries: [] });
   }
 
-  const params = { businessUnitIds, statuses, notSubmittedBy: businessUnitUserIds };
+  const params: IOpalFinesDraftAccountParams = {
+    businessUnitIds,
+    statuses,
+    notSubmittedBy: businessUnitUserIds,
+    submittedBy: null,
+    accountStatusDateFrom: null,
+    accountStatusDateTo: null,
+  };
   return opalFinesService.getDraftAccounts(params);
 };

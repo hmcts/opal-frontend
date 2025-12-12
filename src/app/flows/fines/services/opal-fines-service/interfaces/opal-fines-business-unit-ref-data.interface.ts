@@ -9,14 +9,14 @@ export interface IOpalFinesBusinessUnitConfigurationItems {
 // Generated summary plus legacy fields we still surface in the UI/mappers.
 export type IOpalFinesBusinessUnit = Omit<BusinessUnitSummaryCommon, 'business_unit_id' | 'welsh_speaking'> & {
   business_unit_id: number;
-  business_unit_id_display?: string | null;
-  welsh_speaking?: string | null;
-  welsh_language?: boolean | null;
-  business_unit_code?: string | null;
-  business_unit_type?: string | null;
-  account_number_prefix?: string | null;
-  opal_domain?: string | null;
-  configuration_items?: IOpalFinesBusinessUnitConfigurationItems[];
+  business_unit_id_display: string | null;
+  welsh_speaking: string | null;
+  welsh_language: boolean | null;
+  business_unit_code: string | null;
+  business_unit_type: string | null;
+  account_number_prefix: string | null;
+  opal_domain: string | null;
+  configuration_items: IOpalFinesBusinessUnitConfigurationItems[] | null;
 };
 
 export interface IOpalFinesBusinessUnitRefData {
@@ -31,12 +31,12 @@ export interface IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase {
 }
 
 export interface IOpalFinesBusinessUnitNonSnakeCase {
-  businessUnitCode?: string | null;
-  businessUnitType?: string | null;
-  accountNumberPrefix?: null | string;
-  opalDomain?: null | string;
+  businessUnitCode: string | null;
+  businessUnitType: string | null;
+  accountNumberPrefix: string | null;
+  opalDomain: string | null;
   businessUnitId: number;
   businessUnitName: string;
-  configurationItems?: IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase[];
-  welshLanguage?: boolean | null;
+  configurationItems: IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase[] | null;
+  welshLanguage: boolean | null;
 }

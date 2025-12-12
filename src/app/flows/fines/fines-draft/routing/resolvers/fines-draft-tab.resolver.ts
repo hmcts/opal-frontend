@@ -32,6 +32,10 @@ export function finesDraftTabResolver(options: FinesDraftResolverOptions): Resol
     const params: IOpalFinesDraftAccountParams = {
       businessUnitIds,
       statuses,
+      submittedBy: null,
+      notSubmittedBy: null,
+      accountStatusDateFrom: null,
+      accountStatusDateTo: null,
     };
 
     if (options.includeSubmittedBy) {

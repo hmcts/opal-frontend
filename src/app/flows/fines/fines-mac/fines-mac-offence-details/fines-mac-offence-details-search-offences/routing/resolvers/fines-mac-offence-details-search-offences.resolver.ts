@@ -5,6 +5,7 @@ import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { map, of, catchError } from 'rxjs';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { IOpalFinesSearchOffencesParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences-params.interface';
 
 export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesSearchOffencesData> = () => {
   const router = inject(Router);
@@ -29,13 +30,15 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
   // Build the initial request payload from the provided search form data
   const body = {
     active_date: state.payload['inactive'] === true ? null : todayIsoDate,
-    cjs_code: state.payload['code'],
-    title: state.payload['short_title'],
-    act_and_section: state.payload['act_section'],
+    cjs_code: (state.payload['code'] as string | null) ?? null,
+    title: (state.payload['short_title'] as string | null) ?? null,
+    act_and_section: (state.payload['act_section'] as string | null) ?? null,
+    max_results: null as number | null,
+    offence_id: null as string | null,
   };
 
   // Filter out any undefined or null fields from the request payload
-  const filteredBody = utilsService.filterNullOrUndefined(body);
+  const filteredBody = utilsService.filterNullOrUndefined(body) as unknown as IOpalFinesSearchOffencesParams;
 
   // Call the offence search API and map the response to a simplified table structure
   return opalFinesService.searchOffences(filteredBody).pipe(

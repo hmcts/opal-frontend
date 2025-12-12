@@ -4,4 +4,6 @@ export const OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK: IOpalFinesDraftAccountParams 
   statuses: ['Submitted', 'Resubmitted'],
   submittedBy: ['user1', 'user2'],
   notSubmittedBy: ['user3', 'user4'],
+  accountStatusDateFrom: null,
+  accountStatusDateTo: null,
 };

@@ -16,12 +16,14 @@ describe('finesMacPayloadMapBusinessUnit', () => {
         account_number_prefix: businessUnitRefData.accountNumberPrefix,
         opal_domain: businessUnitRefData.opalDomain,
         business_unit_id: businessUnitRefData.businessUnitId,
+        business_unit_id_display: null,
         business_unit_name: businessUnitRefData.businessUnitName,
         configuration_items: (businessUnitRefData.configurationItems ?? []).map((item) => ({
           item_name: item.itemName,
           item_value: item.itemValue,
           item_values: item.itemValues,
         })),
+        welsh_speaking: null,
         welsh_language: businessUnitRefData.welshLanguage,
       },
     };

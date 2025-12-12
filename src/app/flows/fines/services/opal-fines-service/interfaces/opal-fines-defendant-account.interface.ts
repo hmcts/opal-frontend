@@ -23,12 +23,12 @@ import type { InstalmentPeriodCommonInstalmentPeriodCodeEnum } from '../types/op
 import type { PaymentTermsTypeCommonPaymentTermsTypeCodeEnum } from '../types/opal-fines-payment-terms-type-common-payment-terms-type-code-enum.type';
 
 export interface IOpalFinesDefendantAccountAlias {
-  alias_id?: string;
-  sequence_number?: number;
-  alias_number?: number | null;
-  organisation_name?: string | null;
-  surname?: string | null;
-  forenames?: string | null;
+  alias_id: string | null;
+  sequence_number: number | null;
+  alias_number: number | null;
+  organisation_name: string | null;
+  surname: string | null;
+  forenames: string | null;
 }
 
 export interface IOpalFinesDefendantAccount {
