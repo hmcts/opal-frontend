@@ -392,7 +392,7 @@ Feature: Manual account creation - Create Draft Account
     When I click the "Submit for review" button and capture the created account number
     Then I see "You've submitted this account for review" text on the page
 
-  @PO-1449 @PO-1638 @only
+  @PO-1449 @PO-1638
   Scenario: As a user I can create a draft account for the Adult or youth with parent or guardian to pay defendant type
     Given I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box

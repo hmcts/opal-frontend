@@ -35,7 +35,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
     ],
   };
 
-  it.only(
+  it(
     'AC1: Warning banner will not be displayed when version control mechanism confirms account-level-data has not changed',
     { tags: ['@PO-2140'] },
     () => {

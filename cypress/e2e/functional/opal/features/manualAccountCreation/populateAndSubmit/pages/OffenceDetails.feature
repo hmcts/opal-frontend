@@ -18,7 +18,7 @@ Feature: Manual account creation - Offence Details
     Then I see "Add an offence" on the page header
     And I see "Offence details" text on the page
 
-  @only
+
   Scenario: The User can add an offence with multiple impositions with different creditor types [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-668, @PO-669, @PO-413, @PO-817, @PO-818]
     When I enter "TP11003" into the "Offence code" field
     And I enter a date 9 weeks into the past into the "Date of sentence" date field
