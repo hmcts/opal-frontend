@@ -104,7 +104,7 @@ export const routing: Routes = [
         canActivate: [routePermissionsGuard],
       },
       {
-        path: `:partyType/amend`,
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['party']}/:partyType/amend`,
 
         loadComponent: () =>
           import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(
