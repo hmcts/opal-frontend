@@ -84,4 +84,26 @@ export class DashboardActions {
 
     log('done', 'Successfully navigated to Search for an Account page');
   }
+
+  /**
+   * Navigates to the Create and Manage Draft Accounts area for inputters.
+   *
+   * @example
+   *   dashboard.goToCreateAndManageDraftAccounts();
+   */
+  public goToCreateAndManageDraftAccounts(): void {
+    log('navigate', 'Opening Create and Manage Draft Accounts');
+    cy.get(L.createAndManageDraftAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  }
+
+  /**
+   * Navigates to the Check and Validate Draft Accounts area for checkers.
+   *
+   * @example
+   *   dashboard.goToCheckAndValidateDraftAccounts();
+   */
+  public goToCheckAndValidateDraftAccounts(): void {
+    log('navigate', 'Opening Check and Validate Draft Accounts');
+    cy.get(L.checkAndValidateDraftAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  }
 }

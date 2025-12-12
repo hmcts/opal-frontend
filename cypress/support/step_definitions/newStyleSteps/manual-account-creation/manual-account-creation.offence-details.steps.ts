@@ -86,16 +86,6 @@ When('I have provided offence details from account details:', (table: DataTable)
   });
 });
 
-// /**
-//  * @step Sends offence details for review.
-//  * @description Sends offence details for review.
-
-//  */
-// When('I submit the offence details for review', () => {
-//   log('navigate', 'Submitting offence details for review');
-//   offenceDetails().clickReviewOffence();
-// });
-
 /**
  * @step Provide offence code and sentence date using a relative weeks offset.
  * @description Provide offence code and sentence date using a relative weeks offset.

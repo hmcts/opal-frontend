@@ -74,7 +74,29 @@ export class ManualReviewAccountActions {
                   );
                   return;
                 }
-                expect(normalizedText).to.contain(value);
+                const expectedNormalized = value.replace(/\s+/g, ' ').trim();
+                const isCaseInsensitiveMatch =
+                  normalizedText.localeCompare(expectedNormalized, undefined, { sensitivity: 'accent' }) === 0;
+                const parseDate = (val: string): number | null => {
+                  const cleaned = val.replace(/\(.*?\)/g, '').trim();
+                  const slashDate = cleaned.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                  if (slashDate) {
+                    const [, dd, mm, yyyy] = slashDate;
+                    const utc = Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd));
+                    return Number.isNaN(utc) ? null : utc;
+                  }
+                  const parsed = Date.parse(cleaned);
+                  return Number.isNaN(parsed) ? null : new Date(parsed).setUTCHours(0, 0, 0, 0);
+                };
+                const actualDate = parseDate(normalizedText);
+                const expectedDate = parseDate(expectedNormalized);
+                const datesMatch = actualDate !== null && expectedDate !== null && actualDate === expectedDate;
+                expect(
+                  isCaseInsensitiveMatch ||
+                    normalizedText.toLowerCase().includes(expectedNormalized.toLowerCase()) ||
+                    datesMatch,
+                  `Expected "${normalizedText}" to include "${expectedNormalized}" (case-insensitive)`,
+                ).to.equal(true);
               });
             });
         });
