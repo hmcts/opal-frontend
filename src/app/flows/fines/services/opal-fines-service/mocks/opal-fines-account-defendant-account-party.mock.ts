@@ -24,7 +24,7 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK: IOpalFinesAccountD
         surname: 'Thompson',
         date_of_birth: '12/04/1988',
         age: '36',
-        national_insurance_number: 'QQ 12 34 56 C',
+        national_insurance_number: 'QQ123456C',
         individual_aliases: [
           {
             alias_id: '1',
