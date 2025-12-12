@@ -41,6 +41,12 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fine
 import { OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK } from './mocks/opal-fines-add-note-payload.mock';
 import { OPAL_FINES_ADD_NOTE_RESPONSE_MOCK } from './mocks/opal-fines-add-note-response.mock';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
+import {
+  OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK,
+  OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK,
+  OPAL_FINES_AMEND_PAYMENT_TERMS_SUCCESS_RESPONSE_MOCK,
+  OPAL_FINES_AMEND_PAYMENT_TERMS_MINIMAL_RESPONSE_MOCK,
+} from './mocks/opal-fines-amend-payment-terms.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from './mocks/opal-fines-defendant-account-response-individual.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from './mocks/opal-fines-account-defendant-account-party.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
@@ -1071,117 +1077,51 @@ describe('OpalFines', () => {
     req.flush({ defendant_account_id: accountId, message: 'Account comments notes updated successfully' });
   });
 
-  it('should putDefendantAccountParty with required headers', () => {
-    const defendantAccountId = 123456;
-    const defendantAccountPartyId = 'PARTY789';
-    const version = '2';
-    const businessUnitId = '61';
-    const updatePayload = {
-      defendant_account_party_type: 'PRIMARY',
-      is_debtor: true,
-      party_details: {
-        party_id: defendantAccountPartyId,
-        organisation_flag: false,
-        individual_details: {
-          title: 'Mr',
-          forenames: 'John',
-          surname: 'Doe',
-          date_of_birth: '01/01/1990',
-          age: '34',
-          national_insurance_number: 'AB123456C',
-          individual_aliases: null,
-        },
-        organisation_details: null,
-      },
-      address: {
-        address_line_1: '123 Test Street',
-        address_line_2: null,
-        address_line_3: null,
-        address_line_4: null,
-        address_line_5: null,
-        postcode: 'TE5 T12',
-      },
-      contact_details: null,
-      vehicle_details: null,
-      employer_details: null,
-      language_preferences: null,
-    };
+  describe('putDefendantAccountPaymentTerms', () => {
+    it('should send a PUT request to amend payment terms for a defendant account', () => {
+      const defendantAccountId = 123456;
+      const businessUnitId = 'TEST_UNIT';
+      const ifMatch = 'version123';
 
-    const expectedResponse = {
-      version: version,
-      defendant_account_party: updatePayload,
-    };
+      const mockPayload = OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK;
+      const mockResponse = OPAL_FINES_AMEND_PAYMENT_TERMS_SUCCESS_RESPONSE_MOCK;
 
-    service
-      .putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, updatePayload, version, businessUnitId)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
+      service
+        .putDefendantAccountPaymentTerms(defendantAccountId, mockPayload, businessUnitId, ifMatch)
+        .subscribe((response) => {
+          expect(response).toEqual(mockResponse);
+        });
+
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
+      const req = httpMock.expectOne(expectedUrl);
+
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(mockPayload);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('If-Match')).toBe(ifMatch);
+
+      req.flush(mockResponse);
+    });
+
+    it('should send a PUT request without optional headers when not provided', () => {
+      const defendantAccountId = 123456;
+
+      const mockPayload = OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK;
+      const mockResponse = OPAL_FINES_AMEND_PAYMENT_TERMS_MINIMAL_RESPONSE_MOCK;
+
+      service.putDefendantAccountPaymentTerms(defendantAccountId, mockPayload).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-    const req = httpMock.expectOne(
-      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`,
-    );
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.headers.get('If-Match')).toBe(version);
-    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
-    expect(req.request.body).toEqual(updatePayload);
+      const expectedUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
+      const req = httpMock.expectOne(expectedUrl);
 
-    req.flush(expectedResponse);
-  });
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(mockPayload);
+      expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
+      expect(req.request.headers.has('If-Match')).toBe(false);
 
-  it('should putDefendantAccountParty without optional headers', () => {
-    const defendantAccountId = 123456;
-    const defendantAccountPartyId = 'PARTY789';
-    const updatePayload = {
-      defendant_account_party_type: 'PRIMARY',
-      is_debtor: true,
-      party_details: {
-        party_id: defendantAccountPartyId,
-        organisation_flag: false,
-        individual_details: {
-          title: 'Mr',
-          forenames: 'John',
-          surname: 'Doe',
-          date_of_birth: '01/01/1990',
-          age: '34',
-          national_insurance_number: 'AB123456C',
-          individual_aliases: null,
-        },
-        organisation_details: null,
-      },
-      address: {
-        address_line_1: '123 Test Street',
-        address_line_2: null,
-        address_line_3: null,
-        address_line_4: null,
-        address_line_5: null,
-        postcode: 'TE5 T12',
-      },
-      contact_details: null,
-      vehicle_details: null,
-      employer_details: null,
-      language_preferences: null,
-    };
-
-    const expectedResponse = {
-      version: null,
-      defendant_account_party: updatePayload,
-    };
-
-    service
-      .putDefendantAccountParty(defendantAccountId, defendantAccountPartyId, updatePayload)
-      .subscribe((response) => {
-        expect(response).toEqual(expectedResponse);
-      });
-
-    const req = httpMock.expectOne(
-      `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/defendant-account-parties/${defendantAccountPartyId}`,
-    );
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.headers.has('If-Match')).toBe(false);
-    expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
-    expect(req.request.body).toEqual(updatePayload);
-
-    req.flush(expectedResponse);
+      req.flush(mockResponse);
+    });
   });
 });

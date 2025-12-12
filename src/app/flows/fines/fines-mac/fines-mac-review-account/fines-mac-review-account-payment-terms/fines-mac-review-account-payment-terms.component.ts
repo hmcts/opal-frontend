@@ -5,13 +5,13 @@ import {
   GovukSummaryListComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
-import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
+import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-enforcement-action-options';
 import { IFinesMacPaymentTermsEnforcementActionsOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-enforcement-actions-options.interface';
-import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
-import { IFinesMacPaymentTermsFrequencyOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-frequency-options.interface';
 import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-permissions.interface';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { IFinesPaymentTermsFrequencyOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
@@ -40,9 +40,9 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly dateService = inject(DateService);
   private readonly hasBusinessUnitPermissionAccess = inject(PermissionsService).hasBusinessUnitPermissionAccess;
   private userState!: IOpalUserState;
-  private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
+  private readonly frequencyOptions = FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS;
 
-  protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  protected readonly paymentTermsOptions = FINES_PAYMENT_TERMS_OPTIONS;
   protected readonly enforcementActions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
 
   @Input({ required: true }) public paymentTermsState!: IFinesMacPaymentTermsState;
@@ -98,7 +98,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private getPaymentTerms(): void {
     this.paymentTerms =
       this.paymentTermsOptions[
-        this.paymentTermsState.fm_payment_terms_payment_terms! as keyof IFinesMacPaymentTermsOptions
+        this.paymentTermsState.fm_payment_terms_payment_terms! as keyof IFinesPaymentTermsOptions
       ];
   }
 
@@ -187,7 +187,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private getFrequency(): void {
     this.frequency =
       this.frequencyOptions[
-        this.paymentTermsState.fm_payment_terms_instalment_period! as keyof IFinesMacPaymentTermsFrequencyOptions
+        this.paymentTermsState.fm_payment_terms_instalment_period! as keyof IFinesPaymentTermsFrequencyOptions
       ];
   }
 
