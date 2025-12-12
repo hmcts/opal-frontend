@@ -6,9 +6,11 @@
 
 import { FinesFilterBusinessUnitLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu-fines.locators';
 import { SearchFilterByBUCommonLocators } from '../../../../../shared/selectors/account-search/account.search.filter-by-bu.common.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 export type BusinessUnitMap = Map<string, string>;
+
+const log = createScopedLogger('SearchFilterByBUFinesActions');
 
 export class SearchFilterByBUFinesActions {
   private readonly businessUnitNameToIdMap: Map<string, string> = new Map();

@@ -10,8 +10,12 @@
   ],
 
   "cucumberautocomplete.syncfeatures": "cypress/e2e/**/*.feature",  // <- string, not array
-
+  "cucumberautocomplete.gherkinDialect": "en",
   "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then|And|But)\\(",
   "cucumberautocomplete.strictGherkinCompletion": true,
-  "cucumberautocomplete.smartSnippets": true
+  "cucumberautocomplete.smartSnippets": true,
+  "cucumberautocomplete.exclude": [
+      "**/node_modules/**",
+      "cypress/e2e/**/_archive/**"
+    ]
 }

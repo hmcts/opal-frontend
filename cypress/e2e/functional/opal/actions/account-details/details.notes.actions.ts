@@ -1,5 +1,7 @@
 import { AccountDetailsNotesLocators as L } from '../../../../../shared/selectors/account-details/account.notes.details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountDetailsNotesActions');
 
 export class AccountDetailsNotesActions {
   private static readonly DEFAULT_TIMEOUT = 15000;
