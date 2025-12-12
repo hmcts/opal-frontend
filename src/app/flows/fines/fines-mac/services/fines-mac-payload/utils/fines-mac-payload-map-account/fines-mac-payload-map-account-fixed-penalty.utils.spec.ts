@@ -7,7 +7,7 @@ import { finesMacPayloadMapAccountFixedPenalty } from './fines-mac-payload-map-a
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 const cjsCodes: IOpalFinesOffencesNonSnakeCase[] = [
-  { offenceId: 12345, cjsCode: 'CJS12345' },
+  { offenceId: 12345, cjsCode: 'CJS12345', id: 12345, code: 'CJS12345', title: 'Offence 12345' },
 ] as IOpalFinesOffencesNonSnakeCase[];
 
 describe('finesMacPayloadMapAccountFixedPenalty', () => {

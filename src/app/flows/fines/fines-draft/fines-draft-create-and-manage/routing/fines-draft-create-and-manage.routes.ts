@@ -41,9 +41,9 @@ export const routing: Routes = [
   {
     path: FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.viewAllRejected,
     loadComponent: () =>
-      import('../fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component').then(
-        (c) => c.FinesDraftCreateAndManageViewAllRejectedComponent,
-      ),
+      import(
+        '../fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component'
+      ).then((c) => c.FinesDraftCreateAndManageViewAllRejectedComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
       routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],

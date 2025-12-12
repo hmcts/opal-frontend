@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
+import { IOpalFinesDraftAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-params.interface';
 
 export const finesDraftCreateAndManageRejectedCountResolver: ResolveFn<number> = () => {
   const opalFinesService = inject(OpalFines);
@@ -13,9 +14,12 @@ export const finesDraftCreateAndManageRejectedCountResolver: ResolveFn<number> =
   const businessUnitIds = userState.business_unit_users.map((u) => u.business_unit_id);
   const businessUnitUserIds = userState.business_unit_users.map((u) => u.business_unit_user_id);
 
-  const params = {
+  const params: IOpalFinesDraftAccountParams = {
     businessUnitIds,
     submittedBy: businessUnitUserIds,
+    notSubmittedBy: null,
+    accountStatusDateFrom: null,
+    accountStatusDateTo: null,
     statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
   };
 

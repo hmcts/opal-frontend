@@ -8,6 +8,9 @@ import {
   IFinesMacPayloadAccountOffencesImposition,
   IFinesMacPayloadAccountOffencesMinorCreditor,
 } from '../interfaces/fines-mac-payload-account-offences.interface';
+import { AddressDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-address-details-common.interface';
+import { PartyDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-party-details-common.interface';
+import { CreditorAccountPaymentDetailsCommon } from '@services/fines/opal-fines-service/interfaces/generated/opal-fines-creditor-account-payment-details-common.interface';
 
 /**
  * Determines if the payout is on hold based on the payment method.
@@ -52,6 +55,47 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
   const payoutOnHold = getPayoutOnHold(payByBacs);
   const creditorType = childFormData?.formData?.fm_offence_details_minor_creditor_creditor_type ?? null;
   const companyFlag = getCompanyFlag(creditorType);
+  const organisationName = childFormData?.formData?.fm_offence_details_minor_creditor_company_name ?? '';
+  const individualSurname = childFormData?.formData?.fm_offence_details_minor_creditor_surname ?? '';
+  const address: AddressDetailsCommon = {
+    address_line_1: childFormData?.formData?.fm_offence_details_minor_creditor_address_line_1 ?? null,
+    address_line_2: childFormData?.formData?.fm_offence_details_minor_creditor_address_line_2 ?? null,
+    address_line_3: childFormData?.formData?.fm_offence_details_minor_creditor_address_line_3 ?? null,
+    address_line_4: null,
+    address_line_5: null,
+    postcode: childFormData?.formData?.fm_offence_details_minor_creditor_post_code ?? null,
+  };
+
+  const payment: CreditorAccountPaymentDetailsCommon = {
+    account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
+    sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
+    account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
+    account_reference: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,
+    pay_by_bacs: payByBacs,
+    hold_payment: payoutOnHold ?? false,
+  };
+
+  const party_details: PartyDetailsCommon = {
+    party_id: '', // not captured in form
+    organisation_flag: companyFlag,
+    organisation_details: companyFlag
+      ? {
+          organisation_name: organisationName,
+          organisation_aliases: null,
+        }
+      : null,
+    individual_details: companyFlag
+      ? null
+      : {
+          title: childFormData?.formData?.fm_offence_details_minor_creditor_title ?? null,
+          forenames: childFormData?.formData?.fm_offence_details_minor_creditor_forenames ?? null,
+          surname: individualSurname,
+          date_of_birth: null,
+          age: null,
+          national_insurance_number: null,
+          individual_aliases: null,
+        },
+  };
 
   return {
     company_flag: companyFlag,
@@ -73,6 +117,9 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
     bank_account_ref: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,
+    address,
+    payment,
+    party_details,
   };
 };
 

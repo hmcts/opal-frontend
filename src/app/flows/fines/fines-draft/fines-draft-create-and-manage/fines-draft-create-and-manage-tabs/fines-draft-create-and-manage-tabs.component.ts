@@ -110,8 +110,11 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
 
         const params: IOpalFinesDraftAccountParams = {
           businessUnitIds: this.businessUnitIds,
-          statuses: currentTab?.statuses,
+          statuses: currentTab?.statuses ?? null,
           submittedBy: this.businessUnitUserIds,
+          notSubmittedBy: null,
+          accountStatusDateFrom: null,
+          accountStatusDateTo: null,
         };
 
         if (currentTab?.historicWindowInDays) {
@@ -148,6 +151,9 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
       () => ({
         businessUnitIds: this.businessUnitIds,
         submittedBy: this.businessUnitUserIds,
+        notSubmittedBy: null,
+        accountStatusDateFrom: null,
+        accountStatusDateTo: null,
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
       }),
       (params) => this.opalFinesService.getDraftAccounts(params),

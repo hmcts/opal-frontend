@@ -59,6 +59,9 @@ describe('finesDraftTabResolver', () => {
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
       submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      notSubmittedBy: null,
+      accountStatusDateFrom: null,
+      accountStatusDateTo: null,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
@@ -73,6 +76,9 @@ describe('finesDraftTabResolver', () => {
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
       notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      submittedBy: null,
+      accountStatusDateFrom: null,
+      accountStatusDateTo: null,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
@@ -107,6 +113,10 @@ describe('finesDraftTabResolver', () => {
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: defaultStatuses,
+      submittedBy: null,
+      notSubmittedBy: null,
+      accountStatusDateFrom: null,
+      accountStatusDateTo: null,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });
@@ -131,6 +141,7 @@ describe('finesDraftTabResolver', () => {
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: tab.statuses,
       submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      notSubmittedBy: null,
       accountStatusDateFrom: [dateFrom],
       accountStatusDateTo: [dateTo],
     });

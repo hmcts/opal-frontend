@@ -53,6 +53,9 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
       statuses: ['Rejected'],
       notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
+      submittedBy: null,
+      accountStatusDateFrom: null,
+      accountStatusDateTo: null,
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
   });

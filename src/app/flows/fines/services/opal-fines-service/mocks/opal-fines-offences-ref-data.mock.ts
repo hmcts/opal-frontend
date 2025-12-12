@@ -4,6 +4,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
   count: 16,
   refData: [
     {
+      id: 314441,
+      code: 'AK123456',
+      title: 'ak test',
       offence_id: 314441,
       get_cjs_code: 'AK123456',
       business_unit_id: 52,
@@ -15,6 +18,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314683,
+      code: 'CA03010D',
+      title: 'No Televison Licence',
       offence_id: 314683,
       get_cjs_code: 'CA03010D',
       business_unit_id: 22,
@@ -26,6 +32,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     },
     {
+      id: 314201,
+      code: 'GMMET001',
+      title: 'No Ticket on Metrolink',
       offence_id: 314201,
       get_cjs_code: 'GMMET001',
       business_unit_id: 22,
@@ -37,6 +46,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314203,
+      code: 'GMMET001',
+      title: 'No Ticket on Metrolink',
       offence_id: 314203,
       get_cjs_code: 'GMMET001',
       business_unit_id: 1020,
@@ -48,6 +60,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314205,
+      code: 'GMMET001',
+      title: 'No Ticket on Metrolink',
       offence_id: 314205,
       get_cjs_code: 'GMMET001',
       business_unit_id: 1037,
@@ -59,6 +74,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314321,
+      code: 'GST001',
+      title: 'GST001',
       offence_id: 314321,
       get_cjs_code: 'GST001',
       business_unit_id: 52,
@@ -70,6 +88,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314481,
+      code: 'HU11001',
+      title: 'Humberside By Law 001',
       offence_id: 314481,
       get_cjs_code: 'HU11001',
       business_unit_id: 1042,
@@ -81,6 +102,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314603,
+      code: 'JF000001',
+      title: 'jf test',
       offence_id: 314603,
       get_cjs_code: 'JF000001',
       business_unit_id: 52,
@@ -92,6 +116,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314281,
+      code: 'LOC001',
+      title: 'GST Local Offence Test',
       offence_id: 314281,
       get_cjs_code: 'LOC001',
       business_unit_id: 1042,
@@ -103,6 +130,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314361,
+      code: 'NEWLOCOF',
+      title: 'New Local Offence',
       offence_id: 314361,
       get_cjs_code: 'NEWLOCOF',
       business_unit_id: 1042,
@@ -114,6 +144,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314723,
+      code: 'NW01001',
+      title: "Fail to be long enough to fit as many words as necessary so that the tiltle isn't truncated ",
       offence_id: 314723,
       get_cjs_code: 'NW01001',
       business_unit_id: 45,
@@ -125,6 +158,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314521,
+      code: 'TEST12',
+      title: 'Test',
       offence_id: 314521,
       get_cjs_code: 'TEST12',
       business_unit_id: 52,
@@ -136,6 +172,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314561,
+      code: 'TEST13',
+      title: 'test 13',
       offence_id: 314561,
       get_cjs_code: 'TEST13',
       business_unit_id: 52,
@@ -147,6 +186,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314643,
+      code: 'TH68001',
+      title: 'fdfafsdsafsdf',
       offence_id: 314643,
       get_cjs_code: 'TH68001',
       business_unit_id: 52,
@@ -158,6 +200,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314601,
+      code: 'TST50001',
+      title: 'Local Offence Blocked for Use',
       offence_id: 314601,
       get_cjs_code: 'TST50001',
       business_unit_id: 52,
@@ -169,6 +214,9 @@ export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
       offence_oas_cy: null,
     },
     {
+      id: 314241,
+      code: 'WE99999',
+      title: 'Overtaking on a Motorway without indicating',
       offence_id: 314241,
       get_cjs_code: 'WE99999',
       business_unit_id: 22,

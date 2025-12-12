@@ -1,8 +1,8 @@
 export interface IOpalFinesDraftAccountParams {
-  businessUnitIds?: number[];
-  statuses?: string[];
-  submittedBy?: string[];
-  notSubmittedBy?: string[];
-  accountStatusDateFrom?: string[];
-  accountStatusDateTo?: string[];
+  businessUnitIds: number[] | null;
+  statuses: string[] | null;
+  submittedBy: string[] | null;
+  notSubmittedBy: string[] | null;
+  accountStatusDateFrom: string[] | null;
+  accountStatusDateTo: string[] | null;
 }
