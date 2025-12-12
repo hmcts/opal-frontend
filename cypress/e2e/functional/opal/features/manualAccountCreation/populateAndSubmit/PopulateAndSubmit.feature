@@ -194,7 +194,6 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see "You've submitted this account for review" text on the page
 
-
   @PO-1449 @PO-1638
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
@@ -392,12 +391,12 @@ Feature: Manual account creation - Create Draft Account
     And I see the manual review "Parent or guardian details" summary:
       | Surname                   | LNAME                                                                                             |
       | Address                   | 1 Address Street RG12 8EU                                                                         |
-      | National Insurance number | AB122398B                                                                                         |
+      | National Insurance number | AB 12 23 98 B                                                                                     |
       | Aliases                   | fnameone LNAMEONE fnametwo LNAMETWO fnamethree LNAMETHREE fnamefour LNAMEFOUR fnamefive LNAMEFIVE |
     And I see the manual review "Defendant details" summary:
       | Last name                 | LNAME                     |
       | Address                   | 1 Address Street RG12 8EU |
-      | National Insurance number | AB122398B                 |
+      | National Insurance number | AB 12 23 98 B             |
       | Aliases                   | Not provided              |
     And I see the manual review "Employer details" summary:
       | Employee reference | AB122398B                 |

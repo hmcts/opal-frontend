@@ -4,12 +4,14 @@
  */
 import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualReviewAccountActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/review-account.actions';
+import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { log } from '../../../utils/log.helper';
 
 type SummaryRow = { label: string; value: string };
 
 const reviewAccount = (): ManualReviewAccountActions => new ManualReviewAccountActions();
+const macFlow = (): ManualAccountCreationFlow => new ManualAccountCreationFlow();
 
 const mapTableToSummaryRows = (table: DataTable): SummaryRow[] => {
   const rows = normalizeTableRows(table);
@@ -33,9 +35,8 @@ const resolveSummaryListId = (section: string): string => {
  * Navigates from Account details to Check account details.
  */
 When('I check the manual account details', () => {
-  log('navigate', 'Checking account details from task list');
-  reviewAccount().clickCheckAccount();
-  reviewAccount().assertOnReviewPage();
+  log('step', 'Checking account details from task list');
+  macFlow().checkManualAccountDetails();
 });
 
 /**

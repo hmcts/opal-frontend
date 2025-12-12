@@ -1,5 +1,6 @@
 /**
- * Offence detail and imposition step definitions for Manual Account Creation journeys.
+ * @file manual-account-creation.offence-details.steps.ts
+ * @description Offence detail and imposition step definitions for Manual Account Creation journeys.
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { calculateWeeksInFuture, calculateWeeksInPast, resolveRelativeDate } from '../../../utils/dateUtils';
@@ -27,9 +28,8 @@ import {
 
  */
 Then('I see the offence details page with header {string} and text {string}', (header: string, text: string) => {
-  log('assert', 'Asserting offence details page header and text', { header, text });
-  offenceDetails().assertOnAddOffencePage(header);
-  cy.contains(text).should('exist');
+  log('step', 'Asserting offence details page header and text', { header, text });
+  flow().assertOffenceDetailsPage(header, text);
 });
 
 /**
@@ -48,23 +48,8 @@ Then('I see offence text {string}', (text: string) => {
 When(
   'I add an offence dated {int} weeks in the past with offence code {string}, result code {string}, amount imposed {string}, and amount paid {string}',
   (weeksInPast: number, offenceCode: string, resultCode: string, amountImposed: string, amountPaid: string) => {
-    const dateOfSentence = calculateWeeksInPast(weeksInPast);
-    log('step', 'Completing offence details', {
-      weeksInPast,
-      offenceCode,
-      resultCode,
-      amountImposed,
-      amountPaid,
-      dateOfSentence,
-    });
-    details().assertOnAccountDetailsPage();
-    offenceDetails().fillOffenceDetails({
-      dateOfSentence,
-      offenceCode,
-      resultCode,
-      amountImposed,
-      amountPaid,
-    });
+    log('step', 'Completing offence details', { weeksInPast, offenceCode, resultCode, amountImposed, amountPaid });
+    flow().completeOffenceWithAmounts({ weeksInPast, offenceCode, resultCode, amountImposed, amountPaid });
   },
 );
 
@@ -94,10 +79,8 @@ When('I have provided offence details from account details:', (table: DataTable)
 When(
   'I provide offence details for offence code {string} with a sentence date {int} weeks in the past',
   (offenceCode: string, weeks: number) => {
-    const dateOfSentence = calculateWeeksInPast(weeks);
-    log('step', 'Providing offence code and sentence date', { offenceCode, weeks, dateOfSentence });
-    offenceDetails().setOffenceField('Offence code', offenceCode);
-    offenceDetails().setOffenceField('Date of sentence', dateOfSentence);
+    log('step', 'Providing offence code and sentence date', { offenceCode, weeks });
+    flow().setOffenceDetailsWithSentenceWeeksAgo(offenceCode, weeks);
     setCurrentImpositionIndex(0);
   },
 );
@@ -121,9 +104,7 @@ When(
     }));
 
     log('flow', 'Adding offence and cancelling (stay on form)', { offenceCode, weeksAgo, impositions });
-    flow().addOffenceWithImpositions({ offenceCode, weeksAgo, impositions });
-    offenceDetails().cancelOffenceDetails('Cancel');
-    offenceDetails().assertOnAddOffencePage();
+    flow().addOffenceWithImpositionsAndCancel({ offenceCode, weeksAgo, impositions });
   },
 );
 

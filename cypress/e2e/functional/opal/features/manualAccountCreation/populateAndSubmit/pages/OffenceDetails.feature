@@ -814,7 +814,6 @@ Feature: Manual account creation - Offence Details
       | Column          | Value  |
       | Act and section | London |
 
-  @only
   @PO-667 @PO-987 @PO-545
   Scenario: AC1g-h Starts-with, contains and max-results offence searches
     When I follow the offence search link in the same tab
