@@ -400,7 +400,7 @@ Feature: Manual account creation - Create Draft Account
       | National Insurance number | AB 12 23 98 B             |
       | Aliases                   | Not provided              |
     And I see the manual review "Employer details" summary:
-      | Employee reference | A122398B                  |
+      | Employee reference | AB122398B                 |
       | Employer address   | 1 Address Street RG12 8EU |
     And the manual review offence table contains:
       | Imposition   | Creditor           | Amount imposed | Amount paid | Balance remaining |

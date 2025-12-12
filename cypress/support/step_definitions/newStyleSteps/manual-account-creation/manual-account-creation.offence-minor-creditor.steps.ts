@@ -1,14 +1,12 @@
 /**
- * Minor creditor step definitions for Manual Account Creation offence journeys.
+ * @file manual-account-creation.offence-minor-creditor.steps.ts
+ * @description Minor creditor step definitions for Manual Account Creation offence journeys.
  */
 import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { calculateWeeksInPast } from '../../../utils/dateUtils';
 import { normalizeHash } from '../../../utils/cucumberHelpers';
 import { log } from '../../../utils/log.helper';
-import { MinorCreditorFieldKey, resolveMinorCreditorFieldKey } from '../../../utils/macFieldResolvers';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
 import {
-  common,
   flow,
   getCurrentOffenceCode,
   getCurrentImpositionIndex,
@@ -18,20 +16,6 @@ import {
   setCurrentOffenceCode,
   setCurrentImpositionIndex,
 } from './manual-account-creation.offence.stepshelper';
-
-const ensureOnMinorCreditorPage = (index: number): Cypress.Chainable => {
-  return cy
-    .get('body')
-    .then(($body) => {
-      const isMinorCreditor = $body.find(L.minorCreditorForm.saveButton).length > 0;
-      if (!isMinorCreditor) {
-        offenceDetails().openMinorCreditorDetails(index);
-      }
-    })
-    .then(() => {
-      minorCreditor().assertOnMinorCreditorPage();
-    });
-};
 
 const ensureOnOffenceDetailsFromReview = (): Cypress.Chainable => {
   return cy.get('body').then(($body) => {
@@ -64,32 +48,19 @@ const ensureOnOffenceDetailsFromReview = (): Cypress.Chainable => {
  */
 When('I maintain minor creditor details for imposition {int}:', (imposition: number, table: DataTable) => {
   const data = normalizeHash(table);
-  const index = imposition - 1;
-  setCurrentImpositionIndex(index);
+  const payload = {
+    title: data['Title'],
+    firstNames: data['First name'],
+    lastName: data['Last name'],
+    address1: data['Address line 1'],
+    address2: data['Address line 2'],
+    address3: data['Address line 3'],
+    postcode: data['Postcode'],
+  };
 
-  ensureOnMinorCreditorPage(index);
-
-  minorCreditor().selectCreditorType('Individual');
-
-  if (data['Title']) {
-    minorCreditor().selectTitle(data['Title']);
-  }
-
-  const fieldMap: Array<{ label: string; key: MinorCreditorFieldKey }> = [
-    { label: 'First name', key: 'firstNames' },
-    { label: 'Last name', key: 'lastName' },
-    { label: 'Address line 1', key: 'address1' },
-    { label: 'Address line 2', key: 'address2' },
-    { label: 'Address line 3', key: 'address3' },
-    { label: 'Postcode', key: 'postcode' },
-  ];
-
-  fieldMap.forEach(({ label, key }) => {
-    const value = data[label];
-    if (value) {
-      minorCreditor().setField(key, value);
-    }
-  });
+  setCurrentImpositionIndex(imposition - 1);
+  log('flow', 'Maintaining individual minor creditor details', { imposition, payload });
+  flow().maintainIndividualMinorCreditor(imposition, payload);
 });
 
 /**
@@ -106,27 +77,17 @@ When('I maintain minor creditor details for imposition {int}:', (imposition: num
  */
 When('I maintain company minor creditor details for imposition {int}:', (imposition: number, table: DataTable) => {
   const data = normalizeHash(table);
-  const index = imposition - 1;
-  setCurrentImpositionIndex(index);
+  const payload = {
+    company: data['Company'],
+    address1: data['Address line 1'],
+    address2: data['Address line 2'],
+    address3: data['Address line 3'],
+    postcode: data['Postcode'],
+  };
 
-  ensureOnMinorCreditorPage(index);
-
-  minorCreditor().selectCreditorType('Company');
-
-  const fieldMap: Array<{ label: string; key: MinorCreditorFieldKey }> = [
-    { label: 'Company', key: 'company' },
-    { label: 'Address line 1', key: 'address1' },
-    { label: 'Address line 2', key: 'address2' },
-    { label: 'Address line 3', key: 'address3' },
-    { label: 'Postcode', key: 'postcode' },
-  ];
-
-  fieldMap.forEach(({ label, key }) => {
-    const value = data[label];
-    if (value) {
-      minorCreditor().setField(key, value);
-    }
-  });
+  setCurrentImpositionIndex(imposition - 1);
+  log('flow', 'Maintaining company minor creditor details', { imposition, payload });
+  flow().maintainCompanyMinorCreditor(imposition, payload);
 });
 
 /**
@@ -136,23 +97,19 @@ When('I maintain company minor creditor details for imposition {int}:', (imposit
  * @param _imposition - 1-based imposition number (unused; retained for Gherkin clarity).
  * @param table - DataTable for accountName, sortCode, accountNumber, paymentReference.
  */
-When('I maintain BACS payment details for imposition {int}:', (_imposition: number, table: DataTable) => {
+When('I maintain BACS payment details for imposition {int}:', (imposition: number, table: DataTable) => {
   const data = normalizeHash(table);
-  minorCreditor().togglePayByBacs(true);
+  const accountName = data['Account name'] ?? data['Name on account'] ?? data['Name on the account'];
+  const payload = {
+    accountName,
+    sortCode: data['Sort code'],
+    accountNumber: data['Account number'],
+    paymentReference: data['Payment reference'],
+  };
 
-  const fieldMap: Array<{ label: string; key: MinorCreditorFieldKey }> = [
-    { label: 'Name on the account', key: 'accountName' },
-    { label: 'Sort code', key: 'sortCode' },
-    { label: 'Account number', key: 'accountNumber' },
-    { label: 'Payment reference', key: 'paymentReference' },
-  ];
-
-  fieldMap.forEach(({ label, key }) => {
-    const value = data[label];
-    if (value) {
-      minorCreditor().setField(key, value);
-    }
-  });
+  setCurrentImpositionIndex(imposition - 1);
+  log('flow', 'Maintaining BACS payment details', { imposition, payload });
+  flow().maintainMinorCreditorBacsDetails(imposition, payload);
 });
 
 /**
@@ -227,48 +184,24 @@ When(
   (imposition: number, table: DataTable) => {
     const data = normalizeHash(table);
     const accountName = data['Account name'] ?? data['Name on account'] ?? data['Name on the account'];
-    const index = imposition - 1;
-    setCurrentImpositionIndex(index);
-
-    const fillMinorCreditor = () => {
-      minorCreditor().assertOnMinorCreditorPage();
-      minorCreditor().selectCreditorType('Individual');
-      if (data['Title']) {
-        minorCreditor().selectTitle(data['Title']);
-      }
-
-      const fieldMap: Array<{ label: string; key: MinorCreditorFieldKey }> = [
-        { label: 'First name', key: 'firstNames' },
-        { label: 'Last name', key: 'lastName' },
-        { label: 'Address line 1', key: 'address1' },
-        { label: 'Address line 2', key: 'address2' },
-        { label: 'Address line 3', key: 'address3' },
-        { label: 'Postcode', key: 'postcode' },
-      ];
-
-      fieldMap.forEach(({ label, key }) => {
-        const value = data[label];
-        if (value) {
-          minorCreditor().setField(key, value);
-        }
-      });
-
-      const hasBacs = accountName || data['Sort code'] || data['Account number'] || data['Payment reference'];
-      if (hasBacs) {
-        minorCreditor().togglePayByBacs(true);
-        if (accountName) minorCreditor().setField('accountName', accountName);
-        if (data['Sort code']) minorCreditor().setField('sortCode', data['Sort code']);
-        if (data['Account number']) minorCreditor().setField('accountNumber', data['Account number']);
-        if (data['Payment reference']) minorCreditor().setField('paymentReference', data['Payment reference']);
-      }
-
-      minorCreditor().save();
-      offenceDetails().assertOnAddOffencePage();
+    const payload = {
+      title: data['Title'],
+      firstNames: data['First name'],
+      lastName: data['Last name'],
+      address1: data['Address line 1'],
+      address2: data['Address line 2'],
+      address3: data['Address line 3'],
+      postcode: data['Postcode'],
+      accountName,
+      sortCode: data['Sort code'],
+      accountNumber: data['Account number'],
+      paymentReference: data['Payment reference'],
     };
 
+    setCurrentImpositionIndex(imposition - 1);
+
     ensureOnOffenceDetailsFromReview().then(() => {
-      offenceDetails().clickMinorCreditorAction(index, 'Change');
-      fillMinorCreditor();
+      flow().updateIndividualMinorCreditorWithBacs(imposition, payload);
     });
   },
 );
@@ -290,60 +223,8 @@ When('I save the minor creditor details for imposition {int}', () => {
  * @param offenceCode - Offence code to seed.
  */
 Given('an offence exists with 2 minor creditor impositions for offence code {string}', (offenceCode: string) => {
-  const offence = offenceDetails();
-  const creditor = minorCreditor();
-  const date = calculateWeeksInPast(9);
-
-  log('flow', 'Creating offence with two minor creditors', { offenceCode, date });
-  offence.assertOnAddOffencePage();
-  offence.setOffenceField('Offence code', offenceCode);
-  offence.setOffenceField('Date of sentence', date);
-
-  // Imposition 1 – Individual minor creditor with BACS
-  offence.setImpositionField(0, 'Result code', 'Compensation (FCOMP)');
-  offence.setImpositionField(0, 'Amount imposed', '200');
-  offence.setImpositionField(0, 'Amount paid', '100');
-  offence.selectCreditorType(0, 'minor');
-  offence.openMinorCreditorDetails(0);
-  creditor.assertOnMinorCreditorPage();
-  creditor.selectCreditorType('Individual');
-  creditor.selectTitle('Mr');
-  creditor.setField('firstNames', 'FNAME');
-  creditor.setField('lastName', 'LNAME');
-  creditor.setField('address1', 'Addr1');
-  creditor.setField('address2', 'Addr2');
-  creditor.setField('address3', 'Addr3');
-  creditor.setField('postcode', 'TE12 3ST');
-  creditor.togglePayByBacs(true);
-  creditor.setField('accountName', 'F LNAME');
-  creditor.setField('sortCode', '123456');
-  creditor.setField('accountNumber', '12345678');
-  creditor.setField('paymentReference', 'REF');
-  creditor.save();
-  offence.assertOnAddOffencePage();
-
-  // Imposition 2 – Company minor creditor with BACS
-  offence.clickAddAnotherImposition();
-  offence.setImpositionField(1, 'Result code', 'Compensation (FCOMP)');
-  offence.setImpositionField(1, 'Amount imposed', '200');
-  offence.setImpositionField(1, 'Amount paid', '100');
-  offence.selectCreditorType(1, 'minor');
-  offence.openMinorCreditorDetails(1);
-  creditor.assertOnMinorCreditorPage();
-  creditor.selectCreditorType('Company');
-  creditor.setField('company', 'CNAME');
-  creditor.setField('address1', 'Addr1');
-  creditor.setField('address2', 'Addr2');
-  creditor.setField('address3', 'Addr3');
-  creditor.setField('postcode', 'TE12 3ST');
-  creditor.togglePayByBacs(true);
-  creditor.setField('accountName', 'F LNAME');
-  creditor.setField('sortCode', '123456');
-  creditor.setField('accountNumber', '12345678');
-  creditor.setField('paymentReference', 'REF');
-  creditor.save();
-  offence.assertOnAddOffencePage();
-
+  log('flow', 'Creating offence with two minor creditors', { offenceCode });
+  flow().seedOffenceWithTwoMinorCreditors(offenceCode);
   setCurrentOffenceCode(offenceCode);
 });
 
@@ -355,22 +236,9 @@ Given('an offence exists with 2 minor creditor impositions for offence code {str
  * @example When I select the "Minor creditor" radio button
  */
 When('I select the minor creditor radio option {string}', (label: string) => {
-  const normalized = label.toLowerCase();
-  if (normalized.includes('minor creditor') || normalized.includes('major creditor')) {
-    const type = normalized.includes('minor') ? 'minor' : 'major';
-    log('click', 'Selecting creditor type (default imposition)', { label, type, index: getCurrentImpositionIndex() });
-    offenceDetails().selectCreditorType(getCurrentImpositionIndex(), type as 'major' | 'minor');
-    return;
-  }
-
-  if (normalized.includes('individual') || normalized.includes('company')) {
-    const type = normalized.includes('individual') ? 'Individual' : 'Company';
-    log('click', 'Selecting minor creditor type', { label, type });
-    minorCreditor().selectCreditorType(type as 'Individual' | 'Company');
-    return;
-  }
-
-  throw new Error(`Unknown radio button label: ${label}`);
+  const index = getCurrentImpositionIndex();
+  log('click', 'Selecting minor/major or minor creditor type via flow', { label, index });
+  flow().selectMinorCreditorRadioOption(label, index);
 });
 
 /**
@@ -428,17 +296,9 @@ When('I open minor creditor details for imposition {int}', (row: number) => {
 When(
   'I open and cancel company minor creditor for imposition {int} with company {string}',
   (imposition: number, company: string) => {
-    const index = imposition - 1;
-    setCurrentImpositionIndex(index);
+    setCurrentImpositionIndex(imposition - 1);
     log('flow', 'Opening company minor creditor and cancelling with data preserved', { imposition, company });
-    offenceDetails().openMinorCreditorDetails(index);
-    minorCreditor().assertOnMinorCreditorPage();
-    minorCreditor().selectCreditorType('Company');
-    minorCreditor().setField('company', company);
-    minorCreditor().cancelAndChoose('Cancel');
-    minorCreditor().assertOnMinorCreditorPage();
-    minorCreditor().assertCreditorTypeSelected('Company');
-    minorCreditor().assertFieldValue('company', company);
+    flow().openAndCancelCompanyMinorCreditor(imposition, company);
   },
 );
 
@@ -486,26 +346,9 @@ Then('the minor creditor summary for imposition {int} is:', (imposition: number,
  * @param table - DataTable of label/value pairs.
  */
 Then('I see the following values in the Minor Creditor fields:', (table: DataTable) => {
-  const rows = normalizeHash(table);
-  const entries = Object.entries(rows);
-
-  if (!entries.length) {
-    throw new Error('No minor creditor fields provided for assertion');
-  }
-
-  log('assert', 'Asserting minor creditor field values', { rows });
-
-  entries.forEach(([label, value]) => {
-    if (/payment method/i.test(label)) {
-      const shouldBeBacs = /bacs/i.test(value);
-      log('assert', 'Asserting payment method via BACS toggle', { value, shouldBeBacs });
-      minorCreditor().assertPayByBacsState(shouldBeBacs);
-      return;
-    }
-
-    const key = resolveMinorCreditorFieldKey(label);
-    minorCreditor().assertFieldValue(key, value);
-  });
+  const expectations = normalizeHash(table);
+  log('assert', 'Asserting minor creditor field values', { expectations });
+  flow().assertMinorCreditorFormValues(expectations);
 });
 
 /**
@@ -514,26 +357,9 @@ Then('I see the following values in the Minor Creditor fields:', (table: DataTab
  * @param table - DataTable of payment field labels and expected values.
  */
 Then('I see the following values in the Payment details fields:', (table: DataTable) => {
-  const rows = normalizeHash(table);
-  const entries = Object.entries(rows);
-
-  if (!entries.length) {
-    throw new Error('No payment detail fields provided for assertion');
-  }
-
-  log('assert', 'Asserting minor creditor payment detail values', { rows });
-
-  entries.forEach(([label, value]) => {
-    if (/payment method/i.test(label)) {
-      const shouldBeBacs = /bacs/i.test(value);
-      log('assert', 'Asserting payment method via BACS toggle', { value, shouldBeBacs });
-      minorCreditor().assertPayByBacsState(shouldBeBacs);
-      return;
-    }
-
-    const key = resolveMinorCreditorFieldKey(label);
-    minorCreditor().assertFieldValue(key, value);
-  });
+  const expectations = normalizeHash(table);
+  log('assert', 'Asserting minor creditor payment detail values', { expectations });
+  flow().assertMinorCreditorPaymentValues(expectations);
 });
 
 /**
@@ -543,12 +369,8 @@ Then('I see the following values in the Payment details fields:', (table: DataTa
  * @param imposition - 1-based imposition number to cancel removal for.
  */
 When('I cancel removing the minor creditor for imposition {int}', (imposition: number) => {
-  const index = imposition - 1;
   ensureOnOffenceDetailsFromReview().then(() => {
-    offenceDetails().clickMinorCreditorAction(index, 'Remove');
-    common().assertHeaderContains('Are you sure you want to remove this minor creditor?');
-    offenceDetails().cancelRemoveMinorCreditor();
-    offenceDetails().assertOnAddOffencePage();
+    flow().cancelRemoveMinorCreditor(imposition);
   });
 });
 
@@ -559,12 +381,8 @@ When('I cancel removing the minor creditor for imposition {int}', (imposition: n
  * @param imposition - 1-based imposition number to confirm removal for.
  */
 When('I confirm removing the minor creditor for imposition {int}', (imposition: number) => {
-  const index = imposition - 1;
   ensureOnOffenceDetailsFromReview().then(() => {
-    offenceDetails().clickMinorCreditorAction(index, 'Remove');
-    common().assertHeaderContains('Are you sure you want to remove this minor creditor?');
-    offenceDetails().confirmRemoveMinorCreditor();
-    offenceDetails().assertMinorCreditorAbsent(index);
+    flow().confirmRemoveMinorCreditor(imposition);
   });
 });
 
@@ -575,9 +393,7 @@ When('I confirm removing the minor creditor for imposition {int}', (imposition: 
  * @param choice - Confirmation choice: "Cancel", "Ok", "Stay", or "Leave".
  */
 When('I cancel minor creditor details choosing {string}', (choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave') => {
-  log('cancel', 'Cancelling minor creditor details', { choice });
-  minorCreditor().assertOnMinorCreditorPage();
-  minorCreditor().cancelAndChoose(choice);
+  flow().cancelMinorCreditorDetails(choice);
 });
 
 /**
@@ -586,9 +402,7 @@ When('I cancel minor creditor details choosing {string}', (choice: 'Cancel' | 'O
 
  */
 When('I cancel the remove minor creditor confirmation', () => {
-  log('navigate', 'Cancelling minor creditor removal confirmation');
-  offenceDetails().cancelRemoveMinorCreditor();
-  offenceDetails().assertOnAddOffencePage();
+  flow().cancelRemoveMinorCreditorConfirmation();
 });
 
 /**

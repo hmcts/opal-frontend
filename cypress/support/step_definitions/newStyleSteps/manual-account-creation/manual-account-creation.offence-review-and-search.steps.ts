@@ -1,5 +1,6 @@
 /**
- * Offence review, navigation, and search step definitions for Manual Account Creation.
+ * @file manual-account-creation.offence-review-and-search.steps.ts
+ * @description Offence review, navigation, and search step definitions for Manual Account Creation.
  */
 import { When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { ManualOffenceDetailsLocators as L } from '../../../../shared/selectors/manual-account-creation/offence-details.locators';
@@ -52,9 +53,7 @@ const resolveMacPage = (): Cypress.Chainable<MacPageContext> =>
  */
 When('I choose to amend offence with offence code {string}', (offenceCode: string) => {
   log('navigate', 'Amending offence from review', { offenceCode });
-  offenceReview().assertOnReviewPage();
-  offenceReview().clickChangeOffence(offenceCode);
-  offenceDetails().assertOnAddOffencePage();
+  flow().amendOffenceFromReview(offenceCode);
   setCurrentOffenceCode(offenceCode);
 });
 
@@ -64,8 +63,7 @@ When('I choose to amend offence with offence code {string}', (offenceCode: strin
 
  */
 When('I review the offence and see the review page', () => {
-  offenceDetails().clickReviewOffence();
-  offenceReview().assertOnReviewPage();
+  flow().reviewOffenceAndAssertReviewPage();
 });
 
 /**
@@ -163,8 +161,7 @@ Then('I see {string} in the {string} field in the MAC flow', (expected: string, 
  */
 When('I add another offence', () => {
   log('navigate', 'Adding another offence');
-  offenceReview().clickAddAnotherOffence();
-  offenceDetails().assertOnAddOffencePage();
+  flow().addAnotherOffenceFromReview();
 });
 
 /**
@@ -184,8 +181,7 @@ When('I review the offence', () => {
  * @example When I review all offences
  */
 When('I review all offences', () => {
-  offenceDetails().clickReviewOffence();
-  offenceReview().assertOnReviewPage();
+  flow().reviewOffenceAndAssertReviewPage();
 });
 
 /**

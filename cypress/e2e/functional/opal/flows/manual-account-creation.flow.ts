@@ -33,6 +33,7 @@ import {
 import { ManualOffenceDetailsActions } from '../actions/manual-account-creation/offence-details.actions';
 import { ManualOffenceReviewActions } from '../actions/manual-account-creation/offence-review.actions';
 import { ManualOffenceSearchActions } from '../actions/manual-account-creation/offence-search.actions';
+import { ManualReviewAccountActions } from '../actions/manual-account-creation/review-account.actions';
 import {
   ManualPaymentTermsActions,
   ManualPaymentTermsExpectations,
@@ -131,6 +132,7 @@ export class ManualAccountCreationFlow {
   private readonly offenceMinorCreditor = new ManualOffenceMinorCreditorActions();
   private readonly paymentTerms = new ManualPaymentTermsActions();
   private readonly languagePreferences = new ManualLanguagePreferencesActions();
+  private readonly reviewAccount = new ManualReviewAccountActions();
   private readonly defaultBusinessUnitToken = 'default business unit';
 
   private isDefaultBusinessUnit(businessUnit: string): boolean {
@@ -1503,6 +1505,259 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Asserts the offence details page header and supporting text.
+   * @param header - Expected header text.
+   * @param text - Supporting text to assert is visible.
+   */
+  assertOffenceDetailsPage(header: string, text: string): void {
+    log('assert', 'Asserting offence details page header/text', { header, text });
+    this.offenceDetails.assertOnAddOffencePage(header);
+    cy.contains(text).should('exist');
+  }
+
+  /**
+   * Completes basic offence details with a single imposition (amounts only).
+   * @param payload - Weeks offset and offence/imposition values.
+   */
+  completeOffenceWithAmounts(payload: {
+    weeksInPast: number;
+    offenceCode: string;
+    resultCode: string;
+    amountImposed: string;
+    amountPaid: string;
+  }): void {
+    const { weeksInPast, offenceCode, resultCode, amountImposed, amountPaid } = payload;
+    const dateOfSentence = calculateWeeksInPast(weeksInPast);
+    log('flow', 'Completing offence details with amounts', {
+      ...payload,
+      dateOfSentence,
+    });
+    this.accountDetails.assertOnAccountDetailsPage();
+    this.offenceDetails.fillOffenceDetails({
+      dateOfSentence,
+      offenceCode,
+      resultCode,
+      amountImposed,
+      amountPaid,
+    });
+  }
+
+  /**
+   * Sets offence code and sentence date based on a weeks offset.
+   * @param offenceCode - Offence code to enter.
+   * @param weeks - Weeks in the past to calculate sentence date.
+   */
+  setOffenceDetailsWithSentenceWeeksAgo(offenceCode: string, weeks: number): void {
+    const dateOfSentence = calculateWeeksInPast(weeks);
+    log('flow', 'Setting offence details (code + sentence date)', { offenceCode, weeks, dateOfSentence });
+    this.offenceDetails.setOffenceField('Offence code', offenceCode);
+    this.offenceDetails.setOffenceField('Date of sentence', dateOfSentence);
+  }
+
+  /**
+   * Adds an offence with impositions then cancels back to the offence page.
+   * @param payload - Offence code, weeks offset, and impositions.
+   */
+  addOffenceWithImpositionsAndCancel(payload: {
+    offenceCode: string;
+    weeksAgo: number;
+    impositions: OffenceImpositionInput[];
+  }): void {
+    log('flow', 'Adding offence with impositions then cancelling', payload);
+    this.addOffenceWithImpositions(payload);
+    this.offenceDetails.cancelOffenceDetails('Cancel');
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Reviews the current offence and asserts the review page is shown.
+   */
+  reviewOffenceAndAssertReviewPage(): void {
+    log('flow', 'Reviewing offence and asserting review page');
+    this.offenceDetails.clickReviewOffence();
+    this.offenceReview.assertOnReviewPage();
+  }
+
+  /**
+   * Adds another offence from the review page and asserts the form is shown.
+   */
+  addAnotherOffenceFromReview(): void {
+    log('flow', 'Adding another offence from review');
+    this.offenceReview.clickAddAnotherOffence();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Navigates from the offence review page to amend a specific offence.
+   * @param offenceCode - Offence code caption to amend.
+   */
+  amendOffenceFromReview(offenceCode: string): void {
+    log('flow', 'Amending offence from review', { offenceCode });
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.clickChangeOffence(offenceCode);
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Opens Check account details from the task list and asserts the review page.
+   */
+  checkManualAccountDetails(): void {
+    log('flow', 'Checking manual account details from task list');
+    this.accountDetails.assertOnAccountDetailsPage();
+    this.reviewAccount.clickCheckAccount();
+    this.reviewAccount.assertOnReviewPage();
+  }
+
+  /**
+   * Opens the Individual minor creditor form (no BACS) and fills provided fields without saving.
+   * @param imposition - 1-based imposition number.
+   * @param details - Minor creditor payload (individual) without payment data.
+   */
+  maintainIndividualMinorCreditor(imposition: number, details: MinorCreditorWithBacs): void {
+    const index = imposition - 1;
+    log('flow', 'Maintaining individual minor creditor details', { imposition, details });
+    this.ensureOnMinorCreditorPage(index);
+    this.offenceMinorCreditor.selectCreditorType('Individual');
+
+    if (details.title) {
+      this.offenceMinorCreditor.selectTitle(details.title);
+    }
+    if (details.firstNames) {
+      this.offenceMinorCreditor.setField('firstNames', details.firstNames);
+    }
+    if (details.lastName) {
+      this.offenceMinorCreditor.setField('lastName', details.lastName);
+    }
+    if (details.address1) {
+      this.offenceMinorCreditor.setField('address1', details.address1);
+    }
+    if (details.address2) {
+      this.offenceMinorCreditor.setField('address2', details.address2);
+    }
+    if (details.address3) {
+      this.offenceMinorCreditor.setField('address3', details.address3);
+    }
+    if (details.postcode) {
+      this.offenceMinorCreditor.setField('postcode', details.postcode);
+    }
+  }
+
+  /**
+   * Populates only BACS payment details on the minor creditor form (does not save).
+   * @param imposition - 1-based imposition number (for logging).
+   * @param details - BACS payment details.
+   */
+  maintainMinorCreditorBacsDetails(imposition: number, details: MinorCreditorWithBacs): void {
+    log('flow', 'Maintaining minor creditor BACS details', { imposition, details });
+    this.ensureOnMinorCreditorPage(imposition - 1);
+    this.offenceMinorCreditor.togglePayByBacs(true);
+
+    if (details.accountName) {
+      this.offenceMinorCreditor.setField('accountName', details.accountName);
+    }
+    if (details.sortCode) {
+      this.offenceMinorCreditor.setField('sortCode', details.sortCode);
+    }
+    if (details.accountNumber) {
+      this.offenceMinorCreditor.setField('accountNumber', details.accountNumber);
+    }
+    if (details.paymentReference) {
+      this.offenceMinorCreditor.setField('paymentReference', details.paymentReference);
+    }
+  }
+
+  /**
+   * Updates an Individual minor creditor (with optional BACS) via Change action and saves.
+   * @param imposition - 1-based imposition number.
+   * @param details - Minor creditor payload (individual) including optional BACS.
+   */
+  updateIndividualMinorCreditorWithBacs(imposition: number, details: MinorCreditorWithBacs): void {
+    const index = imposition - 1;
+    log('flow', 'Updating individual minor creditor with BACS', { imposition, details });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.clickMinorCreditorAction(index, 'Change');
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Individual');
+
+    if (details.title) {
+      this.offenceMinorCreditor.selectTitle(details.title);
+    }
+    if (details.firstNames) {
+      this.offenceMinorCreditor.setField('firstNames', details.firstNames);
+    }
+    if (details.lastName) {
+      this.offenceMinorCreditor.setField('lastName', details.lastName);
+    }
+    if (details.address1) {
+      this.offenceMinorCreditor.setField('address1', details.address1);
+    }
+    if (details.address2) {
+      this.offenceMinorCreditor.setField('address2', details.address2);
+    }
+    if (details.address3) {
+      this.offenceMinorCreditor.setField('address3', details.address3);
+    }
+    if (details.postcode) {
+      this.offenceMinorCreditor.setField('postcode', details.postcode);
+    }
+
+    const hasBacsDetails = [
+      details.accountName,
+      details.sortCode,
+      details.accountNumber,
+      details.paymentReference,
+    ].some(Boolean);
+    if (hasBacsDetails) {
+      this.offenceMinorCreditor.togglePayByBacs(true);
+      if (details.accountName) {
+        this.offenceMinorCreditor.setField('accountName', details.accountName);
+      }
+      if (details.sortCode) {
+        this.offenceMinorCreditor.setField('sortCode', details.sortCode);
+      }
+      if (details.accountNumber) {
+        this.offenceMinorCreditor.setField('accountNumber', details.accountNumber);
+      }
+      if (details.paymentReference) {
+        this.offenceMinorCreditor.setField('paymentReference', details.paymentReference);
+      }
+    }
+
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Opens the Company minor creditor form (no BACS) and fills provided fields without saving.
+   * @param imposition - 1-based imposition number.
+   * @param details - Minor creditor payload (company) without payment data.
+   */
+  maintainCompanyMinorCreditor(imposition: number, details: MinorCreditorWithBacs): void {
+    const index = imposition - 1;
+    log('flow', 'Maintaining company minor creditor details', { imposition, details });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.openMinorCreditorDetails(index);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Company');
+
+    if (details.company) {
+      this.offenceMinorCreditor.setField('company', details.company);
+    }
+    if (details.address1) {
+      this.offenceMinorCreditor.setField('address1', details.address1);
+    }
+    if (details.address2) {
+      this.offenceMinorCreditor.setField('address2', details.address2);
+    }
+    if (details.address3) {
+      this.offenceMinorCreditor.setField('address3', details.address3);
+    }
+    if (details.postcode) {
+      this.offenceMinorCreditor.setField('postcode', details.postcode);
+    }
+  }
+
+  /**
    * Completes an Individual minor creditor with BACS details and saves.
    * @param imposition - 1-based imposition number.
    * @param details - Minor creditor payload (individual) including optional BACS.
@@ -1615,6 +1870,202 @@ export class ManualAccountCreationFlow {
     }
 
     this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Seeds an offence with two minor creditor impositions (individual + company with BACS).
+   * @param offenceCode - Offence code to seed.
+   */
+  seedOffenceWithTwoMinorCreditors(offenceCode: string): void {
+    const date = calculateWeeksInPast(9);
+    log('flow', 'Seeding offence with two minor creditors', { offenceCode, date });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.setOffenceField('Offence code', offenceCode);
+    this.offenceDetails.setOffenceField('Date of sentence', date);
+
+    // Imposition 1 – Individual minor creditor with BACS
+    this.offenceDetails.setImpositionField(0, 'Result code', 'Compensation (FCOMP)');
+    this.offenceDetails.setImpositionField(0, 'Amount imposed', '200');
+    this.offenceDetails.setImpositionField(0, 'Amount paid', '100');
+    this.offenceDetails.selectCreditorType(0, 'minor');
+    this.offenceDetails.openMinorCreditorDetails(0);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Individual');
+    this.offenceMinorCreditor.selectTitle('Mr');
+    this.offenceMinorCreditor.setField('firstNames', 'FNAME');
+    this.offenceMinorCreditor.setField('lastName', 'LNAME');
+    this.offenceMinorCreditor.setField('address1', 'Addr1');
+    this.offenceMinorCreditor.setField('address2', 'Addr2');
+    this.offenceMinorCreditor.setField('address3', 'Addr3');
+    this.offenceMinorCreditor.setField('postcode', 'TE12 3ST');
+    this.offenceMinorCreditor.togglePayByBacs(true);
+    this.offenceMinorCreditor.setField('accountName', 'F LNAME');
+    this.offenceMinorCreditor.setField('sortCode', '123456');
+    this.offenceMinorCreditor.setField('accountNumber', '12345678');
+    this.offenceMinorCreditor.setField('paymentReference', 'REF');
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+
+    // Imposition 2 – Company minor creditor with BACS
+    this.offenceDetails.clickAddAnotherImposition();
+    this.offenceDetails.setImpositionField(1, 'Result code', 'Compensation (FCOMP)');
+    this.offenceDetails.setImpositionField(1, 'Amount imposed', '200');
+    this.offenceDetails.setImpositionField(1, 'Amount paid', '100');
+    this.offenceDetails.selectCreditorType(1, 'minor');
+    this.offenceDetails.openMinorCreditorDetails(1);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Company');
+    this.offenceMinorCreditor.setField('company', 'CNAME');
+    this.offenceMinorCreditor.setField('address1', 'Addr1');
+    this.offenceMinorCreditor.setField('address2', 'Addr2');
+    this.offenceMinorCreditor.setField('address3', 'Addr3');
+    this.offenceMinorCreditor.setField('postcode', 'TE12 3ST');
+    this.offenceMinorCreditor.togglePayByBacs(true);
+    this.offenceMinorCreditor.setField('accountName', 'F LNAME');
+    this.offenceMinorCreditor.setField('sortCode', '123456');
+    this.offenceMinorCreditor.setField('accountNumber', '12345678');
+    this.offenceMinorCreditor.setField('paymentReference', 'REF');
+    this.offenceMinorCreditor.save();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Selects creditor/minor creditor radio options based on label.
+   * @param label - Label describing the radio to select.
+   * @param impositionIndex - Zero-based imposition index for major/minor selection.
+   */
+  selectMinorCreditorRadioOption(label: string, impositionIndex: number): void {
+    const normalized = label.toLowerCase();
+
+    if (normalized.includes('minor creditor') || normalized.includes('major creditor')) {
+      if (impositionIndex === undefined || impositionIndex < 0) {
+        throw new Error('Imposition index is required when selecting major/minor creditor');
+      }
+      const type = normalized.includes('minor') ? 'minor' : 'major';
+      this.offenceDetails.selectCreditorType(impositionIndex, type as 'major' | 'minor');
+      return;
+    }
+
+    if (normalized.includes('individual') || normalized.includes('company')) {
+      const type = normalized.includes('individual') ? 'Individual' : 'Company';
+      this.offenceMinorCreditor.selectCreditorType(type as 'Individual' | 'Company');
+      return;
+    }
+
+    throw new Error(`Unknown radio button label: ${label}`);
+  }
+
+  /**
+   * Opens company minor creditor form, populates company, cancels, and asserts values persist.
+   * @param imposition - 1-based imposition number.
+   * @param company - Company name to populate.
+   */
+  openAndCancelCompanyMinorCreditor(imposition: number, company: string): void {
+    const index = imposition - 1;
+    log('flow', 'Opening company minor creditor and cancelling with data preserved', { imposition, company });
+    this.offenceDetails.openMinorCreditorDetails(index);
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.selectCreditorType('Company');
+    this.offenceMinorCreditor.setField('company', company);
+    this.offenceMinorCreditor.cancelAndChoose('Cancel');
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.assertCreditorTypeSelected('Company');
+    this.offenceMinorCreditor.assertFieldValue('company', company);
+  }
+
+  /**
+   * Asserts field values on the minor creditor form (including payment method toggle).
+   * @param expectations - Label/value pairs to assert.
+   */
+  assertMinorCreditorFormValues(expectations: Record<string, string>): void {
+    const entries = Object.entries(expectations);
+    if (!entries.length) {
+      throw new Error('No minor creditor fields provided for assertion');
+    }
+
+    log('assert', 'Asserting minor creditor field values', { expectations });
+
+    entries.forEach(([label, value]) => {
+      if (/payment method/i.test(label)) {
+        const shouldBeBacs = /bacs/i.test(value);
+        this.offenceMinorCreditor.assertPayByBacsState(shouldBeBacs);
+        return;
+      }
+
+      const key = resolveMinorCreditorFieldKey(label);
+      this.offenceMinorCreditor.assertFieldValue(key, value);
+    });
+  }
+
+  /**
+   * Asserts payment detail values on the minor creditor form.
+   * @param expectations - Label/value pairs to assert.
+   */
+  assertMinorCreditorPaymentValues(expectations: Record<string, string>): void {
+    const entries = Object.entries(expectations);
+    if (!entries.length) {
+      throw new Error('No payment detail fields provided for assertion');
+    }
+
+    log('assert', 'Asserting minor creditor payment detail values', { expectations });
+
+    entries.forEach(([label, value]) => {
+      if (/payment method/i.test(label)) {
+        const shouldBeBacs = /bacs/i.test(value);
+        this.offenceMinorCreditor.assertPayByBacsState(shouldBeBacs);
+        return;
+      }
+
+      const key = resolveMinorCreditorFieldKey(label);
+      this.offenceMinorCreditor.assertFieldValue(key, value);
+    });
+  }
+
+  /**
+   * Cancels the minor creditor form with a chosen dialog response.
+   * @param choice - Confirmation choice.
+   */
+  cancelMinorCreditorDetails(choice: 'Cancel' | 'Ok' | 'Stay' | 'Leave'): void {
+    log('cancel', 'Cancelling minor creditor details', { choice });
+    this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    this.offenceMinorCreditor.cancelAndChoose(choice);
+  }
+
+  /**
+   * Cancels the minor creditor removal flow for an imposition.
+   * @param imposition - 1-based imposition number.
+   */
+  cancelRemoveMinorCreditor(imposition: number): void {
+    const index = imposition - 1;
+    log('flow', 'Cancelling remove minor creditor', { imposition });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.clickMinorCreditorAction(index, 'Remove');
+    this.common.assertHeaderContains('Are you sure you want to remove this minor creditor?');
+    this.offenceDetails.cancelRemoveMinorCreditor();
+    this.offenceDetails.assertOnAddOffencePage();
+  }
+
+  /**
+   * Confirms the minor creditor removal flow for an imposition.
+   * @param imposition - 1-based imposition number.
+   */
+  confirmRemoveMinorCreditor(imposition: number): void {
+    const index = imposition - 1;
+    log('flow', 'Confirming remove minor creditor', { imposition });
+    this.offenceDetails.assertOnAddOffencePage();
+    this.offenceDetails.clickMinorCreditorAction(index, 'Remove');
+    this.common.assertHeaderContains('Are you sure you want to remove this minor creditor?');
+    this.offenceDetails.confirmRemoveMinorCreditor();
+    this.offenceDetails.assertMinorCreditorAbsent(index);
+  }
+
+  /**
+   * Cancels the remove minor creditor confirmation page.
+   */
+  cancelRemoveMinorCreditorConfirmation(): void {
+    log('navigate', 'Cancelling minor creditor removal confirmation');
+    this.offenceDetails.cancelRemoveMinorCreditor();
     this.offenceDetails.assertOnAddOffencePage();
   }
 
@@ -2057,6 +2508,24 @@ export class ManualAccountCreationFlow {
     this.offenceReview.assertOnReviewPage();
     this.common.assertHeaderContains('Offences and impositions');
     accessibilityActions().checkAccessibilityOnly();
+  }
+
+  /**
+   * Ensures the minor creditor form is open for a given imposition.
+   * @param index - Zero-based imposition index.
+   */
+  private ensureOnMinorCreditorPage(index: number): void {
+    cy.get('body').then(($body) => {
+      const onMinorCreditor = $body.find(L.minorCreditorForm.saveButton).length > 0;
+      if (onMinorCreditor) {
+        this.offenceMinorCreditor.assertOnMinorCreditorPage();
+        return;
+      }
+
+      this.offenceDetails.assertOnAddOffencePage();
+      this.offenceDetails.openMinorCreditorDetails(index);
+      this.offenceMinorCreditor.assertOnMinorCreditorPage();
+    });
   }
 
   /**
