@@ -18,7 +18,9 @@ import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { convertDataTableToNestedObject } from '../../../../support/utils/table';
 import { getDraftPayloadFileForAccountType, type DefendantType } from '../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../support/draftAccounts';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('DraftAccountApiActions');
 
 /** Path builder for a draft account resource */
 const pathForAccount = (id: number | string) => `/opal-fines-service/draft-accounts/${id}`;

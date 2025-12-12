@@ -8,7 +8,9 @@ import { AccountSearchIndividualsLocators as L } from '../../../../../shared/sel
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { ResultsActions } from '../search.results.actions';
 import { CommonActions } from '../common/common.actions';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountSearchIndividualsActions');
 
 export class AccountSearchIndividualsActions {
   private readonly results = new ResultsActions();

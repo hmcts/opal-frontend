@@ -390,4 +390,3 @@ Feature: Manual fixed penalty account creation - Create Draft Account
     And I see "Fixed Penalty" is present in column "Account type"
     And I navigate to the "Failed" tab
     And I see "Fixed Penalty" is present in column "Account type"
-

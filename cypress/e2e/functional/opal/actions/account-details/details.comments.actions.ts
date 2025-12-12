@@ -1,6 +1,8 @@
 // e2e/functional/opal/actions/account details/details.comments.actions.ts
 import { AccountCommentsAddLocators as L } from '../../../../../shared/selectors/account-details/account.comments-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountDetailsCommentsActions');
 
 export class AccountDetailsCommentsActions {
   /** Assert we're on the Comments page **/

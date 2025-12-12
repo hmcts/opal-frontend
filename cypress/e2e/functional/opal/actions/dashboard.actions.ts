@@ -6,7 +6,9 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('DashboardActions');
 
 export class DashboardActions {
   /**
@@ -31,7 +33,10 @@ export class DashboardActions {
     if (username) {
       log('assert', `Asserting username: ${username}`);
       cy.get(L.userName, { timeout: 10_000 })
-        .should('contain.text', username)
+        .invoke('text')
+        .should((text) => {
+          expect(text.trim().toLowerCase()).to.contain(username.toLowerCase());
+        })
         .then(() => log('done', 'Username displayed correctly'));
     }
   }

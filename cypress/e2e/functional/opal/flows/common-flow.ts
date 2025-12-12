@@ -9,8 +9,10 @@
  * - Logging is centralised via the shared `log` helper to keep Cypress output readable.
  */
 
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 import { CommonActions } from '../actions/common/common.actions';
+
+const log = createScopedLogger('CommonFlow');
 
 export class CommonFlow {
   private readonly common = new CommonActions();

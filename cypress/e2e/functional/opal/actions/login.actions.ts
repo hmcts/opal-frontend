@@ -7,7 +7,9 @@
  */
 
 import { LoginLocators as L } from '../../../../shared/selectors/login.locators';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('LoginActions');
 
 /**
  * Performs the full login flow for the given user.

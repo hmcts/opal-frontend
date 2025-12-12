@@ -8,7 +8,7 @@
  *
  * @remarks
  * - The steps use `loginAndLandOnDashboard()` from the `auth.flow` module.
- * - Logging is performed using `Cypress.log()` for consistent test runner output.
+ * - Logging uses the shared `log()` helper for consistent output.
  * - Supports parameterized logins for different users or roles.
  *
  * @example
@@ -19,6 +19,7 @@
 
 import { Given } from '@badeball/cypress-cucumber-preprocessor';
 import { loginAndLandOnDashboard } from '../../../e2e/functional/opal/flows/auth.flow';
+import { log } from '../../utils/log.helper';
 
 /**
  * @step Logs in using the provided email address and confirms the user lands on the dashboard.
@@ -31,12 +32,6 @@ import { loginAndLandOnDashboard } from '../../../e2e/functional/opal/flows/auth
  * - Intended to be reusable across all authenticated scenarios.
  */
 Given('I am logged in with email {string}', (email: string) => {
-  Cypress.log({
-    name: 'auth',
-    displayName: 'Login',
-    message: `Logging in as ${email}`,
-    consoleProps: () => ({ user: email }),
-  });
-
+  log('step', 'Logging in via auth flow', { email });
   loginAndLandOnDashboard(email);
 });

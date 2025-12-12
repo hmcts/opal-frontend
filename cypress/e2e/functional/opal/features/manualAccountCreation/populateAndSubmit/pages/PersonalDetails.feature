@@ -5,130 +5,135 @@ Feature: Manual account creation - Personal Details
   #Tests for conditional rendering (different defendant types) are contained in the PersonalDetailsComponent.cy.ts component tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    When I start a fine manual account for business unit "West London" with defendant type "Adult or youth only"
+    And I view the "Personal details" task
+    Then I should see the header containing text "Personal details"
 
-    When I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    And I click the "Continue" button
+  Scenario: (AC.13) Personal details persist within the session [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
+    When I complete manual personal details:
+      | title               | Mr          |
+      | first names         | FNAME       |
+      | last name           | LNAME       |
+      | address line 1      | Addr Line 1 |
+      | address line 2      | Addr Line 2 |
+      | address line 3      | Addr Line 3 |
+      | postcode            | TE1 1ST     |
+      | date of birth       | 01/01/1990  |
+      | make and model      | FORD FOCUS  |
+      | registration number | AB12 CDE    |
+    And I return to account details
+    Then the "Personal details" task status is "Provided"
+    When I view the "Personal details" task
+    Then the manual personal details fields are:
+      | title               | Mr          |
+      | first names         | FNAME       |
+      | last name           | LNAME       |
+      | address line 1      | Addr Line 1 |
+      | address line 2      | Addr Line 2 |
+      | address line 3      | Addr Line 3 |
+      | postcode            | TE1 1ST     |
+      | date of birth       | 01/01/1990  |
+      | make and model      | FORD FOCUS  |
+      | registration number | AB12 CDE    |
 
-    Then I click on the "Personal details" link
-    And I see "Personal details" on the page header
+  Scenario: (AC.13) Restarting manual account clears personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
+    When I complete manual personal details:
+      | title          | Mr          |
+      | first names    | FNAME       |
+      | last name      | LNAME       |
+      | address line 1 | Addr Line 1 |
+    And I return to account details
+    Then the "Personal details" task status is "Provided"
+    When I refresh the application
+    And I restart manual fine account for business unit "West London" with defendant type "Adult or youth only"
+    Then the "Personal details" task status is "Not provided"
+    When I view the "Personal details" task
+    Then the manual personal details fields are:
+      | title               | Not selected |
+      | first names         |              |
+      | last name           |              |
+      | address line 1      |              |
+      | address line 2      |              |
+      | address line 3      |              |
+      | postcode            |              |
+      | date of birth       |              |
+      | make and model      |              |
+      | registration number |              |
 
-  Scenario: (AC.13) Entered data persists in the session [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
-    When I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr Line 1" into the "Address line 1" field
-    And I enter "Addr Line 2" into the "Address line 2" field
-    And I enter "Addr Line 3" into the "Address line 3" field
-    And I enter "TE1 1ST" into the "Postcode" field
-    And I enter "01/01/1990" into the Date of birth field
-    And I enter "FORD FOCUS" into the "Make and model" field
-    And I enter "AB12 CDE" into the "Registration number" field
-    And I click the "Return to account details" button
+  Scenario: (AC.14) Confirming cancel clears unsaved personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
+    When I complete manual personal details:
+      | title               | Mr          |
+      | first names         | FNAME       |
+      | last name           | LNAME       |
+      | address line 1      | Addr Line 1 |
+      | address line 2      | Addr Line 2 |
+      | address line 3      | Addr Line 3 |
+      | postcode            | TE1 1ST     |
+      | date of birth       | 01/01/1990  |
+      | make and model      | FORD FOCUS  |
+      | registration number | AB12 CDE    |
+    And I cancel manual personal details choosing "Ok"
+    Then I am viewing account details
+    And the "Personal details" task status is "Not provided"
+    When I view the "Personal details" task
+    Then the manual personal details fields are:
+      | title               | Not selected |
+      | first names         |              |
+      | last name           |              |
+      | address line 1      |              |
+      | address line 2      |              |
+      | address line 3      |              |
+      | postcode            |              |
+      | date of birth       |              |
+      | make and model      |              |
+      | registration number |              |
 
-    Then I see the status of "Personal details" is "Provided"
+  Scenario: (AC.15) Confirming cancel restores last saved details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
+    When I complete manual personal details:
+      | title          | Mr          |
+      | first names    | FNAME       |
+      | last name      | LNAME       |
+      | address line 1 | Addr Line 1 |
+    And I return to account details
+    Then the "Personal details" task status is "Provided"
+    When I view the "Personal details" task
+    And I complete manual personal details:
+      | first names | FNAME EDITED |
+    And I cancel manual personal details choosing "Ok"
+    Then I am viewing account details
+    And the "Personal details" task status is "Provided"
+    When I view the "Personal details" task
+    Then the manual personal details fields are:
+      | title          | Mr          |
+      | first names    | FNAME       |
+      | last name      | LNAME       |
+      | address line 1 | Addr Line 1 |
 
-    When I click on the "Personal details" link
-    And I see "Mr" selected in the "Title" dropdown
-    And I see "FNAME" in the "First names" field
-    And I see "LNAME" in the "Last name" field
-    And I see "Addr Line 1" in the "Address line 1" field
-    And I see "Addr Line 2" in the "Address line 2" field
-    And I see "Addr Line 3" in the "Address line 3" field
-    And I see "TE1 1ST" in the "Postcode" field
-    And I see "01/01/1990" in the Date of birth field
-    And I see "FORD FOCUS" in the "Make and model" field
-    And I see "AB12 CDE" in the "Registration number" field
-
-    When I reload the page
-    Then I see "Business unit and defendant type" on the page header
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    And I click the "Continue" button
-
-    Then I see the status of "Personal details" is "Not provided"
-
-    When I click on the "Personal details" link
-    And I see there is no selected option in the "Title" dropdown
-    And I see "" in the "First names" field
-    And I see "" in the "Last name" field
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Address line 2" field
-    And I see "" in the "Address line 3" field
-    And I see "" in the "Postcode" field
-    And I see "" in the Date of birth field
-    And I see "" in the "Make and model" field
-    And I see "" in the "Registration number" field
-
-  Scenario: (AC.14, AC.15) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
-    When I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr Line 1" into the "Address line 1" field
-    And I enter "Addr Line 2" into the "Address line 2" field
-    And I enter "Addr Line 3" into the "Address line 3" field
-    And I enter "TE1 1ST" into the "Postcode" field
-    And I enter "01/01/1990" into the Date of birth field
-    And I enter "FORD FOCUS" into the "Make and model" field
-    And I enter "AB12 CDE" into the "Registration number" field
-    When I click Cancel, a window pops up and I click Ok
-
-    Then I see the status of "Personal details" is "Not provided"
-
-    When I click on the "Personal details" link
-    And I see there is no selected option in the "Title" dropdown
-    And I see "" in the "First names" field
-    And I see "" in the "Last name" field
-    And I see "" in the "Address line 1" field
-    And I see "" in the "Address line 2" field
-    And I see "" in the "Address line 3" field
-    And I see "" in the "Postcode" field
-    And I see "" in the Date of birth field
-    And I see "" in the "Make and model" field
-    And I see "" in the "Registration number" field
-
-    Then I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr Line 1" into the "Address line 1" field
-    Then I click the "Return to account details" button
-    And I see the status of "Personal details" is "Provided"
-
-    When I click on the "Personal details" link
-    And I enter "FNAME EDITED" into the "First names" field
-    And I click Cancel, a window pops up and I click Ok
-
-    When I click on the "Personal details" link
-    And I see "FNAME" in the "First names" field
-
-    And I enter "FNAME EDITED" into the "First names" field
-    And I click Cancel, a window pops up and I click Cancel
-
-    Then I see "FNAME EDITED" in the "First names" field
-
-    When I enter "FNAME" into the "First names" field
-    And I click Cancel, a window pops up and I click Ok
-
-
-    Then I see the status of "Personal details" is "Provided"
-
-    When I click on the "Personal details" link
-    And I see "FNAME" in the "First names" field
+  Scenario: (AC.15) Dismissing cancel keeps unsaved personal details on the page [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
+    When I complete manual personal details:
+      | title          | Mr          |
+      | first names    | FNAME       |
+      | last name      | LNAME       |
+      | address line 1 | Addr Line 1 |
+    And I return to account details
+    Then the "Personal details" task status is "Provided"
+    When I view the "Personal details" task
+    And I complete manual personal details:
+      | first names | FNAME EDITED |
+    And I cancel manual personal details choosing "Cancel"
+    Then I should see the header containing text "Personal details"
+    And the manual personal details fields are:
+      | first names | FNAME EDITED |
 
   Scenario: Personal Details - Axe Core
     Then I check accessibility
 
   Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
-    Then I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr Line 1" into the "Address line 1" field
-
-    When I click the "Add contact details" button
-
-    Then I see "Defendant contact details" on the page header
+    When I complete manual personal details:
+      | title          | Mr          |
+      | first names    | FNAME       |
+      | last name      | LNAME       |
+      | address line 1 | Addr Line 1 |
+    And I continue to contact details from personal details
+    Then I should see the header containing text "Defendant contact details"

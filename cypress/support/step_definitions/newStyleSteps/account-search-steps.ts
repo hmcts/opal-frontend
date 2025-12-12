@@ -13,15 +13,13 @@ import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/ac
 import { AccountSearchCompanyActions } from '../../../e2e/functional/opal/actions/search/search.companies.actions';
 import { AccountSearchMinorCreditorsActions } from '../../../e2e/functional/opal/actions/search/search.minor-creditors.actions';
 import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions/search/search.common.actions';
-import { AccountSearchNavActions } from '../../../e2e/functional/opal/actions/search/search.nav.actions';
 import { AccountSearchProblemActions } from '../../../e2e/functional/opal/actions/search/search.problem.actions';
 import { ResultsActions } from '../../../e2e/functional/opal/actions/search.results.actions';
 import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
 import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
+import { MinorCreditorType } from '../../utils/macFieldResolvers';
 
 import { log } from '../../utils/log.helper';
-
-type MinorCreditorType = 'Individual' | 'Company';
 
 // Factory pattern for isolated, stateless flow instances
 const flow = () => new AccountEnquiryFlow();
@@ -30,7 +28,6 @@ const searchIndividualActions = () => new AccountSearchIndividualsActions();
 const searchCompanyActions = () => new AccountSearchCompanyActions();
 const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions();
 const searchCommonActions = () => new AccountSearchCommonActions();
-const searchNavActions = () => AccountSearchNavActions;
 const searchProblemActions = () => new AccountSearchProblemActions();
 const commonActions = () => new CommonActions();
 const dashboardActions = () => new DashboardActions();
@@ -44,7 +41,7 @@ const resultsActions = () => new ResultsActions();
  *  Given I am on the Account Search page - Individuals form displayed by default
  */
 Given('I am on the Account Search page - Individuals form displayed by default', () => {
-  log('navigate', 'Navigating to Account Search from dashboard and verifying Individuals form by default');
+  log('step', 'Navigating to Account Search from dashboard and verifying Individuals form by default');
   // perform the real navigation (should be click-based)
   searchFlow().navigateAndVerifySearchFromDashboard();
 });
@@ -56,7 +53,7 @@ Given('I am on the Account Search page - Individuals form displayed by default',
  *  When I submit an empty individual account search
  */
 When('I submit an empty individual account search', () => {
-  log('action', 'Submitting empty individual account search');
+  log('step', 'Submitting empty individual account search');
   searchIndividualActions().submitEmptySearch();
 });
 
@@ -67,7 +64,7 @@ When('I submit an empty individual account search', () => {
  *  When I submit an empty company account search
  */
 When('I submit an empty company account search', () => {
-  log('action', 'Submitting empty company account search');
+  log('step', 'Submitting empty company account search');
   searchCompanyActions().submitEmptySearch();
 });
 
@@ -78,7 +75,7 @@ When('I submit an empty company account search', () => {
  *  When I submit an empty Minor Creditors account search
  */
 When('I submit an empty Minor Creditors account search', () => {
-  log('action', 'Submitting empty Minor Creditor account search');
+  log('step', 'Submitting empty Minor Creditor account search');
   searchMinorCreditorsActions().submitEmptySearch();
 });
 
@@ -89,7 +86,7 @@ When('I submit an empty Minor Creditors account search', () => {
  *  Then the Individuals form shows default empty fields and options
  */
 Then('the Individuals form shows default empty fields and options', () => {
-  log('assert', 'Verifying Individuals form shows default empty fields and options');
+  log('step', 'Verifying Individuals form shows default empty fields and options');
   searchFlow().assertIndividualsDefaults();
 });
 
@@ -100,7 +97,7 @@ Then('the Individuals form shows default empty fields and options', () => {
  *  When I view the Companies search form
  */
 When('I view the Companies search form', () => {
-  log('navigate', 'Switching to Companies form');
+  log('step', 'Switching to Companies form');
   searchFlow().viewCompaniesForm();
 });
 
@@ -111,7 +108,7 @@ When('I view the Companies search form', () => {
  *  When I view the Individuals search form
  */
 When('I view the Individuals search form', () => {
-  log('navigate', 'Switching to Individuals form');
+  log('step', 'Switching to Individuals form');
   searchFlow().viewIndividualsForm();
 });
 
@@ -123,11 +120,12 @@ When('I view the Individuals search form', () => {
  *     | account number | 12345678 |
  */
 When('I view the Individuals search form and enter the following:', function (table: DataTable) {
-  log('navigate', 'Switching to Individuals form');
+  log('step', 'Switching to Individuals form');
   searchFlow().enterIndividualsFormWithoutSubmit(table);
 });
 
 When('I navigate the Individuals search form and enter the following:', function (table: DataTable) {
+  log('step', 'Navigating and entering Individuals form without submit');
   searchFlow().navigateAndEnterIndividualsFormWithoutSubmit(table);
 });
 
@@ -138,7 +136,7 @@ When('I navigate the Individuals search form and enter the following:', function
  *  When I view the Minor Creditors search form
  */
 When('I view the Minor Creditors search form', () => {
-  log('navigate', 'Switching to the Minor Creditors search form');
+  log('step', 'Switching to the Minor Creditors search form');
   searchFlow().viewMinorCreditorsForm();
 });
 
@@ -149,7 +147,7 @@ When('I view the Minor Creditors search form', () => {
  *  When I view the Major Creditors search form
  */
 When('I view the Major Creditors search form', () => {
-  log('navigate', 'Switching to the Major Creditors search form');
+  log('step', 'Switching to the Major Creditors search form');
   searchFlow().viewMajorCreditorsForm();
 });
 
@@ -160,7 +158,7 @@ When('I view the Major Creditors search form', () => {
  *  Then the Companies form shows default empty fields and options
  */
 Then('the Companies form shows default empty fields and options', () => {
-  log('assert', 'Verifying Companies form defaults');
+  log('step', 'Verifying Companies form defaults');
   searchFlow().assertCompaniesDefaults();
 });
 
@@ -171,7 +169,7 @@ Then('the Companies form shows default empty fields and options', () => {
  *  When I view the Minor creditors search form
  */
 When('I view the Minor creditors search form', () => {
-  log('navigate', 'Switching to Minor creditors form');
+  log('step', 'Switching to Minor creditors form');
   searchFlow().viewMinorCreditorsForm();
 });
 
@@ -183,7 +181,7 @@ When('I view the Minor creditors search form', () => {
  *  When I choose minor creditor type "Company"
  */
 When('I choose minor creditor type {string}', (type: MinorCreditorType) => {
-  log('action', `Choosing minor creditor type: ${type}`);
+  log('step', `Choosing minor creditor type: ${type}`);
   searchMinorCreditorsActions().chooseType(type);
 });
 
@@ -195,7 +193,7 @@ When('I choose minor creditor type {string}', (type: MinorCreditorType) => {
  *  When I switch minor creditor type to "Company"
  */
 When('I switch minor creditor type to {string}', (type: MinorCreditorType) => {
-  log('action', `Switching minor creditor type to: ${type}`);
+  log('step', `Switching minor creditor type to: ${type}`);
   searchMinorCreditorsActions().chooseType(type);
 });
 
@@ -206,26 +204,9 @@ When('I switch minor creditor type to {string}', (type: MinorCreditorType) => {
  *  Then the search remains on the Minor creditors form - no navigation
  */
 Then('the search remains on the Minor creditors form - no navigation', () => {
-  log('assert', 'Verifying Minor creditors form remains active');
+  log('step', 'Verifying Minor creditors form remains active');
   searchMinorCreditorsActions().assertOnSearchPage();
 });
-
-/**
- * @step Verifies a validation message for a Minor Creditor Individual or Company is visible.
- * @param expectedText The text expected to be shown (use quotes in feature files).
- * @param entity "individual" or "company"
- * @details Delegates to `AccountSearchMinorCreditorsActions.assertMinorValidationMessage()`.
- * @example
- *  Then I see "Enter minor creditor first name, last name, address or postcode" validation message for a minor creditor individual
- *  Then I see "Enter minor creditor company name or address" validation message for a minor creditor company
- */
-Then(
-  'I see {string} validation message for a minor creditor {word}',
-  (expectedText: string, entity: 'individual' | 'company') => {
-    log('assert', `Verifying minor creditor ${entity} validation message: "${expectedText}"`);
-    searchCommonActions().assertValidationMessageContains(expectedText);
-  },
-);
 
 /**
  * @step Prefills the Individuals form with a sample set of inputs (for stateful tests).
@@ -234,7 +215,7 @@ Then(
  *  When I prepare an Individuals search - sample details provided
  */
 When('I prepare an Individuals search - sample details provided', () => {
-  log('prepare', 'Preparing Individuals search input');
+  log('step', 'Preparing Individuals search input');
   searchIndividualActions().prepareIndividualsSample();
 });
 
@@ -245,7 +226,7 @@ When('I prepare an Individuals search - sample details provided', () => {
  *  When I switch away and back to the Individuals form
  */
 When('I switch away and back to the Individuals form', () => {
-  log('navigate', 'Switching away and back to Individuals form');
+  log('step', 'Switching away and back to Individuals form');
   searchFlow().switchAwayAndBackToIndividuals();
 });
 
@@ -256,7 +237,7 @@ When('I switch away and back to the Individuals form', () => {
  *  Then the Individuals form is cleared to defaults
  */
 Then('the Individuals form is cleared to defaults', () => {
-  log('assert', 'Verifying Individuals form cleared');
+  log('step', 'Verifying Individuals form cleared');
   searchIndividualActions().assertIndividualsCleared();
 });
 
@@ -267,7 +248,7 @@ Then('the Individuals form is cleared to defaults', () => {
  *  When I prepare a Companies search - sample details provided
  */
 When('I prepare a Companies search - sample details provided', () => {
-  log('prepare', 'Preparing Companies search input');
+  log('step', 'Preparing Companies search input');
   searchFlow().prepareCompaniesSample();
 });
 
@@ -278,7 +259,7 @@ When('I prepare a Companies search - sample details provided', () => {
  *  When I switch away and back to the Companies form
  */
 When('I switch away and back to the Companies form', () => {
-  log('navigate', 'Switching away and back to Companies form');
+  log('step', 'Switching away and back to Companies form');
   searchFlow().switchAwayAndBackToCompanies();
 });
 
@@ -289,7 +270,7 @@ When('I switch away and back to the Companies form', () => {
  *  Then the Companies form is cleared to defaults
  */
 Then('the Companies form is cleared to defaults', () => {
-  log('assert', 'Verifying Companies form cleared');
+  log('step', 'Verifying Companies form cleared');
   searchCompanyActions().assertCompaniesCleared();
 });
 
@@ -301,7 +282,7 @@ Then('the Companies form is cleared to defaults', () => {
  *  When I prepare a Minor creditors search for type "Individual" - sample details provided
  */
 When('I prepare a Minor creditors search for type {string} - sample details provided', (type: MinorCreditorType) => {
-  log('prepare', `Preparing Minor creditors search input for type: ${type}`);
+  log('step', `Preparing Minor creditors search input for type: ${type}`);
   searchFlow().prepareMinorCreditorsSample(type);
 });
 
@@ -312,7 +293,7 @@ When('I prepare a Minor creditors search for type {string} - sample details prov
  *  When I switch away and back to the Minor creditors form
  */
 When('I switch away and back to the Minor creditors form', () => {
-  log('navigate', 'Switching away and back to Minor creditors form');
+  log('step', 'Switching away and back to Minor creditors form');
   searchFlow().switchAwayAndBackToMinorCreditors();
 });
 
@@ -323,19 +304,8 @@ When('I switch away and back to the Minor creditors form', () => {
  *  Then the Minor creditors form is cleared to defaults
  */
 Then('the Minor creditors form is cleared to defaults', () => {
-  log('assert', 'Verifying Minor creditors form cleared');
+  log('step', 'Verifying Minor creditors form cleared');
   searchFlow().assertMinorCreditorsCleared();
-});
-
-/**
- * @step Submits the search request (whatever form is active).
- * @details Delegates to `AccountSearchCommonActions.submitSearch()`.
- * @example
- *  When I attempt the search
- */
-When('I attempt the search', () => {
-  log('action', 'Submitting search with multiple section data');
-  searchCommonActions().clickSearchButton();
 });
 
 /**
@@ -347,6 +317,7 @@ When('I attempt the search', () => {
  *    | account number | 12345678 |
  */
 When('I search using the following inputs:', function (table: DataTable) {
+  log('step', 'Searching using provided inputs table');
   searchFlow().searchUsingInputs(table);
 });
 
@@ -358,7 +329,7 @@ When('I search using the following inputs:', function (table: DataTable) {
  *  Then I see an page containing "There is a problem"
  */
 Then('I see an page containing {string}', (headingText: string) => {
-  log('assert', `Checking problem page heading equals "${headingText}"`);
+  log('step', `Checking problem page heading equals "${headingText}"`);
   searchProblemActions().assertProblemPageDisplayed();
 });
 
@@ -370,7 +341,7 @@ Then('I see an page containing {string}', (headingText: string) => {
  *  Then I see the validation message "Reference data and account information cannot be entered together when searching for an account. Search using either:"
  */
 Then('I see the validation message {string}', (expectedMessage: string) => {
-  log('assert', `Checking problem description contains: "${expectedMessage}"`);
+  log('step', `Checking problem description contains: "${expectedMessage}"`);
   searchProblemActions().assertProblemDescription(expectedMessage);
 });
 
@@ -382,7 +353,7 @@ Then('I see the validation message {string}', (expectedMessage: string) => {
  *  Then I see the listed options "Reference data only, Account information only"
  */
 Then('I see the listed options {string}', (expectedCSV: string) => {
-  log('assert', `Checking problem bullet list contains: ${expectedCSV}`);
+  log('step', `Checking problem bullet list contains: ${expectedCSV}`);
   searchProblemActions().assertProblemBulletedOptions(expectedCSV);
 });
 
@@ -393,7 +364,7 @@ Then('I see the listed options {string}', (expectedCSV: string) => {
  *  When I go back from the problem page
  */
 When('I go back from the problem page', () => {
-  log('action', 'Go back from problem page');
+  log('step', 'Go back from problem page');
   searchProblemActions().clickBackLink();
 });
 
@@ -416,6 +387,7 @@ When('I go back from the problem page', () => {
 Then(
   'I see the {string} page for individuals with the following details:',
   (expectedHeader: string, table: DataTable) => {
+    log('step', `Verify individuals page "${expectedHeader}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -426,7 +398,6 @@ Then(
       ] = String(r[1] ?? '').trim();
     }
 
-    log('assert', `Verify individuals page "${expectedHeader}" with map: ${JSON.stringify(map)}`);
     searchFlow().verifyPageForIndividuals(expectedHeader, map);
   },
 );
@@ -450,6 +421,7 @@ Then(
 Then(
   'I see the {string} page for companies with the following details:',
   (expectedHeader: string, table: DataTable) => {
+    log('step', `Verify companies page "${expectedHeader}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -460,7 +432,6 @@ Then(
       ] = String(r[1] ?? '').trim();
     }
 
-    log('assert', `Verify companies page "${expectedHeader}" with map: ${JSON.stringify(map)}`);
     searchFlow().verifyPageForCompanies(map);
   },
 );
@@ -486,6 +457,7 @@ Then(
 Then(
   'I see the {string} page for minor creditors - individual with the following details:',
   (expectedHeader: string, table: DataTable) => {
+    log('step', `Verify minor (individual) page "${expectedHeader}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -496,7 +468,6 @@ Then(
       ] = String(r[1] ?? '').trim();
     }
 
-    log('assert', `Verify minor (individual) page "${expectedHeader}" with map: ${JSON.stringify(map)}`);
     searchFlow().verifyPageForMinorIndividual(expectedHeader, map);
   },
 );
@@ -522,6 +493,7 @@ Then(
 Then(
   'I see the {string} page for minor creditors - company with the following details:',
   (expectedHeader: string, table: DataTable) => {
+    log('step', `Verify minor (company) page "${expectedHeader}"`);
     const rows = table.rows();
     const map: Record<string, string> = {};
     for (const r of rows) {
@@ -532,30 +504,9 @@ Then(
       ] = String(r[1] ?? '').trim();
     }
 
-    log('assert', `Verify minor (company) page "${expectedHeader}" with map: ${JSON.stringify(map)}`);
     searchFlow().verifyPageForMinorCompany(expectedHeader, map);
   },
 );
-
-/**
- * @step Assert we remain on the Search Individuals form (no navigation occurred).
- * @details Verifies URL still targets the Search Accounts search path and that the Individuals form root is visible.
- * @example Then the search remains on the Search Individuals form - no navigation
- */
-Then('the search remains on the Search Individuals form - no navigation', () => {
-  log('assert', 'Verifying search remains on the Search Individuals form (no navigation)');
-  searchIndividualActions().assertRemainsOnSearchFormNoNavigation();
-});
-
-/*
- * @step Assert we remain on the Search Companies form (no navigation occurred).
- * @details Verifies URL still targets the Search Accounts search path and that the Companies form root is visible.
- * @example Then the search remains on the Search Companies form - no navigation
- */
-Then('the search remains on the Search Companies form - no navigation', () => {
-  log('assert', 'Verifying search remains on the Search Companies form (no navigation)');
-  searchCompanyActions().assertRemainsOnSearchFormNoNavigation();
-});
 
 /**
  * @step Verifies a validation message is visible for a given search type (company/individual/minor/etc).
@@ -566,7 +517,20 @@ Then('the search remains on the Search Companies form - no navigation', () => {
  *   And I see "Enter minor creditor first name, last name, address or postcode" validation message for an individual
  */
 Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedText: string, searchType: string) => {
-  log('assert', `Verifying validation message for ${searchType}: "${expectedText}"`);
+  log('step', `Verifying validation message for ${searchType}: "${expectedText}"`);
+  searchCommonActions().assertValidationMessageContains(expectedText);
+});
+
+/**
+ * @step Verifies a validation message for Minor Creditor searches (explicit wording).
+ *
+ * Alias to handle feature wording like:
+ *   And I see "Enter minor creditor company name or address" validation message for a minor creditor "company"
+ *
+ * Delegates to the generic validation assertion.
+ */
+Then('I see {string} validation message for a minor creditor {string}', (expectedText: string, searchType: string) => {
+  log('step', `Verifying minor creditor validation for ${searchType}: "${expectedText}"`);
   searchCommonActions().assertValidationMessageContains(expectedText);
 });
 
@@ -589,7 +553,7 @@ When('I select back with confirmation and verify I navigate to the Dashboard', (
   commonActions().navigateBrowserBackWithChoice('ok');
 
   // Assert we reached Dashboard
-  log('assert', 'Verify Dashboard is displayed');
+  log('step', 'Verify Dashboard is displayed');
   dashboardActions().assertDashboard();
 });
 
@@ -609,6 +573,7 @@ When('I select back with confirmation and verify I navigate to the Dashboard', (
  */
 
 Then('I see the Search results page', () => {
+  log('step', 'Asserting Search results page is displayed');
   resultsActions().assertPageDisplayed();
 });
 
@@ -629,6 +594,7 @@ Then('I see the Search results page', () => {
  */
 
 When('I go back from the results page', () => {
+  log('step', 'Returning to Search page from results');
   resultsActions().useBackLinkToReturnToSearch();
 });
 
@@ -655,6 +621,7 @@ When('I go back from the results page', () => {
  */
 
 When('I intercept the {string} account search API', (accountType: string) => {
+  log('step', 'Intercepting account search API', { accountType });
   searchCommonActions().interceptAccountSearch(accountType);
 });
 
@@ -690,6 +657,7 @@ When('I intercept the {string} account search API', (accountType: string) => {
 Then(
   'the intercepted {string} account search API call will contain the following parameters:',
   (accountType: string, table: DataTable) => {
+    log('step', 'Asserting intercepted account search API payload', { accountType });
     searchCommonActions().interceptedSearchAccountAPIContains(accountType, table);
   },
 );
@@ -717,6 +685,7 @@ Then(
  *     | Ref | PCRAUTO008 |
  */
 Then('I see the Individuals search results:', (table: DataTable) => {
+  log('step', 'Asserting Individuals search results');
   searchFlow().assertIndividualsResultsForReference(table);
 });
 
@@ -743,27 +712,8 @@ Then('I see the Individuals search results:', (table: DataTable) => {
  *     | Ref | PCRAUTO008 |
  */
 When('I see the Companies search results:', (table: DataTable) => {
+  log('step', 'Asserting Companies search results');
   searchFlow().assertCompaniesResultsAlreadyOnCompanies(table);
-});
-
-/**
- * @step I see the Companies search results after switching tab:
- * @description
- * Verifies Companies search results after the user has switched to the
- * Companies tab from another tab (e.g. Individuals), using:
- *
- *   - AccountSearchFlow.assertCompaniesResultsWithTabSwitch()
- *
- * The DataTable must be a two-column table where each row is:
- *   | field | value |
- *
- * Example:
- *   Then I see the Companies search results after switching tab:
- *     | company name      | ACME LTD |
- *     | company reference | C123456  |
- */
-Then('I see the Companies search results after switching tab:', (table: DataTable) => {
-  searchFlow().assertCompaniesResultsWithTabSwitch(table);
 });
 
 /**
@@ -783,6 +733,7 @@ Then('I see the Companies search results after switching tab:', (table: DataTabl
  *     | company name | LEGACY CO   |
  */
 Then('I see the Companies search results exclude:', (table: DataTable) => {
+  log('step', 'Asserting Companies search results exclusion');
   searchFlow().assertCompaniesResultsDoNotContain(table);
 });
 
@@ -805,6 +756,7 @@ Then('I see the Companies search results exclude:', (table: DataTable) => {
  *     | reference or case number | PCRAUTO008 |
  */
 When('I return to the Companies search page from the results it is displayed with:', (table: DataTable) => {
+  log('step', 'Returning to Companies search page from results and asserting values');
   searchFlow().returnToCompaniesSearchFromResults(table);
 });
 
@@ -820,6 +772,7 @@ When('I return to the Companies search page from the results it is displayed wit
  *   Then I see there are no matching results and I check my search
  */
 Then('I see there are no matching results and I check my search', () => {
+  log('step', 'Asserting no matching results and returning to search');
   searchFlow().verifyNoResultsAndClickCheckYourSearch();
 });
 
@@ -843,5 +796,6 @@ Then('I see there are no matching results and I check my search', () => {
  *   And I return to the dashboard using the HMCTS link
  */
 When('I return to the dashboard using the HMCTS link', () => {
+  log('step', 'Returning to dashboard via HMCTS link');
   searchFlow().returnToDashboardViaHmctsLink();
 });

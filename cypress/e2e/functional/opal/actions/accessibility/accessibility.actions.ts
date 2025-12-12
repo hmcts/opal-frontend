@@ -1,6 +1,8 @@
 // File: cypress/e2e/functional/opal/actions/accessibility/accessibility.actions.ts
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccessibilityActions');
 
 export class AccessibilityActions {
   /**

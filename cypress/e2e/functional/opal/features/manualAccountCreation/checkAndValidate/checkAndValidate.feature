@@ -957,5 +957,3 @@ Feature: Navigate and edit sections from task list
 
     # Verify company account details are displayed
     And I see "TestFixedPenaltyCompany" on the page header
-
-

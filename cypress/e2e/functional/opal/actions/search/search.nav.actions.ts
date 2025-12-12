@@ -13,8 +13,10 @@
  *  - Verifies activation by checking the "selected" class
  */
 
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { AccountSearchNavLocators as Nav } from '../../../../../shared/selectors/account-search/account.search.nav.locators';
+
+const log = createScopedLogger('AccountSearchNavActions');
 
 export class AccountSearchNavActions {
   /**
