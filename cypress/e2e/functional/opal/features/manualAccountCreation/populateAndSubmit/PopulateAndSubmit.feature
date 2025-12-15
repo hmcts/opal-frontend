@@ -194,7 +194,6 @@ Feature: Manual account creation - Create Draft Account
     When I submit the manual account for review
     Then I see "You've submitted this account for review" text on the page
 
-
   @PO-1449 @PO-1638
   Scenario: Capitalisation is applied for parent or guardian, defendant and employer details
     When I start a fine manual account for business unit "West London" with defendant type "Adult or youth with parent or guardian to pay"
