@@ -153,3 +153,11 @@ Then('I see the following text {string}', (text: string) => {
   log('assert', 'Checking text on page', { text });
   cy.contains(text).should('exist');
 });
+
+/**
+ * @step Assert arbitrary text content exists on the button
+ * @param text - Text expected to be visible in the button
+ */
+Then('I should not see the button with text {string}', (buttonText: string) => {
+  cy.contains('button', buttonText).should('not.exist');
+});
