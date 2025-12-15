@@ -379,7 +379,7 @@ Feature: Navigate and edit sections from task list
       | Address                   | Addr1  TE1 1ST          |
       | Date of birth             | 01 January 1990 (Adult) |
       | Vehicle make and model    | FORD FOCUS              |
-      | National Insurance number | QQ123456C               |
+      | National Insurance number | QQ 12 34 56 C           |
       | Registration number       | AB12 CDE                |
 
     Then I see the following in the "Contact details" table:
@@ -586,14 +586,14 @@ Feature: Navigate and edit sections from task list
       | Last name                 | LNAME                   |
       | Address                   | Addr1  RG12 8EU         |
       | Date of birth             | 01 January 2010 (Youth) |
-      | National Insurance number | AB122398B               |
+      | National Insurance number | AB 12 23 98 B           |
 
     Then I see the following in the "Parent or guardian details" table:
       | Forenames                 | parent fname                  |
       | Surname                   | PARENT LNAME                  |
       | Aliases                   | alias fname ALIAS LNAME       |
       | Date of birth             | 01 January 1980               |
-      | National Insurance number | QW123456C                     |
+      | National Insurance number | QW 12 34 56 C                 |
       | Address                   | Addr1  Addr2  Addr3  AB12 3CD |
       | Vehicle make and model    | Ford Focus                    |
       | Registration number       | AB12 CDE                      |
@@ -922,3 +922,38 @@ Feature: Navigate and edit sections from task list
       | —               |
       | Business Unit A |
 
+  @PO-1804
+  Scenario: AC1 - As a user I can view Fixed Penalty Details when selecting defendant name link under In Review tab
+
+    # Create a Fixed Penalty account for testing
+    Given I create a "fixedPenalty" draft account with the following details:
+      | account.defendant.forenames | FakeFixed |
+      | account.defendant.surname   | FAKELAST  |
+
+    # Check accounts in the Draft tab (default)
+    Then I see "Create accounts" on the page header
+
+    # Click on the defendant name link (format should be "LastName, FirstName")
+    When I click on the "FAKELAST, FakeFixed" link
+
+    # See what account details page we land on
+    Then I see "Mr FakeFixed FAKELAST" on the page header
+
+
+
+  @PO-1804
+  Scenario: AC1 - As a user I can view Fixed Penalty Details when selecting company defendant name link under In Review tab
+
+    # Create a Fixed Penalty company account for testing
+    Given I create a "fixedPenaltyCompany" draft account with the following details:
+      | account.defendant.company_name | TestFixedPenaltyCompany |
+
+    # Navigate to the In Review tab
+    Then I see "Create accounts" on the page header
+    #When I click on the "In Review" link
+
+    # Click on the company name link
+    Then I click on the "TestFixedPenaltyCompany" link
+
+    # Verify company account details are displayed
+    And I see "TestFixedPenaltyCompany" on the page header

@@ -1,6 +1,35 @@
 /**
- * Locators for the login page elements.
+ * @file login.locators.ts
+ * @description
+ * Selector map for the **Login Page** and related global header elements.
+ * Provides resilient locators used by login actions and post-login validation.
+ *
+ * @remarks
+ * - Prefer `data-testid` attributes for stability.
+ * - Fallback CSS selectors are included for legacy markup support.
+ * - Also includes top-navigation elements required for login verification.
+ *
+ * @example
+ *   cy.get(LoginLocators.usernameInput).type('qa.user@example.com');
+ *   cy.get(LoginLocators.submitBtn).click();
+ *   cy.get(LoginLocators.signOutLink).should('exist');
  */
-export const usernameInput = '[data-testid="login-username"], input[type="text"]';
-export const submitBtn = '[data-testid="login-submit"], #submitForm';
-export const errorMessage = '[data-testid="login-error-message"]';
+export const LoginLocators = {
+  /** Username input field (supports both test ID and text input fallback). */
+  usernameInput: '[data-testid="login-username"], input[type="text"]',
+
+  /** Login/Submit button (supports both test ID and legacy form ID). */
+  submitBtn: '[data-testid="login-submit"], #submitForm',
+
+  /** Error message container shown after invalid login attempts. */
+  errorMessage: '[data-testid="login-error-message"]',
+
+  /** “Sign out” link in the GOV.UK/MOJ global header. */
+  signOutLink: 'nav[aria-label="Account navigation"] a.moj-header__navigation-link',
+
+  /** Organisation (HMCTS) link in the header. */
+  organisationLink: 'a.moj-header__link--organisation-name',
+
+  /** Service name (Opal) link in the header. */
+  serviceLink: 'a.moj-header__link--service-name',
+};

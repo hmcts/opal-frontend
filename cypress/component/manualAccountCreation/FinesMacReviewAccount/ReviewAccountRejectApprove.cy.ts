@@ -22,7 +22,8 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { DRAFT_SESSION_USER_STATE_MOCK } from '../../../../cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/check-and-validate-session-mock';
 import { getToday } from 'cypress/support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { FINES_MAC_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/constants/fines-mac-account-types';
+import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 
 describe('ReviewAccountRejectedApproveComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
@@ -48,9 +49,12 @@ describe('ReviewAccountRejectedApproveComponent', () => {
           useFactory: () => {
             let store = new GlobalStore();
             store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
-            store.setError({
+            store.setBannerError({
+              ...GLOBAL_ERROR_STATE,
               error: false,
               message: '',
+              title: null,
+              operationId: null,
             });
             return store;
           },
@@ -175,9 +179,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Adult or youth only');
 
     cy.get(DOM_ELEMENTS.title).should('contain', 'Title').should('contain', 'Mr');
@@ -187,7 +189,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
@@ -295,9 +297,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'pgToPay';
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData)
       .should('contain', 'Defendant type')
       .should('contain', 'Adult or youth with parent or guardian to pay');
@@ -306,7 +306,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.PGsurname).should('contain', 'test');
     cy.get(DOM_ELEMENTS.PGAliases).should('contain', 'test test');
     cy.get(DOM_ELEMENTS.PGdob).should('contain', '01 February 1990');
-    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB123456C');
+    cy.get(DOM_ELEMENTS.PGnationalInsuranceNumber).should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.PGaddress)
       .should('contain', 'Address')
       .should('contain', 'test address line 1')
@@ -324,7 +324,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.dob).should('contain', 'Date of birth').should('contain', '01 January 2000 (Adult)');
     cy.get(DOM_ELEMENTS.nationalInsuranceNumber)
       .should('contain', 'National Insurance number')
-      .should('contain', 'AB123456C');
+      .should('contain', 'AB 12 34 56 C');
     cy.get(DOM_ELEMENTS.address)
       .should('contain', 'Address')
       .should('contain', '123 Fake Street')
@@ -411,9 +411,7 @@ describe('ReviewAccountRejectedApproveComponent', () => {
     cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
     cy.get(DOM_ELEMENTS.businessUnitData).should('contain', 'Business unit');
-    cy.get(DOM_ELEMENTS.accountTypeData)
-      .should('contain', 'Account type')
-      .should('contain', FINES_MAC_ACCOUNT_TYPES.Fine);
+    cy.get(DOM_ELEMENTS.accountTypeData).should('contain', 'Account type').should('contain', FINES_ACCOUNT_TYPES.Fine);
     cy.get(DOM_ELEMENTS.defendantTypeData).should('contain', 'Defendant type').should('contain', 'Company');
 
     cy.get(DOM_ELEMENTS.companyName).should('contain', 'Company name').should('contain', 'test company');

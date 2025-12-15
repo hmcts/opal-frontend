@@ -53,6 +53,7 @@ describe('FinesAccountStore', () => {
     expect(snapshot).toEqual({
       account_number: payload.account_number,
       account_id: payload.account_id,
+      pg_party_id: payload.pg_party_id,
       party_id: payload.party_id,
       party_type: payload.party_type,
       party_name: payload.party_name,
@@ -74,6 +75,7 @@ describe('FinesAccountStore', () => {
     expect(current).toEqual({
       account_number: initialState.account_number,
       account_id: initialState.account_id,
+      pg_party_id: initialState.pg_party_id,
       party_id: initialState.party_id,
       party_type: initialState.party_type,
       party_name: initialState.party_name,
@@ -114,5 +116,17 @@ describe('FinesAccountStore', () => {
     expect(store.successMessage()).toBe('Success');
     store.clearSuccessMessage();
     expect(store.successMessage()).toBe(null);
+  });
+
+  it('should set hasVersionMismatch to true if versions do not match', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.compareVersion('different-version');
+    expect(store.hasVersionMismatch()).toBeTrue();
+  });
+
+  it('should not set hasVersionMismatch to true if versions match', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.compareVersion(MOCK_FINES_ACCOUNT_STATE.base_version);
+    expect(store.hasVersionMismatch()).toBeFalse();
   });
 });

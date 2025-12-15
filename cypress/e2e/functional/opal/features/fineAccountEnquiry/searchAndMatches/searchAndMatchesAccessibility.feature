@@ -1,42 +1,37 @@
 Feature: Search and Matches Accessibility
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
-    When I navigate to Search For An Account
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    And I am on the Account Search page - Individuals form displayed by default
 
   Scenario: Check Search and Matches Accessibility with Axe-Core
     ## Check Accessibility on Individuals Tab
-    When I click on the "Individuals" link
-
-    Then I enter "*" into the "Last name" field
-    Then I enter "*" into the "First names" field
-    Then I enter "*" into the Date of birth field
-    Then I enter "*" into the "National Insurance number" field
-    Then I enter "*" into the "Address line 1" field
-    Then I enter "*" into the "Postcode" field
-
-    Then I click the "Search" button
-
-
-    Then I check accessibility
+    When I search using the following inputs:
+      | individual last name      | * |
+      | first names               | * |
+      | Date of birth             | * |
+      | National Insurance number | * |
+      | Address line 1            | * |
+      | Postcode                  | * |
+    Then I check the page for accessibility
 
     ## Check Accessibility on Companies Tab
-    When I click on the "Companies" link
-    Then I check accessibility
+    When I view the Companies search form
+    Then I check the page for accessibility
 
     ## Check Accessibility on Minor Creditors Tab
-    When I click on the "Minor creditors" link
-    Then I check accessibility
+    And I view the Minor Creditors search form
+    Then I check the page for accessibility
 
-    ## Check Accessibility on Major Creditors Tab
-    When I click on the "Major creditors" link
-    Then I check accessibility
+    # Check Accessibility on Major Creditors Tab
+    And I view the Major Creditors search form
+    Then I check the page for accessibility
 
-    ## Check Accessibility on Search Results
-    When I click on the "Individuals" link
-    Then I enter "Smith" into the "Last name" field
-    Then I enter "John" into the "First names" field
-
-    When I click the "Search" button
-    Then I check accessibility
+    # Check Accessibility on Search Results
+    # this is verifying accessibility on no results returned
+    And I view the Individuals search form
+    When I search using the following inputs:
+      | individual last name | Smith |
+      | first names          | John  |
+    Then I see the Search results page
+    And I check the page for accessibility

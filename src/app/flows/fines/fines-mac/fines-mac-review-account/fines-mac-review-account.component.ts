@@ -40,8 +40,8 @@ import { IFinesMacAccountTimelineData } from '../services/fines-mac-payload/inte
 import { FinesMacReviewAccountFailedBannerComponent } from './fines-mac-review-account-failed-banner/fines-mac-review-account-failed-banner.component';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
-import { FINES_MAC_ACCOUNT_TYPES } from '../constants/fines-mac-account-types';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -99,7 +99,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   public timelineData!: IFinesMacAccountTimelineData[];
   public accountType = this.finesMacStore.getAccountType();
   public accountStatus!: string;
-  public accountTypesKeys = FINES_MAC_ACCOUNT_TYPES;
+  public accountTypesKeys = FINES_ACCOUNT_TYPES;
   public defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
   public showTimeline = false;
 
@@ -397,11 +397,6 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    if (this.finesMacStore.getAccountType() === this.accountTypesKeys['Fixed Penalty']) {
-      this.routerNavigate(this.finesMacRoutes.children.fixedPenaltyDetails);
-      return;
-    }
-
     if (this.isReadOnly) {
       this.handleReadOnlyNavigation();
       return;
@@ -456,7 +451,7 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStore.resetError();
+    this.globalStore.resetBannerError();
   }
 
   public ngOnInit(): void {

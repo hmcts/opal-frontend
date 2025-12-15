@@ -2,6 +2,7 @@ import { mount } from 'cypress/angular';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
+import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
 import {
@@ -9,34 +10,35 @@ import {
   getAliasForenamesInput,
   getAliasSurnameInput,
   getFieldErrorFor,
-} from './constants/viewAndAmendDefendant_elements';
+} from '../../../shared/selectors/accountEnquiriesViewDetails.locators';
 import {
-  MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA,
-  VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK,
-  VIEW_AND_AMEND_DEFENDANT_COMPANY_MOCK,
-  VIEW_AND_AMEND_DEFENDANT_COMPANY_FULL_MOCK,
-} from './mocks/viewAndAmendDefendant.mock';
+  coreRequiredMessages,
+  expectedErrors,
+  allExpectedErrors,
+} from '../../../shared/errorMessages/accountEnquiriesViewDetails.errorMessages';
+import {
+  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK,
+  VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK,
+} from './mocks/viewAndAmendDefendant-api.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
-import { IFinesAccPartyAddAmendConvertForm } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-form.interface';
-import { coreRequiredMessages } from './constants/viewAndAmendDefendant_elements';
-import { expectedErrors } from './constants/viewAndAmendDefendant_elements';
-import { allExpectedErrors } from './constants/viewAndAmendDefendant_elements';
+import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
 
 describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () => {
-  let fullMock: IFinesAccPartyAddAmendConvertForm;
-  let minimalMock: IFinesAccPartyAddAmendConvertForm;
+  let fullMock: IOpalFinesAccountDefendantAccountParty;
+  let minimalMock: IOpalFinesAccountDefendantAccountParty;
 
   beforeEach(() => {
-    fullMock = structuredClone(MOCK_FINES_ACC_DEBTOR_ADD_AMEND_FORM_DATA);
-    minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_MINIMAL_MOCK);
+    fullMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_FULL_MOCK);
+    minimalMock = structuredClone(VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK);
   });
   const setupComponent = (
     partyType: string,
-    formData: IFinesAccPartyAddAmendConvertForm,
+    formData: IOpalFinesAccountDefendantAccountParty,
     welshSpeaking: string = 'N',
   ) => {
     mount(FinesAccPartyAddAmendConvert, {
       providers: [
+        provideHttpClient(),
         DateService,
         {
           provide: FinesAccountStore,
@@ -56,7 +58,7 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
           useValue: {
             snapshot: {
               data: {
-                partyAmendFormData: formData,
+                partyAddAmendConvertData: formData,
               },
               params: {
                 partyType: partyType,
@@ -95,15 +97,15 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       cy.get(DOM_ELEMENTS.aliasForenamesInput2).should('have.value', 'Test');
       cy.get(DOM_ELEMENTS.aliasSurnameInput2).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput3).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith2');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput3).should('have.value', 'Smith');
       cy.get(DOM_ELEMENTS.aliasForenamesInput4).should('have.value', 'Test');
-      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith3');
+      cy.get(DOM_ELEMENTS.aliasSurnameInput4).should('have.value', 'Smith');
 
       cy.get(DOM_ELEMENTS.dobInput).should('exist');
       cy.get(DOM_ELEMENTS.dobLabel).should('contain', 'Date of birth');
 
       const dateService = new DateService();
-      const dob = fullMock.formData.facc_party_add_amend_convert_dob ?? '';
+      const dob = fullMock.defendant_account_party.party_details.individual_details!.date_of_birth ?? '';
       const expectedAge = dateService.calculateAge(dob, 'dd/MM/yyyy');
       const expectedAgeGroup = dateService.getAgeObject(dob)?.group ?? '';
 
@@ -324,13 +326,11 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
 
   it('AC5. Parent/Guardian - Required field validation (core)', { tags: ['@PO-1112'] }, () => {
     const emptyCoreMock = structuredClone(minimalMock);
-    emptyCoreMock.formData = {
-      ...emptyCoreMock.formData,
-      facc_party_add_amend_convert_title: '',
-      facc_party_add_amend_convert_forenames: '',
-      facc_party_add_amend_convert_surname: '',
-      facc_party_add_amend_convert_address_line_1: '',
-    };
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.title = '';
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.forenames = '';
+    emptyCoreMock.defendant_account_party.party_details.individual_details!.surname = '';
+    emptyCoreMock.defendant_account_party.address!.address_line_1 = '';
+
     setupComponent('parentGuardian', emptyCoreMock);
 
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
@@ -342,6 +342,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+    // Verify parent/guardian specific error messages
     coreRequiredMessages.forEach((msg) => {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain.text', msg);
     });
@@ -354,8 +356,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC5. Parent/Guardian - Required field validation (employer name)', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_employer_company_name = 'Quality Corp';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.employer_details!.employer_name = 'Quality Corp';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
     const employerRequiredMessages = [
@@ -369,8 +372,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC5. Parent/Guardian - Required field validation (employer address)', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_employer_address_line_1 = '123 Office Park';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = '123 Office Park';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
     const employerRequiredMessages = ['Enter employee reference or National Insurance number', 'Enter employer name'];
@@ -381,8 +385,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC5. Parent/Guardian - Required field validation (employer reference number)', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_employer_reference = 'Empref123';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.employer_details!.employer_reference = 'Empref123';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
     const employerRequiredMessages = ['Enter address line 1, typically the building and street', 'Enter employer name'];
@@ -452,8 +457,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   );
 
   it('AC6a. Parent/Guardian - DOB with non-numerical characters shows format error', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_dob = '!5/02/1980';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '!5/02/1980';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -463,8 +469,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC6b. Parent/Guardian - DOB in the future shows past-date error', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_dob = '01/01/2099';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.party_details.individual_details!.date_of_birth = '01/01/2099';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -472,8 +479,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC6c. Parent/Guardian - NI number invalid format shows NI format error', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_national_insurance_number = '12AB3';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.party_details.individual_details!.national_insurance_number = '12AB3';
+    setupComponent('parentGuardian', testMock);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -486,8 +494,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     'AC7a. Parent/Guardian - Primary email invalid format shows primary email format error',
     { tags: ['@PO-1112'] },
     () => {
-      minimalMock.formData.facc_party_add_amend_convert_contact_email_address_1 = 'invalid_email';
-      setupComponent('parentGuardian', minimalMock);
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.contact_details!.primary_email_address = 'invalid_email';
+      setupComponent('parentGuardian', testMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -501,8 +510,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     'AC7b. Parent/Guardian - Secondary email invalid format shows secondary email format error',
     { tags: ['@PO-1112'] },
     () => {
-      minimalMock.formData.facc_party_add_amend_convert_contact_email_address_2 = 'wrong.secondemail';
-      setupComponent('parentGuardian', minimalMock);
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.contact_details!.secondary_email_address = 'wrong.secondemail';
+      setupComponent('parentGuardian', testMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -516,8 +526,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     'AC7c. Parent/Guardian - Employer email invalid format shows employer email format error',
     { tags: ['@PO-1112'] },
     () => {
-      minimalMock.formData.facc_party_add_amend_convert_employer_email_address = 'employer#email@gmail.com';
-      setupComponent('parentGuardian', minimalMock);
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.employer_details!.employer_email_address = 'employer#email@gmail.com';
+      setupComponent('parentGuardian', testMock);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -528,8 +539,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   );
 
   it('AC8a. Parent/Guardian - Home telephone invalid format shows home telephone error', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_home = '0207A214875';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.contact_details!.home_telephone_number = '0207A214875';
+    setupComponent('parentGuardian', testMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
@@ -537,8 +549,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
   });
 
   it('AC8b. Parent/Guardian - Work telephone invalid format shows work telephone error', { tags: ['@PO-1112'] }, () => {
-    minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_business = '01632-960-001A';
-    setupComponent('parentGuardian', minimalMock);
+    const testMock = structuredClone(minimalMock);
+    testMock.defendant_account_party.contact_details!.work_telephone_number = '01632-960-001A';
+    setupComponent('parentGuardian', testMock);
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary)
       .should('exist')
@@ -549,8 +562,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     'AC8c. Parent/Guardian - Mobile telephone invalid length/format shows mobile telephone error',
     { tags: ['@PO-1112'] },
     () => {
-      minimalMock.formData.facc_party_add_amend_convert_contact_telephone_number_mobile = '0207821734';
-      setupComponent('parentGuardian', minimalMock);
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.contact_details!.mobile_telephone_number = '0207821734';
+      setupComponent('parentGuardian', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
@@ -562,8 +576,9 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     'AC8d. Parent/Guardian - Employer telephone invalid format shows employer telephone error',
     { tags: ['@PO-1112'] },
     () => {
-      minimalMock.formData.facc_party_add_amend_convert_employer_telephone_number = '0207A214875';
-      setupComponent('parentGuardian', minimalMock);
+      const testMock = structuredClone(minimalMock);
+      testMock.defendant_account_party.employer_details!.employer_telephone_number = '0207A214875';
+      setupComponent('parentGuardian', testMock);
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary)
         .should('exist')
@@ -583,36 +598,35 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       const secondaryEmail = `${'b'.repeat(65)}@example.com`;
       const employerEmail = `${'c'.repeat(65)}@example.com`;
 
-      maxLengthMock.formData = {
-        ...maxLengthMock.formData,
-        facc_party_add_amend_convert_forenames: 'A'.repeat(21),
-        facc_party_add_amend_convert_surname: 'B'.repeat(31),
-        facc_party_add_amend_convert_individual_aliases: [
-          {
-            facc_party_add_amend_convert_alias_forenames_0: 'C'.repeat(21),
-            facc_party_add_amend_convert_alias_surname_0: 'D'.repeat(31),
-          },
-        ],
-        facc_party_add_amend_convert_add_alias: true,
-        facc_party_add_amend_convert_national_insurance_number: 'AB123456CD',
-        facc_party_add_amend_convert_address_line_1: 'E'.repeat(31),
-        facc_party_add_amend_convert_address_line_2: 'F'.repeat(31),
-        facc_party_add_amend_convert_address_line_3: 'G'.repeat(17),
-        facc_party_add_amend_convert_post_code: 'POSTCODE9',
-        facc_party_add_amend_convert_contact_email_address_1: primaryEmail,
-        facc_party_add_amend_convert_contact_email_address_2: secondaryEmail,
-        facc_party_add_amend_convert_vehicle_make: 'H'.repeat(31),
-        facc_party_add_amend_convert_vehicle_registration_mark: 'I'.repeat(21),
-        facc_party_add_amend_convert_employer_company_name: 'J'.repeat(51),
-        facc_party_add_amend_convert_employer_reference: 'K'.repeat(21),
-        facc_party_add_amend_convert_employer_email_address: employerEmail,
-        facc_party_add_amend_convert_employer_address_line_1: 'L'.repeat(31),
-        facc_party_add_amend_convert_employer_address_line_2: 'M'.repeat(31),
-        facc_party_add_amend_convert_employer_address_line_3: 'N'.repeat(31),
-        facc_party_add_amend_convert_employer_address_line_4: 'O'.repeat(31),
-        facc_party_add_amend_convert_employer_address_line_5: 'P'.repeat(31),
-        facc_party_add_amend_convert_employer_post_code: 'EMPPOSTC9',
-      };
+      // Set all fields to exceed max length using API structure
+      maxLengthMock.defendant_account_party.party_details.individual_details!.forenames = 'A'.repeat(21);
+      maxLengthMock.defendant_account_party.party_details.individual_details!.surname = 'B'.repeat(31);
+      maxLengthMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'C'.repeat(21),
+          surname: 'D'.repeat(31),
+        },
+      ];
+      maxLengthMock.defendant_account_party.party_details.individual_details!.national_insurance_number = 'AB123456CD';
+      maxLengthMock.defendant_account_party.address!.address_line_1 = 'E'.repeat(31);
+      maxLengthMock.defendant_account_party.address!.address_line_2 = 'F'.repeat(31);
+      maxLengthMock.defendant_account_party.address!.address_line_3 = 'G'.repeat(17);
+      maxLengthMock.defendant_account_party.address!.postcode = 'POSTCODE9';
+      maxLengthMock.defendant_account_party.contact_details!.primary_email_address = primaryEmail;
+      maxLengthMock.defendant_account_party.contact_details!.secondary_email_address = secondaryEmail;
+      maxLengthMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'H'.repeat(31);
+      maxLengthMock.defendant_account_party.vehicle_details!.vehicle_registration = 'I'.repeat(21);
+      maxLengthMock.defendant_account_party.employer_details!.employer_name = 'J'.repeat(51);
+      maxLengthMock.defendant_account_party.employer_details!.employer_reference = 'K'.repeat(21);
+      maxLengthMock.defendant_account_party.employer_details!.employer_email_address = employerEmail;
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_1 = 'L'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_2 = 'M'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_3 = 'N'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_4 = 'O'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.address_line_5 = 'P'.repeat(31);
+      maxLengthMock.defendant_account_party.employer_details!.employer_address!.postcode = 'EMPPOSTC9';
 
       setupComponent('parentGuardian', maxLengthMock);
 
@@ -633,33 +647,36 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
     () => {
       const dataTypeValidationMock = structuredClone(minimalMock);
 
-      dataTypeValidationMock.formData = {
-        ...dataTypeValidationMock.formData,
-        facc_party_add_amend_convert_forenames: 'John123',
-        facc_party_add_amend_convert_surname: 'Doe@Smith',
-        facc_party_add_amend_convert_individual_aliases: [
-          {
-            facc_party_add_amend_convert_alias_forenames_0: 'Johnny$',
-            facc_party_add_amend_convert_alias_surname_0: 'Smith#Brown',
-          },
-        ],
-        facc_party_add_amend_convert_add_alias: true,
-
-        facc_party_add_amend_convert_address_line_1: '123 Main St @#$',
-        facc_party_add_amend_convert_address_line_2: 'Apt 4B %^&',
-        facc_party_add_amend_convert_address_line_3: 'Building C *()+=',
-        facc_party_add_amend_convert_post_code: 'M1& 1AA',
-        facc_party_add_amend_convert_vehicle_make: 'Toyota Corolla {}[]',
-        facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123|\\',
-        facc_party_add_amend_convert_employer_company_name: 'Test Company <>?/',
-        facc_party_add_amend_convert_employer_reference: 'EMP123~`',
-        facc_party_add_amend_convert_employer_address_line_1: '456 Business Park !@#',
-        facc_party_add_amend_convert_employer_address_line_2: 'Suite 200 $%^',
-        facc_party_add_amend_convert_employer_address_line_3: 'Industrial Estate &*()',
-        facc_party_add_amend_convert_employer_address_line_4: 'Business District +={}',
-        facc_party_add_amend_convert_employer_address_line_5: 'Metropolitan Area []|\\',
-        facc_party_add_amend_convert_employer_post_code: 'BU5& 1NE',
-      };
+      // Set all fields with invalid characters using API structure
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.forenames = 'John123';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.surname = 'Doe@Smith';
+      dataTypeValidationMock.defendant_account_party.party_details.individual_details!.individual_aliases = [
+        {
+          alias_id: '1',
+          sequence_number: 1,
+          forenames: 'Johnny$',
+          surname: 'Smith#Brown',
+        },
+      ];
+      dataTypeValidationMock.defendant_account_party.address!.address_line_1 = '123 Main St @#$';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_2 = 'Apt 4B %^&';
+      dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Building C *()+=';
+      dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
+      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
+      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
+        '456 Business Park !@#';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_2 =
+        'Suite 200 $%^';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_3 =
+        'Industrial Estate &*()';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_4 =
+        'Business District +={}';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_5 =
+        'Metropolitan Area []|\\';
+      dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.postcode = 'BU5& 1NE';
 
       setupComponent('parentGuardian', dataTypeValidationMock);
 

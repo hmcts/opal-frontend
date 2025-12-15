@@ -1,4 +1,4 @@
-import * as express from 'express';
+import type { Express } from 'express';
 import config from 'config';
 import { Helmet } from '@hmcts/opal-frontend-common-node/helmet';
 import { CSRFToken } from '@hmcts/opal-frontend-common-node/csrf-token';
@@ -11,6 +11,7 @@ import {
   RoutesConfiguration,
   SessionStorageConfiguration,
   TransferServerState,
+  OpalUserServiceConfiguration,
 } from '@hmcts/opal-frontend-common-node/interfaces';
 
 const env = process.env['NODE_ENV'] || 'development';
@@ -19,6 +20,7 @@ const developmentMode = env === 'development';
 export function getRoutesConfig(): {
   sessionExpiryConfiguration: ExpiryConfiguration;
   routesConfiguration: RoutesConfiguration;
+  opalUserServiceConfiguration: OpalUserServiceConfiguration;
 } {
   const testMode = config.get<boolean>('expiry.testMode');
   const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
@@ -42,16 +44,22 @@ export function getRoutesConfig(): {
     microsoftUrl: config.get('microsoft.url'),
   };
 
-  return { sessionExpiryConfiguration, routesConfiguration };
+  const opalUserServiceConfiguration: OpalUserServiceConfiguration = {
+    userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
+    addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
+    updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+  };
+
+  return { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration };
 }
 
-export function configureApiProxyRoutes(app: express.Express): void {
+export function configureApiProxyRoutes(app: Express): void {
   app.use('/api', OpalApiProxy(config.get('opal-api.url')));
   app.use('/opal-fines-service', OpalApiProxy(config.get('opal-api.opal-fines-service')));
   app.use('/opal-user-service', OpalApiProxy(config.get('opal-api.opal-user-service')));
 }
 
-export function configureSession(server: express.Express): void {
+export function configureSession(server: Express): void {
   const sessionStorageConfig: SessionStorageConfiguration = {
     secret: config.get('secrets.opal.opal-frontend-cookie-secret'),
     prefix: config.get('session.prefix'),
@@ -66,7 +74,7 @@ export function configureSession(server: express.Express): void {
   new SessionStorage().enableFor(server, sessionStorageConfig);
 }
 
-export function configureCsrf(server: express.Express): void {
+export function configureCsrf(server: Express): void {
   new CSRFToken().enableFor(
     server,
     config.get('secrets.opal.opal-frontend-csrf-secret'),
@@ -76,7 +84,7 @@ export function configureCsrf(server: express.Express): void {
   );
 }
 
-export function configureSecurityHeaders(server: express.Express): void {
+export function configureSecurityHeaders(server: Express): void {
   new Helmet(developmentMode).enableFor(server, config.get('features.helmet.enabled'));
 }
 
@@ -98,5 +106,6 @@ export function configureMonitoring(): TransferServerState {
     launchDarklyConfig: launchDarkly,
     ssoEnabled: config.get('features.sso.enabled'),
     appInsightsConfig: appInsights,
+    userStateCacheExpirationMilliseconds: config.get('expiry.userStateExpiryInMilliseconds'),
   };
 }

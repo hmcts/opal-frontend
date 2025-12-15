@@ -78,6 +78,8 @@ export function interceptDefendantDetails(
     .as('getDefendantDetails');
 }
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
+import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
 
 /**
  * Intercepts the GET request for the defendant header summary in Cypress tests,
@@ -151,4 +153,44 @@ export function interceptPGDetails(
       },
     })
     .as('getPGDetails');
+}
+
+/**
+ * Intercepts the GET request for fixed penalty details of a defendant account and mocks the response.
+ *
+ * @param accountId - The unique identifier of the defendant account (string or number).
+ * @param mockData - The mock data to be returned as the response body, conforming to `IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData`.
+ * @param respHeaderEtag - The ETag value to be set in the response headers.
+ * @returns A Cypress chainable object with the alias 'getFixedPenaltyDetails' for further command chaining.
+ */
+export function interceptFixedPenaltyDetails(
+  accountId: String | number,
+  mockData: IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/fixed-penalty`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getFixedPenaltyDetails');
+}
+
+export function interceptPaymentTerms(
+  accountId: String | number,
+  mockData: IOpalFinesAccountDefendantDetailsPaymentTermsLatest,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/payment-terms/latest`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getPaymentTerms');
 }

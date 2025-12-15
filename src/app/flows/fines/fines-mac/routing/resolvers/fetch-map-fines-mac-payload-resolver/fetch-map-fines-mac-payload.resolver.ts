@@ -64,7 +64,7 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     };
   } catch (error) {
     // Log and rethrow the error
-    globalStore.setError({
+    globalStore.setBannerError({
       ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',

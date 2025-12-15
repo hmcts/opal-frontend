@@ -5,129 +5,79 @@ Feature: Manual account creation - Account Comments and Notes
   #Tests for conditional rendering (different defendant types) are contained in the AccountCommentsAndNotesComponent.cy.ts component tests
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
+    Given I am logged in with email "opal-test@HMCTS.NET"
 
-    When I navigate to Manual Account Creation
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth" radio button
-    And I click the "Continue" button
+  Scenario: Providing account comments and notes updates the task status and persists the data [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Then the "Account comments and notes" task status is "Not provided"
+    When I provide account comments "Test comments" and notes "Test notes"
+    And returning to account details the "Account comments and notes" task the status is "Provided"
+    When I view the "Account comments and notes" task
+    Then the manual account comment and note fields show "Test comments" and "Test notes"
 
-    Then I click on the "Account comments and notes" link
-    And I see "Account comments and notes" on the page header
+  Scenario: A new manual account starts with comments and notes not provided [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Then the "Account comments and notes" task status is "Not provided"
+    When I view the "Account comments and notes" task
+    Then the manual account comment and note fields show "" and ""
 
-  Scenario: (AC.4, AC.5) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
-    Then I see "Account comments and notes" on the page header
+  Scenario: Unsaved account comments can be kept or discarded [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    And I provide account comments "Test comments" and notes "Test notes"
+    And I choose "Cancel" on the unsaved changes prompt for account comments
+    Then the manual account comment field shows "Test comments"
+    And the manual account note field shows "Test notes"
+    When I choose "Ok" on the unsaved changes prompt for account comments
+    Then the "Account comments and notes" task status is "Not provided"
+    When I view the "Account comments and notes" task
+    Then the manual account comment and note fields show "" and ""
 
-    When I click the "Return to account details" button
-    Then I see the status of "Account comments and notes" is "Not provided"
+  Scenario: Task navigation allows review after all sections are provided [@PO-272, @PO-469, @PO-499, @PO-500]
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    Then the "Account comments and notes" task status is "Not provided"
 
-    When I click on the "Account comments and notes" link
-    And I enter "Test comments" into the "Add comment" text field
-    And I enter "Test notes" into the "Add account notes" text field
+    And I view the "Court details" task
+    And I complete manual court details:
+      | LJA               | Avon              |
+      | PCR               | 1234              |
+      | enforcement court | West London VPFPO |
 
-    And I click the "Return to account details" button
+    And I return to account details
+    And I provide manual personal details from account details:
+      | field          | value |
+      | title          | Mr    |
+      | first names    | FNAME |
+      | last name      | LNAME |
+      | address line 1 | Addr1 |
 
-    Then I see the status of "Account comments and notes" is "Provided"
+    And I return to account details
+    And I have provided offence details from account details:
+      | field          | value               |
+      | offence date   | 2 weeks in the past |
+      | offence code   | TP11003             |
+      | result code    | Fine (FO)           |
+      | amount imposed | 200                 |
+      | amount paid    | 100                 |
 
-    When I click on the "Account comments and notes" link
-    And I see "Test comments" in the "Add comment" text field
-    And I see "Test notes" in the "Add account notes" text field
+    And I return to account details
+    And I have provided manual payment terms:
+      | field                 | value                  |
+      | collection order      | Yes                    |
+      | collection order date | 1 weeks ago            |
+      | pay in full by        | 28 weeks in the future |
 
-    When I reload the page
-    Then I see "Business unit and defendant type" on the page header
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth" radio button
-    And I click the "Continue" button
+    And I return to account details
+    Then the task statuses are:
+      | task             | status   |
+      | Court details    | Provided |
+      | Personal details | Provided |
+      | Offence details  | Provided |
+      | Payment terms    | Provided |
 
-    Then I see the status of "Account comments and notes" is "Not provided"
-
-    When I click on the "Account comments and notes" link
-    And I see "" in the "Add comment" text field
-    And I see "" in the "Add account notes" text field
-
-
-  Scenario: (AC.6, AC.7) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
-    And I enter "Test comments" into the "Add comment" text field
-    And I enter "Test notes" into the "Add account notes" text field
-
-    Then I click Cancel, a window pops up and I click Cancel
-
-    Then I see "Account comments and notes" on the page header
-    And I see "Test comments" in the "Add comment" text field
-    And I see "Test notes" in the "Add account notes" text field
-
-    Then I click Cancel, a window pops up and I click Ok
-
-    Then I see the status of "Account comments and notes" is "Not provided"
-
-    When I click on the "Account comments and notes" link
-    And I see "" in the "Add comment" text field
-    And I see "" in the "Add account notes" text field
-
-  Scenario: (AC.8) grey navigation button routes to correct page [@PO-272, @PO-469, @PO-499, @PO-500]
-    Then I see "Account comments and notes" on the page header
-
-    When I click the "Return to account details" button
-    Then I see the status of "Account comments and notes" is "Not provided"
-
-    #Add Court details
-    Then I click on the "Court details" link
-    And I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
-    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
-    And I enter "West London VPFPO" into the "Enforcement court" search box
-
-    Then I click the "Return to account details" button
-
-    Then I see the status of "Court details" is "Provided"
-
-    #Add Personal details
-    When I click on the "Personal details" link
-    And I select "Mr" from the "Title" dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "Addr1" into the "Address line 1" field
-    Then I click the "Return to account details" button
-
-    Then I see the status of "Personal details" is "Provided"
-
-
-    #Add Offence details
-    When I click on the "Offence details" link
-    And I enter a date 2 weeks into the past into the "Date of sentence" date field
-    And I enter "TP11003" into the "Offence code" field
-    And I enter "Fine (FO)" into the "Result code" search box
-    And I enter "200" into the "Amount imposed" payment field
-    And I enter "100" into the "Amount paid" payment field
-    And I click the "Review offence" button
-
-    When I click the "Return to account details" button
-    Then I see "Account details" on the page header
-    And I see the status of "Offence details" is "Provided"
-
-    #Add Payment terms
-    Then I click on the "Payment terms" link
-    And I see "Payment terms" on the page header
-    And I select the "Yes" radio button
-    And I enter a date 1 weeks into the past into the "Date of collection order" date field
-    And I select the "Pay in full" radio button
-    And I enter a date 28 weeks into the future into the "Enter pay by date" date field
-
-    Then I click the "Return to account details" button
-
-    Then I see the status of "Payment terms" is "Provided"
-
-    #Validate Account comments and notes grey nav button route
-    When I click on the "Account comments and notes" link
-    Then I see "Account comments and notes" on the page header
-
-    Then I see the "Review and submit account details" button
-    When I click the "Review and submit account details" button
-
-    Then I see "Check account details" on the page header
+    And I view the "Account comments and notes" task
+    Then I can proceed to review account details from comments and notes and see the header "Check account details"
 
   Scenario: Account Comments and Notes - Axe Core
+    Given I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
+    When I view the "Account comments and notes" task
     Then I check accessibility
-
