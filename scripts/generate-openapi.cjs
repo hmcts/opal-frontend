@@ -7,7 +7,8 @@ const OPENAPI_TEMPLATES = path.resolve(__dirname, '../openapi/templates');
 const OUTPUT_DIR = path.resolve(__dirname, '../src/app/generated/api-client');
 const APP_DIR = path.resolve(__dirname, '../src/app/flows/fines/services/opal-fines-service');
 const INTERFACES_DIR = path.join(APP_DIR, 'interfaces', 'generated');
-const TYPES_DIR = path.join(APP_DIR, 'types');
+const TYPES_ROOT_DIR = path.join(APP_DIR, 'types');
+const TYPES_DIR = path.join(TYPES_ROOT_DIR, 'generated');
 const GENERATOR_CLI = 'npx';
 
 // Function to clean up response interface names (remove HTTP status codes)
@@ -59,7 +60,7 @@ function generateTypeImports(typeDependencies) {
 
   const imports = typeDependencies
     .map((typeName) => {
-      const typeFileName = `opal-fines-${typeName
+      const typeFileName = `generated/opal-fines-${typeName
         .replace(/([A-Z])/g, '-$1')
         .toLowerCase()
         .replace(/^-/, '')}.type`;
@@ -183,8 +184,8 @@ if (fs.existsSync(indexPath)) {
     console.log(`🧹 Cleaned existing interfaces directory`);
   }
 
-  if (fs.existsSync(TYPES_DIR)) {
-    fs.rmSync(TYPES_DIR, { recursive: true, force: true });
+  if (fs.existsSync(TYPES_ROOT_DIR)) {
+    fs.rmSync(TYPES_ROOT_DIR, { recursive: true, force: true });
     console.log(`🧹 Cleaned existing types directory`);
   }
 

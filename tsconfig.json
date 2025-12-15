@@ -38,7 +38,13 @@
     "strictTemplates": true
   },
   "include": ["src", "node_modules/cypress", "src/app/interfaces/.ts"],
-  "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts"]
+  "exclude": [
+    "node_modules/cypress",
+    "**/*.mock.ts",
+    "**/helpers/*.ts",
+    "**/interfaces/generated/**",
+    "**/types/generated/**"
+  ]
 }
 
 // include + exclude - Issue with cypress + jasmine
