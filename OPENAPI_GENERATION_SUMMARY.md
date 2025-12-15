@@ -1,5 +1,7 @@
 # OpenAPI Interface Generation - Complete Implementation Summary
 
+> Reference-only: `yarn generate:openapi` produces temporary models in `src/app/flows/fines/services/opal-fines-service/interfaces/generated` and `src/app/flows/fines/services/opal-fines-service/types/generated`. Use them as a guide to update the hand-written interfaces under `src/app/flows/fines/services/opal-fines-service/interfaces`; do not import the generated files in app code or tests. The generated folders are gitignored and excluded from TypeScript/Jasmine.
+
 ## ✅ Production-Ready Implementation Completed
 
 ### 1. **Single Command Workflow** 🚀
