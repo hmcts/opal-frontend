@@ -242,11 +242,7 @@ const interceptionMatchesExpected = (
   });
 };
 
-const pickMatchingInterception = (
-  interceptions: any[],
-  expectedEntries: ExpectedEntry[],
-  entityKey: string,
-): any => {
+const pickMatchingInterception = (interceptions: any[], expectedEntries: ExpectedEntry[], entityKey: string): any => {
   return interceptions.find((interception) => interceptionMatchesExpected(interception, expectedEntries, entityKey));
 };
 
