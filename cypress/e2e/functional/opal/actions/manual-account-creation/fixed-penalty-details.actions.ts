@@ -188,14 +188,12 @@ export class FixedPenaltyDetailsActions {
     cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
   }
 
-
   /**
    * Maps a Section/Field/Value table into the payload used to populate the form.
    * @param rows - Raw DataTable rows including headers.
    * @returns Structured payload partitioned by section.
    */
   private mapTableToPayload(rows: string[][]): FixedPenaltyPayload {
-
     if (!rows.length) {
       throw new Error('No rows supplied for Fixed Penalty details');
     }
@@ -284,30 +282,36 @@ export class FixedPenaltyDetailsActions {
     return payload;
   }
 
-
   /**
    * Fills the court details fields.
    * @param payload - Partial court details payload.
    */
   private fillCourtDetails(payload: CourtDetailsPayload): void {
-
     if (!payload.issuingAuthority && !payload.enforcementCourt) return;
 
     if (payload.issuingAuthority !== undefined) {
-      this.typeAutocomplete(L.issuingAuthorityInput, L.issuingAuthorityListbox, payload.issuingAuthority, 'Issuing Authority');
+      this.typeAutocomplete(
+        L.issuingAuthorityInput,
+        L.issuingAuthorityListbox,
+        payload.issuingAuthority,
+        'Issuing Authority',
+      );
     }
     if (payload.enforcementCourt !== undefined) {
-      this.typeAutocomplete(L.enforcementCourtInput, L.enforcementCourtListbox, payload.enforcementCourt, 'Enforcement court');
+      this.typeAutocomplete(
+        L.enforcementCourtInput,
+        L.enforcementCourtListbox,
+        payload.enforcementCourt,
+        'Enforcement court',
+      );
     }
   }
-
 
   /**
    * Fills the personal details fields.
    * @param payload - Partial personal details payload.
    */
   private fillPersonalDetails(payload: PersonalDetailsPayload): void {
-
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
     if (!entries.length) return;
 
@@ -327,13 +331,11 @@ export class FixedPenaltyDetailsActions {
     this.typeField(L.postcodeInput, payload.postcode, 'Postcode');
   }
 
-
   /**
    * Fills the company details fields when present.
    * @param payload - Partial company details payload.
    */
   private fillCompanyDetails(payload: CompanyDetailsPayload): void {
-
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
     if (!entries.length) return;
 
@@ -344,13 +346,11 @@ export class FixedPenaltyDetailsActions {
     this.typeField(L.companyPostcodeInput, payload.postcode, 'Company postcode');
   }
 
-
   /**
    * Fills offence details fields, including offence type selection when provided.
    * @param payload - Partial offence details payload.
    */
   private fillOffenceDetails(payload: OffenceDetailsPayload): void {
-
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
     if (!entries.length) return;
 
@@ -365,14 +365,12 @@ export class FixedPenaltyDetailsActions {
     this.typeField(L.amountImposedInput, payload.amountImposed, 'Amount imposed');
   }
 
-
   /**
    * Fills vehicle details and ensures offence type is set to vehicle when needed.
    * @param payload - Partial vehicle details payload.
    * @param offenceType - Offence type, used to guard switching radios.
    */
   private fillVehicleDetails(payload: VehicleDetailsPayload, offenceType?: OffenceType): void {
-
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
     if (!entries.length) return;
 
@@ -386,13 +384,11 @@ export class FixedPenaltyDetailsActions {
     this.typeField(L.dateNtoIssuedInput, payload.dateNtoIssued, 'Date notice to owner was issued');
   }
 
-
   /**
    * Fills comment and note fields when supplied.
    * @param payload - Comment details payload.
    */
   private fillComments(payload: CommentDetailsPayload): void {
-
     const entries = Object.entries(payload ?? {}).filter(([, value]) => value !== undefined);
     if (!entries.length) return;
 
@@ -400,17 +396,14 @@ export class FixedPenaltyDetailsActions {
     this.typeField(L.noteInput, payload.note, 'Add account notes');
   }
 
-
   /**
    * Selects an offence type radio option.
    * @param type - Offence type value.
    */
   private selectOffenceType(type: OffenceType): void {
-
     const selector = L.offenceTypeRadio(type);
     cy.get(selector, this.common.getTimeoutOptions()).should('exist').scrollIntoView().check({ force: true });
   }
-
 
   /**
    * Types into a text field with basic normalization/assertion.
@@ -419,7 +412,6 @@ export class FixedPenaltyDetailsActions {
    * @param label - Human-friendly label for error messaging.
    */
   private typeField(selector: string, value: string | undefined, label: string): void {
-
     if (value === undefined) return;
     const input = cy.get(selector, this.common.getTimeoutOptions()).should('exist');
     input.scrollIntoView().clear({ force: true });
@@ -428,13 +420,16 @@ export class FixedPenaltyDetailsActions {
       return;
     }
     input.type(value, { force: true, delay: 0 }).should(($el) => {
-      const normalize = (val: string | undefined) => String(val ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+      const normalize = (val: string | undefined) =>
+        String(val ?? '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .toLowerCase();
       const actualValue = normalize($el.val() as string | undefined);
       const expectedValue = normalize(value);
       expect(actualValue, `Expected ${label} to match typed value (case-insensitive/trimmed)`).to.equal(expectedValue);
     });
   }
-
 
   /**
    * Types into an autocomplete input and selects the first option.
@@ -444,7 +439,6 @@ export class FixedPenaltyDetailsActions {
    * @param label - Field label for logging.
    */
   private typeAutocomplete(inputSelector: string, listboxSelector: string, value: string, label: string): void {
-
     const input = cy.get(inputSelector, this.common.getTimeoutOptions()).should('exist');
     input.scrollIntoView().clear({ force: true });
 
@@ -460,14 +454,12 @@ export class FixedPenaltyDetailsActions {
     log('select', `Selected autocomplete option for ${label}`, { value });
   }
 
-
   /**
    * Resolves a human-readable field label to its CSS selector.
    * @param fieldLabel - Field label from feature files.
    * @returns CSS selector or null if unsupported.
    */
   private resolveSelector(fieldLabel: string): string | null {
-
     const normalized = fieldLabel.trim().toLowerCase();
     if (/title/.test(normalized)) return L.titleSelect;
     if (/first/.test(normalized)) return L.firstNamesInput;

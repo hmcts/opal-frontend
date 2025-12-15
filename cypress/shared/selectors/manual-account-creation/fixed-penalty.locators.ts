@@ -27,8 +27,7 @@ export const FixedPenaltyDetailsLocators = {
   companyAddressLine3Input: '#fm_fp_company_details_address_line_3',
   companyPostcodeInput: '#fm_fp_company_details_postcode',
   noticeNumberInput: '#fm_fp_offence_details_notice_number',
-  offenceTypeRadio: (value: string) =>
-    `[opal-lib-govuk-radios-item][inputvalue="${value}"] input[type="radio"]`,
+  offenceTypeRadio: (value: string) => `[opal-lib-govuk-radios-item][inputvalue="${value}"] input[type="radio"]`,
   dateOfOffenceInput: '#fm_fp_offence_details_date_of_offence',
   offenceCodeInput: '#fm_fp_offence_details_offence_cjs_code',
   timeOfOffenceInput: '#fm_fp_offence_details_time_of_offence',

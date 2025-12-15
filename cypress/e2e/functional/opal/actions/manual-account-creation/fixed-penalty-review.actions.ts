@@ -60,14 +60,19 @@ export class FixedPenaltyReviewActions {
    * Clicks the Delete account link on the review page.
    */
   openDeleteAccount(): void {
-    cy.get(L.deleteAccountLink, this.common.getTimeoutOptions()).should('exist').scrollIntoView().click({ force: true });
+    cy.get(L.deleteAccountLink, this.common.getTimeoutOptions())
+      .should('exist')
+      .scrollIntoView()
+      .click({ force: true });
   }
 
   /**
    * Cancels deletion on the confirmation page.
    */
   cancelDeletion(): void {
-    cy.contains('a', /No - cancel/i, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+    cy.contains('a', /No - cancel/i, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .click({ force: true });
   }
 
   /**
