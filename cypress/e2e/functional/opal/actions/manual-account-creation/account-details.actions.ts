@@ -1,9 +1,15 @@
+/**
+ * @fileoverview Actions for Manual Account Creation - Account details task list.
+ * Provides helpers to open tasks, assert status, and confirm header presence.
+ */
 import {
   ManualAccountDetailsLocators as L,
   ManualAccountTaskName,
 } from '../../../../../shared/selectors/manual-account-creation/account-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('ManualAccountDetailsActions');
 
 export class ManualAccountDetailsActions {
   private readonly common = new CommonActions();
@@ -38,5 +44,36 @@ export class ManualAccountDetailsActions {
    */
   assertOnAccountDetailsPage(expectedHeader: string = 'Account details'): void {
     this.common.assertHeaderContains(expectedHeader);
+  }
+
+  /**
+   * Asserts a language preference value in the Account details summary list.
+   * @param label - Row label ("Document language" or "Hearing language").
+   * @param expectedValue - Expected value text.
+   */
+  assertLanguagePreference(label: 'Document language' | 'Hearing language', expectedValue: string): void {
+    log('assert', 'Checking account language preference', { label, expectedValue });
+
+    cy.contains(L.summaryList.languageRow, label, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .within(() => {
+        cy.get(L.summaryList.value)
+          .invoke('text')
+          .should((text) => expect(text.trim()).to.equal(expectedValue));
+      });
+  }
+
+  /**
+   * Opens the Change link for a language preference row.
+   * @param label - Row label ("Document language" or "Hearing language").
+   */
+  openLanguagePreference(label: 'Document language' | 'Hearing language'): void {
+    log('navigate', 'Opening language preference change link', { label });
+
+    cy.contains(L.summaryList.languageRow, label, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .within(() => {
+        cy.get(L.summaryList.changeLink).should('contain.text', 'Change').scrollIntoView().click({ force: true });
+      });
   }
 }

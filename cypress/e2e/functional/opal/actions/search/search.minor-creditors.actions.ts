@@ -10,13 +10,16 @@
  * - Individual asserts feature-detect and skip if the individual inputs are not present in DOM.
  */
 
-import { log } from '../../../../../support/utils/log.helper';
+import { MinorCreditorType as BaseMinorCreditorType } from '../../../../../support/utils/macFieldResolvers';
 import { AccountSearchCommonLocators as C } from '../../../../../shared/selectors/account-search/account.search.common.locators';
 import { AccountSearchMinorCreditorsLocators as L } from '../../../../../shared/selectors/account-search/account.search.minor-creditors.locators';
 import { CommonActions } from '../common/common.actions';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
-export type MinorCreditorType = 'Individual' | 'Company' | 'individual' | 'company';
+export type MinorCreditorType = BaseMinorCreditorType | 'individual' | 'company';
 type SimpleType = 'individual' | 'company';
+
+const log = createScopedLogger('AccountSearchMinorCreditorsActions');
 
 export class AccountSearchMinorCreditorsActions {
   private readonly commonActions = new CommonActions();

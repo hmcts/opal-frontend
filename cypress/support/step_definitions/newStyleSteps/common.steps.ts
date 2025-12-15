@@ -75,6 +75,21 @@ Then('I should see the header containing text {string}', (expectedHeader: string
 });
 
 /**
+ * @step Select an option from a dropdown by its label.
+ * @description Selects the given option in a dropdown identified by its visible label text.
+ *
+ * @param option - The option/value text to choose.
+ * @param dropdownLabel - The visible label of the dropdown.
+ *
+ * @example
+ *   When I choose "Mr" from the "Title" dropdown
+ */
+When('I choose {string} from the {string} dropdown', (option: string, dropdownLabel: string) => {
+  log('select', 'Selecting dropdown value', { dropdownLabel, option });
+  Common().selectFromDropdown(dropdownLabel, option);
+});
+
+/**
  * @step Combined assertion: check both page header and URL.
  * @description
  * Provides a compact assertion for scenarios where both header text and
@@ -143,4 +158,40 @@ When('I select back and confirm', () => {
 When('I select back and cancel', () => {
   log('step', 'Select back and cancel (no navigate)');
   Common().navigateBrowserBackWithChoice('cancel');
+});
+
+/**
+ * @step Assert arbitrary text content exists on the page.
+ * @param text - Text expected to be visible anywhere on the page.
+ */
+Then('I see the following text {string}', (text: string) => {
+  log('assert', 'Checking text on page', { text });
+  cy.contains(text).should('exist');
+});
+
+/**
+ * @step Assert a link with given text is not present.
+ * @param linkText - Link text that should not be found.
+ */
+Then('the link with text {string} should not be present', (linkText: string) => {
+  log('assert', 'Ensuring link is not present', { linkText });
+  cy.contains('a', linkText).should('not.exist');
+});
+
+/**
+ * @step Assert a button with given text is not present.
+ * @param text - Button text that should not be found.
+ */
+Then('the button with text {string} should not be present', (text: string) => {
+  log('assert', 'Ensuring button is not present', { text });
+  cy.contains('button', text).should('not.exist');
+});
+
+/**
+ * @step Assert a button with given text is not present (alias).
+ * @param text - Button text that should not be found.
+ */
+Then('I should not see the button with text {string}', (text: string) => {
+  log('assert', 'Ensuring button is not present (alias)', { text });
+  cy.contains('button', text).should('not.exist');
 });

@@ -11,7 +11,9 @@ import { ResultsActions } from '../search.results.actions';
 import { AccountSearchCommonActions } from '../search/search.common.actions';
 import { CommonActions } from '../common/common.actions';
 
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountSearchCompanyActions');
 
 export class AccountSearchCompanyActions {
   private readonly results = new ResultsActions();
