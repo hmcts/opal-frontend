@@ -487,34 +487,38 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
-
-      const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-      mockDataPayByDate.payment_terms = {
-        payment_terms_type: {
-          payment_terms_type_code: 'B',
-          payment_terms_type_display_name: 'By date',
-        },
-        effective_date: '31/12/2024',
-        instalment_period: null,
-        lump_sum_amount: 250,
-        instalment_amount: null,
-      };
-
-      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
-      interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
-      interceptAtAGlance(77, mockDataPayByDate, '1');
-
-      setupAccountEnquiryComponent(componentProperties);
-      cy.get('h2').contains('Payment terms').should('exist');
-      cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
-      cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
-
-      // Verify that instalment-specific fields are not displayed
-      cy.get('h3').contains('Frequency').should('not.exist');
-      cy.get('h3').contains('Instalments').should('not.exist');
-      cy.get('h3').contains('Start Date').should('not.exist');
+      // Verify that link not present
+      cy.get(DOM.linkText).should('not.exist');
     },
   );
+
+  it('AC6a: displays Payment Terms section for "Pay by date" scenario', { tags: ['PO-984', 'PO-814'] }, () => {
+    const mockDataPayByDate = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    mockDataPayByDate.payment_terms = {
+      payment_terms_type: {
+        payment_terms_type_code: 'B',
+        payment_terms_type_display_name: 'By date',
+      },
+      effective_date: '31/12/2024',
+      instalment_period: null,
+      lump_sum_amount: 250,
+      instalment_amount: null,
+    };
+
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(77, createDefendantHeaderMockWithName('Robert', 'Thomson'), '1');
+    interceptAtAGlance(77, mockDataPayByDate, '1');
+
+    setupAccountEnquiryComponent(componentProperties);
+    cy.get('h2').contains('Payment terms').should('exist');
+    cy.get('h3').contains('Payment terms').and('be.visible').next('p').should('have.text', 'Pay by date');
+    cy.get('h3').contains('By date').and('be.visible').next('p').should('have.text', ' 31 December 2024 ');
+
+    // Verify that instalment-specific fields are not displayed
+    cy.get('h3').contains('Frequency').should('not.exist');
+    cy.get('h3').contains('Instalments').should('not.exist');
+    cy.get('h3').contains('Start Date').should('not.exist');
+  });
 
   it(
     'AC6b: displays Payment Terms section for "Lump sum plus instalments" scenario',
