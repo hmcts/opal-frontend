@@ -440,7 +440,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       },
       effective_date: '31/12/2024',
       instalment_period: null,
-      lump_sum_amount: null,
+      lump_sum_amount: 100,
       instalment_amount: null,
     };
 
