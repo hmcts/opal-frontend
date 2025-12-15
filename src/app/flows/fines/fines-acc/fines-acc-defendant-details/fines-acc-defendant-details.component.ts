@@ -110,6 +110,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
   public accountStore = inject(FinesAccountStore);
   public tabs: IFinesAccountDefendantDetailsTabs = FINES_ACC_DEFENDANT_DETAILS_TABS;
   public accountData!: IOpalFinesAccountDefendantDetailsHeader;
+  public accountId: number = Number(this.activatedRoute.snapshot.paramMap.get('accountId'));
   public tabContentStyles: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public tabAtAGlance$: Observable<IOpalFinesAccountDefendantAtAGlance> = EMPTY;
   public tabDefendant$: Observable<IOpalFinesAccountDefendantAccountParty> = EMPTY;
@@ -128,6 +129,10 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    */
   private getHeaderDataFromRoute(): void {
     this.accountData = this.activatedRoute.snapshot.data['defendantAccountHeadingData'];
+    this.accountStore.setAccountState(
+      this.payloadService.transformAccountHeaderForStore(this.accountId, this.accountData),
+    );
+
     this.activeTab = this.activatedRoute.snapshot.fragment || 'at-a-glance';
   }
 

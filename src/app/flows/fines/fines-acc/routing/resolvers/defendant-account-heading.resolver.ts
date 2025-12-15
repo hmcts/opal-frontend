@@ -14,7 +14,6 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
   const accountId = Number(route.paramMap.get('accountId'));
 
   const opalFinesService = inject(OpalFines);
-  const accountStore = inject(FinesAccountStore);
   const payloadService = inject(FinesAccPayloadService);
 
   /**
@@ -24,10 +23,7 @@ export const defendantAccountHeadingResolver: ResolveFn<IOpalFinesAccountDefenda
    * If the account ID is not provided, it returns an empty observable.
    * @throws Error if the account ID is invalid or if the data cannot be fetched.
    */
-  return opalFinesService.getDefendantAccountHeadingData(accountId).pipe(
-    tap((headingData) => {
-      accountStore.setAccountState(payloadService.transformAccountHeaderForStore(accountId, headingData));
-    }),
-    map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)),
-  );
+  return opalFinesService
+    .getDefendantAccountHeadingData(accountId)
+    .pipe(map((headingData) => payloadService.transformPayload(headingData, FINES_ACC_MAP_TRANSFORM_ITEMS_CONFIG)));
 };
