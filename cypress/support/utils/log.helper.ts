@@ -23,6 +23,7 @@ export type LogScope =
   | 'flow'
   | 'info'
   | 'input'
+  | 'intercept'
   | 'locator'
   | 'match'
   | 'method'
