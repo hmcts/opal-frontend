@@ -1,5 +1,12 @@
 // cypress/support/utils/payloads.ts
-export type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay' | 'failedAdultOrYouthOnly' | 'failedCompany';
+export type DefendantType =
+  | 'company'
+  | 'adultOrYouthOnly'
+  | 'pgToPay'
+  | 'failedAdultOrYouthOnly'
+  | 'failedCompany'
+  | 'fixedPenalty'
+  | 'fixedPenaltyCompany';
 
 /** Resolve DRAFT fixture file name for POST /draft-accounts. Adjust names if yours differ. */
 export function getDraftPayloadFileForAccountType(type: DefendantType): string {
@@ -9,6 +16,8 @@ export function getDraftPayloadFileForAccountType(type: DefendantType): string {
     pgToPay: 'parentOrGuardianPayload.json',
     failedAdultOrYouthOnly: 'failedAdultOrYouthOnlyPayload.json',
     failedCompany: 'failedCompanyPayload.json',
+    fixedPenalty: 'fixedPenaltyPayload.json',
+    fixedPenaltyCompany: 'fixedPenaltyCompanyPayload.json',
   };
   return map[type];
 }

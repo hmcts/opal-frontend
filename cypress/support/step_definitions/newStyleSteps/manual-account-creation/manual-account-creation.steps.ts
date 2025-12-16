@@ -239,6 +239,11 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
   log('navigate', 'Opening task', { taskName });
   flow().openTaskFromAccountDetails(taskName);
 });
+
+When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, header: string) => {
+  log('navigate', 'Opening task with custom header', { taskName, header });
+  flow().openTaskFromAccountDetails(taskName, header);
+});
 /**
  * @step Asserts the status text for a task list item after returning to account details.
  * @description Clicks Return, waits for Account details, then checks the task status.
@@ -357,6 +362,20 @@ When('I complete manual account creation with the following fields and defaults:
   log('flow', 'Completing full manual account creation from composite table');
   flow().completeManualAccountWithDefaults(table.raw());
 });
+
+/**
+ * @step Completes manual account creation fields using a composite table with a custom Account details header.
+ * @description Use when the Account details header is the defendant/company name (e.g., rejected accounts).
+ * @param header - Expected Account details page header text.
+ * @param table - DataTable with columns: Section | Field | Value | Imposition (optional).
+ */
+When(
+  'I complete manual account creation with the following fields and defaults for account header {string}:',
+  (header: string, table: DataTable) => {
+    log('flow', 'Completing manual account creation with custom header', { header });
+    flow().completeManualAccountWithDefaults(table.raw(), header);
+  },
+);
 
 /**
  * @step Completes court details and remains on the form (navigation handled by caller).
@@ -752,6 +771,25 @@ Then('the task statuses are:', (table: DataTable) => {
   }));
   log('assert', 'Checking task status from table', { statuses });
   flow().assertTaskStatuses(statuses);
+});
+
+/**
+ * @step Asserts task statuses with a specific Account details header.
+ * @description Checks task statuses on Account details using a field/value table and custom header.
+ * @param header - Expected Account details header (e.g., defendant name on rejected accounts).
+ * @param table - DataTable of task name to status pairs.
+ * @example
+ *   Then the task statuses for account header "John Smith" are:
+ *     | Court details   | Provided    |
+ *     | Payment terms   | Not provided |
+ */
+Then('the task statuses for account header {string} are:', (header: string, table: DataTable) => {
+  const statuses = table.rows().map(([task, status]) => ({
+    task: task as ManualAccountTaskName,
+    status,
+  }));
+  log('assert', 'Checking task status from table with custom header', { header, statuses });
+  flow().assertTaskStatuses(statuses, header);
 });
 /**
  * @step Asserts a single task status while on Account details.

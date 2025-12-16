@@ -27,6 +27,9 @@ const resolveSummaryListId = (section: string): string => {
   if (normalized.includes('company details')) return 'companyDetails';
   if (normalized.includes('parent or guardian')) return 'parentGuardianDetails';
   if (normalized.includes('defendant details') || normalized.includes('personal details')) return 'personalDetails';
+  if (normalized.includes('contact details')) return 'contactDetails';
+  if (normalized.includes('payment terms')) return 'paymentTerms';
+  if (normalized.includes('account comments')) return 'accountCommentsAndNotes';
   if (normalized.includes('employer details')) return 'employerDetails';
   throw new Error(`Unsupported review summary section: ${section}`);
 };
@@ -37,6 +40,11 @@ const resolveSummaryListId = (section: string): string => {
 When('I check the manual account details', () => {
   log('step', 'Checking account details from task list');
   macFlow().checkManualAccountDetails();
+});
+
+When('I check the manual account details for account header {string}', (header: string) => {
+  log('step', 'Checking account details from task list with custom header', { header });
+  macFlow().checkManualAccountDetails(header);
 });
 
 /**

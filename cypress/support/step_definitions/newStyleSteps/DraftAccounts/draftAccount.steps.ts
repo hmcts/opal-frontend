@@ -23,14 +23,14 @@
 
 import { Given } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { createDraftAndSetStatus } from '../../../e2e/functional/opal/actions/draft-account.api';
-import { log } from '../../utils/log.helper';
+import { createDraftAndSetStatus } from '../../../../e2e/functional/opal/actions/draft-account.api';
+import { log } from '../../../utils/log.helper';
 
 /**
  * @typedef AccountType
- * Union of all supported draft account types.
+ * Union of all supported draft account types (including fixed penalty variants).
  */
-type AccountType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
+type AccountType = 'company' | 'adultOrYouthOnly' | 'pgToPay' | 'fixedPenalty' | 'fixedPenaltyCompany';
 
 /**
  * Unified implementation used by all step aliases.
@@ -89,6 +89,6 @@ Given(
     log('step', `Create ${accountType} draft, status ${status}`, { accountType, status, data });
 
     // Perform the draft creation and set the desired status.
-    createDraftAndPrepareForPublishing(accountType, table, status);
+    return createDraftAndPrepareForPublishing(accountType, table, status);
   },
 );

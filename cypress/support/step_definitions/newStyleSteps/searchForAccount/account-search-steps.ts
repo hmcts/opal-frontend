@@ -6,20 +6,20 @@
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/account-enquiry.flow';
-import { AccountSearchFlow } from '../../../e2e/functional/opal/flows/account-search.flow';
+import { AccountEnquiryFlow } from '../../../../e2e/functional/opal/flows/account-enquiry.flow';
+import { AccountSearchFlow } from '../../../../e2e/functional/opal/flows/account-search.flow';
 // Actions
-import { AccountSearchIndividualsActions } from '../../../e2e/functional/opal/actions/search/search.individuals.actions';
-import { AccountSearchCompanyActions } from '../../../e2e/functional/opal/actions/search/search.companies.actions';
-import { AccountSearchMinorCreditorsActions } from '../../../e2e/functional/opal/actions/search/search.minor-creditors.actions';
-import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions/search/search.common.actions';
-import { AccountSearchProblemActions } from '../../../e2e/functional/opal/actions/search/search.problem.actions';
-import { ResultsActions } from '../../../e2e/functional/opal/actions/search.results.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
-import { DashboardActions } from '../../../e2e/functional/opal/actions/dashboard.actions';
-import { MinorCreditorType } from '../../utils/macFieldResolvers';
+import { AccountSearchIndividualsActions } from '../../../../e2e/functional/opal/actions/search/search.individuals.actions';
+import { AccountSearchCompanyActions } from '../../../../e2e/functional/opal/actions/search/search.companies.actions';
+import { AccountSearchMinorCreditorsActions } from '../../../../e2e/functional/opal/actions/search/search.minor-creditors.actions';
+import { AccountSearchCommonActions } from '../../../../e2e/functional/opal/actions/search/search.common.actions';
+import { AccountSearchProblemActions } from '../../../../e2e/functional/opal/actions/search/search.problem.actions';
+import { ResultsActions } from '../../../../e2e/functional/opal/actions/search.results.actions';
+import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
+import { DashboardActions } from '../../../../e2e/functional/opal/actions/dashboard.actions';
+import { MinorCreditorType } from '../../../utils/macFieldResolvers';
 
-import { log } from '../../utils/log.helper';
+import { log } from '../../../utils/log.helper';
 
 // Factory pattern for isolated, stateless flow instances
 const flow = () => new AccountEnquiryFlow();
