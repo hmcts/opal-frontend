@@ -487,7 +487,7 @@ describe('Defendant Account Summary - At a Glance Tab', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, '1');
 
       setupAccountEnquiryComponent(componentProperties);
-      // Verify that link not present
+      // Verify the Change or Add Comment link not present
       cy.get(DOM.linkText).should('not.exist');
     },
   );
