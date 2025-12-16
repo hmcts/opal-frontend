@@ -7,7 +7,7 @@ import { DefendantType } from '../../../../e2e/functional/opal/actions/manual-ac
 import { FixedPenaltyFlow } from '../../../../e2e/functional/opal/flows/fixed-penalty.flow';
 import { FixedPenaltyDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-details.actions';
 import { FixedPenaltyReviewActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-review.actions';
-import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-accounts.intercepts';
+import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
 import { log } from '../../../utils/log.helper';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { installDraftAccountCleanup } from '../../../../support/draftAccounts';

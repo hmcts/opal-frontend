@@ -16,11 +16,11 @@ import merge from 'lodash/merge';
 import get from 'lodash/get';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
-import { convertDataTableToNestedObject } from '../../../../support/utils/table';
-import { getDraftPayloadFileForAccountType, type DefendantType } from '../../../../support/utils/payloads';
-import { readDraftIdFromBody } from '../../../../support/draftAccounts';
-import { createScopedLogger } from '../../../../support/utils/log.helper';
-import { DraftAccountsInterceptActions } from './draft-accounts.intercepts';
+import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
+import { getDraftPayloadFileForAccountType, type DefendantType } from '../../../../../support/utils/payloads';
+import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { DraftAccountsInterceptActions } from '../draft-account/draft-accounts.intercepts';
 
 const log = createScopedLogger('DraftAccountApiActions');
 const intercepts = new DraftAccountsInterceptActions();
@@ -178,9 +178,7 @@ export function createDraftAndSetStatus(
               body: postResp.body,
               requestBody,
             });
-            cy.log(
-              `POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`,
-            );
+            cy.log(`POST /draft-accounts -> ${postResp.status}: ${JSON.stringify(postResp.body).slice(0, 500)}`);
             if (postResp.status !== 201) {
               log('assert', 'POST /draft-accounts failed', {
                 status: postResp.status,

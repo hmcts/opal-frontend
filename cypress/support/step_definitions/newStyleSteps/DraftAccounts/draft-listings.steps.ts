@@ -8,11 +8,11 @@ import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import {
   CreateManageDraftsActions,
   CreateManageTab,
-} from '../../../../e2e/functional/opal/actions/create-manage-drafts.actions';
+} from '../../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
 import {
   CheckAndValidateDraftsActions,
   CheckAndValidateTab,
-} from '../../../../e2e/functional/opal/actions/check-and-validate-drafts.actions';
+} from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-drafts.actions';
 import { DraftAccountsTableLocators } from '../../../../shared/selectors/draft-accounts-table.locators';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { log } from '../../../utils/log.helper';

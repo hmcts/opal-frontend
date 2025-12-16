@@ -1,4 +1,4 @@
-import { createScopedSyncLogger } from '../../../../support/utils/log.helper';
+import { createScopedSyncLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedSyncLogger('DraftAccountsInterceptActions');
 

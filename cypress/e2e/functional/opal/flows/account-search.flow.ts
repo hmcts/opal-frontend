@@ -10,7 +10,7 @@ import { AccountSearchMinorCreditorsActions } from '../actions/search/search.min
 import { AccountSearchMajorCreditorsActions } from '../actions/search/search.major-creditors.actions';
 import { AccountSearchCommonActions } from '../actions/search/search.common.actions';
 import { AccountSearchProblemActions } from '../actions/search/search.problem.actions';
-import { ResultsActions } from '../actions/search.results.actions';
+import { ResultsActions } from '../actions/search/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
 import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
 
@@ -537,16 +537,16 @@ export class AccountSearchFlow {
     // ───────────────────────────────
     const hasIndividualData = Boolean(
       map['individual last name'] ||
-      map['first names'] ||
-      map['date of birth'] ||
-      map['dob'] ||
-      map['national insurance number'] ||
-      map['ni number'] ||
-      map['address line 1'] ||
-      map['postcode'] ||
-      map['last name exact match'] ||
-      map['first names exact match'] ||
-      map['include aliases'],
+        map['first names'] ||
+        map['date of birth'] ||
+        map['dob'] ||
+        map['national insurance number'] ||
+        map['ni number'] ||
+        map['address line 1'] ||
+        map['postcode'] ||
+        map['last name exact match'] ||
+        map['first names exact match'] ||
+        map['include aliases'],
     );
 
     if (!hasIndividualData) {

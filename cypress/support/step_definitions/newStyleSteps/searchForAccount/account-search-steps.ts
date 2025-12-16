@@ -14,7 +14,7 @@ import { AccountSearchCompanyActions } from '../../../../e2e/functional/opal/act
 import { AccountSearchMinorCreditorsActions } from '../../../../e2e/functional/opal/actions/search/search.minor-creditors.actions';
 import { AccountSearchCommonActions } from '../../../../e2e/functional/opal/actions/search/search.common.actions';
 import { AccountSearchProblemActions } from '../../../../e2e/functional/opal/actions/search/search.problem.actions';
-import { ResultsActions } from '../../../../e2e/functional/opal/actions/search.results.actions';
+import { ResultsActions } from '../../../../e2e/functional/opal/actions/search/search.results.actions';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { DashboardActions } from '../../../../e2e/functional/opal/actions/dashboard.actions';
 import { MinorCreditorType } from '../../../utils/macFieldResolvers';

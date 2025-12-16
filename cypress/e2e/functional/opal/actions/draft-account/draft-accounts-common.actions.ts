@@ -1,32 +1,33 @@
-import { DraftAccountsTableLocators as L } from '../../../../shared/selectors/draft-accounts-table.locators';
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { DraftAccountsTableLocators as L } from '../../../../../shared/selectors/draft-accounts-table.locators';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 /**
  * @fileoverview Shared actions for draft account listings across inputter and checker views.
- * Provides tab switching, navigation, and table assertions used by both Create/Manage and Check/Validate flows.
+ * Provides navigation helpers and table assertions used by both Create/Manage and Check/Validate flows.
  */
-import { CommonActions } from './common/common.actions';
+import { CommonActions } from '../common/common.actions';
 
-const log = createScopedLogger('DraftAccountsListActions');
-
-type DraftTableColumn =
+export type DraftAccountsTableColumn =
   | 'Defendant'
   | 'Date of birth'
   | 'Date failed'
+  | 'Approved'
   | 'Created'
   | 'Account'
   | 'Account type'
   | 'Business unit'
   | 'Submitted by';
 
+const log = createScopedLogger('DraftAccountsCommonActions');
+
 /**
- * Actions for interacting with the Create and Manage Draft Accounts listings.
+ * Actions shared across draft account listings (Create & Manage / Check & Validate).
  *
  * @remarks
  * - Supports both the main tabbed view and the View all rejected accounts page.
  * - Relies on the shared sortable table used across tabs for consistent selectors.
  */
-export class DraftAccountsListActions {
-  private readonly common = new CommonActions();
+export class DraftAccountsCommonActions {
+  protected readonly common = new CommonActions();
 
   /**
    * Opens a draft account by defendant/company name.
@@ -108,10 +109,17 @@ export class DraftAccountsListActions {
    * @example
    *   list.assertColumnContains('Defendant', 'TEST');
    */
-  assertColumnContains(column: DraftTableColumn, expectedText: string): void {
+  assertColumnContains(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
     log('assert', 'Asserting draft table column contains text', { column, expectedText });
     cy.get(selector, this.common.getTimeoutOptions()).should('contain.text', expectedText);
+  }
+
+  /**
+   * Asserts the Account type column contains the expected text.
+   */
+  assertAccountType(expected: string): void {
+    cy.get(L.cells.accountType, this.common.getTimeoutOptions()).should('contain.text', expected);
   }
 
   /**
@@ -128,6 +136,12 @@ export class DraftAccountsListActions {
       throw new Error(`Row position must be >= 1, received ${position}`);
     }
 
+    const normalize = (text: string) =>
+      text
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+
     log('assert', 'Asserting draft table row values', { position, expectedValues });
     cy.get(L.rows, this.common.getTimeoutOptions())
       .eq(position - 1)
@@ -139,12 +153,55 @@ export class DraftAccountsListActions {
           if (expected === undefined) {
             return;
           }
-          const text = $cell.text().replace(/\s+/g, ' ').trim();
-          if (/days ago/i.test(expected)) {
+          const text = normalize($cell.text());
+          const expectedNormalized = normalize(expected);
+          if (/days ago/i.test(expectedNormalized)) {
             expect(text.toLowerCase()).to.include('days ago');
             return;
           }
-          expect(text).to.include(expected);
+          expect(text).to.include(expectedNormalized);
+        });
+      });
+  }
+
+  /**
+   * Asserts a row contains expected column/value pairs (order-agnostic).
+   * @param position - 1-based row index.
+   * @param expectations - Map of column label to expected text.
+   */
+  assertRowColumns(position: number, expectations: Record<DraftAccountsTableColumn, string>): void {
+    if (position < 1) {
+      throw new Error(`Row position must be >= 1, received ${position}`);
+    }
+
+    const normalize = (text: string) =>
+      text
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const approvedSummaries = (Cypress.env('approvedDraftSummaries') as any[]) || [];
+
+    log('assert', 'Asserting draft table row column values', { position, expectations });
+    cy.get(L.rows, this.common.getTimeoutOptions())
+      .eq(position - 1)
+      .scrollIntoView()
+      .within(() => {
+        Object.entries(expectations).forEach(([column, value]) => {
+          const selector = this.resolveColumnSelector(column as DraftAccountsTableColumn);
+          let expectedNormalized = normalize(value);
+          if (column.toLowerCase() === 'approved' && expectedNormalized.toLowerCase() === 'days ago') {
+            const computed = normalize(approvedSummaries[position - 1]?.__approvedDays || '');
+            if (computed) {
+              expectedNormalized = computed;
+            }
+          }
+          cy.get(selector, this.common.getTimeoutOptions()).should(($cells) => {
+            const cellTexts = $cells.map((_, el) => normalize(Cypress.$(el).text())).toArray();
+            expect(cellTexts.some((text) => text.includes(expectedNormalized))).to.equal(
+              true,
+              `Expected "${expectedNormalized}" in ${column}`,
+            );
+          });
         });
       });
   }
@@ -155,26 +212,45 @@ export class DraftAccountsListActions {
    * @returns Selector targeting cells within the specified column.
    * @throws Error when the column label is unsupported.
    */
-  private resolveColumnSelector(column: DraftTableColumn): string {
-    switch (column) {
-      case 'Defendant':
+  protected resolveColumnSelector(column: DraftAccountsTableColumn): string {
+    const normalized = column.toLowerCase();
+    switch (normalized) {
+      case 'defendant':
         return L.cells.defendant;
-      case 'Date of birth':
+      case 'date of birth':
+      case 'dob':
         return L.cells.dateOfBirth;
-      case 'Date failed':
+      case 'date failed':
         return L.cells.changedDate;
-      case 'Created':
+      case 'approved':
+      case 'created':
         return L.cells.createdDate;
-      case 'Account':
+      case 'account':
         return L.cells.accountLink;
-      case 'Account type':
+      case 'account type':
         return L.cells.accountType;
-      case 'Business unit':
+      case 'business unit':
         return L.cells.businessUnit;
-      case 'Submitted by':
+      case 'submitted by':
         return L.cells.submittedBy;
       default:
         throw new Error(`Unsupported column ${column}`);
     }
+  }
+
+  /**
+   * Opens the first draft account where the specified column contains the expected text.
+   * @param column - Column label.
+   * @param expectedText - Text to match within the column.
+   */
+  openFirstMatchInColumn(column: DraftAccountsTableColumn, expectedText: string): void {
+    const selector = this.resolveColumnSelector(column);
+    log('navigate', 'Opening first draft account matching column text', { column, expectedText });
+    cy.get(L.rows, this.common.getTimeoutOptions())
+      .find(selector)
+      .contains(expectedText)
+      .first()
+      .should('be.visible')
+      .click({ force: true });
   }
 }
