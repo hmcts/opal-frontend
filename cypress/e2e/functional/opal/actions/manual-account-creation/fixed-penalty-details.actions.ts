@@ -258,7 +258,17 @@ export class FixedPenaltyDetailsActions {
         else if (/place of offence/.test(field)) payload.offence.placeOfOffence = value;
         else if (/amount imposed/.test(field)) payload.offence.amountImposed = value;
         else if (/offence type/.test(field)) {
-          payload.offence.offenceType = value.toLowerCase().includes('vehicle') ? 'vehicle' : 'non-vehicle';
+          const normalizedType = value.trim().toLowerCase();
+          const isNonVehicle = /non[\s-]*vehicle/.test(normalizedType);
+          const isVehicle = /vehicle/.test(normalizedType);
+
+          if (isNonVehicle) {
+            payload.offence.offenceType = 'non-vehicle';
+          } else if (isVehicle) {
+            payload.offence.offenceType = 'vehicle';
+          } else {
+            payload.offence.offenceType = 'non-vehicle';
+          }
         }
         return;
       }
