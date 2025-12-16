@@ -80,6 +80,7 @@ export function interceptDefendantDetails(
 import { IOpalFinesAccountDefendantDetailsHeader } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 import { IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-fixed-penalty-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsPaymentTermsLatest } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-payment-terms-latest.interface';
+import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 
 /**
  * Intercepts the GET request for the defendant header summary in Cypress tests,
@@ -193,4 +194,20 @@ export function interceptPaymentTerms(
       },
     })
     .as('getPaymentTerms');
+}
+
+export function interceptEnforcementStatus(
+  accountId: String | number,
+  mockData: IOpalFinesAccountDefendantDetailsEnforcementTabRefData,
+  respHeaderEtag: string,
+) {
+  return cy
+    .intercept('GET', `/opal-fines-service/defendant-accounts/${accountId}/enforcement-status`, {
+      statusCode: 200,
+      body: mockData,
+      headers: {
+        ETag: respHeaderEtag,
+      },
+    })
+    .as('getEnforcementStatus');
 }

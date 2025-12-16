@@ -8,8 +8,8 @@ export interface IOpalFinesAccountDefendantDetailsEnforcementTabRefData {
   employer_flag: boolean;
   enforcement_override: {
     enforcement_override_result: {
-      enforcement_override_result_id: string;
-      enforcement_override_result_name: string;
+      enforcement_override_result_id: string | null;
+      enforcement_override_result_name: string | null;
     };
     enforcer: {
       enforcer_id: number;
