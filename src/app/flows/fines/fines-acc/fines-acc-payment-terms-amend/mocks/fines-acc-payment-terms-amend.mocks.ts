@@ -22,8 +22,8 @@ export const MOCK_FORM_DATA: IFinesAccPaymentTermsAmendForm = {
 
 export const MOCK_PAYLOAD: IOpalFinesAmendPaymentTermsPayload = {
   payment_terms: {
-    jail_days: 30,
-    suspended_committal_date: null,
+    days_in_default: 30,
+    date_days_in_default_imposed: null,
     reason_for_extension: 'Payment plan adjustment',
     extension: true,
     payment_terms_type: { payment_terms_type_code: 'B' },
@@ -32,6 +32,6 @@ export const MOCK_PAYLOAD: IOpalFinesAmendPaymentTermsPayload = {
     lump_sum_amount: null,
     instalment_amount: null,
   },
-  payment_card_requested: null,
+  request_payment_card: null,
   generate_payment_terms_change_letter: null,
 };

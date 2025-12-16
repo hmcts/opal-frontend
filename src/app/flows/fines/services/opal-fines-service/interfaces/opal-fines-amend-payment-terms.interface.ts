@@ -16,8 +16,8 @@ export interface IOpalFinesInstalmentPeriod {
  * Interface for payment terms object within the amend payload
  */
 export interface IOpalFinesAmendPaymentTerms {
-  jail_days: number | null; // Days in default
-  suspended_committal_date: string | null; // Date days in default imposed
+  days_in_default: number | null; // Days in default
+  date_days_in_default_imposed: string | null; // Date days in default imposed
   reason_for_extension: string | null;
   extension: boolean | null; // Used to determine whether conditional 'Payment terms amendments' panel is displayed
   payment_terms_type: IOpalFinesPaymentTermsType | null; // Payment Terms type object
@@ -32,7 +32,7 @@ export interface IOpalFinesAmendPaymentTerms {
  */
 export interface IOpalFinesAmendPaymentTermsPayload {
   payment_terms: IOpalFinesAmendPaymentTerms;
-  payment_card_requested: boolean | null; // Flag whether a payment card has been requested for this account
+  request_payment_card: boolean | null; // Flag whether a payment card has been requested for this account
   generate_payment_terms_change_letter: boolean | null;
 }
 

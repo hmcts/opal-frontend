@@ -8,8 +8,8 @@ import {
  */
 export const OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK: IOpalFinesAmendPaymentTermsPayload = {
   payment_terms: {
-    jail_days: 30,
-    suspended_committal_date: null,
+    days_in_default: 30,
+    date_days_in_default_imposed: null,
     reason_for_extension: 'Payment plan adjustment',
     extension: true,
     payment_terms_type: { payment_terms_type_code: 'B' },
@@ -18,7 +18,7 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK: IOpalFines
     lump_sum_amount: null,
     instalment_amount: null,
   },
-  payment_card_requested: null,
+  request_payment_card: null,
   generate_payment_terms_change_letter: null,
 };
 
@@ -27,8 +27,8 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK: IOpalFines
  */
 export const OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK: IOpalFinesAmendPaymentTermsPayload = {
   payment_terms: {
-    jail_days: null,
-    suspended_committal_date: null,
+    days_in_default: null,
+    date_days_in_default_imposed: null,
     reason_for_extension: 'Updated to lump sum payment',
     extension: true,
     payment_terms_type: { payment_terms_type_code: 'A' },
@@ -37,7 +37,7 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK: IOpalFinesAme
     lump_sum_amount: 500.0,
     instalment_amount: null,
   },
-  payment_card_requested: false,
+  request_payment_card: false,
   generate_payment_terms_change_letter: true,
 };
 
@@ -46,8 +46,8 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_LUMP_SUM_PAYLOAD_MOCK: IOpalFinesAme
  */
 export const OPAL_FINES_AMEND_PAYMENT_TERMS_INSTALMENT_PAYLOAD_MOCK: IOpalFinesAmendPaymentTermsPayload = {
   payment_terms: {
-    jail_days: null,
-    suspended_committal_date: null,
+    days_in_default: null,
+    date_days_in_default_imposed: null,
     reason_for_extension: 'Set up instalment plan',
     extension: true,
     payment_terms_type: { payment_terms_type_code: 'C' },
@@ -56,7 +56,7 @@ export const OPAL_FINES_AMEND_PAYMENT_TERMS_INSTALMENT_PAYLOAD_MOCK: IOpalFinesA
     lump_sum_amount: null,
     instalment_amount: 50.0,
   },
-  payment_card_requested: true,
+  request_payment_card: true,
   generate_payment_terms_change_letter: false,
 };
 

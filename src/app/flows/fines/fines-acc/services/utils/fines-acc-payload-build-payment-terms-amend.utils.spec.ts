@@ -23,8 +23,8 @@ describe('buildPaymentTermsAmendPayload', () => {
 
     expect(result).toEqual({
       payment_terms: {
-        jail_days: 30,
-        suspended_committal_date: null,
+        days_in_default: 30,
+        date_days_in_default_imposed: null,
         reason_for_extension: 'Payment plan adjustment',
         extension: true,
         payment_terms_type: { payment_terms_type_code: 'B' }, // Pay in full is 'B' with no lump sum amount
@@ -33,7 +33,7 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: null,
         instalment_amount: null,
       },
-      payment_card_requested: null,
+      request_payment_card: null,
       generate_payment_terms_change_letter: null,
     });
   });
@@ -59,8 +59,8 @@ describe('buildPaymentTermsAmendPayload', () => {
 
     expect(result).toEqual({
       payment_terms: {
-        jail_days: null,
-        suspended_committal_date: null,
+        days_in_default: null,
+        date_days_in_default_imposed: null,
         reason_for_extension: null,
         extension: true,
         payment_terms_type: { payment_terms_type_code: 'I' },
@@ -69,7 +69,7 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: null,
         instalment_amount: 50.0,
       },
-      payment_card_requested: null,
+      request_payment_card: null,
       generate_payment_terms_change_letter: null,
     });
   });
@@ -95,8 +95,8 @@ describe('buildPaymentTermsAmendPayload', () => {
 
     expect(result).toEqual({
       payment_terms: {
-        jail_days: 15,
-        suspended_committal_date: null,
+        days_in_default: 15,
+        date_days_in_default_imposed: null,
         reason_for_extension: 'Change to lump sum plus instalments',
         extension: true,
         payment_terms_type: { payment_terms_type_code: 'B' },
@@ -105,7 +105,7 @@ describe('buildPaymentTermsAmendPayload', () => {
         lump_sum_amount: 200.0,
         instalment_amount: 75.0,
       },
-      payment_card_requested: null,
+      request_payment_card: null,
       generate_payment_terms_change_letter: null,
     });
   });

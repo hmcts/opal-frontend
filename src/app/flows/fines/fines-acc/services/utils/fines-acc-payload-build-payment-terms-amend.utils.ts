@@ -89,8 +89,8 @@ export function buildPaymentTermsAmendPayloadUtil(
 
   return {
     payment_terms: {
-      jail_days: formData.facc_payment_terms_default_days_in_jail,
-      suspended_committal_date: formData.facc_payment_terms_suspended_committal_date,
+      days_in_default: formData.facc_payment_terms_default_days_in_jail,
+      date_days_in_default_imposed: formData.facc_payment_terms_suspended_committal_date,
       reason_for_extension: formData.facc_payment_terms_reason_for_change,
       extension: true,
       payment_terms_type: paymentTermsTypeCode
@@ -107,7 +107,7 @@ export function buildPaymentTermsAmendPayloadUtil(
       lump_sum_amount: mapLumpSumAmount(formData),
       instalment_amount: mapInstalmentAmount(formData),
     },
-    payment_card_requested: formData.facc_payment_terms_payment_card_request,
+    request_payment_card: formData.facc_payment_terms_payment_card_request,
     generate_payment_terms_change_letter: formData.facc_payment_terms_change_letter,
   };
 }
