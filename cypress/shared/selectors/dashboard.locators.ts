@@ -23,4 +23,10 @@ export const DashboardLocators = {
 
   /** Link to open the Account Search interface. */
   searchForAnAccountLink: '#finesSaSearchLink',
+
+  /** Inputter navigation link to Create and Manage Draft Accounts. */
+  createAndManageDraftAccountsLink: '#finesCavInputterLink',
+
+  /** Checker navigation link to Check and Validate Draft Accounts. */
+  checkAndValidateDraftAccountsLink: '#finesCavCheckerLink',
 };

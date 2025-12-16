@@ -119,7 +119,7 @@ export function recordCreatedId(id: number): void {
 
 /** Return the last created id or fail. */
 export function lastCreatedIdOrFail(): number {
-  const fromArray = createdIds.at(-1);
+  const fromArray = createdIds.length ? createdIds[createdIds.length - 1] : undefined;
   const fromEnv = Cypress.env('lastDraftAccountId');
   const envNum = typeof fromEnv === 'string' && /^\d+$/.test(fromEnv) ? Number(fromEnv) : undefined;
   const candidate = fromArray ?? envNum;
