@@ -80,14 +80,14 @@ export class FixedPenaltyFlow {
   }
 
   /**
-   * Submits from review.
+   * Submit for review.
    */
   submitForReview(): void {
     this.review.submitForReview();
   }
 
   /**
-   * Submits from review and captures the created account id.
+   * Submit for review and captures the created account id.
    */
   submitForReviewAndCapture(): void {
     this.review.submitForReviewAndCapture();
