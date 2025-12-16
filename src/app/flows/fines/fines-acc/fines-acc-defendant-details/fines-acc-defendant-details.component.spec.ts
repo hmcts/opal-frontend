@@ -23,6 +23,7 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../fines-acc-part
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { OPAL_FINES_RESULT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-ref-data.mock';
+import { OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-data-non-snake-case.mock';
 
 describe('FinesAccDefendantDetailsComponent', () => {
   let component: FinesAccDefendantDetailsComponent;
@@ -70,6 +71,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       'clearCache',
       'getResult',
       'getDefendantAccountFixedPenalty',
+      'getCourtById',
     ]);
     mockOpalFinesService.getDefendantAccountHeadingData.and.returnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK));
     mockOpalFinesService.getDefendantAccountAtAGlance.and.returnValue(
@@ -95,6 +97,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       of(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK),
     );
     mockOpalFinesService.getResult.and.returnValue(of(OPAL_FINES_RESULT_REF_DATA_MOCK));
+    mockOpalFinesService.getCourtById.and.returnValue(of(OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -182,6 +185,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
     // Subscribe to trigger the pipe execution
     component.tabEnforcement$.subscribe();
     expect(mockOpalFinesService.getDefendantAccountEnforcementTabData).toHaveBeenCalled();
+    expect(mockOpalFinesService.getCourtById).toHaveBeenCalledWith(OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK.courtId);
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
   });
 

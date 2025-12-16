@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   IOpalFinesCourt,
+  IOpalFinesCourtNonSnakeCase,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import {
@@ -51,6 +52,7 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mo
 import { OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK } from './mocks/opal-fines-creditor-account-response-minor-creditor.mock';
 import { OPAL_FINES_CREDITOR_ACCOUNT_SEARCH_PARAMS_INDIVIDUAL_MOCK } from './mocks/opal-fines-creditor-account-search-params.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PARENT_OR_GUARDIAN_TAB_REF_DATA_MOCK } from './mocks/opal-fines-account-defendant-details-parent-or-guardian-tab-ref-data.mock';
+import { OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-court-data-non-snake-case.mock';
 import { of } from 'rxjs';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from './mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { IOpalFinesResultRefData } from './interfaces/opal-fines-result-ref-data.interface';
@@ -188,12 +190,58 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should send a GET request to court data by id API', () => {
+    const courtId = 123;
+    const mockCourtData: IOpalFinesCourtNonSnakeCase = OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}/${courtId}`;
+
+    service.getCourtById(courtId).subscribe((response) => {
+      expect(response).toEqual(mockCourtData);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockCourtData);
+  });
+
+  it('should return cached response for the same court id', () => {
+    const courtId = 123;
+    const mockCourtData: IOpalFinesCourtNonSnakeCase = OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}/${courtId}`;
+
+    service.getCourtById(courtId).subscribe((response) => {
+      expect(response).toEqual(mockCourtData);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockCourtData);
+
+    // Make a second call to getCourtById with the same id
+    service.getCourtById(courtId).subscribe((response) => {
+      expect(response).toEqual(mockCourtData);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
+  });
+
   it('should return the court name and code in a pretty format', () => {
     const court: IOpalFinesCourt = OPAL_FINES_COURT_REF_DATA_MOCK.refData[0];
 
     const result = service.getCourtPrettyName(court);
 
     expect(result).toEqual(`${court.name} (${court.court_code})`);
+  });
+
+  it('should return the court name and code in a pretty format (non snake case)', () => {
+    const court: IOpalFinesCourtNonSnakeCase = OPAL_FINES_COURT_NON_SNAKE_CASE_MOCK;
+
+    const result = service.getCourtPrettyName(court);
+
+    expect(result).toEqual(`${court.name} (${court.courtCode})`);
   });
 
   it('should send a GET request to court ref data API', () => {

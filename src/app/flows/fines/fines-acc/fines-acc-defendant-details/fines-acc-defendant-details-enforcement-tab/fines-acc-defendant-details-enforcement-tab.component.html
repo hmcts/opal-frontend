@@ -4,33 +4,72 @@
   <opal-lib-govuk-summary-card-list cardTitle="Enforcement overview" summaryCardListId="enforcement-overview">
     <ng-container content>
       <opal-lib-govuk-summary-list summaryListId="enforcementOverviewDetails">
-        <div
-          opal-lib-govuk-summary-list-row
-          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          summaryListId="enforcementOverviewDetails"
-          summaryListRowId="collection_order_status"
-        >
-          <ng-container name>Collection order status</ng-container>
-          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-        </div>
-        <div
-          opal-lib-govuk-summary-list-row
-          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          summaryListId="enforcementOverviewDetails"
-          summaryListRowId="days_in_default"
-        >
-          <ng-container name>Days in default</ng-container>
-          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-        </div>
-        <div
-          opal-lib-govuk-summary-list-row
-          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          summaryListId="enforcementOverviewDetails"
-          summaryListRowId="enforcement_court"
-        >
-          <ng-container name>Enforcement court</ng-container>
-          <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
-        </div>
+        @if (tabData.enforcement_overview.collection_order) {
+          <div
+            opal-lib-govuk-summary-list-row
+            [class]="
+              hasAccountMaintenancePermission
+                ? 'govuk-summary-list__row'
+                : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
+            "
+            summaryListId="enforcementOverviewDetails"
+            summaryListRowId="collection_order_status"
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+          >
+            <ng-container name>Collection order status</ng-container>
+            <ng-container value>
+              @if (tabData.enforcement_overview.collection_order.collection_order_flag) {
+                <opal-lib-moj-badge badgeId="collectionOrderStatusBadge" [badgeClasses]="style.badgeBlue"
+                  >Collection Order</opal-lib-moj-badge
+                >
+              } @else {
+                {{ 'No collection order' }}
+              }
+            </ng-container>
+            @if (hasAccountMaintenancePermission) {
+              <ng-container action>Change</ng-container>
+            }
+          </div>
+        }
+        @if (tabData.enforcement_overview.days_in_default) {
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="enforcementOverviewDetails"
+            summaryListRowId="days_in_default"
+          >
+            <ng-container name>Days in default</ng-container>
+            <ng-container value>
+              @let daysText = tabData.enforcement_overview.days_in_default === 1 ? 'day' : 'days';
+              {{ tabData.enforcement_overview.days_in_default }} {{ daysText }}
+            </ng-container>
+          </div>
+        }
+        @if (enforcementCourt) {
+          <div
+            opal-lib-govuk-summary-list-row
+            [class]="
+              hasAccountMaintenancePermission
+                ? 'govuk-summary-list__row'
+                : 'govuk-summary-list__row govuk-summary-list__row--no-actions'
+            "
+            summaryListId="enforcementOverviewDetails"
+            summaryListRowId="enforcement_court"
+            [actionEnabled]="hasAccountMaintenancePermission ? true : false"
+          >
+            <ng-container name>Enforcement court</ng-container>
+            <ng-container value>
+              @if (enforcementCourtPrettyName) {
+                {{ enforcementCourtPrettyName }}
+              } @else {
+                <app-fines-not-provided></app-fines-not-provided>
+              }
+            </ng-container>
+            @if (hasAccountMaintenancePermission) {
+              <ng-container action>Change</ng-container>
+            }
+          </div>
+        }
       </opal-lib-govuk-summary-list>
     </ng-container>
   </opal-lib-govuk-summary-card-list>

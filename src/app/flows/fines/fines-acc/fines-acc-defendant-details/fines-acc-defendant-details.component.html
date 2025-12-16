@@ -244,6 +244,7 @@
     @if (tabEnforcement$ | async; as tabData) {
       <app-fines-acc-defendant-details-enforcement-tab
         [tabData]="tabData"
+        [enforcementCourt]="enforcementCourt"
         [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
         [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
       ></app-fines-acc-defendant-details-enforcement-tab>
