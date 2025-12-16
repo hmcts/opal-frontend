@@ -473,7 +473,7 @@ describe('FinesMacAddOffenceComponent', () => {
       setupComponent(null);
 
       cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123456', { delay: 0 });
-      cy.wait('@getOffenceCode')
+      cy.wait('@getOffenceCode');
 
       cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist').click();
       cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('be.visible');
