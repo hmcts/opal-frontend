@@ -1,8 +1,10 @@
 // e2e/functional/opal/actions/search/search.problem.actions.ts
 
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { AccountSearchProblemLocators as L } from '../../../../../shared/selectors/account-search/account.search.problem.locators';
 import { CommonActions } from '../common/common.actions';
+
+const log = createScopedLogger('AccountSearchProblemActions');
 
 /**
  * Actions for the "There is a problem" / problem view shown when cross-section validation fails.

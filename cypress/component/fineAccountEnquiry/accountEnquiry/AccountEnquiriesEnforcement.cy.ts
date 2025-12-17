@@ -1,12 +1,9 @@
+import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
 import {
-  createDefendantHeaderMockWithName,
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
-  USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-  USER_STATE_MOCK_PERMISSION_ENF,
-  USER_STATE_MOCK_PERMISSION_MAINTENANCE,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from './constants/account_enquiry_enforcement_status_elements';
@@ -18,8 +15,6 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
-import { PERMISSIONS } from './mocks/permissions';
-import { userWithPermissions } from './mocks/user_state_factory';
 
 describe('Account Enquiry Enforcement Status', () => {
   beforeEach(() => {
@@ -178,24 +173,6 @@ describe('Account Enquiry Enforcement Status', () => {
       .should('contain.text', '—');
   });
 
-  it('Failing create user with function test for review', { tags: ['PO-1647'] }, () => {
-    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
-    headerMock.debtor_type = 'individual';
-    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
-
-    const accountId = headerMock.defendant_account_party_id;
-    interceptAuthenticatedUser();
-    //cy.interceptUserState(
-    //  userWithPermissions(PERMISSIONS.ACCOUNT_ENQUIRY, PERMISSIONS.ACCOUNT_ENQUIRY_ACCOUNT_NOTES),
-    //);
-    interceptDefendantHeader(accountId, headerMock, '123');
-    interceptEnforcementStatus(accountId, enforcementMock, '123');
-    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
-    cy.get('router-outlet').should('exist');
-
-    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
-  });
-
   it(
     'AC2: Action column displayed and add enforcement action link visible when user has Enter Enforcement permission',
     { tags: ['PO-1647'] },
@@ -203,10 +180,15 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 10,
+        permission_name: 'Enter Enforcement',
+      });
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_ENF);
+      interceptUserState(newUserState);
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptEnforcementStatus(accountId, enforcementMock, '123');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
@@ -225,10 +207,15 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_MAINTENANCE);
+      interceptUserState(newUserState);
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptEnforcementStatus(accountId, enforcementMock, '123');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
@@ -271,10 +258,15 @@ describe('Account Enquiry Enforcement Status', () => {
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
       enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
       enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_MAINTENANCE);
+      interceptUserState(newUserState);
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptEnforcementStatus(accountId, enforcementMock, '123');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
@@ -293,10 +285,15 @@ describe('Account Enquiry Enforcement Status', () => {
       let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
       headerMock.debtor_type = 'individual';
       let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
 
       const accountId = headerMock.defendant_account_party_id;
       interceptAuthenticatedUser();
-      interceptUserState(USER_STATE_MOCK_PERMISSION_MAINTENANCE);
+      interceptUserState(newUserState);
       interceptDefendantHeader(accountId, headerMock, '123');
       interceptEnforcementStatus(accountId, enforcementMock, '123');
       setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });

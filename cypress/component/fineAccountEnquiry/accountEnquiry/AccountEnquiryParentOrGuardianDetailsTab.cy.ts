@@ -1,10 +1,12 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
+
 import {
+  USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-  USER_STATE_MOCK_NO_PERMISSION,
-  createDefendantHeaderMockWithName,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
 import {
   interceptAddNotes,
   interceptDefendantHeader,
@@ -256,7 +258,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.parentOrGuardianDetailsName).should('contain.text', 'Mr Opal parent2 LNAME');
 
       // AC1cii: National Insurance Number should be formatted as 'AA NN NN NN A'
-      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).siblings().should('contain.text', 'OT000001D');
+      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey)
+        .siblings()
+        .should('contain.text', 'OT 00 00 01 D');
 
       // Address should display correctly
       cy.get(DOM.parentOrGuardianDetailsAddressKey).siblings().should('contain.text', 'PG2 addr1');
