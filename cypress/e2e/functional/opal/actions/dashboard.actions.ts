@@ -6,7 +6,9 @@
  */
 
 import { DashboardLocators as L } from '../../../../shared/selectors/dashboard.locators';
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
+
+const log = createScopedLogger('DashboardActions');
 
 export class DashboardActions {
   /**
@@ -31,7 +33,10 @@ export class DashboardActions {
     if (username) {
       log('assert', `Asserting username: ${username}`);
       cy.get(L.userName, { timeout: 10_000 })
-        .should('contain.text', username)
+        .invoke('text')
+        .should((text) => {
+          expect(text.trim().toLowerCase()).to.contain(username.toLowerCase());
+        })
         .then(() => log('done', 'Username displayed correctly'));
     }
   }
@@ -78,5 +83,27 @@ export class DashboardActions {
     cy.get('app-fines-sa-search, [data-testid="fines-sa-search"]', { timeout: 10_000 }).should('be.visible');
 
     log('done', 'Successfully navigated to Search for an Account page');
+  }
+
+  /**
+   * Navigates to the Create and Manage Draft Accounts area for inputters.
+   *
+   * @example
+   *   dashboard.goToCreateAndManageDraftAccounts();
+   */
+  public goToCreateAndManageDraftAccounts(): void {
+    log('navigate', 'Opening Create and Manage Draft Accounts');
+    cy.get(L.createAndManageDraftAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
+  }
+
+  /**
+   * Navigates to the Check and Validate Draft Accounts area for checkers.
+   *
+   * @example
+   *   dashboard.goToCheckAndValidateDraftAccounts();
+   */
+  public goToCheckAndValidateDraftAccounts(): void {
+    log('navigate', 'Opening Check and Validate Draft Accounts');
+    cy.get(L.checkAndValidateDraftAccountsLink, { timeout: 10_000 }).should('be.visible').click({ force: true });
   }
 }

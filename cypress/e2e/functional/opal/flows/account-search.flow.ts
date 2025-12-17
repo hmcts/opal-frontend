@@ -1,6 +1,6 @@
 // e2e/functional/opal/flows/account-search.flow.ts
 
-import { log } from '../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../support/utils/log.helper';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { DashboardActions } from '../actions/dashboard.actions';
 import { AccountSearchNavActions } from '../actions/search/search.nav.actions';
@@ -12,8 +12,7 @@ import { AccountSearchCommonActions } from '../actions/search/search.common.acti
 import { AccountSearchProblemActions } from '../actions/search/search.problem.actions';
 import { ResultsActions } from '../actions/search.results.actions';
 import { CommonActions } from '../actions/common/common.actions';
-
-type MinorCreditorType = 'Individual' | 'Company';
+import { MinorCreditorType } from '../../../../support/utils/macFieldResolvers';
 
 /**
  * Normalised Minor Creditor types used in flow processing.
@@ -23,6 +22,7 @@ type MinorCreditorSimpleType = 'individual' | 'company';
 type InputMap = Record<string, string>;
 
 const SEARCH_RESULTS_PATH_SEGMENT = '/fines/search-accounts/results';
+const log = createScopedLogger('AccountSearchFlow');
 
 /**
  * AccountSearchFlow
@@ -42,7 +42,7 @@ export class AccountSearchFlow {
   private readonly commonSearch = new AccountSearchCommonActions();
   private readonly results = new ResultsActions();
   private readonly common = new CommonActions();
-  private readonly problem = new AccountSearchProblemActions();
+  // private readonly problem = new AccountSearchProblemActions();
 
   /**
    * Builds a simple key/value map from a two-column Cucumber table:
@@ -537,16 +537,16 @@ export class AccountSearchFlow {
     // ───────────────────────────────
     const hasIndividualData = Boolean(
       map['individual last name'] ||
-        map['first names'] ||
-        map['date of birth'] ||
-        map['dob'] ||
-        map['national insurance number'] ||
-        map['ni number'] ||
-        map['address line 1'] ||
-        map['postcode'] ||
-        map['last name exact match'] ||
-        map['first names exact match'] ||
-        map['include aliases'],
+      map['first names'] ||
+      map['date of birth'] ||
+      map['dob'] ||
+      map['national insurance number'] ||
+      map['ni number'] ||
+      map['address line 1'] ||
+      map['postcode'] ||
+      map['last name exact match'] ||
+      map['first names exact match'] ||
+      map['include aliases'],
     );
 
     if (!hasIndividualData) {
@@ -687,11 +687,6 @@ export class AccountSearchFlow {
    *
    * This keeps the step definition thin and declarative while allowing
    * flows and assertions to reuse the same field→value mapping consistently.
-   *
-   * Useful for scenarios such as:
-   *
-   *   - AC10 — persistence of Individuals search criteria after BU filter save
-   *   - scenarios verifying state reset, switching, or prepopulation
    *
    * NOTE:
    *   All key normalisation is handled via `buildInputMap()` which trims,
@@ -1186,11 +1181,6 @@ export class AccountSearchFlow {
    *  - Asserts the "Companies" tab is selected.
    *  - Asserts there is NO row in the results whose columns match all
    *    key/value pairs from the provided table.
-   *
-   * Intended for AC such as:
-   *   Then I see "Search results" on the page header
-   *   And I see the "Companies" tab is selected
-   *   And I do not see "PCRAUTO010A" in column "Ref"
    *
    * @param table Two-column Cucumber table of column → forbidden value.
    *

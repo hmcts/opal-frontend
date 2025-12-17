@@ -10,7 +10,9 @@ export type LogScope =
   | 'a11y'
   | 'assert'
   | 'cancel'
+  | 'check'
   | 'comments'
+  | 'clear'
   | 'click'
   | 'complete'
   | 'debug'
@@ -21,9 +23,11 @@ export type LogScope =
   | 'flow'
   | 'info'
   | 'input'
+  | 'intercept'
   | 'locator'
   | 'match'
   | 'method'
+  | 'name'
   | 'navigate'
   | 'navigation'
   | 'open'
@@ -68,3 +72,33 @@ export function logSync(scope: LogScope, message: string, details?: Record<strin
     consoleProps: () => details ?? {},
   });
 }
+
+/**
+ * Creates a scoped logger that automatically tags log entries with a `scope` field (e.g., flow/action name).
+ * @param scopeName - Logical scope to include in log details (e.g., "ManualAccountCreationFlow").
+ * @returns A logger function matching the `log` signature that injects the scope name.
+ *
+ * @example
+ * const log = createScopedLogger('AccountSearchFlow');
+ * log('navigate', 'Opening account search');
+ */
+export const createScopedLogger = (scopeName: string) => {
+  return (scope: LogScope, message: string, details?: Record<string, unknown>): void => {
+    log(scope, message, { scope: scopeName, ...details });
+  };
+};
+
+/**
+ * Creates a scoped synchronous logger for Cypress callbacks.
+ *
+ * Mirrors {@link createScopedLogger} but uses `logSync` so it can be safely
+ * invoked inside `.then` chains or intercept handlers without queueing
+ * additional Cypress commands.
+ *
+ * @param scopeName Logical scope to include in log details (e.g., flow/action name).
+ */
+export const createScopedSyncLogger = (scopeName: string) => {
+  return (scope: LogScope, message: string, details?: Record<string, unknown>): void => {
+    logSync(scope, message, { scope: scopeName, ...details });
+  };
+};

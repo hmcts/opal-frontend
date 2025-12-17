@@ -1,5 +1,7 @@
 import { AccountAtAGlanceLocators as N } from '../../../../../shared/selectors/account-details/account.at-a-glance-details.locators';
-import { log } from '../../../../../support/utils/log.helper';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
+
+const log = createScopedLogger('AccountDetailsAtAGlanceActions');
 
 export class AccountDetailsAtAGlanceActions {
   /** ensure we’re on at a glance */
