@@ -20,10 +20,7 @@
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
       <ng-container content>
         <opal-lib-govuk-summary-list summaryListId="payment-terms">
-          @if (
-            tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I' &&
-            tabData.payment_terms.lump_sum_amount
-          ) {
+          @if (tabData.payment_terms.lump_sum_amount) {
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -38,7 +35,7 @@
               }
             </div>
           }
-          @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
+          @if (tabData.payment_terms.instalment_amount) {
             <div
               opal-lib-govuk-summary-list-row
               class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -75,7 +72,7 @@
             summaryListId="payment-terms"
             summaryListRowId="effective-date"
           >
-            @if (tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'I') {
+            @if (tabData.payment_terms.instalment_amount) {
               <ng-container name>Start date</ng-container>
             } @else {
               <ng-container name>Pay by date</ng-container>

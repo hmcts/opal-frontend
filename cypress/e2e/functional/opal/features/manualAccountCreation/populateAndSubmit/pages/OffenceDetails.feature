@@ -8,7 +8,6 @@ Feature: Manual account creation - Offence Details
     And I start a fine manual account for business unit "West London" with defendant type "Adult or youth"
     And I view the "Offence details" task
 
-
   Scenario: The User can add an offence with multiple impositions with different creditor types [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-668, @PO-669, @PO-413, @PO-817, @PO-818]
     When I provide offence details for offence code "TP11003" with a sentence date 9 weeks in the past
     Then the "Remove imposition" option is not available
