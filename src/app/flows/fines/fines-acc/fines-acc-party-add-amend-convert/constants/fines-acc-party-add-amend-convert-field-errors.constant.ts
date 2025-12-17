@@ -1,6 +1,90 @@
 import { IFinesAccPartyAddAmendConvertFieldErrors } from '../interfaces/fines-acc-party-add-amend-convert-field-errors.interface';
 
 export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAmendConvertFieldErrors = {
+  facc_party_add_amend_convert_organisation_name: {
+    required: {
+      message: `Enter company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Company name must be 50 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_0: {
+    required: {
+      message: `Enter alias 1 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 1 company name must be 20 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 1 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_1: {
+    required: {
+      message: `Enter alias 2 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 2 company name must be 20 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 2 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_2: {
+    required: {
+      message: `Enter alias 3 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 3 company name must be 20 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 3 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_3: {
+    required: {
+      message: `Enter alias 4 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 4 company name must be 20 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 4 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_alias_organisation_name_4: {
+    required: {
+      message: `Enter alias 5 company name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Alias 5 company name must be 20 characters or fewer`,
+      priority: 2,
+    },
+    alphanumericWithHyphensSpacesApostrophesDotPattern: {
+      message: `Alias 5 company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+      priority: 3,
+    },
+  },
   facc_party_add_amend_convert_title: {
     required: {
       message: 'Select a title',
@@ -21,6 +105,20 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 3,
     },
   },
+  facc_party_add_amend_convert_forenames_parent_guardian: {
+    required: {
+      message: `Enter parent or guardian first name(s)`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Parent or guardian first name(s) must be 20 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Parent or guardian first name(s) must only contain letters`,
+      priority: 3,
+    },
+  },
   facc_party_add_amend_convert_surname: {
     required: {
       message: `Enter defendant's last name`,
@@ -32,6 +130,20 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
     },
     lettersWithSpacesPattern: {
       message: `Defendant's last name must only contain letters`,
+      priority: 3,
+    },
+  },
+  facc_party_add_amend_convert_surname_parent_guardian: {
+    required: {
+      message: `Enter parent or guardian last name`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Parent or guardian last name must be 30 characters or fewer`,
+      priority: 2,
+    },
+    lettersWithSpacesPattern: {
+      message: `Parent or guardian last name must only contain letters`,
       priority: 3,
     },
   },
@@ -301,7 +413,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
   },
   facc_party_add_amend_convert_vehicle_registration_mark: {
     maxlength: {
-      message: `Vehicle registration must be 20 characters or fewer`,
+      message: `Vehicle registration must be 11 characters or fewer`,
       priority: 1,
     },
     alphanumericTextPattern: {

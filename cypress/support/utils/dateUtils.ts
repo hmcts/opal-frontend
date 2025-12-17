@@ -38,6 +38,25 @@ export function calculateDOB(yearsAgo: number): string {
   return `${day}/${month}/${year}`;
 }
 
+/**
+ * Converts dd/MM/yyyy → yyyy-MM-dd and accepts ISO format as-is.
+ * Throws for any other format to keep assertions strict.
+ */
+export function parseToIsoDate(value: unknown, contextKey: string): string {
+  const str = String(value).trim();
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+    const [dd, mm, yyyy] = str.split('/');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return str;
+  }
+
+  throw new Error(`Unsupported date format for "${contextKey}": "${str}". Expected dd/MM/yyyy or yyyy-MM-dd.`);
+}
+
 export function getToday(): string {
   const today = new Date();
   const day = String(today.getDate()).padStart(2, '0');
@@ -78,4 +97,22 @@ export function getFirstDayOfPreviousMonth(): string {
   const year = dob.getFullYear();
 
   return `${day}/${month}/${year}`;
+}
+
+/**
+ * Parses a relative weeks phrase (e.g., "9 weeks in the past") into a tuple.
+ */
+export function parseWeeksValue(value: string): { weeks: number; direction: 'past' | 'future' } {
+  const match = value.match(/(\d+)\s+weeks?/i);
+  const weeks = match ? Number(match[1]) : 0;
+  const direction = /future/i.test(value) ? 'future' : 'past';
+  return { weeks, direction };
+}
+
+/**
+ * Resolves a relative weeks phrase into an ISO date string.
+ */
+export function resolveRelativeDate(value: string): string {
+  const { weeks, direction } = parseWeeksValue(value);
+  return direction === 'future' ? calculateWeeksInFuture(weeks) : calculateWeeksInPast(weeks);
 }

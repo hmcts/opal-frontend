@@ -1,10 +1,12 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
+
 import {
+  USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-  USER_STATE_MOCK_NO_PERMISSION,
-  createDefendantHeaderMockWithName,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
 import {
   interceptAddNotes,
   interceptDefendantHeader,
@@ -48,7 +50,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
 
@@ -112,7 +114,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // Set language preferences to null to simulate non-Welsh speaking BU
       pgDetailsMock.defendant_account_party.language_preferences = null;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
       interceptAuthenticatedUser();
@@ -177,7 +179,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       pgDetailsMock.defendant_account_party.is_debtor = false;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
 
@@ -236,7 +238,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // AC1b: Set debtor flag to true to test that all sub-sections are displayed
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
 
@@ -256,7 +258,9 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       cy.get(DOM.parentOrGuardianDetailsName).should('contain.text', 'Mr Opal parent2 LNAME');
 
       // AC1cii: National Insurance Number should be formatted as 'AA NN NN NN A'
-      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey).siblings().should('contain.text', 'OT000001D');
+      cy.get(DOM.parentOrGuardianDetailsNational_insurance_numberKey)
+        .siblings()
+        .should('contain.text', 'OT 00 00 01 D');
 
       // Address should display correctly
       cy.get(DOM.parentOrGuardianDetailsAddressKey).siblings().should('contain.text', 'PG2 addr1');
@@ -357,7 +361,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
     pgDetailsMock.defendant_account_party.address!.address_line_5 = null;
     pgDetailsMock.defendant_account_party.party_details.individual_details!.national_insurance_number = null;
 
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
 
     interceptAddNotes();
     interceptAuthenticatedUser();
@@ -429,7 +433,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
       interceptAuthenticatedUser();
@@ -451,7 +455,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       // // Click Change button and verify it navigates to the change screen
       cy.get('a[class="govuk-!-margin-bottom-0 govuk-link"]').contains('Change').click();
 
-      cy.get('@routerNavigate').should('have.been.calledWith', ['../parentGuardian/amend']);
+      cy.get('@routerNavigate').should('have.been.calledWith', ['../party/parentGuardian/amend']);
     },
   );
 
@@ -473,7 +477,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       interceptAddNotes();
       interceptAuthenticatedUser();
@@ -516,7 +520,7 @@ describe('Account Enquiry Parent or Guardian Component', () => {
       pgDetailsMock.defendant_account_party.party_details.party_id = pgPartyId;
       pgDetailsMock.defendant_account_party.is_debtor = true;
 
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
 
       // Create mock user state without Account Maintenance permission in any BU
       let userStateMockNoPermission = structuredClone(USER_STATE_MOCK_NO_PERMISSION);

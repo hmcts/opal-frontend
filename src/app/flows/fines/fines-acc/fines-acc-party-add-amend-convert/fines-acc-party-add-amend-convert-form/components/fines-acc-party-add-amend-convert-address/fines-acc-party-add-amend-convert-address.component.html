@@ -1,0 +1,34 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+  <opal-lib-govuk-text-input
+    labelText="Address line 1"
+    inputId="facc_party_add_amend_convert_address_line_1"
+    inputName="facc_party_add_amend_convert_address_line_1"
+    [control]="form.get('facc_party_add_amend_convert_address_line_1')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_address_line_1']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Address line 2"
+    inputId="facc_party_add_amend_convert_address_line_2"
+    inputName="facc_party_add_amend_convert_address_line_2"
+    [control]="form.get('facc_party_add_amend_convert_address_line_2')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_address_line_2']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Address line 3"
+    inputId="facc_party_add_amend_convert_address_line_3"
+    inputName="facc_party_add_amend_convert_address_line_3"
+    inputClasses="govuk-input--width-20"
+    [control]="form.get('facc_party_add_amend_convert_address_line_3')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_address_line_3']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Postcode"
+    inputId="facc_party_add_amend_convert_post_code"
+    inputName="facc_party_add_amend_convert_post_code"
+    inputClasses="govuk-input--width-10"
+    [control]="form.get('facc_party_add_amend_convert_post_code')"
+    [errors]="formControlErrorMessages['facc_party_add_amend_convert_post_code']"
+    [opalLibCapitaliseAllCharacters]="form.get('facc_party_add_amend_convert_post_code')!"
+  ></opal-lib-govuk-text-input>
+</fieldset>

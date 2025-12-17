@@ -15,6 +15,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '../../services/
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { IFinesAccAddCommentsFormState } from '../fines-acc-comments-add/interfaces/fines-acc-comments-add-form-state.interface';
 import { FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG } from '../../fines-mac/services/fines-mac-payload/constants/fines-mac-transform-items-config.constant';
+import { MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA } from '../fines-acc-party-add-amend-convert/mocks/fines-acc-party-add-amend-convert-form.mock';
 
 describe('FinesAccPayloadService', () => {
   let service: FinesAccPayloadService;
@@ -141,6 +142,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
+      pg_party_id: header.parent_guardian_party_id,
       party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name:
@@ -172,6 +174,7 @@ describe('FinesAccPayloadService', () => {
     expect(result).toEqual({
       account_number: header.account_number,
       account_id: account_id,
+      pg_party_id: header.parent_guardian_party_id,
       party_id: header.defendant_account_party_id,
       party_type: header.debtor_type,
       party_name: header.party_details.organisation_details?.organisation_name ?? '',
@@ -212,7 +215,7 @@ describe('FinesAccPayloadService', () => {
         OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK,
       );
 
-      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData, 'individual', true);
 
       const { defendant_account_party } = mockDefendantData;
       const { party_details, address, contact_details, vehicle_details } = defendant_account_party;
@@ -273,16 +276,18 @@ describe('FinesAccPayloadService', () => {
         ];
       }
 
-      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData, 'individual', true);
 
-      expect(result.facc_party_add_amend_convert_aliases).toEqual([
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([
         {
           facc_party_add_amend_convert_alias_forenames_0: 'Johnny',
           facc_party_add_amend_convert_alias_surname_0: 'Smith',
+          facc_party_add_amend_convert_alias_id_0: '1',
         },
         {
           facc_party_add_amend_convert_alias_forenames_1: 'Jon',
           facc_party_add_amend_convert_alias_surname_1: 'Doe',
+          facc_party_add_amend_convert_alias_id_1: '2',
         },
       ]);
       expect(result.facc_party_add_amend_convert_add_alias).toBe(true); // Should be true when aliases exist
@@ -309,7 +314,7 @@ describe('FinesAccPayloadService', () => {
         },
       };
 
-      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData, 'individual', true);
 
       expect(result.facc_party_add_amend_convert_employer_company_name).toBe('Test Company Ltd');
       expect(result.facc_party_add_amend_convert_employer_reference).toBe('EMP123');
@@ -355,7 +360,7 @@ describe('FinesAccPayloadService', () => {
         },
       };
 
-      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData, 'individual', true);
 
       expect(result.facc_party_add_amend_convert_language_preferences_document_language).toBe('CY');
       expect(result.facc_party_add_amend_convert_language_preferences_hearing_language).toBe('EN');
@@ -387,12 +392,13 @@ describe('FinesAccPayloadService', () => {
       mockDefendantData.defendant_account_party.employer_details = null;
       mockDefendantData.defendant_account_party.language_preferences = null;
 
-      const result = service.mapDebtorAccountPartyPayload(mockDefendantData);
+      const result = service.mapDebtorAccountPartyPayload(mockDefendantData, 'individual', true);
 
       expect(result.facc_party_add_amend_convert_title).toBeNull();
       expect(result.facc_party_add_amend_convert_forenames).toBeNull();
       expect(result.facc_party_add_amend_convert_surname).toBeNull();
-      expect(result.facc_party_add_amend_convert_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_individual_aliases).toEqual([]);
+      expect(result.facc_party_add_amend_convert_organisation_aliases).toEqual([]);
       expect(result.facc_party_add_amend_convert_address_line_1).toBeNull(); // Empty string becomes null due to || null
       expect(result.facc_party_add_amend_convert_address_line_2).toBeNull();
       expect(result.facc_party_add_amend_convert_post_code).toBeNull(); // Empty string becomes null due to || null
@@ -504,6 +510,27 @@ describe('FinesAccPayloadService', () => {
         );
         expect(result).toEqual(inputPayload);
       });
+    });
+    it('should delegate to buildAccountPartyPayload utility function', () => {
+      // This test ensures the service method properly delegates to the utility
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_title: 'Mr',
+        facc_party_add_amend_convert_forenames: 'John',
+        facc_party_add_amend_convert_surname: 'Doe',
+        facc_party_add_amend_convert_address_line_1: '123 Main St',
+      };
+
+      const result = service.buildAccountPartyPayload(formState, 'individual', true, 'party123');
+
+      // Verify it returns a proper payload structure
+      expect(result).toBeDefined();
+      expect(result.defendant_account_party_type).toBe('Defendant');
+      expect(result.is_debtor).toBe(true);
+      expect(result.party_details).toBeDefined();
+      expect(result.address).toBeDefined();
+      expect(result.contact_details).toBeDefined();
+      expect(result.language_preferences).toBeDefined();
     });
   });
 });

@@ -7,5 +7,7 @@ export const FINES_ACC_DEFENDANT_ROUTING_TITLES: IFinesAccDefendantRoutingPaths 
     note: 'Account notes',
     comments: 'Account comments',
     debtor: 'Change debtor details',
+    'payment-terms': 'Amend payment terms',
+    party: 'Amend party details',
   },
 };

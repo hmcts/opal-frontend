@@ -1,59 +1,85 @@
+// cypress.config.ts
 import { defineConfig } from 'cypress';
 import webpack from '@cypress/webpack-preprocessor';
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import * as path from 'path';
+import * as path from 'node:path';
 
-function setupBrowserLaunch(on) {
-  on('before:browser:launch', (browser, launchOptions) => {
+function setupBrowserLaunch(on: Cypress.PluginEvents): void {
+  on('before:browser:launch', (browser: Cypress.Browser, launchOptions: Cypress.BeforeBrowserLaunchOptions) => {
+    // eslint-disable-next-line no-console
     console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless);
 
     const width = 3640;
     const height = 2560;
 
+    // eslint-disable-next-line no-console
     console.log('setting the browser window size to %d x %d', width, height);
 
     if (browser.name === 'chrome' && browser.isHeadless) {
-      launchOptions.args.push(`--window-size=${width},${height}`);
-      launchOptions.args.push('--force-device-scale-factor=1');
+      launchOptions.args = [
+        ...(launchOptions.args ?? []),
+        `--window-size=${width},${height}`,
+        '--force-device-scale-factor=1',
+      ];
     }
 
     if (browser.name === 'electron' && browser.isHeadless) {
-      launchOptions.preferences.width = width;
-      launchOptions.preferences.height = height;
+      launchOptions.preferences = {
+        ...launchOptions.preferences,
+        width,
+        height,
+      } as typeof launchOptions.preferences;
     }
 
     if (browser.name === 'firefox' && browser.isHeadless) {
-      launchOptions.args.push(`--width=${width}`);
-      launchOptions.args.push(`--height=${height}`);
+      launchOptions.args = [...(launchOptions.args ?? []), `--width=${width}`, `--height=${height}`];
     }
 
     return launchOptions;
   });
 }
 
-async function setupNodeEvents(on, config) {
+async function setupNodeEvents(
+  on: Cypress.PluginEvents,
+  config: Cypress.PluginConfigOptions,
+): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
+
   on(
     'file:preprocessor',
     webpack({
       webpackOptions: {
+        // IMPORTANT: use a valid sourcemap mode, not false,
+        // to avoid broken Base64 / "length must be multiple of 4" errors.
+        devtool: 'eval',
         resolve: {
           extensions: ['.ts', '.js'],
+          plugins: [
+            new TsconfigPathsPlugin({
+              configFile: path.resolve(__dirname, 'e2e.tsconfig.json'),
+            }),
+          ],
         },
         module: {
           rules: [
             {
-              // Only .ts files
               test: /\.ts$/,
-              // Ignore node_modules and the src folder
               exclude: [/node_modules/, /src/],
               use: [
                 {
                   loader: 'ts-loader',
                   options: {
                     configFile: 'e2e.tsconfig.json',
+                    // keep transpileOnly to speed up bundling for Cypress
                     transpileOnly: true,
+                    compilerOptions: {
+                      // TS sourcemaps are optional; Webpack devtool handles
+                      // bundle-level sourcemaps for Cucumber.
+                      sourceMap: false,
+                      inlineSourceMap: false,
+                      inlineSources: false,
+                    },
                   },
                 },
               ],
@@ -73,53 +99,47 @@ async function setupNodeEvents(on, config) {
       },
     }),
   );
+
   setupBrowserLaunch(on);
+
+  // messagesOutput logic (unchanged)
   if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN === 'chrome') {
-    config.env['messagesOutput'] =
-      `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-    return config;
+    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   } else if (process.env.TEST_MODE === 'OPAL' && process.env.BROWSER_TO_RUN !== 'chrome') {
-    config.env['messagesOutput'] =
-      `${process.env.TEST_STAGE}-output/prod/${process.env.BROWSER_TO_RUN}/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-    return config;
+    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/${process.env.BROWSER_TO_RUN}/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   } else if (process.env.TEST_MODE === 'LEGACY') {
-    config.env['messagesOutput'] =
-      `${process.env.TEST_STAGE}-output/prod/legacy/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-    return config;
+    config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/legacy/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   }
+
   return config;
 }
 
 export default defineConfig({
-  nodeVersion: 'bundled',
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
 
   e2e: {
-    baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
-
+    baseUrl: process.env.TEST_URL || 'http://localhost:4000/',
     specPattern: 'cypress/e2e/**/*.feature',
     excludeSpecPattern: [
       '**/*/*.cy.ts',
       'cypress/e2e/DiscoPlus_accountEnquiry/**/*',
       'cypress/e2e/Old_functional_E2E_Tests/**/*',
     ],
-
     setupNodeEvents,
-    retries: {
-      runMode: 1,
-      openMode: 0,
-    },
+    retries: { runMode: 1, openMode: 0 },
+    // make sure our support file always loads
+    supportFile: 'cypress/support/e2e.ts',
   },
 
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
 
   env: {
-    CYPRESS_TEST_EMAIL: process.env['OPAL_TEST_USER_EMAIL'],
-    CYPRESS_TEST_PASSWORD: process.env['OPAL_TEST_USER_PASSWORD'],
-    TEST_MODE: process.env['TEST_MODE'] || 'OPAL',
+    CYPRESS_TEST_EMAIL: process.env.OPAL_TEST_USER_EMAIL,
+    CYPRESS_TEST_PASSWORD: process.env.OPAL_TEST_USER_PASSWORD,
+    TEST_MODE: process.env.TEST_MODE || 'OPAL',
   },
 
   component: {
@@ -157,11 +177,13 @@ export default defineConfig({
     },
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
-      require('@cypress/grep/src/plugin')(config);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { plugin: cypressGrepPlugin } = require('@cypress/grep/plugin');
+      cypressGrepPlugin(config);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       require('cypress-mochawesome-reporter/plugin')(on);
 
-      config.env['messagesOutput'] =
-        `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
+      config.env.messagesOutput = `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
       return config;
     },
   },

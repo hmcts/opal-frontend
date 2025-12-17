@@ -20,6 +20,7 @@ Given(
     });
   },
 );
+
 Then('I should see the global error banner', () => {
   cy.get('div[opal-lib-moj-alert]', { timeout: 20_000 }).should('exist').and('contain.text', globalErrorBannerText);
 });
@@ -27,6 +28,39 @@ Then('I should see the global error banner', () => {
 Then('I should not see the global error banner', () => {
   cy.get('div[opal-lib-moj-alert]').should('not.exist');
 });
+
+Given(
+  'I click the Search button and trigger a {int} retriable error for the defendant accounts search API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: '/opal-fines-service/defendant-accounts/search',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: true,
+          title: 'Temporary System Issue',
+          detail: 'Please try again later or contact the help desk.',
+          operation_id: 'OP12345',
+        },
+      },
+    ).as('defendantAccountsSearchRetriableError');
+
+    cy.get('#submitForm').contains('Search').click();
+
+    cy.wait('@defendantAccountsSearchRetriableError');
+
+    cy.get('@defendantAccountsSearchRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.true;
+      expect(interception.response.body.title).to.equal('Temporary System Issue');
+      expect(interception.response.body.detail).to.include('contact the help desk');
+      expect(interception.response.body.operation_id).to.equal('OP12345');
+    });
+  },
+);
 
 Given(
   'I click the Manual account creation link and trigger a {int} retriable error for the get businessUnits API',
@@ -57,6 +91,70 @@ Given(
       expect(interception.response.body.title).to.equal('Temporary System Issue');
       expect(interception.response.body.detail).to.include('contact the help desk');
       expect(interception.response.body.operation_id).to.equal('OP12345');
+    });
+  },
+);
+
+Given(
+  'I click the Search button and trigger a {int} non-retriable error for the defendant accounts search API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: '/opal-fines-service/defendant-accounts/search',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: false,
+          title: 'Internal Server Error',
+          detail: 'Sorry, there is a problem with the service',
+          operation_id: 'OP67890',
+        },
+      },
+    ).as('getDefendantAccountsSearchNonRetriableError');
+
+    cy.get('button, a').contains('Search').click();
+
+    cy.wait('@getDefendantAccountsSearchNonRetriableError');
+    cy.get('@getDefendantAccountsSearchNonRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.false;
+      expect(interception.response.body.title).to.equal('Internal Server Error');
+      expect(interception.response.body.operation_id).to.equal('OP67890');
+    });
+  },
+);
+
+Given(
+  'I click the Manual account creation link and trigger a {int} non-retriable error for the get businessUnits API',
+  (statusCode: number) => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/opal-fines-service/business-units**',
+      },
+      {
+        statusCode,
+        body: {
+          retriable: false,
+          title: 'Internal Server Error',
+          detail: 'An unexpected error occurred. Please report this issue using the Operation ID.',
+          operation_id: 'OP67890',
+        },
+      },
+    ).as('getBusinessUnitsNonRetriableError');
+
+    cy.get('button, a').contains('Manual Account Creation').click();
+
+    cy.wait('@getBusinessUnitsNonRetriableError');
+
+    cy.get('@getBusinessUnitsNonRetriableError').then((interception: any) => {
+      expect(interception.response.statusCode).to.equal(statusCode);
+      expect(interception.response.body.retriable).to.be.false;
+      expect(interception.response.body.title).to.equal('Internal Server Error');
+      expect(interception.response.body.detail).to.include('Operation ID');
+      expect(interception.response.body.operation_id).to.equal('OP67890');
     });
   },
 );

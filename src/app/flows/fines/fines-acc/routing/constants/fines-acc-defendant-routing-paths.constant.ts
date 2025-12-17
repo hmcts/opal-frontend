@@ -7,5 +7,7 @@ export const FINES_ACC_DEFENDANT_ROUTING_PATHS: IFinesAccDefendantRoutingPaths =
     note: 'note',
     comments: 'comments',
     debtor: 'debtor',
+    'payment-terms': 'payment-terms',
+    party: 'party',
   },
 };

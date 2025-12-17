@@ -15,7 +15,7 @@ global['self'] = win;
 import 'zone.js/node';
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr/node';
-import * as express from 'express';
+import express, { type Express, type NextFunction, type Request, type Response } from 'express';
 import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
@@ -51,7 +51,10 @@ const ssoConfiguration: SsoConfiguration = {
   authenticated: '/sso/authenticated',
 };
 
-function app(): express.Express {
+const serverLogger = Logger.getLogger('server');
+const ssrLogger = Logger.getLogger('SSR');
+
+function app(): Express {
   const server = express();
 
   const commonEngine = new CommonEngine();
@@ -65,11 +68,11 @@ function app(): express.Express {
   configureSecurityHeaders(server);
   new HealthCheck().enableFor(server, 'opal-frontend');
 
-  const { sessionExpiryConfiguration, routesConfiguration } = getRoutesConfig();
+  const { sessionExpiryConfiguration, routesConfiguration, opalUserServiceConfiguration } = getRoutesConfig();
 
   configureApiProxyRoutes(server);
 
-  server.get('/health', (_, res, next) => {
+  server.get('/health', (_req: Request, res: Response) => {
     res.status(200).send('OK');
   });
 
@@ -80,20 +83,22 @@ function app(): express.Express {
     routesConfiguration,
     sessionConfiguration,
     ssoConfiguration,
+    opalUserServiceConfiguration,
   );
 
   const serverTransferState = configureMonitoring();
 
-  // Serve static files from /browser
-  server.get(
-    '*.*',
+  // Serve static files from /browser. Using middleware instead of wildcard route
+  // avoids path-to-regexp wildcard errors introduced in Express 5.
+  server.use(
     express.static(distFolder, {
       maxAge: '1y',
+      index: false,
     }),
   );
 
   // All regular routes use the Angular engine
-  server.get('*', async (req, res, next) => {
+  server.get(/.*/, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { protocol, originalUrl, baseUrl, headers } = req;
 
@@ -113,9 +118,19 @@ function app(): express.Express {
 
       res.send(html);
     } catch (err) {
-      Logger.getLogger('SSR').error('SSR render failed', err);
+      ssrLogger.error('SSR render failed', err);
       next(err);
     }
+  });
+
+  server.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+    serverLogger.error(`Unhandled error processing ${req.method} ${req.originalUrl}`, err);
+
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    res.status(500).send('Internal Server Error');
   });
 
   return server;
@@ -123,13 +138,12 @@ function app(): express.Express {
 
 function run(): void {
   const port = process.env['PORT'] || 4000;
-  const logger = Logger.getLogger('server');
 
   // Start up the Node server
   const server = app();
 
   server.listen(port, () => {
-    logger.info(`Server listening on http://localhost:${port}`);
+    serverLogger.info(`Server listening on http://localhost:${port}`);
   });
 }
 

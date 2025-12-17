@@ -27,7 +27,6 @@
     </opal-lib-moj-alert>
   </div>
 }
-
 <div class="govuk-grid-column-full">
   <opal-lib-custom-page-header>
     <ng-container pageHeaderHeading>
@@ -68,15 +67,20 @@
 <div class="govuk-grid-column-three-quarters">
   <opal-lib-custom-account-information>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>Account type:</h3>
+      <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value>{{ accountData.account_type }}</p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
-      <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+      @if (accountData.account_type === accountTypes['Fixed Penalty']) {
+        <h3 opal-lib-custom-account-information-item-label>PCR or ticket number:</h3>
+        <p opal-lib-custom-account-information-item-value>{{ accountData.fixed_penalty_ticket_number | uppercase }}</p>
+      } @else {
+        <h3 opal-lib-custom-account-information-item-label>PCR or case number:</h3>
+        <p opal-lib-custom-account-information-item-value>{{ accountData.prosecutor_case_reference | uppercase }}</p>
+      }
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter">
-      <h3 opal-lib-custom-account-information-item-label>Business Unit:</h3>
+      <h2 opal-lib-custom-account-information-item-label>Business Unit:</h2>
       <p opal-lib-custom-account-information-item-value>
         {{ accountData.business_unit_summary.business_unit_name }} ({{
           accountData.business_unit_summary.business_unit_id
@@ -140,6 +144,15 @@
         [activeSubNavItemFragment]="activeTab"
         subNavItemFragment="parent-or-guardian"
         [subNavItemText]="tabs['parent-or-guardian']"
+      ></li>
+    }
+    @if (accountData.account_type === accountTypes['Fixed Penalty']) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        subNavItemId="fixed-penalty-tab"
+        [activeSubNavItemFragment]="activeTab"
+        subNavItemFragment="fixed-penalty"
+        [subNavItemText]="tabs['fixed-penalty']"
       ></li>
     }
     <li
@@ -208,11 +221,32 @@
       ></app-fines-acc-defendant-details-parent-or-guardian-tab>
     }
   }
+  @case ('fixed-penalty') {
+    @if (tabFixedPenalty$ | async; as tabData) {
+      <app-fines-acc-defendant-details-fixed-penalty-tab
+        [tabData]="tabData"
+        [style]="tabContentStyles"
+      ></app-fines-acc-defendant-details-fixed-penalty-tab>
+    }
+  }
   @case ('payment-terms') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabPaymentTerms$ | async; as tabData) {
+      <app-fines-acc-defendant-details-payment-terms-tab
+        [tabData]="tabData"
+        [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
+        [style]="tabContentStyles"
+        (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
+      ></app-fines-acc-defendant-details-payment-terms-tab>
+    }
   }
   @case ('enforcement') {
-    <div class="govuk-grid-column-full"></div>
+    @if (tabEnforcement$ | async; as tabData) {
+      <app-fines-acc-defendant-details-enforcement-tab
+        [tabData]="tabData"
+        [hasAccountMaintenancePermission]="hasPermission('account-maintenance')"
+        [hasEnterEnforcementPermission]="hasPermission('enter-enforcement')"
+      ></app-fines-acc-defendant-details-enforcement-tab>
+    }
   }
   @case ('impositions') {
     <div class="govuk-grid-column-full"></div>

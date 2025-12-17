@@ -1,10 +1,12 @@
 import { interceptAuthenticatedUser, interceptUserState } from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
 import {
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
 import { interceptDefendantHeader, interceptDefendantDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as HEADER } from './constants/account_enquiry_header_elements';
@@ -62,7 +64,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -113,7 +115,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = false;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -160,7 +162,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
     defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -179,7 +181,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference, 'CY', 'Welsh and English');
     setLanguagePref(language_preferences!.hearing_language_preference, 'CY', 'Welsh and English');
     interceptAuthenticatedUser();
@@ -198,7 +200,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -208,7 +210,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../individual/amend']);
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/individual/amend']);
   });
 
   it('AC2a. Account maintenance permission true, BU not associated with account', { tags: ['PO-784'] }, () => {
@@ -217,7 +219,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -236,7 +238,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = false;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -254,7 +256,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -293,7 +295,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.contact_details!.secondary_email_address = null;
     defendantDetailsMock.defendant_account_party.employer_details!.employer_telephone_number = null;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -311,7 +313,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference, 'CY', 'Welsh and English');
     setLanguagePref(language_preferences!.hearing_language_preference, 'CY', 'Welsh and English');
     interceptAuthenticatedUser();
@@ -330,7 +332,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();
@@ -340,7 +342,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
 
     cy.get(DEFENDANT_DETAILS.defendantChange).should('exist').click();
-    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../company/amend']);
+    cy.get('@routerNavigate').should('have.been.calledWithMatch', ['../party/company/amend']);
   });
 
   it(
@@ -352,7 +354,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
       defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
       defendantDetailsMock.defendant_account_party.is_debtor = true;
       const { language_preferences } = defendantDetailsMock.defendant_account_party;
-      const accountId = headerMock.defendant_party_id;
+      const accountId = headerMock.defendant_account_party_id;
       setLanguagePref(language_preferences!.document_language_preference);
       setLanguagePref(language_preferences!.hearing_language_preference);
       interceptAuthenticatedUser();
@@ -372,7 +374,7 @@ describe('Account Enquiry Defendant Details Tab', () => {
     defendantDetailsMock.defendant_account_party.party_details.organisation_flag = true;
     defendantDetailsMock.defendant_account_party.is_debtor = true;
     const { language_preferences } = defendantDetailsMock.defendant_account_party;
-    const accountId = headerMock.defendant_party_id;
+    const accountId = headerMock.defendant_account_party_id;
     setLanguagePref(language_preferences!.document_language_preference);
     setLanguagePref(language_preferences!.hearing_language_preference);
     interceptAuthenticatedUser();

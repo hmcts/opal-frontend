@@ -8,6 +8,7 @@ export const FinesAccountStore = signalStore(
   withState(() => ({
     account_number: null as string | null,
     account_id: null as number | null,
+    pg_party_id: null as string | null,
     party_id: null as string | null,
     party_type: null as string | null,
     party_name: null as string | null,
@@ -45,6 +46,7 @@ export const FinesAccountStore = signalStore(
         return {
           account_number: store.account_number(),
           account_id: store.account_id(),
+          pg_party_id: store.pg_party_id(),
           party_id: store.party_id(),
           party_type: store.party_type(),
           party_name: store.party_name(),
@@ -63,6 +65,11 @@ export const FinesAccountStore = signalStore(
       },
       clearSuccessMessage: () => {
         patchState(store, { successMessage: null });
+      },
+      compareVersion: (version: string | null) => {
+        if (store.base_version() !== version) {
+          patchState(store, { hasVersionMismatch: true });
+        }
       },
     };
   }),

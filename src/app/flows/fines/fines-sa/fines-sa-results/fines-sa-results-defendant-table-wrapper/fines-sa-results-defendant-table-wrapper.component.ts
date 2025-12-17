@@ -15,6 +15,7 @@ import { NationalInsurancePipe } from '@hmcts/opal-frontend-common/pipes/nationa
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { CustomHorizontalScrollPaneComponent } from '@hmcts/opal-frontend-common/components/custom/custom-horizontal-scroll-pane';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
+import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-sa-results-defendant-table-wrapper',
@@ -29,6 +30,7 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
     DateFormatPipe,
     NationalInsurancePipe,
     CustomHorizontalScrollPaneComponent,
+    FinesNotProvidedComponent,
   ],
   templateUrl: './fines-sa-results-defendant-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

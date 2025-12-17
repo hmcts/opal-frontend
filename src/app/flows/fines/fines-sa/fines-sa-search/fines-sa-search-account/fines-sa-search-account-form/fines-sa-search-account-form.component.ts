@@ -221,9 +221,9 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    * inline/summary error messages.
    */
   private clearSearchForm(): void {
-    ['individuals', 'companies', 'minor_creditors', 'major_creditors'].forEach((key) =>
-      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false }),
-    );
+    for (const key of ['individuals', 'companies', 'minor_creditors', 'major_creditors']) {
+      this.form.get(`fsa_search_account_${key}_search_criteria`)?.reset({}, { emitEvent: false });
+    }
     this.clearAllErrorMessages();
   }
 
@@ -301,7 +301,8 @@ export class FinesSaSearchAccountFormComponent extends AbstractFormBaseComponent
    */
   public goToFilterBusinessUnits(): void {
     this.finesSaStore.setSearchAccountTemporary(this.form.value);
-    this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), false, undefined, {
+    this.handleRoute(this.finesSaStore.getFilterByBusinessUnitsPath(), {
+      nonRelative: false,
       fragment: this.finesSaStore.activeTab(),
     });
   }

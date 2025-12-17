@@ -157,7 +157,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
     );
 
-    expect(globalStore.error()).toEqual({
+    expect(globalStore.bannerError()).toEqual({
       ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',
@@ -180,7 +180,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       'Cannot find business unit for ID: 61',
     );
 
-    expect(globalStore.error()).toEqual({
+    expect(globalStore.bannerError()).toEqual({
       ...GLOBAL_ERROR_STATE,
       error: true,
       title: 'There was a problem',
@@ -198,7 +198,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
     await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError('Unexpected error');
 
-    expect(globalStore.error()).toEqual({
+    expect(globalStore.bannerError()).toEqual({
       ...GLOBAL_ERROR_STATE,
       error: true,
       message: 'Unexpected error',
@@ -220,7 +220,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       name: 'ErrorWithoutMessage',
     });
 
-    expect(globalStore.error()).toEqual({
+    expect(globalStore.bannerError()).toEqual({
       ...GLOBAL_ERROR_STATE,
       error: true,
       message: 'An unexpected error occurred',

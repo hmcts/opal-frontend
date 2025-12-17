@@ -23,7 +23,6 @@ export class FinesMacPersonalDetailsComponent extends AbstractFormParentBaseComp
    * @returns void
    */
   public handlePersonalDetailsSubmit(form: IFinesMacPersonalDetailsForm): void {
-    console.log('Personal Details Form submitted with data:', form);
     this.finesMacStore.setPersonalDetails(form);
 
     if (form.nestedFlow && this.defendantType) {
