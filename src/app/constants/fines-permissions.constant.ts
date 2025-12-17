@@ -10,4 +10,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'account-maintenance': 7,
   'add-account-activity-notes': 8,
   'amend-payment-terms': 9,
+  'enter-enforcement': 10,
 };

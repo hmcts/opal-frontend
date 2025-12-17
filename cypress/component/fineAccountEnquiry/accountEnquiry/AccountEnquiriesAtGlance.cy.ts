@@ -1,11 +1,11 @@
 import { ACCOUNT_ENQUIRY_HEADER_ELEMENTS as DOM } from './constants/account_enquiry_header_elements';
+import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
 import {
-  createDefendantHeaderMockWithName,
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
 
 import {
   OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
