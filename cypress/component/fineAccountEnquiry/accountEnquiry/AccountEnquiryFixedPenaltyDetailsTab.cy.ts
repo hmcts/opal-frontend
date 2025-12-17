@@ -2,9 +2,11 @@ import { interceptAuthenticatedUser, interceptUserState } from '../../CommonInte
 import {
   DEFENDANT_HEADER_MOCK,
   DEFENDANT_HEADER_ORG_MOCK,
-  USER_STATE_MOCK_PERMISSION_BU77,
   createDefendantHeaderMockWithName,
 } from './mocks/defendant_details_mock';
+
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
+
 import { interceptDefendantHeader, interceptFixedPenaltyDetails } from './intercept/defendantAccountIntercepts';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_FIXED_PENALTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-fixed-penalty.mock';
 import { ACCOUNT_ENQUIRY_FIXED_PENALTY_ELEMENTS as FIXED_PENALTY_TAB } from './constants/account_enquiry_fixed_penalty_elements';
