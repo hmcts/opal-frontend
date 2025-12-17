@@ -469,15 +469,14 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
 
       setupComponent(null);
 
-      cy.wait('@getOffenceCode');
       cy.get(DOM_ELEMENTS.offenceCodeInput).clear().type('AK123456', { delay: 0 });
+      cy.wait('@getOffenceCode');
 
-      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-      cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('exist');
+      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist').click();
+      cy.get(DOM_ELEMENTS.successPanel, { timeout: 30000 }).should('be.visible');
     },
   );
 
