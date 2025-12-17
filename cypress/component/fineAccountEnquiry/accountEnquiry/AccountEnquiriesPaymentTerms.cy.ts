@@ -1,10 +1,10 @@
+import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
 import {
-  createDefendantHeaderMockWithName,
-  DEFENDANT_HEADER_MOCK,
   USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
 
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS as PAYMENT_TERMS_TAB } from './constants/account_enquiry_payment_terms_elements';

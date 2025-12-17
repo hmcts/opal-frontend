@@ -14,7 +14,8 @@ import {
   interceptResultByCode,
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77 } from './mocks/defendant_details_mock';
+import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { head } from 'lodash';
 
