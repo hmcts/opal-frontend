@@ -38,12 +38,16 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
    * @returns string representing the card title
    */
   public cardTitle(): string {
-    if (this.tabData.payment_terms.payment_terms_type.payment_terms_type_code === 'B') {
-      return 'Pay in full';
-    } else if (this.tabData.payment_terms.lump_sum_amount) {
-      return 'Lump sum plus instalments';
-    }
-    return 'Instalments only';
+    const { payment_terms } = this.tabData;
+
+    if (payment_terms.lump_sum_amount && payment_terms.instalment_amount) return 'Lump sum plus instalments';
+    if (payment_terms.lump_sum_amount) return 'Pay in full';
+    if (payment_terms.instalment_amount) return 'Instalments only';
+
+    const typeCode = payment_terms.payment_terms_type?.payment_terms_type_code;
+    if (typeCode === 'B') return 'Pay by date';
+    if (typeCode === 'P') return 'Paid';
+    return 'Paid'; // default
   }
 
   /**
