@@ -292,29 +292,44 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
   });
 
-  describe('should get the relevant denied type from getDeniedType', () => {
+  describe('should get the relevant denied type from getRequestPaymentCardDeniedType', () => {
+    it('for an enforcement with prevent_payment_card should return "enforcement"', () => {
+      component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
+      component.lastEnforcement.prevent_payment_card = true;
+      const deniedType = component['getRequestPaymentCardDeniedType']();
+      expect(deniedType).toBe('enforcement');
+    });
+
+    it('for a lack of permission with a BU should return "permission"', () => {
+      spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
+      const deniedType = component['getRequestPaymentCardDeniedType']();
+      expect(deniedType).toBe('permission');
+    });
+  });
+
+  describe('should get the relevant denied type from getAmendPaymentTermsDeniedType', () => {
     it('for a balance of 0 should return "balance"', () => {
       component.accountData.payment_state_summary.account_balance = 0;
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('balance');
     });
 
     it('for an enforcement with extend_ttp_disallow should return "enforcement"', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.extend_ttp_disallow = true;
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('enforcement');
     });
 
     it('for a lack of permission with a BU should return "permission"', () => {
       spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('permission');
     });
 
     it('for an invalid account status shouldreturn "account-status"', () => {
       component.accountData.account_status_reference.account_status_code = 'REW';
-      const deniedType = component['getDeniedType']();
+      const deniedType = component['getAmendPaymentTermsDeniedType']();
       expect(deniedType).toBe('account-status');
     });
   });

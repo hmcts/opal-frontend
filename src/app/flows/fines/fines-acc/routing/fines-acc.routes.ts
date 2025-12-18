@@ -121,6 +121,33 @@ export const routing: Routes = [
           partyAddAmendConvertData: defendantAccountPartyResolver,
         },
       },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/request`,
+
+        loadComponent: () =>
+          import('../fines-acc-request-payment-card-submit/fines-acc-request-payment-card-submit.component').then(
+            (c) => c.FinesAccRequestPaymentCardSubmitComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+        canDeactivate: [canDeactivateGuard],
+        data: {
+          routePermissionId: [accRootPermissionIds['amend-payment-terms']],
+          title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
+          accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`,
+        },
+        resolve: {
+          title: TitleResolver,  
+        },
+      },
+      {
+        path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/:type`,
+
+        loadComponent: () =>
+          import('../fines-acc-request-payment-card-access-denied/fines-acc-request-payment-card-access-denied.component').then(
+            (c) => c.FinesAccRequestPaymentCardAccessDeniedComponent,
+          ),
+        canActivate: [routePermissionsGuard],
+      }
     ],
   },
 ];
