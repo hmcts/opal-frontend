@@ -385,7 +385,7 @@ describe('FinesAccDefendantDetailsComponent', () => {
       const canRequest = component['canRequestPaymentCard']();
       expect(canRequest).toBeFalse();
     });
-      it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
+    it('when the user does not have amend-payment-terms permisson and the prevent_payment_card flag is set to false', () => {
       component.lastEnforcement = structuredClone(OPAL_FINES_RESULT_REF_DATA_MOCK);
       component.lastEnforcement.prevent_payment_card = false;
       spyOn(component['permissionsService'], 'hasBusinessUnitPermissionAccess').and.returnValue(false);
