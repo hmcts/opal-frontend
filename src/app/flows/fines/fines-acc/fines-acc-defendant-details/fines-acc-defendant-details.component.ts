@@ -154,10 +154,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
    * @returns boolean indicating if the user can request a payment card
    */
   private canRequestPaymentCard(): boolean {
-    return (
-      !this.lastEnforcement?.prevent_payment_card &&
-      this.hasBusinessUnitPermission('amend-payment-terms')
-    );
+    return !this.lastEnforcement?.prevent_payment_card && this.hasBusinessUnitPermission('amend-payment-terms');
   }
 
   /**
@@ -418,7 +415,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       });
     } else {
       this['router'].navigate(
-        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getAmendPaymentTermsDeniedType()}`],
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/${this.getAmendPaymentTermsDeniedType()}`,
+        ],
         {
           relativeTo: this.activatedRoute,
           state: {
@@ -440,7 +439,9 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
       });
     } else {
       this['router'].navigate(
-        [`../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.getRequestPaymentCardDeniedType()}`],
+        [
+          `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/${this.getRequestPaymentCardDeniedType()}`,
+        ],
         {
           relativeTo: this.activatedRoute,
           state: {

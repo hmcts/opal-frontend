@@ -136,7 +136,7 @@ export const routing: Routes = [
           accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`,
         },
         resolve: {
-          title: TitleResolver,  
+          title: TitleResolver,
         },
       },
       {
@@ -147,7 +147,7 @@ export const routing: Routes = [
             (c) => c.FinesAccRequestPaymentCardAccessDeniedComponent,
           ),
         canActivate: [routePermissionsGuard],
-      }
+      },
     ],
   },
 ];
