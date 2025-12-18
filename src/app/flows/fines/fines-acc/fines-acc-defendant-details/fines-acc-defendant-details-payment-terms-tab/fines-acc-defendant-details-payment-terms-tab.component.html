@@ -129,7 +129,9 @@
             } @else {
               <ng-container value><app-fines-not-provided></app-fines-not-provided></ng-container>
             }
-            <ng-container action>Request payment card</ng-container>
+            @if (hasAmendPaymentTermsPermission) {
+              <ng-container action>Request payment card</ng-container>
+            }
           </div>
         </opal-lib-govuk-summary-list>
       </ng-container>
