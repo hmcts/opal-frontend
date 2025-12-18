@@ -46,7 +46,11 @@ export class ManualAccountDetailsActions {
   /**
    * Asserts the status text for a given task list item.
    */
-  assertTaskStatus(taskName: ManualAccountTaskName, expectedStatus: string, expectedHeader: string = 'Account details'): void {
+  assertTaskStatus(
+    taskName: ManualAccountTaskName,
+    expectedStatus: string,
+    expectedHeader: string = 'Account details',
+  ): void {
     log('assert', 'Asserting task status', { taskName, expectedStatus, expectedHeader });
 
     this.assertOnAccountDetailsPage(expectedHeader);

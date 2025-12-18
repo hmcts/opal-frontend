@@ -1,9 +1,6 @@
 import { DashboardActions } from '../actions/dashboard.actions';
-import {
-  AccountType,
-  DefendantType,
-  ManualCreateAccountActions,
-} from '../actions/manual-account-creation/create-account.actions';
+import { ManualCreateAccountActions, DefendantType } from '../actions/manual-account-creation/create-account.actions';
+import { AccountType } from '../../../../support/utils/payloads';
 import { ManualAccountDetailsActions } from '../actions/manual-account-creation/account-details.actions';
 import { ManualAccountCommentsNotesActions } from '../actions/manual-account-creation/account-comments-notes.actions';
 import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
@@ -339,8 +336,10 @@ export class ManualAccountCreationFlow {
     const contactRows = entries.filter(({ section }) => /contact/i.test(section));
     const commentRows = entries.filter(({ section }) => /account\s*comments?|comments?\s*and\s*notes/i.test(section));
     let currentHeader = accountDetailsHeader;
-    const companyHeader = this.resolveCompanyHeader(companyRows);
-    const personalHeader = this.resolvePersonalHeader(personalRows);
+
+    // Only compute alternate headers when an explicit Account details header is provided.
+    const companyHeader = accountDetailsHeader ? this.resolveCompanyHeader(companyRows) : undefined;
+    const personalHeader = accountDetailsHeader ? this.resolvePersonalHeader(personalRows) : undefined;
 
     const handledSection = (section?: string): boolean => {
       if (!section) return false;
@@ -372,13 +371,13 @@ export class ManualAccountCreationFlow {
     this.handleParentGuardianEntries(parentRows, accountDetailsHeader);
     this.handleEmployerEntries(employerRows, accountDetailsHeader);
     this.handlePersonalEntries(personalRows, currentHeader);
-    if (personalHeader) {
+    if (accountDetailsHeader && personalHeader) {
       currentHeader = personalHeader;
     }
     this.handleOffenceAndMinorEntries(offenceRows, minorRows, currentHeader);
     this.handlePaymentEntries(paymentRows, currentHeader);
     this.handleCompanyEntries(companyRows, currentHeader);
-    if (companyHeader) {
+    if (accountDetailsHeader && companyHeader) {
       currentHeader = companyHeader;
     }
     this.handleContactEntries(contactRows, currentHeader);

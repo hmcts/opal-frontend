@@ -320,9 +320,9 @@ Feature: Navigate and edit sections from task list
 
   @PO-607
   Scenario: Approved tab lists recent accounts
-    Given I create a "company" draft account with the following details and set status "Approved":
+    Given I create a "company" approved account with the following details:
       | account_snapshot.defendant_name | TEST New Company Ltd |
-    And I create a "adultOrYouthOnly" draft account with the following details and set status "Approved":
+    And I create a "adultOrYouthOnly" approved account with the following details:
       | account_snapshot.defendant_name | Smith, James |
 
     When I view the "Approved" tab on the Create and Manage Draft Accounts page

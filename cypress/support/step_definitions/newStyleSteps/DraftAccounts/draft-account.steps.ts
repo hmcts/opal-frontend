@@ -1,7 +1,8 @@
 /**
  * @file draftAccount.steps.ts
  * @description
- * Step definitions for creating draft accounts, setting their status, and interacting with draft listings.
+ * Step definitions for creating draft accounts, setting their status, and interacting with draft listings
+ * (Create & Manage + Check & Validate).
  * Supports multiple Gherkin aliases that map to one underlying implementation,
  * keeping features readable while avoiding duplicate logic.
  *
@@ -25,21 +26,30 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 import { createDraftAndSetStatus } from '../../../../e2e/functional/opal/actions/draft-account/draft-account.api';
-import { CreateManageDraftsActions } from '../../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
+import {
+  CreateManageDraftsActions,
+  CreateManageTab,
+} from '../../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
+import {
+  CheckAndValidateDraftsActions,
+  CheckAndValidateTab,
+} from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-drafts.actions';
+import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
+import { DraftAccountsTableColumn } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts-common.actions';
+import { DraftPayloadType } from '../../../../support/utils/payloads';
 import { log } from '../../../utils/log.helper';
+import { DraftAccountsFlow } from '../../../../e2e/functional/opal/flows/draft-accounts.flow';
 
-/**
- * @typedef AccountType
- * Union of all supported draft account types (including fixed penalty variants).
- */
-type AccountType = 'company' | 'adultOrYouthOnly' | 'pgToPay' | 'fixedPenalty' | 'fixedPenaltyCompany';
-
-const list = () => new CreateManageDraftsActions();
+type AccountType = DraftPayloadType;
+const inputter = () => new CreateManageDraftsActions();
+const checker = () => new CheckAndValidateDraftsActions();
+const intercepts = () => new DraftAccountsInterceptActions();
+const draftsFlow = () => new DraftAccountsFlow();
 
 /**
  * Unified implementation used by all step aliases.
  *
- * @param accountType - The type of account to create (`company`, `adultOrYouthOnly`, or `pgToPay`).
+ * @param accountType - Draft payload type (e.g., company, pgToPay).
  * @param table - A Cucumber DataTable defining the account fields and values.
  * @param status - The target status after creation (defaults to "Publishing Pending").
  *
@@ -87,13 +97,125 @@ function createDraftAndPrepareForPublishing(
 Given(
   'I create a {string} draft account with the following details and set status {string}:',
   (accountType: AccountType, status: string, table: DataTable) => {
-    // Convert DataTable into raw row format for logging purposes.
     const data = table.rows();
-
     log('step', `Create ${accountType} draft, status ${status}`, { accountType, status, data });
-
-    // Perform the draft creation and set the desired status.
     return createDraftAndPrepareForPublishing(accountType, table, status);
+  },
+);
+
+/**
+ * @step Clears approved draft account listings to start from an empty state.
+ * @description Stubs the approved drafts API to return zero results to avoid cross-test leakage.
+ *
+ * @example
+ *   And I clear all approved accounts
+ */
+Given('I clear all approved accounts', () => {
+  log('intercept', 'Clearing approved accounts');
+  intercepts().clearApprovedListings();
+});
+
+/**
+ * @step Open the Create and Manage Draft Accounts page.
+ * @description Navigates from the dashboard to the inputter draft listings and asserts the header.
+ * @example And I open Create and Manage Draft Accounts
+ */
+When('I open Create and Manage Draft Accounts', () => {
+  log('navigate', 'Opening Create and Manage Draft Accounts');
+  inputter().openPage();
+});
+
+/**
+ * @step Use the back link on Create and Manage Draft Accounts.
+ * @description Clicks the GOV.UK back link rendered on the draft listings page.
+ * @example When I go back from Create and Manage Draft Accounts
+ */
+When('I go back to Create and Manage Draft Accounts', () => {
+  log('navigate', 'Clicking back link on Create and Manage Draft Accounts');
+  inputter().goBack();
+});
+
+/**
+ * @step Use the back link on Check and Validate Draft Accounts.
+ * @description Clicks the GOV.UK back link rendered on the checker draft pages.
+ * @example When I go back to Check and Validate Draft Accounts
+ */
+When('I go back to Check and Validate Draft Accounts', () => {
+  log('navigate', 'Clicking back link on Check and Validate Draft Accounts');
+  checker().goBack();
+});
+
+/**
+ * @step Switch tab on the Create and Manage Draft Accounts page.
+ * @description Clicks the specified tab on the inputter view.
+ * @param tab - Tab name (e.g., "In review", "Rejected").
+ * @example When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+ */
+When('I view the {string} tab on the Create and Manage Draft Accounts page', (tab: CreateManageTab) => {
+  log('navigate', 'Switching Create and Manage tab', { tab });
+  inputter().switchTab(tab);
+});
+
+/**
+ * @step Switch tab on the Check and Validate page.
+ * @description Clicks the specified tab on the checker view.
+ * @param tab - Tab name (e.g., "To review", "Rejected").
+ * @example When I view the "To review" tab on the Check and Validate page
+ */
+When('I view the {string} tab on the Check and Validate page', (tab: CheckAndValidateTab) => {
+  log('navigate', 'Switching Check and Validate tab', { tab });
+  checker().switchTab(tab);
+});
+
+/**
+ * @step Assert a checker tab is active.
+ * @description Verifies the specified Check and Validate tab has `aria-current="page"`.
+ * @param tab - Tab name (e.g., "Failed", "To review").
+ * @example Then the "Failed" tab on Check and Validate is active
+ */
+Then('the {string} tab on Check and Validate is active', (tab: CheckAndValidateTab) => {
+  log('assert', 'Asserting Check and Validate tab is active', { tab });
+  checker().assertTabActive(tab);
+});
+
+/**
+ * @step Open the Check and Validate Draft Accounts page
+ * @description Composite to navigate to the checker view and confirm the "Review accounts" header is visible.
+ * @example When I open Check and Validate Draft Accounts
+ */
+When('I open Check and Validate Draft Accounts', () => {
+  log('navigate', 'Opening Check and Validate Draft Accounts with header assert');
+  draftsFlow().openCheckAndValidateWithHeader();
+});
+
+/**
+ * @step Assert account type column text.
+ * @description Verifies the draft listings table Account type column contains the expected text.
+ * @param expected - Account type text to find.
+ * @example Then I see "Fixed Penalty" in the account type column on the draft table
+ */
+Then('I see {string} in the account type column on the draft table', (expected: string) => {
+  log('assert', 'Checking account type column contains expected text', { expected });
+  checker().assertAccountType(expected);
+});
+
+/**
+ * @step Sort the draft accounts table by the given column and direction.
+ * @description Ensures the sortable header is set to ascending/descending before asserting rows.
+ * @param column - Display column name to sort by.
+ * @param direction - "ascending" or "descending".
+ * @example And I sort the draft accounts table by column "Date failed" in "descending" order
+ */
+When(
+  'I sort the draft accounts table by column {string} in {string} order',
+  (column: DraftAccountsTableColumn, direction: 'ascending' | 'descending') => {
+    const normalizedDirection = direction.trim().toLowerCase() as 'ascending' | 'descending';
+    const allowed: Array<'ascending' | 'descending'> = ['ascending', 'descending'];
+    if (!allowed.includes(normalizedDirection)) {
+      throw new Error(`Unsupported sort direction: ${direction}`);
+    }
+    log('action', 'Sorting draft accounts table', { column, direction: normalizedDirection });
+    checker().sortByColumn(column, normalizedDirection);
   },
 );
 
@@ -103,7 +225,17 @@ Given(
  */
 When('I open the draft account for defendant {string}', (defendantName: string) => {
   log('navigate', 'Opening draft account by defendant', { defendantName });
-  list().openDefendant(defendantName);
+  inputter().openDefendant(defendantName);
+});
+
+/**
+ * @step Open a draft account in checker view by defendant/company name.
+ * @param defendantName - Visible name in the Defendant column.
+ * @example And I view the draft account details for defendant "GREEN, Oliver"
+ */
+When('I view the draft account details for defendant {string}', (defendantName: string) => {
+  log('navigate', 'Opening checker draft account by defendant', { defendantName });
+  checker().openDefendant(defendantName);
 });
 
 /**
@@ -112,7 +244,7 @@ When('I open the draft account for defendant {string}', (defendantName: string) 
  */
 When('I open the draft account number {string}', (accountNumber: string) => {
   log('navigate', 'Opening draft account by account number', { accountNumber });
-  list().openAccountNumber(accountNumber);
+  inputter().openAccountNumber(accountNumber);
 });
 
 /**
@@ -120,7 +252,7 @@ When('I open the draft account number {string}', (accountNumber: string) => {
  */
 When('I view all rejected draft accounts', () => {
   log('navigate', 'Opening View all rejected accounts');
-  list().openViewAllRejected();
+  inputter().openViewAllRejected();
 });
 
 /**
@@ -128,7 +260,17 @@ When('I view all rejected draft accounts', () => {
  */
 When('I return to the rejected accounts tab', () => {
   log('navigate', 'Returning to rejected accounts tab');
-  list().returnFromViewAllRejected();
+  inputter().returnFromViewAllRejected();
+});
+
+/**
+ * @step Open a draft account in checker view and assert the header.
+ * @param defendantName - Defendant/company to click.
+ * @param expectedHeader - Header text expected after navigation.
+ */
+Then('I open the draft account for {string} and see header {string}', (defendantName: string, expectedHeader: string) => {
+  log('navigate', 'Opening draft and asserting header', { defendantName, expectedHeader });
+  draftsFlow().openDraftAndAssertHeader(defendantName, expectedHeader);
 });
 
 /**
@@ -140,8 +282,8 @@ Then('the manual draft table headings are:', (table: DataTable) => {
     .rows()
     .map(([heading]) => heading.trim())
     .filter(Boolean);
-  log('assert', 'Draft table headings', { headings });
-  list().assertHeadings(headings);
+  log('assert', 'Draft table headings', { headingsList: headings });
+  checker().assertHeadings(headings);
 });
 
 /**
@@ -155,7 +297,7 @@ Then('the manual draft table row {int} contains:', (position: number, table: Dat
     .map(([value]) => value.trim())
     .filter(Boolean);
   log('assert', 'Draft table row values', { position, expectedValues });
-  list().assertRowValues(position, expectedValues);
+  inputter().assertRowValues(position, expectedValues);
 });
 
 /**
@@ -171,8 +313,28 @@ Then('the manual draft table row {int} has values:', (position: number, table: D
       .filter(([column]) => Boolean(column)),
   );
   log('assert', 'Draft table row column values', { position, expectations });
-  list().assertRowColumns(position, expectations as any);
+  inputter().assertRowColumns(position, expectations as any);
 });
+
+/**
+ * @step Assert that the row matching a column value has the provided column/value pairs.
+ * @param matchValue - Text to find within the matchColumn.
+ * @param matchColumn - Column used to locate the row (e.g., "Defendant").
+ * @param table - Two-column table: Column | Value.
+ */
+Then(
+  'the manual draft table row containing {string} in column {string} has values:',
+  (matchValue: string, matchColumn: DraftAccountsTableColumn, table: DataTable) => {
+    const expectations = Object.fromEntries(
+      table
+        .rows()
+        .map(([column, value]) => [column.trim(), value.trim()])
+        .filter(([column]) => Boolean(column)),
+    );
+    log('assert', 'Draft table row values by match', { matchColumn, matchValue, expectations });
+    checker().assertRowByMatch(matchColumn, matchValue, expectations as any);
+  },
+);
 
 /**
  * @step Assert that a column contains the provided text.
@@ -181,10 +343,20 @@ Then('the manual draft table row {int} has values:', (position: number, table: D
  */
 Then('I see {string} in the manual draft column {string}', (expectedText: string, column: string) => {
   log('assert', 'Draft table column contains text', { column, expectedText });
-  list().assertColumnContains(
+  inputter().assertColumnContains(
     column as Parameters<CreateManageDraftsActions['assertColumnContains']>[0],
     expectedText,
   );
+});
+
+/**
+ * @step Assert that the draft accounts table contains text in a column (checker view).
+ * @param expectedText - Text to search for.
+ * @param column - Column label.
+ */
+Then('the draft accounts table should contain {string} in column {string}', (expectedText: string, column: string) => {
+  log('assert', 'Checker draft table column contains text', { column, expectedText });
+  checker().assertColumnContains(column as DraftAccountsTableColumn, expectedText);
 });
 
 /**
@@ -197,7 +369,7 @@ When(
   'I open the draft account in row containing {string} in the manual draft column {string}',
   (expectedText: string, column: string) => {
     log('navigate', 'Opening draft account by column match', { column, expectedText });
-    list().openFirstMatchInColumn(
+    inputter().openFirstMatchInColumn(
       column as Parameters<CreateManageDraftsActions['openFirstMatchInColumn']>[0],
       expectedText,
     );

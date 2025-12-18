@@ -3,7 +3,7 @@ Feature: View Defendant Account Summary - Add Comments
 
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I clear all approved draft accounts
+    And I clear all approved accounts
 
   @PO-777
   Scenario: Complete View Defendant Account Adult or Youth Summary and Comments functionality
@@ -166,4 +166,3 @@ Feature: View Defendant Account Summary - Add Comments
 
     # When I discard Parent or guardian changes
     Then I should see the account summary header contains "Miss Catherine GREEN"
-

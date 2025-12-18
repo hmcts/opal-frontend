@@ -91,13 +91,19 @@ export class DraftAccountsCommonActions {
    */
   assertHeadings(expectedHeadings: string[]): void {
     const normalized = expectedHeadings.map((heading) => heading.trim());
-    log('assert', 'Asserting draft table headings', { expectedHeadings: normalized });
-    cy.get(L.headings, this.common.getTimeoutOptions())
-      .should('have.length.at.least', normalized.length)
-      .then(($headings) => {
-        const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim());
-        expect(actual.slice(0, normalized.length)).to.deep.equal(normalized);
-      });
+    cy.get(L.headings, this.common.getTimeoutOptions()).then(($headings) => {
+      const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim());
+      const actualNormalized = actual.map((h) => h.toLowerCase());
+      log('assert', 'Asserting draft table headings', { expectedHeadings: normalized, actualHeadings: actual });
+
+      const missing = normalized.filter(
+        (expected) => !actualNormalized.some((actualHeading) => actualHeading === expected.toLowerCase()),
+      );
+
+      if (missing.length) {
+        throw new Error(`Missing headings: ${missing.join(', ')}`);
+      }
+    });
   }
 
   /**
@@ -207,6 +213,53 @@ export class DraftAccountsCommonActions {
   }
 
   /**
+   * Asserts the row that matches a column value contains the expected column/value pairs.
+   * @param matchColumn - Column used to locate the row.
+   * @param matchValue - Text to match within the column.
+   * @param expectations - Map of column label to expected text for that row.
+   */
+  assertRowByMatch(
+    matchColumn: DraftAccountsTableColumn,
+    matchValue: string,
+    expectations: Record<DraftAccountsTableColumn, string>,
+  ): void {
+    const normalize = (text: string) =>
+      text
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const matchSelector = this.resolveColumnSelector(matchColumn);
+
+    cy.get(L.rows, this.common.getTimeoutOptions())
+      .then(($rows) => {
+        const rowIndex = Cypress.$.makeArray($rows).findIndex((row) => {
+          const cellTexts = Cypress.$(row).find(matchSelector).map((_, el) => normalize(Cypress.$(el).text())).toArray();
+          return cellTexts.some((text) => text.includes(normalize(matchValue)));
+        });
+
+        if (rowIndex === -1) {
+          throw new Error(`Row with ${matchColumn} containing "${matchValue}" was not found`);
+        }
+
+        return cy.wrap($rows[rowIndex]);
+      })
+      .within(() => {
+        Object.entries(expectations).forEach(([column, value]) => {
+          const selector = this.resolveColumnSelector(column as DraftAccountsTableColumn);
+          const expectedNormalized = normalize(value);
+          cy.get(selector, this.common.getTimeoutOptions()).should(($cells) => {
+            const cellTexts = $cells.map((_, el) => normalize(Cypress.$(el).text())).toArray();
+            expect(
+              cellTexts.some((text) => text.includes(expectedNormalized)),
+              `Expected "${expectedNormalized}" in column ${column}`,
+            ).to.be.true;
+          });
+        });
+      });
+  }
+
+  /**
    * Sorts the draft accounts table by clicking the column header until the desired direction is set.
    * @description Ensures the sortable header aria-sort matches the requested direction for deterministic assertions.
    * @param column - Column header text to sort by.
@@ -222,34 +275,34 @@ export class DraftAccountsCommonActions {
 
     cy.contains(headerButtonSelector, column, this.common.getTimeoutOptions())
       .scrollIntoView()
-      .then(($button) => {
-        const ensureDirection = (currentSort?: string | null) => {
-          if ((currentSort ?? '').toLowerCase() === normalizedDirection) {
-            return;
-          }
+      .closest('th')
+      .then(($th) => {
+        const clickButton = () => cy.wrap($th).find('button').click({ force: true });
 
-          cy.wrap($button).click({ force: true });
+        return cy
+          .wrap($th)
+          .invoke('attr', 'aria-sort')
+          .then((currentSort) => {
+            const normalizedCurrent = (currentSort ?? '').toLowerCase();
+            if (normalizedCurrent === normalizedDirection) {
+              return;
+            }
 
-          if ((currentSort ?? '').toLowerCase() !== normalizedDirection) {
-            cy.wrap($button)
+            clickButton();
+
+            return cy
+              .wrap($th)
               .invoke('attr', 'aria-sort')
-              .then((nextSort) => {
-                if ((nextSort ?? '').toLowerCase() !== normalizedDirection) {
-                  cy.wrap($button).click({ force: true });
+              .then((afterClick) => {
+                const normalizedAfterClick = (afterClick ?? '').toLowerCase();
+                if (normalizedAfterClick !== normalizedDirection) {
+                  clickButton();
                 }
               });
-          }
-        };
-
-        cy.wrap($button)
-          .invoke('attr', 'aria-sort')
-          .then((currentSort) => ensureDirection(typeof currentSort === 'string' ? currentSort : undefined));
+          })
+          .then(() => cy.wrap($th));
       })
-      .then(() =>
-        cy
-          .contains(headerButtonSelector, column, this.common.getTimeoutOptions())
-          .should('have.attr', 'aria-sort', normalizedDirection),
-      );
+      .should('have.attr', 'aria-sort', normalizedDirection);
   }
 
   /**

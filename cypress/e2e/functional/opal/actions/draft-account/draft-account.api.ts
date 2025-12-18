@@ -17,15 +17,17 @@ import get from 'lodash/get';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
 
 import { convertDataTableToNestedObject } from '../../../../../support/utils/table';
-import { getDraftPayloadFileForAccountType, type DefendantType } from '../../../../../support/utils/payloads';
+import {
+  getApprovedPayloadFile,
+  getDraftPayloadFile,
+  type DraftPayloadType,
+} from '../../../../../support/utils/payloads';
 import { readDraftIdFromBody } from '../../../../../support/draftAccounts';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 import { DraftAccountsInterceptActions } from '../draft-account/draft-accounts.intercepts';
 
 const log = createScopedLogger('DraftAccountApiActions');
 const intercepts = new DraftAccountsInterceptActions();
-const approvedDraftSummaries: any[] = [];
-type ApprovedAccountType = DefendantType | 'fixedPenalty' | 'fixedPenaltyCompany';
 
 /**
  * Path builder for a draft account resource.
@@ -57,93 +59,27 @@ export interface EtagUpdate {
 }
 
 /**
- * Resolve the approved payload fixture filename for the provided account type.
- * @param accountType - Account type used for the approved stub.
- * @returns Fixture filename for the approved draft payload.
- * @throws Error when the account type is unsupported.
- */
-function getApprovedPayloadFileForAccountType(accountType: ApprovedAccountType): string {
-  switch (accountType) {
-    case 'company':
-    case 'fixedPenaltyCompany':
-      return 'approvedCompanyPayload.json';
-    case 'adultOrYouthOnly':
-      return 'approvedAccountPayload.json';
-    case 'pgToPay':
-      return 'approvedParentOrGuardianPayload.json';
-    case 'fixedPenalty':
-      return 'approvedAccountPayload.json';
-    default:
-      throw new Error(`Unsupported account type for approved stub: ${accountType}`);
-  }
-}
-
-/**
  * Create a draft account, set its status, and expose ETag/ID metadata via @etagUpdate.
  *
- * @param accountType - 'individual' | 'company'
+ * @param draftType - Draft account type from payloads.ts (e.g., company, pgToPay, fixedPenalty).
  * @param newStatus - e.g., 'Published'
  * @param table - Cucumber DataTable of overrides
  * @returns Cypress.Chainable<void>
  */
 export function createDraftAndSetStatus(
-  accountType: ApprovedAccountType,
+  draftType: DraftPayloadType,
   newStatus: string,
   table: DataTable,
 ): Cypress.Chainable<void> {
   const overrides = convertDataTableToNestedObject(table);
-  const draftFixture = getDraftPayloadFileForAccountType(accountType);
+  const draftFixture = getDraftPayloadFile(draftType);
   const isInReview = newStatus.trim().toLowerCase() === 'in review';
 
-  log('action', `Creating ${accountType} draft and setting status to ${newStatus}`, {
-    accountType,
+  log('action', `Creating ${draftType} draft and setting status to ${newStatus}`, {
+    draftType,
     newStatus,
     overrides,
   });
-
-  // If "Approved" is requested, stub the approved listings instead of patching the backend.
-  if (newStatus.toLowerCase() === 'approved') {
-    const approvedFixture = getApprovedPayloadFileForAccountType(accountType);
-
-    return cy
-      .fixture(`draftAccounts/${approvedFixture}`)
-      .then((base) => {
-        const summary = merge({}, base, overrides);
-        // Prefer explicit account_snapshot overrides; fall back to existing fixture value.
-        const overrideSnapshotName = get(overrides, 'account_snapshot.defendant_name');
-        if (overrideSnapshotName) {
-          summary.account_snapshot = {
-            ...(summary.account_snapshot ?? {}),
-            defendant_name: overrideSnapshotName,
-          };
-        }
-
-        const approvedDate =
-          get(summary, 'account_status_date') ||
-          get(summary, 'created_at') ||
-          get(summary, 'account_snapshot.created_date') ||
-          new Date().toISOString();
-        const approvedTime = Date.parse(approvedDate);
-        const now = new Date();
-        const msPerDay = 24 * 60 * 60 * 1000;
-        const daysAgo =
-          Number.isNaN(approvedTime) || approvedTime > now.getTime()
-            ? 0
-            : Math.floor((now.setHours(0, 0, 0, 0) - new Date(approvedTime).setHours(0, 0, 0, 0)) / msPerDay);
-        summary.created_at = approvedDate;
-        summary.account_status_date = approvedDate;
-        summary.__approvedDays = `${daysAgo} days ago`;
-
-        return summary;
-      })
-      .then((summary) => {
-        approvedDraftSummaries.push(summary);
-        intercepts.stubApprovedDraftListings([...approvedDraftSummaries]);
-        Cypress.env('approvedDraftSummaries', [...approvedDraftSummaries]);
-        cy.wrap(summary, { log: false }).as('approvedDraftAccount');
-      })
-      .then(() => undefined as void);
-  }
 
   // Local state accumulated across steps
   let requestBody: Record<string, unknown> = {};

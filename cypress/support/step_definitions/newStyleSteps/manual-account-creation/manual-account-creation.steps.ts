@@ -11,9 +11,8 @@ import { When, Then, Given, DataTable } from '@badeball/cypress-cucumber-preproc
 import { ManualAccountCreationFlow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { ManualAccountTaskName } from '../../../../shared/selectors/manual-account-creation/account-details.locators';
 import {
-  AccountType,
-  DefendantType,
   ManualCreateAccountActions,
+  DefendantType,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { ManualAccountCommentsNotesActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/account-comments-notes.actions';
 import {
@@ -35,6 +34,7 @@ import {
   ManualContactDetailsActions,
   ManualContactFieldKey,
 } from '../../../../e2e/functional/opal/actions/manual-account-creation/contact-details.actions';
+import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
 import { CompanyAliasRow } from '../../../../e2e/functional/opal/flows/manual-account-creation.flow';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import {
@@ -53,6 +53,7 @@ import {
 } from '../../../utils/macFieldResolvers';
 import { normalizeHash, normalizeTableRows } from '../../../utils/cucumberHelpers';
 import { accessibilityActions } from '../../../../e2e/functional/opal/actions/accessibility/accessibility.actions';
+import { AccountType, ApprovedAccountType } from '../../../utils/payloads';
 const flow = () => new ManualAccountCreationFlow();
 const comments = () => new ManualAccountCommentsNotesActions();
 const courtDetails = () => new ManualCourtDetailsActions();
@@ -67,6 +68,7 @@ const contactDetails = () => new ManualContactDetailsActions();
 const common = () => new CommonActions();
 const createAccount = () => new ManualCreateAccountActions();
 const languagePreferences = () => new ManualLanguagePreferencesActions();
+const intercepts = () => new DraftAccountsInterceptActions();
 /**
  * @step Confirms the user is on the dashboard.
  * @description Asserts the dashboard is visible to ensure navigation is in a known state.
@@ -228,6 +230,22 @@ Given('I am viewing account details for a manual account', () => {
   log('step', 'Starting default manual account (West London, Adult or youth)');
   flow().startFineAccount('West London', 'Adult or youth');
 });
+
+/**
+ * @step Clears approved account listings to start from an empty state.
+ * @description Stubs the approved listings API to return zero results to avoid cross-test leakage.
+ */
+/**
+ * @step Creates an approved (Published) account stub using fixtures and overrides.
+ * @description Delegates to DraftAccountsInterceptActions to serve approved listings for the given account type.
+ */
+Given(
+  'I create a {string} approved account with the following details:',
+  (accountType: ApprovedAccountType, table: DataTable) => {
+    log('intercept', 'Stubbing approved account listing', { accountType });
+    intercepts().createApprovedAccount(accountType, table);
+  },
+);
 /**
  * @step Opens a task from the account details list.
  * @description Clicks a task list entry from the Account details page.
@@ -240,6 +258,17 @@ When('I view the {string} task', (taskName: ManualAccountTaskName) => {
   flow().openTaskFromAccountDetails(taskName);
 });
 
+/**
+ * @step Opens a specific task from the task list and asserts a custom header.
+ * @description Use this variant when the expected page header is not the default task name or when the
+ *              task list is tied to a specific account header (e.g., returning to a draft with a known title).
+ *              Prefer `When I view the "{task}" task` for generic navigation; use this step only when you need
+ *              to assert a custom header after navigation.
+ * @param taskName - Display name of the task to open.
+ * @param header - Expected header text to assert after navigation.
+ * @example
+ *   When I view the "Court details" task for "TEST COMPANY LTD"
+ */
 When('I view the {string} task for {string}', (taskName: ManualAccountTaskName, header: string) => {
   log('navigate', 'Opening task with custom header', { taskName, header });
   flow().openTaskFromAccountDetails(taskName, header);

@@ -19,15 +19,6 @@ export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
   private readonly dashboard = new DashboardActions();
 
   /**
-   * Opens the Check and Validate Draft Accounts page from the dashboard.
-   */
-  openPage(): void {
-    log('navigate', 'Opening Check and Validate Draft Accounts');
-    this.dashboard.goToCheckAndValidateDraftAccounts();
-    this.common.assertHeaderContains('Review accounts');
-  }
-
-  /**
    * Switches to the specified checker tab.
    * @param tab - Tab name (To review | Rejected | Deleted | Failed)
    */
@@ -50,5 +41,43 @@ export class CheckAndValidateDraftsActions extends DraftAccountsCommonActions {
 
     log('navigate', 'Switching Check and Validate tab', { tab, selector });
     cy.get(selector, this.common.getTimeoutOptions()).should('be.visible').click({ force: true });
+  }
+
+  /**
+   * Clicks the GOV.UK back link on Check and Validate pages.
+   * @description Returns to the draft listings from a draft detail view or nested page.
+   * @example
+   *   this.goBack();
+   */
+  goBack(): void {
+    log('navigate', 'Clicking back link on Check and Validate Draft Accounts');
+    cy.get(DraftAccountsTableLocators.backLink, this.common.getTimeoutOptions())
+      .should('be.visible')
+      .click({ force: true });
+  }
+
+  /**
+   * Asserts that the specified checker tab has aria-current="page".
+   * @param tab - Tab name to assert.
+   */
+  assertTabActive(tab: CheckAndValidateTab): void {
+    const normalized = tab.trim().toLowerCase();
+    const selector = (() => {
+      switch (normalized) {
+        case 'to review':
+          return L.tabs.toReview;
+        case 'rejected':
+          return L.tabs.rejected;
+        case 'deleted':
+          return L.tabs.deleted;
+        case 'failed':
+          return L.tabs.failed;
+        default:
+          return L.tabs.byText(tab);
+      }
+    })();
+
+    log('assert', 'Asserting Check and Validate tab is active', { tab, selector });
+    cy.get(selector, this.common.getTimeoutOptions()).should('have.attr', 'aria-current', 'page');
   }
 }
