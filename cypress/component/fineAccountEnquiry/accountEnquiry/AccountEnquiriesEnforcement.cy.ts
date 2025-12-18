@@ -1,0 +1,325 @@
+import { createDefendantHeaderMockWithName, DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+
+import {
+  USER_STATE_MOCK_NO_PERMISSION,
+  USER_STATE_MOCK_PERMISSION_BU77,
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
+import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENFORCEMENT_STATUS_TAB } from './constants/account_enquiry_enforcement_status_elements';
+import { interceptDefendantHeader, interceptEnforcementStatus } from './intercept/defendantAccountIntercepts';
+import {
+  interceptAuthenticatedUser,
+  interceptResultByCode,
+  interceptUserState,
+} from 'cypress/component/CommonIntercepts/CommonIntercepts';
+import { IComponentProperties } from './setup/setupComponent.interface';
+import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+
+describe('Account Enquiry Enforcement Status', () => {
+  beforeEach(() => {
+    interceptAuthenticatedUser();
+  });
+  const componentProperties: IComponentProperties = {
+    accountId: '77',
+    fragments: 'enforcement',
+    interceptedRoutes: [
+      '/access-denied',
+      '../note/add',
+      '../debtor/individual/amend',
+      '../debtor/parentGuardian/amend',
+      '../enforcement/amend',
+      '../enforcement/amend-denied',
+      // Add more routes here as needed
+    ],
+  };
+
+  it(
+    'AC1: The Enforcement Status tab is built as per the design artefact - Adult or youth only',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      //interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
+      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle)
+        .should('contain.text', 'Enforcement overview')
+        .and('contain.text', 'Last enforcement action');
+      cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
+        .should('exist')
+        .and('contain.text', 'Collection order status')
+        .next()
+        .should('contain.text', '—');
+      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
+        .should('exist')
+        .and('contain.text', 'Days in default')
+        .next()
+        .should('contain.text', '—');
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
+        .should('exist')
+        .and('contain.text', 'Enforcement court')
+        .next()
+        .should('contain.text', '—');
+    },
+  );
+
+  it(
+    'AC1: The Enforcement Status tab is built as per the design artefact - Parent or guardian',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'Parent/Guardian';
+      headerMock.parent_guardian_party_id = '1770000001';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      //interceptResultByCode('REM');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+      cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.parentGuardianTag).should('exist').and('contain.text', 'Parent or Guardian to pay');
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
+      cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
+        .should('exist')
+        .and('contain.text', 'Collection order status')
+        .next()
+        .should('contain.text', '—');
+      cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
+        .should('exist')
+        .and('contain.text', 'Days in default')
+        .next()
+        .should('contain.text', '—');
+      cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
+        .should('exist')
+        .and('contain.text', 'Enforcement court')
+        .next()
+        .should('contain.text', '—');
+    },
+  );
+
+  it('AC1: The Enforcement Status tab is built as per the design artefact - Company', { tags: ['PO-1647'] }, () => {
+    const header = structuredClone(DEFENDANT_HEADER_MOCK);
+    header.party_details.organisation_flag = true;
+    header.party_details.organisation_details = {
+      organisation_name: 'Test Org Ltd',
+      organisation_aliases: [],
+    };
+
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+    const accountId = header.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+    interceptDefendantHeader(accountId, header, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    //interceptResultByCode('REM');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingWithCaption).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.accountInfo).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.summaryMetricBar).should('exist');
+    cy.get('input, textarea, select, [contenteditable="true"]').should('not.exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.enforcementStatusLink).should('exist').and('contain.text', 'Request an HMRC check');
+    cy.get(ENFORCEMENT_STATUS_TAB.headingName).should('exist').and('contain.text', 'Test Org Ltd');
+    cy.get(ENFORCEMENT_STATUS_TAB.tabName).should('exist').and('contain.text', 'Enforcement');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+    cy.get(ENFORCEMENT_STATUS_TAB.collectionOrderStatus)
+      .should('exist')
+      .and('contain.text', 'Collection order status')
+      .next()
+      .should('contain.text', '—');
+    cy.get(ENFORCEMENT_STATUS_TAB.daysInDefault)
+      .should('exist')
+      .and('contain.text', 'Days in default')
+      .next()
+      .should('contain.text', '—');
+    cy.get(ENFORCEMENT_STATUS_TAB.enforcementCourt)
+      .should('exist')
+      .and('contain.text', 'Enforcement court')
+      .next()
+      .should('contain.text', '—');
+  });
+
+  it(
+    'AC2: Action column displayed and add enforcement action link visible when user has Enter Enforcement permission',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 10,
+        permission_name: 'Enter Enforcement',
+      });
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(newUserState);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
+    },
+  );
+
+  it(
+    'AC2: Action column displayed when user has Account Maintenance permission and add enforcement action link not visible',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(newUserState);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('not.exist');
+    },
+  );
+
+  it(
+    'AC2: Action column displayed and add enforcement action link visible when user has both Account Maintenance and Enter Enforcement permissions',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement action').should('exist');
+    },
+  );
+
+  it(
+    'AC2: Add enforcement override link displayed when user has Account Maintenance permission and no enf_override_result_id',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_id = null;
+      enforcementMock.enforcement_override.enforcement_override_result.enforcement_override_result_name = null;
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(newUserState);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('exist');
+    },
+  );
+
+  it(
+    'AC2: Add enforcement override link not displayed when user has Account Maintenance permission and enf_override_result_id is not null',
+    { tags: ['PO-1647'] },
+    () => {
+      let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      let newUserState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
+      newUserState.business_unit_users[0].permissions.push({
+        permission_id: 7,
+        permission_name: 'Account Maintenance',
+      });
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(newUserState);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptEnforcementStatus(accountId, enforcementMock, '123');
+      setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+      cy.get('router-outlet').should('exist');
+
+      cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+      cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+      cy.contains('h2', 'Actions').parent().contains('a', 'Add enforcement override').should('not.exist');
+    },
+  );
+
+  it('AC2: Action column not displayed when user has no relevant permissions', { tags: ['PO-1647'] }, () => {
+    let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+    headerMock.debtor_type = 'individual';
+    let enforcementMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+
+    const accountId = headerMock.defendant_account_party_id;
+    interceptAuthenticatedUser();
+    interceptUserState(USER_STATE_MOCK_NO_PERMISSION);
+    interceptDefendantHeader(accountId, headerMock, '123');
+    interceptEnforcementStatus(accountId, enforcementMock, '123');
+    setupAccountEnquiryComponent({ ...componentProperties, accountId: accountId });
+    cy.get('router-outlet').should('exist');
+
+    cy.get(ENFORCEMENT_STATUS_TAB.pageHeader).should('exist');
+    cy.get(ENFORCEMENT_STATUS_TAB.tableTitle).should('exist').and('contain.text', 'Enforcement overview');
+    cy.get(ENFORCEMENT_STATUS_TAB.actionsColumnHeader).should('not.exist');
+  });
+});

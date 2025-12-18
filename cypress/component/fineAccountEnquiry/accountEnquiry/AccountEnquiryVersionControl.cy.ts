@@ -7,6 +7,7 @@ import {
   interceptAtAGlance,
   interceptDefendantDetails,
   interceptDefendantHeader,
+  interceptEnforcementStatus,
   interceptPaymentTerms,
 } from './intercept/defendantAccountIntercepts';
 import {
@@ -14,9 +15,11 @@ import {
   interceptResultByCode,
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { DEFENDANT_HEADER_MOCK, USER_STATE_MOCK_PERMISSION_BU77 } from './mocks/defendant_details_mock';
+import { DEFENDANT_HEADER_MOCK } from './mocks/defendant_details_mock';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from '../../CommonIntercepts/CommonUserState.mocks';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { head } from 'lodash';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-enforcement-tab-ref-data.mock';
 
 describe('Global Version Control Mechanism - Component Tests', () => {
   beforeEach(() => {
@@ -54,6 +57,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, etag);
       interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, etag);
       interceptResultByCode('REM');
+      interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, etag);
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -99,6 +103,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, atAGlanceEtag);
       interceptPaymentTerms(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK, paymentTermsEtag);
       interceptResultByCode('REM');
+      interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '123');
 
       setupAccountEnquiryComponent(componentProperties);
 
@@ -145,6 +150,7 @@ describe('Global Version Control Mechanism - Component Tests', () => {
       );
       interceptAtAGlance(77, OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, atAGlanceEtag);
       setupAccountEnquiryComponent(componentProperties);
+      interceptEnforcementStatus(77, OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK, '123');
 
       cy.get(DOM_ELEMENTS.warningBanner).should('exist');
 

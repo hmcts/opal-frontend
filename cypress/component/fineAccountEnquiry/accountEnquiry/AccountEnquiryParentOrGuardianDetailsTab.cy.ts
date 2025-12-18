@@ -1,10 +1,12 @@
 import { interceptAuthenticatedUser, interceptUserState } from '../../CommonIntercepts/CommonIntercepts';
+import { createDefendantHeaderMockWithName } from './mocks/defendant_details_mock';
+
 import {
+  USER_STATE_MOCK_NO_PERMISSION,
   USER_STATE_MOCK_PERMISSION_BU17,
   USER_STATE_MOCK_PERMISSION_BU77,
-  USER_STATE_MOCK_NO_PERMISSION,
-  createDefendantHeaderMockWithName,
-} from './mocks/defendant_details_mock';
+} from '../../CommonIntercepts/CommonUserState.mocks';
+
 import {
   interceptAddNotes,
   interceptDefendantHeader,
