@@ -3,14 +3,15 @@
  * Wires Cucumber steps to Cypress flows/actions for the Fixed Penalty journey.
  */
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { DefendantType } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 import { FixedPenaltyFlow } from '../../../../e2e/functional/opal/flows/fixed-penalty.flow';
 import { FixedPenaltyDetailsActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-details.actions';
 import { FixedPenaltyReviewActions } from '../../../../e2e/functional/opal/actions/manual-account-creation/fixed-penalty-review.actions';
-import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
+import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-accounts.intercepts';
+import { DraftTabsActions, InputterTab, CheckerTab } from '../../../../e2e/functional/opal/actions/draft-tabs.actions';
 import { log } from '../../../utils/log.helper';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { installDraftAccountCleanup } from '../../../../support/draftAccounts';
-import { DefendantType } from '../../../../e2e/functional/opal/actions/manual-account-creation/create-account.actions';
 
 installDraftAccountCleanup();
 
@@ -18,6 +19,7 @@ const flow = () => new FixedPenaltyFlow();
 const details = () => new FixedPenaltyDetailsActions();
 const review = () => new FixedPenaltyReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
+const tabs = () => new DraftTabsActions();
 const common = () => new CommonActions();
 
 const mapSummaryRows = (table: DataTable) =>
@@ -239,4 +241,51 @@ When('I navigate back from fixed penalty details choosing {string}', (choice: 'O
 Given('I stub fixed penalty draft account listings', () => {
   log('intercept', 'Stubbing fixed penalty draft listings');
   intercepts().stubFixedPenaltyListings();
+});
+
+/**
+ * @step Opens the Create and Manage Draft Accounts page for inputters.
+ * @description Clicks the dashboard link and asserts the inputter view header.
+ */
+When('I open Create and Manage Draft Accounts', () => {
+  log('navigate', 'Opening Create and Manage Draft Accounts');
+  tabs().openInputterTabs();
+});
+
+/**
+ * @step Opens the Check and Validate Draft Accounts page for checkers.
+ * @description Clicks the dashboard link and asserts the checker view header.
+ */
+When('I open Check and Validate Draft Accounts', () => {
+  log('navigate', 'Opening Check and Validate Draft Accounts');
+  tabs().openCheckerTabs();
+});
+
+/**
+ * @step Switches to the specified inputter draft tab.
+ * @description Clicks the tab by name within the inputter draft accounts view.
+ * @param tab - Tab name (e.g., "In review").
+ */
+When('I view the inputter draft tab {string}', (tab: InputterTab) => {
+  log('navigate', 'Switching inputter tab', { tab });
+  tabs().switchInputterTab(tab);
+});
+
+/**
+ * @step Switches to the specified checker draft tab.
+ * @description Clicks the tab by name within the checker draft accounts view.
+ * @param tab - Tab name (e.g., "To review").
+ */
+When('I view the checker draft tab {string}', (tab: CheckerTab) => {
+  log('navigate', 'Switching checker tab', { tab });
+  tabs().switchCheckerTab(tab);
+});
+
+/**
+ * @step Asserts the account type column shows Fixed Penalty.
+ * @description Checks the draft listings table for the Fixed Penalty account type text.
+ */
+Then('I see fixed penalty in the account type column', () => {
+  log('assert', 'Checking account type column for Fixed Penalty');
+  tabs().assertAccountType('Fixed Penalty');
 });

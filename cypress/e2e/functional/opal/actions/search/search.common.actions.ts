@@ -199,6 +199,53 @@ export const assertParamValue = (
   expect(String(actualValue), `${label} – scalar mismatch`).to.equal(String(expectedValue));
 };
 
+type ExpectedEntry = {
+  gherkinKey: string;
+  expectedRaw: string;
+  mapping: AccountSearchFieldMapping;
+};
+
+const valuesMatch = (actualValue: unknown, expectedRaw: string, mapping: AccountSearchFieldMapping): boolean => {
+  const expectedValue = expectedRaw === 'null' ? null : expectedRaw;
+
+  if (expectedValue === null) {
+    return actualValue === null || actualValue === undefined;
+  }
+
+  if (Array.isArray(actualValue)) {
+    let parsedExpected: unknown;
+    try {
+      parsedExpected = JSON.parse(expectedRaw);
+    } catch (error) {
+      throw new Error(`Failed to parse JSON array for "${mapping.key}": "${expectedRaw}". ${String(error)}`);
+    }
+
+    return Array.isArray(parsedExpected) && JSON.stringify(actualValue) === JSON.stringify(parsedExpected);
+  }
+
+  return String(actualValue) === String(expectedValue);
+};
+
+const interceptionMatchesExpected = (
+  interception: any,
+  expectedEntries: ExpectedEntry[],
+  entityKey: string,
+): boolean => {
+  const body = (interception.request.body ?? {}) as Record<string, unknown>;
+  const entity = (body[entityKey] as Record<string, unknown>) ?? {};
+
+  return expectedEntries.every(({ mapping, expectedRaw }) => {
+    const container = resolveContainer(body, entity, mapping);
+    const actualValue = container[mapping.key];
+
+    return valuesMatch(actualValue, expectedRaw, mapping);
+  });
+};
+
+const pickMatchingInterception = (interceptions: any[], expectedEntries: ExpectedEntry[], entityKey: string): any => {
+  return interceptions.find((interception) => interceptionMatchesExpected(interception, expectedEntries, entityKey));
+};
+
 export class AccountSearchCommonActions {
   private readonly minorActions = new AccountSearchMinorCreditorsActions();
   private readonly commonActions = new CommonActions();
@@ -591,38 +638,60 @@ export class AccountSearchCommonActions {
     }
 
     const { alias, entityKey } = resolveAliasAndEntityKey(type);
+    const expectedEntries: ExpectedEntry[] = Object.entries(expectedParams).map(([gherkinKey, expectedRaw]) => {
+      const translatedKey = translateGherkinKey(type, gherkinKey);
+      const mapping = mappings[translatedKey];
 
-    cy.wait(alias).then((interception) => {
-      const body = interception.request.body as Record<string, unknown>;
-      const entity = (body[entityKey] as Record<string, unknown>) ?? {};
+      if (!mapping) {
+        throw new Error(`No mapping found for feature key: ${gherkinKey} (translated: ${translatedKey})`);
+      }
 
-      // Always visible — even on test failure
-      logSync('debug', `RAW DEFENDANT REQUEST BODY: ${JSON.stringify(body, null, 2)}`);
+      return { gherkinKey, expectedRaw, mapping };
+    });
 
-      // Expandable structured debugging
-      logSync('debug', 'Defendant API request body captured', {
-        requestBody: body,
-        entityKey,
-        entity,
-      });
+    cy.wait(alias).then(() => {
+      cy.get<any[]>(`${alias}.all`).then((interceptions) => {
+        const interceptionsList = interceptions ?? [];
+        const matchingInterception =
+          interceptionsList.length <= 1
+            ? interceptionsList[0]
+            : pickMatchingInterception(interceptionsList, expectedEntries, entityKey);
 
-      // Also visible in browser DevTools
-      console.log('RAW DEFENDANT REQUEST BODY:', body);
+        if (!matchingInterception) {
+          const capturedBodies = interceptionsList.map((interception, index) => ({
+            index,
+            body: interception.request.body,
+          }));
 
-      for (const [gherkinKey, expectedRaw] of Object.entries(expectedParams)) {
-        const translatedKey = translateGherkinKey(type, gherkinKey);
-        const mapping = mappings[translatedKey];
-
-        if (!mapping) {
-          throw new Error(`No mapping found for feature key: ${gherkinKey} (translated: ${translatedKey})`);
+          throw new Error(
+            `No intercepted ${type} request matched expected parameters. Captured bodies: ${JSON.stringify(capturedBodies, null, 2)}`,
+          );
         }
 
-        const container = resolveContainer(body, entity, mapping);
-        assertParamValue(gherkinKey, mapping, container, expectedRaw, {
-          type,
-          alias,
+        const body = matchingInterception.request.body as Record<string, unknown>;
+        const entity = (body[entityKey] as Record<string, unknown>) ?? {};
+
+        // Always visible — even on test failure
+        logSync('debug', `RAW ${type.toUpperCase()} REQUEST BODY: ${JSON.stringify(body, null, 2)}`);
+
+        // Expandable structured debugging
+        logSync('debug', 'Account search API request body captured', {
+          requestBody: body,
+          entityKey,
+          entity,
         });
-      }
+
+        // Also visible in browser DevTools
+        console.log(`RAW ${type.toUpperCase()} REQUEST BODY:`, body);
+
+        for (const { gherkinKey, expectedRaw, mapping } of expectedEntries) {
+          const container = resolveContainer(body, entity, mapping);
+          assertParamValue(gherkinKey, mapping, container, expectedRaw, {
+            type,
+            alias,
+          });
+        }
+      });
     });
   }
 

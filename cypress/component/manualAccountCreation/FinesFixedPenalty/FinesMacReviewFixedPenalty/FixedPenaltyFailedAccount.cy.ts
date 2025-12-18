@@ -9,7 +9,7 @@ import {
   interceptRefDataForReviewAccount,
   interceptUserState,
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
-import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/fineAccountEnquiry/accountEnquiry/mocks/defendant_details_mock';
+import { USER_STATE_MOCK_PERMISSION_BU77 } from 'cypress/component/CommonIntercepts/CommonUserState.mocks';
 import { interceptGetDraftAccountById } from 'cypress/component/manualAccountCreation/setup/FineAccount.intercepts';
 import { FIXED_PENALTY_FAILED_DEFENDANT_MOCK } from 'cypress/component/manualAccountCreation/FinesFixedPenalty/FinesMacReviewFixedPenalty/mocks/fines_mac_failed_account_mock';
 import { BUSINESS_UNIT_77_MOCK } from 'cypress/component/CommonIntercepts/CommonIntercept.mocks';
