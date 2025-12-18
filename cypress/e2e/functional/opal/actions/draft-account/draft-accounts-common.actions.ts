@@ -179,7 +179,7 @@ export class DraftAccountsCommonActions {
         .replace(/[\u2013\u2014]/g, '-')
         .replace(/\s+/g, ' ')
         .trim();
-    const approvedSummaries = (Cypress.env('approvedDraftSummaries') as any[]) || [];
+    const approvedSummaries = (Cypress.env('approvedListingsCache') as any[]) || [];
 
     log('assert', 'Asserting draft table row column values', { position, expectations });
     cy.get(L.rows, this.common.getTimeoutOptions())
@@ -204,6 +204,52 @@ export class DraftAccountsCommonActions {
           });
         });
       });
+  }
+
+  /**
+   * Sorts the draft accounts table by clicking the column header until the desired direction is set.
+   * @description Ensures the sortable header aria-sort matches the requested direction for deterministic assertions.
+   * @param column - Column header text to sort by.
+   * @param direction - Target sort direction ('ascending' | 'descending').
+   * @example
+   *   this.sortByColumn('Date failed', 'descending');
+   */
+  sortByColumn(column: DraftAccountsTableColumn, direction: 'ascending' | 'descending'): void {
+    const normalizedDirection = direction.trim().toLowerCase() as 'ascending' | 'descending';
+    const headerButtonSelector = `${L.table} th button`;
+
+    log('action', 'Sorting draft accounts table', { column, direction: normalizedDirection });
+
+    cy.contains(headerButtonSelector, column, this.common.getTimeoutOptions())
+      .scrollIntoView()
+      .then(($button) => {
+        const ensureDirection = (currentSort?: string | null) => {
+          if ((currentSort ?? '').toLowerCase() === normalizedDirection) {
+            return;
+          }
+
+          cy.wrap($button).click({ force: true });
+
+          if ((currentSort ?? '').toLowerCase() !== normalizedDirection) {
+            cy.wrap($button)
+              .invoke('attr', 'aria-sort')
+              .then((nextSort) => {
+                if ((nextSort ?? '').toLowerCase() !== normalizedDirection) {
+                  cy.wrap($button).click({ force: true });
+                }
+              });
+          }
+        };
+
+        cy.wrap($button)
+          .invoke('attr', 'aria-sort')
+          .then((currentSort) => ensureDirection(typeof currentSort === 'string' ? currentSort : undefined));
+      })
+      .then(() =>
+        cy
+          .contains(headerButtonSelector, column, this.common.getTimeoutOptions())
+          .should('have.attr', 'aria-sort', normalizedDirection),
+      );
   }
 
   /**
@@ -248,7 +294,7 @@ export class DraftAccountsCommonActions {
     log('navigate', 'Opening first draft account matching column text', { column, expectedText });
     cy.get(L.rows, this.common.getTimeoutOptions())
       .find(selector)
-      .contains(expectedText)
+      .contains(expectedText, this.common.getTimeoutOptions())
       .first()
       .should('be.visible')
       .click({ force: true });
