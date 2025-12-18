@@ -161,7 +161,7 @@ export class FinesAccDefendantDetailsComponent extends AbstractTabData implement
 
   /**
    * Determines the type of denial for amending payment terms based on permission, account status and enforcement details.
-   * @returns A string representing the denial type: 'enforcement', 'permission', balance' or 'account-status'
+   * @returns A string representing the denial type: 'enforcement', 'permission', 'balance' or 'account-status'
    */
   private getAmendPaymentTermsDeniedType(): string {
     if (this.lastEnforcement?.extend_ttp_disallow) {
