@@ -234,7 +234,10 @@ export class DraftAccountsCommonActions {
     cy.get(L.rows, this.common.getTimeoutOptions())
       .then(($rows) => {
         const rowIndex = Cypress.$.makeArray($rows).findIndex((row) => {
-          const cellTexts = Cypress.$(row).find(matchSelector).map((_, el) => normalize(Cypress.$(el).text())).toArray();
+          const cellTexts = Cypress.$(row)
+            .find(matchSelector)
+            .map((_, el) => normalize(Cypress.$(el).text()))
+            .toArray();
           return cellTexts.some((text) => text.includes(normalize(matchValue)));
         });
 

@@ -268,10 +268,13 @@ When('I return to the rejected accounts tab', () => {
  * @param defendantName - Defendant/company to click.
  * @param expectedHeader - Header text expected after navigation.
  */
-Then('I open the draft account for {string} and see header {string}', (defendantName: string, expectedHeader: string) => {
-  log('navigate', 'Opening draft and asserting header', { defendantName, expectedHeader });
-  draftsFlow().openDraftAndAssertHeader(defendantName, expectedHeader);
-});
+Then(
+  'I open the draft account for {string} and see header {string}',
+  (defendantName: string, expectedHeader: string) => {
+    log('navigate', 'Opening draft and asserting header', { defendantName, expectedHeader });
+    draftsFlow().openDraftAndAssertHeader(defendantName, expectedHeader);
+  },
+);
 
 /**
  * @step Assert sortable table headings.

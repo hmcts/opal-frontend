@@ -34,23 +34,24 @@ export class DraftAccountsInterceptActions {
           const url = new URL(req.url, 'http://localhost');
           const statuses = url.searchParams.getAll('status').map((s) => s.toLowerCase());
 
-        const summaries = (accounts.summaries ?? []) as DraftAccountSummary[];
-        const filteredSummaries = summaries.filter((summary) => {
-          const status = String(summary.account_status ?? '').toLowerCase();
-          if (!statuses.length) return true;
-          return statuses.includes(status);
-        });
+          const summaries = (accounts.summaries ?? []) as DraftAccountSummary[];
+          const filteredSummaries = summaries.filter((summary) => {
+            const status = String(summary.account_status ?? '').toLowerCase();
+            if (!statuses.length) return true;
+            return statuses.includes(status);
+          });
 
-        log('intercept', 'Serving filtered fixed penalty drafts', {
-          requestedStatuses: statuses,
-          returned: filteredSummaries.length,
-        });
+          log('intercept', 'Serving filtered fixed penalty drafts', {
+            requestedStatuses: statuses,
+            returned: filteredSummaries.length,
+          });
 
-        req.reply({
-          count: filteredSummaries.length,
-          summaries: filteredSummaries,
-        });
-      }).as('getFixedPenaltyAccounts');
+          req.reply({
+            count: filteredSummaries.length,
+            summaries: filteredSummaries,
+          });
+        },
+      ).as('getFixedPenaltyAccounts');
     });
   }
 
