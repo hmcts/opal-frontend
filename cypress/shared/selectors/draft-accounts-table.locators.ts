@@ -31,4 +31,10 @@ export const DraftAccountsTableLocators = {
     businessUnit: 'td#businessUnit',
     submittedBy: 'td#submittedBy',
   },
+  pagination: {
+    container: 'nav.govuk-pagination',
+    next: 'a.govuk-pagination__link--next, button.govuk-pagination__link--next',
+    links: 'a.moj-pagination__link',
+    activeItem: 'li.moj-pagination__item--active',
+  },
 } as const;

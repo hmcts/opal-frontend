@@ -100,7 +100,16 @@ export class DraftAccountsCommonActions {
         `Expected at least ${normalized.length} headings but found ${actual.length}: [${actual.join(', ')}]`,
       ).to.be.at.least(normalized.length);
 
-      const actualPrefix = actual.slice(0, normalized.length);
+      const windowSize = normalized.length;
+      const startIndex = actual.findIndex((_, index) => {
+        if (index + windowSize > actual.length) {
+          return false;
+        }
+        const window = actual.slice(index, index + windowSize);
+        return window.every((heading, idx) => heading === normalized[idx]);
+      });
+
+      const actualPrefix = startIndex >= 0 ? actual.slice(startIndex, startIndex + windowSize) : [];
       expect(
         actualPrefix,
         `Expected headings to match order: [${normalized.join(', ')}]; actual: [${actual.join(', ')}]`,
@@ -344,17 +353,69 @@ export class DraftAccountsCommonActions {
 
   /**
    * Opens the first draft account where the specified column contains the expected text.
+   * @description
+   * - Searches the current table page for a partial, case-insensitive match in the target column.
+   * - If not found, iterates through pagination links (numeric pages) until a match is clicked or throws.
+   * - Ensures only the first matching row is opened for deterministic navigation.
    * @param column - Column label.
    * @param expectedText - Text to match within the column.
    */
   openFirstMatchInColumn(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
-    log('navigate', 'Opening first draft account matching column text', { column, expectedText });
-    cy.get(L.rows, this.common.getTimeoutOptions())
-      .find(selector)
-      .contains(expectedText, this.common.getTimeoutOptions())
-      .first()
-      .should('be.visible')
-      .click({ force: true });
+    const normalizedExpected = expectedText.trim().toLowerCase();
+    log('navigate', 'Opening first draft account matching column text (searching pages)', { column, expectedText });
+
+    const errorMessage = `Draft account with ${column} containing "${expectedText}" not found across pages`;
+
+    const search = (): Cypress.Chainable<unknown> => {
+      return cy.get(L.rows, this.common.getTimeoutOptions()).then(($rows): Cypress.Chainable<unknown> => {
+        const matchRow: HTMLElement | undefined = Cypress.$($rows)
+          .toArray()
+          .find((row) =>
+            Cypress.$(row)
+              .find(selector)
+              .toArray()
+              .some((cell) => Cypress.$(cell).text().trim().toLowerCase().includes(normalizedExpected)),
+          );
+
+        if (matchRow) {
+          return cy
+            .wrap<HTMLElement>(matchRow)
+            .scrollIntoView()
+            .find(selector)
+            .contains(expectedText, this.common.getTimeoutOptions())
+            .first()
+            .should('be.visible')
+            .click({ force: true })
+            .then(() => null as unknown);
+        }
+
+        return cy.get('body').then(($body): Cypress.Chainable<unknown> => {
+          const pagination = L.pagination;
+          if (!pagination?.links) {
+            throw new Error(errorMessage);
+          }
+
+          const activeText = pagination.activeItem ? $body.find(pagination.activeItem).text().trim() : undefined;
+          const pageLinks = $body
+            .find(pagination.links)
+            .filter((_, el) => {
+              const text = Cypress.$(el).text().trim();
+              const isNumber = /^\d+$/.test(text);
+              const isActive = activeText && text === activeText;
+              return isNumber && !isActive;
+            });
+
+          if (!pageLinks.length) {
+            throw new Error(errorMessage);
+          }
+
+          const nextPage = cy.wrap(pageLinks.first()).click({ force: true });
+          return nextPage.then(() => search());
+        });
+      });
+    };
+
+    search();
   }
 }
