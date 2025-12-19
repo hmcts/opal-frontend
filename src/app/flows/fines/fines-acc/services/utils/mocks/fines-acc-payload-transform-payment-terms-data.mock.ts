@@ -27,6 +27,7 @@ export const BASE_PAYMENT_TERMS_DATA: IOpalFinesAccountDefendantDetailsPaymentTe
   },
   payment_card_last_requested: null,
   last_enforcement: null,
+  resultData: null,
 };
 
 /**
@@ -184,6 +185,7 @@ export const PAYMENT_TERMS_COMPLETE_INSTALMENTS_MOCK: IOpalFinesAccountDefendant
   },
   payment_card_last_requested: '2024-11-15',
   last_enforcement: 'ENF456',
+  resultData: null,
 };
 
 /**
@@ -216,6 +218,7 @@ export const PAYMENT_TERMS_COMPLETE_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IOpalFinesAc
     },
     payment_card_last_requested: null,
     last_enforcement: null,
+    resultData: null,
   };
 
 /**

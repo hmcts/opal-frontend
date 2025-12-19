@@ -27,4 +27,5 @@ export const OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK: IOp
     },
     payment_card_last_requested: '2025-10-11',
     last_enforcement: 'REM',
+    resultData: null,
   };

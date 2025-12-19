@@ -28,6 +28,7 @@ export const MOCK_PAYMENT_TERMS_DATA: IOpalFinesAccountDefendantDetailsPaymentTe
   },
   payment_card_last_requested: null,
   last_enforcement: 'ENF123',
+  resultData: null,
 };
 
 export const MOCK_RESULT_DATA: IOpalFinesResultRefData = {

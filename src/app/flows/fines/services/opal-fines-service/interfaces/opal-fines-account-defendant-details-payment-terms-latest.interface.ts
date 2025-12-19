@@ -1,4 +1,5 @@
 import { IOpalFinesDefendantAccountPaymentTermsSummary } from './opal-fines-defendant-account.interface';
+import { IOpalFinesResultRefData } from './opal-fines-result-ref-data.interface';
 
 export interface IOpalFinesAccountDefendantDetailsPaymentTermsLatest {
   version: string | null;
@@ -15,4 +16,5 @@ export interface IOpalFinesAccountDefendantDetailsPaymentTermsLatest {
   } & IOpalFinesDefendantAccountPaymentTermsSummary;
   payment_card_last_requested: string | null;
   last_enforcement: string | null;
+  resultData: IOpalFinesResultRefData | null;
 }
