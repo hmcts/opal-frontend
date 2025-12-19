@@ -8149,8 +8149,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^15.0.0":
-  version: 15.8.0
-  resolution: "cypress@npm:15.8.0"
+  version: 15.8.1
+  resolution: "cypress@npm:15.8.1"
   dependencies:
     "@cypress/request": "npm:^3.0.9"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -8189,14 +8189,14 @@ __metadata:
     proxy-from-env: "npm:1.0.0"
     request-progress: "npm:^3.0.0"
     supports-color: "npm:^8.1.1"
-    systeminformation: "npm:5.27.7"
+    systeminformation: "npm:^5.27.14"
     tmp: "npm:~0.2.4"
     tree-kill: "npm:1.2.2"
     untildify: "npm:^4.0.0"
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10/eb9eff2a58bc62472527c7b934aeb8b66c82f19be30a44a8511526ddcb681177f0cb16f44bd2f8044de163f270f732ae610895d966ef109cfdc05bd439ba572f
+  checksum: 10/ec53cc379fec04c8069b6b517bf0f1fd70b69c3e5640ed56ce1540f8a2335abfb75feba6d1c10a8f785d968448a6df0203866ace28abbeeaeff69895f94b686e
   languageName: node
   linkType: hard
 
@@ -11684,18 +11684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
-  dependencies:
-    argparse: "npm:^2.0.1"
-  bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
-  languageName: node
-  linkType: hard
-
-"js-yaml@npm:^4.1.1":
+"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0, js-yaml@npm:^4.1.1":
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
@@ -16631,12 +16620,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:5.27.7":
-  version: 5.27.7
-  resolution: "systeminformation@npm:5.27.7"
+"systeminformation@npm:^5.27.14":
+  version: 5.27.14
+  resolution: "systeminformation@npm:5.27.14"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10/8e9b2fc1836822bd09355933675fdaa40776b150b8afd3e8cedf2a2303f95f02aa592c0303eb46a68857f367bc2483159ba325b40d0b7deca776ec0615f743ad
+  checksum: 10/bf8194000e1a4af47acf16a9bc41b715dbd6bde15cb09dc52626f8c8d77ebc1c62b939343ae153b7cbc08486c5d841128019bfe4e5d71c42c14e1089a32c97a1
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
