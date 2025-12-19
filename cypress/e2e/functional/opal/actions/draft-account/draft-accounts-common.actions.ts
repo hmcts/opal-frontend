@@ -397,14 +397,12 @@ export class DraftAccountsCommonActions {
           }
 
           const activeText = pagination.activeItem ? $body.find(pagination.activeItem).text().trim() : undefined;
-          const pageLinks = $body
-            .find(pagination.links)
-            .filter((_, el) => {
-              const text = Cypress.$(el).text().trim();
-              const isNumber = /^\d+$/.test(text);
-              const isActive = activeText && text === activeText;
-              return isNumber && !isActive;
-            });
+          const pageLinks = $body.find(pagination.links).filter((_, el) => {
+            const text = Cypress.$(el).text().trim();
+            const isNumber = /^\d+$/.test(text);
+            const isActive = activeText && text === activeText;
+            return isNumber && !isActive;
+          });
 
           if (!pageLinks.length) {
             throw new Error(errorMessage);
