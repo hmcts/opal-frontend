@@ -90,19 +90,16 @@ export class DraftAccountsCommonActions {
    *   list.assertHeadings(['Defendant', 'Date of birth', 'Created']);
    */
   assertHeadings(expectedHeadings: string[]): void {
-    const normalized = expectedHeadings.map((heading) => heading.trim());
+    const normalized = expectedHeadings.map((heading) => heading.trim().toLowerCase());
     cy.get(L.headings, this.common.getTimeoutOptions()).then(($headings) => {
-      const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim());
-      const actualNormalized = actual.map((h) => h.toLowerCase());
+      const actual = Cypress.$.makeArray($headings).map((el) => Cypress.$(el).text().trim().toLowerCase());
       log('assert', 'Asserting draft table headings', { expectedHeadings: normalized, actualHeadings: actual });
 
-      const missing = normalized.filter(
-        (expected) => !actualNormalized.some((actualHeading) => actualHeading === expected.toLowerCase()),
-      );
-
-      if (missing.length) {
-        throw new Error(`Missing headings: ${missing.join(', ')}`);
-      }
+      expect(
+        actual.length,
+        `Expected ${normalized.length} headings but found ${actual.length}: [${actual.join(', ')}]`,
+      ).to.equal(normalized.length);
+      expect(actual, `Expected headings to match order: [${normalized.join(', ')}]`).to.deep.equal(normalized);
     });
   }
 
