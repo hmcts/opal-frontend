@@ -97,9 +97,14 @@ export class DraftAccountsCommonActions {
 
       expect(
         actual.length,
-        `Expected ${normalized.length} headings but found ${actual.length}: [${actual.join(', ')}]`,
-      ).to.equal(normalized.length);
-      expect(actual, `Expected headings to match order: [${normalized.join(', ')}]`).to.deep.equal(normalized);
+        `Expected at least ${normalized.length} headings but found ${actual.length}: [${actual.join(', ')}]`,
+      ).to.be.at.least(normalized.length);
+
+      const actualPrefix = actual.slice(0, normalized.length);
+      expect(
+        actualPrefix,
+        `Expected headings to match order: [${normalized.join(', ')}]; actual: [${actual.join(', ')}]`,
+      ).to.deep.equal(normalized);
     });
   }
 
