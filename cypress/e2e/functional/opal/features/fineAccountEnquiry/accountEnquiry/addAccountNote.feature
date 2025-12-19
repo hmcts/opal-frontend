@@ -2,7 +2,7 @@ Feature: Add Account Note - View Defendant Account Details
   # This feature file contains tests for adding an account note in the View Defendant Account Details section #
   Background:
     Given I am logged in with email "opal-test@HMCTS.NET"
-    And I clear all approved draft accounts
+    And I clear all approved accounts
 
   @PO-771 @807
   Scenario: As a user I can add defendant account note

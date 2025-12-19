@@ -5,8 +5,8 @@
  * and opening by a specific account number.
  */
 
-import { AccountEnquiryResultsLocators as R } from '../../../../shared/selectors/account-enquiry-results.locators';
-import { createScopedLogger } from '../../../../support/utils/log.helper';
+import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/account-enquiry-results.locators';
+import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
 const log = createScopedLogger('ResultsActions');
 

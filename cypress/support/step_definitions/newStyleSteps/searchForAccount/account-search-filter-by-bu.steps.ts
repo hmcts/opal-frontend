@@ -11,10 +11,10 @@
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { SearchFilterByBUFlow } from '../../../e2e/functional/opal/flows/account-search.filter-by-bu.flow';
-import { SearchFilterByBUCommonActions } from '../../../e2e/functional/opal/actions/search/search.filter-by-bu.common.actions';
-import { AccountSearchCommonActions } from '../../../e2e/functional/opal/actions/search/search.common.actions';
-import { log } from '../../utils/log.helper';
+import { SearchFilterByBUFlow } from '../../../../e2e/functional/opal/flows/account-search.filter-by-bu.flow';
+import { SearchFilterByBUCommonActions } from '../../../../e2e/functional/opal/actions/search/search.filter-by-bu.common.actions';
+import { AccountSearchCommonActions } from '../../../../e2e/functional/opal/actions/search/search.common.actions';
+import { log } from '../../../utils/log.helper';
 
 const filterByBUFlow = new SearchFilterByBUFlow();
 const commonFilter = new SearchFilterByBUCommonActions();

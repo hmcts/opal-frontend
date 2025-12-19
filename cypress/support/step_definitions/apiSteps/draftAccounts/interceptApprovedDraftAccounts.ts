@@ -1,16 +1,15 @@
 import { DataTable, When } from '@badeball/cypress-cucumber-preprocessor';
 import _ from 'lodash';
 import { getDaysAgo } from '../../../utils/dateUtils';
-
-type DefendantType = 'company' | 'adultOrYouthOnly' | 'pgToPay';
+import { DefendantTypes } from '../../../utils/payloads';
 
 let approvedAccounts: any[] = [];
 
 /**
  * Get the appropriate payload file name based on the account type
  */
-function getPayloadFileForApprovedAccountType(accountType: DefendantType): string {
-  const payloadFiles = {
+function getPayloadFileForApprovedAccountType(accountType: DefendantTypes): string {
+  const payloadFiles: Record<DefendantTypes, string> = {
     company: 'approvedCompanyPayload.json',
     adultOrYouthOnly: 'approvedAccountPayload.json',
     pgToPay: 'approvedParentOrGuardianPayload.json',
@@ -73,7 +72,7 @@ function processDateFunctions(obj: any): any {
  */
 When(
   'I create a {string} approved draft account with the following details:',
-  (accountType: DefendantType, data: DataTable) => {
+  (accountType: DefendantTypes, data: DataTable) => {
     const overrides = convertDataTableToNestedObject(data);
 
     // Load the appropriate base payload for this account type
