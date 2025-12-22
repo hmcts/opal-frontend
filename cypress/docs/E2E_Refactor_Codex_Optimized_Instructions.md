@@ -38,19 +38,6 @@ Only create new composites/steps/flows/actions when no suitable one exists.
 ### Scenario Shaping (MANDATORY)
 Any scenario containing more than one distinct behaviour **MUST** be split.
 
-Distinct behaviours include:
-- Cancel branches (Cancel → OK vs Cancel → Cancel)
-- Different state transitions (Not provided → Provided → Not provided)
-- Create vs Edit vs Review flows
-- Unsaved data clearing vs persistence
-- Validation/error vs normal data entry
-- Multiple remove/edit/review flows
-- Different functional categories:
-  - Capitalisation rules
-  - Summary composition
-  - Task status transitions
-  - Submission/confirmation
-
 Each new scenario MUST:
 - Have one clear intent.
 - Test one behaviour only from start to end.
@@ -65,7 +52,30 @@ Each new scenario MUST:
 
 ---
 
-## 3. Gherkin Style & Step Design
+## 3. Gherkin Structure: Background + Rule Blocks (RECOMMENDED)
+
+When refactoring a feature with multiple baselines, prefer grouping with `Rule:` rather than duplicating setup in every scenario.
+
+### Feature-level Background
+Use for setup that applies to all scenarios (e.g., login, global cleanup).
+
+### Rule blocks for baselines
+Use `Rule:` to group scenarios that share a common baseline (data setup + entry point), such as:
+- adult/youth baseline
+- company baseline
+- non-paying baseline
+- parent/guardian baseline
+
+Each `Rule:` may include a `Background:` that:
+- creates baseline data
+- navigates to the correct entry point
+- performs minimal guards required to ensure the baseline is valid
+
+**Guardrails:** keep Rule Background minimal; do not embed behaviour-specific assertions that only apply to one scenario.
+
+---
+
+## 4. Gherkin Style & Step Design
 
 ### Imperative, Intent-Based Gherkin
 - No UI verbs (*click, type, select*).
@@ -76,11 +86,11 @@ Each new scenario MUST:
 Steps **should be combined** where it improves readability, **without spelling out mechanics**.
 
 ✅ Good:
-- *When I delete the account from the review page*
-- *When I remove the defendant and confirm deletion*
+- “When I delete the account from the review page”
+- “When I remove the defendant and confirm deletion”
 
 ❌ Avoid:
-- *When I click Delete then I am on confirmation page then I click Confirm*
+- “When I click Delete then I am on confirmation page then I click Confirm”
 
 **Rule:** combine actions + inherent navigation into **one intent step**.  
 Page assertions must be **implicit** and handled inside flows/actions.
@@ -88,21 +98,14 @@ Page assertions must be **implicit** and handled inside flows/actions.
 ### Inherent Navigation & Guarding (MANDATORY)
 If an action causes navigation:
 - The Flow/Action must **assert/guard the destination page or state internally**
-- Do not rely on repeated *“Then I am on the X page”* steps
+- Do not rely on repeated “Then I am on the X page” steps
 
 ---
 
-## 4. Composite Assertions & Deduplication
+## 5. Composite Assertions & Deduplication
 
 ### Composite Assertions
 Where several assertions verify one outcome, replace them with one composite using a DataTable.
-
-**Example:**
-```gherkin
-Then I see all offence search results have:
-  | Column  | Value   |
-  | Used to | Present |
-```
 
 ### Review / Summary Pages
 - One composite per logical section.
@@ -117,7 +120,7 @@ Single-field steps must be converted to table-driven steps.
 
 ---
 
-## 5. Steps, Flows, and Actions
+## 6. Steps, Flows, and Actions
 
 ### Step Definitions
 - Steps must be thin.
@@ -128,20 +131,15 @@ Single-field steps must be converted to table-driven steps.
 - Use a Flow when a step requires multiple UI actions.
 - Flows orchestrate Actions only (never selectors).
 - Must log high-level journey intent.
-- **If navigation occurs, the flow must guard/assert the destination.**
+- If navigation occurs, the flow must guard/assert the destination.
 
 ### Actions
 - Page-level, single-responsibility.
 - Use selectors only from `cypress/shared/selectors/**`.
 - Import shared actions:
-
 ```ts
 import { CommonActions } from '../common/common.actions';
 ```
-
-### Shared behaviour placement
-- Shared Actions → `../common/common.actions`
-- Shared Steps → `newStyleSteps/common.steps.ts`
 
 ### Logging
 All new Flows and Actions must use:
@@ -151,7 +149,7 @@ cypress/shared/utils/log.helper
 
 ---
 
-## 6. Results Pages & Pagination (MANDATORY DEFAULT)
+## 7. Results Pages & Pagination (MANDATORY DEFAULT)
 
 If a page represents a **set of results**, assume pagination exists.
 
@@ -159,36 +157,13 @@ Rules:
 - Result validation steps must be pagination-aware by default.
 - Do not assume a single page unless explicitly stated.
 - “All results” assertions must validate across pages.
-- First-page-only checks must be explicit in the scenario.
 
 ---
 
-## 7. Selectors & DOM
+## 8. Selectors & DOM
 - Never invent selectors.
 - If a selector is missing → request DOM/Angular markup.
 - Add new selectors only in `cypress/shared/selectors/**`.
-
----
-
-## 8. Technical Interaction Rules
-
-### DataTables
-- Always normalise via `.rowsHash()`.
-- Trim keys & values.
-- Log mapped payloads.
-
-### Hidden/Opacity Inputs
-For radios/checkboxes with `opacity: 0`:
-```js
-should('exist')
-scrollIntoView()
-check({ force: true })
-```
-
-### Navigation Rules
-- No conditional navigation.
-- Navigation must occur at the **start** of a step.
-- If navigation happens inside a Flow/Action, it must also assert the destination.
 
 ---
 
@@ -201,12 +176,6 @@ All new Flows and Actions MUST include full JSDoc:
 - `@param`
 - `@remarks`
 - `@example`
-
-### Sonar compliance
-- No duplicated logic.
-- Clear naming.
-- Single-responsibility methods.
-- Minimal inline comments.
 
 ---
 
@@ -222,11 +191,9 @@ All new Flows and Actions MUST include full JSDoc:
 
 ## 11. Validation & Hygiene Checks (MANDATORY)
 
-Before completing a refactor:
-
 ### Step Definition Coverage
 - Every Gherkin step in the feature file MUST have a corresponding step definition.
-- Ensure feature files are refreshed after step changes.
+- This includes steps inside: **Feature Backgrounds** and **Rule Backgrounds**.
 
 ### No Unused Step Definitions
 - Remove unused step definitions.

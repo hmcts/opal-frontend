@@ -23,6 +23,7 @@ import { AccountDetailsDefendantActions } from '../../../../e2e/functional/opal/
 import { AccountDetailsAtAGlanceActions } from '../../../../e2e/functional/opal/actions/account-details/details.at-a-glance.actions';
 import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
 import { EditDefendantDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
+import { EditCompanyDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.company-details.actions';
 import { AccountDetailsNavActions } from '../../../../e2e/functional/opal/actions/account-details/details.nav.actions';
 import { EditParentGuardianDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
 import { log } from '../../../utils/log.helper';
@@ -33,6 +34,7 @@ const commonFlow = () => new CommonFlow();
 const atAGlanceDetails = () => new AccountDetailsAtAGlanceActions();
 const common = () => new CommonActions();
 const editDefendantDetails = () => new EditDefendantDetailsActions();
+const editCompanyDetails = () => new EditCompanyDetailsActions();
 const editParentGuardianDetails = () => new EditParentGuardianDetailsActions();
 const navActions = () => new AccountDetailsNavActions();
 
@@ -234,6 +236,42 @@ Then('I should remain on the defendant edit page', () => {
 });
 
 /**
+ * @step Cancels a company edit and stays on the form.
+ */
+When('I cancel the company edit and choose to stay', () => {
+  log('step', 'Cancel company edit and stay on form');
+  flow().cancelCompanyEditAndStay();
+});
+
+/**
+ * @step Cancels a company edit, confirms leaving, and expects the header to match.
+ *
+ * @param expectedHeader - Header text expected after discarding changes.
+ */
+When('I discard the company edit changes and expect the header {string}', (expectedHeader: string) => {
+  log('step', 'Discard company edits', { expectedHeader });
+  flow().discardCompanyEditAndReturn(expectedHeader);
+});
+
+/**
+ * @step Ensures the company edit form remains visible.
+ */
+Then('I should remain on the company edit page', () => {
+  log('assert', 'Remain on company edit page');
+  editCompanyDetails().assertStillOnEditPage();
+});
+
+/**
+ * @step Asserts the company name field still contains the expected value.
+ *
+ * @param expected - Company name expected in the edit field.
+ */
+Then('I should see the company name field contains {string}', (expected: string) => {
+  log('assert', 'Company name field contains', { expected });
+  editCompanyDetails().verifyFieldValue(expected);
+});
+
+/**
  * @step Confirms the user has returned to the account details page defendant tab
  */
 Then('I should return to the account details page Defendant tab', () => {
@@ -275,6 +313,39 @@ Then('I should see the company name contains {string}', (expected: string) => {
   log('assert', 'Company name contains', { expected });
   flow().assertCompanyNameContains(expected);
 });
+
+/**
+ * @step Establishes an amendment baseline for defendant updates.
+ *
+ * @param updatedFirstName - First name to persist and audit.
+ */
+When('I establish a defendant amendment baseline with first name {string}', (updatedFirstName: string) => {
+  log('step', 'Establish defendant amendment baseline', { updatedFirstName });
+  flow().establishDefendantAmendmentBaseline(updatedFirstName);
+});
+
+/**
+ * @step Establishes an amendment baseline for company updates.
+ *
+ * @param updatedCompanyName - Company name to persist and audit.
+ */
+When('I establish a company amendment baseline with company name {string}', (updatedCompanyName: string) => {
+  log('step', 'Establish company amendment baseline', { updatedCompanyName });
+  flow().establishCompanyAmendmentBaseline(updatedCompanyName);
+});
+
+/**
+ * @step Establishes an amendment baseline for parent/guardian updates.
+ *
+ * @param updatedFirstName - Guardian first name to persist and audit.
+ */
+When(
+  'I establish a parent or guardian amendment baseline with first name {string}',
+  (updatedFirstName: string) => {
+    log('step', 'Establish parent/guardian amendment baseline', { updatedFirstName });
+    flow().establishParentGuardianAmendmentBaseline(updatedFirstName);
+  },
+);
 
 /**
  * @step Verifies via API that a defendant amendment exists for the provided first name.
@@ -331,25 +402,6 @@ Then('I verify no amendments were created via API for parent or guardian details
 });
 
 /**
- * @step Validates route-guard behaviour for company edits.
- * It temporarily edits the company name, cancels once, verifies persistence,
- * then cancels again to revert to the original.
- */
-When('I verify route guard behaviour when cancelling company edits', () => {
-  log('step', 'Verify route guard for company edits');
-  flow().verifyRouteGuardBehaviour('Accdetail comp', 'Test');
-});
-
-/**
- * @step Validates cancel-changes behaviour for company edits.
- * Edits the company name, cancels, and verifies no persisted changes.
- */
-When('I verify cancel-changes behaviour for company edits', () => {
-  log('step', 'Verify cancel-changes behaviour for company edits');
-  flow().verifyCancelChangesBehaviour('Accdetail comp', 'Test');
-});
-
-/**
  * @step Searches for an account by company name.
  *
  * @param companyName - Company name to search by.
@@ -394,14 +446,37 @@ When('I enter {string} into the notes field and save the note', (note: string) =
 });
 
 /**
- * @step Opens the Add account note screen, enters text, and cancels (discarding changes).
+ * @step Opens Add account note, saves the provided text, and confirms return to details.
+ *
+ * @param noteText - The note text to record.
+ * @example
+ * When I record an account note "Valid test account note"
+ */
+When('I record an account note {string}', (noteText: string) => {
+  log('step', 'Record account note and return to details', { noteText });
+  flow().openAccountNoteEnterNoteAndSave(noteText);
+});
+
+/**
+ * @step Starts Add account note and cancels without entering data.
+ *
+ * @example
+ * When I start an account note and cancel without saving
+ */
+When('I start an account note and cancel without saving', () => {
+  log('step', 'Start account note then cancel without input');
+  flow().cancelAccountNoteWithoutEntering();
+});
+
+/**
+ * @step Opens Add account note, enters text, and cancels (discarding changes).
  *
  * @param noteText - The note text to input before cancelling.
  * @example
- * When I open the Add account note screen, enter "This is a test account note for validation", and cancel
+ * When I start an account note with "This is a test account note for validation" and cancel
  */
-When('I open the Add account note screen, enter {string}, and cancel', (noteText: string) => {
-  log('step', 'Open add note screen, enter text, cancel', { noteText });
+When('I start an account note with {string} and cancel', (noteText: string) => {
+  log('step', 'Start account note, enter text, cancel', { noteText });
   flow().openNotesScreenEnterTextAndCancel(noteText);
 });
 
@@ -435,10 +510,10 @@ When(
  *
  * @param noteText - The note text to input before navigating back.
  * @example
- * When I open the Add account note screen, enter "This is a test account note for back button", and navigate back with confirmation
+ * When I start an account note with "This is a test account note for back button" and confirm browser back
  */
-When('I open the Add account note screen, enter {string}, and navigate back with confirmation', (noteText: string) => {
-  log('step', 'Open notes, enter text, navigate back w/ confirmation', { noteText });
+When('I start an account note with {string} and confirm browser back', (noteText: string) => {
+  log('step', 'Start account note, enter text, confirm back navigation', { noteText });
   flow().openScreenEnterTextAndNavigateBackWithConfirmation(noteText);
 });
 

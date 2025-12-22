@@ -379,81 +379,34 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Verifies route guard behaviour for a Company defendant by editing a field,
-   * choosing to stay, then confirming the temporary value is retained until leaving.
+   * Cancels a company edit and remains on the edit form.
    *
-   * @param companyName - The original company name shown in the header.
-   * @param tempName - Temporary value entered for the company name field.
+   * @param expectedTempName - Optional temporary value that should remain populated.
    */
-  public verifyRouteGuardBehaviour(companyName: string, tempName: string): void {
-    logAE('method', 'verifyRouteGuardBehaviour()');
-    logAE('verify', 'Verifying route guard behaviour', { companyName, tempName });
+  public cancelCompanyEditAndStay(expectedTempName?: string): void {
+    logAE('method', 'cancelCompanyEditAndStay()', { expectedTempName });
+    logAE('cancel', 'Cancelling company edit and staying on the form');
 
-    // Navigate to defendant tab
-    logAE('action', 'Navigating to Defendant tab');
-    this.detailsNav.goToDefendantTab();
-
-    // Click Change Link
-    logAE('action', 'Change Link');
-    this.defendantDetails.change();
-
-    // Edit company name
-    logAE('action', 'Editing company name', { newName: tempName });
-    this.editCompanyDetailsActions.editCompanyName(tempName);
-
-    // Cancel edit (without saving)
-    logAE('action', 'Cancelling edit without saving');
     this.common.cancelEditing(false);
+    this.editCompanyDetailsActions.assertStillOnEditPage();
 
-    // Verify temp name persisted
-    logAE('verify', 'Verifying temporary company name persisted', { expected: tempName });
-    this.editCompanyDetailsActions.verifyFieldValue(tempName);
-
-    // Cancel edit (revert changes)
-    logAE('action', 'Cancelling edit with revert');
-    this.common.cancelEditing(true);
-
-    // Final verification: header restored to original
-    logAE('verify', 'Verifying header reverted to original company name', { expected: companyName });
-    this.atAGlanceDetails.assertHeaderContains(companyName);
-
-    logAE('complete', 'Route guard behaviour verification completed');
+    if (expectedTempName) {
+      this.editCompanyDetailsActions.verifyFieldValue(expectedTempName);
+    }
   }
 
   /**
-   * Verifies cancel-changes behaviour for a Company defendant by editing a field,
-   * choosing to stay, then asserting the header still reflects the original value.
+   * Cancels a company edit, confirms leaving, and asserts the summary header is restored.
    *
-   * @param companyName - The original company name shown in the header.
-   * @param tempName - Temporary value entered for the company name field.
+   * @param originalName - Company name expected on the summary after discarding changes.
    */
-  public verifyCancelChangesBehaviour(companyName: string, tempName: string): void {
-    logAE('method', 'verifyCancelChangesBehaviour()');
-    logAE('verify', 'Verifying cancel changes behaviour', { companyName, tempName });
+  public discardCompanyEditAndReturn(originalName: string): void {
+    logAE('method', 'discardCompanyEditAndReturn()', { originalName });
+    logAE('cancel', 'Cancelling company edit and returning to summary');
 
-    // Navigate to defendant tab
-    logAE('action', 'Navigating to Defendant tab');
-    this.detailsNav.goToDefendantTab();
-
-    // Click Change Link
-    logAE('action', 'Change Link');
-    this.defendantDetails.change();
-
-    // Begin editing company name
-    logAE('action', 'Starting edit of Company Name field', { newValue: tempName });
-    this.editCompanyDetailsActions.editCompanyName(tempName);
-
-    // Simulate cancel action but choose to stay
-    logAE('action', 'Initiating cancel edit (choosing to stay on page)');
-    this.common.cancelEditing(false);
-
-    // Check that header remains unchanged
-    logAE('verify', 'Verifying header still displays original company name', { expected: companyName });
-    this.atAGlanceDetails.assertHeaderContains(companyName);
-
-    // Post-verification confirmation
-    logAE('info', 'Cancel-changes behaviour verified successfully — no unintended persistence detected');
-    logAE('complete', 'verifyCancelChangesBehaviour() completed');
+    this.common.cancelEditing(true);
+    this.detailsNav.assertDefendantTabIsActive();
+    this.atAGlanceDetails.assertHeaderContains(originalName);
   }
 
   /**
@@ -656,16 +609,52 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Enters an account note and saves it (reusing the open+enter helper).
+   * Enters an account note and saves it (reusing the open+enter helper), ensuring
+   * we return to the defendant account details page.
    *
+   * @description Saves a note via the Add account note journey and guards the redirect back to details.
    * @param note - The note text to enter.
+   *
+   * @remarks
+   *  - Guards navigation by asserting the defendant details URL after saving.
+   *  - Delegates typing to {@link openNotesScreenAndEnterText}.
+   *
+   * @example
+   *  flow.openAccountNoteEnterNoteAndSave('Valid test account note');
    */
   public openAccountNoteEnterNoteAndSave(note: string): void {
     logAE('method', 'openAccountNoteEnterNoteAndSave()');
     logAE('input', 'Preparing to enter and save account note', { length: note?.length });
+
     this.openNotesScreenAndEnterText(note);
+
     logAE('save', 'Saving account note');
     this.notes.save();
+
+    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
+  }
+
+  /**
+   * Opens the Add account note view and cancels immediately without entering text.
+   *
+   * @description Starts the Add account note journey and discards it without entering content.
+   * @remarks
+   *  - Confirms any unsaved-changes dialog (if shown) and asserts we return to defendant details.
+   *  - Uses {@link openAddAccountNoteAndVerifyHeader} for the initial navigation guard.
+   *
+   * @example
+   *  flow.cancelAccountNoteWithoutEntering();
+   */
+  public cancelAccountNoteWithoutEntering(): void {
+    logAE('method', 'cancelAccountNoteWithoutEntering()');
+    logAE('flow', 'Open → cancel without changes');
+
+    this.openAddAccountNoteAndVerifyHeader();
+    this.notes.assertNoteValueEquals('');
+
+    this.common.cancelEditing(true);
+
+    cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   }
 
   /**
@@ -932,6 +921,51 @@ export class AccountEnquiryFlow {
     this.common.cancelEditing(false); // user selects "Cancel" → "Stay"
 
     logAE('complete', 'Stayed on page; temporary data should be retained');
+  }
+
+  /**
+   * Updates defendant details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedFirstName - First name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishDefendantAmendmentBaseline(updatedFirstName: string): void {
+    logAE('method', 'establishDefendantAmendmentBaseline()', { updatedFirstName });
+
+    this.editDefendantAndChangeFirstName(updatedFirstName);
+    this.saveDefendantDetails();
+    this.assertDefendantNameContains(updatedFirstName);
+    this.verifyDefendantAmendmentsViaApi(updatedFirstName);
+  }
+
+  /**
+   * Updates company details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedCompanyName - Company name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishCompanyAmendmentBaseline(updatedCompanyName: string): void {
+    logAE('method', 'establishCompanyAmendmentBaseline()', { updatedCompanyName });
+
+    this.editCompanyDetailsAndChangeName(updatedCompanyName);
+    this.saveCompanyDetails();
+    this.assertCompanyNameContains(updatedCompanyName);
+    this.verifyCompanyAmendmentsViaApi(updatedCompanyName);
+  }
+
+  /**
+   * Updates parent/guardian details and records the amendment baseline for later comparisons.
+   *
+   * @param updatedFirstName - Guardian first name to persist and audit.
+   * @remarks Stores `@amendmentBaseline` for subsequent no-change assertions.
+   */
+  public establishParentGuardianAmendmentBaseline(updatedFirstName: string): void {
+    logAE('method', 'establishParentGuardianAmendmentBaseline()', { updatedFirstName });
+
+    this.editParentGuardianAndChangeFirstName(updatedFirstName);
+    this.saveParentGuardianDetails();
+    this.assertParentGuardianNameContains(updatedFirstName);
+    this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
   }
 
   /**
