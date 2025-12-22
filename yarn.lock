@@ -4277,18 +4277,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/signals@npm:^20.0.0":
-  version: 20.1.0
-  resolution: "@ngrx/signals@npm:20.1.0"
+"@ngrx/signals@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@ngrx/signals@npm:21.0.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": ^20.0.0
+    "@angular/core": ^21.0.0
     rxjs: ^6.5.3 || ^7.4.0
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10/a0c0b6275fc7326f87e51e7dd356f2f652ddad33cf9c1e6fccf961c00027f38c0c484d56eb3d9497149aae454a32e5a11769f4bf0dcbde2bc0b3170cacd7481b
+  checksum: 10/4d5a25432db11c2ba379a3dd2d4c4644a8390ac19ee21a294337f25b3202021d954b410b53d54943650103130d18ed52c5cb6e9693be40d251d2e3b2f6e7e13b
   languageName: node
   linkType: hard
 
@@ -13789,7 +13789,7 @@ __metadata:
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@microsoft/applicationinsights-web": "npm:^3.3.5"
     "@ministryofjustice/frontend": "npm:^7.0.0"
-    "@ngrx/signals": "npm:^20.0.0"
+    "@ngrx/signals": "npm:^21.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
