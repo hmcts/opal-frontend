@@ -17733,8 +17733,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.93.0":
-  version: 5.104.0
-  resolution: "webpack@npm:5.104.0"
+  version: 5.104.1
+  resolution: "webpack@npm:5.104.1"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -17766,7 +17766,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/354e19ce9d00b3b47d0161a2dda6cb657ad27c7c572052fe66562c96a310821e95ac83b4b4296f8b929d310d3ab5be2ac31a83f89db303dbee4b5eb906fb0b4d
+  checksum: 10/c22b58fdf41d993971516154cb621d13b7b61dd744b7e2c6be972e9afcc9942694a8aaa322c07fba46448c69d663023ff53d0aeeb00eb0b125d83ace5ca8fa3c
   languageName: node
   linkType: hard
 
