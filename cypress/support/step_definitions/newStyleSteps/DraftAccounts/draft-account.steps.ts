@@ -25,15 +25,23 @@
 
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { createDraftAndSetStatus } from '../../../../e2e/functional/opal/actions/draft-account/draft-account.api';
+import {
+  assertLatestDraftUpdateHasStrongEtag,
+  assertStaleIfMatchConflict,
+  createDraftAndSetStatus,
+  simulateStaleIfMatchConflict,
+  updateLastCreatedDraftAccountStatus,
+} from '../../../../e2e/functional/opal/actions/draft-account/draft-account.api';
 import {
   CreateManageDraftsActions,
   CreateManageTab,
 } from '../../../../e2e/functional/opal/actions/draft-account/create-manage-drafts.actions';
+import { DraftTabsActions, InputterTab, CheckerTab } from '../../../../e2e/functional/opal/actions/draft-tabs.actions';
 import {
   CheckAndValidateDraftsActions,
   CheckAndValidateTab,
 } from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-drafts.actions';
+import { CheckAndValidateReviewActions } from '../../../../e2e/functional/opal/actions/draft-account/check-and-validate-review.actions';
 import { DraftAccountsInterceptActions } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts.intercepts';
 import { DraftAccountsTableColumn } from '../../../../e2e/functional/opal/actions/draft-account/draft-accounts-common.actions';
 import { DraftPayloadType } from '../../../../support/utils/payloads';
@@ -43,8 +51,10 @@ import { DraftAccountsFlow } from '../../../../e2e/functional/opal/flows/draft-a
 type AccountType = DraftPayloadType;
 const inputter = () => new CreateManageDraftsActions();
 const checker = () => new CheckAndValidateDraftsActions();
+const checkerReview = () => new CheckAndValidateReviewActions();
 const intercepts = () => new DraftAccountsInterceptActions();
 const draftsFlow = () => new DraftAccountsFlow();
+const tabs = () => new DraftTabsActions();
 
 /**
  * Unified implementation used by all step aliases.
@@ -76,6 +86,25 @@ function createDraftAndPrepareForPublishing(
   return createDraftAndSetStatus(accountType, status, table);
 }
 
+function extractStatusAndTable(table: DataTable): { status: string; filteredTable: DataTable } {
+  const raw = table.raw();
+  const statusRowIndex = raw.findIndex(([key]) => key?.trim().toLowerCase() === 'account_status');
+  const status = statusRowIndex >= 0 ? (raw[statusRowIndex][1] ?? '').trim() : 'Publishing Pending';
+  const filteredRows = statusRowIndex >= 0 ? raw.filter((_, index) => index !== statusRowIndex) : raw;
+
+  const filteredTable: DataTable = {
+    raw: () => filteredRows,
+    rows: () => filteredRows,
+    rowsHash: () =>
+      Object.fromEntries(filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => [key, value ?? ''])),
+    hashes: () => filteredRows.filter(([key]) => Boolean(key)).map(([key, value]) => ({ [key]: value ?? '' })),
+    transpose: () => filteredTable,
+    toString: () => JSON.stringify(filteredRows),
+  } as DataTable;
+
+  return { status: status || 'Publishing Pending', filteredTable };
+}
+
 /**
  * @step Create a draft account, set explicit status, and persist.
  * @description
@@ -102,6 +131,22 @@ Given(
     return createDraftAndPrepareForPublishing(accountType, table, status);
   },
 );
+
+/**
+ * @step Create a draft account from a table that includes Account_status.
+ * @description Extracts Account_status for the status update and applies the remaining rows as payload overrides.
+ *
+ * @example
+ *   Given a "adultOrYouthOnly" draft account exists with:
+ *     | Account_status              | Submitted |
+ *     | account.defendant.forenames | John      |
+ *     | account.defendant.surname   | Smith     |
+ */
+Given('a {string} draft account exists with:', (accountType: AccountType, table: DataTable) => {
+  const { status, filteredTable } = extractStatusAndTable(table);
+  log('step', 'Create draft with table-provided status', { accountType, status });
+  return createDraftAndPrepareForPublishing(accountType, filteredTable, status);
+});
 
 /**
  * @step Clears approved draft account listings to start from an empty state.
@@ -143,6 +188,51 @@ When('I go back to Create and Manage Draft Accounts', () => {
 When('I go back to Check and Validate Draft Accounts', () => {
   log('navigate', 'Clicking back link on Check and Validate Draft Accounts');
   checker().goBack();
+});
+
+/**
+ * @step Update the most recently created draft account status.
+ * @param status - Target status (e.g., "Deleted").
+ * @example When I set the last created draft account status to "Deleted"
+ */
+When('I set the last created draft account status to {string}', (status: string) => {
+  log('step', 'Setting last created draft status', { status });
+  return updateLastCreatedDraftAccountStatus(status);
+});
+
+Then('the last draft update should return a new strong ETag', () => {
+  log('assert', 'Asserting strong ETag for last draft update');
+  return assertLatestDraftUpdateHasStrongEtag();
+});
+
+When('I attempt a stale If-Match update on the last draft account with status {string}', (status: string) => {
+  log('step', 'Attempting stale If-Match update on last draft account', { status });
+  return simulateStaleIfMatchConflict(status);
+});
+
+Then('the stale If-Match update should return a conflict', () => {
+  log('assert', 'Asserting stale If-Match conflict');
+  return assertStaleIfMatchConflict();
+});
+
+/**
+ * @step Assert the status tag on a checker review page.
+ * @param status - Expected status text (e.g., "In review").
+ * @example Then the draft account status tag is "Rejected"
+ */
+Then('the draft account status tag is {string}', (status: string) => {
+  log('assert', 'Asserting draft status tag', { status });
+  checkerReview().assertStatusTag(status);
+});
+
+/**
+ * @step Assert the checker tab heading text.
+ * @param heading - Expected heading such as "To review" or "Deleted".
+ * @example Then the checker status heading is "Deleted"
+ */
+Then('the checker status heading is {string}', (heading: string) => {
+  log('assert', 'Asserting checker status heading', { heading });
+  checker().assertStatusHeading(heading);
 });
 
 /**
@@ -277,6 +367,29 @@ Then(
 );
 
 /**
+ * @step Assert the draft review page header and status tag after navigation.
+ * @param header - Expected page header text.
+ * @param status - Expected status tag (e.g., "In review").
+ */
+Then('I should be back on the page {string} with status {string}', (header: string, status: string) => {
+  log('assert', 'Asserting draft review header and status tag', { header, status });
+  draftsFlow().assertReviewHeaderAndStatus(header, status);
+});
+
+/**
+ * @step Assert the checker header and status heading together.
+ * @param header - Expected page header text.
+ * @param statusHeading - Expected status heading (e.g., "To review").
+ */
+Then(
+  'I should see the checker header {string} and status heading {string}',
+  (header: string, statusHeading: string) => {
+    log('assert', 'Asserting checker header and status heading', { header, statusHeading });
+    draftsFlow().assertHeaderAndStatusHeading(header, statusHeading);
+  },
+);
+
+/**
  * @step Assert sortable table headings.
  * @param table - Single-column table of heading labels in order.
  */
@@ -378,3 +491,23 @@ When(
     );
   },
 );
+
+/**
+ * @step Switches to the specified inputter draft tab.
+ * @description Clicks the tab by name within the inputter draft accounts view.
+ * @param tab - Tab name (e.g., "In review").
+ */
+When('I view the inputter draft tab {string}', (tab: InputterTab) => {
+  log('navigate', 'Switching inputter tab', { tab });
+  tabs().switchInputterTab(tab);
+});
+
+/**
+ * @step Switches to the specified checker draft tab.
+ * @description Clicks the tab by name within the checker draft accounts view.
+ * @param tab - Tab name (e.g., "To review").
+ */
+When('I view the checker draft tab {string}', (tab: CheckerTab) => {
+  log('navigate', 'Switching checker tab', { tab });
+  tabs().switchCheckerTab(tab);
+});

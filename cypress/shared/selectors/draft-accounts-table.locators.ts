@@ -20,6 +20,11 @@ export const DraftAccountsTableLocators = {
   backLink: 'a.govuk-back-link',
   /** Inline link to open the View all rejected accounts page */
   viewAllRejectedLink: 'a.govuk-link:contains("view all rejected accounts")',
+  pagination: {
+    container: '#fines-draft-table-pagination',
+    next: '.moj-pagination__item--next a',
+    pages: '.moj-pagination__item a',
+  },
   cells: {
     accountLink: 'td#account a',
     defendantLink: 'td#defendant a',

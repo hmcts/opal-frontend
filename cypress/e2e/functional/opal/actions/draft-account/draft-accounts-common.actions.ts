@@ -39,9 +39,30 @@ export class DraftAccountsCommonActions {
    */
   openDefendant(defendantName: string): void {
     log('navigate', 'Opening draft account by defendant', { defendantName });
-    cy.contains(L.cells.defendantLink, defendantName, this.common.getTimeoutOptions())
-      .should('be.visible')
-      .click({ force: true });
+    const matcher = new RegExp(defendantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const tryPage = () => {
+      cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+      cy.get('body').then(($body) => {
+        const links = $body.find(L.cells.defendantLink).filter((_, el) => matcher.test(Cypress.$(el).text()));
+        if (links.length) {
+          cy.wrap(links.first()).scrollIntoView().click({ force: true });
+          return;
+        }
+
+        const next = $body.find(L.pagination.next);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        if (hasNext) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+          tryPage();
+          return;
+        }
+
+        throw new Error(`Defendant "${defendantName}" not found in draft listings`);
+      });
+    };
+
+    tryPage();
   }
 
   /**
@@ -348,11 +369,34 @@ export class DraftAccountsCommonActions {
   openFirstMatchInColumn(column: DraftAccountsTableColumn, expectedText: string): void {
     const selector = this.resolveColumnSelector(column);
     log('navigate', 'Opening first draft account matching column text', { column, expectedText });
-    cy.get(L.rows, this.common.getTimeoutOptions())
-      .find(selector)
-      .contains(expectedText, this.common.getTimeoutOptions())
-      .first()
-      .should('be.visible')
-      .click({ force: true });
+    const matcher = new RegExp(expectedText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+
+    const tryPage = () => {
+      cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+      cy.get('body').then(($body) => {
+        const cells = $body.find(selector).filter((_, el) => matcher.test(Cypress.$(el).text()));
+
+        if (cells.length) {
+          const first = Cypress.$(cells[0]);
+          const link = first.find('a').first();
+          const target = link.length ? link : first;
+          cy.wrap(target).scrollIntoView().click({ force: true });
+          return;
+        }
+
+        const next = $body.find(L.pagination.next);
+        const hasNext = next.length > 0 && !next.closest('li').hasClass('moj-pagination__item--disabled');
+        if (hasNext) {
+          cy.wrap(next.first()).scrollIntoView().click({ force: true });
+          cy.get(L.rows, this.common.getTimeoutOptions()).should('exist');
+          tryPage();
+          return;
+        }
+
+        throw new Error(`No draft row found in column "${column}" containing "${expectedText}"`);
+      });
+    };
+
+    tryPage();
   }
 }

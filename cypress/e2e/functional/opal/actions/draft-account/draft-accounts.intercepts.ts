@@ -121,6 +121,50 @@ export class DraftAccountsInterceptActions {
   }
 
   /**
+   * Stubs failed draft account summaries to ensure the Failed tab has data.
+   */
+  stubFailedDraftSummaries(): void {
+    log('intercept', 'Stubbing failed draft account summaries');
+    cy.fixture('getDraftAccounts/oneFailedAccountSummary.json').then((summary) => {
+      cy.intercept(
+        {
+          method: 'GET',
+          url: '/opal-fines-service/draft-accounts?*status=Publishing%20Failed&*',
+        },
+        (req) => {
+          req.continue((res) => {
+            res.send(summary);
+          });
+        },
+      ).as('getFailedDraftAccountSummaries');
+    });
+  }
+
+  /**
+   * Stubs failed draft account details for the default failed account id.
+   */
+  stubFailedDraftDetails(): void {
+    log('intercept', 'Stubbing failed draft account details');
+    cy.fixture('getDraftAccounts/oneFailedAccountDetails.json').then((details) => {
+      cy.intercept('GET', '/opal-fines-service/draft-accounts/36', (req) => {
+        req.reply(details);
+      }).as('getFailedDraftAccountDetails');
+    });
+  }
+
+  /**
+   * Forces draft account decision PATCH calls to fail with the provided status code.
+   * @param statusCode - HTTP status to return (default 400).
+   */
+  stubPatchDraftAccountError(statusCode: number = 400): void {
+    log('intercept', 'Stubbing PATCH draft account error', { statusCode });
+    cy.intercept('PATCH', '/opal-fines-service/draft-accounts/*', {
+      statusCode,
+      body: { error: 'Bad Request', message: 'Invalid request data' },
+    }).as('patchDraftAccountError');
+  }
+
+  /**
    * Resolve approved payload fixture filename for the provided account type.
    * @param accountType - Logical account type name.
    * @returns Fixture filename.

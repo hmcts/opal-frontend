@@ -70,7 +70,8 @@
     "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\"",
     "cypress": "cypress open",
     "audit:save": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "check:steps": "cypress run --env cucumberOnlyMissingSteps=true"
   },
   "private": true,
   "dependencies": {
