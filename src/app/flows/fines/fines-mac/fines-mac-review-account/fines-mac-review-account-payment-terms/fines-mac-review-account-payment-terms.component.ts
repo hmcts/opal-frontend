@@ -10,7 +10,7 @@ import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-ter
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-enforcement-action-options';
 import { IFinesMacPaymentTermsEnforcementActionsOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-enforcement-actions-options.interface';
 import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-permissions.interface';
-import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 import { IFinesPaymentTermsFrequencyOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';

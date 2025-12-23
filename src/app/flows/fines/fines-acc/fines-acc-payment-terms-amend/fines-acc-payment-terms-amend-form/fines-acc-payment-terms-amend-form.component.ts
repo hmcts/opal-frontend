@@ -19,7 +19,7 @@ import { FINES_ACC_PAYMENT_TERMS_AMEND_FORM } from '../constants/fines-acc-payme
 import { payInFullPaymentCardValidator } from '../validators/fines-acc-payment-terms-pay-in-full.validator';
 import { changeLetterWithoutChangesValidator } from '../validators/fines-acc-payment-terms-change-letter.validator';
 import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
-import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';

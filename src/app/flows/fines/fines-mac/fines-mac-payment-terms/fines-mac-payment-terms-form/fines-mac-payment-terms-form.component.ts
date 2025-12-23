@@ -54,7 +54,7 @@ import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/g
 import { dateBeforeValidator } from '@hmcts/opal-frontend-common/validators/date-before';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
-import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-options.constant';
+import { FINES_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../constants/fines-payment-terms-frequency-options.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
