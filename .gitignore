@@ -47,6 +47,7 @@ testem.log
 /typings
 package-lock.json
 .nx
+.codex-plans
 
 # System files
 .DS_Store
