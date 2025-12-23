@@ -1,0 +1,40 @@
+{
+  "inputs": [
+    {
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/master/src/main/resources/openapi/DefendantAccount.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "DefendantAccount"
+      }
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/master/src/main/resources/openapi/MajorCreditor.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "MajorCreditor"
+      }
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/master/src/main/resources/openapi/MinorCreditor.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "MinorCreditor"
+      }
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/master/src/main/resources/openapi/common.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "Common"
+      }
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/hmcts/opal-fines-service/master/src/main/resources/openapi/types.yaml",
+      "dispute": {
+        "alwaysApply": true,
+        "suffix": "Types"
+      }
+    }
+  ],
+  "output": "./opal-merged.yaml"
+}
