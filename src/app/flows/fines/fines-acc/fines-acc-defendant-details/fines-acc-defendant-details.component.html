@@ -236,6 +236,7 @@
         [hasAmendPaymentTermsPermission]="hasPermission('amend-payment-terms')"
         [style]="tabContentStyles"
         (changePaymentTerms)="navigateToAmendPaymentTermsPage()"
+        (requestPaymentCard)="navigateToRequestPaymentCardPage()"
       ></app-fines-acc-defendant-details-payment-terms-tab>
     }
   }
