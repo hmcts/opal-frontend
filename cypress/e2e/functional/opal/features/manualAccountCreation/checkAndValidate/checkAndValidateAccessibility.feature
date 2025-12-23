@@ -2,42 +2,53 @@ Feature: Accessibility Tests for Check and Validate Screens
   # This feature file ensures that all screens in the Check and Validate flow meet accessibility standards using Axe-Core.
 
   Background:
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
+    Given I am logged in with email "opal-test@HMCTS.NET"
+    And I open Create and Manage Draft Accounts
 
-    Given I navigate to Create and Manage Draft Accounts
+  Scenario: Create and Manage landing page passes accessibility checks
+    Then I check the page for accessibility
 
-  Scenario: Draft Account List, Account Details, and Check and Validate Sections - Axe Core
-    Then I check accessibility
-
-    # Create a draft account with rejected status for testing
-    Given I create a "pgToPay" draft account with the following details:
+  Scenario: Rejected tab is accessible for rejected draft account
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
       | account.defendant.forenames | Accessibility |
       | account.defendant.surname   | Test          |
-    When I update the last created draft account with status "Rejected"
-    Then I click on the "Rejected" link
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    Then I see the following text "Test, Accessibility"
+    And I check the page for accessibility
 
-    Then I see "Test, Accessibility" text on the page
-    Then I check accessibility
+  Scenario: Approved tab is accessible
+    When I view the "Approved" tab on the Create and Manage Draft Accounts page
+    Then I check the page for accessibility
 
-    Then I click on the 'Approved' link
-    Then I check accessibility
+  Scenario: Deleted tab is accessible
+    When I view the "Deleted" tab on the Create and Manage Draft Accounts page
+    Then I check the page for accessibility
 
-    Then I click on the "Deleted" link
-    Then I check accessibility
+  Scenario: Check and submit task list is accessible for rejected draft
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | Test          |
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "Test, Accessibility"
+    Then I see the following text "Check and submit"
+    And I check the page for accessibility
 
-    Then I click on the "Rejected" link
-    Then I click on the "Test, Accessibility" link
+  Scenario: Check account details page is accessible for rejected draft
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | Test          |
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "Test, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST"
+    And I check the page for accessibility
 
-    # Account Details screen - Axe Core
-    And I see the "Check and submit" section heading
-    Then I check accessibility
-
-    # Check Account screen - Axe Core
-    When I click the "Check account" button
-    Then I see "Check account details" on the page header
-    Then I check accessibility
-
-    # Submit for review screen - Axe Core
-    When I click the "Submit for review" button
-    Then I see "You have submitted Accessibility Test's account for review" text on the page
+  Scenario: Submitting a rejected draft for review shows confirmation
+    Given I create a "pgToPay" draft account with the following details and set status "Rejected":
+      | account.defendant.forenames | Accessibility |
+      | account.defendant.surname   | Test          |
+    When I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "Test, Accessibility"
+    And I check the manual account details for account header "Miss Accessibility TEST"
+    When I submit the manual account for review
+    Then I see the following text "You have submitted Accessibility Test's account for review"
+    And I check the page for accessibility

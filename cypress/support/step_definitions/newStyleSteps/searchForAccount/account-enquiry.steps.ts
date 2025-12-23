@@ -15,17 +15,17 @@
  */
 
 import { Given, When, Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
-import { AccountEnquiryFlow } from '../../../e2e/functional/opal/flows/account-enquiry.flow';
-import { CommonFlow } from '../../../e2e/functional/opal/flows/common-flow';
+import { AccountEnquiryFlow } from '../../../../e2e/functional/opal/flows/account-enquiry.flow';
+import { CommonFlow } from '../../../../e2e/functional/opal/flows/common-flow';
 
 // Actions
-import { AccountDetailsDefendantActions } from '../../../e2e/functional/opal/actions/account-details/details.defendant.actions';
-import { AccountDetailsAtAGlanceActions } from '../../../e2e/functional/opal/actions/account-details/details.at-a-glance.actions';
-import { CommonActions } from '../../../e2e/functional/opal/actions/common/common.actions';
-import { EditDefendantDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
-import { AccountDetailsNavActions } from '../../../e2e/functional/opal/actions/account-details/details.nav.actions';
-import { EditParentGuardianDetailsActions } from '../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
-import { log } from '../../utils/log.helper';
+import { AccountDetailsDefendantActions } from '../../../../e2e/functional/opal/actions/account-details/details.defendant.actions';
+import { AccountDetailsAtAGlanceActions } from '../../../../e2e/functional/opal/actions/account-details/details.at-a-glance.actions';
+import { CommonActions } from '../../../../e2e/functional/opal/actions/common/common.actions';
+import { EditDefendantDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.defendant-details.actions';
+import { AccountDetailsNavActions } from '../../../../e2e/functional/opal/actions/account-details/details.nav.actions';
+import { EditParentGuardianDetailsActions } from '../../../../e2e/functional/opal/actions/account-details/edit.parent-guardian-details.actions';
+import { log } from '../../../utils/log.helper';
 
 // Factory functions so each step gets a fresh instance with its own Cypress chain
 const flow = () => new AccountEnquiryFlow();
@@ -38,7 +38,7 @@ const navActions = () => new AccountDetailsNavActions();
 
 type CommentRow = { [key: string]: string };
 
-import { rowsHashSafe } from '../../../support/utils/table';
+import { rowsHashSafe } from '../../../utils/table';
 
 /**
  * @step Selects the latest account and verifies the header.

@@ -60,8 +60,10 @@ export class ManualReviewAccountActions {
       .should('be.visible')
       .within(() => {
         rows.forEach(({ label, value }) => {
-          cy.contains(L.summaryRow, label, this.common.getTimeoutOptions())
+          cy.contains(L.summaryKey, label, this.common.getTimeoutOptions())
             .should('be.visible')
+            .parents(L.summaryRow)
+            .first()
             .within(() => {
               cy.get(L.summaryValue, this.common.getTimeoutOptions()).should(($val) => {
                 const normalizedText = ($val.text() ?? '').replace(/\s+/g, ' ').trim();
