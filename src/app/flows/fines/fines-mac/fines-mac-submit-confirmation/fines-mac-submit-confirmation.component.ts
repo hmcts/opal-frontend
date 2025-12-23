@@ -42,7 +42,7 @@ export class FinesMacSubmitConfirmationComponent {
    * @returns {void}
    */
   public seeAllAccounts(): void {
-    this.finesMacStore.resetFinesMacStore();
+    this.finesMacStore.resetStore();
 
     this.router.navigate(
       [

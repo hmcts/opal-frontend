@@ -71,6 +71,13 @@ export const FinesAccountStore = signalStore(
           patchState(store, { hasVersionMismatch: true });
         }
       },
+      resetStore: () => {
+        patchState(store, {
+          ...FINES_ACCOUNT_STATE,
+          hasVersionMismatch: false,
+          successMessage: null,
+        });
+      },
     };
   }),
 );

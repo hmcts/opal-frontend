@@ -6,16 +6,21 @@ import { FinesMacStore } from './stores/fines-mac.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;
   let fixture: ComponentFixture<FinesMacComponent>;
   let finesMacStore: FinesMacStoreType;
   let globalStore: GlobalStoreType;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
 
   beforeEach(async () => {
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['clearDraftAccountsCache']);
+
     await TestBed.configureTestingModule({
       imports: [FinesMacComponent],
+      providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacComponent);
